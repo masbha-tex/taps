@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<odoo>
+    <record id="hr_overtime_action" model="ir.actions.act_window">
+        <field name="name">Overtime</field>
+        <field name="res_model">hr.overtime</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="menu_overtime"
+        name="Overtime"
+        action="hr_overtime_action"
+        parent="hr_work_entry_contract.menu_hr_payroll_work_entries_root"
+        sequence="32"/>
+</odoo>
