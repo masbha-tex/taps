@@ -48,7 +48,7 @@ class HrAttendance(models.Model):
 
 class ZkMachine(models.Model):
     _name = 'zk.machine'
-    
+
     name = fields.Char(string='Machine IP', required=True)
     port_no = fields.Integer(string='Port No', required=True)
     address_id = fields.Many2one('res.partner', string='Working Address')
@@ -60,7 +60,7 @@ class ZkMachine(models.Model):
             return conn
         except:
             return False
-    
+
     def clear_attendance(self):
         for info in self:
             try:
@@ -68,7 +68,7 @@ class ZkMachine(models.Model):
                 zk_port = info.port_no
                 timeout = 30
                 try:
-                    zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=False)
+                    zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
                 except NameError:
                     raise UserError(_("Please install it with 'pip3 install pyzk'."))
                 conn = self.device_connect(zk)
@@ -116,7 +116,7 @@ class ZkMachine(models.Model):
         machines = self.env['zk.machine'].search([])
         for machine in machines :
             machine.download_attendance()
-        
+
     def download_attendance(self):
         _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
         zk_attendance = self.env['zk.machine.attendance']
@@ -126,7 +126,7 @@ class ZkMachine(models.Model):
             zk_port = info.port_no
             timeout = 15
             try:
-                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=False)
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
             except NameError:
                 raise UserError(_("Pyzk module not Found. Please install it with 'pip3 install pyzk'."))
             conn = self.device_connect(zk)
