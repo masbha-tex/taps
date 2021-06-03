@@ -7,6 +7,7 @@ class StockQuant(models.Model):
     landed_cost = fields.Monetary(string="Landed cost", compute="_compute_value", groups="stock.group_stock_manager")
     total_unit_value = fields.Monetary(string="Total Unit Value", compute="_compute_value", groups="stock.group_stock_manager")
     unit_value = fields.Monetary(string="Unit Value", compute="_compute_value", groups="stock.group_stock_manager")
+    product_category = fields.Many2one("product.category", related="product_id.categ_id", store=True)
 
     def _compute_value(self):
         # overriden from stock.quant._compute_value
