@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="product_tree_view" model="ir.ui.view">
+        <field name="name">Product tree view</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='qty_available']" position="before">
+                <field name="landed_cost" />
+            </xpath>
+            <xpath expr="//field[@name='qty_available']" position="after">
+                <field name="unit_value" />
+                <field name="total_unit_value" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
