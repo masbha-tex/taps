@@ -19,5 +19,5 @@ class StockQuant(models.Model):
                 qty_sum = sum(self.env['stock.quant'].search([('lot_id', '=', quant.lot_id.id), ('location_id.usage', '=', 'internal')]).mapped('quantity'))
                 quant.landed_cost = (quant.quantity / qty_sum) * quant.lot_id.landed_cost_total if qty_sum != 0 else 0
 
-            quant.unit_value = (quant.value - quant.landed_cost) / quant.quantity
-            quant.total_unit_value = quant.value / quant.quantity
+            quant.unit_value = (quant.value - quant.landed_cost) / quant.quantity if quant.quantity != 0 else 0
+            quant.total_unit_value = quant.value / quant.quantity if quant.quantity != 0 else 0
