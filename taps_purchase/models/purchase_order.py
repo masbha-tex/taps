@@ -16,8 +16,8 @@ class PurchaseOrder(models.Model):
         # NOTE: previously use approach with using user_id. However due to different version of PostgreSQL lead to different order of ids retrieved using read_group()
 
         # dictionary of document (purchase.order) -> latest approved entry
-        groups = self.env['studio.approval.entry'].sudo().read_group(domain, ['max_id:max(id)'], ['res_id'])
+        Entry = self.env['studio.approval.entry'].sudo()
+        groups = Entry.read_group(domain, ['max_id:max(id)'], ['res_id'])
         purchase_last_approver = {i['res_id']: i['max_id'] for i in groups}
-        Entry = self.env['studio.approval.entry']
         for rec in self:
             rec.last_approver = Entry.browse(purchase_last_approver.get(rec.id, 0)).user_id

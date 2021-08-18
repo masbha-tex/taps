@@ -5,7 +5,7 @@
         Show the last approver of the purchase on view
         """,
     "category": "",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "author": "Odoo PS",
     "website": "http://www.odoo.com",
     "license": "OEEL-1",
