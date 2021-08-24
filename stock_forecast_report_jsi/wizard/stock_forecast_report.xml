@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_form_stock_forecast_report_jsi" model="ir.ui.view">
+        <field name="name">view.form.stock.forecast.report.jsi</field>
+        <field name="model">stock.forecast.report</field>
+        <field name="arch" type="xml">
+            <form string="Report Options">
+                <group>
+                    <group>
+                        <field name="report_by" required="True"/>
+                        <field name="categ_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_products')], 'required': [('report_by', '=', 'by_categories')]}"/>
+                        <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')], 'required': [('report_by', '=', 'by_products')]}"/>
+                        <field name="from_date" required="True"/>
+                        <field name="to_date" required="True"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_date_wise_stock_register" string="Print" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_window_stock_forecast_report_jsi" model="ir.actions.act_window">
+        <field name="name">Stock Forecast Report</field>
+        <field name="res_model">stock.forecast.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_form_stock_forecast_report_jsi"/>
+        <field name="target">new</field>
+    </record>
+    <menuitem name="Stock Forecast Report" id="menu_action_window_stock_forecast_report_jsi" action="action_window_stock_forecast_report_jsi" parent="stock.menu_warehouse_report" />
+</odoo>
