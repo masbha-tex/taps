@@ -9,9 +9,9 @@
             <form string="Report Options">
                 <group>
                     <group>
-                        <field name="report_by" required="True"/>
-                        <field name="categ_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_products')], 'required': [('report_by', '=', 'by_categories')]}"/>
-                        <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')], 'required': [('report_by', '=', 'by_products')]}"/>
+                        <field name="report_by"/>
+                        <field name="categ_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_products')]}"/>
+                        <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')]}"/>
                         <field name="from_date" required="True"/>
                         <field name="to_date" required="True"/>
                     </group>
