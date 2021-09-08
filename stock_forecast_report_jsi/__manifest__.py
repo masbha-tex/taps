@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 {
     "name": "Stock Forecast Report - jsi",
     "summary": """
