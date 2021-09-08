@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import base64
 import io
 import logging
-from os import stat_result
 
 from odoo.tools.misc import xlsxwriter
 from odoo.tools.float_utils import float_round as round
@@ -19,8 +16,8 @@ class StockForecastReport(models.TransientModel):
 
     report_by = fields.Selection([
         ('by_categories', 'By Categories'),
-        ('by_products', 'By Products')])
-    # location_ids = fields.Many2many('stock.location', string='Locations')
+        ('by_products', 'By Products')],
+        default='by_categories')
     categ_ids = fields.Many2many('product.category', string='Categories')
     product_ids = fields.Many2many('product.product')
     from_date = fields.Date('From')
@@ -33,74 +30,82 @@ class StockForecastReport(models.TransientModel):
         start_time = fields.datetime.now()
         from_date = self.from_date
         to_date = self.to_date
-        if self.report_by == 'by_products':
+        if not (self.product_ids or self.categ_ids):
+            products = Product.search([('type', '=', 'product')])
+        elif self.report_by == 'by_products':
             products = self.product_ids
         else:
-            products = self.env['product.product'].search([('categ_id', 'in', self.categ_ids.mapped('id'))])
+            products = Product.search([('categ_id', 'in', self.categ_ids.ids)])
 
         # Date wise opening quantity
         product_quantities = products._compute_quantities_dict(False, False, False, from_date, to_date)
 
         # Received data
         in_moves = Move.read_group([
-            ('date', '>=', from_date),
-            ('date', '<', to_date),
-            ('product_id', 'in', products.ids),
-            ('state', '=', 'done'),
-            ('picking_code', '=', 'incoming')],
-            ['product_uom_qty', 'price_unit'], 
+                ('date', '>=', from_date),
+                ('date', '<', to_date),
+                ('product_id', 'in', products.ids),
+                ('state', '=', 'done'),
+                ('picking_code', '=', 'incoming'),
+                ('location_dest_id.usage', '=', 'internal')
+            ],
+            ['product_uom_qty', 'price_unit'],
             ['product_id']
         )
         in_move_dict = dict((item['product_id'][0], (item['product_uom_qty'], item['price_unit'])) for item in in_moves)
 
         # Issued data
         out_moves = Move.read_group([
-            ('date', '>=', from_date),
-            ('date', '<', to_date),
-            ('product_id', 'in', products.ids),
-            ('state', '=', 'done'),
-            ('picking_code', '=', 'outgoing')],
-            ['product_uom_qty', 'price_unit'], 
+                ('date', '>=', from_date),
+                ('date', '<', to_date),
+                ('product_id', 'in', products.ids),
+                ('state', '=', 'done'),
+                ('picking_code', '=', 'outgoing')
+            ],
+            ['product_uom_qty', 'price_unit'],
             ['product_id']
         )
         out_move_dict = dict((item['product_id'][0], (item['product_uom_qty'], item['price_unit'])) for item in out_moves)
         report_data = []
 
-        for product in products:
-            received_qty = received_price_unit = issued_qty = issued_value = 0
-            product_id = product.id
+        for categ in products.categ_id:
+            report_data.append([categ.display_name])
+            categ_products = products.filtered(lambda x: x.categ_id == categ)
+            for product in categ_products:
+                received_qty = received_price_unit = issued_qty = issued_value = 0
+                product_id = product.id
 
-            # Prepare Opening Data
-            opening_qty = product_quantities[product_id]['qty_available']
-            opening_value = round(opening_qty * product.standard_price, precision_rounding=4)
+                # Prepare Opening Data
+                opening_qty = product_quantities[product_id]['qty_available']
+                opening_value = round(opening_qty * product.standard_price, precision_rounding=4)
 
-            # Prepare Received data
-            if in_move_dict.get(product_id):
-                received_qty = in_move_dict[product_id][0]
-                received_price_unit = in_move_dict[product_id][1]
-            received_value = round(received_qty * received_price_unit, precision_rounding=4)
+                # Prepare Received data
+                if in_move_dict.get(product_id):
+                    received_qty = in_move_dict[product_id][0]
+                    received_price_unit = in_move_dict[product_id][1]
+                received_value = round(received_qty * received_price_unit, precision_rounding=4)
 
-            # prepare Issued Data
-            if out_move_dict.get(product_id):
-                issued_qty = out_move_dict[product_id][0]
-                issued_value = (issued_qty * out_move_dict[product_id][1])
+                # prepare Issued Data
+                if out_move_dict.get(product_id):
+                    issued_qty = out_move_dict[product_id][0]
+                    issued_value = (issued_qty * out_move_dict[product_id][1])
 
-            # Prepare Closing Quantity
-            closing_qty = opening_qty + received_qty - issued_qty
-            closing_value = opening_value + received_value - issued_value
+                # Prepare Closing Quantity
+                closing_qty = opening_qty + received_qty - issued_qty
+                closing_value = opening_value + received_value - issued_value
 
-            product_data = [
-                product.name,
-                opening_qty,
-                opening_value,
-                received_qty,
-                received_value,
-                issued_qty,
-                issued_value,
-                closing_qty,
-                closing_value,
-            ]
-            report_data.append(product_data)
+                product_data = [
+                    product.name,
+                    opening_qty,
+                    opening_value,
+                    received_qty,
+                    received_value,
+                    issued_qty,
+                    issued_value,
+                    closing_qty,
+                    closing_value,
+                ]
+                report_data.append(product_data)
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -115,6 +120,7 @@ class StockForecastReport(models.TransientModel):
         column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
         column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
+        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
 
         # set the width od the column
         worksheet.set_column(0, 8, 20)
@@ -126,11 +132,6 @@ class StockForecastReport(models.TransientModel):
         worksheet.write(6, 4, 'Received Value', column_received_style)
         worksheet.write(6, 5, 'Issued Quantity', column_issued_style)
         worksheet.write(6, 6, 'Issued Value', column_issued_style)
-        # worksheet.write(6, 7, 'Unit', column_product_style)
-        # worksheet.write(6, 8, 'Unit Value', column_product_style)
-        # worksheet.write(6, 9, 'C&F', column_product_style)
-        # worksheet.write(6, 10, 'Freight', column_product_style)
-        # worksheet.write(6, 9, 'Total Unit Value', column_product_style)
         worksheet.write(6, 7, 'Closing Quantity', column_product_style)
         worksheet.write(6, 8, 'Closing Value', column_product_style)
         col = 0
@@ -138,9 +139,14 @@ class StockForecastReport(models.TransientModel):
 
         for line in report_data:
             col=0
-            for l in line:
-                worksheet.write(row, col, l)
-                col+=1
+            if len(line) == 1:
+                # worksheet.write(row, col, line[0], row_categ_style)
+                worksheet.merge_range('A%s:I%s' % (row+1, row+1), line[0], row_categ_style)
+
+            else:
+                for l in line:
+                    worksheet.write(row, col, l)
+                    col+=1
             row+=1
         workbook.close()
         xlsx_data = output.getvalue()
