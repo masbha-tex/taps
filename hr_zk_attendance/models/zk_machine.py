@@ -43,7 +43,7 @@ _logger = logging.getLogger(__name__)
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
 
-    device_id = fields.Char(string='Biometric Device ID')
+    barcode = fields.Char(string='Badge ID')
 
 
 class ZkMachine(models.Model):
@@ -156,15 +156,15 @@ class ZkMachine(models.Model):
                             for uid in user:
                                 if uid.user_id == each.user_id:
                                     get_user_id = self.env['hr.employee'].search(
-                                        [('device_id', '=', each.user_id)])
+                                        [('barcode', '=', each.user_id)])
                                     if get_user_id:
                                         duplicate_atten_ids = zk_attendance.search(
-                                            [('device_id', '=', each.user_id), ('punching_time', '=', atten_time)])
+                                            [('barcode', '=', each.user_id), ('punching_time', '=', atten_time)])
                                         if duplicate_atten_ids:
                                             continue
                                         else:
                                             zk_attendance.create({'employee_id': get_user_id.id,
-                                                                  'device_id': each.user_id,
+                                                                  'barcode': each.user_id,
                                                                   'attendance_type': str(each.status),
                                                                   'punch_type': str(each.punch),
                                                                   'punching_time': atten_time,
@@ -185,18 +185,7 @@ class ZkMachine(models.Model):
                                                         att_var1[-1].write({'check_out': atten_time})
 
                                     else:
-                                        print('ddfcd', str(each.status))
-                                        print('user', uid.name)
-                                        employee = self.env['hr.employee'].create(
-                                            {'device_id': each.user_id, 'name': uid.name})
-                                        zk_attendance.create({'employee_id': employee.id,
-                                                              'device_id': each.user_id,
-                                                              'attendance_type': str(each.status),
-                                                              'punch_type': str(each.punch),
-                                                              'punching_time': atten_time,
-                                                              'address_id': info.address_id.id})
-                                        att_obj.create({'employee_id': employee.id,
-                                                        'check_in': atten_time})
+                                        pass
                                 else:
                                     pass
                     # zk.enableDevice()
