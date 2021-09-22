@@ -7,7 +7,7 @@ class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
 #     _description = 'hr_attendance_new_columns.hr_attendance_new_columns'
 
-    date = fields.datetime.date(string = "Date", store=True)
+    date = fields.date(string = "Date", store=True)
     inTime = fields.float(string = "In-Time")
     inFlag = fields.char("In-Flag")
     outTime = fields.float(string = "Out-Time")
