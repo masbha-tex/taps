@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <record id="view_shift_transfer_form" model="ir.ui.view">
+        <field name="name">Shift Transfer</field>
+        <field name="model">shift.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Shift Transfer">
+                <header/>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="code" placeholder="Transfer Code.."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <!--<field name="empID"/>-->
+                            <field name="name"/>
+                            <field name="activationDate"/>
+                        </group>
+                        <group>
+                            <field name="transferGroup"/>
+                            <field name="inTime" widget="float_time"/>
+                            <field name="outTime" widget="float_time"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- explicit tree view definition -->
+
+    <record id="view_shift_transfer_tree" model="ir.ui.view">
+      <field name="name">shift.transfer.tree</field>
+      <field name="model">shift.transfer</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="code" placeholder="Transfer Code.."/>
+            <!--<field name="empID"/> -->
+            <field name="name"/>
+            <field name="activationDate"/>
+            <field name="transferGroup"/> 
+            <field name="inTime" widget="float_time"/>
+            <field name="outTime" widget="float_time"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record id="shift_transfer_action" model="ir.actions.act_window">
+      <field name="name">Shift Transfer</field>
+      <field name="res_model">shift.transfer</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+      <menuitem id="shift_transfer_menu" name="Shift Transfer" action="shift_transfer_action" parent="shift_setup.shift_setup_menu" sequence="2"/>
+
+  </data>
+</odoo>

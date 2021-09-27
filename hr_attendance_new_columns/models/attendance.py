@@ -10,8 +10,7 @@ class HrAttendance(models.Model):
     inFlag = fields.Char("In-Flag")
     outTime = fields.Float(string = "Out-Time")
     outFlag = fields.Char("Out-Flag")
-    otHours = fields.Float(string = "OT Hours")
-     
+    otHours = fields.Float(string = "OT Hours")    
     
 #     value = fields.Integer()
 #     value2 = fields.Float(compute="_value_pc", store=True)
