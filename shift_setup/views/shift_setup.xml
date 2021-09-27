@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <record id="view_shift_setup_form" model="ir.ui.view">
+        <field name="name">Shift Time Setup</field>
+        <field name="model">shift.setup</field>
+        <field name="arch" type="xml">
+            <form string="Shift Analysis">
+                <header/>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Shift Name.."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="types"/>
+                        </group>
+                        <group>
+                            <field name="inTime" widget="float_time"/>
+                            <field name="outTime" widget="float_time"/>
+                            <field name="graceinTime" widget="float_time"/>
+                            <field name="lunchinTime" widget="float_time"/>
+                            <field name="lunchoutTime" widget="float_time"/>
+                            <field name="generalOT" widget="float_time"/>
+                            <field name="excessOT" widget="float_time"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- explicit tree view definition -->
+
+    <record id="view_shift_setup_tree" model="ir.ui.view">
+      <field name="name">shift.setup.tree</field>
+      <field name="model">shift.setup</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="name" placeholder="Shift Name.."/>
+            <field name="types"/>
+            <field name="inTime" widget="float_time"/>
+            <field name="outTime" widget="float_time"/>
+            <field name="graceinTime" widget="float_time"/>
+            <field name="lunchinTime" widget="float_time"/>
+            <field name="lunchoutTime" widget="float_time"/>
+            <field name="generalOT" widget="float_time"/>
+            <field name="excessOT" widget="float_time"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record id="shift_setup_action" model="ir.actions.act_window">
+      <field name="name">Shift Time Setup</field>
+      <field name="res_model">shift.setup</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="shift_setup.action_server">
+      <field name="name">shift_setup server</field>
+      <field name="model_id" ref="model_shift_setup_shift_setup"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item 
+      <menuitem id="shift_setup_menu" parent="hr_attendance.menu_hr_attendance_root"  name="Shift Setup" action="shift_setup_action" sequence="100"/>
+    -->
+      
+    <menuitem id="shift_setup_menu" parent="hr_attendance.menu_hr_attendance_root" sequence="40" name="Shift Analysis" />
+    <menuitem id="shift_setup_sub_menu" parent="shift_setup_menu"  name="Shift Configuration" action="shift_setup_action" sequence="1"/>
+<!--
+    <menuitem name="shift_setup" id="shift_setup.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="shift_setup.menu_1" parent="shift_setup.menu_root"/>
+    <menuitem name="Menu 2" id="shift_setup.menu_2" parent="shift_setup.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="shift_setup.menu_1_list" parent="shift_setup.menu_1"
+              action="shift_setup.action_window"/>
+    <menuitem name="Server to list" id="shift_setup" parent="shift_setup.menu_2"
+              action="shift_setup.action_server"/>
+-->
+  </data>
+</odoo>
