@@ -7,6 +7,8 @@ class ShiftTransfer(models.Model):
 
     code = fields.Char(string='Code', readonly=True)
     name = fields.Many2one('hr.employee', string='Employee')
+    #empID = fields.Many2one(related= 'name.x_studio_employee_id', related_sudo=False, string='Employee ID')
     activationDate = fields.Date(string='Activation Date')
     transferGroup = fields.Many2one('shift.setup', string='Shift Transfer Group')
-
+    inTime = fields.Char(related= 'transferGroup.inTime', string='In-Time')
+    outTime = fields.Char(related= 'transferGroup.outTime', string='Out-Time')

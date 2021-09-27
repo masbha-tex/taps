@@ -21,6 +21,8 @@
                         </group>
                         <group>
                             <field name="transferGroup"/>
+                            <field name="inTime" widget="float_time"/>
+                            <field name="outTime" widget="float_time"/>
                         </group>
                     </group>
                 </sheet>
@@ -39,6 +41,8 @@
             <field name="name"/>
             <field name="activationDate"/>
             <field name="transferGroup"/> 
+            <field name="inTime" widget="float_time"/>
+            <field name="outTime" widget="float_time"/>
         </tree>
       </field>
     </record>
