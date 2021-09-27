@@ -1,5 +1,3 @@
-#-*- coding: utf-8 -*-
-
 from odoo import models, fields, api
 
 
@@ -7,13 +5,12 @@ class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
 #     _description = 'hr_attendance_new_columns.hr_attendance_new_columns'
 
-    date = fields.date(string = "Date", store=True)
-    inTime = fields.float(string = "In-Time")
-    inFlag = fields.char("In-Flag")
-    outTime = fields.float(string = "Out-Time")
-    outFlag = fields.char("Out-Flag")
-    otHours = fields.float(string = "Out-Time")
-     
+    attDate = fields.Date(string = "Date")
+    inTime = fields.Float(string = "In-Time")
+    inFlag = fields.Char("In-Flag")
+    outTime = fields.Float(string = "Out-Time")
+    outFlag = fields.Char("Out-Flag")
+    otHours = fields.Float(string = "OT Hours")    
     
 #     value = fields.Integer()
 #     value2 = fields.Float(compute="_value_pc", store=True)
