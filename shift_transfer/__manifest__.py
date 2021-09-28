@@ -14,10 +14,11 @@
     'category': 'Generic Modules',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','web_studio','hr'],
 
     # always loaded
     'data': [
+        #'security/security.xml',
         'security/ir.model.access.csv',
         'views/shift_transfer.xml',
     ],

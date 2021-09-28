@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
+#from odoo.addons.hr.models.hr_employee import hr_employee
 
 class ShiftTransfer(models.Model):
     _name = 'shift.transfer'
@@ -7,8 +8,9 @@ class ShiftTransfer(models.Model):
 
     code = fields.Char(string='Code', readonly=True)
     name = fields.Many2one('hr.employee', string='Employee')
-    #empID = fields.Many2one(related= 'name.x_studio_employee_id', related_sudo=False, string='Employee ID')
+    pin = fields.Many2one('name.x_studio_employee_id', string='Employee ID')
     activationDate = fields.Date(string='Activation Date')
     transferGroup = fields.Many2one('shift.setup', string='Shift Transfer Group')
-    inTime = fields.Char(related= 'transferGroup.inTime', string='In-Time')
-    outTime = fields.Char(related= 'transferGroup.outTime', string='Out-Time')
+    inTime = fields.Float(related= 'transferGroup.inTime', related_sudo=False, string='In-Time')
+    outTime = fields.Float(related= 'transferGroup.outTime', related_sudo=False, string='Out-Time')
+    #empid = fields.Many2one('shift.transfer',related='name.pin')

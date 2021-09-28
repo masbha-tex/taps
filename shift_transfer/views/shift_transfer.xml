@@ -15,14 +15,14 @@
                     </div>
                     <group>
                         <group>
-                            <!--<field name="empID"/>-->
+                            <field name="pin"/>
                             <field name="name"/>
                             <field name="activationDate"/>
                         </group>
                         <group>
                             <field name="transferGroup"/>
-                            <field name="inTime" widget="float_time"/>
-                            <field name="outTime" widget="float_time"/>
+                            <field name="inTime" widget= "float_time"/>
+                            <field name="outTime" widget= "float_time"/>
                         </group>
                     </group>
                 </sheet>
@@ -37,12 +37,11 @@
       <field name="arch" type="xml">
         <tree>
             <field name="code" placeholder="Transfer Code.."/>
-            <!--<field name="empID"/> -->
             <field name="name"/>
             <field name="activationDate"/>
-            <field name="transferGroup"/> 
-            <field name="inTime" widget="float_time"/>
-            <field name="outTime" widget="float_time"/>
+            <field name="transferGroup"/>
+            <field name="inTime" widget= "float_time"/>
+            <field name="outTime" widget= "float_time"/>
         </tree>
       </field>
     </record>
