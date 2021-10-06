@@ -20,6 +20,7 @@
 
     # always loaded
     'data': [
+        'data/attendance_date_generate.xml',
         'views/attendance_views.xml',
     ],
     # only loaded in demonstration mode
