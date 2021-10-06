@@ -15,7 +15,7 @@
                     </div>
                     <group>
                         <group>
-                            <field name="pin"/>
+                            <field name="empid"/>
                             <field name="name"/>
                             <field name="activationDate"/>
                         </group>
@@ -38,6 +38,7 @@
         <tree>
             <field name="code" placeholder="Transfer Code.."/>
             <field name="name"/>
+            <field name="empid"/>
             <field name="activationDate"/>
             <field name="transferGroup"/>
             <field name="inTime" widget= "float_time"/>
