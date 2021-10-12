@@ -200,18 +200,28 @@ class ZkMachine(models.Model):
                                                                        'outHour' : zk_outhour,
                                                                        'outFlag': 'TO'})
                                             else:
-                                                get_transfer = self.env['shift.transfer'].search([('name', '=', get_user_id.id),('activationDate', '<=', getDate)])
-                                                trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]
-                                                att_var.create({'attDate' : getDate,
-                                                                'employee_id': get_user_id.id,
-                                                                'check_in': zk_ck_in,
-                                                                'inHour': zk_inhour,
-                                                                'inFlag': 'P',
-                                                                'check_out': zk_ck_out,
-                                                                'outHour' : zk_outhour,
-                                                                'outFlag':'PO',
-                                                                'inTime': trans_data.inTime,
-                                                                'outTime': trans_data.outTime})
+                                                y = atten_time.strftime("%X")
+                                                if y<myfromtime:
+                                                    pre_date = att_Date - timedelta(days=1)
+                                                    att_pre = att_obj.search([('employee_id', '=', get_user_id.id),
+                                                                              ('attDate','=', pre_date)])
+                                                    att_pre[-1].write({'check_out': atten_time})
+                                                else:
+                                                    get_tr = self.env['shift.transfer'].search([('name', '=',
+                                                                                                 get_user_id.id),
+                                                                                                ('activationDate',
+                                                                                                 '<=', getDate)])
+                                                    trans_data = get_tr.sorted(key = 'activationDate', reverse=True)[:1]
+                                                    att_var.create({'attDate' : getDate,
+                                                                    'employee_id': get_user_id.id,
+                                                                    'check_in': zk_ck_in,
+                                                                    'inHour': zk_inhour,
+                                                                    'inFlag': 'P',
+                                                                    'check_out': zk_ck_out,
+                                                                    'outHour' : zk_outhour,
+                                                                    'outFlag':'PO',
+                                                                    'inTime': trans_data.inTime,
+                                                                    'outTime': trans_data.outTime})
                                     else:
                                         pass
                                 else:
