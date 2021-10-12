@@ -49,29 +49,37 @@ class HrAttendance(models.Model):
         shift_data = shift_record.sorted(key = 'activationDate', reverse=True)[:1]
         get_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', att_date)])
         
-        office_in_time = office_in_time
-        inHour = format_datetime(self.env, in_time, dt_format=False)
-        inHour = str((inHour[-8:])[:-3])
-        office_out_time = office_out_time
-        outHour = format_datetime(self.env, out_time, dt_format=False)
-        outHour = str((outHour[-8:])[:-3])
+        office_in_time = timedelta(hours=office_in_time)#office_in_time
+        office_out_time = timedelta(hours=office_out_time)#office_out_time
+        inHour = False
+        if in_time:
+            inHour = in_time + timedelta(hours=6) #format_datetime(self.env, in_time, dt_format=False)
+            inHour = inHour.strftime("%H:%M")#str((inHour[-8:])[:-3])
+        outHour = False
+        if out_time:
+            outHour = out_time + timedelta(hours=6)#format_datetime(self.env, out_time, dt_format=False)
+            outHour = outHour.strftime("%H:%M")#str((outHour[-8:])[:-3])
         
+        #raise UserError((office_in_time,office_out_time,inHour,outHour,in_time,out_time))
         if len(get_att_data) == 1:
-            if str(office_in_time)>=str(inHour):
-                get_att_data[-1].write({'inFlag':'P',
-                                       'inHour' : inHour})
-            if str(office_in_time)<=str(inHour):
-                get_att_data[-1].write({'inFlag':'L',
-                                       'inHour' : inHour})
-                #raise UserError((office_out_time))
-            if outHour==False:
-                if inHour:
-                    get_att_data[-1].write({'outFlag':'PO'})
+            if not inHour and not outHour:
+                get_att_data[-1].write({'inFlag':'A','outFlag':'A','inHour' : False,'outHour' : False})
+            elif inHour and outHour:
+                if str(office_in_time)>=str(inHour):
+                    get_att_data[-1].write({'inFlag':'P','inHour' : inHour})
                 else:
-                    get_att_data[-1].write({'outFlag':'A'})
-            if str(office_out_time)>=str(outHour):
-                get_att_data[-1].write({'outFlag':'EO',
-                                       'outHour' : outHour})
-            if str(office_out_time)<=str(outHour):
-                get_att_data[-1].write({'outFlag':'TO',
-                                       'outHour' : outHour})
+                    get_att_data[-1].write({'inFlag':'L','inHour' : inHour})
+                if str(office_out_time)>=str(outHour):
+                    get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                else:
+                    get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+            elif inHour and not outHour:
+                if str(office_in_time)>=str(inHour):
+                    get_att_data[-1].write({'inFlag':'P','inHour' : inHour,'outFlag':'PO','outHour' : False})
+                else:
+                    get_att_data[-1].write({'inFlag':'L','inHour' : inHour,'outFlag':'PO','outHour' : False})
+            elif not inHour and outHour:
+                if str(office_out_time)>=str(outHour):
+                    get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                else:
+                    get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
