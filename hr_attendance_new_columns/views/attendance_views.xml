@@ -1,86 +1,29 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-  <data>
-    <record id="hr_attendance_inherit_form_view" model="ir.ui.view">
-            <field name="name">hr.attendance.tree.inherit</field>
-            <field name="model">hr.attendance</field>
-            <field name="inherit_id" ref="hr_attendance.view_attendance_tree_inherit"/>
-            <field name="arch" type="xml">
-                <field name="employee_id" position="before">
-                    <field name="attDate"/>
-                    <field name="empID"/>
-                </field>
-                <field name="employee_id" position="after">
-                    <field name="inTime" widget="float_time"/>
-                    <field name="inFlag"/>
-                    <field name="inHour"/>
-                </field> 
-                <field name="check_in" position="after">
-                    <field name="outTime" widget="float_time"/>
-                    <field name="outFlag"/>
-                    <field name="outHour"/>
-                </field>
-                <field name="worked_hours" position="after">
-                    <field name="otHours" widget="float_time"/>
-                </field>
-            </field>
-    </record>
-      
-    <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="hr_attendance_new_columns.list">
-      <field name="name">hr_attendance_new_columns list</field>
-      <field name="model">hr_attendance_new_columns.hr_attendance_new_columns</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
-    </record>
--->
-
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="hr_attendance_new_columns.action_window">
-      <field name="name">hr_attendance_new_columns window</field>
-      <field name="res_model">hr_attendance_new_columns.hr_attendance_new_columns</field>
-      <field name="view_mode">tree,form</field>
-    </record>
--->
-
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="hr_attendance_new_columns.action_server">
-      <field name="name">hr_attendance_new_columns server</field>
-      <field name="model_id" ref="model_hr_attendance_new_columns_hr_attendance_new_columns"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
--->
-
-    <!-- Top menu item -->
-<!--
-    <menuitem name="hr_attendance_new_columns" id="hr_attendance_new_columns.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="hr_attendance_new_columns.menu_1" parent="hr_attendance_new_columns.menu_root"/>
-    <menuitem name="Menu 2" id="hr_attendance_new_columns.menu_2" parent="hr_attendance_new_columns.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="hr_attendance_new_columns.menu_1_list" parent="hr_attendance_new_columns.menu_1"
-              action="hr_attendance_new_columns.action_window"/>
-    <menuitem name="Server to list" id="hr_attendance_new_columns" parent="hr_attendance_new_columns.menu_2"
-              action="hr_attendance_new_columns.action_server"/>
--->
+  <data> 
+      <record id="hr_attendance_inherit_form_view" model="ir.ui.view">
+          <field name="name">hr.attendance.tree.inherit</field>
+          <field name="model">hr.attendance</field>
+          <field name="inherit_id" ref="hr_attendance.view_attendance_tree_inherit"/>
+          <field name="arch" type="xml">
+              <field name="employee_id" position="before">
+                  <field name="attDate"/>
+                  <field name="empID"/>
+              </field>
+              <field name="employee_id" position="after">
+                  <field name="inTime" widget="float_time"/>
+                  <field name="inFlag"/>
+                  <field name="inHour" widget="float_time"/>
+              </field>
+              <field name="check_in" position="after">
+                  <field name="outTime" widget="float_time"/>
+                  <field name="outFlag"/>
+                  <field name="outHour" widget="float_time"/>
+              </field>
+              <field name="worked_hours" position="after">
+                  <field name="otHours" widget="float_time"/>
+              </field>
+          </field>
+      </record>
   </data>
 </odoo>

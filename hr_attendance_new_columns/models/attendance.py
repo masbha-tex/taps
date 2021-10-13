@@ -5,26 +5,65 @@ import datetime
 from odoo.tools import format_datetime
 from odoo.exceptions import UserError, ValidationError
 
+class HrEmployee(models.Model):
+    _inherit = 'hr.employee'
+    
+    isOverTime = fields.Boolean("Over Time", readonly=False)
+
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
     
     attDate = fields.Date(string = "Date")
     empID = fields.Char(related = 'employee_id.x_studio_employee_id', related_sudo=False, string='Emp ID')
-    inTime = fields.Float(string = "Office In-Time")
-    inHour = fields.Char(string = "In-Time")
-    inFlag = fields.Char("In-Flag")
-    outTime = fields.Float(string = "Office Out-Time")
-    outHour = fields.Char(string = "Out-Time")
-    outFlag = fields.Char("Out-Flag")
-    otHours = fields.Float(string = "OT Hours")
+    inTime = fields.Float(compute="_calculate_office_start_time", string = "Office In-Time", readonly=True)
+    inHour = fields.Float(string = "In-Time", readonly=True)
+    inFlag = fields.Char("In-Flag", readonly=True)
+    outTime = fields.Float(compute="_calculate_office_end_time", string = "Office Out-Time", readonly=True)
+    outHour = fields.Float(string = "Out-Time", readonly=True)
+    outFlag = fields.Char("Out-Flag", readonly=True)
+    otHours = fields.Float(compute="_calculate_ot", string = "OT Hours")
     check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
+    
+    @api.depends('outHour')
+    def _calculate_ot(self):
+        for record in self:
+            activeemplist = self.env['hr.employee'].search([('x_studio_employee_id', '=', record.empID),
+                                                            ('active', '=', True)])
+            if activeemplist.isOverTime is True:
+                if record.outTime > 0.0 and record.worked_hours > (record.outTime - record.inTime):
+                    delta = record.worked_hours - (record.outTime - record.inTime)
+                    #delta = (record.outHour - record.outTime)
+                    delta = (delta * 3600 / 60) / 30
+                    delta = int(delta) * 30 * 60 / 3600
+                    record.otHours = delta
+                else:
+                    record.otHours = False
+            else:
+                record.otHours = False
+                
+    @api.depends('attDate','employee_id')
+    def _calculate_office_start_time(self):
+        for record in self:
+            get_transfer = self.env['shift.transfer'].search([('empid', '=', record.empID),
+                                                              ('activationDate', '<=', record.attDate)])
+            trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]
+            record.inTime = trans_data.inTime
+            
+    @api.depends('attDate','employee_id')
+    def _calculate_office_end_time(self):
+        for record in self:
+            get_transfer = self.env['shift.transfer'].search([('empid', '=', record.empID),
+                                                              ('activationDate', '<=', record.attDate)])
+            trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]
+            record.outTime = trans_data.outTime
 
     def generate_attdate(self):
         activeemplist = self.env['hr.employee'].search([('active', '=', True)])
         for employeelist in activeemplist:
             att_obj = self.env['hr.attendance']
             dateGenerate = datetime.datetime.now() + timedelta(hours=6)
-            get_transfer = self.env['shift.transfer'].search([('empid', '=', employeelist.pin),('activationDate', '<=', dateGenerate)])
+            get_transfer = self.env['shift.transfer'].search([('empid', '=', employeelist.pin),
+                                                              ('activationDate', '<=', dateGenerate)])
             trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]
             
             get_att_date = att_obj.search([('employee_id', '=', employeelist.id), ('attDate', '=', dateGenerate)])
@@ -49,16 +88,20 @@ class HrAttendance(models.Model):
         shift_data = shift_record.sorted(key = 'activationDate', reverse=True)[:1]
         get_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', att_date)])
         
-        office_in_time = timedelta(hours=office_in_time)#office_in_time
-        office_out_time = timedelta(hours=office_out_time)#office_out_time
+        def get_sec(time_str):
+            h, m, s = time_str.split(':')
+            return int(h) * 3600 + int(m) * 60 + int(s)
+
         inHour = False
         if in_time:
-            inHour = in_time + timedelta(hours=6) #format_datetime(self.env, in_time, dt_format=False)
-            inHour = inHour.strftime("%H:%M")#str((inHour[-8:])[:-3])
+            inHour = in_time + timedelta(hours=6)
+            inHour = inHour.strftime("%H:%M:%S")
+            inHour = get_sec(inHour) / 3600
         outHour = False
         if out_time:
-            outHour = out_time + timedelta(hours=6)#format_datetime(self.env, out_time, dt_format=False)
-            outHour = outHour.strftime("%H:%M")#str((outHour[-8:])[:-3])
+            outHour = out_time + timedelta(hours=6)
+            outHour = outHour.strftime("%H:%M:%S")
+            outHour = get_sec(outHour)  / 3600
         
         #raise UserError((office_in_time,office_out_time,inHour,outHour,in_time,out_time))
         if len(get_att_data) == 1:

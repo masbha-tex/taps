@@ -23,6 +23,7 @@
         'data/attendance_date_generate.xml',
         'data/attendance_flag_generate.xml',
         'views/attendance_views.xml',
+        'views/hr_employee.xml',
     ],
     # only loaded in demonstration mode
     'demo': [],
