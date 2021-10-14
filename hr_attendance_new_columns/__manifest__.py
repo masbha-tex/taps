@@ -22,6 +22,7 @@
     'data': [
         'data/attendance_date_generate.xml',
         'data/attendance_flag_generate.xml',
+        'data/overtime_calculate.xml',
         'views/attendance_views.xml',
         'views/hr_employee.xml',
     ],

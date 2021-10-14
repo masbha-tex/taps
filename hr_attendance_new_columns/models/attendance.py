@@ -21,25 +21,37 @@ class HrAttendance(models.Model):
     outTime = fields.Float(compute="_calculate_office_end_time", string = "Office Out-Time", readonly=True)
     outHour = fields.Float(string = "Out-Time", readonly=True)
     outFlag = fields.Char("Out-Flag", readonly=True)
-    otHours = fields.Float(compute="_calculate_ot", string = "OT Hours")
+    otHours = fields.Float(string = "OT Hours")
     check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
     
-    @api.depends('outHour')
-    def _calculate_ot(self):
-        for record in self:
-            activeemplist = self.env['hr.employee'].search([('x_studio_employee_id', '=', record.empID),
+    def _calculate_ot(self,att_date,emp_id,inTime,outTime,inHour,worked_hours):
+         
+        att_obj = self.env['hr.attendance']
+        
+        get_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', att_date)])
+        
+        activeemplist = self.env['hr.employee'].search([('x_studio_employee_id', '=', emp_id),
                                                             ('active', '=', True)])
-            if activeemplist.isOverTime is True:
-                if record.outTime > 0.0 and record.worked_hours > (record.outTime - record.inTime):
-                    delta = record.worked_hours - (record.outTime - record.inTime)
-                    #delta = (record.outHour - record.outTime)
+        if activeemplist.isOverTime is True:
+            if outTime > 0.0 and worked_hours > (outTime - inTime):
+                if inTime > inHour:
+                    delta = ((worked_hours - (inTime - inHour)) - (outTime - inTime))
+                    #delta = (outHour - outTime)
                     delta = (delta * 3600 / 60) / 30
                     delta = int(delta) * 30 * 60 / 3600
-                    record.otHours = delta
+                    otHours = delta
+                    get_att_data[-1].write({'otHours' : otHours})
                 else:
-                    record.otHours = False
+                    delta = (worked_hours - (outTime - inTime))
+                    #delta = (outHour - outTime)
+                    delta = (delta * 3600 / 60) / 30
+                    delta = int(delta) * 30 * 60 / 3600
+                    otHours = delta
+                    get_att_data[-1].write({'otHours' : otHours})
             else:
-                record.otHours = False
+                get_att_data[-1].write({'otHours' : False})
+        else:
+            get_att_data[-1].write({'otHours' : False})
                 
     @api.depends('attDate','employee_id')
     def _calculate_office_start_time(self):
@@ -81,7 +93,7 @@ class HrAttendance(models.Model):
                                         'inTime': trans_data.inTime,
                                         'outTime': trans_data.outTime})
                     
-    def generateAttFlag(self,emp_id,att_date,office_in_time,in_time,office_out_time,out_time,):
+    def generateAttFlag(self,emp_id,att_date,office_in_time,in_time,office_out_time,out_time):
         
         att_obj = self.env['hr.attendance']
         shift_record = self.env['shift.transfer'].search([('empid', '=', emp_id),('activationDate', '<=',att_date)])
@@ -101,8 +113,10 @@ class HrAttendance(models.Model):
         if out_time:
             outHour = out_time + timedelta(hours=6)
             outHour = outHour.strftime("%H:%M:%S")
-            outHour = get_sec(outHour)  / 3600
+            outHour = get_sec(outHour) / 3600
         
+        myfromtime = 0.0
+        mytotime = 5.0
         #raise UserError((office_in_time,office_out_time,inHour,outHour,in_time,out_time))
         if len(get_att_data) == 1:
             if not inHour and not outHour:
@@ -113,7 +127,10 @@ class HrAttendance(models.Model):
                 else:
                     get_att_data[-1].write({'inFlag':'L','inHour' : inHour})
                 if str(office_out_time)>=str(outHour):
-                    get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                    if str(myfromtime)<=str(outHour) and str(mytotime)>=str(outHour):
+                        get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                    else:
+                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
                 else:
                     get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
             elif inHour and not outHour:
@@ -122,7 +139,10 @@ class HrAttendance(models.Model):
                 else:
                     get_att_data[-1].write({'inFlag':'L','inHour' : inHour,'outFlag':'PO','outHour' : False})
             elif not inHour and outHour:
-                if str(office_out_time)>=str(outHour):
-                    get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                if str(office_out_time)>str(outHour):
+                    if str(myfromtime)<=str(outHour) and str(mytotime)>=str(outHour):
+                        get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                    else:
+                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
                 else:
                     get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
