@@ -39,15 +39,13 @@ class HrAttendance(models.Model):
                     #delta = (outHour - outTime)
                     delta = (delta * 3600 / 60) / 30
                     delta = int(delta) * 30 * 60 / 3600
-                    otHours = delta
-                    get_att_data[-1].write({'otHours' : otHours})
+                    get_att_data[-1].write({'otHours' : delta})
                 else:
                     delta = (worked_hours - (outTime - inTime))
                     #delta = (outHour - outTime)
                     delta = (delta * 3600 / 60) / 30
                     delta = int(delta) * 30 * 60 / 3600
-                    otHours = delta
-                    get_att_data[-1].write({'otHours' : otHours})
+                    get_att_data[-1].write({'otHours' : delta})
             else:
                 get_att_data[-1].write({'otHours' : False})
         else:
