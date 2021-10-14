@@ -132,7 +132,7 @@ class ZkMachine(models.Model):
                         utc_dt = utc_dt.strftime("%Y-%m-%d %H:%M:%S")
                         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
                         att_Date = datetime.strptime(atten_time.strftime('%Y-%m-%d'), '%Y-%m-%d')
-                        atten_time = fields.Datetime.to_string(atten_time)
+                        #atten_time = fields.Datetime.to_string(atten_time)
                         #officeTime = format_datetime(self.env, atten_time, dt_format=False)
                         #officeTime = str((officeTime[-8:])[:-3])
                         
@@ -172,12 +172,18 @@ class ZkMachine(models.Model):
                                                                                ('punching_time', '<=', todatetime)])
                                             get_zk_sort_asc = get_zk_att.sorted(key = 'punching_time')[:1]
                                             get_zk_sort_desc = get_zk_att.sorted(key = 'punching_time', reverse=True)[:1]
+                                            def get_sec(time_str):
+                                                h, m = time_str.split(':')
+                                                return int(h) * 3600 + int(m) * 60
+                                            
                                             zk_ck_in = get_zk_sort_asc.punching_time
                                             zk_ck_out = get_zk_sort_desc.punching_time
                                             zk_inhour = format_datetime(self.env, zk_ck_in, dt_format=False)
                                             zk_inhour = str((zk_inhour[-8:])[:-3])
+                                            zk_inhour = get_sec(zk_inhour)/3600
                                             zk_outhour = format_datetime(self.env, zk_ck_out, dt_format=False)
                                             zk_outhour = str((zk_outhour[-8:])[:-3])
+                                            zk_outhour = get_sec(zk_outhour)/3600
                                             
                                             if att_var:
                                                 att_in = att_var.search([('employee_id', '=', get_user_id.id),
@@ -200,8 +206,10 @@ class ZkMachine(models.Model):
                                                                        'outHour' : zk_outhour,
                                                                        'outFlag': 'TO'})
                                             else:
-                                                y = atten_time.strftime("%X")
-                                                if y<myfromtime:
+                                                y = atten_time.strftime('%H:%M:%S')
+                                                
+                                                if str(y) < str(myfromtime):
+                                                    #raise UserError((str(y),str(myfromtime)))
                                                     pre_date = att_Date - timedelta(days=1)
                                                     att_pre = att_obj.search([('employee_id', '=', get_user_id.id),
                                                                               ('attDate','=', pre_date)])
