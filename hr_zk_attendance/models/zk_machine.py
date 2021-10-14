@@ -1,24 +1,4 @@
 # -*- coding: utf-8 -*-
-###################################################################################
-#
-#    Cybrosys Technologies Pvt. Ltd.
-#    Copyright (C) 2020-TODAY Cybrosys Technologies(<http://www.cybrosys.com>).
-#    Author: cybrosys(<https://www.cybrosys.com>)
-#
-#    This program is free software: you can modify
-#    it under the terms of the GNU Affero General Public License (AGPL) as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-###################################################################################
 import pytz
 import sys
 import datetime
@@ -31,6 +11,8 @@ from struct import unpack
 from odoo import api, fields, models
 from odoo import _
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import format_datetime
+from datetime import timedelta
 _logger = logging.getLogger(__name__)
 try:
     from zk import ZK, const
@@ -144,14 +126,27 @@ class ZkMachine(models.Model):
                     for each in attendance:
                         atten_time = each.timestamp
                         atten_time = datetime.strptime(atten_time.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                        local_tz = pytz.timezone(
-                            self.env.user.partner_id.tz or 'GMT')
+                        local_tz = pytz.timezone(self.env.user.partner_id.tz or 'GMT')
                         local_dt = local_tz.localize(atten_time, is_dst=None)
                         utc_dt = local_dt.astimezone(pytz.utc)
                         utc_dt = utc_dt.strftime("%Y-%m-%d %H:%M:%S")
-                        atten_time = datetime.strptime(
-                            utc_dt, "%Y-%m-%d %H:%M:%S")
+                        atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
+                        att_Date = datetime.strptime(atten_time.strftime('%Y-%m-%d'), '%Y-%m-%d')
                         atten_time = fields.Datetime.to_string(atten_time)
+                        #officeTime = format_datetime(self.env, atten_time, dt_format=False)
+                        #officeTime = str((officeTime[-8:])[:-3])
+                        
+                        fromdatetime = datetime.now() + timedelta(hours=6)
+                        #fromdatetime = datetime.strptime(fromdatetime.strftime('%Y-%m-%d 00:00:00'), '%Y-%m-%d 00:00:00')
+                        myfromtime = datetime.strptime('000000','%H%M%S').time()
+                        fromdatetime = datetime.combine(fromdatetime, myfromtime)
+                        todatetime = datetime.now() + timedelta(hours=6)
+                        #todatetime = datetime.strptime(todatetime.strftime('%Y-%m-%d 23:59:59'), '%Y-%m-%d 23:59:59')
+                        mytotime = datetime.strptime('235959','%H%M%S').time()
+                        todatetime = datetime.combine(todatetime, mytotime)
+                        
+                        getDate = datetime.now() + timedelta(hours=6)
+                        getDate = datetime.strptime(getDate.strftime('%Y-%m-%d'), '%Y-%m-%d')
                         if user:
                             for uid in user:
                                 if uid.user_id == each.user_id:
@@ -169,21 +164,64 @@ class ZkMachine(models.Model):
                                                                   'punch_type': str(each.punch),
                                                                   'punching_time': atten_time,
                                                                   'address_id': info.address_id.id})
+                                            
                                             att_var = att_obj.search([('employee_id', '=', get_user_id.id),
-                                                                      ('check_out', '=', False)])
-                                            print('ddfcd', str(each.status))
-                                            if each.punch == 0: #check-in
-                                                if not att_var:
-                                                    att_obj.create({'employee_id': get_user_id.id,
-                                                                    'check_in': atten_time})
-                                            if each.punch == 1: #check-out
-                                                if len(att_var) == 1:
-                                                    att_var.write({'check_out': atten_time})
+                                                                      ('attDate','=', att_Date)])
+                                            get_zk_att = zk_attendance.search([('employee_id', '=', get_user_id.id),
+                                                                               ('punching_time', '>=', fromdatetime), 
+                                                                               ('punching_time', '<=', todatetime)])
+                                            get_zk_sort_asc = get_zk_att.sorted(key = 'punching_time')[:1]
+                                            get_zk_sort_desc = get_zk_att.sorted(key = 'punching_time', reverse=True)[:1]
+                                            zk_ck_in = get_zk_sort_asc.punching_time
+                                            zk_ck_out = get_zk_sort_desc.punching_time
+                                            zk_inhour = format_datetime(self.env, zk_ck_in, dt_format=False)
+                                            zk_inhour = str((zk_inhour[-8:])[:-3])
+                                            zk_outhour = format_datetime(self.env, zk_ck_out, dt_format=False)
+                                            zk_outhour = str((zk_outhour[-8:])[:-3])
+                                            
+                                            if att_var:
+                                                att_in = att_var.search([('employee_id', '=', get_user_id.id),
+                                                                         ('attDate','=', att_Date),
+                                                                         ('check_in', '=', False),
+                                                                         ('check_out', '=', False)])
+                                                if att_in:
+                                                    #raise UserError(_(zk_ck_in))
+                                                    att_in.write({'check_in': zk_ck_in,
+                                                                  'inHour': zk_inhour,
+                                                                  'inFlag': 'P',
+                                                                  'check_out': zk_ck_out,
+                                                                  'outHour' : zk_outhour,
+                                                                  'outFlag': 'TO'})
+                                                    
                                                 else:
-                                                    att_var1 = att_obj.search([('employee_id', '=', get_user_id.id)])
-                                                    if att_var1:
-                                                        att_var1[-1].write({'check_out': atten_time})
-
+                                                    att_out = att_in.search([('employee_id', '=', get_user_id.id),
+                                                                             ('attDate','=', att_Date)])
+                                                    att_out[-1].write({'check_out': zk_ck_out,
+                                                                       'outHour' : zk_outhour,
+                                                                       'outFlag': 'TO'})
+                                            else:
+                                                y = atten_time.strftime("%X")
+                                                if y<myfromtime:
+                                                    pre_date = att_Date - timedelta(days=1)
+                                                    att_pre = att_obj.search([('employee_id', '=', get_user_id.id),
+                                                                              ('attDate','=', pre_date)])
+                                                    att_pre[-1].write({'check_out': atten_time})
+                                                else:
+                                                    get_tr = self.env['shift.transfer'].search([('name', '=',
+                                                                                                 get_user_id.id),
+                                                                                                ('activationDate',
+                                                                                                 '<=', getDate)])
+                                                    trans_data = get_tr.sorted(key = 'activationDate', reverse=True)[:1]
+                                                    att_var.create({'attDate' : getDate,
+                                                                    'employee_id': get_user_id.id,
+                                                                    'check_in': zk_ck_in,
+                                                                    'inHour': zk_inhour,
+                                                                    'inFlag': 'P',
+                                                                    'check_out': zk_ck_out,
+                                                                    'outHour' : zk_outhour,
+                                                                    'outFlag':'PO',
+                                                                    'inTime': trans_data.inTime,
+                                                                    'outTime': trans_data.outTime})
                                     else:
                                         pass
                                 else:

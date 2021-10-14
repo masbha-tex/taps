@@ -12,6 +12,6 @@
         'data/hr_payroll_planning_data.xml',
         'wizard/hr_work_entry_regeneration_wizard_views.xml',
     ],
-    'installable': True,
-    'auto_install': True,
+    'installable': False,
+    'auto_install': False,
 }
