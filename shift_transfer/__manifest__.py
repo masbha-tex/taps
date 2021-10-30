@@ -18,8 +18,8 @@
 
     # always loaded
     'data': [
-        #'security/security.xml',
         'security/ir.model.access.csv',
+        'data/shift_code_generate.xml',
         'views/shift_transfer.xml',
     ],
     # only loaded in demonstration mode

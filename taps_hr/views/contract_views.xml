@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <data>
+      <record id="hr_contract_view_form_inherit" model="ir.ui.view">
+          <field name="name">hr.contract.form.inherit</field>
+          <field name="model">hr.contract</field>
+          <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+          <field name="arch" type="xml">
+              <xpath expr="//field[@name='employee_id']" position="before">
+                  <field name="emp_id" readonly="1"/>
+                  <xpath expr="//field[@name='company_id']" position="move"/>
+              </xpath>
+              <xpath expr="//field[@name='date_start']" position="after">
+                  <field name="trial_date_end"/>
+              </xpath>
+              <xpath expr="//field[@name='date_end']" position="after">
+                  <field name="serviceLength"/>
+              </xpath>
+              <xpath expr="//field[@name='date_start']" position="attributes">
+                  <attribute name="string">Joining Date</attribute>
+              </xpath>
+              <xpath expr="//field[@name='date_end']" position="attributes">
+                  <attribute name="string">Resign Date</attribute>
+              </xpath>
+              <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/group[2]" position="after">
+                  <group name="group_others_details">
+                      <group name="group_others"/>
+                      <group name="group_pf"/>  
+                  </group>
+              </xpath>
+              <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/group[3]/group[1]" position="attributes">
+                  <attribute name="string">Others</attribute>
+              </xpath>
+              <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/group[3]/group[2]" position="attributes">
+                  <attribute name="string">Employee's Provident Fund</attribute>
+              </xpath>
+              <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/group[3]/group[1]" position="inside">
+                  <field name='first_contract_date' position="move"/>
+                  <label for="resource_calendar_id" position="move"/>
+                  <field name='resource_calendar_id' position="move"/>
+                  <field name='hr_responsible_id' position="move"/>
+                  <field name='analytic_account_id' position="move"/>
+              </xpath>
+              <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/group[3]/group[2]" position="inside">
+                  <field name="isActivePF"/>
+                  <field name="pf_activationDate" attrs="{'invisible': [['isActivePF','=',False],], 'required':
+                                                         [['isActivePF','=',True]]}"/>
+              </xpath>
+              <xpath expr="//group[@name='yearly_advantages']" position="inside">
+                  <label for="basic"/>
+                  <div class="o_row" name="basic">
+                      <field name="basic" nolabel="1"/>
+                      <span>/ month</span>
+                  </div>
+                  <label for="houseRent"/>
+                  <div class="o_row" name="houseRent">
+                      <field name="houseRent" nolabel="1"/>
+                      <span>/ month</span>
+                  </div>
+                  <label for="medical"/>
+                  <div class="o_row" name="medical">
+                      <field name="medical" nolabel="1"/>
+                      <span>/ month</span>
+                  </div>
+              </xpath>
+              <xpath expr="//group[@name='yearly_advantages']" position="attributes">
+                  <attribute name="string">Salary Breakdown</attribute>
+              </xpath>
+              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='information']/group[@name='main_info']/group[@name='salary_and_advantages']/label[1]" position="attributes">
+                  <attribute name="string">Gross Salary</attribute>
+              </xpath>
+              <xpath expr="/form[1]/sheet[1]/notebook[1]/page[2]/group[2]" position="after">
+                  <group name="group_earnings_deduction">
+                      <group name="group_earnings_left">
+                          <field name="e_convence"/>
+                          <field name="e_food"/>
+                          <field name="e_tiffin"/>
+                          <field name="e_strenghtSnacks"/>
+                          <field name="e_attBonus"/>
+                          <field name="e_mobileInternet"/>
+                          <field name="e_car"/>
+                          <field name="e_others"/>
+                          <field name="e_incentive"/>
+                      </group>
+                      <group name="group_deduction_right">
+                          <field name="d_ait"/>
+                          <field name="d_others"/>
+                      </group>
+                  </group>
+              </xpath>
+              <xpath expr="/form[1]/sheet[1]/notebook[1]/page[2]/group[3]/group[1]" position="attributes">
+                  <attribute name="string">Earnings Head</attribute>
+              </xpath>
+              <xpath expr="/form[1]/sheet[1]/notebook[1]/page[2]/group[3]/group[2]" position="attributes">
+                  <attribute name="string">Deduction Head</attribute>
+              </xpath>
+              <xpath expr="//group[@name='group_others_details']" position="after">
+                  <xpath expr="//group[@name='notes_group']" position="move"/>
+              </xpath>
+              <xpath expr="/form[1]/sheet[1]/notebook[1]/page[2]" position="after">
+                  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]" position="move"/>
+              </xpath>
+          </field>
+      </record>
+    </data>
+</odoo>

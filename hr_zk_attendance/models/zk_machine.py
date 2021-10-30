@@ -178,13 +178,19 @@ class ZkMachine(models.Model):
                                             
                                             zk_ck_in = get_zk_sort_asc.punching_time
                                             zk_ck_out = get_zk_sort_desc.punching_time
-                                            zk_inhour = format_datetime(self.env, zk_ck_in, dt_format=False)
-                                            zk_inhour = str((zk_inhour[-8:])[:-3])
-                                            zk_inhour = get_sec(zk_inhour)/3600
-                                            zk_outhour = format_datetime(self.env, zk_ck_out, dt_format=False)
-                                            zk_outhour = str((zk_outhour[-8:])[:-3])
-                                            zk_outhour = get_sec(zk_outhour)/3600
-                                            
+                                            if zk_ck_in:
+                                                zk_inhour = format_datetime(self.env, zk_ck_in, dt_format=False)
+                                                zk_inhour = str((zk_inhour[-8:])[:-3])
+                                                zk_inhour = get_sec(zk_inhour)/3600
+                                            else:
+                                                zk_inhour = False
+                                            if zk_ck_out:
+                                                zk_outhour = format_datetime(self.env, zk_ck_out, dt_format=False)
+                                                zk_outhour = str((zk_outhour[-8:])[:-3])
+                                                zk_outhour = get_sec(zk_outhour)/3600
+                                            else:
+                                                zk_outhour = False
+                                                
                                             if att_var:
                                                 att_in = att_var.search([('employee_id', '=', get_user_id.id),
                                                                          ('attDate','=', att_Date),

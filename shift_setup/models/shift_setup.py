@@ -7,6 +7,7 @@ class ShiftSetup(models.Model):
     _name = 'shift.setup'
     _description = 'Shift Setup'
 
+    code = fields.Char('Code')
     name = fields.Char(string="Shift Name")
     types = fields.Selection([
         ('morning', 'Morning Shift'),

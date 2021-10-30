@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-
-    <record id="view_form_stock_forecast_report_jsi" model="ir.ui.view">
-        <field name="name">view.form.stock.forecast.report.jsi</field>
-        <field name="model">stock.forecast.report</field>
+    <record id="view_form_stock_register_report" model="ir.ui.view">
+        <field name="name">view.form.stock.register.report</field>
+        <field name="model">stock.register.report</field>
         <field name="arch" type="xml">
             <form string="Report Options">
                 <group>
                     <group>
-                        <field name="report_by"/>
+                        <!--<field name="report_by"/>
                         <field name="categ_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_products')]}"/>
-                        <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')]}"/>
+                        <!--<field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')]}"/>-->
                         <field name="from_date" required="True"/>
                         <field name="to_date" required="True"/>
                     </group>
@@ -24,12 +22,12 @@
         </field>
     </record>
 
-    <record id="action_window_stock_forecast_report_jsi" model="ir.actions.act_window">
-        <field name="name">Bridge Report</field>
-        <field name="res_model">stock.forecast.report</field>
+    <record id="action_window_stock_register_report" model="ir.actions.act_window">
+        <field name="name">Stock Register Report</field>
+        <field name="res_model">stock.register.wiz</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="view_form_stock_forecast_report_jsi"/>
+        <field name="view_id" ref="view_form_stock_register_report"/>
         <field name="target">new</field>
     </record>
-    <menuitem name="Bridge Report" id="menu_action_window_stock_forecast_report_jsi" action="action_window_stock_forecast_report_jsi" parent="stock.menu_warehouse_report" />
+    <menuitem name="Stock Register Report" id="menu_action_window_stock_register_report" action="action_window_stock_register_report" parent="stock.menu_warehouse_report" />
 </odoo>

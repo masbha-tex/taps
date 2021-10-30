@@ -1,0 +1,1 @@
+from . import stock_register_wiz
