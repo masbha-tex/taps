@@ -9,7 +9,7 @@
                 <field name="isOverTime"/>
             </field>
             <field name="coach_id" position="after">
-                <field name="serviceLength"/>
+                <field name="service_length"/>
             </field>
             <field name="parent_id" position="before">
                 <field name="joining_date"/>
@@ -65,7 +65,7 @@
                 <xpath expr="//field[@name='department_id']" position="move"/>
                 <xpath expr="//field[@name='job_id']" position="move"/>
                 <field name="joining_date"/>
-                <field name="serviceLength"/>
+                <field name="service_length"/>
                 <field name="shift_group"/>
                 <field name="mobile_phone"/>
                 <xpath expr="//field[@name='work_phone']" position="move"/>

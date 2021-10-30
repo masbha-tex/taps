@@ -14,7 +14,7 @@
                   <field name="trial_date_end"/>
               </xpath>
               <xpath expr="//field[@name='date_end']" position="after">
-                  <field name="serviceLength"/>
+                  <field name="service_length"/>
               </xpath>
               <xpath expr="//field[@name='date_start']" position="attributes">
                   <attribute name="string">Joining Date</attribute>

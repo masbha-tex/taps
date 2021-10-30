@@ -6,7 +6,7 @@ class HrContract(models.Model):
     
     emp_id = fields.Char(related = 'employee_id.emp_id', related_sudo=False, string="Emp ID", readonly=True, store=True)
     #category = fields.Many2many(related = 'employee_id.category_ids', related_sudo=False, string='Category', store=True)
-    serviceLength = fields.Char(related = 'employee_id.serviceLength', related_sudo=False, string='Service Length', store=True)
+    service_length = fields.Char(related = 'employee_id.service_length', related_sudo=False, string='Service Length', store=True)
     
     basic = fields.Monetary('Basic', readonly=True, store=True, tracking=True, help="Employee's monthly basic wage.")
     houseRent = fields.Monetary('House Rent', readonly=True, store=True, tracking=True, help="Employee's monthly HRA wage.")
