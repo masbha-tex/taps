@@ -25,11 +25,11 @@
     </record>
 
     <record id="action_window_stock_forecast_report_jsi" model="ir.actions.act_window">
-        <field name="name">Stock Forecast Report</field>
+        <field name="name">Bridge Report</field>
         <field name="res_model">stock.forecast.report</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_form_stock_forecast_report_jsi"/>
         <field name="target">new</field>
     </record>
-    <menuitem name="Stock Forecast Report" id="menu_action_window_stock_forecast_report_jsi" action="action_window_stock_forecast_report_jsi" parent="stock.menu_warehouse_report" />
+    <menuitem name="Bridge Report" id="menu_action_window_stock_forecast_report_jsi" action="action_window_stock_forecast_report_jsi" parent="stock.menu_warehouse_report" />
 </odoo>
