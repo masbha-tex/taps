@@ -17,7 +17,6 @@
         'data/attendance_date_generate.xml',
         'data/attendance_flag_generate.xml',
         'data/overtime_calculate.xml',
-        'data/service_length_calculate.xml',
         'views/attendance_views.xml',
         'views/employee_views.xml',
         'views/contract_views.xml',

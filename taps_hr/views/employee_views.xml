@@ -65,6 +65,7 @@
                 <xpath expr="//field[@name='department_id']" position="move"/>
                 <xpath expr="//field[@name='job_id']" position="move"/>
                 <field name="joining_date"/>
+                <field name="serviceLength"/>
                 <field name="shift_group"/>
                 <field name="mobile_phone"/>
                 <xpath expr="//field[@name='work_phone']" position="move"/>
