@@ -7,30 +7,30 @@ from odoo.tools import format_datetime
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
     
-    emp_id = fields.Char(string="Emp ID", readonly=True, store=True) 
-    isOverTime = fields.Boolean("Over Time", readonly=False, store=True)
-    serviceLength = fields.Char(compute='_calculate_serviceLength()', string="Service Length", readonly=True, store=True)
-    joining_date = fields.Date(related = 'contract_id.date_start', related_sudo=False, string='Joining Date', store=True)
-    probation_date = fields.Date(related = 'contract_id.trial_date_end', related_sudo=False, store=True)
-    resign_date = fields.Date(related = 'contract_id.date_end', related_sudo=False, string='Resign Date', store=True)
+    emp_id = fields.Char(string="Emp ID", readonly=True, store=True, tracking=True) 
+    isOverTime = fields.Boolean("Over Time", readonly=False, store=True, tracking=True)
+    serviceLength = fields.Char(compute='_calculate_serviceLength', string="Service Length", readonly=True, store=True, tracking=True)
+    joining_date = fields.Date(related = 'contract_id.date_start', related_sudo=False, string='Joining Date', store=True, tracking=True)
+    probation_date = fields.Date(related = 'contract_id.trial_date_end', related_sudo=False, store=True, tracking=True)
+    resign_date = fields.Date(related = 'contract_id.date_end', related_sudo=False, string='Resign Date', store=True, tracking=True)
     grade = fields.Char(related = 'contract_id.structure_type_id.default_struct_id.name', 
-                              related_sudo=False, string='Grade', store=True)
-    shift_group = fields.Many2one('shift.setup', string="Attendance Group", store=True)
-    fathers_name = fields.Char(string="Father's Name's", store=True)
-    mothers_name = fields.Char(string="Mother's Name's", store=True)
-    marriageDate = fields.Date(string='Date of Marriages', store=True)
+                              related_sudo=False, string='Grade', store=True, tracking=True)
+    shift_group = fields.Many2one('shift.setup', string="Attendance Group", store=True, tracking=True)
+    fathers_name = fields.Char(string="Father's Name's", store=True, tracking=True)
+    mothers_name = fields.Char(string="Mother's Name's", store=True, tracking=True)
+    marriageDate = fields.Date(string='Date of Marriages', store=True, tracking=True)
     
     #_calculate_serviceLength(record.emp_id,record.joining_date,record.resign_date)
-    def _calculate_serviceLength():
+    def _calculate_serviceLength(self):
         emp_obj = self.env['hr.employee'].search([('emp_id', '=', record.emp_id),
                                                             ('active', '=', True)])
         if emp_obj:
-            if emp_obj.resign_date:
-                currentDate = datetime.datetime.strptime(str(emp_obj.resign_date),'%Y-%m-%d')
+            if record.resign_date:
+                currentDate = datetime.datetime.strptime(str(record.resign_date),'%Y-%m-%d')
             else:
                 currentDate = datetime.datetime.now()
-            if emp_obj.joining_date:
-                deadlineDate = datetime.datetime.strptime(str(emp_obj.joining_date),'%Y-%m-%d')
+            if record.joining_date:
+                deadlineDate = datetime.datetime.strptime(str(record.joining_date),'%Y-%m-%d')
             else:
                 deadlineDate = datetime.datetime.now()
                 
