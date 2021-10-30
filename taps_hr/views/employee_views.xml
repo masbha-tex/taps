@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <field name="pin" position="before">
+                <field name="isOverTime"/>
+            </field>
+            <field name="coach_id" position="after">
+                <field name="serviceLength"/>
+            </field>
+            <field name="parent_id" position="before">
+                <field name="joining_date"/>
+                <field name="probation_date"/>
+                <field name="resign_date"/>
+            </field>
+            <field name="company_id" position="before">
+                <field name="emp_id"/>
+            </field>
+            <field name="tz" position="before">
+                <field name="shift_group"/>
+            </field>
+            <field name="address_home_id" position="before">
+                <field name="fathers_name"/>
+                <field name="mothers_name"/>
+            </field>
+            <field name="spouse_complete_name" position="before">
+                <field name="marriageDate" attrs="{'invisible': [('marital', 'not in', ['married', 'cohabitant'])]}"
+                       groups="hr.group_hr_user"/>
+            </field>
+            <xpath expr="//field[@name='work_location']" position="before">
+                <xpath expr="//field[@name='mobile_phone']" position="move"/>
+                <xpath expr="//field[@name='work_phone']" position="move"/>
+                <xpath expr="//field[@name='work_email']" position="move"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <xpath expr="//field[@name='category_ids']" position="move"/>
+                <xpath expr="//field[@name='department_id']" position="move"/>
+                <xpath expr="//field[@name='job_id']" position="move"/>
+            </xpath>
+            <field name="job_id" position="after">
+                <field name="grade"/>
+            </field>
+            <xpath expr="//field[@name='identification_id']" position="attributes">
+                <attribute name="string">NID or Birth Certificate</attribute>
+            </xpath>
+            <xpath expr="//field[@name='category_ids']" position="attributes">
+                <attribute name="string">Category</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_employee_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.tree.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <tree string="Employees" multi_edit="1" sample="1">
+                <field name="emp_id" readonly="1"/>
+                <xpath expr="//field[@name='name']" position="move"/>
+                <xpath expr="//field[@name='company_id']" position="move"/>
+                <field name="category_ids" widget="many2many_tags" 
+                       options="{&quot;color_field&quot;: &quot;color&quot;}" string="Category"/>
+                <xpath expr="//field[@name='department_id']" position="move"/>
+                <xpath expr="//field[@name='job_id']" position="move"/>
+                <field name="joining_date"/>
+                <field name="shift_group"/>
+                <field name="mobile_phone"/>
+                <xpath expr="//field[@name='work_phone']" position="move"/>
+                <xpath expr="//field[@name='work_email']" position="move"/>
+                <field name="address_id"/>
+                <xpath expr="//field[@name='parent_id']" position="move"/>
+                <field name="fathers_name"/>
+                <field name="mothers_name"/>
+                <field name="address_home_id"/>
+                <field name="bank_account_id"/>
+                <field name="km_home_work"/>
+                <field name="marital"/>
+                <field name="marriageDate"/>
+                <field name="spouse_complete_name"/>
+                <field name="spouse_birthdate"/>
+                <field name="emergency_contact"/>
+                <field name="emergency_phone"/>
+                <field name="certificate"/>
+                <field name="country_id"/>
+                <field name="identification_id"/>
+                <field name="passport_id"/>
+                <field name="gender"/>
+                <field name="birthday"/>
+                <field name="place_of_birth"/>
+                <field name="country_of_birth"/>
+                <field name="children"/>
+                <field name="visa_no"/>
+                <field name="permit_no"/>
+                <field name="visa_expire"/>
+                <field name="user_id"/>
+                <field name="registration_number"/>
+                <field name="pin"/>
+                <field name="barcode"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_employee_filter_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.search.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search[1]/field[@name='name']" position="before">
+                    <field name="emp_id"/>
+                </xpath>
+                <xpath expr="//filter[@name='group_manager']" position="before">
+                    <filter name="group_by_emp_id" string="Emp ID" context="{'group_by': 'emp_id'}"/>
+                </xpath>
+        </field>
+    </record>
+</odoo>
