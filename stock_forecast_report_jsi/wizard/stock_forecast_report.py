@@ -156,8 +156,9 @@ class StockForecastReport(models.TransientModel):
                 ]
             
             report_data.append(product_cat_data)
-            for prodata in report_product_data:
-                report_data.append(prodata)
+            if self.report_by == 'by_products':
+                for prodata in report_product_data:
+                    report_data.append(prodata)
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
