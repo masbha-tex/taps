@@ -2,6 +2,7 @@
 
 from odoo import models, fields, api
 from odoo.tools.misc import format_datetime
+from odoo.exceptions import UserError, ValidationError
 
 class taps_inventory(models.Model):
     _inherit = 'stock.valuation.layer'
@@ -10,11 +11,13 @@ class taps_inventory(models.Model):
     schedule_date = fields.Datetime('Schedule Date',readonly=True, check_company=True)
     
     def set_schedule_date(self, productid, moveid, createdate):
+        productid=int(productid)
+        moveid=int(moveid)
         getvaluation = self.env['stock.valuation.layer'].search([('stock_move_id', '=', moveid),('product_id', '=', productid)])
         getmove_line = self.env['stock.move.line'].search([('move_id', '=', moveid),('product_id', '=', productid)])
         
         if len(getmove_line) == 1:
-            sc_date = getmove_line.schedule_date
+            sc_date = getmove_line.x_studio_schedule_date
             if len(getvaluation) == 1:
                 if sc_date:
                     getvaluation[-1].write({'schedule_date':sc_date})
