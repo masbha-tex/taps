@@ -93,7 +93,7 @@ class HrAttendance(models.Model):
         shift_data = shift_record.sorted(key = 'activationDate', reverse=True)[:1]
         get_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', att_date)])
         office_in_time = False
-        office_in_time = shift_record.graceinTime
+        office_in_time = shift_data.graceinTime
         
         def get_sec(time_str):
             h, m, s = time_str.split(':')
