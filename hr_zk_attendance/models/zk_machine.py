@@ -44,32 +44,31 @@ class ZkMachine(models.Model):
             return False
 
     def clear_attendance(self):
+        _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
         for info in self:
+            machine_ip = info.name
+            zk_port = info.port_no
+            timeout = 15
             try:
-                machine_ip = info.name
-                zk_port = info.port_no
-                timeout = 30
-                try:
-                    zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
-                except NameError:
-                    raise UserError(_("Please install it with 'pip3 install pyzk'."))
-                conn = self.device_connect(zk)
-                if conn:
-                    conn.enable_device()
-                    clear_data = zk.get_attendance()
-                    if clear_data:
-                        # conn.clear_attendance()
-                        self._cr.execute("""delete from zk_machine_attendance""")
-                        conn.disconnect()
-                        raise UserError(_('Attendance Records Deleted.'))
-                    else:
-                        raise UserError(_('Unable to clear Attendance log. Are you sure attendance log is not empty.'))
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+            except NameError:
+                raise UserError(_("Please install it with 'pip3 install pyzk'."))
+            conn = self.device_connect(zk)
+            if conn:
+                conn.enable_device()
+                clear_data = zk.get_attendance()
+                if clear_data:
+                    conn.clear_attendance()
+                    self._cr.execute("""delete from zk_machine_attendance""")
+                    conn.disconnect()
+                    raise UserError('Attendance Records Deleted.')
                 else:
-                    raise UserError(
-                        _('Unable to connect to Attendance Device. Please use Test Connection button to verify.'))
-            except:
-                raise ValidationError(
-                    'Unable to clear Attendance log. Are you sure attendance device is connected & record is not empty.')
+                    raise UserError(_('Unable to clear Attendance log. Are you sure attendance log is not empty.'))
+            else:
+                raise UserError(_('Unable to connect to Attendance Device. Please use Test Connection button to verify.'))
+            #except:
+                #raise ValidationError(
+                    #'Unable to clear Attendance log. Are you sure attendance device is connected & record is not empty.')
 
     def getSizeUser(self, zk):
         """Checks a returned packet to see if it returned CMD_PREPARE_DATA,
@@ -221,7 +220,8 @@ class ZkMachine(models.Model):
                                                                               ('attDate','=', pre_date)])
                                                     att_pre[-1].write({'check_out': atten_time})
                                                 else:
-                                                    get_tr = self.env['shift.transfer'].search([('name', '=',
+                                                    pass
+                                                    """get_tr = self.env['shift.transfer'].search([('name', '=',
                                                                                                  get_user_id.id),
                                                                                                 ('activationDate',
                                                                                                  '<=', getDate)])
@@ -235,12 +235,13 @@ class ZkMachine(models.Model):
                                                                     'outHour' : zk_outhour,
                                                                     'outFlag':'PO',
                                                                     'inTime': trans_data.inTime,
-                                                                    'outTime': trans_data.outTime})
+                                                                    'outTime': trans_data.outTime})"""
                                     else:
                                         pass
                                 else:
                                     pass
                     # zk.enableDevice()
+                    #conn.clear_attendance()
                     conn.disconnect
                     return True
                 else:
