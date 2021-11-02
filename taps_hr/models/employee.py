@@ -22,8 +22,7 @@ class HrEmployee(models.Model):
     
     def _calculate_serviceLength(self):
         for record in self:
-            emp_obj = self.env['hr.employee'].search([('emp_id', '=', record.emp_id),
-                                                            ('active', '=', True)])
+            emp_obj = self.env['hr.employee'].search([('emp_id', '=', record.emp_id)])
             if emp_obj:
                 if record.resign_date:
                     currentDate = datetime.datetime.strptime(str(record.resign_date),'%Y-%m-%d')
@@ -48,4 +47,4 @@ class HrEmployee(models.Model):
             
                 emp_obj[-1].write({'service_length' : length})
             else:
-                emp_obj[-1].write({'service_length' : False})
+                record.write({'service_length' : False})
