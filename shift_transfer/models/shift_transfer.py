@@ -6,7 +6,7 @@ class ShiftTransfer(models.Model):
     _name = 'shift.transfer'
     _description = 'Shift Transfer'
 
-    code = fields.Char(string='Code', readonly=True, store=True)
+    code = fields.Char(string='Code', store=True)
     name = fields.Many2one('hr.employee', string='Employee')
     empid = fields.Char(related= 'name.pin', related_sudo=False, string='Employee ID')
     activationDate = fields.Date(string='Activation Date')
