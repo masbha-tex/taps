@@ -28,19 +28,29 @@ class HrAttendance(models.Model):
         activeemplist = self.env['hr.employee'].search([('emp_id', '=', emp_id),
                                                             ('active', '=', True)])
         if activeemplist.isOverTime is True:
-            if outTime > 0.0 and worked_hours > (outTime - inTime):
+            #if outTime > 0.0 and worked_hours > (outTime - inTime):
+            if outTime > 0.0 and worked_hours > (8.5):
                 if inTime > inHour:
-                    delta = ((worked_hours - (inTime - inHour)) - (outTime - inTime))
+                    #delta = ((worked_hours - (inTime - inHour)) - (outTime - inTime))
+                    delta = ((worked_hours - (inTime - inHour)) - (8.5))
+                    #raise UserError((delta))
                     #delta = (outHour - outTime)
                     delta = (delta * 3600 / 60) / 30
                     delta = int(delta) * 30 * 60 / 3600
-                    get_att_data[-1].write({'otHours' : delta})
+                    if delta > 0:
+                        get_att_data[-1].write({'otHours' : delta})
+                    else:
+                        get_att_data[-1].write({'otHours' : False})
                 else:
-                    delta = (worked_hours - (outTime - inTime))
+                    #delta = (worked_hours - (outTime - inTime))
+                    delta = (worked_hours - (8.5))
                     #delta = (outHour - outTime)
                     delta = (delta * 3600 / 60) / 30
                     delta = int(delta) * 30 * 60 / 3600
-                    get_att_data[-1].write({'otHours' : delta})
+                    if delta > 0:
+                        get_att_data[-1].write({'otHours' : delta})
+                    else:
+                        get_att_data[-1].write({'otHours' : False})
             else:
                 get_att_data[-1].write({'otHours' : False})
         else:
@@ -93,21 +103,21 @@ class HrAttendance(models.Model):
         shift_data = shift_record.sorted(key = 'activationDate', reverse=True)[:1]
         get_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', att_date)])
         office_in_time = False
-        office_in_time = shift_data.graceinTime
+        office_in_time = shift_data.graceinTime+0.01999
         
         def get_sec(time_str):
-            h, m, s = time_str.split(':')
-            return int(h) * 3600 + int(m) * 60 + int(s)
+            h, m= time_str.split(':')
+            return int(h) * 3600 + int(m) * 60
 
         inHour = False
         if in_time:
             inHour = in_time + timedelta(hours=6)
-            inHour = inHour.strftime("%H:%M:%S")
+            inHour = inHour.strftime("%H:%M")
             inHour = get_sec(inHour) / 3600
         outHour = False
         if out_time:
             outHour = out_time + timedelta(hours=6)
-            outHour = outHour.strftime("%H:%M:%S")
+            outHour = outHour.strftime("%H:%M")
             outHour = get_sec(outHour) / 3600
         
         myfromtime = 0.0
@@ -120,7 +130,7 @@ class HrAttendance(models.Model):
             if not inHour and not outHour:
                 get_att_data[-1].write({'inFlag':'A','outFlag':'A','inHour' : False,'outHour' : False})
             elif inHour and outHour:
-                if str(office_in_time)>=str(inHour):
+                if office_in_time>=inHour:
                     get_att_data[-1].write({'inFlag':'P','inHour' : inHour})
                 else:
                     get_att_data[-1].write({'inFlag':'L','inHour' : inHour})
@@ -134,7 +144,7 @@ class HrAttendance(models.Model):
                 else:
                     get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
             elif inHour and not outHour:
-                if str(office_in_time)>=str(inHour):
+                if office_in_time>=inHour:
                     get_att_data[-1].write({'inFlag':'P','inHour' : inHour,'outFlag':'PO','outHour' : False})
                 else:
                     get_att_data[-1].write({'inFlag':'L','inHour' : inHour,'outFlag':'PO','outHour' : False})
