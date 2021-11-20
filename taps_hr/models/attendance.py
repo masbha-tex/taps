@@ -25,28 +25,43 @@ class HrAttendance(models.Model):
         
         get_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', att_date)])
         
+        
         activeemplist = self.env['hr.employee'].search([('emp_id', '=', emp_id),
                                                             ('active', '=', True)])
+        
+        holiday_record = self.env['resource.calendar.leaves'].search([('resource_id', '=', False),('date_from', '<=', att_date),('date_to', '>=', att_date)])
+        
         if activeemplist.isOverTime is True:
             #if outTime > 0.0 and worked_hours > (outTime - inTime):
-            if outTime > 0.0 and worked_hours > (8.5):
+            if get_att_data.outHour > outTime:
                 if inTime > inHour:
                     #delta = ((worked_hours - (inTime - inHour)) - (outTime - inTime))
-                    delta = ((worked_hours - (inTime - inHour)) - (8.5))
-                    #raise UserError((delta))
-                    #delta = (outHour - outTime)
-                    delta = (delta * 3600 / 60) / 30
-                    delta = int(delta) * 30 * 60 / 3600
+                    if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
+                        delta = worked_hours+0.01999
+                        delta = (delta * 3600 / 60) / 30
+                        #raise UserError((delta))
+                        delta = int(delta) * 30 * 60 / 3600
+                    else:
+                        delta = (get_att_data.outHour - outTime)
+                        #raise UserError((delta))
+                        #delta = (outHour - outTime)
+                        delta = (delta * 3600 / 60) / 30
+                        delta = int(delta) * 30 * 60 / 3600
                     if delta > 0:
                         get_att_data[-1].write({'otHours' : delta})
                     else:
                         get_att_data[-1].write({'otHours' : False})
                 else:
-                    #delta = (worked_hours - (outTime - inTime))
-                    delta = (worked_hours - (8.5))
-                    #delta = (outHour - outTime)
-                    delta = (delta * 3600 / 60) / 30
-                    delta = int(delta) * 30 * 60 / 3600
+                    if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
+                        delta = worked_hours+0.01999
+                        delta = (delta * 3600 / 60) / 30
+                        delta = int(delta) * 30 * 60 / 3600
+                    else:
+                        #delta = (worked_hours - (outTime - inTime))
+                        delta = (get_att_data.outHour - outTime)
+                        #delta = (outHour - outTime)
+                        delta = (delta * 3600 / 60) / 30
+                        delta = int(delta) * 30 * 60 / 3600
                     if delta > 0:
                         get_att_data[-1].write({'otHours' : delta})
                     else:
@@ -104,7 +119,14 @@ class HrAttendance(models.Model):
         get_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', att_date)])
         office_in_time = False
         office_in_time = shift_data.graceinTime+0.01999
+        lv_record = self.env['hr.leave'].search([('employee_id', '=', int(get_att_data.employee_id)),('state', '=', 'validate'),('request_date_from', '<=', att_date),('request_date_to', '>=', att_date)])
+        lv_type = self.env['hr.leave.type'].search([('id', '=', int(lv_record.holiday_status_id))])
         
+        holiday_record = self.env['resource.calendar.leaves'].search([('resource_id', '=', False),('date_from', '<=', att_date),('date_to', '>=', att_date)])
+        holiday_type = self.env['hr.work.entry.type'].search([('id', '=', int(holiday_record.work_entry_type_id))])
+        #,(att_date, 'between','request_date_from and request_date_to')
+        #lv_emp = lv_record.filtered(lambda lv: att_date>=lv.request_date_from and att_date<=lv.request_date_to)
+        #raise UserError((att_date,lv_record))
         def get_sec(time_str):
             h, m= time_str.split(':')
             return int(h) * 3600 + int(m) * 60
@@ -125,31 +147,70 @@ class HrAttendance(models.Model):
         #office_out_time = get_sec(office_out_time) / 3600
         #myfromtime = datetime.strptime('00:00:00','%H:%M:%S').time()
         #mytotime = datetime.strptime('00:00:00','%H:%M:%S').time()
-        #raise UserError((office_in_time,office_out_time,inHour,outHour,in_time,out_time))
+        #raise UserError((att_date,int(att_date.strftime("%w"))))
         if len(get_att_data) == 1:
-            if not inHour and not outHour:
-                get_att_data[-1].write({'inFlag':'A','outFlag':'A','inHour' : False,'outHour' : False})
+            if len(lv_record) == 1:
+                get_att_data[-1].write({'inFlag':lv_type.code,'outFlag':lv_type.code})
+            elif not inHour and not outHour:
+                if (int(att_date.strftime("%w")))==5:
+                    get_att_data[-1].write({'inFlag':'F','outFlag':'F','inHour' : False,'outHour' : False})
+                elif len(holiday_record) == 1:
+                    get_att_data[-1].write({'inFlag':holiday_type.code,'outFlag':holiday_type.code})
+                else:
+                    get_att_data[-1].write({'inFlag':'A','outFlag':'A','inHour' : False,'outHour' : False})
             elif inHour and outHour:
-                if office_in_time>=inHour:
-                    get_att_data[-1].write({'inFlag':'P','inHour' : inHour})
-                else:
-                    get_att_data[-1].write({'inFlag':'L','inHour' : inHour})
-                if office_out_time>outHour:
-                    if mytotime>=office_out_time:
-                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
-                    elif myfromtime<=outHour and mytotime>=outHour:
-                        get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                if (int(att_date.strftime("%w")))==5:
+                    get_att_data[-1].write({'inFlag':'FP','inHour' : inHour})
+                    if office_out_time>outHour:
+                        if mytotime>=office_out_time:
+                            get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                        elif myfromtime<=outHour and mytotime>=outHour:
+                            get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                        else:
+                            get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
                     else:
-                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                        get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                elif len(holiday_record) == 1:
+                    get_att_data[-1].write({'inFlag':'HP','inHour' : inHour})
+                    if office_out_time>outHour:
+                        if mytotime>=office_out_time:
+                            get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                        elif myfromtime<=outHour and mytotime>=outHour:
+                            get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                        else:
+                            get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                    else:
+                        get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
                 else:
-                    get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                    if office_in_time>=inHour:
+                        get_att_data[-1].write({'inFlag':'P','inHour' : inHour})
+                    else:
+                        get_att_data[-1].write({'inFlag':'L','inHour' : inHour})
+                    if office_out_time>outHour:
+                        if mytotime>=office_out_time:
+                            get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                        elif myfromtime<=outHour and mytotime>=outHour:
+                            get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                        else:
+                            get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                    else:
+                        get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
             elif inHour and not outHour:
-                if office_in_time>=inHour:
+                #raise UserError((int(att_date.strftime("%w"))))
+                if (int(att_date.strftime("%w")))==5:
+                    get_att_data[-1].write({'inFlag':'FP','inHour' : inHour,'outFlag':'PO','outHour' : False})
+                elif len(holiday_record) == 1:
+                    get_att_data[-1].write({'inFlag':'HP','inHour' : inHour,'outFlag':'PO','outHour' : False})
+                elif office_in_time>=inHour:
                     get_att_data[-1].write({'inFlag':'P','inHour' : inHour,'outFlag':'PO','outHour' : False})
                 else:
                     get_att_data[-1].write({'inFlag':'L','inHour' : inHour,'outFlag':'PO','outHour' : False})
             elif not inHour and outHour:
-                if office_out_time>outHour:
+                if (int(att_date.strftime("%w")))==5:
+                    get_att_data[-1].write({'outFlag':'FP','outHour' : outHour})
+                elif len(holiday_record) == 1:
+                    get_att_data[-1].write({'outFlag':'HP','outHour' : outHour})
+                elif office_out_time>outHour:
                     if mytotime>=office_out_time:
                         get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
                     elif myfromtime<=outHour and mytotime>=outHour:

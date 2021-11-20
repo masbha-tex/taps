@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- HR WORK ENTRY -->
+    <record id="hr_work_entry_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.work.entry.form.inherit</field>
+        <field name="model">hr.work.entry</field>
+        <field name="inherit_id" ref="hr_work_entry.hr_work_entry_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <label for="otHours" string="Overtime"/>
+                <div class="o_row">
+                    <field name="otHours" nolabel="1" widget="float_time" attrs="{'readonly': [('state', '!=', 'draft')]}" /><span class="ml8">Hours</span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

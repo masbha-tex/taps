@@ -1,5 +1,17 @@
 # -*- coding:utf-8 -*-
 from odoo import models, fields, api
+from odoo.exceptions import UserError,ValidationError
+from collections import defaultdict
+from dateutil.relativedelta import relativedelta
+from datetime import date, datetime, time, timedelta
+from dateutil.rrule import rrule, DAILY, WEEKLY
+from odoo.addons.resource.models.resource_mixin import timezone_datetime
+from odoo.addons.resource.models.resource import datetime_to_string, string_to_datetime, Intervals
+from odoo.tools.float_utils import float_round
+from odoo.tools import date_utils, float_utils
+import math
+import pytz
+
 
 class HrContract(models.Model):
     _inherit = 'hr.contract'
@@ -29,8 +41,336 @@ class HrContract(models.Model):
     
     isActivePF = fields.Boolean(string="PF Active", store=True, tracking=True, help="Employee's monthly PF Contribution is Active.")
     pf_activationDate = fields.Date('PF Active Date', store=True, tracking=True, help="Activation Date of the PF Contribution.")
+
+    def float_to_time(self,hours):
+        if hours == 24.0:
+            return time.max
+        fractional, integral = math.modf(hours)
+        return time(int(integral), int(float_round(60 * fractional, precision_digits=0)), 0)      
     
     @api.depends('employee_id')
     def _compute_employee_contract_ref(self):
         for contract in self.filtered('employee_id'):
             contract.name = contract.employee_id.emp_id
+    
+    def _get_default_work_entry_type(self):
+        return self.env.ref('hr_work_entry.work_entry_type_attendance', raise_if_not_found=False)  
+    
+    def _get_leave_work_entry_type_dates(self, leave, date_from, date_to):
+        return self._get_leave_work_entry_type(leave)
+
+    def _get_leave_work_entry_type(self, leave):
+        return leave.work_entry_type_id
+    
+    def _get_interval_leave_work_entry_type(self, interval, leaves):
+        #raise UserError(('sdfefe'))
+        for leave in leaves:
+            if interval[0] >= leave[0] and interval[1] <= leave[1] and leave[2]:
+                interval_start = interval[0].astimezone(pytz.utc).replace(tzinfo=None)
+                interval_stop = interval[1].astimezone(pytz.utc).replace(tzinfo=None)
+                return self._get_leave_work_entry_type_dates(leave[2], interval_start, interval_stop)
+        return self.env.ref('hr_work_entry_contract.work_entry_type_leave')    
+    
+    def _get_contract_work_entries_values(self, date_start, date_stop):
+        self.ensure_one()
+        contract_vals = []
+        employee = self.employee_id
+        calendar = self.resource_calendar_id
+        resource = employee.resource_id
+        tz = pytz.timezone(calendar.tz)
+        start_dt = pytz.utc.localize(date_start) if not date_start.tzinfo else date_start
+        end_dt = pytz.utc.localize(date_stop) if not date_stop.tzinfo else date_stop
+        #raise UserError((start_dt,end_dt))
+
+        attendances = self.attendance_intervals_batch(employee.id,
+            start_dt, end_dt, resources=resource, tz=tz
+        )[resource.id]
+        
+        """domainatt =([('employee_id', '=', employee.id),
+                     ('attDate', '>=', start_dt),
+                     ('attDate','<=', end_dt)])
+        attendances = self.env['hr.attendance'].search(domainatt)"""
+
+        # Other calendars: In case the employee has declared time off in another calendar
+        # Example: Take a time off, then a credit time.
+        # YTI TODO: This mimics the behavior of _leave_intervals_batch, while waiting to be cleaned
+        # in master.
+        resources_list = [self.env['resource.resource'], resource]
+        resource_ids = [False, resource.id]
+        leave_domain = [
+            ('time_type', '=', 'leave'),
+            # ('calendar_id', '=', self.id), --> Get all the time offs
+            ('resource_id', 'in', resource_ids),
+            ('date_from', '<=', datetime_to_string(end_dt)),
+            ('date_to', '>=', datetime_to_string(start_dt)),
+            ('company_id', 'in', [False, self.company_id.id]),
+        ]
+        result = defaultdict(lambda: [])
+        tz_dates = {}
+        
+        for leave in self.env['resource.calendar.leaves'].search(leave_domain):
+            addval = True
+            for interval in attendances:
+                if interval[2].attDate == leave.date_from.date():
+                    addval = False
+                    break
+            if addval:
+                for resource in resources_list:
+                    if leave.resource_id.id not in [False, resource.id]:
+                        continue
+                    tz = tz if tz else pytz.timezone((resource or self).tz)
+                    if (tz, start_dt) in tz_dates:
+                        start = tz_dates[(tz, start_dt)]
+                    else:
+                        start = start_dt.astimezone(tz)
+                        tz_dates[(tz, start_dt)] = start
+                    if (tz, end_dt) in tz_dates:
+                        end = tz_dates[(tz, end_dt)]
+                    else:
+                        end = end_dt.astimezone(tz)
+                        tz_dates[(tz, end_dt)] = end
+                    dt0 = string_to_datetime(leave.date_from).astimezone(tz)
+                    dt1 = string_to_datetime(leave.date_to).astimezone(tz)
+                
+                    #dt0 = tz.localize(combine(attendance.attDate, self.float_to_time(hour_from)))
+                
+                    result[resource.id].append((max(start, dt0), min(end, dt1), leave))
+        
+        
+        mapped_leaves = {r.id: Intervals(result[r.id]) for r in resources_list}
+        
+        leaves = mapped_leaves[resource.id]
+        
+        #raise UserError((mapped_leaves))
+        real_attendances = attendances - leaves
+        real_leaves = attendances - real_attendances#leaves#
+        
+        # A leave period can be linked to several resource.calendar.leave
+        split_leaves = []
+        for leave_interval in leaves:
+            if leave_interval[2] and len(leave_interval[2]) > 1:
+                split_leaves += [(leave_interval[0], leave_interval[1], l) for l in leave_interval[2]]
+            else:
+                split_leaves += [(leave_interval[0], leave_interval[1], leave_interval[2])]
+        real_leaves = split_leaves
+        #raise UserError((real_leaves))
+        # Attendances 199168
+        att_contract_vals = []        
+        for interval in real_attendances:
+            default_work_entry_type = self._get_default_work_entry_type()
+            if interval[2].inFlag in ('F','A'):
+                work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', interval[2].inFlag)])
+                default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
+                
+            work_entry_type_id = default_work_entry_type
+            # All benefits generated here are using datetimes converted from the employee's timezone
+            contract_vals += [{
+                #'name': "%s: %s" % (work_entry_type_id.name, employee.name),
+                'name': interval[2].inFlag,
+                'date_start': interval[0].astimezone(pytz.utc).replace(tzinfo=None),
+                'date_stop': interval[1].astimezone(pytz.utc).replace(tzinfo=None),
+                'work_entry_type_id': work_entry_type_id.id,
+                'employee_id': employee.id,
+                'contract_id': self.id,
+                'company_id': self.company_id.id,
+                'state': 'draft',
+                'inFlag': interval[2].inFlag,
+                'outFlag': interval[2].outFlag,
+                'otHours': interval[2].otHours,
+            }]
+            
+        for interval in real_leaves:
+            #raise UserError(('sdfefefefefefef'))
+            # Could happen when a leave is configured on the interface on a day for which the
+            # employee is not supposed to work, i.e. no attendance_ids on the calendar.
+            # In that case, do try to generate an empty work entry, as this would raise a
+            # sql constraint error
+            if interval[0] == interval[1]:  # if start == stop
+                continue
+            #if (real_attendances)
+            leave_entry_type = self._get_interval_leave_work_entry_type(interval, real_leaves)
+            interval_start = interval[0].astimezone(pytz.utc).replace(tzinfo=None)
+            interval_stop = interval[1].astimezone(pytz.utc).replace(tzinfo=None)
+            
+            addval = True
+            for interval in real_attendances:
+                if interval[2].attDate == interval_start.date():
+                    addval = False
+                    break
+            if addval:
+                contract_vals += [dict([
+                    #('name', "%s%s" % (leave_entry_type.name + ": " if leave_entry_type else "", employee.name)),
+                    ('name', leave_entry_type.code),
+                    ('date_start', interval_start),
+                    ('date_stop', interval_stop),
+                    ('work_entry_type_id', leave_entry_type.id),
+                    ('employee_id', employee.id),
+                    ('company_id', self.company_id.id),
+                    ('state', 'draft'),
+                    ('contract_id', self.id),
+                ] + self._get_more_vals_leave_interval(interval, real_leaves))]
+        return contract_vals
+    
+    def _get_work_entries_values(self, date_start, date_stop):
+        """
+        Generate a work_entries list between date_start and date_stop for one contract.
+        :return: list of dictionnary.
+        """
+        vals_list = []
+        for contract in self:
+            contract_vals = contract._get_contract_work_entries_values(date_start, date_stop)
+
+            # If we generate work_entries which exceeds date_start or date_stop, we change boundaries on contract
+            if contract_vals:
+                #raise UserError(('sdfdsf'))
+                #Handle empty work entries for certain contracts, could happen on an attendance based contract
+                #NOTE: this does not handle date_stop or date_start not being present in vals
+                dates_stop = [x['date_stop'] for x in contract_vals if x['contract_id'] == contract.id]
+                if dates_stop:
+                    date_stop_max = max(dates_stop)
+                    if date_stop_max > contract.date_generated_to:
+                        contract.date_generated_to = date_stop_max
+
+                dates_start = [x['date_start'] for x in contract_vals if x['contract_id'] == contract.id]
+                if dates_start:
+                    date_start_min = min(dates_start)
+                    if date_start_min < contract.date_generated_from:
+                        contract.date_generated_from = date_start_min
+
+            vals_list += contract_vals
+
+        return vals_list
+    
+
+    def attendance_intervals_batch(self, employee_id, start_dt, end_dt, resources=None, domain=None, tz=None):
+        """ Return the attendance intervals in the given datetime range.
+            The returned intervals are expressed in specified tz or in the resource's timezone.
+        """
+        #raise UserError((start,until))
+        self.ensure_one()
+        resources = self.env['resource.resource'] if not resources else resources
+        assert start_dt.tzinfo and end_dt.tzinfo
+        self.ensure_one()
+        combine = datetime.combine
+
+        resources_list = list(resources) + [self.env['resource.resource']]
+        resource_ids = [r.id for r in resources_list]
+        #domain = domain if domain is not None else []
+        
+        """domain = expression.AND([domain, [
+            ('calendar_id', '=', self.id),
+            ('resource_id', 'in', resource_ids),
+            ('display_type', '=', False),
+        ]])"""
+
+        # for each attendance spec, generate the intervals in the date range
+        cache_dates = defaultdict(dict)
+        cache_deltas = defaultdict(dict)
+        result = defaultdict(list)
+        
+        domainatt =([('employee_id', '=', employee_id), 
+                                     ('attDate', '>=', start_dt),
+                                     ('attDate','<=', end_dt)])
+        
+        attrecord = self.env['hr.attendance'].search(domainatt)
+        attData = attrecord.sorted(key = 'attDate', reverse=False)
+        for attendance in attData:
+            for resource in resources_list:
+                # express all dates and times in specified tz or in the resource's timezone
+                tz = tz if tz else timezone((resource or self).tz)
+                if (tz, start_dt) in cache_dates:
+                    start = cache_dates[(tz, start_dt)]
+                else:
+                    start = start_dt.astimezone(tz)
+                    cache_dates[(tz, start_dt)] = start
+                if (tz, end_dt) in cache_dates:
+                    end = cache_dates[(tz, end_dt)]
+                else:
+                    end = end_dt.astimezone(tz)
+                    cache_dates[(tz, end_dt)] = end
+
+                start = start.date()
+                #if attendance.attDate:
+                #    start = max(start, attendance.attDate)
+                until = end.date()
+                #if attendance.attDate:
+                #    until = min(until, attendance.attDate)
+                    
+                #start = start + relativedelta(weeks=-1)
+                #raise UserError((start,until))
+                #attendance.attendance.weekday()
+                #weekdays = attendance.check_in
+                #weekday = int(weekdays.strftime("%w"))
+                
+                #days = rrule(WEEKLY, start, interval=2, until=until, byweekday=weekday)
+                #days = rrule(DAILY, start, until=until, byweekday=weekday)
+                #if i>0:
+                
+                k=0
+                #for day in days:
+                    #k +=1
+                    # attendance hours are interpreted in the resource's timezone
+                #raise UserError((cache_deltas))#
+                
+                hour_from = 0
+                hour_to = 0
+                if attendance.inFlag not in ('H','CL','SL','EL','ML','LW','OD','CO','AJ'):
+                    hour_from = 9.0
+                    hour_to = 18.0
+                if (tz, attendance.attDate, hour_from) in cache_deltas:
+                    dt0 = cache_deltas[(tz, attendance.attDate, hour_from)]
+                else:
+                    dt0 = tz.localize(combine(attendance.attDate, self.float_to_time(hour_from)))
+                    cache_deltas[(tz, attendance.attDate, hour_from)] = dt0
+                
+                    
+                
+                if (tz, attendance.attDate, hour_to) in cache_deltas:
+                    dt1 = cache_deltas[(tz, attendance.attDate, hour_to)]
+                else:
+                    dt1 = tz.localize(combine(attendance.attDate, self.float_to_time(hour_to)))
+                    cache_deltas[(tz, attendance.attDate, hour_to)] = dt1
+                    #raise UserError((start_dt,end_dt,(max(cache_dates[(tz, start_dt)], dt0), min(cache_dates[(tz, end_dt)], dt1), attendance)))
+                    #if k==5:
+                    #    raise UserError((attendance.attDate))
+                    #   raise UserError((day,(max(cache_dates[(tz, start_dt)], dt0), min(cache_dates[(tz, end_dt)], dt1), attendance)))
+                result[resource.id].append((max(cache_dates[(tz, start_dt)], dt0), min(cache_dates[(tz, end_dt)], dt1), attendance))
+        return {r.id: Intervals(result[r.id]) for r in resources_list}
+
+
+    
+    
+class HrPayslipsss(models.Model):
+    _inherit = 'hr.payslip'
+    _description = 'Pay Slip'
+    
+    
+    def _get_worked_day_lines_values(self, domain=None):
+        self.ensure_one()
+        res = []
+        att_record = self.env['hr.attendance'].search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', 'in', ('P','L','HP','FP','CO'))])
+        valdays = len(att_record)
+        valhours = sum(att_record.mapped('worked_hours'))
+        hours_per_day = self._get_worked_day_lines_hours_per_day()
+        work_hours = self.contract_id._get_work_hours(self.date_from, self.date_to, domain=domain)
+        work_hours_ordered = sorted(work_hours.items(), key=lambda x: x[1])
+        biggest_work = work_hours_ordered[-1][0] if work_hours_ordered else 0
+        add_days_rounding = 0
+        for work_entry_type_id, hours in work_hours_ordered:
+            work_entry_type = self.env['hr.work.entry.type'].browse(work_entry_type_id)
+            days = round(hours / hours_per_day, 5) if hours_per_day else 0
+            if work_entry_type_id == biggest_work:
+                days += add_days_rounding
+            day_rounded = self._round_days(work_entry_type, days)
+            add_days_rounding += (days - day_rounded)
+            if (work_entry_type_id==1):
+                day_rounded=valdays
+                hours=valhours
+            attendance_line = {
+                'sequence': work_entry_type.sequence,
+                'work_entry_type_id': work_entry_type_id,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        return res

@@ -20,6 +20,8 @@
         'views/attendance_views.xml',
         'views/employee_views.xml',
         'views/contract_views.xml',
+        'views/hr_work_entry_views.xml',
+        'views/hr_payslip_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [],

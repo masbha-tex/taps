@@ -9,7 +9,7 @@ class HrEmployee(models.Model):
     
     emp_id = fields.Char(string="Emp ID", readonly=True, store=True, tracking=True) 
     isOverTime = fields.Boolean("Over Time", readonly=False, store=True, tracking=True)
-    service_length = fields.Char(compute='_calculate_serviceLength', string="Service Length")
+    service_length = fields.Char( string="Service Length")#compute='_calculate_serviceLength',
     joining_date = fields.Date(related = 'contract_id.date_start', related_sudo=False, string='Joining Date', store=True, tracking=True)
     probation_date = fields.Date(related = 'contract_id.trial_date_end', related_sudo=False, store=True, tracking=True)
     resign_date = fields.Date(related = 'contract_id.date_end', related_sudo=False, string='Resign Date', store=True, tracking=True)
