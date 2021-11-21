@@ -9,6 +9,7 @@
                     <sheet>
                         <group>
                             <field name="name"/>
+                            <field name="parent_id"/>
                             <field name="company_id"/>
                         </group>
                     </sheet>
@@ -24,6 +25,7 @@
             <field name="arch" type="xml">
                 <tree string="Type of Categories" editable="bottom">
                     <field name="name"/>
+                    <field name="parent_id"/>
                     <field name="company_id"/>
                 </tree>
             </field>
