@@ -10,7 +10,7 @@
                 <group>
                     <group>
                         <field name="report_by"/>
-                        <field name="categ_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_products')]}"/>
+                        <field name="categ_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_items')]}"/>
                         <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')]}"/>
                         <field name="from_date" required="True"/>
                         <field name="to_date" required="True"/>
