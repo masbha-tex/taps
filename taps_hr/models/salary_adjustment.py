@@ -13,35 +13,33 @@ from odoo.tools.safe_eval import safe_eval
 
 class SalaryAdjustment(models.Model):
     _name = 'salary.adjustment'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _description = 'Salary Adjustment'
     
-    name = fields.Char('Salary Month', required=True, translate=True)
-    date_from = fields.Char('From Date', required=True, translate=True)
-    date_to = fields.Char('To Date', required=True, translate=True)
-    adjustment_line = fields.One2many('purchase.order.line', 'order_id', string='Order Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True)
+    name = fields.Char('Code', store=True)
+    salary_month = fields.Date('Salary Month', store=True, default=fields.Datetime.now)
+    adjustment_line = fields.One2many('salary.adjustment.line', 'adjustment_id', string='Adjustment Lines', store=True)
     #company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda s: s.env.company.id, index=True)
 
 
 class SalaryAdjustmentLine(models.Model):
     _name = 'salary.adjustment.line'
     _description = 'Salary Adjustment Line'
-    _order = 'order_id, sequence, id'
-
-    name = fields.Text(string='Description', required=True)
-    sequence = fields.Integer(string='Sequence', default=10)
-    product_qty = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True)
-    product_uom_qty = fields.Float(string='Total Quantity', compute='_compute_product_uom_qty', store=True)
-    date_planned = fields.Datetime(string='Delivery Date', index=True,
-        help="Delivery date expected from vendor. This date respectively defaults to vendor pricelist lead time then today's date.")
-    taxes_id = fields.Many2many('account.tax', string='Taxes', domain=['|', ('active', '=', False), ('active', '=', True)])
-    product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
-    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id')
-    product_id = fields.Many2one('product.product', string='Product', domain=[('purchase_ok', '=', True)], change_default=True)
-    product_type = fields.Selection(related='product_id.type', readonly=True)
-    price_unit = fields.Float(string='Unit Price', required=True, digits='Product Price')
-
-    price_subtotal = fields.Monetary(compute='_compute_amount', string='Subtotal', store=True)
-    price_total = fields.Monetary(compute='_compute_amount', string='Total', store=True)
-    price_tax = fields.Float(compute='_compute_amount', string='Tax', store=True)
-
-    order_id = fields.Many2one('purchase.order', string='Order Reference', index=True, required=True, ondelete='cascade')
+    
+    
+    @api.onchange('mode_type')
+    def onchange_partner_id(self):
+        self.adjustment_type = ''
+        for rec in self:
+            if rec.mode_type == 'False':
+                return {'domain':{'adjustment_type': [('is_deduction','=',False)]}}
+            if rec.mode_type == 'True':
+                return {'domain':{'adjustment_type': [('is_deduction','=',True)]}}
+    
+    
+    adjustment_id = fields.Many2one('salary.adjustment', string='Adjustment Reference', index=True, required=True, ondelete='cascade')
+    employee_id = fields.Many2one('hr.employee', string='Employee', required=True, store=True)
+    emp_id = fields.Char(related = 'employee_id.emp_id', string="Emp ID", readonly=True, store=True)
+    mode_type = fields.Selection([('False', "Pay"),('True', "Deduct")], string="Mode Type", required=True)
+    adjustment_type = fields.Many2one('hr.payslip.input.type', string='Type',store=True)
+    amount = fields.Float(string='Amount', store=True)

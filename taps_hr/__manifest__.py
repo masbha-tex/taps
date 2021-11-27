@@ -10,9 +10,10 @@
     'category': 'Generic Modules/Human Resources',
     "version": "14.0.1.0.0",
     "license": "OEEL-1",
-    'depends': ['base_setup', 'hr_attendance', 'web_studio','hr','hr_payroll_account',],
+    'depends': ['base_setup', 'hr_attendance', 'web_studio','hr','hr_payroll_account','hr_payroll'],
     # always loaded
     'data': [
+        'security/ir.model.access.csv',
         'data/employee_id_generate.xml',
         'data/attendance_date_generate.xml',
         'data/attendance_flag_generate.xml',
@@ -22,6 +23,8 @@
         'views/contract_views.xml',
         'views/hr_work_entry_views.xml',
         'views/hr_payslip_views.xml',
+        'views/hr_payslip_input_views.xml',
+        'views/salary_adjustment_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [],

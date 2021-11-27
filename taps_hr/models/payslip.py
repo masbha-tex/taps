@@ -106,3 +106,39 @@ class HrPayslipsss(models.Model):
             res.append(attendance_line)
         return res
     
+    
+    def action_refresh_from_work_entries(self):
+        # Refresh the whole payslip in case the HR has modified some work entries
+        # after the payslip generation
+        self.ensure_one()
+        self._onchange_employee()
+        self.compute_sheet()
+        #self.re_compute_sheet()
+        
+    def re_compute_sheet(self):
+        # Refresh the whole payslip in case the HR has entry some adjustment entries
+        # after the payslip generation
+        payslips = self.filtered(lambda slip: slip.state in ['draft', 'verify'])
+        # delete old payslip lines 
+        raise UserError((payslips))
+        payslips.line_ids.unlink()
+        payslips.input_line_ids.unlink()
+        for payslip in payslips:
+            number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
+            lines = [(0, 0, line) for line in payslip._get_payslip_lines()]
+            payslip.write({'line_ids': lines, 'number': number, 'state': 'verify', 'compute_date': fields.Date.today()})
+        return True
+
+class HrPayslipInputType(models.Model):
+    _inherit = 'hr.payslip.input.type'
+    _description = 'Payslip Input Type'
+    
+    is_deduction = fields.Boolean(string="is Deduct", store=True)
+    
+    
+class HrPayslipInput(models.Model):
+    _inherit = 'hr.payslip.input'
+    _description = 'Payslip Input'
+    _order = 'payslip_id, sequence'
+
+

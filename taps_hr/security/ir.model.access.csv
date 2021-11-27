@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_salary_adjustment,salary.adjustment,model_salary_adjustment,base.group_user,1,1,1,1
+access_salary_adjustment_line,salary.adjustment.line,model_salary_adjustment_line,base.group_user,1,1,1,1

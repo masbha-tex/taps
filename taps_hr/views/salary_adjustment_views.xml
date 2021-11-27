@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <record id="view_salary_adjustment_form" model="ir.ui.view">
+        <field name="name">salary.adjustment.view.from</field>
+        <field name="model">salary.adjustment</field>
+        <field name="arch" type="xml">
+            <form string="Salary Adjustment">
+                <header/>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Code.."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="salary_month"/>
+                        </group>
+                    </group>
+                    <div class="oe_title">
+                        <field name="adjustment_line"
+                               widget="section_and_note_one2many"
+                               mode="tree">
+                            <tree string="Salary Adjustment Lines" editable="bottom">
+                                <control>
+                                    <create name="add_employee_control" string="Add a employee"/>
+                                </control>
+                                <field name="employee_id"/>
+                                <field name="emp_id"/>
+                                <field name="mode_type"/>
+                                <field name="adjustment_type"/>
+                                <field name="amount"/>
+                            </tree>
+                        </field>
+                    </div>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!-- explicit tree view definition -->
+    <record id="salary_adjustment_line_tree" model="ir.ui.view">
+        <field name="name">salary.adjustment.line.tree</field>
+        <field name="model">salary.adjustment.line</field>
+        <field name="arch" type="xml">
+            <tree string="Salary Adjustment Lines" create="false">
+                <field name="adjustment_id"/>
+                <field name="employee_id"/>
+                <field name="emp_id"/>
+                <field name="mode_type"/>
+                <field name="adjustment_type"/>
+                <field name="amount"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_salary_adjustment_tree" model="ir.ui.view">
+      <field name="name">salary.adjustment.view.tree</field>
+      <field name="model">salary.adjustment</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="name" placeholder="Code.."/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record id="salary_adjustment_action" model="ir.actions.act_window">
+      <field name="name">Salary Adjustment</field>
+      <field name="res_model">salary.adjustment</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="shift_setup.action_server">
+      <field name="name">shift_setup server</field>
+      <field name="model_id" ref="model_shift_setup_shift_setup"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item 
+      <menuitem id="shift_setup_menu" parent="hr_attendance.menu_hr_attendance_root"  name="Shift Setup" action="shift_setup_action" sequence="100"/>
+    -->
+      
+    <menuitem id="salary_adjustment_menu" parent="hr_work_entry_contract.menu_hr_payroll_root" sequence="50" name="Salary Adjustment" action="salary_adjustment_action"/>
+
+      
+<!--
+    <menuitem name="shift_setup" id="shift_setup.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="shift_setup.menu_1" parent="shift_setup.menu_root"/>
+    <menuitem name="Menu 2" id="shift_setup.menu_2" parent="shift_setup.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="shift_setup.menu_1_list" parent="shift_setup.menu_1"
+              action="shift_setup.action_window"/>
+    <menuitem name="Server to list" id="shift_setup" parent="shift_setup.menu_2"
+              action="shift_setup.action_server"/>
+-->
+  </data>
+</odoo>
