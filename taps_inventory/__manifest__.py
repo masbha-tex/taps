@@ -28,6 +28,7 @@
         #'data/insert_schedule_date.xml',
         'views/stock_register_views.xml',
         'views/product_template.xml',
+        'views/product_move.xml',
         #'security/stock_account_security.xml',
         #'security/ir.model.access.csv',
         #'wizard/stock_valuation_layer_revaluation_views.xml',

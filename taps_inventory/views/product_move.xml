@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="view_move_line_tree" model="ir.ui.view">
+            <field name="name">stock.move.line.tree</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.view_move_line_tree"/>
+            <field name="arch" type="xml">
+               <xpath expr="//field[@name='product_id']" position="before">
+                    <field name="parent_categ_type" string="Parent Category"/>
+               </xpath>                
+               <xpath expr="//field[@name='product_id']" position="before">
+                    <field name="category_type" string="Category Type"/>
+               </xpath>
+               <xpath expr="//field[@name='qty_done']" position="after">
+                    <field name="value" string="Value"/>
+               </xpath>
+               <xpath expr="//field[@name='qty_done']" position="after">
+                    <field name="qty_onhand" string="Quantity"/>
+               </xpath>
+            </field>
+        </record>
+        
+        <record id="stock_move_line_view_search" model="ir.ui.view">
+            <field name="name">stock.move.line.search</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.stock_move_line_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="qty_onhand" string="On Hand"/>
+                </xpath>
+            </field>
+        </record>        
+        
+    </data>
+</odoo>
