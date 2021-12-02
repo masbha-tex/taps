@@ -25,7 +25,7 @@
     </record>
 
     <record id="action_window_stock_forecast_report_jsi" model="ir.actions.act_window">
-        <field name="name">Bridge Report</field>
+        <field name="name">RM Stock Report</field>
         <field name="res_model">stock.forecast.report</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_form_stock_forecast_report_jsi"/>

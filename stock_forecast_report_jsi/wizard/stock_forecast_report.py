@@ -6,8 +6,9 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tools.misc import xlsxwriter
 from odoo.tools.float_utils import float_round as round
 from odoo.tools import format_date
+from datetime import date, datetime, time, timedelta
 from odoo import fields, models
-
+import math
 _logger = logging.getLogger(__name__)
 
 
@@ -37,22 +38,22 @@ class StockForecastReport(models.TransientModel):
         return val
     
     def getreceive_qty(self,productid,from_date,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('quantity', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date)])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('quantity', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%')])
         qty = sum(stock_details.mapped('quantity'))
         return qty
     
     def getreceive_val(self,productid,from_date,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('value', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date)])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('value', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%')])
         val = sum(stock_details.mapped('value'))
         return val
     
     def getissue_qty(self,productid,from_date,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('quantity', '<', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date)])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('quantity', '<', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%')])
         qty = sum(stock_details.mapped('quantity'))
         return qty
     
     def getissue_val(self,productid,from_date,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('value', '<', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date)])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('value', '<', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%')])
         val = sum(stock_details.mapped('value'))
         return val
 
@@ -65,14 +66,24 @@ class StockForecastReport(models.TransientModel):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', to_date)])
         val = sum(stock_details.mapped('value'))
         return val
-    
+    def float_to_time(self,hours):
+        if hours == 24.0:
+            return time.max
+        fractional, integral = math.modf(hours)
+        return time(int(integral), int(round(60 * fractional, precision_digits=0)), 0)    
     
     def print_date_wise_stock_register(self):
         Move = self.env['stock.valuation.layer']
         Product = self.env['product.product'].search([('default_code', 'like', 'R_')])
         start_time = fields.datetime.now()
-        from_date = self.from_date
-        to_date = self.to_date
+        f_date = self.from_date
+        t_date = self.to_date
+        hour_from = 0.0
+        hour_to = 23.98
+        combine = datetime.combine
+        from_date = combine(f_date, self.float_to_time(hour_from))
+        to_date = combine(t_date, self.float_to_time(hour_to))
+        #raise UserError((from_date,to_date))
         if not (self.product_ids or self.categ_ids):
             products = Product.search([('type', '=', 'product'),('default_code', 'like', 'R_')])
         elif self.report_by == 'by_items':
