@@ -17,29 +17,35 @@ class HrContract(models.Model):
     _inherit = 'hr.contract'
     
     emp_id = fields.Char(related = 'employee_id.emp_id', related_sudo=False, string="Emp ID", readonly=True, store=True)
-    #category = fields.Many2many(related = 'employee_id.category_ids', related_sudo=False, string='Category', store=True)
     service_length = fields.Char(related = 'employee_id.service_length', related_sudo=False, string='Service Length', store=True)
     
-    basic = fields.Monetary('Basic', readonly=True, store=True, tracking=True, help="Employee's monthly basic wage.")
-    houseRent = fields.Monetary('House Rent', readonly=True, store=True, tracking=True, help="Employee's monthly HRA wage.")
-    medical = fields.Monetary('Medical', readonly=True, store=True, tracking=True, help="Employee's monthly medical wage.")
+    basic = fields.Monetary('Basic', readonly=True, store=True, tracking=True,compute='_compute_salary_breakdown',
+                            help="Employee's monthly basic wage.")
+    houseRent = fields.Monetary('House Rent', readonly=True, store=True, tracking=True,
+                                compute='_compute_salary_breakdown',help="Employee's monthly HRA wage.")
+    medical = fields.Monetary('Medical', readonly=True, store=True, tracking=True, 
+                              compute='_compute_salary_breakdown',help="Employee's monthly medical wage.")
+    
+    category = fields.Selection([('staff', 'Staff'),('worker', 'Worker'),], string='Employee Category', tracking=True, 
+                                 help='Employee Category of the contract', store=True, 
+                                default='staff', copy=False, required=True)
     
     """e_ for Earnings head & d_ for Deduction head"""
-    
-    e_convence = fields.Boolean(string="Convence Allowance", store=True, tracking=True, help="Employee's monthly Convence Allowance.")
+    e_convence = fields.Boolean(string="Convence Allowance", store=True, tracking=True, 
+                                help="Employee's monthly Convence Allowance.")
     e_food = fields.Boolean(string="Food Allowance", store=True, tracking=True, help="Employee's monthly Food Allowance.")
     e_tiffin = fields.Boolean(string="Tiffin Allowance", store=True, tracking=True, help="Employee's monthly Tiffin Allowance.")
-    e_strenghtSnacks = fields.Boolean(string="Strenght Snacks Allowance", store=True, tracking=True, help="Employee's monthly Strenght Snacks Allowance.")
+    e_strenghtSnacks = fields.Boolean(string="Strenght Snacks Allowance", store=True, tracking=True, 
+                                      help="Employee's monthly Strenght Snacks Allowance.")
     e_attBonus = fields.Monetary(string="Att Bonus", store=True, tracking=True, help="Employee's monthly Attendance Bonus.")
-    e_mobileInternet = fields.Monetary(string="Mobile & Internet Allowance", store=True, tracking=True, help="Employee's monthly Mobile & Internet Allowance.")
     e_car = fields.Monetary(string='Car Allowance', store=True, tracking=True, help="Employee's monthly Car Allowance.")
     e_others = fields.Monetary(string='Others Allowance', store=True, tracking=True, help="Employee's monthly Others Allowance.")
-    e_incentive = fields.Monetary(string='Incentive Allowance', store=True, tracking=True, help="Employee's monthly Incentive Allowance.")
-    
+   
     d_ait = fields.Monetary(string='AIT Deduction', store=True, tracking=True, help="Employee's monthly AIT Deduction.")
     d_others = fields.Monetary(string='Others Deduction', store=True, tracking=True, help="Employee's monthly Others Deduction.")
-    
-    isActivePF = fields.Boolean(string="PF Active", store=True, tracking=True, help="Employee's monthly PF Contribution is Active.")
+   
+    isActivePF = fields.Boolean(string="PF Active", store=True, tracking=True, 
+                                help="Employee's monthly PF Contribution is Active.")
     pf_activationDate = fields.Date('PF Active Date', store=True, tracking=True, help="Activation Date of the PF Contribution.")
 
     def float_to_time(self,hours):
@@ -52,6 +58,23 @@ class HrContract(models.Model):
     def _compute_employee_contract_ref(self):
         for contract in self.filtered('employee_id'):
             contract.name = contract.employee_id.emp_id
+            
+    @api.depends('category','wage')
+    def _compute_salary_breakdown(self):
+        self.basic = '0.0'
+        self.houseRent = '0.0'
+        self.medical = '0.0'
+        for contract in self:
+            if contract.category == 'staff':
+                contract.basic = contract.wage*0.60
+                contract.houseRent = (contract.wage*0.30)
+                contract.medical = (contract.wage*0.10)
+                #return {'domain':{'adjustment_type': [('is_deduction','=',False)]}}
+            if contract.category == 'worker':
+                contract.basic = (contract.wage-1450)/1.5
+                contract.houseRent = ((contract.wage-1450)/1.5)*0.50
+                contract.medical = 1450.00
+                #return {'domain':{'adjustment_type': [('is_deduction','=',True)]}}            
     
     def _get_default_work_entry_type(self):
         return self.env.ref('hr_work_entry.work_entry_type_attendance', raise_if_not_found=False)  
@@ -107,7 +130,7 @@ class HrContract(models.Model):
         ]
         result = defaultdict(lambda: [])
         tz_dates = {}
-        
+        combine = datetime.combine
         for leave in self.env['resource.calendar.leaves'].search(leave_domain):
             addval = True
             for interval in attendances:
@@ -131,6 +154,12 @@ class HrContract(models.Model):
                         tz_dates[(tz, end_dt)] = end
                     dt0 = string_to_datetime(leave.date_from).astimezone(tz)
                     dt1 = string_to_datetime(leave.date_to).astimezone(tz)
+                    
+                    hour_from = 9.0
+                    hour_to = 18.0
+                    
+                    dt0 = tz.localize(combine(dt0.date(), self.float_to_time(hour_from)))
+                    dt1 = tz.localize(combine(dt1.date(), self.float_to_time(hour_to)))
                 
                     #dt0 = tz.localize(combine(attendance.attDate, self.float_to_time(hour_from)))
                 
@@ -158,8 +187,17 @@ class HrContract(models.Model):
         att_contract_vals = []        
         for interval in real_attendances:
             default_work_entry_type = self._get_default_work_entry_type()
-            if interval[2].inFlag in ('F','A'):
+            if interval[2].inFlag in ('F','A','X'):
                 work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', interval[2].inFlag)])
+                default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
+            if interval[2].otHours>=2:
+                work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', 'T')])
+                default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
+            if interval[2].inFlag in ('L'):
+                work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', 'L')])
+                default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
+            if interval[2].outFlag in ('EO'):
+                work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', 'EO')])
                 default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
                 
             work_entry_type_id = default_work_entry_type
@@ -336,41 +374,3 @@ class HrContract(models.Model):
                     #   raise UserError((day,(max(cache_dates[(tz, start_dt)], dt0), min(cache_dates[(tz, end_dt)], dt1), attendance)))
                 result[resource.id].append((max(cache_dates[(tz, start_dt)], dt0), min(cache_dates[(tz, end_dt)], dt1), attendance))
         return {r.id: Intervals(result[r.id]) for r in resources_list}
-
-
-    
-    
-class HrPayslipsss(models.Model):
-    _inherit = 'hr.payslip'
-    _description = 'Pay Slip'
-    
-    
-    def _get_worked_day_lines_values(self, domain=None):
-        self.ensure_one()
-        res = []
-        att_record = self.env['hr.attendance'].search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', 'in', ('P','L','HP','FP','CO'))])
-        valdays = len(att_record)
-        valhours = sum(att_record.mapped('worked_hours'))
-        hours_per_day = self._get_worked_day_lines_hours_per_day()
-        work_hours = self.contract_id._get_work_hours(self.date_from, self.date_to, domain=domain)
-        work_hours_ordered = sorted(work_hours.items(), key=lambda x: x[1])
-        biggest_work = work_hours_ordered[-1][0] if work_hours_ordered else 0
-        add_days_rounding = 0
-        for work_entry_type_id, hours in work_hours_ordered:
-            work_entry_type = self.env['hr.work.entry.type'].browse(work_entry_type_id)
-            days = round(hours / hours_per_day, 5) if hours_per_day else 0
-            if work_entry_type_id == biggest_work:
-                days += add_days_rounding
-            day_rounded = self._round_days(work_entry_type, days)
-            add_days_rounding += (days - day_rounded)
-            if (work_entry_type_id==1):
-                day_rounded=valdays
-                hours=valhours
-            attendance_line = {
-                'sequence': work_entry_type.sequence,
-                'work_entry_type_id': work_entry_type_id,
-                'number_of_days': day_rounded,
-                'number_of_hours': hours,
-            }
-            res.append(attendance_line)
-        return res

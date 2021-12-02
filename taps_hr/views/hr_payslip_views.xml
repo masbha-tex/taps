@@ -12,6 +12,21 @@
                 </div>
                 <field name="otRate"/>
             </xpath>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='worked_days_input']/field[@name='worked_days_line_ids']/tree[1]/field[@name='name']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='worked_days_input']/field[@name='worked_days_line_ids']/tree[1]/field[@name='number_of_days']" position="attributes">
+                <attribute name="sum"/>
+            </xpath>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='worked_days_input']/field[@name='worked_days_line_ids']/tree[1]/field[@name='number_of_hours']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='worked_days_input']/field[@name='worked_days_line_ids']/tree[1]/field[@name='amount']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>

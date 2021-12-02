@@ -16,6 +16,9 @@
               <xpath expr="//field[@name='date_end']" position="after">
                   <field name="service_length"/>
               </xpath>
+              <xpath expr="//field[@name='service_length']" position="after">
+                  <field name="category"/>
+              </xpath>
               <xpath expr="//field[@name='date_start']" position="attributes">
                   <attribute name="string">Joining Date</attribute>
               </xpath>
@@ -77,10 +80,8 @@
                           <field name="e_tiffin"/>
                           <field name="e_strenghtSnacks"/>
                           <field name="e_attBonus"/>
-                          <field name="e_mobileInternet"/>
                           <field name="e_car"/>
                           <field name="e_others"/>
-                          <field name="e_incentive"/>
                       </group>
                       <group name="group_deduction_right">
                           <field name="d_ait"/>

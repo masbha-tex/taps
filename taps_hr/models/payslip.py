@@ -28,7 +28,7 @@ class HrPayslipsss(models.Model):
             if emp_list.isOverTime is True:
                 #raise UserError((contract_id.wage))
                 #payslip.otRate = round((((payslip._get_salary_line_total('BASIC'))/208)*2),2)
-                payslip.otRate = round((((payslip._get_contract_wage()*0.60)/208)*2),2)
+                payslip.otRate = round(((((payslip._get_contract_wage()-1450)/1.5)/208)*2),2)
                 payslip.otHours = sum(att_record.mapped('otHours'))
             else:
                 payslip.otRate = 0.0
@@ -79,9 +79,23 @@ class HrPayslipsss(models.Model):
     def _get_worked_day_lines_values(self, domain=None):
         self.ensure_one()
         res = []
-        att_record = self.env['hr.attendance'].search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', 'in', ('P','L','HP','FP','CO'))])
-        valdays = len(att_record)
-        valhours = sum(att_record.mapped('worked_hours'))
+        att_obj = self.env['hr.attendance']
+        present_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', 'in', ('P','L','HP','FP','CO'))])
+        p_days = len(present_record)
+        p_hours = sum(present_record.mapped('worked_hours'))
+        
+        late_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'L')])
+        l_days = len(late_record)
+        l_hours = sum(late_record.mapped('worked_hours'))
+        
+        early_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('outFlag', '=', 'EO')])
+        e_days = len(early_record)
+        e_hours = sum(early_record.mapped('worked_hours'))
+        
+        tiffin_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('otHours', '>=', 2.0),('inFlag', 'not in', ('HP','FP'))])
+        t_days = len(tiffin_record)
+        t_hours = sum(tiffin_record.mapped('worked_hours'))
+        
         hours_per_day = self._get_worked_day_lines_hours_per_day()
         work_hours = self.contract_id._get_work_hours(self.date_from, self.date_to, domain=domain)
         work_hours_ordered = sorted(work_hours.items(), key=lambda x: x[1])
@@ -94,9 +108,19 @@ class HrPayslipsss(models.Model):
                 days += add_days_rounding
             day_rounded = self._round_days(work_entry_type, days)
             add_days_rounding += (days - day_rounded)
-            if (work_entry_type_id==1):
-                day_rounded=valdays
-                hours=valhours
+            #raise UserError((work_entry_type_id.code))
+            if (work_entry_type.code=='P'):
+                day_rounded=p_days
+                hours=p_hours
+            if (work_entry_type.code=='L'):
+                day_rounded=l_days
+                hours=l_hours
+            if (work_entry_type.code=='EO'):
+                day_rounded=e_days
+                hours=e_hours
+            if (work_entry_type.code=='T'):
+                day_rounded=t_days
+                hours=t_hours
             attendance_line = {
                 'sequence': work_entry_type.sequence,
                 'work_entry_type_id': work_entry_type_id,
@@ -107,26 +131,36 @@ class HrPayslipsss(models.Model):
         return res
     
     
+    def _input_compute_sheet(self, payslip_id, contract_id, employee_id, date_start, date_stop):
+        others_adjust = self.env['hr.payslip.input']
+        input = self.env['salary.adjustment'].search([('salary_month', '<=', date_stop), ('salary_month', '>=', date_start)])
+        for line in input:
+            input_entries = self.env['salary.adjustment.line'].search([('adjustment_id', '=', line.id),
+                                                                       ('employee_id', '=', int(employee_id))])
+            if input_entries:
+                others_adjust.create({'payslip_id': payslip_id,'sequence':10,'input_type_id': int(input_entries.adjustment_type),
+                                      'contract_id':contract_id,
+                                      'amount': input_entries.amount})
     def action_refresh_from_work_entries(self):
         # Refresh the whole payslip in case the HR has modified some work entries
         # after the payslip generation
         self.ensure_one()
         self._onchange_employee()
         self.compute_sheet()
-        #self.re_compute_sheet()
         
-    def re_compute_sheet(self):
+    def compute_sheet(self):
         # Refresh the whole payslip in case the HR has entry some adjustment entries
         # after the payslip generation
         payslips = self.filtered(lambda slip: slip.state in ['draft', 'verify'])
         # delete old payslip lines 
-        raise UserError((payslips))
         payslips.line_ids.unlink()
-        payslips.input_line_ids.unlink()
+        #payslips.input_line_ids.unlink()
         for payslip in payslips:
             number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
             lines = [(0, 0, line) for line in payslip._get_payslip_lines()]
             payslip.write({'line_ids': lines, 'number': number, 'state': 'verify', 'compute_date': fields.Date.today()})
+            payslips.input_line_ids.unlink()
+            self._input_compute_sheet(payslip.id, payslip.contract_id, payslip.employee_id, payslip.date_from, payslip.date_to)
         return True
 
 class HrPayslipInputType(models.Model):
@@ -134,11 +168,3 @@ class HrPayslipInputType(models.Model):
     _description = 'Payslip Input Type'
     
     is_deduction = fields.Boolean(string="is Deduct", store=True)
-    
-    
-class HrPayslipInput(models.Model):
-    _inherit = 'hr.payslip.input'
-    _description = 'Payslip Input'
-    _order = 'payslip_id, sequence'
-
-
