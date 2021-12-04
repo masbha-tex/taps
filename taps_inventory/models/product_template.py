@@ -7,6 +7,7 @@ class IncludeCateTypeInPT(models.Model):
     
     pur_description = fields.Selection([
         ('spares', 'Spares'),
+        ('raw', 'Raw')
     ], string='PUR Description', store=False, readonly=False, copy=True)
     #description_purchase = fields.Text('Purchase Description', related='pur_description', translate=True)
     
