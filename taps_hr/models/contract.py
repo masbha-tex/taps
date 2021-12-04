@@ -22,13 +22,12 @@ class HrContract(models.Model):
     basic = fields.Monetary('Basic', readonly=True, store=True, tracking=True,compute='_compute_salary_breakdown',
                             help="Employee's monthly basic wage.")
     houseRent = fields.Monetary('House Rent', readonly=True, store=True, tracking=True,
-                                compute='_compute_salary_breakdown',help="Employee's monthly HRA wage.")
+                                compute='_compute_salary_breakdown',help="Employee's monthly House Rent wage.")
     medical = fields.Monetary('Medical', readonly=True, store=True, tracking=True, 
                               compute='_compute_salary_breakdown',help="Employee's monthly medical wage.")
     
     category = fields.Selection([('staff', 'Staff'),('worker', 'Worker'),], string='Employee Category', tracking=True, 
-                                 help='Employee Category of the contract', store=True, 
-                                default='staff', copy=False, required=True)
+                                 help='Employee Category of the contract', store=True, required=True)
     
     """e_ for Earnings head & d_ for Deduction head"""
     e_convence = fields.Boolean(string="Convence Allowance", store=True, tracking=True, 
