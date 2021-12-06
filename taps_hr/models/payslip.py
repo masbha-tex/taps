@@ -92,6 +92,18 @@ class HrPayslipsss(models.Model):
         e_days = len(early_record)
         e_hours = sum(early_record.mapped('worked_hours'))
         
+        co_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'CO')])
+        c_days = len(co_record)
+        c_hours = sum(co_record.mapped('worked_hours'))
+        
+        aj_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'AJ')])
+        a_days = len(aj_record)
+        a_hours = sum(aj_record.mapped('worked_hours'))
+        
+        od_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'OD')])
+        o_days = len(od_record)
+        o_hours = sum(od_record.mapped('worked_hours'))        
+        
         tiffin_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('otHours', '>=', 2.0),('inFlag', 'not in', ('HP','FP'))])
         t_days = len(tiffin_record)
         t_hours = sum(tiffin_record.mapped('worked_hours'))
@@ -118,6 +130,15 @@ class HrPayslipsss(models.Model):
             if (work_entry_type.code=='EO'):
                 day_rounded=e_days
                 hours=e_hours
+            if (work_entry_type.code=='CO'):
+                day_rounded=c_days
+                hours=c_hours
+            if (work_entry_type.code=='AJ'):
+                day_rounded=a_days
+                hours=a_hours
+            if (work_entry_type.code=='OD'):
+                day_rounded=o_days
+                hours=o_hours                
             if (work_entry_type.code=='T'):
                 day_rounded=t_days
                 hours=t_hours
