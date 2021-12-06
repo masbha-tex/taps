@@ -182,7 +182,7 @@ class StockForecastReport(models.TransientModel):
         worksheet = workbook.add_worksheet()
 
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
-        worksheet.merge_range('C2:F2', 'Datewise Stock Register', report_title_style)
+        worksheet.merge_range('C2:F2', 'RM Stock Report', report_title_style)
 
         report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14})
         worksheet.write(3, 3, ('From %s to %s' % (format_date(self.env, from_date), format_date(self.env, to_date))), report_small_title_style)
