@@ -149,14 +149,15 @@ class HrAttendance(models.Model):
         #myfromtime = datetime.strptime('00:00:00','%H:%M:%S').time()
         #mytotime = datetime.strptime('00:00:00','%H:%M:%S').time()
         #raise UserError((att_date,int(att_date.strftime("%w"))))
+        
         if len(get_att_data) == 1:
             if not inHour and not outHour:
                 if (int(att_date.strftime("%w")))==5:
                     get_att_data[-1].write({'inFlag':'F','outFlag':'F','inHour' : False,'outHour' : False})
                 elif len(holiday_record) == 1:
-                    get_att_data[-1].write({'inFlag':holiday_type.code,'outFlag':holiday_type.code})
+                    get_att_data[-1].write({'inFlag':holiday_type.code,'outFlag':holiday_type.code,'inHour' : False,'outHour' : False})
                 elif len(lv_record) == 1:
-                    get_att_data[-1].write({'inFlag':lv_type.code,'outFlag':lv_type.code})
+                    get_att_data[-1].write({'inFlag':lv_type.code,'outFlag':lv_type.code,'inHour' : False,'outHour' : False})
                 else:
                     get_att_data[-1].write({'inFlag':'A','outFlag':'A','inHour' : False,'outHour' : False})
             elif inHour and outHour:
