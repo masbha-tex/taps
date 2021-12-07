@@ -43,8 +43,16 @@ class StockForecastReport(models.TransientModel):
         return qty
     
     def getreceive_val(self,productid,from_date,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('value', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%')])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('value', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%'),('description','not like','%LC/%')])
         val = sum(stock_details.mapped('value'))
+        landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '>=', from_date.date()),('date', '<=', to_date.date())])
+        for rec in landedcost:
+            lc_details = self.env['stock.valuation.adjustment.lines'].search([('product_id', '=', productid),('cost_id', '=', rec.id)])
+            raise UserError((productid,rec.id))
+            lc_val = 0
+            if len(lc_details)>=1:
+                lc_val = sum(lc_details.mapped('additional_landed_cost'))
+                val = val + lc_val
         return val
     
     def getissue_qty(self,productid,from_date,to_date):
