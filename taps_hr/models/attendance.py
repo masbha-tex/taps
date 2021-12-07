@@ -1,9 +1,10 @@
 import pytz
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 from datetime import timedelta
 import datetime
 from odoo.tools import format_datetime
-from odoo.exceptions import UserError, ValidationError
+
 
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
@@ -33,7 +34,7 @@ class HrAttendance(models.Model):
         
         if activeemplist.isOverTime is True:
             #if outTime > 0.0 and worked_hours > (outTime - inTime):
-            if get_att_data.outHour > outTime:
+            if get_att_data.outHour > outTime and worked_hours > 4.0:
                 if inTime > inHour:
                     #delta = ((worked_hours - (inTime - inHour)) - (outTime - inTime))
                     if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
@@ -181,7 +182,7 @@ class HrAttendance(models.Model):
                             get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
                     else:
                         get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
-                elif lv_type.code == 'CO' and len(lv_record) == 1:
+                elif lv_type.code == 'CO':
                     get_att_data[-1].write({'inFlag':'CO','inHour' : inHour})
                     if office_out_time>outHour:
                         if mytotime>=office_out_time:
@@ -212,7 +213,7 @@ class HrAttendance(models.Model):
                     get_att_data[-1].write({'inFlag':'FP','inHour' : inHour,'outFlag':'PO','outHour' : False})
                 elif len(holiday_record) == 1:
                     get_att_data[-1].write({'inFlag':'HP','inHour' : inHour,'outFlag':'PO','outHour' : False})
-                elif lv_type.code == 'CO' and len(lv_record) == 1:
+                elif lv_type.code == 'CO':
                     get_att_data[-1].write({'inFlag':'CO','inHour' : inHour,'outFlag':'PO','outHour' : False})                    
                 elif office_in_time>=inHour:
                     get_att_data[-1].write({'inFlag':'P','inHour' : inHour,'outFlag':'PO','outHour' : False})
@@ -220,18 +221,18 @@ class HrAttendance(models.Model):
                     get_att_data[-1].write({'inFlag':'L','inHour' : inHour,'outFlag':'PO','outHour' : False})
             elif not inHour and outHour:
                 if (int(att_date.strftime("%w")))==5:
-                    get_att_data[-1].write({'outFlag':'FP','outHour' : outHour})
+                    get_att_data[-1].write({'outFlag':'FP','outHour' : outHour,'inHour' : False})
                 elif len(holiday_record) == 1:
-                    get_att_data[-1].write({'outFlag':'HP','outHour' : outHour})
-                elif lv_type.code == 'CO' and len(lv_record) == 1:
-                    get_att_data[-1].write({'outFlag':'CO','outHour' : outHour})                    
+                    get_att_data[-1].write({'outFlag':'HP','outHour' : outHour,'inHour' : False})
+                elif lv_type.code == 'CO':
+                    get_att_data[-1].write({'outFlag':'CO','outHour' : outHour,'inHour' : False})                    
                 elif office_out_time>outHour:
                     if mytotime>=office_out_time:
-                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour,'inHour' : False})
                     elif myfromtime<=outHour and mytotime>=outHour:
-                        get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                        get_att_data[-1].write({'outFlag':'TO','outHour' : outHour,'inHour' : False})
                     else:
-                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour,'inHour' : False})
                 else:
                     get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
 
@@ -276,7 +277,7 @@ class HrAttendance(models.Model):
                 ('id', '!=', attendance.id),
             ], order='check_in desc', limit=1)
             if last_attendance_before_check_out and last_attendance_before_check_in != last_attendance_before_check_out:
-                raise exceptions.ValidationError(_("Cannot create new attendance record for %(empl_name)s, the employee was already checked in on %(datetime)s") % {
+                raise ValidationError(_("Cannot create new attendance record for %(empl_name)s, the employee was already checked in on %(datetime)s") % {
                     'empl_name': attendance.employee_id.name,
                     'datetime': format_datetime(self.env, last_attendance_before_check_out.check_in, dt_format=False),
                 })
