@@ -115,18 +115,17 @@ class HrAttendance(models.Model):
             get_att_date = att_obj.search([('employee_id', '=', employeelist.id), ('attDate', '=', dateGenerate)])
             if len(get_att_date) == 1:
                 get_att_date[-1].write({'attDate': dateGenerate,
-                                        'inFlag':'A',
-                                        'outFlag':'A',
                                         'inTime': trans_data.inTime,
                                         'outTime': trans_data.outTime})
+                self.generateAttFlag(get_att_date.empID,get_att_date.attDate,get_att_date.inTime,get_att_date.inHour,
+                                     get_att_date.outTime,get_att_date.outHour)
             else:
                 att_obj.create({'attDate': dateGenerate,
-                                        'employee_id': employeelist.id,
-                                        'inFlag':'A',
-                                        'outFlag':'A',
-                                        'inTime': trans_data.inTime,
-                                        'outTime': trans_data.outTime})
-            self.generateAttFlag(att_obj.empID,dateGenerate,att_obj.inTime,att_obj.inHour,att_obj.outTime,att_obj.outHour)
+                                'employee_id': employeelist.id,
+                                'inTime': trans_data.inTime,
+                                'outTime': trans_data.outTime})
+                self.generateAttFlag(att_obj.empID,dateGenerate,att_obj.inTime,att_obj.inHour,att_obj.outTime,att_obj.outHour)
+            
                     
     def generateAttFlag(self,emp_id,att_date,office_in_time,in_time,office_out_time,out_time):
         
@@ -172,11 +171,13 @@ class HrAttendance(models.Model):
         endd = (t_date - st_date).days
         attdate = t_date - timedelta(days=1)
         get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])
-        
-        if len(get_pre_att_data) == 0:
-            for d in range(0, endd):
-                get_pre_att_data.create({'attDate':st_date + timedelta(days=d), 
-                                        'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
+
+        if len(get_att_data) == 1:
+            if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
+                if len(get_pre_att_data) == 0:
+                    for d in range(0, endd):
+                        get_pre_att_data.create({'attDate':st_date + timedelta(days=d), 
+                                                 'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
         if len(get_att_data) == 1:
             if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
                 get_att_data[-1].write({'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})            
