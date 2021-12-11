@@ -107,44 +107,74 @@ class HrPayslipsss(models.Model):
         tiffin_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('otHours', '>=', 2.0),('inFlag', 'not in', ('HP','FP'))])
         t_days = len(tiffin_record)
         t_hours = sum(tiffin_record.mapped('worked_hours'))
-        
-        hours_per_day = self._get_worked_day_lines_hours_per_day()
-        work_hours = self.contract_id._get_work_hours(self.date_from, self.date_to, domain=domain)
-        work_hours_ordered = sorted(work_hours.items(), key=lambda x: x[1])
-        biggest_work = work_hours_ordered[-1][0] if work_hours_ordered else 0
-        add_days_rounding = 0
-        for work_entry_type_id, hours in work_hours_ordered:
-            work_entry_type = self.env['hr.work.entry.type'].browse(work_entry_type_id)
-            days = round(hours / hours_per_day, 5) if hours_per_day else 0
-            if work_entry_type_id == biggest_work:
-                days += add_days_rounding
-            day_rounded = self._round_days(work_entry_type, days)
-            add_days_rounding += (days - day_rounded)
-            #raise UserError((work_entry_type_id.code))
-            if (work_entry_type.code=='P'):
-                day_rounded=p_days
-                hours=p_hours
-            if (work_entry_type.code=='L'):
-                day_rounded=l_days
-                hours=l_hours
-            if (work_entry_type.code=='EO'):
-                day_rounded=e_days
-                hours=e_hours
-            if (work_entry_type.code=='CO'):
-                day_rounded=c_days
-                hours=c_hours
-            if (work_entry_type.code=='AJ'):
-                day_rounded=a_days
-                hours=a_hours
-            if (work_entry_type.code=='OD'):
-                day_rounded=o_days
-                hours=o_hours                
-            if (work_entry_type.code=='T'):
-                day_rounded=t_days
-                hours=t_hours
+
+
+        if p_days>0:#'P'
+            day_rounded=p_days
+            hours=p_hours
             attendance_line = {
-                'sequence': work_entry_type.sequence,
-                'work_entry_type_id': work_entry_type_id,
+                'sequence': 1,
+                'work_entry_type_id': 1,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if l_days>0:#L
+            day_rounded=l_days
+            hours=l_hours
+            attendance_line = {
+                'sequence': 14,
+                'work_entry_type_id': 118,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if e_days>0:#EO
+            day_rounded=e_days
+            hours=e_hours
+            attendance_line = {
+                'sequence': 17,
+                'work_entry_type_id': 121,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if c_days>0:#CO
+            day_rounded=c_days
+            hours=c_hours
+            attendance_line = {
+                'sequence': 8,
+                'work_entry_type_id': 119,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if a_days>0:#AJ
+            day_rounded=a_days
+            hours=a_hours
+            attendance_line = {
+                'sequence': 7,
+                'work_entry_type_id': 107,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if o_days>0:#OD
+            day_rounded=o_days
+            hours=o_hours
+            attendance_line = {
+                'sequence': 9,
+                'work_entry_type_id': 112,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if t_days>0:#T
+            day_rounded=t_days
+            hours=t_hours
+            attendance_line = {
+                'sequence': 1,
+                'work_entry_type_id': 116,
                 'number_of_days': day_rounded,
                 'number_of_hours': hours,
             }

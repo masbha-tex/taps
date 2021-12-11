@@ -4,7 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 from datetime import timedelta
 import datetime
 from odoo.tools import format_datetime
-
+from dateutil.relativedelta import relativedelta
 
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
@@ -126,6 +126,7 @@ class HrAttendance(models.Model):
                                         'outFlag':'A',
                                         'inTime': trans_data.inTime,
                                         'outTime': trans_data.outTime})
+            self.generateAttFlag(att_obj.empID,dateGenerate,att_obj.inTime,att_obj.inHour,att_obj.outTime,att_obj.outHour)
                     
     def generateAttFlag(self,emp_id,att_date,office_in_time,in_time,office_out_time,out_time):
         
@@ -142,7 +143,7 @@ class HrAttendance(models.Model):
         holiday_type = self.env['hr.work.entry.type'].search([('id', '=', int(holiday_record.work_entry_type_id))])
         #,(att_date, 'between','request_date_from and request_date_to')
         #lv_emp = lv_record.filtered(lambda lv: att_date>=lv.request_date_from and att_date<=lv.request_date_to)
-        #raise UserError((att_date,lv_record))
+        #raise UserError((att_date,get_att_data.employee_id.joining_date))
         def get_sec(time_str):
             h, m= time_str.split(':')
             return int(h) * 3600 + int(m) * 60
@@ -160,13 +161,28 @@ class HrAttendance(models.Model):
         
         myfromtime = 0.0
         mytotime = 7.0
-        #office_out_time = get_sec(office_out_time) / 3600
-        #myfromtime = datetime.strptime('00:00:00','%H:%M:%S').time()
-        #mytotime = datetime.strptime('00:00:00','%H:%M:%S').time()
-        #raise UserError((att_date,int(att_date.strftime("%w"))))
+      
+        t_date = att_date      
+        st_date = t_date
+        delta = t_date.replace(day=26).day - t_date.day
+        if delta<=0:
+            st_date = t_date.replace(day=26)
+        else:
+            st_date = t_date.replace(day=26) - relativedelta(months = 1)
+        endd = (t_date - st_date).days
+        attdate = t_date - timedelta(days=1)
+        get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])
         
+        if len(get_pre_att_data) == 0:
+            for d in range(0, endd):
+                get_pre_att_data.create({'attDate':st_date + timedelta(days=d), 
+                                        'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
         if len(get_att_data) == 1:
-            if not inHour and not outHour:
+            if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
+                get_att_data[-1].write({'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})            
+            elif get_att_data.employee_id.resign_date and get_att_data.employee_id.resign_date <= att_date:
+                get_att_data[-1].write({'inFlag':'R','outFlag':'R','inHour' : False,'outHour' : False})
+            elif not inHour and not outHour:
                 if (int(att_date.strftime("%w")))==5:
                     get_att_data[-1].write({'inFlag':'F','outFlag':'F','inHour' : False,'outHour' : False})
                 if len(holiday_record) == 1:
