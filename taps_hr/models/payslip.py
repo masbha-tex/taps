@@ -80,10 +80,28 @@ class HrPayslipsss(models.Model):
         self.ensure_one()
         res = []
         att_obj = self.env['hr.attendance']
+
+        
+        basic_absent_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', ('A'))])
+        ba_days = len(basic_absent_record)
+        ba_hours = sum(basic_absent_record.mapped('worked_hours'))
+        
+        gross_absent_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', ('X'))])
+        ga_days = len(gross_absent_record)
+        ga_hours = sum(gross_absent_record.mapped('worked_hours'))
+
+        friday_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'F')])
+        f_days = len(friday_record)
+        f_hours = sum(friday_record.mapped('worked_hours')) 
+        
+        holiday_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'H')])
+        h_days = len(holiday_record)
+        h_hours = sum(holiday_record.mapped('worked_hours'))        
+        
         present_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', 'in', ('P','L','HP','FP','CO'))])
         p_days = len(present_record)
         p_hours = sum(present_record.mapped('worked_hours'))
-        
+                
         late_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'L')])
         l_days = len(late_record)
         l_hours = sum(late_record.mapped('worked_hours'))
@@ -108,7 +126,46 @@ class HrPayslipsss(models.Model):
         t_days = len(tiffin_record)
         t_hours = sum(tiffin_record.mapped('worked_hours'))
 
-
+        if ba_days>0:#'A'
+            day_rounded=ba_days
+            hours=ba_hours
+            attendance_line = {
+                'sequence': 13,
+                'work_entry_type_id': 115,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if ga_days>0:#'X'
+            day_rounded=ga_days
+            hours=ga_hours
+            attendance_line = {
+                'sequence': 12,
+                'work_entry_type_id': 117,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)            
+        if f_days>0:#'F'
+            day_rounded=f_days
+            hours=f_hours
+            attendance_line = {
+                'sequence': 11,
+                'work_entry_type_id': 114,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)            
+        if h_days>0:#'H'
+            day_rounded=h_days
+            hours=h_hours
+            attendance_line = {
+                'sequence': 10,
+                'work_entry_type_id': 113,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)            
         if p_days>0:#'P'
             day_rounded=p_days
             hours=p_hours
@@ -173,7 +230,7 @@ class HrPayslipsss(models.Model):
             day_rounded=t_days
             hours=t_hours
             attendance_line = {
-                'sequence': 1,
+                'sequence': 15,
                 'work_entry_type_id': 116,
                 'number_of_days': day_rounded,
                 'number_of_hours': hours,
