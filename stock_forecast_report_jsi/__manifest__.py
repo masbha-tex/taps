@@ -10,6 +10,7 @@
     ],
     "data": [
         "wizard/stock_forecast_report.xml",
+        "wizard/bridge_report.xml",
         "security/ir.model.access.csv",
     ],
 }
