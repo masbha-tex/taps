@@ -125,7 +125,77 @@ class HrPayslipsss(models.Model):
         tiffin_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('otHours', '>=', 2.0),('inFlag', 'not in', ('HP','FP'))])
         t_days = len(tiffin_record)
         t_hours = sum(tiffin_record.mapped('worked_hours'))
-
+        
+        cl_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'CL')])
+        cl_days = len(cl_record)
+        cl_hours = sum(cl_record.mapped('worked_hours'))
+        
+        sl_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'SL')])
+        sl_days = len(sl_record)
+        sl_hours = sum(sl_record.mapped('worked_hours'))
+        
+        el_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'EL')])
+        el_days = len(el_record)
+        el_hours = sum(el_record.mapped('worked_hours'))
+        
+        ml_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'ML')])
+        ml_days = len(ml_record)
+        ml_hours = sum(ml_record.mapped('worked_hours'))
+        
+        lw_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'LW')])
+        lw_days = len(lw_record)
+        lw_hours = sum(lw_record.mapped('worked_hours'))        
+                
+        if cl_days>0:#'CL'
+            day_rounded=cl_days
+            hours=cl_hours
+            attendance_line = {
+                'sequence': 2,
+                'work_entry_type_id': 106,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if sl_days>0:#'SL'
+            day_rounded=sl_days
+            hours=sl_hours
+            attendance_line = {
+                'sequence': 3,
+                'work_entry_type_id': 109,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if el_days>0:#'EL'
+            day_rounded=el_days
+            hours=el_hours
+            attendance_line = {
+                'sequence': 4,
+                'work_entry_type_id': 110,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if ml_days>0:#'ML'
+            day_rounded=ml_days
+            hours=ml_hours
+            attendance_line = {
+                'sequence': 5,
+                'work_entry_type_id': 111,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)
+        if lw_days>0:#'LW'
+            day_rounded=lw_days
+            hours=lw_hours
+            attendance_line = {
+                'sequence': 6,
+                'work_entry_type_id': 108,
+                'number_of_days': day_rounded,
+                'number_of_hours': hours,
+            }
+            res.append(attendance_line)            
         if ba_days>0:#'A'
             day_rounded=ba_days
             hours=ba_hours

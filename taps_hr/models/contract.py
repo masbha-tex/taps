@@ -351,7 +351,7 @@ class HrContract(models.Model):
                 
                 hour_from = 0
                 hour_to = 0
-                if attendance.inFlag not in ('H','CL','SL','EL','ML','LW','OD','CO','AJ'):
+                if attendance.inFlag not in ('H','CL','SL','EL','ML','LW','OD','AJ'):
                     hour_from = 9.0
                     hour_to = 18.0
                 if (tz, attendance.attDate, hour_from) in cache_deltas:
