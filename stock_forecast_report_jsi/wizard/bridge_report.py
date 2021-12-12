@@ -128,6 +128,7 @@ class StockBridgeReport(models.TransientModel):
         m1 = fst_m_s_day.strftime("%B,%y")
         m2 = sec_m_s_day.strftime("%B,%y")
         m3 = last_m_s_day.strftime("%B,%y")
+        report_month = m1+' - '+m2+' - '+m3
         #raise UserError((fst_m_s_day,fst_m_e_day,sec_m_s_day,sec_m_e_day,last_m_s_day,last_m_e_day))
         
         #raise UserError((from_date,stock_date))
@@ -172,9 +173,14 @@ class StockBridgeReport(models.TransientModel):
                 lst_issued_qty = self.getissue_qty(product_id,last_m_s_day,last_m_e_day)
                 lst_issued_value = self.getissue_val(product_id,last_m_s_day,last_m_e_day)
                 
-                fst_issued_qty = abs(fst_issued_qty)
-                sec_issued_qty = abs(sec_issued_qty)
-                lst_issued_qty = abs(lst_issued_qty)
+                fst_issued_qty = round(abs(fst_issued_qty),2)
+                fst_issued_value = round(abs(fst_issued_value),2)
+                
+                sec_issued_qty = round(abs(sec_issued_qty),2)
+                sec_issued_value = round(abs(sec_issued_value),2)
+                
+                lst_issued_qty = round(abs(lst_issued_qty),2)
+                lst_issued_value = round(abs(lst_issued_value),2)
                 
                 avg_qty = round((fst_issued_qty+sec_issued_qty+lst_issued_qty)/3,0)
                 avg_value = round((fst_issued_value+sec_issued_value+lst_issued_value)/3,0)
@@ -182,14 +188,18 @@ class StockBridgeReport(models.TransientModel):
                 closing_qty = self.getclosing_qty(product_id,stock_date)
                 closing_value = self.getclosing_val(product_id,stock_date)
                 
-                closing_qty = abs(closing_qty)
-                closing_value = abs(closing_value)
+                closing_value = round(abs(closing_value),2)
+                if closing_qty<=0:
+                    closing_qty = 0
+                    closing_value = 0
                 
-                value_a = avg_value
-                if value_a <= 0:
-                    value_a = 1
+                closing_qty = round(abs(closing_qty),2)
                 
-                num_day = round((closing_value/value_a)*30,0)
+                qty_a = avg_qty
+                if qty_a <= 0:
+                    qty_a = 1
+                
+                num_day = round((closing_qty/qty_a)*30,0)
                 #num_day = round((closing_value/avg_value)*30)
                 #raise UserError((num_day))
                 #fst_m_s_day,fst_m_e_day,sec_m_s_day,sec_m_e_day,last_m_s_day,last_m_e_day
@@ -263,7 +273,7 @@ class StockBridgeReport(models.TransientModel):
         #m2 = sec_m_s_day.strftime("%B,%y")
         #m3 = last_m_s_day.strftime("%B,%y")
         
-        #worksheet.write(3, 3, (m1, m2, m3), report_small_title_style)
+        worksheet.write(3, 3, report_month, report_small_title_style)
         worksheet.merge_range('D6:E6', 'Closing Stock', report_title_style)
         worksheet.merge_range('F6:G6', m1, report_title_style)
         worksheet.merge_range('H6:I6', m2, report_title_style)
@@ -292,7 +302,7 @@ class StockBridgeReport(models.TransientModel):
         worksheet.write(6, 10, 'Value', column_received_style)
         worksheet.write(6, 11, 'Quantity', column_issued_style)
         worksheet.write(6, 12, 'Value', column_issued_style)
-        worksheet.write(6, 13, 'Number of Day', column_issued_style)
+        worksheet.write(6, 13, 'Number of Days', column_received_style)
         col = 0
         row=7
         
