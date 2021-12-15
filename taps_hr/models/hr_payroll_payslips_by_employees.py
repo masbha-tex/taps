@@ -34,9 +34,11 @@ class HrPayslipEmployee(models.TransientModel):
             input_entries = self.env['salary.adjustment.line'].search([('adjustment_id', '=', line.id),
                                                                        ('employee_id', '=', int(employee_id))])
             if input_entries:
-                others_adjust.create({'payslip_id': payslip_id,'sequence':10,'input_type_id': int(input_entries.adjustment_type),
+                others_adjust.create({'payslip_id': payslip_id,
+                                      'sequence':10,
+                                      'input_type_id': int(input_entries.adjustment_type),
                                       'contract_id':contract_id,
-                                      'amount': input_entries.amount})
+                                      'amount': sum(input_entries.mapped('amount'))})#input_entries.amount
             
     def compute_sheet(self):
         self.ensure_one()
@@ -106,7 +108,7 @@ class HrPayslipEmployee(models.TransientModel):
         payslips = Payslip.with_context(tracking_disable=True).create(payslip_values)
         for payslip in payslips:
             payslip._onchange_employee()
-            self._input_compute_sheet(payslip.id, payslip.contract_id, payslip.employee_id, payslip.date_from, payslip.date_to)
+            payslip._input_compute_sheet(payslip.id, payslip.contract_id, payslip.employee_id, payslip.date_from, payslip.date_to)
 
         payslips.compute_sheet()
         payslip_run.state = 'verify'

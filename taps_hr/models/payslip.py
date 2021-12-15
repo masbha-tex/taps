@@ -316,9 +316,11 @@ class HrPayslipsss(models.Model):
             input_entries = self.env['salary.adjustment.line'].search([('adjustment_id', '=', line.id),
                                                                        ('employee_id', '=', int(employee_id))])
             if input_entries:
-                others_adjust.create({'payslip_id': payslip_id,'sequence':10,'input_type_id': int(input_entries.adjustment_type),
+                others_adjust.create({'payslip_id': payslip_id,
+                                      'sequence':10,
+                                      'input_type_id': int(input_entries.adjustment_type),
                                       'contract_id':contract_id,
-                                      'amount': input_entries.amount})
+                                      'amount': sum(input_entries.mapped('amount'))})#input_entries.amount
     def action_refresh_from_work_entries(self):
         # Refresh the whole payslip in case the HR has modified some work entries
         # after the payslip generation
@@ -337,8 +339,8 @@ class HrPayslipsss(models.Model):
             number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
             lines = [(0, 0, line) for line in payslip._get_payslip_lines()]
             payslip.write({'line_ids': lines, 'number': number, 'state': 'verify', 'compute_date': fields.Date.today()})
-            payslips.input_line_ids.unlink()
-            self._input_compute_sheet(payslip.id, payslip.contract_id, payslip.employee_id, payslip.date_from, payslip.date_to)
+            payslip.input_line_ids.unlink()
+            payslip._input_compute_sheet(payslip.id, payslip.contract_id, payslip.employee_id, payslip.date_from, payslip.date_to)
         return True
 
 class HrPayslipInputType(models.Model):
