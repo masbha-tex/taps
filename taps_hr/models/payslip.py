@@ -28,7 +28,7 @@ class HrPayslipsss(models.Model):
             if emp_list.isOverTime is True:
                 #raise UserError((self.contract_id.wage))
                 #payslip.otRate = round((((payslip._get_salary_line_total('BASIC'))/208)*2),2)
-                payslip.otRate = round(((self.contract_id.basic/208)*2),2)
+                payslip.otRate = round(((payslip.contract_id.basic/208)*2),2)
                 payslip.otHours = sum(att_record.mapped('otHours'))
             else:
                 payslip.otRate = 0.0
