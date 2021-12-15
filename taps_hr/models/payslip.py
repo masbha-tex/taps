@@ -307,7 +307,45 @@ class HrPayslipsss(models.Model):
             }
             res.append(attendance_line)
         return res
-    
+    def _get_worked_day_lines(self, domain=None, check_out_of_contract=True):
+        """
+        :returns: a list of dict containing the worked days values that should be applied for the given payslip
+        """
+        res = []
+        # fill only if the contract as a working schedule linked
+        self.ensure_one()
+        contract = self.contract_id
+        if contract.resource_calendar_id:
+            res = self._get_worked_day_lines_values(domain=domain)
+            """if not check_out_of_contract:
+                return res
+
+            # If the contract doesn't cover the whole month, create
+            # worked_days lines to adapt the wage accordingly
+            out_days, out_hours = 0, 0
+            reference_calendar = self._get_out_of_contract_calendar()
+            if self.date_from < contract.date_start:
+                start = fields.Datetime.to_datetime(self.date_from)
+                stop = fields.Datetime.to_datetime(contract.date_start) + relativedelta(days=-1, hour=23, minute=59)
+                out_time = reference_calendar.get_work_duration_data(start, stop, compute_leaves=False)
+                out_days += out_time['days']
+                out_hours += out_time['hours']
+            if contract.date_end and contract.date_end < self.date_to:
+                start = fields.Datetime.to_datetime(contract.date_end) + relativedelta(days=1)
+                stop = fields.Datetime.to_datetime(self.date_to) + relativedelta(hour=23, minute=59)
+                out_time = reference_calendar.get_work_duration_data(start, stop, compute_leaves=False)
+                out_days += out_time['days']
+                out_hours += out_time['hours']
+
+            if out_days or out_hours:
+                work_entry_type = self.env.ref('hr_payroll.hr_work_entry_type_out_of_contract')
+                res.append({
+                    'sequence': work_entry_type.sequence,
+                    'work_entry_type_id': work_entry_type.id,
+                    'number_of_days': out_days,
+                    'number_of_hours': out_hours,
+                })"""
+        return res    
     
     def _input_compute_sheet(self, payslip_id, contract_id, employee_id, date_start, date_stop):
         others_adjust = self.env['hr.payslip.input']
