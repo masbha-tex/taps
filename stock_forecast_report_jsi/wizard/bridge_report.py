@@ -78,12 +78,17 @@ class StockBridgeReport(models.TransientModel):
     def getclosing_qty(self,productid,stock_date):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', stock_date)])
         qty = sum(stock_details.mapped('quantity'))
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', stock_date)])
+        reject_stock = self.env['stock.production.lot'].search([('product_id', '=', productid),('x_studio_rejected','=',1)])
+        if len(reject_stock)>0:
+            reject_qty=0
+            reject_qty = sum(reject_stock.mapped('product_qty'))
+            qty = qty-reject_qty
         return qty
     
     def getclosing_val(self,productid,stock_date):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', stock_date),('description','not like','%LC/%')])
         val = sum(stock_details.mapped('value'))
-        
         landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '<', stock_date.date())])
         
         lclist = landedcost.mapped('id')
@@ -92,6 +97,14 @@ class StockBridgeReport(models.TransientModel):
         if len(lc_details)>0:
             lc_val = sum(lc_details.mapped('additional_landed_cost'))
             val = val + lc_val
+        
+        reject_stock = self.env['stock.production.lot'].search([('product_id', '=', productid),('x_studio_rejected','=',1)])
+        if len(reject_stock)>0:
+            reject_qty=0
+            reject_qty = sum(reject_stock.mapped('product_qty'))
+            product_data = self.env['product.product'].search([('id', '=', productid)])
+            product_price = product_data.standard_price
+            val = val-(reject_qty*product_price)
         return val
     def float_to_time(self,hours):
         if hours == 24.0:
@@ -129,9 +142,7 @@ class StockBridgeReport(models.TransientModel):
         m2 = sec_m_s_day.strftime("%B,%y")
         m3 = last_m_s_day.strftime("%B,%y")
         report_month = m1+' - '+m2+' - '+m3
-        #raise UserError((fst_m_s_day,fst_m_e_day,sec_m_s_day,sec_m_e_day,last_m_s_day,last_m_e_day))
         
-        #raise UserError((from_date,stock_date))
         if not (self.product_ids or self.categ_ids):
             products = Product.search([('type', '=', 'product'),('default_code', 'like', 'R_')])
         elif self.report_by == 'by_items':
