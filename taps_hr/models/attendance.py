@@ -36,54 +36,72 @@ class HrAttendance(models.Model):
         lv_type = self.env['hr.leave.type'].search([('id', '=', int(lv_record.holiday_status_id))])        
         
         if activeemplist.isOverTime is True:
-            #if outTime > 0.0 and worked_hours > (outTime - inTime):
-            if get_att_data.outHour > outTime and worked_hours > 4.0:
+            if get_att_data.outHour > outTime:
                 if inTime > inHour:
-                    #delta = ((worked_hours - (inTime - inHour)) - (outTime - inTime))
+                    delta = (get_att_data.outHour - outTime)
+                    delta = (delta * 3600 / 60) / 30
+                    delta = int(delta) * 30 * 60 / 3600
                     if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
                         delta = worked_hours+0.01999
                         delta = (delta * 3600 / 60) / 30
-                        #raise UserError((delta))
                         delta = int(delta) * 30 * 60 / 3600
                     if lv_type.code == 'CO':
                         delta = (get_att_data.outHour - outTime)
-                        #raise UserError((delta))
-                        #delta = (outHour - outTime)
                         delta = (delta * 3600 / 60) / 30
                         delta = int(delta) * 30 * 60 / 3600                        
-                    else:
-                        delta = (get_att_data.outHour - outTime)
-                        #raise UserError((delta))
-                        #delta = (outHour - outTime)
-                        delta = (delta * 3600 / 60) / 30
-                        delta = int(delta) * 30 * 60 / 3600
                     if delta > 0:
                         get_att_data[-1].write({'otHours' : delta})
                     else:
-                        get_att_data[-1].write({'otHours' : False})
+                        get_att_data[-1].write({'otHours' : False})                        
                 else:
+                    delta = (get_att_data.outHour - outTime)
+                    delta = (delta * 3600 / 60) / 30
+                    delta = int(delta) * 30 * 60 / 3600
                     if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
                         delta = worked_hours+0.01999
                         delta = (delta * 3600 / 60) / 30
                         delta = int(delta) * 30 * 60 / 3600
                     if lv_type.code == 'CO':
                         delta = (get_att_data.outHour - outTime)
-                        #raise UserError((delta))
-                        #delta = (outHour - outTime)
                         delta = (delta * 3600 / 60) / 30
-                        delta = int(delta) * 30 * 60 / 3600                         
+                        delta = int(delta) * 30 * 60 / 3600                        
+                    if delta > 0:
+                        get_att_data[-1].write({'otHours' : delta})
                     else:
-                        #delta = (worked_hours - (outTime - inTime))
-                        delta = (get_att_data.outHour - outTime)
-                        #delta = (outHour - outTime)
+                        get_att_data[-1].write({'otHours' : False})                        
+            else:
+                if worked_hours > 4.0:
+                    delta = (get_att_data.outHour - outTime)
+                    delta = (delta * 3600 / 60) / 30
+                    delta = int(delta) * 30 * 60 / 3600
+                    if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
+                        delta = worked_hours+0.01999
                         delta = (delta * 3600 / 60) / 30
                         delta = int(delta) * 30 * 60 / 3600
+                    if lv_type.code == 'CO':
+                        delta = (get_att_data.outHour - outTime)
+                        delta = (delta * 3600 / 60) / 30
+                        delta = int(delta) * 30 * 60 / 3600                        
+                    if delta > 0:
+                        get_att_data[-1].write({'otHours' : delta})
+                    else:
+                        get_att_data[-1].write({'otHours' : False})                        
+                else:
+                    delta = (get_att_data.outHour - outTime)
+                    delta = (delta * 3600 / 60) / 30
+                    delta = int(delta) * 30 * 60 / 3600
+                    if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
+                        delta = worked_hours+0.01999
+                        delta = (delta * 3600 / 60) / 30
+                        delta = int(delta) * 30 * 60 / 3600
+                    if lv_type.code == 'CO':
+                        delta = (get_att_data.outHour - outTime)
+                        delta = (delta * 3600 / 60) / 30
+                        delta = int(delta) * 30 * 60 / 3600                        
                     if delta > 0:
                         get_att_data[-1].write({'otHours' : delta})
                     else:
                         get_att_data[-1].write({'otHours' : False})
-            else:
-                get_att_data[-1].write({'otHours' : False})
         else:
             get_att_data[-1].write({'otHours' : False})
                 
