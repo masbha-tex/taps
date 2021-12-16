@@ -179,10 +179,6 @@ class HrAttendance(models.Model):
                         get_pre_att_data.create({'attDate':st_date + timedelta(days=d), 
                                                  'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
         if len(get_att_data) == 1:
-            if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
-                get_att_data[-1].write({'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})            
-            if get_att_data.employee_id.resign_date and get_att_data.employee_id.resign_date <= att_date:
-                get_att_data[-1].write({'inFlag':'R','outFlag':'R','inHour' : False,'outHour' : False})
             if not inHour and not outHour:
                 if (int(att_date.strftime("%w")))==5:
                     get_att_data[-1].write({'inFlag':'F','outFlag':'F','inHour' : False,'outHour' : False})
@@ -221,8 +217,8 @@ class HrAttendance(models.Model):
                             get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
                     else:
                         get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
-                elif lv_type.code == 'CO':
-                    get_att_data[-1].write({'inFlag':'CO','inHour' : inHour})
+                elif len(lv_record) == 1:
+                    get_att_data[-1].write({'inFlag':lv_type.code,'inHour' : inHour})
                     if office_out_time>outHour:
                         if mytotime>=office_out_time:
                             get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
@@ -251,6 +247,8 @@ class HrAttendance(models.Model):
                     get_att_data[-1].write({'inFlag':'FP','inHour' : inHour,'outFlag':'PO','outHour' : False})
                 elif len(holiday_record) == 1:
                     get_att_data[-1].write({'inFlag':'HP','inHour' : inHour,'outFlag':'PO','outHour' : False})
+                elif len(lv_record) == 1:
+                    get_att_data[-1].write({'inFlag':lv_type.code,'inHour' : inHour,'outFlag':lv_type.code,'outHour' : False})           
                 elif lv_type.code == 'CO':
                     get_att_data[-1].write({'inFlag':'CO','inHour' : inHour,'outFlag':'PO','outHour' : False})                  
                 elif office_in_time>=inHour:
@@ -262,6 +260,8 @@ class HrAttendance(models.Model):
                     get_att_data[-1].write({'outFlag':'FP','outHour' : outHour,'inHour' : False})
                 elif len(holiday_record) == 1:
                     get_att_data[-1].write({'outFlag':'HP','outHour' : outHour,'inHour' : False})
+                elif len(lv_record) == 1:
+                    get_att_data[-1].write({'outFlag':lv_type.code,'outHour' : outHour,'inHour' : False})                    
                 elif lv_type.code == 'CO':
                     get_att_data[-1].write({'outFlag':'CO','outHour' : outHour,'inHour' : False})                    
                 elif office_out_time>outHour:
@@ -273,6 +273,10 @@ class HrAttendance(models.Model):
                         get_att_data[-1].write({'outFlag':'EO','outHour' : outHour,'inHour' : False})
                 else:
                     get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+            if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
+                get_att_data[-1].write({'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})            
+            if get_att_data.employee_id.resign_date and get_att_data.employee_id.resign_date <= att_date:
+                get_att_data[-1].write({'inFlag':'R','outFlag':'R','inHour' : False,'outHour' : False})                    
 
     @api.constrains('check_in', 'check_out', 'employee_id')
     def _check_validity(self):
