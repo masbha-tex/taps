@@ -182,9 +182,9 @@ class HrAttendance(models.Model):
             if not inHour and not outHour:
                 if (int(att_date.strftime("%w")))==5:
                     get_att_data[-1].write({'inFlag':'F','outFlag':'F','inHour' : False,'outHour' : False})
-                elif len(holiday_record) == 1:
+                if len(holiday_record) == 1:
                     get_att_data[-1].write({'inFlag':holiday_type.code,'outFlag':holiday_type.code,'inHour' : False,'outHour' : False})
-                elif len(lv_record) == 1:
+                if len(lv_record) == 1:
                     if lv_type.code == 'CO' and (int(att_date.strftime("%w")))==5:
                         get_att_data[-1].write({'inFlag':'F','outFlag':'F','inHour' : False,'outHour' : False})
                     else:
@@ -206,7 +206,7 @@ class HrAttendance(models.Model):
                             get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
                     else:
                         get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
-                elif len(holiday_record) == 1:
+                if len(holiday_record) == 1:
                     get_att_data[-1].write({'inFlag':'HP','inHour' : inHour})
                     if office_out_time>outHour:
                         if mytotime>=office_out_time:
@@ -217,7 +217,7 @@ class HrAttendance(models.Model):
                             get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
                     else:
                         get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
-                elif len(lv_record) == 1:
+                if len(lv_record) == 1:
                     get_att_data[-1].write({'inFlag':lv_type.code,'inHour' : inHour})
                     if office_out_time>outHour:
                         if mytotime>=office_out_time:
@@ -228,6 +228,17 @@ class HrAttendance(models.Model):
                             get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
                     else:
                         get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})                        
+                if lv_type.code == 'CO':
+                    get_att_data[-1].write({'inFlag':'CO','inHour' : inHour})
+                    if office_out_time>outHour:
+                        if mytotime>=office_out_time:
+                            get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                        elif myfromtime<=outHour and mytotime>=outHour:
+                            get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
+                        else:
+                            get_att_data[-1].write({'outFlag':'EO','outHour' : outHour})
+                    else:
+                        get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
                 else:
                     if office_in_time>=inHour:
                         get_att_data[-1].write({'inFlag':'P','inHour' : inHour})
@@ -245,11 +256,11 @@ class HrAttendance(models.Model):
             if inHour and not outHour:
                 if (int(att_date.strftime("%w")))==5:
                     get_att_data[-1].write({'inFlag':'FP','inHour' : inHour,'outFlag':'PO','outHour' : False})
-                elif len(holiday_record) == 1:
+                if len(holiday_record) == 1:
                     get_att_data[-1].write({'inFlag':'HP','inHour' : inHour,'outFlag':'PO','outHour' : False})
-                elif len(lv_record) == 1:
+                if len(lv_record) == 1:
                     get_att_data[-1].write({'inFlag':lv_type.code,'inHour' : inHour,'outFlag':lv_type.code,'outHour' : False})           
-                elif lv_type.code == 'CO':
+                if lv_type.code == 'CO':
                     get_att_data[-1].write({'inFlag':'CO','inHour' : inHour,'outFlag':'PO','outHour' : False})                  
                 elif office_in_time>=inHour:
                     get_att_data[-1].write({'inFlag':'P','inHour' : inHour,'outFlag':'PO','outHour' : False})
@@ -258,11 +269,11 @@ class HrAttendance(models.Model):
             if not inHour and outHour:
                 if (int(att_date.strftime("%w")))==5:
                     get_att_data[-1].write({'outFlag':'FP','outHour' : outHour,'inHour' : False})
-                elif len(holiday_record) == 1:
+                if len(holiday_record) == 1:
                     get_att_data[-1].write({'outFlag':'HP','outHour' : outHour,'inHour' : False})
-                elif len(lv_record) == 1:
+                if len(lv_record) == 1:
                     get_att_data[-1].write({'outFlag':lv_type.code,'outHour' : outHour,'inHour' : False})                    
-                elif lv_type.code == 'CO':
+                if lv_type.code == 'CO':
                     get_att_data[-1].write({'outFlag':'CO','outHour' : outHour,'inHour' : False})                    
                 elif office_out_time>outHour:
                     if mytotime>=office_out_time:
