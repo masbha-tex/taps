@@ -48,11 +48,11 @@ class HolidaysRequest(models.Model):
         if not self.env.context.get('leave_fast_create'):
             self.activity_update()
         att_obj = self.env['hr.attendance']
-        t_date = holiday.date_to.date()
-        st_date = holiday.date_from.date()
+        t_date = self.date_to.date()
+        st_date = self.date_from.date()
         endd = (t_date - st_date).days
         for d in range(0, endd+1):
-            get_att_data = att_obj.search([('empID', '=', holiday.employee_id.emp_id),
+            get_att_data = att_obj.search([('empID', '=', self.employee_id.emp_id),
                                            ('attDate', '=', (st_date + timedelta(days=d)))])
             get_att_data.generateAttFlag(get_att_data.empID,get_att_data.attDate,get_att_data.inTime,get_att_data.inHour,
                                          get_att_data.outTime,get_att_data.outHour)        
@@ -72,7 +72,6 @@ class HolidaysRequest(models.Model):
         linked_requests = self.mapped('linked_request_ids')
         if linked_requests:
             linked_requests.action_refuse()
-
         # Post a second message, more verbose than the tracking message
         for holiday in self:
             if holiday.employee_id.user_id:
@@ -83,11 +82,11 @@ class HolidaysRequest(models.Model):
         self._remove_resource_leave()
         self.activity_update()
         att_obj = self.env['hr.attendance']
-        t_date = holiday.date_to.date()
-        st_date = holiday.date_from.date()
+        t_date = self.date_to.date()
+        st_date = self.date_from.date()
         endd = (t_date - st_date).days
         for d in range(0, endd+1):
-            get_att_data = att_obj.search([('empID', '=', holiday.employee_id.emp_id),
+            get_att_data = att_obj.search([('empID', '=', self.employee_id.emp_id),
                                            ('attDate', '=', (st_date + timedelta(days=d)))])
             get_att_data.generateAttFlag(get_att_data.empID,get_att_data.attDate,get_att_data.inTime,get_att_data.inHour,
                                          get_att_data.outTime,get_att_data.outHour)        
