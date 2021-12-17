@@ -179,7 +179,7 @@ class HrAttendance(models.Model):
         myfromtime = 0.0
         mytotime = 7.0
       
-        t_date = att_date      
+        t_date = att_date  
         st_date = t_date
         delta = t_date.replace(day=26).day - t_date.day
         if delta<=0:
@@ -297,15 +297,7 @@ class HrAttendance(models.Model):
                     elif myfromtime<=outHour and mytotime>=outHour:
                         get_att_data[-1].write({'outFlag':'TO','outHour' : outHour,'inHour' : False})
                     else:
-                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour,'inHour' : False})                
-                #if (int(att_date.strftime("%w")))==5:
-                    #get_att_data[-1].write({'outFlag':'FP','outHour' : outHour,'inHour' : False})
-                #if len(holiday_record) == 1:
-                    #get_att_data[-1].write({'outFlag':'HP','outHour' : outHour,'inHour' : False})
-                #if len(lv_record) == 1:
-                    #get_att_data[-1].write({'outFlag':lv_type.code,'outHour' : outHour,'inHour' : False})                    
-                #if lv_type.code == 'CO':
-                    #get_att_data[-1].write({'outFlag':'CO','outHour' : outHour,'inHour' : False})                   
+                        get_att_data[-1].write({'outFlag':'EO','outHour' : outHour,'inHour' : False})                               
                 else:
                     get_att_data[-1].write({'outFlag':'TO','outHour' : outHour})
             if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
