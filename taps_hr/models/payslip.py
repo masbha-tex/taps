@@ -17,9 +17,59 @@ class HrPayslipsss(models.Model):
     _inherit = 'hr.payslip'
     _description = 'Pay Slip'
     
+    emp_id = fields.Char(related = 'employee_id.emp_id', related_sudo=False, string="Emp ID", readonly=True, store=True)
     otHours = fields.Float(compute="_compute_ot_rate", string = "OT Hours", store=True, copy=True)
     otRate = fields.Float(compute="_compute_ot_rate", string = "OT Rate", store=True, copy=True)
-  
+    gross_wage = fields.Monetary(related = 'contract_id.wage', related_sudo=False, readonly=True, store=True)
+    hra_wage = fields.Monetary(compute='_compute_basic_net')
+    medical_wage = fields.Monetary(compute='_compute_basic_net')
+    ot_wage = fields.Monetary(compute='_compute_basic_net')
+    arrear_wage = fields.Monetary(compute='_compute_basic_net')
+    att_bonus_wage = fields.Monetary(compute='_compute_basic_net')
+    convence_wage = fields.Monetary(compute='_compute_basic_net')
+    food_wage = fields.Monetary(compute='_compute_basic_net')
+    tiffin_wage = fields.Monetary(compute='_compute_basic_net')
+    snacks_wage = fields.Monetary(compute='_compute_basic_net')
+    car_wage = fields.Monetary(compute='_compute_basic_net')
+    others_alw_wage = fields.Monetary(compute='_compute_basic_net')
+    incentive_wage = fields.Monetary(compute='_compute_basic_net')
+    pf_empr_wage = fields.Monetary(compute='_compute_basic_net')
+    pf_empe_wage = fields.Monetary(compute='_compute_basic_net')
+    rpf_wage = fields.Monetary(compute='_compute_basic_net')
+    ait_wage = fields.Monetary(compute='_compute_basic_net')
+    basic_absent_wage = fields.Monetary(compute='_compute_basic_net')
+    gross_absent_wage = fields.Monetary(compute='_compute_basic_net')
+    loan_wage = fields.Monetary(compute='_compute_basic_net')
+    adv_salary_wage = fields.Monetary(compute='_compute_basic_net')
+    others_ded_wage = fields.Monetary(compute='_compute_basic_net')
+    
+
+    def _compute_basic_net(self):
+        for payslip in self:
+            payslip.basic_wage = payslip._get_salary_line_total('BASIC')
+            payslip.hra_wage = payslip._get_salary_line_total('HRA')
+            payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')
+            payslip.ot_wage = payslip._get_salary_line_total('OT')
+            payslip.arrear_wage = payslip._get_salary_line_total('ARREAR')
+            payslip.att_bonus_wage = payslip._get_salary_line_total('ATTBONUS')
+            payslip.convence_wage = payslip._get_salary_line_total('CONVENCE')
+            payslip.food_wage = payslip._get_salary_line_total('FOOD')
+            payslip.tiffin_wage = payslip._get_salary_line_total('TIFFIN')
+            payslip.snacks_wage = payslip._get_salary_line_total('SNACKS')
+            payslip.car_wage = payslip._get_salary_line_total('CAR')
+            payslip.others_alw_wage = payslip._get_salary_line_total('OTHERS_ALW')
+            payslip.incentive_wage = payslip._get_salary_line_total('INCENTIVE')
+            payslip.pf_empr_wage = payslip._get_salary_line_total('PFR')
+            payslip.pf_empe_wage = payslip._get_salary_line_total('PFE')
+            payslip.rpf_wage = payslip._get_salary_line_total('RPF')
+            payslip.ait_wage = payslip._get_salary_line_total('AIT')
+            payslip.basic_absent_wage = payslip._get_salary_line_total('BASIC_ABSENT')
+            payslip.gross_absent_wage = payslip._get_salary_line_total('GROSS_ABSENT')
+            payslip.loan_wage = payslip._get_salary_line_total('LOAN')
+            payslip.adv_salary_wage = payslip._get_salary_line_total('ADV_SALARY')
+            payslip.others_ded_wage = payslip._get_salary_line_total('OTHERS_DED')
+            payslip.net_wage = payslip._get_salary_line_total('NET')
+            
     @api.depends('contract_id','date_from','date_to')
     def _compute_ot_rate(self):
         for payslip in self:

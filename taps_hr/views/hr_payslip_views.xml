@@ -29,4 +29,50 @@
             </xpath>
         </field>
     </record>
+    <!-- payslip -->
+
+    <record id="view_hr_payslip_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.tree.inherit</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree"/>
+        <field name="arch" type="xml">
+            <tree string="Payslips" js_class="hr_payroll_payslip_tree" sample="1">
+                <field name="gross_wage" string="Gross"/>
+                <field name="basic_wage" position="move"/>
+                <field name="hra_wage" string="House Rent"/>
+                <field name="medical_wage" string="Medical"/>
+                <field name="otHours" string="OT Hours" widget="float_time"/>
+                <field name="otRate" string="OT Rate"/>
+                <field name="ot_wage" string="OT Amount"/>
+                <field name="arrear_wage" string="Arrear"/>
+                <field name="att_bonus_wage" string="Att Bonus"/>
+                <field name="convence_wage" string="Convence"/>
+                <field name="food_wage" string="Food"/>
+                <field name="tiffin_wage" string="Tiffin"/>
+                <field name="snacks_wage" string="Snacks"/>
+                <field name="car_wage" string="Car"/>
+                <field name="others_alw_wage" string="Others Allowance"/>
+                <field name="incentive_wage" string="Incentive"/>
+                <field name="rpf_wage" string="RPF"/>
+                <field name="pf_empr_wage" string="PF Empr"/>
+                <field name="pf_empe_wage" string="PF Empe"/>
+                <field name="ait_wage" string="AIT"/>
+                <field name="basic_absent_wage" string="Basic Absent"/>
+                <field name="gross_absent_wage" string="Gross Absent"/>
+                <field name="loan_wage" string="Loan"/>
+                <field name="adv_salary_wage" string="Adv Salary"/>
+                <field name="others_ded_wage" string="Others Deduction"/>
+                <field name="net_wage" position="move"/>
+            </tree>
+            <xpath expr="//field[@name='basic_wage']" position="attributes">
+                <attribute name="string">Basic</attribute>
+            </xpath>
+            <xpath expr="//field[@name='net_wage']" position="attributes">
+                <attribute name="string">Net Payable</attribute>
+            </xpath>
+            <field name="number" position="after">
+                <field name="emp_id"/>
+            </field>
+        </field>
+    </record>
 </odoo>
