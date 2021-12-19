@@ -89,8 +89,6 @@ class HrPayslipsss(models.Model):
             emp_list = self.env['hr.employee'].search([('id', '=', payslip.employee_id.id),("active", '=', True)])
             att_record = self.env['hr.attendance'].search([('employee_id', '=', payslip.employee_id.id),('attDate', '>=',payslip.date_from),('attDate', '<=',payslip.date_to)])
             if emp_list.isOverTime is True:
-                #raise UserError((self.contract_id.wage))
-                #payslip.otRate = round((((payslip._get_salary_line_total('BASIC'))/208)*2),2)
                 payslip.otRate = round(((payslip.contract_id.basic/208)*2),2)
                 payslip.otHours = sum(att_record.mapped('otHours'))
             else:
