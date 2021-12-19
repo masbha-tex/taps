@@ -78,13 +78,14 @@ class StockBridgeReport(models.TransientModel):
     def getclosing_qty(self,productid,stock_date):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', stock_date)])
         qty = sum(stock_details.mapped('quantity'))
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', stock_date)])
+        return qty
+    
+        '''stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', stock_date)])
         reject_stock = self.env['stock.production.lot'].search([('product_id', '=', productid),('x_studio_rejected','=',1)])
         if len(reject_stock)>0:
             reject_qty=0
             reject_qty = sum(reject_stock.mapped('product_qty'))
-            qty = qty-reject_qty
-        return qty
+            qty = qty-reject_qty'''
     
     def getclosing_val(self,productid,stock_date):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', stock_date),('description','not like','%LC/%')])
@@ -97,15 +98,18 @@ class StockBridgeReport(models.TransientModel):
         if len(lc_details)>0:
             lc_val = sum(lc_details.mapped('additional_landed_cost'))
             val = val + lc_val
+        return val
         
-        reject_stock = self.env['stock.production.lot'].search([('product_id', '=', productid),('x_studio_rejected','=',1)])
+        '''reject_stock = self.env['stock.production.lot'].search([('product_id', '=', productid),('x_studio_rejected','=',1)])
         if len(reject_stock)>0:
             reject_qty=0
             reject_qty = sum(reject_stock.mapped('product_qty'))
             product_data = self.env['product.product'].search([('id', '=', productid)])
             product_price = product_data.standard_price
-            val = val-(reject_qty*product_price)
-        return val
+            val = val-(reject_qty*product_price)'''
+        
+        
+        
     def float_to_time(self,hours):
         if hours == 24.0:
             return time.max
@@ -122,16 +126,20 @@ class StockBridgeReport(models.TransientModel):
         combine = datetime.combine
         stock_date = combine(t_date, self.float_to_time(hour_to))
         
-        last_m_s_day = combine(t_date.replace(day=1), self.float_to_time(hour_from))
-        last_m_e_day = stock_date
+        #last_m_s_day = combine(t_date.replace(day=1), self.float_to_time(hour_from))
+        #last_m_e_day = stock_date
         
-        sec_e_day = t_date.replace(day=1) - timedelta(days=1)
-        sec_s_day = t_date.replace(day=1) - timedelta(days=sec_e_day.day)
+        last_m_e_day = t_date.replace(day=1) - timedelta(days=1)
+        last_m_s_day = t_date.replace(day=1) - timedelta(days=last_m_e_day.day)
+        
+        sec_day = t_date - relativedelta(months = 1)
+        sec_e_day = sec_day.replace(day=1) - timedelta(days=1)
+        sec_s_day = sec_day.replace(day=1) - timedelta(days=sec_e_day.day)
         
         sec_m_s_day = combine(sec_s_day, self.float_to_time(hour_from))
         sec_m_e_day = combine(sec_e_day, self.float_to_time(hour_to))
         
-        fst_day = t_date - relativedelta(months = 1)
+        fst_day = t_date - relativedelta(months = 2)
         fst_e_day = fst_day.replace(day=1) - timedelta(days=1)
         fst_s_day = fst_day.replace(day=1) - timedelta(days=fst_e_day.day)
         
