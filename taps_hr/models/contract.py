@@ -26,8 +26,7 @@ class HrContract(models.Model):
     medical = fields.Monetary('Medical', readonly=True, store=True, tracking=True, 
                               compute='_compute_salary_breakdown',help="Employee's monthly medical wage.")
     
-    category = fields.Selection([('staff', 'Staff'),('worker', 'Worker'),], string='Employee Category', tracking=True, 
-                                 help='Employee Category of the contract', store=True, required=True)
+    category = fields.Selection([('staff', 'Staff'),('worker', 'Worker'),('expatriate', 'Expatriate')], string='Emp Type', tracking=True, help='Employee Type of the contract', store=True, required=True)
     
     """e_ for Earnings head & d_ for Deduction head"""
     e_convence = fields.Boolean(string="Convence Allowance", store=True, tracking=True, 
@@ -73,7 +72,10 @@ class HrContract(models.Model):
                 contract.basic = (contract.wage-1450)/1.5
                 contract.houseRent = ((contract.wage-1450)/1.5)*0.50
                 contract.medical = 1450.00
-                #return {'domain':{'adjustment_type': [('is_deduction','=',True)]}}            
+            if contract.category == 'expatriate':
+                contract.basic = contract.wage*0.60
+                contract.houseRent = (contract.wage*0.30)
+                contract.medical = (contract.wage*0.10)           
     
     def _get_default_work_entry_type(self):
         return self.env.ref('hr_work_entry.work_entry_type_attendance', raise_if_not_found=False)  

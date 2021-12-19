@@ -18,6 +18,7 @@ class HrPayslipsss(models.Model):
     _description = 'Pay Slip'
     
     emp_id = fields.Char(related = 'employee_id.emp_id', related_sudo=False, string="Emp ID", readonly=True, store=True)
+    emp_type = fields.Selection(related = 'contract_id.category', related_sudo=False, string="Emp Type", readonly=True, store=True)
     otHours = fields.Float(compute="_compute_ot_rate", string = "OT Hours", store=True, copy=True)
     otRate = fields.Float(compute="_compute_ot_rate", string = "OT Rate", store=True, copy=True)
     gross_wage = fields.Monetary(related = 'contract_id.wage', related_sudo=False, readonly=True, store=True)
@@ -43,9 +44,14 @@ class HrPayslipsss(models.Model):
     loan_wage = fields.Monetary(compute='_compute_basic_net', store=True, copy=True)
     adv_salary_wage = fields.Monetary(compute='_compute_basic_net', store=True, copy=True)
     others_ded_wage = fields.Monetary(compute='_compute_basic_net', store=True, copy=True)
+    earnings_total = fields.Monetary(compute='_compute_basic_net', copy=True)
+    deduction_total = fields.Monetary(compute='_compute_basic_net', copy=True)
     net_wage = fields.Monetary(compute='_compute_basic_net', store=True, copy=True)
     
-
+    def _get_salary_line_earnings_deduction_total(self, code):
+        lines = self.line_ids.filtered(lambda line: line.category_id.code == code)
+        return sum([line.total for line in lines])
+    
     def _compute_basic_net(self):
         for payslip in self:
             payslip.basic_wage = payslip._get_salary_line_total('BASIC')
@@ -61,15 +67,20 @@ class HrPayslipsss(models.Model):
             payslip.car_wage = payslip._get_salary_line_total('CAR')
             payslip.others_alw_wage = payslip._get_salary_line_total('OTHERS_ALW')
             payslip.incentive_wage = payslip._get_salary_line_total('INCENTIVE')
+            payslip.rpf_wage = payslip._get_salary_line_total('RPF')
+            payslip.earnings_total = (payslip._get_salary_line_earnings_deduction_total('EARNINGS') +
+                                      payslip._get_salary_line_earnings_deduction_total('BASIC') + 
+                                      payslip._get_salary_line_earnings_deduction_total('HRA') + 
+                                      payslip._get_salary_line_earnings_deduction_total('MEDICAL'))
             payslip.pf_empr_wage = payslip._get_salary_line_total('PFR')
             payslip.pf_empe_wage = payslip._get_salary_line_total('PFE')
-            payslip.rpf_wage = payslip._get_salary_line_total('RPF')
             payslip.ait_wage = payslip._get_salary_line_total('AIT')
             payslip.basic_absent_wage = payslip._get_salary_line_total('BASIC_ABSENT')
             payslip.gross_absent_wage = payslip._get_salary_line_total('GROSS_ABSENT')
             payslip.loan_wage = payslip._get_salary_line_total('LOAN')
             payslip.adv_salary_wage = payslip._get_salary_line_total('ADV_SALARY')
             payslip.others_ded_wage = payslip._get_salary_line_total('OTHERS_DED')
+            payslip.deduction_total = payslip._get_salary_line_earnings_deduction_total('DED')
             payslip.net_wage = payslip._get_salary_line_total('NET')
             
     @api.depends('contract_id','date_from','date_to')

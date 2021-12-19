@@ -54,6 +54,7 @@
                 <field name="others_alw_wage" string="Others Allowance"/>
                 <field name="incentive_wage" string="Incentive"/>
                 <field name="rpf_wage" string="RPF"/>
+                <field name="earnings_total" string="EARNINGS TOTAL"/>
                 <field name="pf_empr_wage" string="PF Empr"/>
                 <field name="pf_empe_wage" string="PF Empe"/>
                 <field name="ait_wage" string="AIT"/>
@@ -62,6 +63,7 @@
                 <field name="loan_wage" string="Loan"/>
                 <field name="adv_salary_wage" string="Adv Salary"/>
                 <field name="others_ded_wage" string="Others Deduction"/>
+                <field name="deduction_total" string="DEDUCTION TOTAL"/>
                 <field name="net_wage" position="move"/>
             </tree>
             <xpath expr="//field[@name='basic_wage']" position="attributes">
@@ -73,6 +75,19 @@
             <field name="number" position="after">
                 <field name="emp_id"/>
             </field>
+            <field name="payslip_run_id" position="after">
+                <field name="emp_type" widget="badge"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_hr_payslip_filter_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.select.inherit</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='employee_id']" position="after">
+                <filter string="Employee Type" name="group_by_emp_type" context="{'group_by': 'emp_type'}"/>
+            </xpath>
         </field>
     </record>
 </odoo>
