@@ -78,6 +78,12 @@
             <field name="payslip_run_id" position="after">
                 <field name="emp_type" widget="badge"/>
             </field>
+            <field name="employee_id" position="after">
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="struct_id" string="Grade"/>
+                <field name="join_date"/>
+            </field>            
         </field>
     </record>
     <record id="view_hr_payslip_filter_inherit" model="ir.ui.view">
@@ -87,6 +93,9 @@
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='employee_id']" position="after">
                 <filter string="Employee Type" name="group_by_emp_type" context="{'group_by': 'emp_type'}"/>
+                <filter string="Department" name="group_by_department_id" context="{'group_by': 'department_id'}"/>
+                <filter string="Job Position" name="group_by_job_id" context="{'group_by': 'job_id'}"/>
+                <filter string="Grade" name="group_by_struct_id" context="{'group_by': 'struct_id'}"/>
             </xpath>
         </field>
     </record>
