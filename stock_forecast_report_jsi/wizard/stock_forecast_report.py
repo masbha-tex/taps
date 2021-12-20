@@ -168,20 +168,22 @@ class StockForecastReport(models.TransientModel):
                 else:
                     closing_value = self.getclosing_val(product_id,to_date)#opening_value + received_value - issued_value
                 closing_value = round(closing_value,2)
-                product_data = [
-                    '',
-                    '',
-                    product.name,
-                    opening_qty,
-                    opening_value,
-                    received_qty,
-                    received_value,
-                    issued_qty,
-                    issued_value,
-                    closing_qty,
-                    closing_value,
-                ]
-                report_product_data.append(product_data)
+                
+                if abs(opening_qty+received_qty+issued_qty)>0:
+                    product_data = [
+                        '',
+                        '',
+                        product.name,
+                        opening_qty,
+                        opening_value,
+                        received_qty,
+                        received_value,
+                        issued_qty,
+                        issued_value,
+                        closing_qty,
+                        closing_value,
+                    ]
+                    report_product_data.append(product_data)
             
             #sum(row[1] for row in report_product_data)
             opening_categ_qty=sum(row[3] for row in report_product_data)#sum(report_product_data.mapped('opening_qty'))
