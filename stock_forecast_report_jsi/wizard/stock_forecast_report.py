@@ -136,32 +136,38 @@ class StockForecastReport(models.TransientModel):
                 # Prepare Opening Data
                 #raise UserError((product_id,from_date))
                 opening_qty = self.getopening_qty(product_id,from_date)#product_quantities[product_id]['qty_available']
+                opening_qty = round(opening_qty,2)
                 if opening_qty<=0:
                     opening_value = 0
                 else:
                     opening_value = self.getopening_val(product_id,from_date)#round(opening_qty * product.standard_price, precision_rounding=4)
-
+                
+                opening_value = round(opening_value,2)
                 # Prepare Received data
                 #if in_move_dict.get(product_id):
                 received_qty = self.getreceive_qty(product_id,from_date,to_date)#in_move_dict[product_id][0]
                     #received_price_unit = in_move_dict[product_id][1]
                 received_value =  self.getreceive_val(product_id,from_date,to_date)#round(received_qty * received_price_unit, precision_rounding=4)
-
+                received_qty = round(received_qty,2)
+                received_value = round(received_value,2)                
                 # prepare Issued Data
                 #if out_move_dict.get(product_id):
                 issued_qty = self.getissue_qty(product_id,from_date,to_date)# out_move_dict[product_id][0]
-                if issued_qty<=0:
+                issued_qty = round(issued_qty,2)
+                if abs(issued_qty)<=0:
                     issued_value = 0
                 else:
                     issued_value = self.getissue_val(product_id,from_date,to_date) #(issued_qty * out_move_dict[product_id][1])
-
+                
+                issued_value = round(issued_value,2)
                 # Prepare Closing Quantity
                 closing_qty = self.getclosing_qty(product_id,to_date)# opening_qty + received_qty - issued_qty
+                closing_qty = round(closing_qty,2)
                 if closing_qty<=0:
                     closing_value = 0
                 else:
                     closing_value = self.getclosing_val(product_id,to_date)#opening_value + received_value - issued_value
-
+                closing_value = round(closing_value,2)
                 product_data = [
                     '',
                     '',
