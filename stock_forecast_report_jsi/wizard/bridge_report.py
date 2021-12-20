@@ -159,6 +159,8 @@ class StockBridgeReport(models.TransientModel):
             products = Product.search([('categ_type', 'in', self.categ_ids.ids),('default_code', 'like', 'R_')])
         # Date wise opening quantity
         #product_quantities = products._compute_quantities_dict(False, False, False, from_date, stock_date)
+        products = products.sorted(key = 'categ_type')
+        #categ.parent_id.name
         report_data = []
 
         for categ in products.categ_type:
