@@ -169,7 +169,7 @@ class StockForecastReport(models.TransientModel):
                     closing_value = self.getclosing_val(product_id,to_date)#opening_value + received_value - issued_value
                 closing_value = round(closing_value,2)
                 
-                if abs(opening_qty+received_qty+issued_qty)>0:
+                if abs(abs(opening_qty)+abs(received_qty)+abs(issued_qty))>0:
                     product_data = [
                         '',
                         '',
