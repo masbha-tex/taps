@@ -44,6 +44,7 @@
                 <field name="holiday_days" string="Holiday"/>
                 <field name="coff_days" string="CO"/>
                 <field name="adjust_days" string="AJ"/>
+                <field name="od_days" string="OD"/>
                 <field name="late_days" string="Late"/>
                 <field name="cl_days" string="CL"/>
                 <field name="sl_days" string="SL"/>

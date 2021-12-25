@@ -60,6 +60,7 @@ class HrPayslipsss(models.Model):
     holiday_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     coff_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     adjust_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    od_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     late_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     cl_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     sl_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
@@ -117,6 +118,7 @@ class HrPayslipsss(models.Model):
             payslip.gross_absent_days = payslip._get_work_days_line_total('X')
             payslip.friday_days = payslip._get_work_days_line_total('F')
             payslip.holiday_days = payslip._get_work_days_line_total('H')
+            payslip.od_days = payslip._get_work_days_line_total('OD')
             payslip.coff_days = payslip._get_work_days_line_total('CO')
             payslip.adjust_days = payslip._get_work_days_line_total('AJ')
             payslip.late_days = payslip._get_work_days_line_total('L')
@@ -128,7 +130,8 @@ class HrPayslipsss(models.Model):
             payslip.total_payable_days = (payslip._get_work_days_line_total('P') + payslip._get_work_days_line_total('F') +
                                           payslip._get_work_days_line_total('H') + payslip._get_work_days_line_total('CO') +
                                           payslip._get_work_days_line_total('AJ') + payslip._get_work_days_line_total('CL') + 
-                                          payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL'))
+                                          payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL') + 
+                                          payslip._get_work_days_line_total('OD'))
             
     @api.depends('contract_id','date_from','date_to')
     def _compute_ot_rate(self):
