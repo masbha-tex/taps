@@ -224,9 +224,14 @@ class StockBridgeReport(models.TransientModel):
                 #num_day = round((closing_value/avg_value)*30)
                 #raise UserError((num_day))
                 #fst_m_s_day,fst_m_e_day,sec_m_s_day,sec_m_e_day,last_m_s_day,last_m_e_day
+                pur_desc = ''
+                if product.description_purchase:
+                    pur_desc = product.description_purchase
+                    
                 product_data = [
                     '',
                     '',
+                    pur_desc,
                     product.name,
                     closing_qty,
                     closing_value,
@@ -242,18 +247,18 @@ class StockBridgeReport(models.TransientModel):
                 ]
                 report_product_data.append(product_data)
             
-            closing_categ_qty=sum(row[3] for row in report_product_data)
-            closing_categ_value=sum(row[4] for row in report_product_data)
-            fst_categ_qty=sum(row[5] for row in report_product_data)
-            fst_categ_value=sum(row[6] for row in report_product_data)
-            sec_categ_qty=sum(row[7] for row in report_product_data)
-            sec_categ_value=sum(row[8] for row in report_product_data)
-            lst_categ_qty=sum(row[9] for row in report_product_data)
-            lst_categ_value=sum(row[10] for row in report_product_data)
-            avg_categ_qty=sum(row[11] for row in report_product_data)
-            avg_categ_value=sum(row[12] for row in report_product_data)
+            closing_categ_qty=sum(row[4] for row in report_product_data)
+            closing_categ_value=sum(row[5] for row in report_product_data)
+            fst_categ_qty=sum(row[6] for row in report_product_data)
+            fst_categ_value=sum(row[7] for row in report_product_data)
+            sec_categ_qty=sum(row[8] for row in report_product_data)
+            sec_categ_value=sum(row[9] for row in report_product_data)
+            lst_categ_qty=sum(row[10] for row in report_product_data)
+            lst_categ_value=sum(row[11] for row in report_product_data)
+            avg_categ_qty=sum(row[12] for row in report_product_data)
+            avg_categ_value=sum(row[13] for row in report_product_data)
             
-            num_day_categ =sum(row[13] for row in report_product_data)
+            num_day_categ =sum(row[14] for row in report_product_data)
             
             parent_type = ''
             if categ.parent_id.name:
@@ -261,6 +266,7 @@ class StockBridgeReport(models.TransientModel):
             product_cat_data = [
                     parent_type,
                     categ.name,
+                    '',
                     '',
                     closing_categ_qty,
                     closing_categ_value,
@@ -308,22 +314,23 @@ class StockBridgeReport(models.TransientModel):
 
         # set the width od the column
         
-        worksheet.set_column(0, 13, 20)
+        worksheet.set_column(0, 14, 20)
         
         worksheet.write(6, 0, 'Product', column_product_style)        
-        worksheet.write(6, 1, 'Category', column_product_style)
-        worksheet.write(6, 2, 'Item', column_product_style)
-        worksheet.write(6, 3, 'Quantity', column_product_style)
-        worksheet.write(6, 4, 'Value', column_product_style)
-        worksheet.write(6, 5, 'Quantity', column_received_style)
-        worksheet.write(6, 6, 'Value', column_received_style)
-        worksheet.write(6, 7, 'Quantity', column_received_style)
-        worksheet.write(6, 8, 'Value', column_received_style)
-        worksheet.write(6, 9, 'Quantity', column_received_style)
-        worksheet.write(6, 10, 'Value', column_received_style)
-        worksheet.write(6, 11, 'Quantity', column_issued_style)
-        worksheet.write(6, 12, 'Value', column_issued_style)
-        worksheet.write(6, 13, 'Number of Days', column_received_style)
+        worksheet.write(6, 1, 'Category', column_product_style)        
+        worksheet.write(6, 2, 'Sub Category', column_product_style)
+        worksheet.write(6, 3, 'Item', column_product_style)
+        worksheet.write(6, 4, 'Quantity', column_product_style)
+        worksheet.write(6, 5, 'Value', column_product_style)
+        worksheet.write(6, 6, 'Quantity', column_received_style)
+        worksheet.write(6, 7, 'Value', column_received_style)
+        worksheet.write(6, 8, 'Quantity', column_received_style)
+        worksheet.write(6, 9, 'Value', column_received_style)
+        worksheet.write(6, 10, 'Quantity', column_received_style)
+        worksheet.write(6, 11, 'Value', column_received_style)
+        worksheet.write(6, 12, 'Quantity', column_issued_style)
+        worksheet.write(6, 13, 'Value', column_issued_style)
+        worksheet.write(6, 14, 'Number of Days', column_received_style)
         col = 0
         row=7
         
