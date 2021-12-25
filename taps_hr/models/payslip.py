@@ -53,6 +53,21 @@ class HrPayslipsss(models.Model):
     deduction_total = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     net_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     
+    working_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    basic_absent_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    gross_absent_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    friday_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    holiday_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    coff_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    adjust_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    late_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    cl_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    sl_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    el_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    ml_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    lw_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    total_payable_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    
     @api.depends('employee_id')
     def _compute_employee_contract(self):
         for payslip in self.filtered('employee_id'):
@@ -62,6 +77,10 @@ class HrPayslipsss(models.Model):
     def _get_salary_line_earnings_deduction_total(self, code):
         lines = self.line_ids.filtered(lambda line: line.category_id.code == code)
         return sum([line.total for line in lines])
+    
+    def _get_work_days_line_total(self, code):
+        lines = self.worked_days_line_ids.filtered(lambda line: line.code == code)
+        return sum([line.number_of_days for line in lines])    
     
     def _compute_basic_net(self):
         for payslip in self:
@@ -93,6 +112,23 @@ class HrPayslipsss(models.Model):
             payslip.others_ded_wage = payslip._get_salary_line_total('OTHERS_DED')
             payslip.deduction_total = payslip._get_salary_line_earnings_deduction_total('DED')
             payslip.net_wage = payslip._get_salary_line_total('NET')
+            payslip.working_days = payslip._get_work_days_line_total('P')
+            payslip.basic_absent_days = payslip._get_work_days_line_total('A')
+            payslip.gross_absent_days = payslip._get_work_days_line_total('X')
+            payslip.friday_days = payslip._get_work_days_line_total('F')
+            payslip.holiday_days = payslip._get_work_days_line_total('H')
+            payslip.coff_days = payslip._get_work_days_line_total('CO')
+            payslip.adjust_days = payslip._get_work_days_line_total('AJ')
+            payslip.late_days = payslip._get_work_days_line_total('L')
+            payslip.cl_days = payslip._get_work_days_line_total('CL')
+            payslip.sl_days = payslip._get_work_days_line_total('SL')
+            payslip.el_days = payslip._get_work_days_line_total('EL')
+            payslip.ml_days = payslip._get_work_days_line_total('ML')
+            payslip.lw_days = payslip._get_work_days_line_total('LW')
+            payslip.total_payable_days = (payslip._get_work_days_line_total('P') + payslip._get_work_days_line_total('F') +
+                                          payslip._get_work_days_line_total('H') + payslip._get_work_days_line_total('CO') +
+                                          payslip._get_work_days_line_total('AJ') + payslip._get_work_days_line_total('CL') + 
+                                          payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL'))
             
     @api.depends('contract_id','date_from','date_to')
     def _compute_ot_rate(self):

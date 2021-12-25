@@ -37,6 +37,20 @@
         <field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree"/>
         <field name="arch" type="xml">
             <tree string="Payslips" js_class="hr_payroll_payslip_tree" sample="1">
+                <field name="working_days" string="Working Days"/>
+                <field name="basic_absent_days" string="Basic Absent"/>
+                <field name="gross_absent_days" string="Gross Absent"/>
+                <field name="friday_days" string="Friday"/>
+                <field name="holiday_days" string="Holiday"/>
+                <field name="coff_days" string="CO"/>
+                <field name="adjust_days" string="AJ"/>
+                <field name="late_days" string="Late"/>
+                <field name="cl_days" string="CL"/>
+                <field name="sl_days" string="SL"/>
+                <field name="el_days" string="EL"/>
+                <field name="ml_days" string="ML"/>
+                <field name="lw_days" string="LW"/>
+                <field name="total_payable_days" string="Total Payable Days"/>
                 <field name="gross_wage" string="Gross"/>
                 <field name="basic_wage" position="move"/>
                 <field name="hra_wage" string="House Rent"/>
