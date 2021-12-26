@@ -219,8 +219,11 @@ class StockBridgeReport(models.TransientModel):
                 qty_a = avg_qty
                 if qty_a <= 0:
                     qty_a = 1
+                val_a = avg_value
+                if val_a <= 0:
+                    val_a = 1
                 
-                num_day = round((closing_qty/qty_a)*30,0)
+                num_day = round((closing_value/val_a)*30,0)
                 #num_day = round((closing_value/avg_value)*30)
                 #raise UserError((num_day))
                 #fst_m_s_day,fst_m_e_day,sec_m_s_day,sec_m_e_day,last_m_s_day,last_m_e_day
@@ -258,8 +261,12 @@ class StockBridgeReport(models.TransientModel):
             avg_categ_qty=sum(row[12] for row in report_product_data)
             avg_categ_value=sum(row[13] for row in report_product_data)
             
-            num_day_categ =sum(row[14] for row in report_product_data)
+            #num_day_categ =sum(row[14] for row in report_product_data)
             
+            val_c_a = avg_categ_value
+            if val_c_a <= 0:
+                val_c_a = 1
+            num_day_categ = round((closing_categ_value/val_c_a)*30,0)
             parent_type = ''
             if categ.parent_id.name:
                 parent_type = categ.parent_id.name
@@ -291,6 +298,10 @@ class StockBridgeReport(models.TransientModel):
         worksheet = workbook.add_worksheet()
 
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
+        report_col_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#6B8DE3'})
+        report_col_style_1 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#F8715F'})
+        report_col_style_2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#A2D374'})
+        report_col_style_3 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#EEED8A'})
         worksheet.merge_range('C2:F2', 'Bridge Report', report_title_style)
 
         report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14})
@@ -301,11 +312,11 @@ class StockBridgeReport(models.TransientModel):
         #m3 = last_m_s_day.strftime("%B,%y")
         
         worksheet.write(3, 3, report_month, report_small_title_style)
-        worksheet.merge_range('D6:E6', 'Closing Stock', report_title_style)
-        worksheet.merge_range('F6:G6', m1, report_title_style)
-        worksheet.merge_range('H6:I6', m2, report_title_style)
-        worksheet.merge_range('J6:K6', m3, report_title_style)
-        worksheet.merge_range('L6:M6', 'Avg Consumption', report_title_style)
+        worksheet.merge_range('E6:F6', 'Closing Stock', report_col_style_1)
+        worksheet.merge_range('G6:H6', m1, report_col_style_2)
+        worksheet.merge_range('I6:J6', m2, report_col_style_3)
+        worksheet.merge_range('K6:L6', m3, report_col_style_2)
+        worksheet.merge_range('M6:N6', 'Avg Consumption', report_col_style_1)
         
         column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
@@ -316,16 +327,16 @@ class StockBridgeReport(models.TransientModel):
         
         worksheet.set_column(0, 14, 20)
         
-        worksheet.write(6, 0, 'Product', column_product_style)        
-        worksheet.write(6, 1, 'Category', column_product_style)        
+        worksheet.write(6, 0, 'Product', column_product_style)
+        worksheet.write(6, 1, 'Category', column_product_style)
         worksheet.write(6, 2, 'Sub Category', column_product_style)
         worksheet.write(6, 3, 'Item', column_product_style)
-        worksheet.write(6, 4, 'Quantity', column_product_style)
-        worksheet.write(6, 5, 'Value', column_product_style)
+        worksheet.write(6, 4, 'Quantity', column_issued_style)
+        worksheet.write(6, 5, 'Value', column_issued_style)
         worksheet.write(6, 6, 'Quantity', column_received_style)
         worksheet.write(6, 7, 'Value', column_received_style)
-        worksheet.write(6, 8, 'Quantity', column_received_style)
-        worksheet.write(6, 9, 'Value', column_received_style)
+        worksheet.write(6, 8, 'Quantity', column_product_style)
+        worksheet.write(6, 9, 'Value', column_product_style)
         worksheet.write(6, 10, 'Quantity', column_received_style)
         worksheet.write(6, 11, 'Value', column_received_style)
         worksheet.write(6, 12, 'Quantity', column_issued_style)
