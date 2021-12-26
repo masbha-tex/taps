@@ -33,18 +33,17 @@ class StockBridgeReport(models.TransientModel):
         return qty
     
     def getopening_val(self,productid,from_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', from_date),('description','not like','%LC/%')])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', from_date)])#,('description','not like','%LC/%')
         val = sum(stock_details.mapped('value'))
-        
-        landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '<', from_date.date())])
-        
-        lclist = landedcost.mapped('id')
-        lc_details = self.env['stock.valuation.adjustment.lines'].search([('product_id', '=', productid),('cost_id', 'in', (lclist))])
-        lc_val = 0
-        if len(lc_details)>0:
-            lc_val = sum(lc_details.mapped('additional_landed_cost'))
-            val = val + lc_val
         return val
+        #landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '<', from_date.date())])
+        
+        #lclist = landedcost.mapped('id')
+        #lc_details = self.env['stock.valuation.adjustment.lines'].search([('product_id', '=', productid),('cost_id', 'in', (lclist))])
+        #lc_val = 0
+        #if len(lc_details)>0:
+        #    lc_val = sum(lc_details.mapped('additional_landed_cost'))
+        #    val = val + lc_val
     
     def getreceive_qty(self,productid,from_date,stock_date):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('quantity', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', stock_date),('description','not like','%Product Quantity Updated%')])
@@ -88,17 +87,18 @@ class StockBridgeReport(models.TransientModel):
             qty = qty-reject_qty'''
     
     def getclosing_val(self,productid,stock_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', stock_date),('description','not like','%LC/%')])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date','<',stock_date)])
+        #,('description','not like','%LC/%')
         val = sum(stock_details.mapped('value'))
-        landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '<', stock_date.date())])
-        
-        lclist = landedcost.mapped('id')
-        lc_details = self.env['stock.valuation.adjustment.lines'].search([('product_id', '=', productid),('cost_id', 'in', (lclist))])
-        lc_val = 0
-        if len(lc_details)>0:
-            lc_val = sum(lc_details.mapped('additional_landed_cost'))
-            val = val + lc_val
         return val
+        #landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '<', stock_date.date())])
+        
+        #lclist = landedcost.mapped('id')
+        #lc_details = self.env['stock.valuation.adjustment.lines'].search([('product_id', '=', productid),('cost_id', 'in', (lclist))])
+        #lc_val = 0
+        #if len(lc_details)>0:
+        #    lc_val = sum(lc_details.mapped('additional_landed_cost'))
+        #    val = val + lc_val
         
         '''reject_stock = self.env['stock.production.lot'].search([('product_id', '=', productid),('x_studio_rejected','=',1)])
         if len(reject_stock)>0:
@@ -224,6 +224,8 @@ class StockBridgeReport(models.TransientModel):
                     val_a = 1
                 
                 num_day = round((closing_value/val_a)*30,0)
+                if num_day>1000:
+                    num_day = 0
                 #num_day = round((closing_value/avg_value)*30)
                 #raise UserError((num_day))
                 #fst_m_s_day,fst_m_e_day,sec_m_s_day,sec_m_e_day,last_m_s_day,last_m_e_day
@@ -267,6 +269,8 @@ class StockBridgeReport(models.TransientModel):
             if val_c_a <= 0:
                 val_c_a = 1
             num_day_categ = round((closing_categ_value/val_c_a)*30,0)
+            if num_day_categ>1000:
+                num_day_categ = 0
             parent_type = ''
             if categ.parent_id.name:
                 parent_type = categ.parent_id.name
