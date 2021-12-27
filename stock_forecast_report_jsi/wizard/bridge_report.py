@@ -146,10 +146,11 @@ class StockBridgeReport(models.TransientModel):
         fst_m_s_day = combine(fst_s_day, self.float_to_time(hour_from))
         fst_m_e_day = combine(fst_e_day, self.float_to_time(hour_to))
         
+        m = t_date.strftime("%d-%B,%y")
         m1 = fst_m_s_day.strftime("%B,%y")
         m2 = sec_m_s_day.strftime("%B,%y")
         m3 = last_m_s_day.strftime("%B,%y")
-        report_month = m1+' - '+m2+' - '+m3
+        #report_month = m1+' - '+m2+' - '+m3
         
         if not (self.product_ids or self.categ_ids):
             products = Product.search([('type', '=', 'product'),('default_code', 'like', 'R_')])
@@ -194,14 +195,14 @@ class StockBridgeReport(models.TransientModel):
                 lst_issued_qty = self.getissue_qty(product_id,last_m_s_day,last_m_e_day)
                 lst_issued_value = self.getissue_val(product_id,last_m_s_day,last_m_e_day)
                 
-                fst_issued_qty = round(abs(fst_issued_qty),2)
-                fst_issued_value = round(abs(fst_issued_value),2)
+                fst_issued_qty = round(abs(fst_issued_qty),0)
+                fst_issued_value = round(abs(fst_issued_value),0)
                 
-                sec_issued_qty = round(abs(sec_issued_qty),2)
-                sec_issued_value = round(abs(sec_issued_value),2)
+                sec_issued_qty = round(abs(sec_issued_qty),0)
+                sec_issued_value = round(abs(sec_issued_value),0)
                 
-                lst_issued_qty = round(abs(lst_issued_qty),2)
-                lst_issued_value = round(abs(lst_issued_value),2)
+                lst_issued_qty = round(abs(lst_issued_qty),0)
+                lst_issued_value = round(abs(lst_issued_value),0)
                 
                 avg_qty = round((fst_issued_qty+sec_issued_qty+lst_issued_qty)/3,0)
                 avg_value = round((fst_issued_value+sec_issued_value+lst_issued_value)/3,0)
@@ -209,12 +210,12 @@ class StockBridgeReport(models.TransientModel):
                 closing_qty = self.getclosing_qty(product_id,stock_date)
                 closing_value = self.getclosing_val(product_id,stock_date)
                 
-                closing_value = round(abs(closing_value),2)
+                closing_value = round(abs(closing_value),0)
                 if closing_qty<=0:
                     closing_qty = 0
                     closing_value = 0
                 
-                closing_qty = round(abs(closing_qty),2)
+                closing_qty = round(abs(closing_qty),0)
                 
                 qty_a = avg_qty
                 if qty_a <= 0:
@@ -236,7 +237,6 @@ class StockBridgeReport(models.TransientModel):
                 product_data = [
                     '',
                     '',
-                    pur_desc,
                     product.name,
                     closing_qty,
                     closing_value,
@@ -252,16 +252,16 @@ class StockBridgeReport(models.TransientModel):
                 ]
                 report_product_data.append(product_data)
             
-            closing_categ_qty=sum(row[4] for row in report_product_data)
-            closing_categ_value=sum(row[5] for row in report_product_data)
-            fst_categ_qty=sum(row[6] for row in report_product_data)
-            fst_categ_value=sum(row[7] for row in report_product_data)
-            sec_categ_qty=sum(row[8] for row in report_product_data)
-            sec_categ_value=sum(row[9] for row in report_product_data)
-            lst_categ_qty=sum(row[10] for row in report_product_data)
-            lst_categ_value=sum(row[11] for row in report_product_data)
-            avg_categ_qty=sum(row[12] for row in report_product_data)
-            avg_categ_value=sum(row[13] for row in report_product_data)
+            closing_categ_qty=sum(row[3] for row in report_product_data)
+            closing_categ_value=sum(row[4] for row in report_product_data)
+            fst_categ_qty=sum(row[5] for row in report_product_data)
+            fst_categ_value=sum(row[6] for row in report_product_data)
+            sec_categ_qty=sum(row[7] for row in report_product_data)
+            sec_categ_value=sum(row[8] for row in report_product_data)
+            lst_categ_qty=sum(row[9] for row in report_product_data)
+            lst_categ_value=sum(row[10] for row in report_product_data)
+            avg_categ_qty=sum(row[11] for row in report_product_data)
+            avg_categ_value=sum(row[12] for row in report_product_data)
             
             #num_day_categ =sum(row[14] for row in report_product_data)
             
@@ -278,7 +278,6 @@ class StockBridgeReport(models.TransientModel):
                     parent_type,
                     categ.name,
                     '',
-                    '',
                     closing_categ_qty,
                     closing_categ_value,
                     fst_categ_qty,
@@ -293,59 +292,83 @@ class StockBridgeReport(models.TransientModel):
                 ]
             
             report_data.append(product_cat_data)
-            if self.report_by == 'by_items':
+            if self.report_by == 'by_items' or categ.name.find('STD SLIDER')==1:# 
                 for prodata in report_product_data:
                     report_data.append(prodata)
-
+        #total_report_data = report_data.search([([2], '=', '')])
+        #total_report_data = report_data.filtered(lambda lv: [2]=='')
+        total_closing_value=sum(row[4] for row in report_data if row[2]=='')
+        total_1st_value=sum(row[6] for row in report_data if row[2]=='')
+        total_2nd_value=sum(row[8] for row in report_data if row[2]=='')
+        total_3rd_value=sum(row[10] for row in report_data if row[2]=='')
+        total_avg_value=sum(row[12] for row in report_data if row[2]=='')
+        total_days=sum(row[13] for row in report_data if row[2]=='')
+        product_cat_total = [
+            '',
+            '',
+            'Total',
+            '',
+            total_closing_value,
+            '',
+            total_1st_value,
+            '',
+            total_2nd_value,
+            '',
+            total_3rd_value,
+            '',
+            total_avg_value,
+            total_days,
+        ]
+        report_data.append(product_cat_total)
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet()
 
-        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
-        report_col_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#6B8DE3'})
-        report_col_style_1 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#F8715F'})
-        report_col_style_2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#A2D374'})
-        report_col_style_3 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#EEED8A'})
-        worksheet.merge_range('C2:F2', 'Bridge Report', report_title_style)
+        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16})#, 'bg_color': '#C8EAAB'
+        report_col_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16})#, 'bg_color': '#6B8DE3'
+        report_col_style_1 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16})#, 'bg_color': '#F8715F'
+        report_col_style_2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16})#, 'bg_color': '#A2D374'
+        report_col_style_3 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16})#, 'bg_color': '#EEED8A'
+        worksheet.merge_range('C2:F2', 'RM Stock Bridge Report', report_title_style)
 
-        report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14})
+        report_small_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 13})
         
         #('%s-%s-%s' % (format_date(self.env, from_date), format_date(self.env, to_date)))
         #m1 = fst_m_s_day.strftime("%B,%y")
         #m2 = sec_m_s_day.strftime("%B,%y")
         #m3 = last_m_s_day.strftime("%B,%y")
         
-        worksheet.write(3, 3, report_month, report_small_title_style)
-        worksheet.merge_range('E6:F6', 'Closing Stock', report_col_style_1)
-        worksheet.merge_range('G6:H6', m1, report_col_style_2)
-        worksheet.merge_range('I6:J6', m2, report_col_style_3)
-        worksheet.merge_range('K6:L6', m3, report_col_style_2)
-        worksheet.merge_range('M6:N6', 'Avg Consumption', report_col_style_1)
+        worksheet.merge_range('D3:E3', m, report_small_title_style)
+        worksheet.merge_range('D6:E6', 'Closing Stock', report_col_style_1)
+        worksheet.merge_range('F6:G6', m1, report_col_style_2)
+        worksheet.merge_range('H6:I6', m2, report_col_style_3)
+        worksheet.merge_range('J6:K6', m3, report_col_style_2)
+        worksheet.merge_range('L6:M6', 'Avg Consumption', report_col_style_1)
         
-        column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
-        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
-        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+        column_product_style = workbook.add_format({'bold': True, 'font_size': 12})#'bg_color': '#EEED8A', 
+        column_received_style = workbook.add_format({'bold': True, 'font_size': 12})#'bg_color': '#A2D374', 
+        column_issued_style = workbook.add_format({'bold': True, 'font_size': 12})#'bg_color': '#F8715F', 
+        row_categ_style = workbook.add_format({'bold': True})#, 'bg_color': '#6B8DE3'
 
         # set the width od the column
         
-        worksheet.set_column(0, 14, 20)
+        worksheet.set_column(0, 13, 20)
         
+        #worksheet.write(6, 2, 'Sub Category', column_product_style)
         worksheet.write(6, 0, 'Product', column_product_style)
         worksheet.write(6, 1, 'Category', column_product_style)
-        worksheet.write(6, 2, 'Sub Category', column_product_style)
-        worksheet.write(6, 3, 'Item', column_product_style)
-        worksheet.write(6, 4, 'Quantity', column_issued_style)
-        worksheet.write(6, 5, 'Value', column_issued_style)
-        worksheet.write(6, 6, 'Quantity', column_received_style)
-        worksheet.write(6, 7, 'Value', column_received_style)
-        worksheet.write(6, 8, 'Quantity', column_product_style)
-        worksheet.write(6, 9, 'Value', column_product_style)
-        worksheet.write(6, 10, 'Quantity', column_received_style)
-        worksheet.write(6, 11, 'Value', column_received_style)
-        worksheet.write(6, 12, 'Quantity', column_issued_style)
-        worksheet.write(6, 13, 'Value', column_issued_style)
-        worksheet.write(6, 14, 'Number of Days', column_received_style)
+        worksheet.write(6, 2, 'Item', column_product_style)
+        worksheet.write(6, 3, 'Quantity', column_issued_style)
+        worksheet.write(6, 4, 'Value', column_issued_style)
+        worksheet.write(6, 5, 'Quantity', column_received_style)
+        worksheet.write(6, 6, 'Value', column_received_style)
+        worksheet.write(6, 7, 'Quantity', column_product_style)
+        worksheet.write(6, 8, 'Value', column_product_style)
+        worksheet.write(6, 9, 'Quantity', column_received_style)
+        worksheet.write(6, 10, 'Value', column_received_style)
+        worksheet.write(6, 11, 'Quantity', column_issued_style)
+        worksheet.write(6, 12, 'Value', column_issued_style)
+        worksheet.write(6, 13, 'Number of Days', column_received_style)
         col = 0
         row=7
         
@@ -353,12 +376,7 @@ class StockBridgeReport(models.TransientModel):
             col=0
             categ=False
             for l in line:
-                if l != '' and col==1 :
-                    categ=True
-                if categ==True:
-                    worksheet.write(row, col, l, row_categ_style)
-                else:
-                    worksheet.write(row, col, l)
+                worksheet.write(row, col, l, row_categ_style)
                 col+=1
             row+=1
         workbook.close()
