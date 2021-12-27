@@ -160,11 +160,26 @@ class StockBridgeReport(models.TransientModel):
             products = Product.search([('categ_type', 'in', self.categ_ids.ids),('default_code', 'like', 'R_')])
         # Date wise opening quantity
         #product_quantities = products._compute_quantities_dict(False, False, False, from_date, stock_date)
-        products = products.sorted(key = 'categ_type')
+        #products = products.sorted(key = 'parent_id')#categ.parent_id.name
         #categ.parent_id.name
+        
+        
+        
         report_data = []
-
-        for categ in products.categ_type:
+        #ca_type = products.categ_type
+        calist = products.mapped('categ_type')
+        calist = calist.mapped('id')
+        #raise UserError((calist.id))
+        #self.env['product.product'].search([('default_code', 'like', 'R_')])
+        Catype = self.env['category.type']
+        Catypes = Catype.search([('id', 'in', (calist))])
+        #ca_type = self.env['category.type'].search([('id', 'in', (calist))])
+        sort_ca_type = Catypes.sorted(key = 'parent_id')
+        
+        #sort_ca_type = ca_type.sorted(ca_type.sorted(key = lambda x : x[9]), key = lambda x : x[0], reverse = True)
+        #sorted(sorted(a, key = lambda x : x[0]), key = lambda x : x[1], reverse = True) 
+        #raise UserError((sort_ca_type))
+        for categ in sort_ca_type:#products.categ_type
             #report_data.append([categ.display_name])
             categ_products = products.filtered(lambda x: x.categ_type == categ)
             #stock_details = self.env['category.type'].search([('product_id', '=', productid),('schedule_date', '<', stock_date)])
