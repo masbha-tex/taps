@@ -292,7 +292,7 @@ class StockBridgeReport(models.TransientModel):
                 ]
             
             report_data.append(product_cat_data)
-            if self.report_by == 'by_items' or categ.name.find('STD SLIDER')==1:# 
+            if self.report_by == 'by_items' or categ.name.find('STD SLIDER')>0:# 
                 for prodata in report_product_data:
                     report_data.append(prodata)
         #total_report_data = report_data.search([([2], '=', '')])
