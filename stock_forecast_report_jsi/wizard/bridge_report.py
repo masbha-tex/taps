@@ -253,6 +253,7 @@ class StockBridgeReport(models.TransientModel):
                     '',
                     '',
                     product.name,
+                    product.uom_id.name,
                     closing_qty,
                     closing_value,
                     fst_issued_qty,
@@ -267,16 +268,17 @@ class StockBridgeReport(models.TransientModel):
                 ]
                 report_product_data.append(product_data)
             
-            closing_categ_qty=sum(row[3] for row in report_product_data)
-            closing_categ_value=sum(row[4] for row in report_product_data)
-            fst_categ_qty=sum(row[5] for row in report_product_data)
-            fst_categ_value=sum(row[6] for row in report_product_data)
-            sec_categ_qty=sum(row[7] for row in report_product_data)
-            sec_categ_value=sum(row[8] for row in report_product_data)
-            lst_categ_qty=sum(row[9] for row in report_product_data)
-            lst_categ_value=sum(row[10] for row in report_product_data)
-            avg_categ_qty=sum(row[11] for row in report_product_data)
-            avg_categ_value=sum(row[12] for row in report_product_data)
+            categ_uom=max(row[3] for row in report_product_data)
+            closing_categ_qty=sum(row[4] for row in report_product_data)
+            closing_categ_value=sum(row[5] for row in report_product_data)
+            fst_categ_qty=sum(row[6] for row in report_product_data)
+            fst_categ_value=sum(row[7] for row in report_product_data)
+            sec_categ_qty=sum(row[8] for row in report_product_data)
+            sec_categ_value=sum(row[9] for row in report_product_data)
+            lst_categ_qty=sum(row[10] for row in report_product_data)
+            lst_categ_value=sum(row[11] for row in report_product_data)
+            avg_categ_qty=sum(row[12] for row in report_product_data)
+            avg_categ_value=sum(row[13] for row in report_product_data)
             
             #num_day_categ =sum(row[14] for row in report_product_data)
             
@@ -293,6 +295,7 @@ class StockBridgeReport(models.TransientModel):
                     parent_type,
                     categ.name,
                     '',
+                    categ_uom,
                     closing_categ_qty,
                     closing_categ_value,
                     fst_categ_qty,
@@ -312,12 +315,12 @@ class StockBridgeReport(models.TransientModel):
                     report_data.append(prodata)
         #total_report_data = report_data.search([([2], '=', '')])
         #total_report_data = report_data.filtered(lambda lv: [2]=='')
-        total_closing_value=sum(row[4] for row in report_data if row[2]=='')
-        total_1st_value=sum(row[6] for row in report_data if row[2]=='')
+        total_closing_value=sum(row[5] for row in report_data if row[2]=='')
+        total_1st_value=sum(row[7] for row in report_data if row[2]=='')
         total_2nd_value=sum(row[8] for row in report_data if row[2]=='')
-        total_3rd_value=sum(row[10] for row in report_data if row[2]=='')
-        total_avg_value=sum(row[12] for row in report_data if row[2]=='')
-        total_days=sum(row[13] for row in report_data if row[2]=='')
+        total_3rd_value=sum(row[11] for row in report_data if row[2]=='')
+        total_avg_value=sum(row[13] for row in report_data if row[2]=='')
+        total_days=sum(row[14] for row in report_data if row[2]=='')
         product_cat_total = [
             '',
             '',
@@ -354,11 +357,11 @@ class StockBridgeReport(models.TransientModel):
         #m3 = last_m_s_day.strftime("%B,%y")
         
         worksheet.merge_range('D3:E3', m, report_small_title_style)
-        worksheet.merge_range('D6:E6', 'Closing Stock', report_col_style_1)
-        worksheet.merge_range('F6:G6', m1, report_col_style_2)
-        worksheet.merge_range('H6:I6', m2, report_col_style_3)
-        worksheet.merge_range('J6:K6', m3, report_col_style_2)
-        worksheet.merge_range('L6:M6', 'Avg Consumption', report_col_style_1)
+        worksheet.merge_range('E6:F6', 'Closing Stock', report_col_style_1)
+        worksheet.merge_range('G6:H6', m1, report_col_style_2)
+        worksheet.merge_range('I6:J6', m2, report_col_style_3)
+        worksheet.merge_range('K6:L6', m3, report_col_style_2)
+        worksheet.merge_range('M6:N6', 'Avg Consumption', report_col_style_1)
         
         column_product_style = workbook.add_format({'bold': True, 'font_size': 12})#'bg_color': '#EEED8A', 
         column_received_style = workbook.add_format({'bold': True, 'font_size': 12})#'bg_color': '#A2D374', 
@@ -367,23 +370,24 @@ class StockBridgeReport(models.TransientModel):
 
         # set the width od the column
         
-        worksheet.set_column(0, 13, 20)
+        worksheet.set_column(0, 14, 20)
         
         #worksheet.write(6, 2, 'Sub Category', column_product_style)
         worksheet.write(6, 0, 'Product', column_product_style)
         worksheet.write(6, 1, 'Category', column_product_style)
         worksheet.write(6, 2, 'Item', column_product_style)
-        worksheet.write(6, 3, 'Quantity', column_issued_style)
-        worksheet.write(6, 4, 'Value', column_issued_style)
-        worksheet.write(6, 5, 'Quantity', column_received_style)
-        worksheet.write(6, 6, 'Value', column_received_style)
-        worksheet.write(6, 7, 'Quantity', column_product_style)
-        worksheet.write(6, 8, 'Value', column_product_style)
-        worksheet.write(6, 9, 'Quantity', column_received_style)
-        worksheet.write(6, 10, 'Value', column_received_style)
-        worksheet.write(6, 11, 'Quantity', column_issued_style)
-        worksheet.write(6, 12, 'Value', column_issued_style)
-        worksheet.write(6, 13, 'Number of Days', column_received_style)
+        worksheet.write(6, 3, 'Unit', column_product_style)
+        worksheet.write(6, 4, 'Quantity', column_issued_style)
+        worksheet.write(6, 5, 'Value', column_issued_style)
+        worksheet.write(6, 6, 'Quantity', column_received_style)
+        worksheet.write(6, 7, 'Value', column_received_style)
+        worksheet.write(6, 8, 'Quantity', column_product_style)
+        worksheet.write(6, 9, 'Value', column_product_style)
+        worksheet.write(6, 10, 'Quantity', column_received_style)
+        worksheet.write(6, 11, 'Value', column_received_style)
+        worksheet.write(6, 12, 'Quantity', column_issued_style)
+        worksheet.write(6, 13, 'Value', column_issued_style)
+        worksheet.write(6, 14, 'Number of Days', column_received_style)
         col = 0
         row=7
         
