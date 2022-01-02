@@ -1,4 +1,9 @@
 from odoo import models, fields, api
+from odoo.tools.misc import format_datetime
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import format_date
+from datetime import date, datetime, time, timedelta
+from dateutil.relativedelta import relativedelta
 
 class IncludeCateTypeInPT(models.Model):
     _inherit = 'stock.move.line'
@@ -7,7 +12,7 @@ class IncludeCateTypeInPT(models.Model):
     qty_onhand = fields.Float(related='lot_id.product_qty', readonly=True, store=True, string='Quantity')
     unit_price = fields.Float(related='product_id.standard_price', readonly=True, store=True, string='Price')
     value = fields.Float(compute='_compute_product_value', readonly=True, store=True, string='Value')
-    
+    duration = fields.Integer(string='Duration', compute='_compute_duration', store=True, readonly=True)    
     #product_id.categ_type.parent_id.name
     @api.depends('product_id', 'product_uom_id', 'product_uom_qty')
     def _compute_product_value(self):
@@ -46,3 +51,15 @@ class IncludeCateTypeInPT(models.Model):
                 aggregated_move_lines[line_key]['qty_onhand'] += move_line.qty_onhand
                 aggregated_move_lines[line_key]['value'] += move_line.value
         return aggregated_move_lines
+    
+    @api.depends('product_id')
+    def _compute_duration(self):
+        for line in self:
+            sc_date = line.create_date
+            if line.x_studio_schedule_date:
+                sc_date = line.x_studio_schedule_date
+            x = datetime.now().replace(hour=0, minute =0, second = 0, microsecond = 0)
+            y = sc_date.replace(hour=23, minute =59, second = 59, microsecond = 0)
+            dur = x-y#datetime.now() - sc_date
+            #raise UserError((line.x_studio_schedule_date))
+            line.duration = dur.days    
