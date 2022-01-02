@@ -54,8 +54,8 @@ class HolidaysRequest(models.Model):
         for d in range(0, endd+1):
             get_att_data = att_obj.search([('empID', '=', self.employee_id.emp_id),
                                            ('attDate', '=', (st_date + timedelta(days=d)))])
-            get_att_data.generateAttFlag(get_att_data.empID,get_att_data.attDate,get_att_data.inTime,get_att_data.inHour,
-                                         get_att_data.outTime,get_att_data.outHour)        
+            get_att_data.generateAttFlag(get_att_data.empID,get_att_data.attDate,get_att_data.inTime,get_att_data.check_in,
+                                         get_att_data.outTime,get_att_data.check_out)        
         return True
 		
     def action_refuse(self):

@@ -191,8 +191,8 @@ class HrPayslipsss(models.Model):
         self.ensure_one()
         res = []
         att_obj = self.env['hr.attendance']
+        leave_obj = self.env['hr.leave']
 
-        
         basic_absent_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', ('A'))])
         ba_days = len(basic_absent_record)
         ba_hours = sum(basic_absent_record.mapped('worked_hours'))
@@ -229,33 +229,35 @@ class HrPayslipsss(models.Model):
         a_days = len(aj_record)
         a_hours = sum(aj_record.mapped('worked_hours'))
         
-        od_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'OD')])
-        o_days = len(od_record)
-        o_hours = sum(od_record.mapped('worked_hours'))        
-        
         tiffin_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('otHours', '>=', 2.0),('inFlag', 'not in', ('HP','FP'))])
         t_days = len(tiffin_record)
         t_hours = sum(tiffin_record.mapped('worked_hours'))
+
+        cl_record = leave_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('date_from', '>=',self.date_from),('date_to', '<=',self.date_to),('holiday_status_id', '=', 107)])
+        cl_days = sum(cl_record.mapped('number_of_days'))
+        cl_hours = False
         
-        cl_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'CL')])
-        cl_days = len(cl_record)
-        cl_hours = sum(cl_record.mapped('worked_hours'))
+        sl_record = leave_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('date_from', '>=',self.date_from),('date_to', '<=',self.date_to),('holiday_status_id', '=', 115)])
+        sl_days = sum(sl_record.mapped('number_of_days'))
+        sl_hours = False
         
-        sl_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'SL')])
-        sl_days = len(sl_record)
-        sl_hours = sum(sl_record.mapped('worked_hours'))
+        el_record = leave_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('date_from', '>=',self.date_from),('date_to', '<=',self.date_to),('holiday_status_id', '=', 114)])
+        el_days = sum(el_record.mapped('number_of_days'))
+        el_hours = False
         
-        el_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'EL')])
-        el_days = len(el_record)
-        el_hours = sum(el_record.mapped('worked_hours'))
+        ml_record = leave_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('date_from', '>=',self.date_from),('date_to', '<=',self.date_to),('holiday_status_id', '=', 110)])
+        ml_days = sum(ml_record.mapped('number_of_days'))
+        ml_hours = False
         
-        ml_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'ML')])
-        ml_days = len(ml_record)
-        ml_hours = sum(ml_record.mapped('worked_hours'))
+        lw_record = leave_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('date_from', '>=',self.date_from),('date_to', '<=',self.date_to),('holiday_status_id', '=', 116)])
+        lw_days = sum(lw_record.mapped('number_of_days'))
+        lw_hours = False
         
-        lw_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'LW')])
-        lw_days = len(lw_record)
-        lw_hours = sum(lw_record.mapped('worked_hours'))        
+        od_record = leave_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('date_from', '>=',self.date_from),('date_to', '<=',self.date_to),('holiday_status_id', '=', 111)])
+        o_days = sum(od_record.mapped('number_of_days'))
+        o_hours = False          
+        
+        #raise UserError((cl_days))
                 
         if cl_days>0:#'CL'
             day_rounded=cl_days
