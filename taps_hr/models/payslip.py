@@ -52,7 +52,6 @@ class HrPayslipsss(models.Model):
     earnings_total = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     deduction_total = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     net_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    
     working_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     basic_absent_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     gross_absent_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
@@ -65,7 +64,7 @@ class HrPayslipsss(models.Model):
     cl_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     sl_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     el_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    ml_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    ml_days = fields.Float(compute='_compute_basic_net')
     lw_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     total_payable_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     

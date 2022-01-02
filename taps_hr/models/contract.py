@@ -191,15 +191,15 @@ class HrContract(models.Model):
             if interval[2].inFlag in ('F','A','X'):
                 work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', interval[2].inFlag)])
                 default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
-            #if interval[2].otHours>=2:
-                #work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', 'T')])
-                #default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
-            #if interval[2].inFlag in ('L'):
-                #work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', 'L')])
-                #default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
-            #if interval[2].outFlag in ('EO'):
-                #work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', 'EO')])
-                #default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
+            if interval[2].otHours>=2:
+                work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', 'T')])
+                default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
+            if interval[2].inFlag in ('L'):
+                work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', 'L')])
+                default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
+            if interval[2].outFlag in ('EO'):
+                work_entry_type = self.env['hr.work.entry.type'].search([('code', '=', 'EO')])
+                default_work_entry_type = work_entry_type#self._get_friday_work_entry_type()
                 
             work_entry_type_id = default_work_entry_type
             # All benefits generated here are using datetimes converted from the employee's timezone
