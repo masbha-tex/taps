@@ -29,7 +29,6 @@ class StockQuantityHistory(models.TransientModel):
     _inherit = 'stock.quantity.history'
 
     def open_at_date(self):
-        raise UserError(('sfefe'))
         active_model = self.env.context.get('active_model')
         if active_model == 'stock.valuation.layer':
             action = self.env["ir.actions.actions"]._for_xml_id("stock_account.stock_valuation_layer_action")

@@ -26,6 +26,7 @@
     
     'data': [
         #'data/insert_schedule_date.xml',
+        'data/update_duration_for_ageing.xml',
         'views/stock_register_views.xml',
         'views/product_template.xml',
         'views/product_move.xml',
