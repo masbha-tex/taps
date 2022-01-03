@@ -12,7 +12,7 @@ class IncludeCateTypeInPT(models.Model):
     qty_onhand = fields.Float(related='lot_id.product_qty', readonly=True, store=True, string='Quantity')
     unit_price = fields.Float(related='product_id.standard_price', readonly=True, store=True, string='Price')
     value = fields.Float(compute='_compute_product_value', readonly=True, store=True, string='Value')
-    duration_day = fields.Integer(string='Duration', compute='_compute_duration', store=True, readonly=True)
+    #duration_day = fields.Integer(string='Duration', compute='_compute_duration', store=True, readonly=True)
     #product_id.categ_type.parent_id.name
     @api.depends('product_id', 'product_uom_id', 'product_uom_qty')
     def _compute_product_value(self):
