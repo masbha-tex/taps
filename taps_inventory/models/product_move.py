@@ -12,7 +12,7 @@ class IncludeCateTypeInPT(models.Model):
     qty_onhand = fields.Float(related='lot_id.product_qty', readonly=True, store=True, string='Quantity')
     unit_price = fields.Float(related='product_id.standard_price', readonly=True, store=True, string='Price')
     value = fields.Float(compute='_compute_product_value', readonly=True, store=True, string='Value')
-    duration = fields.Integer(string='Duration', compute='_compute_duration', store=True, readonly=True)    
+    duration_day = fields.Integer(string='Duration', compute='_compute_duration', store=True, readonly=True)
     #product_id.categ_type.parent_id.name
     @api.depends('product_id', 'product_uom_id', 'product_uom_qty')
     def _compute_product_value(self):
@@ -60,6 +60,5 @@ class IncludeCateTypeInPT(models.Model):
                 sc_date = line.x_studio_schedule_date
             x = datetime.now().replace(hour=0, minute =0, second = 0, microsecond = 0)
             y = sc_date.replace(hour=23, minute =59, second = 59, microsecond = 0)
-            dur = x-y#datetime.now() - sc_date
-            #raise UserError((line.x_studio_schedule_date))
-            line.duration = dur.days    
+            dur = x-y
+            line.duration_day = dur.days
