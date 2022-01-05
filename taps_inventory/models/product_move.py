@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, tools
 from odoo.tools.misc import format_datetime
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import format_date
@@ -13,7 +13,9 @@ class IncludeCateTypeInPT(models.Model):
     unit_price = fields.Float(related='product_id.standard_price', readonly=True, store=True, string='Price')
     value = fields.Float(compute='_compute_product_value', readonly=True, store=True, string='Value')
     duration = fields.Integer(string='Duration', compute='_compute_duration', store=True, readonly=True)
-    #product_id.categ_type.parent_id.name
+    pur_price = fields.Float(compute='_compute_purchase_price', readonly=True, string='Purchase Price')
+    #pur_value = fields.Float(compute='_compute_purchase_value', readonly=True, string='Purchase Value')
+    #product_id.categ_type.parent_id.name 
     @api.depends('product_id', 'product_uom_id', 'product_uom_qty')
     def _compute_product_value(self):
         for record in self:
@@ -74,3 +76,14 @@ class IncludeCateTypeInPT(models.Model):
             dur = x-y
             record.duration = dur.days
             
+    def _compute_purchase_price(self):
+        for record in self:
+            stock_v_layer = self.env['stock.valuation.layer'].search([('stock_move_id', '=', int(record.move_id)),('product_id', '=', int(record.product_id)),('description', 'like', '/IN/')])
+            if stock_v_layer:
+                record.pur_price = round(stock_v_layer.unit_cost,4)
+            else:
+                record.pur_price = 0.00
+                
+    #def _compute_purchase_value(self):
+    #    for record in self:
+    #        record['pur_value'] = round(record.qty_done * record.pur_price,2)
