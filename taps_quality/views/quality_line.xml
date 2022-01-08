@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="quality_check_view_form" model="ir.ui.view">
+            <field name="name">quality.check.view.form</field>
+            <field name="model">quality.check</field>
+            <field name="inherit_id" ref="quality_control.quality_check_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='notes']" position="before">
+                   <page name="check_line" string ="Quality Parameters">
+                       <field name="quality_check_line" widget="section_and_note_one2many" mode="tree">
+                           <tree string="Quality Check Lines" editable="bottom">
+                               <control>
+                                   <create name="add_product_control" string="Add a Parameter"/>
+                                   <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                   <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                               </control>
+                               <field name="parameter" invisible="0"/>
+                               <field name="t_level" invisible="0"/>
+                               <field name="value1" invisible="0"/>
+                               <field name="value2" invisible="0"/>
+                               <field name="value3" invisible="0"/>
+                               <field name="value4" invisible="0"/>
+                               <field name="value5" invisible="0"/>
+                               <field name="value6" invisible="0"/>
+                               <field name="value7" invisible="0"/>
+                               <field name="value8" invisible="0"/>
+                               <field name="value9" invisible="0"/>
+                               <field name="value10" invisible="0"/>
+                               <field name="status" invisible="0"/>
+                               </tree>
+                       </field>
+                   </page>
+                </xpath>
+            </field>
+        </record>
+        
+        
+        <record id="quality_check_line_tree" model="ir.ui.view">
+            <field name="name">quality.check.line.tree</field>
+            <field name="model">quality.check.line</field>
+            <field name="arch" type="xml">
+                <tree string="Quality Check Lines" create="false">
+                    <field name="parameter"/>
+                    <field name="t_level"/>
+                    <field name="value1"/>
+                    <field name="value2"/>
+                    <field name="value3"/>
+                    <field name="value4"/>
+                    <field name="value5"/>
+                    <field name="value6"/>
+                    <field name="value7"/>
+                    <field name="value8"/>
+                    <field name="value9"/>
+                    <field name="value10"/>
+                    <field name="status"/>
+                    <field name="quality_category"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

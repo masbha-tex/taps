@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_taps_quality,quality.check.line,model_quality_check_line,quality.group_quality_user,1,1,1,1
