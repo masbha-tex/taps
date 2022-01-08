@@ -1,4 +1,4 @@
-from odoo import models, fields, api, tools
+from odoo import models, fields, api, tools, _
 from odoo.tools.misc import format_datetime
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import format_date
@@ -63,18 +63,18 @@ class IncludeCateTypeInPT(models.Model):
             x = datetime.now().replace(hour=0, minute =0, second = 0, microsecond = 0)
             y = sc_date.replace(hour=23, minute =59, second = 59, microsecond = 0)
             dur = x-y
-            line.duration = dur.days
-            
+            line.duration = dur.days+1
             
     def _update_duration(self):
-        for record in self:
+        move_line = self.env['stock.move.line'].search([('id', '>', 0)])
+        for record in move_line:
             sc_date = record.create_date
             if record.x_studio_schedule_date:
                 sc_date = record.x_studio_schedule_date
             x = datetime.now().replace(hour=0, minute =0, second = 0, microsecond = 0)
             y = sc_date.replace(hour=23, minute =59, second = 59, microsecond = 0)
             dur = x-y
-            record.duration = dur.days
+            record[-1].write({'duration' : dur.days+1})
             
     def _compute_purchase_price(self):
         for record in self:
