@@ -9,18 +9,33 @@ from odoo.osv.expression import OR
 class QualityCheck(models.Model):
     _inherit = "quality.check"
     quality_check_line = fields.One2many('quality.check.line', 'check_id', string='Order Lines', copy=True)
-    
+    quality_category = fields.Selection([
+        ('n3_long_chain', 'N#3 Long Chain'),
+        ('n3_long_chain_grs', 'N#3 Long Chain Grs')], string='Quality Category', tracking=True,
+        default='n3_long_chain', copy=False)
     
     
     
 class QualityCheckLine(models.Model):
     _name = 'quality.check.line'
     _description = 'Quality Check Details'
-
+    
+    
+    @api.onchange('value1','value2','value3','value4','value5',
+                 'value6','value7','value8','value9','value10','f_value','l_value')
+    def set_status(self):
+        for rec in self:
+            if (rec.value1>=rec.f_value and rec.value1<=rec.l_value) and (rec.value2>=rec.f_value and rec.value2<=rec.l_value) and (rec.value3>=rec.f_value and rec.value3<=rec.l_value) and (rec.value4>=rec.f_value and rec.value4<=rec.l_value) and (rec.value5>=rec.f_value and rec.value5<=rec.l_value) and (rec.value6>=rec.f_value and rec.value6<=rec.l_value) and (rec.value7>=rec.f_value and rec.value7<=rec.l_value) and (rec.value8>=rec.f_value and rec.value8<=rec.l_value) and (rec.value9>=rec.f_value and rec.value9<=rec.l_value) and (rec.value10>=rec.f_value and rec.value10<=rec.l_value):
+                rec.status = 'ok'
+            else:
+                rec.status = 'notok'
+    
     name = fields.Char()
     check_id = fields.Many2one('quality.check', string='Check Reference', index=True, required=True, ondelete='cascade')
-    parameter = fields.Text(string='Parameter')
-    t_level = fields.Text(string='Tolarance')
+    parameter = fields.Many2one('quality.parameter', String="Parameter")
+    t_level = fields.Text(related='parameter.t_level')
+    f_value = fields.Float(related='parameter.initial_value')
+    l_value = fields.Float(related='parameter.last_value')
     value1 = fields.Float(string='V1')
     value2 = fields.Float(string='V2')
     value3 = fields.Float(string='V3')
@@ -33,13 +48,8 @@ class QualityCheckLine(models.Model):
     value10 = fields.Float(string='V10')
     status = fields.Selection([
         ('ok', 'Ok'),
-        ('notok', 'Not Ok'),
-        ('nottested', 'Not Tested')], string='Status', tracking=True,
-        default='nottested', copy=False)
-    quality_category = fields.Selection([
-        ('n3_long_chain', 'N#3 Long Chain'),
-        ('n3_long_chain_grs', 'N#3 Long Chain Grs')], string='Quality Category', tracking=True,
-        default='n3_long_chain', copy=False)
+        ('notok', 'Not Ok')], string='Status', tracking=True, 
+        copy=False, store = True)
     
     
 

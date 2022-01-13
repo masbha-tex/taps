@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="parameter_list" model="ir.ui.view">
+        <field name="name">quality.parameter.list</field>
+        <field name="model">quality.parameter</field>
+        <field name="arch" type="xml">
+            <tree string="Parameters">
+                <field name="parameter_name"/>
+                <field name="t_level"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Form View -->
+    <record id="parameter_form" model="ir.ui.view">
+        <field name="name">quality.parameter.form</field>
+        <field name="model">quality.parameter</field>
+        <field name="arch" type="xml">
+            <form string="Parameter Form">
+                <sheet>
+                    <group>
+                        <field name="parameter_name"/>
+                        <field name="quality_category_parameter"/>
+                        <field name="initial_value"/>
+                        <field name="last_value"/>
+                        <field name="t_level"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="quality_parameter_action_config" model="ir.actions.act_window">
+        <field name="name">Quality Parameter</field>
+        <field name="res_model">quality.parameter</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem
+        id="menu_quality_parameter"
+        name="Quality Parameter"
+        action="quality_parameter_action_config"
+        parent="quality_control.menu_quality_configuration"
+        sequence="6"/>
+</odoo>    

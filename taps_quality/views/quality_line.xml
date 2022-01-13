@@ -6,6 +6,9 @@
             <field name="model">quality.check</field>
             <field name="inherit_id" ref="quality_control.quality_check_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="quality_category"/>
+                </xpath>
                 <xpath expr="//page[@name='notes']" position="before">
                    <page name="check_line" string ="Quality Parameters">
                        <field name="quality_check_line" widget="section_and_note_one2many" mode="tree">
@@ -54,8 +57,7 @@
                     <field name="value9"/>
                     <field name="value10"/>
                     <field name="status"/>
-                    <field name="quality_category"/>
-                </tree>
+                 </tree>
             </field>
         </record>
     </data>

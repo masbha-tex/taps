@@ -25,6 +25,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/quality_line.xml',
+        'views/parameter.xml',
     ],
     # only loaded in demonstration mode
     #'demo': [
