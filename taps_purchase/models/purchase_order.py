@@ -21,15 +21,3 @@ class PurchaseOrder(models.Model):
         purchase_last_approver = {i['res_id']: i['max_id'] for i in groups}
         for rec in self:
             rec.last_approver = Entry.browse(purchase_last_approver.get(rec.id, 0)).user_id
-            
-    def button_approve(self, force=False):
-        self = self.filtered(lambda order: order._approval_allowed())
-        self.write({'state': 'purchase', 'date_approve': fields.Datetime.now()})
-        self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
-        self.action_send_card()
-        return {}
-    
-    def action_send_card(self):
-        template_id = 19
-        template = self.env['mail.template'].browse(template_id)
-        template.send_mail(self.id, force_send=True)
