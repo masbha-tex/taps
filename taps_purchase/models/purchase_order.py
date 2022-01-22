@@ -21,3 +21,7 @@ class PurchaseOrder(models.Model):
         purchase_last_approver = {i['res_id']: i['max_id'] for i in groups}
         for rec in self:
             rec.last_approver = Entry.browse(purchase_last_approver.get(rec.id, 0)).user_id
+    
+    def action_send_card(self):
+        template = self.env['mail.template'].browse(19)
+        template.send_mail(self.id, force_send=True)
