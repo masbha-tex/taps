@@ -25,6 +25,9 @@
         'views/hr_payslip_views.xml',
         'views/hr_payslip_input_views.xml',
         'views/salary_adjustment_views.xml',
+        'report/salary_sheet.xml',
+        'report/top_sheet_summary.xml',
+        'report/report.xml'
     ],
     # only loaded in demonstration mode
     'demo': [],
