@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 
 class PurchaseOrder(models.Model):
@@ -22,6 +23,6 @@ class PurchaseOrder(models.Model):
         for rec in self:
             rec.last_approver = Entry.browse(purchase_last_approver.get(rec.id, 0)).user_id
     
-    def action_send_card(self):
+    def action_send_card(self,id):
         template = self.env['mail.template'].browse(19)
-        template.send_mail(self.id, force_send=True)
+        template.send_mail(id, force_send=True)
