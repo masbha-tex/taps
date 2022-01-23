@@ -9,6 +9,7 @@
         <field name="report_file">taps_hr.top_sheet_summary_report</field>
         <field name="binding_model_id" ref="model_hr_payslip"/>
         <field name="binding_type">report</field>
+        <field name="paperformat_id">8</field>
     </record>
 
     <record id="report_salary_sheet" model="ir.actions.report">
@@ -20,6 +21,7 @@
         <field name="binding_model_id" ref="model_hr_payslip"/>
         <field name="binding_type">report</field>
     </record>
+  
 
 <!--    <record id="report_patient_card_xls" model="ir.actions.report">-->
 <!--        <field name="name">Patient Card Excel</field>-->
