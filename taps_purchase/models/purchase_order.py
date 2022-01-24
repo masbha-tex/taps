@@ -25,8 +25,4 @@ class PurchaseOrder(models.Model):
     
     def action_send_card(self,id):
         template = self.env['mail.template'].browse(19)
-        template.send_mail(id, force_send=True)
-        return template
-        
-        #template_obj = self.env['mail.mail']
-        #template_obj.send(19)
+        template.send_mail(self.id, force_send=True)
