@@ -184,13 +184,13 @@ class StockForecastReport(models.TransientModel):
                 # prepare Issued Data
                 #if out_move_dict.get(product_id):
                 issued_qty = self.getissue_qty(product_id,from_date,to_date)# out_move_dict[product_id][0]
-                issued_qty = round(issued_qty,2)
-                if abs(issued_qty)<=0:
+                issued_qty = round(abs(issued_qty),2)
+                if issued_qty<=0:
                     issued_value = 0
                 else:
                     issued_value = self.getissue_val(product_id,from_date,to_date) #(issued_qty * out_move_dict[product_id][1])
                 
-                issued_value = round(issued_value,2)
+                issued_value = round(abs(issued_value),2)
                 # Prepare Closing Quantity
                 closing_qty = opening_qty + received_qty - issued_qty #self.getclosing_qty(product_id,to_date)# 
                 closing_qty = round(closing_qty,2)
