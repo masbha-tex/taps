@@ -7,7 +7,7 @@ from odoo.tools.misc import xlsxwriter
 from odoo.tools.float_utils import float_round as round
 from odoo.tools import format_date
 from datetime import date, datetime, time, timedelta
-from odoo import fields, models
+from odoo import api, fields, models
 import math
 _logger = logging.getLogger(__name__)
 
@@ -25,8 +25,25 @@ class StockForecastReport(models.TransientModel):
     from_date = fields.Date('From')
     to_date = fields.Date('To', default=fields.Date.context_today)
     file_data = fields.Binary(readonly=True, attachment=False)
+    is_spare = fields.Boolean(string='Is a RM', default=False,
+        help="Check if the product is a RM, otherwise it is a Spare Parts")
+    stock_type = fields.Selection(string='Stock of',
+                                    selection=[('rm', 'RM'), ('spare', 'Spare Parts')],
+                                  compute='_compute_stock_type', inverse='_write_stock_type')
     
-    
+    @api.depends('is_spare')
+    def _compute_stock_type(self):
+        for stock in self:
+            stock.stock_type = 'spare' if stock.is_spare else 'rm'
+
+    def _write_stock_type(self):
+        for stock in self:
+            stock.is_spare = stock.stock_type == 'spare'
+
+    @api.onchange('stock_type')
+    def onchange_company_type(self):
+        self.is_spare = (self.stock_type == 'spare')
+        
     def getopening_qty(self,productid,fr_date):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', fr_date)])
         qty = sum(stock_details.mapped('quantity'))
@@ -131,6 +148,12 @@ class StockForecastReport(models.TransientModel):
         sort_ca_type = Catypes.sorted(key = 'parent_id')
         
         for categ in sort_ca_type:
+            if (self.is_spare != 1):
+                if(categ.name == 'Spare Parts' or categ.parent_id.name == 'Spare Parts'):
+                    continue
+            
+            elif (categ.name != 'Spare Parts' or categ.parent_id.name != 'Spare Parts'):
+                continue
             #report_data.append([categ.display_name])
             categ_products = products.filtered(lambda x: x.categ_type == categ)
             #stock_details = self.env['category.type'].search([('product_id', '=', productid),('schedule_date', '<', to_date)])
@@ -169,12 +192,12 @@ class StockForecastReport(models.TransientModel):
                 
                 issued_value = round(issued_value,2)
                 # Prepare Closing Quantity
-                closing_qty = self.getclosing_qty(product_id,to_date)# opening_qty + received_qty - issued_qty
+                closing_qty = opening_qty + received_qty - issued_qty #self.getclosing_qty(product_id,to_date)# 
                 closing_qty = round(closing_qty,2)
                 if closing_qty<=0:
                     closing_value = 0
                 else:
-                    closing_value = self.getclosing_val(product_id,to_date)#opening_value + received_value - issued_value
+                    closing_value = opening_value + received_value - issued_value #self.getclosing_val(product_id,to_date)#
                 closing_value = round(closing_value,2)
                 
                 if abs(abs(opening_qty)+abs(received_qty)+abs(issued_qty))>0:
