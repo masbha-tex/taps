@@ -19,7 +19,7 @@
                 <sheet>
                     <group>
                         <field name="parameter_name"/>
-                        <field name="quality_category_parameter"/>
+                        <field name="quality_category"/>
                         <field name="initial_value"/>
                         <field name="last_value"/>
                         <field name="t_level"/>

@@ -31,7 +31,7 @@
                                <field name="value9" invisible="0"/>
                                <field name="value10" invisible="0"/>
                                <field name="status" invisible="0"/>
-                               </tree>
+                            </tree>
                        </field>
                    </page>
                 </xpath>
@@ -57,7 +57,7 @@
                     <field name="value9"/>
                     <field name="value10"/>
                     <field name="status"/>
-                 </tree>
+                </tree>
             </field>
         </record>
     </data>

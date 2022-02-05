@@ -1,5 +1,5 @@
 import ast
-
+import json
 from datetime import datetime
 
 from odoo import api, fields, models, _, SUPERUSER_ID
@@ -16,10 +16,15 @@ class QualityCheck(models.Model):
     
     
     
+    
 class QualityCheckLine(models.Model):
     _name = 'quality.check.line'
     _description = 'Quality Check Details'
     
+    
+
+    
+        
     
     @api.onchange('value1','value2','value3','value4','value5',
                  'value6','value7','value8','value9','value10','f_value','l_value')
@@ -29,10 +34,17 @@ class QualityCheckLine(models.Model):
                 rec.status = 'ok'
             else:
                 rec.status = 'notok'
+              
+    
+    
+    
+    def _setParameterDomain(self):
+        return [('quality_category', '=', 'ALL / Others / General')]
+            
     
     name = fields.Char()
     check_id = fields.Many2one('quality.check', string='Check Reference', index=True, required=True, ondelete='cascade')
-    parameter = fields.Many2one('quality.parameter', String="Parameter")
+    parameter = fields.Many2one('quality.parameter', String="Parameter", domain=_setParameterDomain)
     t_level = fields.Text(related='parameter.t_level')
     f_value = fields.Float(related='parameter.initial_value')
     l_value = fields.Float(related='parameter.last_value')
@@ -49,7 +61,12 @@ class QualityCheckLine(models.Model):
     status = fields.Selection([
         ('ok', 'Ok'),
         ('notok', 'Not Ok')], string='Status', tracking=True, 
-        copy=False, store = True)
+        copy=False, store = True, default='notok')
+    
+    
+    
+    
+    
     
     
 
