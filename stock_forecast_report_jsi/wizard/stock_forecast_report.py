@@ -129,12 +129,16 @@ class StockForecastReport(models.TransientModel):
         from_date = combine(f_date, self.float_to_time(hour_from))
         to_date = combine(t_date, self.float_to_time(hour_to))
         #raise UserError((from_date,to_date))
-        if not (self.product_ids or self.categ_ids):
+        if not (self.product_ids or self.categ_ids or self.is_spare == 1):
             products = Product.search([('type', '=', 'product'),('default_code', 'like', 'R_')])
+        elif not (self.product_ids or self.categ_ids or self.is_spare == 0):
+            products = Product.search([('type', '=', 'product'),('default_code', 'like', 'S_')])
         elif self.report_by == 'by_items':
             products = self.product_ids
-        else:
+        elif (self.is_spare == 0):
             products = Product.search([('categ_type', 'in', self.categ_ids.ids),('default_code', 'like', 'R_')])
+        else:
+            products = Product.search([('categ_type', 'in', self.categ_ids.ids),('default_code', 'like', 'S_')])
         # Date wise opening quantity
         #product_quantities = products._compute_quantities_dict(False, False, False, from_date, to_date)
         #products = products.sorted(key = 'categ_type')
@@ -151,9 +155,6 @@ class StockForecastReport(models.TransientModel):
             if (self.is_spare != 1):
                 if(categ.name == 'Spare Parts' or categ.parent_id.name == 'Spare Parts'):
                     continue
-            
-            elif (categ.name != 'Spare Parts' or categ.parent_id.name != 'Spare Parts'):
-                continue
             #report_data.append([categ.display_name])
             categ_products = products.filtered(lambda x: x.categ_type == categ)
             #stock_details = self.env['category.type'].search([('product_id', '=', productid),('schedule_date', '<', to_date)])
