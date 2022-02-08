@@ -6,8 +6,8 @@
             <field name="model">quality.check</field>
             <field name="inherit_id" ref="quality_control.quality_check_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='company_id']" position="after">
-                    <field name="quality_category"/>
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="product_category"/>
                 </xpath>
                 <xpath expr="//page[@name='notes']" position="before">
                    <page name="check_line" string ="Quality Parameters">
@@ -18,6 +18,8 @@
                                    <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
                                    <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
                                </control>
+                               <field name="product_category" invisible="1"/>
+                               <field name="display_type" invisible="1"/>
                                <field name="parameter" invisible="0"/>
                                <field name="t_level" invisible="0"/>
                                <field name="value1" invisible="0"/>
@@ -31,6 +33,7 @@
                                <field name="value9" invisible="0"/>
                                <field name="value10" invisible="0"/>
                                <field name="status" invisible="0"/>
+                               <field name="name" widget="section_and_note_text" invisible="0"/>
                             </tree>
                        </field>
                    </page>
@@ -44,6 +47,8 @@
             <field name="model">quality.check.line</field>
             <field name="arch" type="xml">
                 <tree string="Quality Check Lines" create="false">
+                    <field name="product_category" invisible="1"/>
+                    <field name="display_type" invisible="1"/>
                     <field name="parameter"/>
                     <field name="t_level"/>
                     <field name="value1"/>

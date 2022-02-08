@@ -9,22 +9,22 @@ from odoo.osv.expression import OR
 class QualityCheck(models.Model):
     _inherit = "quality.check"
     quality_check_line = fields.One2many('quality.check.line', 'check_id', string='Order Lines', copy=True)
-    quality_category = fields.Selection([
-        ('n3_long_chain', 'N#3 Long Chain'),
-        ('n3_long_chain_grs', 'N#3 Long Chain Grs')], string='Quality Category', tracking=True,
-        default='n3_long_chain', copy=False)
-    
+    product_category = fields.Many2one(related='product_id.categ_id', string='Product Category', readonly=True)
+#    quality_category = fields.Selection([
+#        ('n3_long_chain', 'N#3 Long Chain'),
+#        ('n3_long_chain_grs', 'N#3 Long Chain Grs')], string='Quality Category', tracking=True,
+#        default='n3_long_chain', copy=False)
+   
     
     
     
 class QualityCheckLine(models.Model):
     _name = 'quality.check.line'
     _description = 'Quality Check Details'
-    
-    
-
-    
         
+     
+    
+    
     
     @api.onchange('value1','value2','value3','value4','value5',
                  'value6','value7','value8','value9','value10','f_value','l_value')
@@ -37,14 +37,16 @@ class QualityCheckLine(models.Model):
               
     
     
-    
-    def _setParameterDomain(self):
-        return [('quality_category', '=', 'ALL / Others / General')]
+
+     
+    #def _setParameterDomain(self):
+    #    return [('product_category', '=', self.product_category.id)]
             
     
     name = fields.Char()
     check_id = fields.Many2one('quality.check', string='Check Reference', index=True, required=True, ondelete='cascade')
-    parameter = fields.Many2one('quality.parameter', String="Parameter", domain=_setParameterDomain)
+    parameter = fields.Many2one('quality.parameter', String="Parameter", domain="[('quality_category', '=', product_category)]")
+    product_category = fields.Many2one(related='check_id.product_category', string='Product Category', readonly=True)
     t_level = fields.Text(related='parameter.t_level')
     f_value = fields.Float(related='parameter.initial_value')
     l_value = fields.Float(related='parameter.last_value')
@@ -64,7 +66,9 @@ class QualityCheckLine(models.Model):
         copy=False, store = True, default='notok')
     
     
-    
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
     
     
     
