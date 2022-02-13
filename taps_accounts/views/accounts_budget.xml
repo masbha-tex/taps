@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="crossovered_budget_view_form">
+            <field name="name">crossovered.budget.view.form</field>
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='percentage']" position="after">
+                    <field name="itemtype" string="Item Type"/>
+                </xpath>
+            </field>
+        </record>        
+        <record id="add_budget_line" model="ir.ui.view">
+            <field name="name">crossovered.budget.line.tree</field>
+            <field name="model">crossovered.budget.lines</field>
+            <field name="inherit_id" ref="account_budget.view_crossovered_budget_line_tree"/>
+            <field name="arch" type="xml">
+               <xpath expr="//field[@name='percentage']" position="after">
+                    <field name="itemtype" string="Item Type"/>
+               </xpath>
+            </field>
+        </record>       
+    </data>
+</odoo>

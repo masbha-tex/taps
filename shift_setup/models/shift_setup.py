@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-
+import base64
 from odoo import models, fields, api
+
 
 
 class ShiftSetup(models.Model):
     _name = 'shift.setup'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']    
     _description = 'Shift Setup'
 
     code = fields.Char('Code')

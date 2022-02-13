@@ -4,9 +4,10 @@ from odoo import models, fields, api
 
 class ShiftTransfer(models.Model):
     _name = 'shift.transfer'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']    
     _description = 'Shift Transfer'
 
-    code = fields.Char(string='Code', store=True)#readonly=True,
+    code = fields.Char(string='Code', store=True, readonly=True)
     name = fields.Many2one('hr.employee', string='Employee')
     empid = fields.Char(related= 'name.pin', related_sudo=False, string='Employee ID')
     activationDate = fields.Date(string='Activation Date')

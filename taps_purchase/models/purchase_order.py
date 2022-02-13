@@ -51,22 +51,19 @@ class PurchaseOrder(models.Model):
         one_week_ago = fields.Datetime.to_string(fields.Datetime.now().replace(day=1))# - relativedelta(days=7)
         # This query is brittle since it depends on the label values of a selection field
         # not changing, but we don't have a direct time tracker of when a state changes
-        query = """SELECT COUNT(1)
-                   FROM mail_tracking_value v
-                   LEFT JOIN mail_message m ON (v.mail_message_id = m.id)
-                   JOIN purchase_order po ON (po.id = m.res_id)
-                   WHERE m.create_date >= %s
-                     AND m.model = 'purchase.order'
-                     AND m.message_type = 'notification'
-                     AND v.old_value_char = 'RFQ'
-                     AND v.new_value_char = 'RFQ Sent'
-                     AND po.company_id = %s;
+        query = """SELECT SUM(CASE WHEN po.date_approve >= %s THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END)
+                   FROM purchase_order po
+                   JOIN res_company comp ON (po.company_id = comp.id)
+                   WHERE po.state in ('purchase', 'done') AND po.itemtype='spares'
+                     AND po.company_id = %s
                 """
 
-        self.env.cr.execute(query, (one_week_ago, self.env.company.id))
+        #self.env.cr.execute(query, (one_week_ago, self.env.company.id))
+        self._cr.execute(query, (one_week_ago, self.env.company.id))
         res = self.env.cr.fetchone()
-        result['all_sent_rfqs'] = res[0] or 0
-
+        currency = self.env.company.currency_id
+        #result['all_sent_rfqs'] = res[0] or 0
+        result['all_sent_rfqs'] = format_amount(self.env, res[0] or 0, currency)
         # easy counts
         po = self.env['purchase.order']
         result['all_to_send'] = po.search_count([('state', '=', 'draft')])
@@ -80,17 +77,17 @@ class PurchaseOrder(models.Model):
         # 'total last 7 days' takes into account exchange rate and current company's currency's precision. Min of currency precision
         # is taken to easily extract it from query.
         # This is done via SQL for scalability reasons
-        query = """SELECT AVG(COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total)),
-                          AVG(extract(epoch from age(po.date_approve,po.create_date)/(24*60*60)::decimal(16,2))),
+        # AVG(COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total)),
+        query = """SELECT (select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and itemtype='raw' and company_id=po.company_id),(select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and itemtype='spares' and company_id=po.company_id),
                           SUM(CASE WHEN po.date_approve >= %s THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END)
                    FROM purchase_order po
                    JOIN res_company comp ON (po.company_id = comp.id)
-                   WHERE po.state in ('purchase', 'done')
-                     AND po.company_id = %s
+                   WHERE po.state in ('purchase', 'done') AND po.itemtype='raw'
+                     AND po.company_id = %s group by po.company_id
                 """
         self._cr.execute(query, (one_week_ago, self.env.company.id))
         res = self.env.cr.fetchone()
-        result['all_avg_days_to_purchase'] = round(res[1] or 0, 2)
+        result['all_avg_days_to_purchase'] = format_amount(self.env, res[1] or 0, currency) #round(res[1] or 0, 2)
         currency = self.env.company.currency_id
         result['all_avg_order_value'] = format_amount(self.env, res[0] or 0, currency)
         result['all_total_last_7_days'] = format_amount(self.env, res[2] or 0, currency)

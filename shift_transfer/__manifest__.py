@@ -14,7 +14,7 @@
     'category': 'Generic Modules',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','web_studio','hr'],
+    'depends': ['base','web_studio','hr','base_setup'],
 
     # always loaded
     'data': [
@@ -26,6 +26,6 @@
     'license': 'OEEL-1',
     'demo': [],
     'installable': True,
-    'auto_install': False,
+    'auto_install': True,
     'application': False,
 }

@@ -45,7 +45,7 @@ class QualityCheckLine(models.Model):
     
     name = fields.Char()
     check_id = fields.Many2one('quality.check', string='Check Reference', index=True, required=True, ondelete='cascade')
-    parameter = fields.Many2one('quality.parameter', String="Parameter", domain="[('quality_category', '=', product_category)]")
+    parameter = fields.Many2one('quality.parameter', String="Parameter", domain="[('quality_category', '=', product_category)]",)
     product_category = fields.Many2one(related='check_id.product_category', string='Product Category', readonly=True)
     t_level = fields.Text(related='parameter.t_level')
     f_value = fields.Float(related='parameter.initial_value')

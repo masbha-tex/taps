@@ -21,6 +21,7 @@
                                <field name="product_category" invisible="1"/>
                                <field name="display_type" invisible="1"/>
                                <field name="parameter" invisible="0"/>
+                               <field name="name" widget="section_and_note_text"/>
                                <field name="t_level" invisible="0"/>
                                <field name="value1" invisible="0"/>
                                <field name="value2" invisible="0"/>
@@ -33,8 +34,22 @@
                                <field name="value9" invisible="0"/>
                                <field name="value10" invisible="0"/>
                                <field name="status" invisible="0"/>
-                               <field name="name" widget="section_and_note_text" invisible="0"/>
                             </tree>
+                            <form string="Quality Check Lines">
+                                <field name="display_type" invisible="1"/>
+                                    <group attrs="{'invisible': [('display_type', '!=', False)]}">
+                                        <group colspan="12">
+                                            <notebook>
+                                                <page string="Notes" name="notes">
+                                                    <field name="name"/>
+                                                </page>
+                                            </notebook>
+                                        </group>
+                                    </group>
+                                    <label for="name" string="Section Name (eg. Products, Services)" attrs="{'invisible': [('display_type', '!=', 'line_section')]}"/>
+                                    <label for="name" string="Note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}"/>
+                                    <field name="name" nolabel="1"  attrs="{'invisible': [('display_type', '=', False)]}"/>
+                            </form>
                        </field>
                    </page>
                 </xpath>

@@ -14,7 +14,7 @@
     'category': 'Generic Modules',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base_setup','web_studio'],
 
     # always loaded
     'data': [
@@ -25,6 +25,6 @@
     'license': 'AGPL-3',
     'demo': [],
     'installable': True,
-    'auto_install': False,
+    'auto_install': True,
     'application': False,
 }
