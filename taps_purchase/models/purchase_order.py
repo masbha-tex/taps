@@ -33,6 +33,7 @@ class PurchaseOrder(models.Model):
             the purchase order views.
         """
         self.check_access_rights('read')
+        povalue = 0
 
         result = {
             'all_to_send': 0,
@@ -51,11 +52,13 @@ class PurchaseOrder(models.Model):
         one_week_ago = fields.Datetime.to_string(fields.Datetime.now().replace(day=1))# - relativedelta(days=7)
         # This query is brittle since it depends on the label values of a selection field
         # not changing, but we don't have a direct time tracker of when a state changes
-        query = """SELECT SUM(CASE WHEN po.date_approve >= %s THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END)
+        query = """SELECT SUM(RawPOvalue) FROM(SELECT SUM(CASE WHEN po.date_approve >= %s THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END) as RawPOvalue
                    FROM purchase_order po
                    JOIN res_company comp ON (po.company_id = comp.id)
                    WHERE po.state in ('purchase', 'done') AND po.itemtype='spares'
                      AND po.company_id = %s
+                     UNION
+                     select 0 as RawPOvalue) as a
                 """
 
         #self.env.cr.execute(query, (one_week_ago, self.env.company.id))
@@ -63,6 +66,7 @@ class PurchaseOrder(models.Model):
         res = self.env.cr.fetchone()
         currency = self.env.company.currency_id
         #result['all_sent_rfqs'] = res[0] or 0
+        povalue = round(res[0] or 0, 2)
         result['all_sent_rfqs'] = format_amount(self.env, res[0] or 0, currency)
         # easy counts
         po = self.env['purchase.order']
@@ -78,18 +82,31 @@ class PurchaseOrder(models.Model):
         # is taken to easily extract it from query.
         # This is done via SQL for scalability reasons
         # AVG(COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total)),
-        query = """SELECT (select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and itemtype='raw' and company_id=po.company_id),(select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and itemtype='spares' and company_id=po.company_id),
-                          SUM(CASE WHEN po.date_approve >= %s THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END)
+        #(select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and itemtype='spares' and company_id=po.company_id) SpareBudget,
+        #and itemtype='raw' 
+        query = """SELECT SUM(RawBudget),SUM(SpareBudget),SUM(RawPOvalue) FROM (SELECT (select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and company_id=po.company_id) RawBudget,0 as SpareBudget,
+                          SUM(CASE WHEN po.date_approve >= %s THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END) RawPOvalue
                    FROM purchase_order po
                    JOIN res_company comp ON (po.company_id = comp.id)
                    WHERE po.state in ('purchase', 'done') AND po.itemtype='raw'
                      AND po.company_id = %s group by po.company_id
+                     Union
+                     select 0 as RawBudget,0 as SpareBudget,0 as RawPOvalue
+                     ) as a
                 """
+        
         self._cr.execute(query, (one_week_ago, self.env.company.id))
         res = self.env.cr.fetchone()
-        result['all_avg_days_to_purchase'] = format_amount(self.env, res[1] or 0, currency) #round(res[1] or 0, 2)
         currency = self.env.company.currency_id
+        povalue = povalue + round(res[2] or 0, 2)
+        budgetalue = round(res[0] or 0, 2)
+        if povalue*budgetalue==0:
+            percent=0
+        else:
+            percent = round((povalue/budgetalue)*100,2)
         result['all_avg_order_value'] = format_amount(self.env, res[0] or 0, currency)
+        result['all_avg_days_to_purchase'] = percent
+        #format_amount(self.env, res[1] or 0, currency)
         result['all_total_last_7_days'] = format_amount(self.env, res[2] or 0, currency)
 
         return result
