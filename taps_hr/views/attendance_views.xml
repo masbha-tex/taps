@@ -8,7 +8,6 @@
           <field name="arch" type="xml">
               <field name="employee_id" position="before">
                   <field name="attDate"/>
-                  <field name="empID"/>
               </field>
               <field name="employee_id" position="after">
                   <field name="inTime" widget="float_time"/>

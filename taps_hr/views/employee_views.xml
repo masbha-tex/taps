@@ -20,7 +20,7 @@
                 <field name="emp_id"/>
             </field>
             <field name="tz" position="before">
-                <field name="shift_group"/>
+                <field name="shift_group" options='{"no_create":true}'/>
             </field>
             <field name="address_home_id" position="before">
                 <field name="fathers_name"/>

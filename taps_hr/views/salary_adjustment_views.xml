@@ -26,8 +26,7 @@
                                 <control>
                                     <create name="add_employee_control" string="Add a employee"/>
                                 </control>
-                                <field name="employee_id"/>
-                                <field name="emp_id"/>
+                                <field name="employee_id" options='{"no_create":true}'/>
                                 <field name="mode_type"/>
                                 <field name="adjustment_type"/>
                                 <field name="amount"/>
@@ -50,8 +49,7 @@
         <field name="arch" type="xml">
             <tree string="Salary Adjustment Lines" create="false">
                 <field name="adjustment_id"/>
-                <field name="employee_id"/>
-                <field name="emp_id"/>
+                <field name="employee_id" options='{"no_create":true}'/>
                 <field name="mode_type"/>
                 <field name="adjustment_type"/>
                 <field name="amount"/>

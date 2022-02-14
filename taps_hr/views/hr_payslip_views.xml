@@ -87,9 +87,6 @@
             <xpath expr="//field[@name='net_wage']" position="attributes">
                 <attribute name="string">Net Payable</attribute>
             </xpath>
-            <field name="number" position="after">
-                <field name="emp_id"/>
-            </field>
             <field name="payslip_run_id" position="after">
                 <field name="emp_type" widget="badge"/>
             </field>

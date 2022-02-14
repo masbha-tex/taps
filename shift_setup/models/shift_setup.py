@@ -8,8 +8,9 @@ class ShiftSetup(models.Model):
     _name = 'shift.setup'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']    
     _description = 'Shift Setup'
+    _rec_name = 'code'    
 
-    code = fields.Char('Code')
+    code = fields.Char('Code', store=True, readonly=True)
     name = fields.Char(string="Shift Name")
     types = fields.Selection([
         ('morning', 'Morning Shift'),
@@ -24,7 +25,9 @@ class ShiftSetup(models.Model):
     generalOT = fields.Float(string="General OT End Time")
     excessOT = fields.Float(string="Excess OT End Time")
     
-#     @api.depends('value')
-#     def _value_pc(self):
-#         for record in self:
-#             record.value2 = float(record.value) / 100
+    def name_get(self):
+        result = []
+        for record in self:
+            name = record.code  + ' - ' +  record.name
+            result.append((record.id, name))
+        return result

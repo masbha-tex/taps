@@ -15,12 +15,11 @@
                     </div>
                     <group>
                         <group>
-                            <field name="empid"/>
-                            <field name="name" widget= "tag"/>
+                            <field name="name" options='{"no_create":true}'/>
                             <field name="activationDate"/>
                         </group>
                         <group>
-                            <field name="transferGroup"/>
+                            <field name="transferGroup" options='{"no_create":true}'/>
                             <field name="inTime" widget= "float_time"/>
                             <field name="outTime" widget= "float_time"/>
                         </group>
@@ -32,6 +31,7 @@
                     <field name="message_ids"/>
                 </div>                
             </form>
+           
         </field>
     </record>
     <!-- explicit tree view definition -->
@@ -43,7 +43,6 @@
         <tree>
             <field name="code" placeholder="Transfer Code.."/>
             <field name="name"/>
-            <field name="empid"/>
             <field name="activationDate"/>
             <field name="transferGroup"/>
             <field name="inTime" widget= "float_time"/>
