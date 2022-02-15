@@ -49,17 +49,17 @@
                     <tr>
                         <!-- can't use th tag due to list rendering error when no values in list... -->
                         <td class="o_text">PO Budget (<t t-esc="values['company_currency_symbol']"/>)</td>
-                        <td><span><t t-esc="values['all_avg_order_value']"/></span></td>
+                        <td class="o_main o_dashboard_action"><a href="#"><span><t t-esc="values['all_avg_order_value']"/></span></a></td>
                         <td class="o_text">PO Value (RM) (<t t-esc="values['company_currency_symbol']"/>)</td>
-                        <td><span><t t-esc="values['all_total_last_7_days']"/></span></td>
+                        <td class="o_main o_dashboard_action"><a href="#"><span><t t-esc="values['all_total_last_7_days']"/></span></a></td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="o_text">Consumed Percent (%)</td>
-                        <td><span><t t-esc="values['all_avg_days_to_purchase']"/></span></td>
+                        <td class="o_main o_dashboard_action"><a href="#"><span><t t-esc="values['all_avg_days_to_purchase']"/></span></a></td>
                         <td class="o_text">PO Value (Spares) (<t t-esc="values['company_currency_symbol']"/>)</td>
-                        <td><span><t t-esc="values['all_sent_rfqs']"/></span></td>
+                        <td class="o_main o_dashboard_action"><a href="#"><span><t t-esc="values['all_sent_rfqs']"/></span></a></td>
                     </tr>
                 </tbody>
             </table></div>
