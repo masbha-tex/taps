@@ -27,6 +27,7 @@ class PurchaseOrder(models.Model):
         template = self.env['mail.template'].browse(19)
         template.send_mail(id, force_send=True)
 
+        
     @api.model
     def retrieve_dashboard(self):
         """ This function returns the values to populate the custom dashboard in
@@ -66,8 +67,8 @@ class PurchaseOrder(models.Model):
         res = self.env.cr.fetchone()
         currency = self.env.company.currency_id
         #result['all_sent_rfqs'] = res[0] or 0
-        povalue = round(res[0] or 0, 2)
-        result['all_sent_rfqs'] = format_amount(self.env, res[0] or 0, currency)
+        povalues = round(res[0] or 0, 2)
+        result['all_sent_rfqs'] = format_amount(self.env, povalues, currency)
         # easy counts
         po = self.env['purchase.order']
         result['all_to_send'] = po.search_count([('state', '=', 'draft')])
@@ -98,15 +99,16 @@ class PurchaseOrder(models.Model):
         self._cr.execute(query, (one_week_ago, self.env.company.id))
         res = self.env.cr.fetchone()
         currency = self.env.company.currency_id
-        povalue = povalue + round(res[2] or 0, 2)
+        povalue = round(res[2] or 0, 2)
+        #povalues + round(res[2] or 0, 2)
         budgetalue = round(res[0] or 0, 2)
         if povalue*budgetalue==0:
             percent=0
         else:
             percent = round((povalue/budgetalue)*100,2)
-        result['all_avg_order_value'] = format_amount(self.env, res[0] or 0, currency)
+        result['all_avg_order_value'] = format_amount(self.env, budgetalue, currency)
         result['all_avg_days_to_purchase'] = percent
         #format_amount(self.env, res[1] or 0, currency)
-        result['all_total_last_7_days'] = format_amount(self.env, res[2] or 0, currency)
+        result['all_total_last_7_days'] = format_amount(self.env, povalue, currency)
 
         return result
