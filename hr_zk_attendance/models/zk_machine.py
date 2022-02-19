@@ -25,7 +25,8 @@ _logger = logging.getLogger(__name__)
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
 
-    barcode = fields.Char(string='Badge ID')
+    #barcode = fields.Char(string='Badge ID')
+    check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
 
 
 class ZkMachine(models.Model):

@@ -38,7 +38,6 @@
     ],
     'images': ['static/description/banner.gif'],
     'license': 'AGPL-3',
-    'demo': [],
     'installable': True,
     'auto_install': False,
     'application': False,
