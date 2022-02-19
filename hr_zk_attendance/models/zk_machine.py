@@ -245,6 +245,8 @@ class ZkMachine(models.Model):
                     conn.disconnect
                     return True
                 else:
-                    raise UserError(_('Unable to get the attendance log, please try again later.'))
+                    continue
+                    #raise UserError(_('Unable to get the attendance log, please try again later.'))
             else:
-                raise UserError(_('Unable to connect, please check the parameters and network connections.'))
+                break
+                #raise UserError(_('Unable to connect, please check the parameters and network connections.'))
