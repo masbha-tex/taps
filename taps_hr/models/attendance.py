@@ -322,9 +322,9 @@ class HrAttendance(models.Model):
                 * maximum 1 "open" attendance record (without check_out)
                 * no overlapping time slices with previous employee records
         """
-        """for attendance in self:
+        for attendance in self:
             # we take the latest attendance before our check_in time and check it doesn't overlap with ours
-            last_attendance_before_check_in = self.env['hr.attendance'].search([
+            """last_attendance_before_check_in = self.env['hr.attendance'].search([
                 ('employee_id', '=', attendance.employee_id.id),
                 ('check_in', '<=', attendance.check_in),
                 ('id', '!=', attendance.id),
