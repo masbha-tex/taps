@@ -313,7 +313,16 @@ class HrAttendance(models.Model):
             if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
                 get_att_data[-1].write({'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})            
             if get_att_data.employee_id.resign_date and get_att_data.employee_id.resign_date <= att_date:
-                get_att_data[-1].write({'inFlag':'R','outFlag':'R','inHour' : False,'outHour' : False})                    
+                get_att_data[-1].write({'inFlag':'R','outFlag':'R','inHour' : False,'outHour' : False})
+
+    @api.constrains('check_in', 'check_out')
+    def _check_validity_check_in_check_out(self):
+        """ verifies if check_in is earlier than check_out. """
+        for attendance in self:
+            continue
+            #if attendance.check_in and attendance.check_out:
+            #    if attendance.check_out < attendance.check_in:
+            #        raise exceptions.ValidationError(_('"Check Out" time cannot be earlier than "Check In" time.'))                
 
     @api.constrains('check_in', 'check_out', 'employee_id')
     def _check_validity(self):
@@ -323,6 +332,7 @@ class HrAttendance(models.Model):
                 * no overlapping time slices with previous employee records
         """
         for attendance in self:
+            continue
             # we take the latest attendance before our check_in time and check it doesn't overlap with ours
             """last_attendance_before_check_in = self.env['hr.attendance'].search([
                 ('employee_id', '=', attendance.employee_id.id),
