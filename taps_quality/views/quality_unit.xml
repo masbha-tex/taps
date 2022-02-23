@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="unit_list" model="ir.ui.view">
+        <field name="name">quality.unit.list</field>
+        <field name="model">quality.unit</field>
+        <field name="arch" type="xml">
+            <tree string="Units">
+                <field name="unit_name"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Form View -->
+    <record id="unit_form" model="ir.ui.view">
+        <field name="name">quality.unit.form</field>
+        <field name="model">quality.unit</field>
+        <field name="arch" type="xml">
+            <form string="Unit Form">
+                <sheet>
+                    <group>
+                        <field name="unit_name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="quality_unit_action_config" model="ir.actions.act_window">
+        <field name="name">Quality Unit</field>
+        <field name="res_model">quality.unit</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem
+        id="menu_quality_unit"
+        name="Quality Unit"
+        action="quality_unit_action_config"
+        parent="quality_control.menu_quality_configuration"
+        sequence="7"/>
+</odoo>    

@@ -20,7 +20,7 @@
                 record.write({'emp_id': seq})
                 record.write({'registration_number': seq})
                 record.write({'pin': seq})
-                record.write({'barcode': seq[-4:]})</field>
+                record.write({'barcode': seq})</field>
             <field name="trigger">on_create</field>
             <field name="filter_domain">[["emp_id","=",False]]</field>
             <field name="active" eval="True"/>

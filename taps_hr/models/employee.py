@@ -6,7 +6,7 @@ from odoo.tools import format_datetime
 
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
-    _rec_name = 'emp_id'    
+    _rec_name = 'name'    
     
     emp_id = fields.Char(string="Emp ID", readonly=True, store=True, tracking=True) 
     isOverTime = fields.Boolean("Over Time", readonly=False, store=True, tracking=True)

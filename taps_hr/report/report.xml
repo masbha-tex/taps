@@ -1,35 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
-    <record id="report_top_sheet_summary" model="ir.actions.report">
-        <field name="name">Top Sheet Summary</field>
-        <field name="model">hr.payslip</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">taps_hr.top_sheet_summary_report</field>
-        <field name="report_file">taps_hr.top_sheet_summary_report</field>
-        <field name="binding_model_id" ref="model_hr_payslip"/>
-        <field name="binding_type">report</field>
-    </record>
+    <data noupdate='1'>
+        <record id="report_top_sheet_summary" model="ir.actions.report">
+            <field name="name">Top Sheet Summary</field>
+            <field name="model">hr.payslip</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.top_sheet_summary_report</field>
+            <field name="report_file">taps_hr.top_sheet_summary_report</field>
+            <field name="binding_model_id" ref="model_hr_payslip"/>
+            <field name="binding_type">report</field>
+        </record>
 
-    <record id="report_salary_sheet" model="ir.actions.report">
-        <field name="name">Salary Sheet</field>
-        <field name="model">hr.payslip</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">taps_hr.salary_sheet_report</field>
-        <field name="report_file">taps_hr.salary_sheet_report</field>
-        <field name="binding_model_id" ref="model_hr_payslip"/>
-        <field name="binding_type">report</field>
-    </record>
-  
-
-<!--    <record id="report_patient_card_xls" model="ir.actions.report">-->
-<!--        <field name="name">Patient Card Excel</field>-->
-<!--        <field name="model">hospital.patient</field>-->
-<!--        <field name="report_type">xlsx</field>-->
-<!--        <field name="report_name">om_hospital.report_patient_id_card_xls</field>-->
-<!--        <field name="report_file">om_hospital.report_patient_id_card_xls</field>-->
-<!--        <field name="binding_model_id" ref="model_hospital_patient"/>-->
-<!--        <field name="binding_type">report</field>-->
-<!--    </record>-->
-
+        <record id="report_salary_sheet" model="ir.actions.report">
+            <field name="name">Salary Sheet</field>
+            <field name="model">hr.payslip</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.salary_sheet_report</field>
+            <field name="report_file">taps_hr.salary_sheet_report</field>
+            <field name="binding_model_id" ref="model_hr_payslip"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
 </odoo>

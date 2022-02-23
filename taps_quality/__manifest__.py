@@ -26,6 +26,7 @@
         'security/ir.model.access.csv',
         'views/quality_line.xml',
         'views/parameter.xml',
+        'views/quality_unit.xml',
     ],
     # only loaded in demonstration mode
     #'demo': [

@@ -1,198 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data noupdate='1'>
+        <template id="top_sheet_summary_report">
+        <t t-call="web.html_container">
+            <t t-foreach="inside_foreach_docs or docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-set="o" t-value="o.with_context(lang=o.employee_id.address_home_id.lang or o.env.lang)"/>
+                    <div class="page">
+                        <h2 t-field="o.name" align="center"/>
+                        <t t-set="is_invalid" t-value="o._is_invalid()"/>
+                        <t t-if="is_invalid">
+                            <strong><t t-esc="is_invalid"/></strong>
+                        </t>
+                        <table class="table table-condensed mb32">
+                            <thead>
+                                <tr>
+                                    <th rowspan="6">SL</th>
+                                    <th rowspan="6">Section</th>
+                                    <th rowspan="6">ID</th>
+                                    <th rowspan="6">Employee Name</th>
+                                    <th rowspan="6">Designation</th>
+                                    <th rowspan="3">Join Date</th>
+                                    <th>Working Days</th>
+                                    <th>Late Days</th>
+                                    <th rowspan="6">Total Payable Days</th>
+                                    <th rowspan="6">Gross Salary</th>
+                                    <th rowspan="6">Total Payable Days</th>
+                                    <th rowspan="2" colspan="16">Earnings Details</th>
+                                    <th rowspan="6">Total Earnings</th>
+                                    <th rowspan="2" colspan="9">Deduction Details</th>
+                                    <th rowspan="6">Total Deduction</th>
+                                    <th rowspan="6">Net Payable</th>
+                                    <th rowspan="6">Bank Details</th>
 
-    <template id="top_sheet_summary_report">
-    <t t-call="web.html_container">
-        <t t-foreach="inside_foreach_docs or docs" t-as="o">
-            <t t-call="web.external_layout">
-                <t t-set="o" t-value="o.with_context(lang=o.employee_id.address_home_id.lang or o.env.lang)"/>
-                <div class="page">
-                    <h2 t-field="o.name" align="center"/>
-                    <t t-set="is_invalid" t-value="o._is_invalid()"/>
-                    <t t-if="is_invalid">
-                        <strong><t t-esc="is_invalid"/></strong>
-                    </t>
-                    <table class="table table-sm mb32">
-                        <thead>
-                            <tr>
-                                <th>Code</th>
-                                <th>Salary Rule Category</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr t-foreach="get_details_by_rule_category" t-as="h">
-                                <td>
-                                    <span t-esc="h['code']"/>
-                                </td>
-                                <td>
-                                    <span t-esc="'..'*h['level']"/><span t-esc="h['rule_category']"/>
-                                </td>
-                                <td class="text-right">
-                                    <span t-esc="h['total']"
-                                          t-esc-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table name="employee-infos" class="table table-sm" style="border: 1pt solid white;">
-                        <tr>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>ID</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id.emp_id"/></td>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Working Days</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/></td>
-                          <td style="border: 1pt solid white;">
-                              <td style="border: 1pt solid white;"><strong>CL</strong></td>
-                              <td style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days"/></td>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Name</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id"/></td>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Gross Absent Days</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/></td> 
-                          <td style="border: 1pt solid white;">
-                              <td class="w-25" style="border: 1pt solid white;"><strong>SL</strong></td>
-                              <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days"/></td>
-                          </td>                          
-                        </tr>
-                        <tr>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Designation</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id.job_title"/></td>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Basic Absent Days</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/></td>
-                          <td style="border: 1pt solid white;">
-                              <td class="w-25" style="border: 1pt solid white;"><strong>EL</strong></td>
-                              <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days"/></td>
-                          </td>                          
-                        </tr>
-                        <tr>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Department</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id.department_id.parent_id"/></td>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Late Days</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days"/></td>
-                          <td style="border: 1pt solid white;">
-                              <td class="w-25" style="border: 1pt solid white;"><strong>ML</strong></td>
-                              <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days"/></td>
-                          </td>                          
-                        </tr>
-                        <tr>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Section</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id.department_id.name"/></td>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Friday</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/></td>
-                          <td style="border: 1pt solid white;">
-                              <td class="w-25" style="border: 1pt solid white;"><strong>LW</strong></td>
-                              <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days"/></td>
-                          </td>                          
-                        </tr>
-                        <tr>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Grade</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.struct_id.name"/></td>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Holiday</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/></td>
-                          <td style="border: 1pt solid white;">
-                              <td class="w-25" style="border: 1pt solid white;"><strong>OD</strong></td>
-                              <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'OD').number_of_days"/></td>
-                          </td>                             
-                        </tr>
-                        <tr>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Join Date</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.contract_id.date_start"/></td>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>C-off | Adjust Days</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/> | <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/></td>                            
-                          <td style="border: 1pt solid white;">
-                              <td class="w-25" style="border: 1pt solid white;"/>
-                              <td class="w-25" style="border: 1pt solid white;"/>
-                          </td>                             
-                        </tr>
-                        <tr>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>OT Rate</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.otRate"/></td>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>OT Hours</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.otHours"/></td> 
-                          <td style="border: 1pt solid white;">
-                              <td class="w-25" style="border: 1pt solid white;"/>
-                              <td class="w-25" style="border: 1pt solid white;"/>
-                          </td>                             
-                        </tr>
-                        <tr>
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Total Payable Days</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.total_payable_days"/></td>  
-                          <td class="w-25" style="border: 1pt solid white;"><strong>Pay Period</strong></td>
-                          <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.date_from"/> - <span t-field="o.date_to"/></td>
-                          <td style="border: 1pt solid white;">
-                              <td class="w-25" style="border: 1pt solid white;"/>
-                              <td class="w-25" style="border: 1pt solid white;"/>
-                          </td>                             
-                        </tr>
-                    </table>
-                    <div id="total">
-                        <table class="table table-sm">
+                                </tr>
+                                <tr>
+                                  <th>Gross Absent Days</th>
+                                  <th>CL</th>
+                                </tr>
+                                <tr>
+                                  <th>Basic Absent Days</th>
+                                  <th>SL</th>
+                                  <th colspan="3">Salary Breakup</th>
+                                  <th colspan="3">Over Time</th>
+                                  <th rowspan="4">Arrear</th>
+                                  <th rowspan="4">Att. Bonus</th>
+                                  <th rowspan="4">Convence Allowance</th>
+                                  <th rowspan="4">Food Allowance</th>
+                                  <th rowspan="4">Tiffin Allowance</th>
+                                  <th rowspan="4">Strength Snacks Allowance</th>
+                                  <th rowspan="4">Mobile Allowance</th>
+                                  <th rowspan="4">Others Allowance</th>
+                                  <th rowspan="4">Incentive Allowance</th>
+                                  <th rowspan="4">PF (Emp'r) 8.33%</th> 
+                                  <th rowspan="4">PF (Emp'r) 8.33%</th> 
+                                  <th rowspan="4">PF (Emp'ee) 8.33%</th> 
+                                  <th rowspan="4">Total (RPF)</th> 
+                                  <th rowspan="4">TDS (AIT)</th> 
+                                  <th rowspan="4">Basic Absent Deduct</th> 
+                                  <th rowspan="4">Gross Absent Deduct</th> 
+                                  <th rowspan="4">Loan</th> 
+                                  <th rowspan="4">Adv. Salary</th> 
+                                  <th rowspan="4">Others Deduct</th>
+                                </tr> 
+                                <tr>
+                                  <th rowspan="3">Grade</th>
+                                  <th>Friday</th>
+                                  <th>EL</th>
+                                  <th rowspan="3">Basic</th>
+                                  <th rowspan="3">House Rent</th>
+                                  <th rowspan="3">Medical</th>
+                                  <th rowspan="3">HRS</th>
+                                  <th rowspan="3">Rate</th>
+                                  <th rowspan="3">Amount</th>
+                                </tr>
+                                <tr>
+                                    <th>Holiday</th>
+                                    <th>ML</th>
+                                </tr>
+                                <tr>
+                                  <th>C-off</th>
+                                  <th>LW</th>
+
+                                </tr>                            
+                            </thead>
                             <tbody>
-                                <span t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip)" t-as="line">
-                                    <t t-set="line_style"/>
-                                    <t t-set="line_class"/>
-                                    <t t-if="line.code == 'NET'">
-                                        <t t-set="line_style" t-value="'color:#875A7B;'"/>
-                                        <t t-set="line_class" t-value="'o_total o_border_bottom'"/>
-                                    </t>
-                                    <t t-if="line.category_id.code == 'EARNINGS'">
-                                        <t t-set="line_style" t-value="'color:#205A7B;'"/>
-                                    </t>
-                                    <t t-if="line.category_id.code == 'DED'">
-                                        <t t-set="line_style" t-value="'color:#875A7B;'"/>
-                                    </t>
-                                    <tr t-att-class="line_class" t-att-style="line_style" style="border: 1pt solid white;">
-                                        <td class="w-25" align="left"><span t-field="line.name"/></td>
-                                        <td class="w-25" align="right"><span t-esc="line.total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/></td>
-                                    </tr>
-                                </span>
+                                <tr t-foreach="get_details_by_rule_category" t-as="h">
+                                    <td>
+                                        <span t-esc="h['code']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="'..'*h['level']"/><span t-esc="h['rule_category']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="formatLang(h['total'], currency_obj=o.company_id.currency_id)"/>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
-                    </div>
-                    <table class="table table-sm" style="border: 1pt solid white;">
-                              <tr>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Basic Wage</strong></td>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"><strong>House Rent</strong></td>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Medical</strong></td>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Gross Wage</strong></td>                            
-                              </tr>
-                              <tr>
-                                <td style="color:#875A7B; border: 1pt solid white;" class="w-25" align="center">
-                                  <span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
-                                </td>                          
-                                <td style="color:#875A7B; border: 1pt solid white;" class="w-25" align="center">
-                                  <span t-esc="o.line_ids.filtered(lambda line: line.code == 'HRA').total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
-                                </td>
-                                <td style="color:#875A7B; border: 1pt solid white;" class="w-25" align="center">
-                                  <span t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
-                                </td>
-                                <td style="color:#875A7B; border: 1pt solid white;" class="w-25" align="center">
-                                  <span t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
-                                </td>                               
-                              </tr>
-                              <tr>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Total Earnings</strong></td>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"/>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"/>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Total Deduction</strong></td>                            
-                              </tr> 
-                              <tr>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"><span t-field="o.earnings_total"/></td>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"/>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"/>
-                                <td class="w-25" align="center" style="border: 1pt solid white;"><span t-field="o.deduction_total"/></td>                          
-                              </tr>                              
-                    </table>
+                        <table name="employee-infos" class="table table-sm" style="border: 1pt solid white;">
+                            <tr>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>ID</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id.emp_id"/></td>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Working Days</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/></td>
+                              <td style="border: 1pt solid white;">
+                                  <td style="border: 1pt solid white;"><strong>CL</strong></td>
+                                  <td style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days"/></td>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Name</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id"/></td>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Gross Absent Days</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/></td> 
+                              <td style="border: 1pt solid white;">
+                                  <td class="w-25" style="border: 1pt solid white;"><strong>SL</strong></td>
+                                  <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days"/></td>
+                              </td>                          
+                            </tr>
+                            <tr>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Designation</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id.job_title"/></td>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Basic Absent Days</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/></td>
+                              <td style="border: 1pt solid white;">
+                                  <td class="w-25" style="border: 1pt solid white;"><strong>EL</strong></td>
+                                  <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days"/></td>
+                              </td>                          
+                            </tr>
+                            <tr>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Department</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id.department_id.parent_id"/></td>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Late Days</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days"/></td>
+                              <td style="border: 1pt solid white;">
+                                  <td class="w-25" style="border: 1pt solid white;"><strong>ML</strong></td>
+                                  <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days"/></td>
+                              </td>                          
+                            </tr>
+                            <tr>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Section</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.employee_id.department_id.name"/></td>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Friday</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/></td>
+                              <td style="border: 1pt solid white;">
+                                  <td class="w-25" style="border: 1pt solid white;"><strong>LW</strong></td>
+                                  <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days"/></td>
+                              </td>                          
+                            </tr>
+                            <tr>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Grade</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.struct_id.name"/></td>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Holiday</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/></td>
+                              <td style="border: 1pt solid white;">
+                                  <td class="w-25" style="border: 1pt solid white;"><strong>OD</strong></td>
+                                  <td class="w-25" style="border: 1pt solid white;"><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'OD').number_of_days"/></td>
+                              </td>                             
+                            </tr>
+                            <tr>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Join Date</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.contract_id.date_start"/></td>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>C-off | Adjust Days</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/> | <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/></td>                            
+                              <td style="border: 1pt solid white;">
+                                  <td class="w-25" style="border: 1pt solid white;"/>
+                                  <td class="w-25" style="border: 1pt solid white;"/>
+                              </td>                             
+                            </tr>
+                            <tr>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>OT Rate</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.otRate"/></td>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>OT Hours</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.otHours"/></td> 
+                              <td style="border: 1pt solid white;">
+                                  <td class="w-25" style="border: 1pt solid white;"/>
+                                  <td class="w-25" style="border: 1pt solid white;"/>
+                              </td>                             
+                            </tr>
+                            <tr>
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Total Payable Days</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.total_payable_days"/></td>  
+                              <td class="w-25" style="border: 1pt solid white;"><strong>Pay Period</strong></td>
+                              <td class="w-25" style="border: 1pt solid white;">: <span t-field="o.date_from"/> - <span t-field="o.date_to"/></td>
+                              <td style="border: 1pt solid white;">
+                                  <td class="w-25" style="border: 1pt solid white;"/>
+                                  <td class="w-25" style="border: 1pt solid white;"/>
+                              </td>                             
+                            </tr>
+                        </table>
+                        <div id="total">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <span t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip)" t-as="line">
+                                        <t t-set="line_style"/>
+                                        <t t-set="line_class"/>
+                                        <t t-if="line.code == 'NET'">
+                                            <t t-set="line_style" t-value="'color:#875A7B;'"/>
+                                            <t t-set="line_class" t-value="'o_total o_border_bottom'"/>
+                                        </t>
+                                        <t t-if="line.category_id.code == 'EARNINGS'">
+                                            <t t-set="line_style" t-value="'color:#205A7B;'"/>
+                                        </t>
+                                        <t t-if="line.category_id.code == 'DED'">
+                                            <t t-set="line_style" t-value="'color:#875A7B;'"/>
+                                        </t>
+                                        <tr t-att-class="line_class" t-att-style="line_style" style="border: 1pt solid white;">
+                                            <td class="w-25" align="left"><span t-field="line.name"/></td>
+                                            <td class="w-25" align="right"><span t-esc="line.total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/></td>
+                                        </tr>
+                                    </span>
+                                </tbody>
+                            </table>
+                        </div>
+                        <table class="table table-sm" style="border: 1pt solid white;">
+                                  <tr>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Basic Wage</strong></td>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"><strong>House Rent</strong></td>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Medical</strong></td>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Gross Wage</strong></td>                            
+                                  </tr>
+                                  <tr>
+                                    <td style="color:#875A7B; border: 1pt solid white;" class="w-25" align="center">
+                                      <span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
+                                    </td>                          
+                                    <td style="color:#875A7B; border: 1pt solid white;" class="w-25" align="center">
+                                      <span t-esc="o.line_ids.filtered(lambda line: line.code == 'HRA').total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
+                                    </td>
+                                    <td style="color:#875A7B; border: 1pt solid white;" class="w-25" align="center">
+                                      <span t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
+                                    </td>
+                                    <td style="color:#875A7B; border: 1pt solid white;" class="w-25" align="center">
+                                      <span t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
+                                    </td>                               
+                                  </tr>
+                                  <tr>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Total Earnings</strong></td>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"/>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"/>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"><strong>Total Deduction</strong></td>                            
+                                  </tr> 
+                                  <tr>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"><span t-field="o.earnings_total"/></td>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"/>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"/>
+                                    <td class="w-25" align="center" style="border: 1pt solid white;"><span t-field="o.deduction_total"/></td>                          
+                                  </tr>                              
+                        </table>
 
-                    <p t-if="o.net_wage &gt;= 0">Total to pay on <td><span t-field="o.employee_id.bank_account_id"/></td>, bank account of <span t-field="o.employee_id"/>: <td><span t-field="o.net_wage"/></td></p>
-                    <p t-if="o.net_wage &lt; 0">The net amount will be recovered from the first positive remuneration established after this.</p>
-                    <p class="text-center">Made by Odoo(TEX)</p>
-                </div>
+                        <p t-if="o.net_wage &gt;= 0">Total to pay on <td><span t-field="o.employee_id.bank_account_id"/></td>, bank account of <span t-field="o.employee_id"/>: <td><span t-field="o.net_wage"/></td></p>
+                        <p t-if="o.net_wage &lt; 0">The net amount will be recovered from the first positive remuneration established after this.</p>
+                        <p class="text-center">Made by Odoo(TEX)</p>
+                    </div>
+                </t>
             </t>
         </t>
-    </t>
-    </template>
-
+        </template>
+    </data>
 </odoo>
