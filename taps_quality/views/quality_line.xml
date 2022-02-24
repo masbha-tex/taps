@@ -21,7 +21,6 @@
                                <field name="product_category" invisible="1"/>
                                <field name="display_type" invisible="1"/>
                                <field name="parameter" invisible="0"/>
-                               <field name="name" widget="section_and_note_text"/>
                                <field name="t_level" invisible="0"/>
                                <field name="value1" invisible="0"/>
                                <field name="value2" invisible="0"/>
@@ -34,6 +33,7 @@
                                <field name="value9" invisible="0"/>
                                <field name="value10" invisible="0"/>
                                <field name="status" invisible="0"/>
+                               <field name="name" widget="section_and_note_text" string="Note"/>
                             </tree>
                             <form string="Quality Check Lines">
                                 <field name="display_type" invisible="1"/>
