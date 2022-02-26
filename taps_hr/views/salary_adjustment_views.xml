@@ -96,7 +96,11 @@
       <menuitem id="shift_setup_menu" parent="hr_attendance.menu_hr_attendance_root"  name="Shift Setup" action="shift_setup_action" sequence="100"/>
     -->
       
-    <menuitem id="salary_adjustment_menu" parent="hr_work_entry_contract.menu_hr_payroll_root" sequence="50" name="Salary Adjustment" action="salary_adjustment_action"/>
+    <menuitem id="salary_adjustment_menu" 
+              parent="hr_work_entry_contract.menu_hr_payroll_root" 
+              sequence="50" 
+              name="Salary Adjustment" 
+              action="salary_adjustment_action"/>
 
       
 <!--

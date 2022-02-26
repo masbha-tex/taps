@@ -25,9 +25,14 @@
         'views/hr_payslip_views.xml',
         'views/hr_payslip_input_views.xml',
         'views/salary_adjustment_views.xml',
-        'report/salary_sheet.xml',
-        'report/top_sheet_summary.xml',
-        'report/report.xml'
+        'reports/salary_sheet.xml',
+        'reports/top_sheet_summary.xml',
+        'reports/report.xml',
+        'reports/custom_header_footer.xml',
+        'reports/header_footer.xml',
+        'reports/openacademy_pdf_report.xml',
+        'reports/paperformat.xml',
+        'wizard/report_wizard_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [],
