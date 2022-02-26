@@ -36,7 +36,7 @@ class Parameter(models.Model):
                 s1=str(record.initial_value)
                 s2=str(record.last_value)
                 s3=str(record.unit_name)
-                record.t_level = s1+" to "+s2+" "+ s3
+                record.t_level = "["+s1+" to "+s2+"] "+ s3
     
     
     
