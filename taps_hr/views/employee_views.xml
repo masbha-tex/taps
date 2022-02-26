@@ -102,17 +102,4 @@
             </tree>
         </field>
     </record>
-    <record id="view_employee_filter_inherit" model="ir.ui.view">
-        <field name="name">hr.employee.search.inherit</field>
-        <field name="model">hr.employee</field>
-        <field name="inherit_id" ref="hr.view_employee_filter"/>
-            <field name="arch" type="xml">
-                <xpath expr="//search[1]/field[@name='name']" position="before">
-                    <field name="emp_id"/>
-                </xpath>
-                <xpath expr="//filter[@name='group_manager']" position="before">
-                    <filter name="group_by_emp_id" string="Emp ID" context="{'group_by': 'emp_id'}"/>
-                </xpath>
-        </field>
-    </record>
 </odoo>

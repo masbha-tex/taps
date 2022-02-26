@@ -7,8 +7,7 @@ from odoo import models, fields, api
 class ShiftSetup(models.Model):
     _name = 'shift.setup'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']    
-    _description = 'Shift Setup'
-    _rec_name = 'code'    
+    _description = 'Shift Setup'    
 
     code = fields.Char('Code', store=True, readonly=True)
     name = fields.Char(string="Shift Name")
@@ -31,3 +30,11 @@ class ShiftSetup(models.Model):
             name = record.code  + ' - ' +  record.name
             result.append((record.id, name))
         return result
+    
+    @api.model
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        args = args or []
+        domain = []
+        if name:
+            domain = ['|', ('name', operator, name), ('code', operator, name)]
+        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)

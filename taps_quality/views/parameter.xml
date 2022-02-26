@@ -23,6 +23,7 @@
                         <field name="initial_value"/>
                         <field name="last_value"/>
                         <field name="quality_unit"/>
+                        <field name="note"/>
                         <field name="t_level"/>
                     </group>
                 </sheet>

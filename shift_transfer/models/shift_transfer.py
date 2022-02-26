@@ -5,11 +5,16 @@ from odoo import models, fields, api,_
 class ShiftTransfer(models.Model):
     _name = 'shift.transfer'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']    
-    _description = 'Shift Transfer' 
+    _description = 'Shift Transfer'
+    
+    #@api.onchange('empid')
+    #def onchange_empid(self):
+        #for rec in self:
+            #return {'domain':{'name':[('emp_id','like', rec.empid)]}}
 
     code = fields.Char(string='Code', store=True, readonly=True)
     name = fields.Many2one('hr.employee', string='Employees')
-    empid = fields.Char(related= 'name.pin', related_sudo=False, string='Employee ID')
+    #empid = fields.Char(string='Employee ID', store=True, readonly=False)
     activationDate = fields.Date(string='Activation Date')
     transferGroup = fields.Many2one('shift.setup', string='Shift Transfer Group')
     inTime = fields.Float(related= 'transferGroup.inTime', related_sudo=False, string='In-Time')

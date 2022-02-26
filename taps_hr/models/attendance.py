@@ -20,6 +20,8 @@ class HrAttendance(models.Model):
     otHours = fields.Float(string = "OT Hours")
     check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
     
+    
+    
     def _calculate_ot(self,att_date,emp_id,inTime,outTime,inHour,worked_hours):
          
         att_obj = self.env['hr.attendance']
