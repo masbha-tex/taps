@@ -14,7 +14,7 @@ class ShiftTransfer(models.Model):
 
     code = fields.Char(string='Code', store=True, readonly=True)
     name = fields.Many2one('hr.employee', string='Employees')
-    #empid = fields.Char(string='Employee ID', store=True, readonly=False)
+    empid = fields.Char(related= 'name.pin', string='Employee ID', store=True, readonly=True)
     activationDate = fields.Date(string='Activation Date')
     transferGroup = fields.Many2one('shift.setup', string='Shift Transfer Group')
     inTime = fields.Float(related= 'transferGroup.inTime', related_sudo=False, string='In-Time')
