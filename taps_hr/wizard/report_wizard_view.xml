@@ -29,7 +29,7 @@
             </form>
         </field>
     </record>
-
+    
     <record id="openacademy_pdf_report" model="ir.actions.act_window">
         <field name="name">PDF Report</field>
         <field name="res_model">openacademy.pdf.report</field>
@@ -42,5 +42,70 @@
               sequence="3"
               action="openacademy_pdf_report"
               parent="open_academy_reporting"/>
+    
+
+    <menuitem id="hr_attendance.menu_hr_attendance_report" 
+              name="Reporting" 
+              parent="hr_attendance.menu_hr_attendance_root"
+              sequence="30" 
+              groups="hr_attendance.group_hr_attendance_user"/>
+    
+    <menuitem id="menu_hr_attendance_analysis_report"
+              name="Attendance Analysis"
+              sequence="2"
+              action="hr_attendance.hr_attendance_action_graph"
+              parent="hr_attendance.menu_hr_attendance_report"/>
+
+
+    <record model="ir.ui.view" id="jobcard_pdf_report_form_view">
+        <field name="name">jobcard.pdf.report.form.view</field>
+        <field name="model">job.card.pdf.report</field>
+        <field name="arch" type="xml">
+            <form string="Job Card">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>                    
+                        <field name="holiday_type" string="Mode" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'employee')],
+                        'invisible': [('holiday_type', '!=', 'employee')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="mode_company_id" string="Company" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'company')],
+                        'invisible': [('holiday_type', '!=', 'company')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="category_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'category')],
+                        'invisible': [('holiday_type', '!=','category')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="department_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'department')],
+                        'invisible': [('holiday_type', '!=','department')]
+                        }" options="{'no_create': True, 'no_open': True}"/> 
+                    </group>
+                </group>
+                <footer>
+                    <button string="Print" name="action_print_report" type="object" class="btn-primary"/>
+                    <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>        
+    
+    <record id="job_card_pdf_report" model="ir.actions.act_window">
+        <field name="name">Job Card</field>
+        <field name="res_model">job.card.pdf.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>   
+    <menuitem id="job_card_reporting"
+              name="Job Card"
+              sequence="3"
+              action="job_card_pdf_report"
+              parent="hr_attendance.menu_hr_attendance_report"/>      
 
 </odoo>

@@ -20,7 +20,8 @@
                                </control>
                                <field name="product_category" invisible="1"/>
                                <field name="display_type" invisible="1"/>
-                               <field name="parameter" invisible="0"/>
+                               
+                               <field name="parameter" invisible="0" options="{'no_create_edit': True, 'no_create': True}"/>
                                <field name="t_level" invisible="0"/>
                                <field name="value1" invisible="0"/>
                                <field name="value2" invisible="0"/>

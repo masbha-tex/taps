@@ -31,6 +31,7 @@
         'reports/custom_header_footer.xml',
         'reports/header_footer.xml',
         'reports/openacademy_pdf_report.xml',
+        'reports/jobcard_pdf_report.xml',
         'reports/paperformat.xml',
         'wizard/report_wizard_view.xml',
     ],
@@ -39,4 +40,5 @@
     'installable': True,
     'auto_install': True,
     'application': False,
+    'images': ['static/description/icon.png'],
 }
