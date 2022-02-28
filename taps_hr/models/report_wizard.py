@@ -18,14 +18,14 @@ class JobCardPDFReport(models.TransientModel):
     
     
     employee_id = fields.Many2one(
-        'hr.employee', compute='_compute_from_holiday_type', string='Employee', index=True, readonly=False, ondelete="restrict", tracking=True)
+        'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict", tracking=True)
     
     category_id = fields.Many2one(
-        'hr.employee.category', compute='_compute_from_holiday_type', string='Employee Tag', help='Category of Employee', readonly=False, tracking=True)
+        'hr.employee.category',  string='Employee Tag', help='Category of Employee', readonly=False, tracking=True)
     mode_company_id = fields.Many2one(
-        'res.company', compute='_compute_from_holiday_type', string='Company Mode', readonly=False, tracking=True)
+        'res.company',  string='Company Mode', readonly=False, tracking=True)
     department_id = fields.Many2one(
-        'hr.department', compute='_compute_from_holiday_type', string='Department', readonly=False, tracking=True)
+        'hr.department',  string='Department', readonly=False, tracking=True)
     
     
     @api.depends('employee_id', 'holiday_type')
@@ -39,7 +39,7 @@ class JobCardPDFReport(models.TransientModel):
             else:
                 holiday.department_id = False
                 
-    @api.depends('holiday_type')
+    #@api.depends('holiday_type')
     def _compute_from_holiday_type(self):
         for holiday in self:
             if holiday.holiday_type == 'employee':
@@ -49,7 +49,6 @@ class JobCardPDFReport(models.TransientModel):
                 holiday.category_id = False
                 holiday.department_id = False
             elif holiday.holiday_type == 'company':
-                holiday.employee_id = False
                 if not holiday.mode_company_id:
                     holiday.mode_company_id = self.env.company.id
                 holiday.category_id = False
@@ -67,11 +66,19 @@ class JobCardPDFReport(models.TransientModel):
                 holiday.employee_id = False
                 holiday.mode_company_id = False
                 holiday.department_id = False
-            else:
-                holiday.employee_id = self.env.context.get('default_employee_id') or self.env.user.employee_id
+            #else:
+            #    holiday.employee_id = self.env.context.get('default_employee_id') or self.env.user.employee_id
+                
     # generate PDF report
     def action_print_report(self):
-        data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': self.mode_company_id, 'department_id': self.department_id, 'category_id': self.category_id, 'employee_id': self.employee_id}
+        if self.holiday_type == "employee":#employee  company department category
+            data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': False, 'department_id': False, 'category_id': False, 'employee_id': self.employee_id.id}
+        if self.holiday_type == "company":
+            data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': self.mode_company_id.id, 'department_id': False, 'category_id': False, 'employee_id': False}
+        if self.holiday_type == "department":
+            data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': False, 'department_id': self.department_id.id, 'category_id': False, 'employee_id': False}
+        if self.holiday_type == "category":
+            data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': False, 'department_id': False, 'category_id': self.category_id.id, 'employee_id': False}
         return self.env.ref('taps_hr.action_job_card_pdf_report').report_action(self, data=data)
 
     # Generate xlsx report
@@ -147,18 +154,18 @@ class JobCardReportPDF(models.AbstractModel):
             domain.append(('attDate', '>=', data.get('date_from')))
         if data.get('date_to'):
             domain.append(('attDate', '<=', data.get('date_to')))
-        if data.get('mode_company_id') != "res.company()":
-            str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', str))
-        if data.get('department_id') != "hr.department()":
-            str = re.sub("[^0-9]","",data.get('department_id'))
-            domain.append(('department_id.id', '=', str))
-        if data.get('category_id') != "hr.employee.category()":
-            str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', str))
-        if data.get('employee_id') != "hr.employee()":
-            str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.id', '=', str))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
         
         
         #raise UserError((domain))    
