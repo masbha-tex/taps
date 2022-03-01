@@ -170,14 +170,66 @@ class JobCardReportPDF(models.AbstractModel):
         
         #raise UserError((domain))    
         docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
+        #docs = list(set([d.employee_id for d in docs]))
+        #employee = docs.unique(df[['emp_id']], axis=0)
+        #employee = docs.drop_duplicates(['emp_id'])[['emp_id']]
+        #raise UserError((employee))
+        emplist = docs.mapped('employee_id.id')
+        #date_list = docs.mapped('attDate')
+        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+        fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
+        lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
         
-        #responsible = self.env['res.users'].browse(data.get('responsible_id'))
+        stdate = fst_days.attDate
+        enddate = lst_days.attDate
+        
+        all_datelist = []
+        dates = []
+        
+        delta = enddate - stdate       # as timedelta
+        for i in range(delta.days + 1):
+            day = stdate + timedelta(days=i)
+            dates = [
+                day,
+            ]
+            all_datelist.append(dates)
+        
+
+        allemp_data = []
+        for details in employee:
+            otTotal = 0
+            for de in docs:
+                if details.id == de.employee_id.id:
+                    otTotal = otTotal + de.otHours
+            
+            emp_data = []
+            emp_data = [
+                data.get('date_from'),
+                data.get('date_to'),
+                details.id,
+                details.emp_id,
+                details.name,
+                details.department_id.parent_id.name,
+                details.department_id.name,
+                details.job_id.name,
+                otTotal,
+            ]
+            allemp_data.append(emp_data)
+        #employee = self.env['hr.employee'].browse(data.get('employee_id'))
         #course_ids = self.env['openacademy.course'].browse(data.get('course_ids'))
-        #data.update({'responsbile': responsible.name})
+        
+        #data.update({'emp_id': employee.emp_id})
+        #data.update({'name': employee.name})
+        #data.update({'department': employee.department_id.parent_id.name})
+        #data.update({'section': employee.department_id.name})
+        #data.update({'position': employee.job_id.name})
+        #raise UserError((all_datelist))
+        
         #data.update({'courses': ",".join([course.course_name for course in course_ids])})
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.attendance',
             'docs': docs,
-            'datas': data
+            'datas': allemp_data,
+            'alldays': all_datelist
         }

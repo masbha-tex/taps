@@ -22,11 +22,6 @@
                     </div>
                 </div>
             </div>
-            <div t-if="company.logo or company.report_header" class="row zero_min_height">
-                <div class="col-12">
-                    <div style="border-bottom: 1px solid black;"/>
-                </div>
-            </div>
         </div>
         <div class="footer">
             <div class="text-center" style="border-top: 1px solid black;">
