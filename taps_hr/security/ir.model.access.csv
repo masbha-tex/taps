@@ -3,7 +3,7 @@ course_manager,course manager,model_openacademy_course,base.group_user,1,1,1,1
 session_manager,session manager,model_openacademy_session,base.group_user,1,1,1,1
 course_read_all,course all,model_openacademy_course,base.group_user,1,0,0,0
 session_read_all,session all,model_openacademy_session,base.group_user,1,0,0,0
-access_openacademy_report,access_open_academy_report,model_openacademy_pdf_report,base.group_user,1,1,1,1
+access_salary_headwise_report,access_salary_headwise_pdf_report,model_salary_headwise_pdf_report,base.group_user,1,1,1,1
 access_salary_adjustment,salary.adjustment,model_salary_adjustment,base.group_user,1,1,1,1
 access_salary_adjustment_line,salary.adjustment.line,model_salary_adjustment_line,base.group_user,1,1,1,1
 access_job_card_pdf_report,access_job_card_pdf_report,model_job_card_pdf_report,base.group_user,1,1,1,1 

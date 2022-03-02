@@ -44,18 +44,43 @@ class HolidaysRequest(models.Model):
                     date=holiday.date_from
                 ),
                 partner_ids=holiday.employee_id.user_id.partner_id.ids)
+        
         self.filtered(lambda hol: not hol.validation_type == 'both').action_validate()
+        #raise UserError(('sfe'))
         if not self.env.context.get('leave_fast_create'):
             self.activity_update()
         att_obj = self.env['hr.attendance']
         t_date = self.date_to.date()
         st_date = self.date_from.date()
         endd = (t_date - st_date).days
-        for d in range(0, endd+1):
-            get_att_data = att_obj.search([('empID', '=', self.employee_id.emp_id),
-                                           ('attDate', '=', (st_date + timedelta(days=d)))])
-            get_att_data.generateAttFlag(get_att_data.empID,get_att_data.attDate,get_att_data.inTime,get_att_data.check_in,
-                                         get_att_data.outTime,get_att_data.check_out)        
+        #raise UserError(('sfe'))
+        #raise UserError((self.employee_id.emp_id,self.mode_company_id.id,self.department_id.id,self.category_id.id))
+        if self.holiday_type == "employee":
+            for d in range(0, endd+1):
+                get_att_data = att_obj.search([('empID', '=', self.employee_id.emp_id),
+                                               ('attDate', '=', (st_date + timedelta(days=d)))])
+                get_att_data.generateAttFlag(get_att_data.empID,get_att_data.attDate,get_att_data.inTime,get_att_data.check_in, get_att_data.outTime,get_att_data.check_out) 
+        
+        if self.holiday_type == "company":
+            for d in range(0, endd+1):
+                get_att_data = att_obj.search([('employee_id.company_id', '=', self.mode_company_id.id),
+                                               ('attDate', '=', (st_date + timedelta(days=d)))])
+                for comp in get_att_data:
+                    get_att_data.generateAttFlag(comp.empID,comp.attDate,comp.inTime,comp.check_in,comp.outTime,comp.check_out)
+        
+        if self.holiday_type == "department":
+            for d in range(0, endd+1):
+                get_att_data = att_obj.search([('employee_id.department_id', '=', self.department_id.id),
+                                               ('attDate', '=', (st_date + timedelta(days=d)))])
+                for dept in get_att_data:
+                    get_att_data.generateAttFlag(dept.empID,dept.attDate,dept.inTime,dept.check_in, dept.outTime,dept.check_out)
+        
+        if self.holiday_type == "category":
+            for d in range(0, endd+1):
+                get_att_data = att_obj.search([('employee_id.category_ids', '=', self.category_id.id),
+                                               ('attDate', '=', (st_date + timedelta(days=d)))])
+                for cat in get_att_data:
+                    get_att_data.generateAttFlag(cat.empID,cat.attDate,cat.inTime,cat.check_in, cat.outTime,cat.check_out)        
         return True
 		
     def action_refuse(self):

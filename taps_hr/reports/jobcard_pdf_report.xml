@@ -11,122 +11,134 @@
     />
 
     <template id="jobcard_pdf_template">
-        <t t-call="web.html_container">
-          <t t-foreach="datas" t-as="emp">
-            <t t-call="web.internal_layout">
-                <div class="page">
-                    <h3>
-                        <center>Employee Job Card</center>
-                    </h3>
-                    <h6>
-                        <center>
-                            Date:
-                            <span t-esc="emp[0]"/> - <span t-esc="emp[1]"/>
-                        </center>
-                    </h6>
-                    <div class="row">
-                        <div class="col-6">
-                            ID:
-                            <span t-esc="emp[3]"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            Name:
-                            <span t-esc="emp[4]"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            Department:
-                            <span t-esc="emp[5]"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            Section:
-                            <span t-esc="emp[6]"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            Position:
-                            <span t-esc="emp[7]"/>
-                        </div>
-                    </div>
-                    <br/>
-
-                    <table class="table table-sm table-bordered">
-                        <thead>
-                            <tr>
-                                <th style="color:#875A7B;">Date</th>
-                                <th style="color:#875A7B;">Office In Time</th>
-                                <th style="color:#875A7B;">In Time</th>
-                                <th style="color:#875A7B;">In Flag</th>
-                                <th style="color:#875A7B;">Office Out Time</th>
-                                <th style="color:#875A7B;">Out Time</th>
-                                <th style="color:#875A7B;">Out Flag</th>
-                                <th style="color:#875A7B;">OT Hours</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                              <tr t-foreach="alldays" t-as="ald">
-                                <tr t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
-                                    <td>
-                                        <div align="center" style="margin-bottom:0pt;margin-top:0pt;max-height:15pt;">
-                                            <span t-field="att.attDate"/>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div t-if="att.inTime != 0.0" align="center" style="margin-bottom:0pt;margin-top:0pt;max-height:15pt;">
-                                            <span t-esc="att['inTime']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div t-if="att.inHour != 0.0" align="center" style="margin-bottom:0pt;margin-top:0pt;max-height:15pt;">
-                                            <span t-esc="att['inHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div align="center" style="margin-bottom:0pt;margin-top:0pt;max-height:15pt;">
-                                            <span t-esc="att['inFlag']"/>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div t-if="att.outTime != 0.0" align="center" style="margin-bottom:0pt;margin-top:0pt;max-height:15pt;">
-                                            <span t-esc="att['outTime']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div t-if="att.outHour != 0.0" align="center" style="margin-bottom:0pt;margin-top:0pt;max-height:15pt;">
-                                            <span t-esc="att['outHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div align="center" style="margin-bottom:0pt;margin-top:0pt;max-height:15pt;">
-                                            <span t-esc="att['outFlag']"/>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div align="center" style="margin-bottom:0pt;margin-top:0pt;max-height:15pt;">
-                                            <span t-esc="att['otHours']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                        </div>
-                                    </td>
-                                </tr>
-                              </tr>  
-                        </tbody>
-                    </table>
-                    <br/>
-                    <div class="row">
-                        <div class="col-12" align="right" style="font-size:15pt;">
-                            Total OT = 
-                            <span t-esc="emp[8]" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                        </div>
-                    </div>
-                </div>
-            </t>
+      <t t-call="web.html_container">
+        <t t-foreach="datas" t-as="emp">
+          <t t-call="web.internal_layout">
+              <div class="page">
+                  <h3>
+                      <center>Employee Job Card</center>
+                  </h3>
+                  <h6>
+                      <center>
+                          Date:
+                          <span t-esc="emp[0]"/> - <span t-esc="emp[1]"/>
+                      </center>
+                  </h6>
+                  <div class="row">
+                      <div class="col-6">
+                          ID: 
+                          <span t-esc="emp[3]"/>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-6">
+                          Name: 
+                          <span t-esc="emp[4]"/>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-6">
+                          Department:
+                          <span t-esc="emp[5]"/>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-6">
+                          Section: 
+                          <span t-esc="emp[6]"/>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-6">
+                          Position: 
+                          <span t-esc="emp[7]"/>
+                      </div>
+                  </div>
+  
+                  <table class="table table-sm table-bordered">
+                      <thead>
+                          <tr align="center">
+                              <th style="color:#875A7B;">Date</th>
+                              <th style="color:#875A7B;">Office In Time</th>
+                              <th style="color:#875A7B;">In Time</th>
+                              <th style="color:#875A7B;">In Flag</th>
+                              <th style="color:#875A7B;">Office Out Time</th>
+                              <th style="color:#875A7B;">Out Time</th>
+                              <th style="color:#875A7B;">Out Flag</th>
+                              <th style="color:#875A7B;">OT Hours</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                            <tr t-foreach="alldays" t-as="ald">
+                              <tr t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
+                                  <t t-set="line_style" t-value="'margin-bottom:0pt;margin-top:0pt;max-height:14pt;'"/>
+                                  <t t-if="att.inFlag == 'A'">
+                                      <t t-set="line_style" t-value="'color:red;'"/>
+                                  </t>
+                                  <t t-if="att.outFlag == 'A'">
+                                      <t t-set="line_style" t-value="'color:red;'"/>
+                                  </t>
+                                  <t t-if="att.inFlag == 'F'">
+                                      <t t-set="line_style" t-value="'color:green;'"/>
+                                  </t>
+                                  <t t-if="att.outFlag == 'F'">
+                                      <t t-set="line_style" t-value="'color:green;'"/>
+                                  </t>
+                                  <td>
+                                      <div t-att-style="line_style" align="center">
+                                          <span t-field="att.attDate"/>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div t-att-style="line_style" align="center">
+                                          <span t-esc="att['inTime']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div t-att-style="line_style" t-if="att.inHour != 0.0" align="center">
+                                          <span t-esc="att['inHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div t-att-style="line_style" align="center">
+                                          <span t-esc="att['inFlag']"/>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div t-att-style="line_style" align="center">
+                                          <span t-esc="att['outTime']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div t-att-style="line_style" t-if="att.outHour != 0.0" align="center">
+                                          <span t-esc="att['outHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div t-att-style="line_style" align="center">
+                                          <span t-esc="att['outFlag']"/>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div t-att-style="line_style" align="center">
+                                          <span t-esc="att['otHours']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                      </div>
+                                  </td>
+                              </tr>
+                            </tr>  
+                      </tbody>
+                  </table>
+                  <br/>
+                  <div class="row">
+                      <div class="col-12" align="right" style="font-size:10pt; color:blue;">
+                          Total OT = 
+                          <span t-esc="emp[8]" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                      </div>
+                  </div>
+              </div>
           </t>
         </t>
+      </t>
     </template>
 
 </odoo>
