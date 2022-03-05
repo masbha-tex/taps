@@ -1,7 +1,14 @@
+import base64
+import io
+import logging
 from odoo import models, fields, api
 from datetime import datetime, date, timedelta, time
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.misc import xlsxwriter
+from odoo.tools import format_date
 import re
+import math
+_logger = logging.getLogger(__name__)
 
 class JobCardPDFReport(models.TransientModel):
     _name = 'job.card.pdf.report'
@@ -15,6 +22,7 @@ class JobCardPDFReport(models.TransientModel):
         ('category', 'By Employee Tag')],
         string='Report Mode', required=True, default='employee',
         help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')
+    
     
     
     employee_id = fields.Many2one(
@@ -66,8 +74,6 @@ class JobCardPDFReport(models.TransientModel):
                 holiday.employee_id = False
                 holiday.mode_company_id = False
                 holiday.department_id = False
-            #else:
-            #    holiday.employee_id = self.env.context.get('default_employee_id') or self.env.user.employee_id
                 
     # generate PDF report
     def action_print_report(self):
@@ -205,7 +211,7 @@ class HeadwisePDFReport(models.TransientModel):
         ('SNACKS',	'Strength Snacks'),
         ('CAR',	'Car'),
         ('OTHERS_ALW',	'Others Allowance'),
-        ('INCENTIVE',	'Incentive'),
+        ('INCENTIVE',	'Incentive'), 
         ('RPF',	'PF (Employer)'),
         ('PFR',	'PF (Employer)'),
         ('PFE',	'PF (Employee)'),
@@ -216,8 +222,9 @@ class HeadwisePDFReport(models.TransientModel):
         ('ADV_SALARY',	'Advance Salary'),
         ('OTHERS_DED',	'Others Deduction'),
         ('NET',	'Net Payable'),],
-        string='Report Mode', required=True, default='employee',
+        string='Report Mode', required=False,
         help='By Salary Head Wise Report')
+    
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
@@ -227,8 +234,11 @@ class HeadwisePDFReport(models.TransientModel):
         help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')
     
     
+    bank_id = fields.Many2one(
+        'res.bank',  string='Bank', readonly=False, ondelete="restrict", required=False)
+    
     employee_id = fields.Many2one(
-        'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict", tracking=True)
+        'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict", tracking=True)    
     
     category_id = fields.Many2one(
         'hr.employee.category',  string='Employee Tag', help='Category of Employee', readonly=False, tracking=True)
@@ -236,7 +246,7 @@ class HeadwisePDFReport(models.TransientModel):
         'res.company',  string='Company Mode', readonly=False, tracking=True)
     department_id = fields.Many2one(
         'hr.department',  string='Department', readonly=False, tracking=True)
-    
+    file_data = fields.Binary(readonly=True, attachment=False)    
     
     @api.depends('employee_id', 'holiday_type')
     def _compute_department_id(self):
@@ -281,34 +291,219 @@ class HeadwisePDFReport(models.TransientModel):
                 
     # generate PDF report
     def action_print_report(self):
-        if self.holiday_type == "employee":#employee  company department category
-            data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': False, 'department_id': False, 'category_id': False, 'employee_id': self.employee_id.id}
-        if self.holiday_type == "company":
-            data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': self.mode_company_id.id, 'department_id': False, 'category_id': False, 'employee_id': False}
-        if self.holiday_type == "department":
-            data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': False, 'department_id': self.department_id.id, 'category_id': False, 'employee_id': False}
-        if self.holiday_type == "category":
-            data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': False, 'department_id': False, 'category_id': self.category_id.id, 'employee_id': False}
+        if self.report_type:
+            if self.holiday_type == "employee":#employee  company department category
+                #raise UserError((self.report_type))
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': self.employee_id.id,
+                        'report_type': self.report_type,
+                        'bank_id': False}
+
+            if self.holiday_type == "company":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': self.mode_company_id.id, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': False}
+
+            if self.holiday_type == "department":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': self.department_id.id, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': False}
+
+            if self.holiday_type == "category":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': self.category_id.id, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': False}
+                
         return self.env.ref('taps_hr.action_salary_headwise_pdf_report').report_action(self, data=data)
 
     # Generate xlsx report
-    def action_generate_xlsx_report(self):
-        data = {
-            'date_from': self.date_from,
-            'date_to': self.date_to,
-        }
-        return self.env.ref('taps_hr.action_openacademy_xlsx_report').report_action(self, data=data)
+#     def action_generate_xlsx_report(self):
+#         data = {
+#             'date_from': self.date_from,
+#             'date_to': self.date_to,
+#         }
+#         return self.env.ref('taps_hr.action_openacademy_xlsx_report').report_action(self, data=data)
 
+    
+    def action_generate_xlsx_report(self):
+        start_time = fields.datetime.now()
+        if self.bank_id:
+            if self.holiday_type == "employee":#employee  company department category
+                #raise UserError(('sfefefegegegeeg'))
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': self.employee_id.id, 
+                        'report_type': False,
+                        'bank_id': self.bank_id.id}
+
+            if self.holiday_type == "company":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': self.mode_company_id.id, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': False,
+                        'bank_id': self.bank_id.id}
+
+            if self.holiday_type == "department":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': self.department_id.id, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': False,
+                        'bank_id': self.bank_id.id}
+
+            if self.holiday_type == "category":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': self.category_id.id, 
+                        'employee_id': False, 
+                        'report_type': False,
+                        'bank_id': self.bank_id.id}
+        
+        domain = []
+        if data.get('date_from'):
+            domain.append(('date_from', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+           domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        domain.append(('code', '=', 'NET'))
+        
+        #raise UserError((domain))
+        docs = self.env['hr.payslip.line'].search(domain).sorted(key = 'employee_id', reverse=False)
+        #raise UserError((docs.id))
+        datefrom = data.get('date_from')
+        dateto = data.get('date_to')
+        bankname = self.bank_id.name
+        categname = self.category_id.name
+        #raise UserError((datefrom,dateto,bankname,categname))
+        report_data = []
+        emp_data = []
+        slnumber=0
+        for edata in docs:
+            slnumber = slnumber+1
+            emp_data = [
+                slnumber,
+                edata.employee_id.emp_id,
+                edata.employee_id.name,
+                format_date(self.env, edata.employee_id.joining_date),
+                edata.employee_id.bank_account_id.acc_number,
+                edata.total,
+            ]
+            report_data.append(emp_data)     
+        
+        
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+
+        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
+        worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+
+        report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14})
+        worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+        worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        
+        column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
+        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
+        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
+        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+
+        # set the width od the column
+        
+        worksheet.set_column(0, 5, 20)
+        
+        worksheet.write(4, 0, 'SL.', column_product_style)
+        worksheet.write(4, 1, 'Employee ID', column_product_style)        
+        worksheet.write(4, 2, 'Name', column_product_style)
+        worksheet.write(4, 3, 'Joining Date', column_product_style)
+        worksheet.write(4, 4, 'Account Number', column_product_style)
+        worksheet.write(4, 5, 'Net Payable', column_product_style)
+        col = 0
+        row=5
+        
+        grandtotal = 0
+        
+        for line in report_data:
+            col=0
+            for l in line:
+                if col>4:
+                    grandtotal = grandtotal+l
+                worksheet.write(row, col, l)
+                col+=1
+            row+=1
+        
+        #worksheet.write(4, 0, 'SL.', column_product_style)
+        #raise UserError((row+1))
+        worksheet.write(row, 4, 'Grand Total', report_small_title_style)
+        worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
+        #raise UserError((datefrom,dateto,bankname,categname))
+        workbook.close()
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, 'SalaryBankTransfer'),
+            'target': 'self',
+        }    
+
+    
+    
+    
 
 class HeadwiseReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.salary_headwise_pdf_template'
 
     def _get_report_values(self, docids, data=None):
         domain = []
+        
+        if data.get('bank_id')==False:
+            domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
-            domain.append(('attDate', '>=', data.get('date_from')))
+            domain.append(('date_from', '>=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('attDate', '<=', data.get('date_to')))
+            domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
@@ -321,60 +516,33 @@ class HeadwiseReportPDF(models.AbstractModel):
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
         
         
-        #raise UserError((domain))    
-        docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
-        #docs = list(set([d.employee_id for d in docs]))
-        #employee = docs.unique(df[['emp_id']], axis=0)
-        #employee = docs.drop_duplicates(['emp_id'])[['emp_id']]
-        #raise UserError((employee))
-        emplist = docs.mapped('employee_id.id')
-        #date_list = docs.mapped('attDate')
-        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
-#         fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
-#         lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
-        
-#         stdate = fst_days.attDate
-#         enddate = lst_days.attDate
-        
-#         all_datelist = []
-#         dates = []
-        
-#         delta = enddate - stdate       # as timedelta
-#         for i in range(delta.days + 1):
-#             day = stdate + timedelta(days=i)
-#             dates = [
-#                 day,
-#             ]
-#             all_datelist.append(dates)
+#         raise UserError((domain))
+        docs = self.env['hr.payslip.line'].search(domain).sorted(key = 'employee_id', reverse=False)
         
 
-        allemp_data = []
-        for details in employee:
+        for details in docs:
             otTotal = 0
             for de in docs:
-                if details.id == de.employee_id.id:
-                    otTotal = otTotal + de.otHours
+                otTotal = otTotal + de.total
             
-            emp_data = []
-            emp_data = [
-                data.get('date_from'),
-                data.get('date_to'),
-                details.id,
-                details.emp_id,
-                details.name,
-                details.department_id.parent_id.name,
-                details.department_id.name,
-                details.job_id.name,
-                otTotal,
-            ]
-            allemp_data.append(emp_data)
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            otTotal,
+            data.get('date_from'),
+            data.get('date_to'),
+        ]
+        common_data.append(common_data)
+        #raise UserError((common_data[2]))
         return {
             'doc_ids': docs.ids,
-            'doc_model': 'hr.attendance',
+            'doc_model': 'hr.payslip.line',
             'docs': docs,
-            'datas': allemp_data,
+            'datas': common_data,
 #             'alldays': all_datelist
         }
-
