@@ -13,7 +13,10 @@
     <template id="jobcard_pdf_template">
       <t t-call="web.html_container">
         <t t-foreach="datas" t-as="emp">
-          <t t-call="web.internal_layout">
+          <t t-call="web.basic_layout">
+              <div class="header">
+                <img t-if="docs.employee_id.company_id.logo" t-att-src="image_data_uri(docs.employee_id.company_id.logo)" style="max-height: 80px;" alt="Logo"/>
+              </div>              
               <div class="page">
                   <h3>
                       <center>Employee Job Card</center>
@@ -128,11 +131,16 @@
                             </tr>  
                       </tbody>
                   </table>
-                  <br/>
-                  <div class="row">
-                      <div class="col-12" align="right" style="font-size:10pt; color:blue;">
-                          Total OT = 
-                          <span t-esc="emp[8]" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                  <div class="row justify-content-end">
+                      <div class="col-3">
+                          <table class="table table-sm">
+                              <tr class="border-black" style="font-size:14pt;">
+                                  <td><strong>Total OT</strong></td>
+                                  <td class="text-right">
+                                      <span t-esc="emp[8]" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                  </td>
+                              </tr>
+                          </table>
                       </div>
                   </div>
               </div>

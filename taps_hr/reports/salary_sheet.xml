@@ -80,7 +80,7 @@
                       <tbody>
                         <tr t-foreach="inside_foreach_docs or docs" t-as="o" t-att-style="line_style" align="center">
                           <tr t-att-style="line_style" align="center">
-                            <td rowspan="6">01</td>
+                            <td rowspan="6"><span t-esc="o_index+1" class="text-nowrap"/></td>
                             <td rowspan="6"><span t-field="o.employee_id.department_id.name"/></td>
                             <td rowspan="6"><span t-field="o.employee_id.emp_id"/></td>
                             <td rowspan="6"><span t-field="o.employee_id"/></td>
