@@ -13,9 +13,10 @@
             <form string="Headwise Report">
                 <group>
                     <group>
-                        <field name="report_type" string="Report Type" placeholder="Salary Headwise Report Type" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="report_type" string="Report Type" groups="hr_holidays.group_hr_holidays_user"/>
                         <field name="date_from"/>
                         <field name="date_to"/>
+                        <field name="bank_id"/>
                     </group>
                     <group>                    
                         <field name="holiday_type" string="Mode" groups="hr_holidays.group_hr_holidays_user"/>
