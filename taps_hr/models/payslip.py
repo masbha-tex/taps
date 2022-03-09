@@ -127,10 +127,9 @@ class HrPayslipsss(models.Model):
             payslip.ml_days = payslip._get_work_days_line_total('ML')
             payslip.lw_days = payslip._get_work_days_line_total('LW')
             payslip.total_payable_days = (payslip._get_work_days_line_total('P') + payslip._get_work_days_line_total('F') +
-                                          payslip._get_work_days_line_total('H') + payslip._get_work_days_line_total('CO') +
-                                          payslip._get_work_days_line_total('AJ') + payslip._get_work_days_line_total('CL') + 
-                                          payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL') + 
-                                          payslip._get_work_days_line_total('OD'))
+                                          payslip._get_work_days_line_total('H') + payslip._get_work_days_line_total('AJ') + 
+                                          payslip._get_work_days_line_total('CL') + payslip._get_work_days_line_total('OD') +
+                                          payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL'))
             
     @api.depends('contract_id','date_from','date_to')
     def _compute_ot_rate(self):

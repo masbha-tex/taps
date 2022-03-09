@@ -7,3 +7,6 @@ access_salary_headwise_report,access_salary_headwise_pdf_report,model_salary_hea
 access_salary_adjustment,salary.adjustment,model_salary_adjustment,base.group_user,1,1,1,1
 access_salary_adjustment_line,salary.adjustment.line,model_salary_adjustment_line,base.group_user,1,1,1,1
 access_job_card_pdf_report,access_job_card_pdf_report,model_job_card_pdf_report,base.group_user,1,1,1,1 
+access_employee_card_pdf_report,access_employee_card_pdf_report,model_employee_profile_card_pdf_report,base.group_user,1,1,1,1 
+access_employee_bulk_card_pdf_report,access_employee_bulk_card_pdf_report,model_employee_bulk_card_pdf_report,base.group_user,1,1,1,1
+access_salary_sheet_pdf_report,access_salary_sheet_pdf_report,model_salary_sheet_pdf_report,base.group_user,1,1,1,1

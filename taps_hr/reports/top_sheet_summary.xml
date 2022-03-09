@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="top_sheet_summary_report">
+    <template id="top_sheet_pdf_template">
     <t t-call="web.html_container">
           <t t-call="web.external_layout">
               <t t-value="docs.with_context(lang=docs.employee_id.address_home_id.lang or docs.env.lang)"/>

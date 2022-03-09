@@ -18,7 +18,7 @@ class StockForecastReport(models.TransientModel):
 
     report_by = fields.Selection([
         ('by_categories', 'By Categories'),
-        ('by_items', 'By Items')],
+        ('by_items', 'By Items')], 
         default='by_categories')
     categ_ids = fields.Many2many('category.type', string='Categories')
     product_ids = fields.Many2many('product.product')

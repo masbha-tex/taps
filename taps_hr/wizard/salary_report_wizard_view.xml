@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record model="ir.ui.view" id="salary_sheet_pdf_report_form_view">
+        <field name="name">salary.sheet.pdf.report.form.view</field>
+        <field name="model">salary.sheet.pdf.report</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Report">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>                    
+                        <field name="holiday_type" string="Mode" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'employee')],
+                        'invisible': [('holiday_type', '!=', 'employee')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="mode_company_id" string="Company" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'company')],
+                        'invisible': [('holiday_type', '!=', 'company')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="category_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'category')],
+                        'invisible': [('holiday_type', '!=','category')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="department_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'department')],
+                        'invisible': [('holiday_type', '!=','department')]
+                        }" options="{'no_create': True, 'no_open': True}"/> 
+                        <field name="employee_type" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'emptype')],
+                        'invisible': [('holiday_type', '!=','emptype')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Print" name="action_print_report" type="object" class="btn-primary"/>
+                    <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="salary_sheet_pdf_report" model="ir.actions.act_window">
+        <field name="name">Payroll Report</field>
+        <field name="res_model">salary.sheet.pdf.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+<!--     <menuitem id="hr_work_entry_contract.menu_hr_payroll_report" 
+              name="Reporting" 
+              parent="hr_work_entry_contract.menu_hr_payroll_root"
+              sequence="30" 
+              groups="hr_work_entry_contract.group_hr_payroll_user"/>   -->
+    
+    <menuitem id="menu_salary_sheet_report"
+              name="Payroll Report"
+              sequence="3"
+              action="salary_sheet_pdf_report"
+              parent="hr_payroll.menu_hr_payroll_report"/>
+    
+</odoo>

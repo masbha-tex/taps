@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate='0'>
+        <record id="report_top_sheet_summary" model="ir.actions.report">
+            <field name="name">Top Sheet Summary</field>
+            <field name="model">salary.sheet.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.top_sheet_pdf_template</field>
+            <field name="report_file">taps_hr.top_sheet_pdf_template</field>
+            <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="report_salary_sheet" model="ir.actions.report">
+            <field name="name">Salary Sheet</field>
+            <field name="model">salary.sheet.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.salary_sheet_pdf_template</field>
+            <field name="report_file">taps_hr.salary_sheet_pdf_template</field>
+            <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
+            <field name="binding_type">report</field>
+        </record>
+        <record id="action_job_card_pdf_report" model="ir.actions.report">
+            <field name="name">Job Card</field>
+            <field name="model">job.card.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.jobcard_pdf_template</field>
+            <field name="report_file">taps_hr.jobcard_pdf_template</field>
+            <field name="binding_model_id" ref="model_job_card_pdf_report"/>
+            <field name="binding_type">report</field>
+        </record>           
+        <record id="action_employee_card_pdf_report" model="ir.actions.report">
+            <field name="name">Employee Profile</field>
+            <field name="model">employee.profile.card.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.employee_card_pdf_template</field>
+            <field name="report_file">taps_hr.employee_card_pdf_template</field>
+            <field name="binding_model_id" ref="model_employee_profile_card_pdf_report"/>
+            <field name="binding_type">report</field>
+        </record>
+        <record id="action_bulk_card_pdf_report" model="ir.actions.report">
+            <field name="name">Bulk Attendance</field>
+            <field name="model">employee.bulk.card.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.employeebulk_pdf_template</field>
+            <field name="report_file">taps_hr.employeebulk_pdf_template</field>
+            <field name="binding_model_id" ref="model_employee_bulk_card_pdf_report"/>
+            <field name="binding_type">report</field>
+        </record>
+        <record id="action_salary_headwise_pdf_report" model="ir.actions.report">
+            <field name="name">Headwise Report</field>
+            <field name="model">salary.headwise.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.salary_headwise_pdf_template</field>
+            <field name="report_file">taps_hr.salary_headwise_pdf_template</field>
+            <field name="binding_model_id" ref="model_salary_headwise_pdf_report"/>
+            <field name="binding_type">report</field>
+        </record>        
+     
+    </data>
+   
+    
+    
+</odoo>
