@@ -133,7 +133,7 @@ class Attreprocess(models.TransientModel):
         if emp_att:
             for record in emp_att:
                 if record.check_in == False:
-                    record[-1].write({'check_in': '20232-01-01 02:02:30','check_out': '2032-01-01 02:02:44'})
+                    record[-1].write({'check_in': '2032-01-01 02:02:30','check_out': '2032-01-01 02:02:44'})
                     record[-1].write({'check_in': '','check_out': ''})
                 else:
                     record[-1].write({'check_out': record.check_out + timedelta(seconds=1)})
