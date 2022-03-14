@@ -14,28 +14,28 @@
                         <field name="date_to"/>
                     </group>
                     <group>                    
-                        <field name="holiday_type" string="Mode" groups="hr_holidays.group_hr_holidays_user"/>
-                        <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
-                        'required': [('holiday_type', '=', 'employee')],
-                        'invisible': [('holiday_type', '!=', 'employee')]
+                        <field name="mode_type" string="Mode"/>
+                        <field name="employee_id" attrs="{
+                        'required': [('mode_type', '=', 'employee')],
+                        'invisible': [('mode_type', '!=', 'employee')]
                         }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="mode_company_id" string="Company" groups="hr_holidays.group_hr_holidays_user" attrs="{
-                        'required': [('holiday_type', '=', 'company')],
-                        'invisible': [('holiday_type', '!=', 'company')]
+                        <field name="mode_company_id" string="Company"  attrs="{
+                        'required': [('mode_type', '=', 'company')],
+                        'invisible': [('mode_type', '!=', 'company')]
                         }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="category_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
-                        'required': [('holiday_type', '=', 'category')],
-                        'invisible': [('holiday_type', '!=','category')]
+                        <field name="category_id" attrs="{
+                        'required': [('mode_type', '=', 'category')],
+                        'invisible': [('mode_type', '!=','category')]
                         }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="department_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
-                        'required': [('holiday_type', '=', 'department')],
-                        'invisible': [('holiday_type', '!=','department')]
+                        <field name="department_id" attrs="{
+                        'required': [('mode_type', '=', 'department')],
+                        'invisible': [('mode_type', '!=','department')]
                         }" options="{'no_create': True, 'no_open': True}"/> 
                     </group>
                 </group>
                 <footer>
                     <button string="Print" name="action_print_report" type="object" class="btn-primary"/>
-                    <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+<!--                     <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/> -->
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

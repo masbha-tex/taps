@@ -89,12 +89,12 @@ class JobCardPDFReport(models.TransientModel):
         return self.env.ref('taps_hr.action_job_card_pdf_report').report_action(self, data=data)
 
     # Generate xlsx report
-    def action_generate_xlsx_report(self):
-        data = {
-            'date_from': self.date_from,
-            'date_to': self.date_to,
-        }
-        return self.env.ref('taps_hr.action_openacademy_xlsx_report').report_action(self, data=data)
+#     def action_generate_xlsx_report(self):
+#         data = {
+#             'date_from': self.date_from,
+#             'date_to': self.date_to,
+#         }
+#         return self.env.ref('taps_hr.action_openacademy_xlsx_report').report_action(self, data=data)
     
     
 class JobCardReportPDF(models.AbstractModel):

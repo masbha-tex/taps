@@ -9,6 +9,8 @@
             <field name="report_file">taps_hr.top_sheet_pdf_template</field>
             <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
             <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
+            
         </record>
 
         <record id="report_salary_sheet" model="ir.actions.report">
@@ -19,6 +21,8 @@
             <field name="report_file">taps_hr.salary_sheet_pdf_template</field>
             <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
             <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
+            
         </record>
         <record id="action_job_card_pdf_report" model="ir.actions.report">
             <field name="name">Job Card</field>
@@ -28,6 +32,7 @@
             <field name="report_file">taps_hr.jobcard_pdf_template</field>
             <field name="binding_model_id" ref="model_job_card_pdf_report"/>
             <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_jobcard_report"/>
         </record>           
         <record id="action_employee_card_pdf_report" model="ir.actions.report">
             <field name="name">Employee Profile</field>
@@ -37,15 +42,7 @@
             <field name="report_file">taps_hr.employee_card_pdf_template</field>
             <field name="binding_model_id" ref="model_employee_profile_card_pdf_report"/>
             <field name="binding_type">report</field>
-        </record>
-        <record id="action_bulk_card_pdf_report" model="ir.actions.report">
-            <field name="name">Bulk Attendance</field>
-            <field name="model">employee.bulk.card.pdf.report</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_hr.employeebulk_pdf_template</field>
-            <field name="report_file">taps_hr.employeebulk_pdf_template</field>
-            <field name="binding_model_id" ref="model_employee_bulk_card_pdf_report"/>
-            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
         </record>
         <record id="action_salary_headwise_pdf_report" model="ir.actions.report">
             <field name="name">Headwise Report</field>
@@ -55,6 +52,7 @@
             <field name="report_file">taps_hr.salary_headwise_pdf_template</field>
             <field name="binding_model_id" ref="model_salary_headwise_pdf_report"/>
             <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_jobcard_report"/>
         </record>        
      
     </data>

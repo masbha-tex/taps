@@ -14,15 +14,15 @@ class EmployeeCardPDFReport(models.TransientModel):
     _name = 'employee.profile.card.pdf.report'
     _description = 'Employee Profile'
 
-    date_from = fields.Date('Date from', required=True, default = datetime.now())
-    date_to = fields.Date('Date to', required=True, default = datetime.now())
-    holiday_type = fields.Selection([
+    date_from = fields.Date('Date from', required=True, default = date.today().strftime('2000-%m-01'))
+    date_to = fields.Date('Date to', required=True, default = date.today())
+    mode_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
         ('department', 'By Department'),
         ('category', 'By Employee Tag')],
-        string='Report Mode', required=True, default='employee',
-        help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')
+        string='Mode', required=True, default='employee',
+        help='By Employee: Request for individual Employee, By Employee Tag: Request for group of employees in category')
     
     employee_id = fields.Many2one(
         'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict")
@@ -35,65 +35,65 @@ class EmployeeCardPDFReport(models.TransientModel):
         'hr.department',  string='Department', readonly=False)
     
     
-    @api.depends('employee_id', 'holiday_type')
+    @api.depends('employee_id', 'mode_type')
     def _compute_department_id(self):
-        for holiday in self:
-            if holiday.employee_id:
-                holiday.department_id = holiday.employee_id.department_id
-            elif holiday.holiday_type == 'department':
-                if not holiday.department_id:
-                    holiday.department_id = self.env.user.employee_id.department_id
+        for profile in self:
+            if profile.employee_id:
+                profile.department_id = profile.employee_id.department_id
+            elif profile.mode_type == 'department':
+                if not profile.department_id:
+                    profile.department_id = self.env.user.employee_id.department_id
             else:
-                holiday.department_id = False
+                profile.department_id = False
                 
-    #@api.depends('holiday_type')
-    def _compute_from_holiday_type(self):
-        for holiday in self:
-            if holiday.holiday_type == 'employee':
-                if not holiday.employee_id:
-                    holiday.employee_id = self.env.user.employee_id
-                holiday.mode_company_id = False
-                holiday.category_id = False
-                holiday.department_id = False
-            elif holiday.holiday_type == 'company':
-                if not holiday.mode_company_id:
-                    holiday.mode_company_id = self.env.company.id
-                holiday.category_id = False
-                holiday.department_id = False
-                holiday.employee_id = False
-            elif holiday.holiday_type == 'department':
-                if not holiday.department_id:
-                    holiday.department_id = self.env.user.employee_id.department_id
-                holiday.employee_id = False
-                holiday.mode_company_id = False
-                holiday.category_id = False
-            elif holiday.holiday_type == 'category':
-                if not holiday.category_id:
-                    holiday.category_id = self.env.user.employee_id.category_ids
-                holiday.employee_id = False
-                holiday.mode_company_id = False
-                holiday.department_id = False
+    #@api.depends('mode_type')
+    def _compute_from_mode_type(self):
+        for profile in self:
+            if profile.mode_type == 'employee':
+                if not profile.employee_id:
+                    profile.employee_id = self.env.user.employee_id
+                profile.mode_company_id = False
+                profile.category_id = False
+                profile.department_id = False
+            elif profile.mode_type == 'company':
+                if not profile.mode_company_id:
+                    profile.mode_company_id = self.env.company.id
+                profile.category_id = False
+                profile.department_id = False
+                profile.employee_id = False
+            elif profile.mode_type == 'department':
+                if not profile.department_id:
+                    profile.department_id = self.env.user.employee_id.department_id
+                profile.employee_id = False
+                profile.mode_company_id = False
+                profile.category_id = False
+            elif profile.mode_type == 'category':
+                if not profile.category_id:
+                    profile.category_id = self.env.user.employee_id.category_ids
+                profile.employee_id = False
+                profile.mode_company_id = False
+                profile.department_id = False
                 
     # generate PDF report
     def action_print_report(self):
-        if self.holiday_type == "employee":#employee  company department category
+        if self.mode_type == "employee":#employee  company department category
             data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': False, 'department_id': False, 'category_id': False, 'employee_id': self.employee_id.id}
-        if self.holiday_type == "company":
+        if self.mode_type == "company":
             data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': self.mode_company_id.id, 'department_id': False, 'category_id': False, 'employee_id': False}
-        if self.holiday_type == "department":
+        if self.mode_type == "department":
             data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': False, 'department_id': self.department_id.id, 'category_id': False, 'employee_id': False}
-        if self.holiday_type == "category":
+        if self.mode_type == "category":
             data = {'date_from': self.date_from, 'date_to': self.date_to, 'mode_company_id': False, 'department_id': False, 'category_id': self.category_id.id, 'employee_id': False}
         #raise UserError(('efewfewf'))
         return self.env.ref('taps_hr.action_employee_card_pdf_report').report_action(self, data=data)
 
 #     Generate xlsx report
-    def action_generate_xlsx_report(self):
-        data = {
-            'date_from': self.date_from,
-            'date_to': self.date_to,
-        }
-        return self.env.ref('taps_hr.action_openacademy_xlsx_report').report_action(self, data=data)
+#     def action_generate_xlsx_report(self):
+#         data = {
+#             'date_from': self.date_from,
+#             'date_to': self.date_to,
+#         }
+#         return self.env.ref('taps_hr.action_openacademy_xlsx_report').report_action(self, data=data)
     
     
 class EmployeeCardReportPDF(models.AbstractModel):
@@ -124,69 +124,10 @@ class EmployeeCardReportPDF(models.AbstractModel):
         #raise UserError((domain))    
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
         
-        #raise UserError((docs))  
-        #docs = list(set([d.employee_id for d in docs]))
-        #employee = docs.unique(df[['emp_id']], axis=0)
-        #employee = docs.drop_duplicates(['emp_id'])[['emp_id']]
-        #raise UserError((employee))
-#         emplist = docs.mapped('employee_id.id')
-#         #date_list = docs.mapped('attDate')
-#         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
-#         fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
-#         lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
-        
-#         stdate = fst_days.attDate
-#         enddate = lst_days.attDate
-        
-#         all_datelist = []
-#         dates = []
-        
-#         delta = enddate - stdate       # as timedelta
-#         for i in range(delta.days + 1):
-#             day = stdate + timedelta(days=i)
-#             dates = [
-#                 day,
-#             ]
-#             all_datelist.append(dates)
-        
-
-#         allemp_data = []
-#         for details in employee:
-#             otTotal = 0
-#             for de in docs:
-#                 if details.id == de.employee_id.id:
-#                     otTotal = otTotal + de.otHours
-            
-#             emp_data = []
-#             emp_data = [
-#                 data.get('date_from'),
-#                 data.get('date_to'),
-#                 details.id,
-#                 details.emp_id,
-#                 details.name,
-#                 details.department_id.parent_id.name,
-#                 details.department_id.name,
-#                 details.job_id.name,
-#                 otTotal,
-#             ]
-#             allemp_data.append(emp_data)
-        #employee = self.env['hr.employee'].browse(data.get('employee_id'))
-        #course_ids = self.env['openacademy.course'].browse(data.get('course_ids'))
-        
-        #data.update({'emp_id': employee.emp_id})
-        #data.update({'name': employee.name})
-        #data.update({'department': employee.department_id.parent_id.name})
-        #data.update({'section': employee.department_id.name})
-        #data.update({'position': employee.job_id.name})
-        #raise UserError((docs.id))
-        
-        #data.update({'courses': ",".join([course.course_name for course in course_ids])}) 
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.employee',
             'docs': docs,
-#             'datas': allemp_data,
-#             'alldays': all_datelist
         }
 
     

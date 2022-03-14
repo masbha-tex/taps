@@ -34,13 +34,11 @@
         'reports/jobcard_pdf_report.xml',
         'reports/paperformat.xml',
         'reports/employee_card_pdf_report.xml',
-        'reports/bulk_card_pdf_report.xml',
-        'wizard/bulk_attendance_report_wizard_view.xml',
         'wizard/employee_profile_report_wizard_view.xml',
         'wizard/headwise_report_wizard_view.xml',
         'wizard/jobcard_report_wizard_view.xml',
         'wizard/salary_report_wizard_view.xml',
-        
+        'wizard/att_reprocess_wizard_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [],

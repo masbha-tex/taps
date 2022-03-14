@@ -13,8 +13,31 @@ import math
 
 class taps_expense(models.Model):
     _inherit = 'hr.expense'
+
     
-    expense_line = fields.One2many('hr.expense.line', 'line_id', string='Expense Lines', copy=True)
+        
+    @api.depends('expense_line.price_total')
+    def _amount_all(self):
+        for expense in self:
+            amount_untaxed = amount_tax = 0.0
+            for line in expense.expense_line:
+                line._compute_amount()
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+            currency = expense.currency_id or self.env.company.currency_id
+            expense.update({
+                'amount_untaxed': currency.round(amount_untaxed),
+                'amount_tax': currency.round(amount_tax),
+                'amount_total': amount_untaxed + amount_tax,
+                'unit_amount': currency.round(amount_untaxed + amount_tax),
+                'total_amount': currency.round(amount_untaxed + amount_tax),
+            })
+    
+    
+
+    unit_amount = fields.Float("Unit Price", compute='_compute_from_product_id_company_id', store=True, required=True, copy=True,states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]}, digits='Account')
+    
+    expense_line = fields.One2many('hr.expense.line', 'expense_id', string='Expense Lines', copy=True)
     payment_mode = fields.Selection([
         ("own_account", "Employee (to reimburse)"),
         ("company_account", "Expense to Vendor")
@@ -24,25 +47,12 @@ class taps_expense(models.Model):
     used_amount = fields.Float("Total Expensed", store=False, compute='_compute_advance', digits='Account')
     balance_amount = fields.Float("Balance Amount", store=False, compute='_compute_advance', digits='Account')
 
+
+    amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all', tracking=True)
+    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all')
+    amount_total = fields.Monetary(string='Total Amount', store=True, readonly=True, compute='_amount_all')    
     
-    @api.depends('expense_line.amount')
-    def _amount_all(self):
-        for expense in self:
-            amount_untaxed = amount_tax = 0.0
-            for line in expense.expense_line:
-                #line._compute_amount()
-                amount_untaxed += line.amount
-                amount_tax += line.price_tax
-            currency = expense.currency_id #or expense.partner_id.property_purchase_currency_id or self.env.company.currency_id
-            expense.update({
-                'amount_untaxed': currency.round(amount_untaxed),
-                'amount_tax': currency.round(amount_tax),
-                'amount_total': amount_untaxed + amount_tax,
-                'unit_amount': currency.round(amount_untaxed),
-                'total_amount': currency.round(amount_tax),
-            })    
-    
-    
+
     def float_to_time(self,hours):
         if hours == 24.0:
             return time.max
@@ -117,44 +127,50 @@ class ExpenseLine(models.Model):
     _description = 'Expense Details'
     
     
-    line_id = fields.Many2one('hr.expense', index=True, required=True, ondelete='cascade')
+    expense_id = fields.Many2one('hr.expense', index=True, required=True, ondelete='cascade')
     
-    address_home_id = fields.Many2one(
-        'res.partner', 'Address', help='Enter here any kind of contact indivisual/company.',
-        groups="hr.group_hr_user", tracking=True, store=True,
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    sequence = fields.Integer(string='Sequence', default=10)
+    partner_id = fields.Many2one(
+        'res.partner', 'Name', help='Enter here any kind of contact indivisual/company.',
+        groups="hr.group_hr_user", tracking=True, store=True)
     
-    description = fields.Char('Description', store=True)
+    name = fields.Char('Note', store=True)
     
+    currency_id = fields.Many2one(related='expense_id.currency_id', store=True, string='Currency', readonly=True)
     #amount = fields.Monetary(string='Amount', store=True, digits='Account')
     taxes_id = fields.Many2many('account.tax', string='Taxes', domain=['|', ('active', '=', False), ('active', '=', True)])
 
-    amount = fields.Monetary(string='Amount', store=True, digits='Account')
+    price_unit = fields.Float(string='Amount', required=True, digits='Account')
+   
+    price_subtotal = fields.Monetary(compute='_compute_amount', string='Subtotal', store=True, digits='Account')
     price_total = fields.Monetary(compute='_compute_amount', string='Total', store=True)
     price_tax = fields.Float(compute='_compute_amount', string='Tax', store=True)    
+    state = fields.Selection(related='expense_id.state', store=True, readonly=False)
     
+    company_id = fields.Many2one('res.company', related='expense_id.company_id', string='Company', store=True, readonly=True)
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
     
-    amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all', tracking=True)
-    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all')
-    amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all')    
-    
-
-    @api.depends('amount', 'taxes_id')
+    @api.depends('price_unit', 'taxes_id')
     def _compute_amount(self):
         for line in self:
             vals = line._prepare_compute_all_values()
             taxes = line.taxes_id.compute_all(
-                vals['amount'],
-                vals['currency_id'])
+                vals['price_unit'],
+                vals['currency_id'],
+                vals['qty'])
             line.update({
                 'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                 'price_total': taxes['total_included'],
-                'amount': taxes['total_excluded'],
+                'price_subtotal': taxes['total_excluded'],
             })
 
     def _prepare_compute_all_values(self):
         self.ensure_one()
         return {
-            'amount': self.amount,
-            'currency_id': self.line_id.currency_id,
+            'price_unit': self.price_unit,
+            'currency_id': self.expense_id.currency_id,
+            'qty': 1,
+            #'partner': self.partner_id,
         }

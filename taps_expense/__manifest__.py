@@ -22,7 +22,7 @@
     'depends': ['base','hr_expense'],
     'data': [
         'security/ir.model.access.csv',
-        #'views/hr_expense.xml',
+        'views/hr_expense.xml',
         'views/hr_emp_imprest.xml',
     ],
 }

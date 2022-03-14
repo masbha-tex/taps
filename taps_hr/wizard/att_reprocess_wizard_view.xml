@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record model="ir.ui.view" id="att_reprocess_form_view">
+        <field name="name">att.reprocess.form.view</field>
+        <field name="model">att.reprocess</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Reprocess">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>                    
+                        <field name="report_by" string="Mode"/>
+                        <field name="employee_id" attrs="{
+                        'required': [('report_by', '=', 'employee')],
+                        'invisible': [('report_by', '!=', 'employee')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="mode_company_id" string="Company" attrs="{
+                        'required': [('report_by', '=', 'company')],
+                        'invisible': [('report_by', '!=', 'company')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="category_id" attrs="{
+                        'required': [('report_by', '=', 'category')],
+                        'invisible': [('report_by', '!=','category')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="department_id" attrs="{
+                        'required': [('report_by', '=', 'department')],
+                        'invisible': [('report_by', '!=','department')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Reprocess" name="action_att_reprocess" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="att_reprocess" model="ir.actions.act_window">
+        <field name="name">Attendance Reprocess</field>
+        <field name="res_model">att.reprocess</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="menu_att_reprocess"
+              name="Attendance Reprocess"
+              sequence="21"
+              action="att_reprocess"
+              parent="hr_attendance.menu_hr_attendance_root"/>
+    
+</odoo>
