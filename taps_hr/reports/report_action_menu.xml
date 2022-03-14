@@ -42,7 +42,7 @@
             <field name="report_file">taps_hr.employee_card_pdf_template</field>
             <field name="binding_model_id" ref="model_employee_profile_card_pdf_report"/>
             <field name="binding_type">report</field>
-            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+<!--             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/> -->
         </record>
         <record id="action_salary_headwise_pdf_report" model="ir.actions.report">
             <field name="name">Headwise Report</field>
