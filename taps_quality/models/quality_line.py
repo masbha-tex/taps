@@ -45,7 +45,7 @@ class QualityCheckLine(models.Model):
     
     name = fields.Char()
     check_id = fields.Many2one('quality.check', string='Check Reference', index=True, required=True, ondelete='cascade')
-    parameter = fields.Many2one('quality.parameter', String="Parameter", domain="[('quality_category', '=', product_category)]",)
+    parameter = fields.Many2one('quality.parameter', string="Parameter", domain="[('quality_category', '=', product_category)]",)
     product_category = fields.Many2one(related='check_id.product_category', string='Product Category', readonly=True)
     #company_id = fields.Many2one('res.company')
     #company_name = fields.Char(related='company_id.name')
@@ -64,7 +64,7 @@ class QualityCheckLine(models.Model):
     value10 = fields.Float(string='V10')
     status = fields.Selection([
         ('ok', 'Ok'),
-        ('notok', 'Not Ok')], string='Status', tracking=True, 
+        ('notok', 'Not Ok')], string='Status',
         copy=False, store = True, default='notok')
     
     

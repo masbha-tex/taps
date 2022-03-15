@@ -16,4 +16,4 @@ class QualityUnit(models.Model):
     _rec_name = "unit_name"
     
     
-    unit_name = fields.Char(String="Unit Name")
+    unit_name = fields.Char(string="Unit Name")

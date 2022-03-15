@@ -24,5 +24,7 @@
         'security/ir.model.access.csv',
         'views/hr_expense.xml',
         'views/hr_emp_imprest.xml',
+        'data/generate_expense_code.xml',
+        'data/generate_imprest_code.xml',
     ],
 }

@@ -14,8 +14,8 @@ class JobCardPDFReport(models.TransientModel):
     _name = 'job.card.pdf.report'
     _description = 'Employee Job Card'     
 
-    date_from = fields.Date('Date from', required=True, default = datetime.now())
-    date_to = fields.Date('Date to', required=True, default = datetime.now())
+    date_from = fields.Date('Date from', required=True, default=(date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
+    date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),

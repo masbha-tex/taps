@@ -9,4 +9,4 @@ class CrossoveredBudgetLines(models.Model):
     itemtype = fields.Selection([
         ('raw', 'Raw Materials'),
         ('spares', 'Spares')
-    ], string='Item Type', index=True, tracking=True, store=True, copy=True)
+    ], string='Item Type', index=True, store=True, copy=True)

@@ -19,14 +19,14 @@ class Parameter(models.Model):
     
             
            
-    parameter_name = fields.Char(String="Parameter Name")
+    parameter_name = fields.Char(string="Parameter Name")
     initial_value = fields.Float(string='Lower Value')
     last_value = fields.Float(string='Higher Value')
     t_level = fields.Char(compute='_compute_level', store="True")
     quality_category = fields.Many2one('product.category')
     quality_unit = fields.Many2one('quality.unit')
     unit_name = fields.Char(related='quality_unit.unit_name')
-    note = fields.Char(String='Note')
+    note = fields.Char(string='Note')
     
     @api.depends('initial_value', 'last_value','unit_name')
     def _compute_level(self):    

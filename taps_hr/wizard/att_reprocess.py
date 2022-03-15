@@ -14,8 +14,9 @@ class Attreprocess(models.TransientModel):
     _name = 'att.reprocess'
     _description = 'Attendance Reprocess'      
 
-    date_from = fields.Date('Date from', required=True, default = datetime.now())
-    date_to = fields.Date('Date to', required=True, default = datetime.now())
+    date_from = fields.Date('Date from', required=True, 
+                            default = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
+    date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))
     report_by = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
@@ -136,6 +137,10 @@ class Attreprocess(models.TransientModel):
                     record[-1].write({'check_in': '2032-01-01 02:02:30','check_out': '2032-01-01 02:02:44'})
                     record[-1].write({'check_in': '','check_out': ''})
                 else:
-                    record[-1].write({'check_out': record.check_out + timedelta(seconds=1)})
-                    record[-1].write({'check_out': record.check_out - timedelta(seconds=1)})
+                    if record.check_out == False:
+                        record[-1].write({'check_out': '2032-01-01 02:02:50'})
+                        record[-1].write({'check_out': ''})
+                    else:
+                        record[-1].write({'check_out': record.check_out + timedelta(seconds=1)})
+                        record[-1].write({'check_out': record.check_out - timedelta(seconds=1)})
         

@@ -2,7 +2,7 @@
 
 from odoo.tools.float_utils import float_round as round
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import timedelta, datetime, time
 from odoo.tools import format_datetime
 from dateutil.relativedelta import relativedelta
@@ -14,12 +14,19 @@ import math
 class taps_expense(models.Model):
     _inherit = 'hr.expense'
 
+    @api.model
+    def create(self, vals):
+        #if vals.get('name', _('New')) == _('New'):
+        if vals.get('name', 'New') == 'New':
+            #course_date = vals.get('course_date')
+            vals['name'] = self.env['ir.sequence'].next_by_code('hr.expense.name')
+        return super(taps_expense, self).create(vals)    
     
     @api.depends('product_id', 'company_id')
     def _compute_from_product_id_company_id(self):
         for expense in self.filtered('product_id'):
             expense = expense.with_company(expense.company_id)
-            expense.name = expense.name or expense.product_id.display_name
+            #expense.name = expense.name or expense.product_id.display_name
             if not expense.attachment_number or (expense.attachment_number and not expense.unit_amount):
                 expense.unit_amount = expense.amount_total#expense.product_id.price_compute('standard_price')[expense.product_id.id]
             expense.product_uom_id = expense.product_id.uom_id
@@ -49,6 +56,11 @@ class taps_expense(models.Model):
     def _default_product_uom_id(self):
         return self.env['uom.uom'].search([], limit=1, order='id')    
 
+    
+    #name = fields.Char('Code', store=True, readonly=True, default='New')#default=_('New')
+    name = fields.Char('Expense Reference', required=True,  readonly=True, index=True, copy=False, default='New')
+    purpose = fields.Char('Description', store=True, required=False, readonly=False)
+    
     product_uom_id = fields.Many2one('uom.uom', required=False, string='Unit of Measure',readonly=True, compute='_compute_from_product_id_company_id',
         store=True, 
         default=_default_product_uom_id, domain="[('category_id', '=', product_uom_category_id)]")
@@ -72,7 +84,7 @@ class taps_expense(models.Model):
 
 
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all', tracking=True)
-    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all')
+    amount_tax = fields.Monetary(string='Total Taxes', store=True, readonly=True, compute='_amount_all')
     amount_total = fields.Monetary(string='Total Amount', store=True, readonly=True, compute='_amount_all')    
     
 
@@ -155,7 +167,7 @@ class ExpenseLine(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     partner_id = fields.Many2one(
         'res.partner', 'Name', help='Enter here any kind of contact indivisual/company.',
-        groups="hr.group_hr_user", tracking=True, store=True)
+        groups="hr.group_hr_user", store=True)
     
     name = fields.Char('Note', store=True)
     
@@ -165,7 +177,7 @@ class ExpenseLine(models.Model):
 
     price_unit = fields.Float(string='Amount', required=True, digits='Account')
    
-    price_subtotal = fields.Monetary(compute='_compute_amount', string='Subtotal', store=True, digits='Account')
+    price_subtotal = fields.Float(compute='_compute_amount', string='Subtotal', store=True, digits='Account')
     price_total = fields.Monetary(compute='_compute_amount', string='Total', store=True)
     price_tax = fields.Float(compute='_compute_amount', string='Tax', store=True)    
     state = fields.Selection(related='expense_id.state', store=True, readonly=False)

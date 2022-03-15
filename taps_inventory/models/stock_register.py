@@ -8,7 +8,7 @@ class taps_inventory(models.Model):
     _inherit = 'stock.valuation.layer'
     _description = 'Stok Valuation'
     
-    schedule_date = fields.Datetime('Schedule Date',readonly=True, check_company=True)
+    schedule_date = fields.Datetime('Schedule Date',readonly=True)
 
 
     def set_schedule_date(self, productid, moveid, createdate):

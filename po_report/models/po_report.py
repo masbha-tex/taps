@@ -15,7 +15,7 @@ class PoReport(models.Model):
         ('stationaryothers', 'Stationary (Others)'),
         ('othersitem', 'Others Item'),
         ('civil', 'Project (Civil)')
-    ], string='Item Type', index=True, tracking=True, store=True, copy=True)
+    ], string='Item Type', index=True, store=True, copy=True)
     
     def _select(self):
         select_str = """

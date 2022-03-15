@@ -16,10 +16,15 @@ class SalaryAdjustment(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _description = 'Salary Adjustment'
     
-    name = fields.Char('Code', store=True)
-    salary_month = fields.Date('Salary Month', store=True, default=fields.Datetime.now)
+    name = fields.Char('Code', store=True,required=True, readonly=True, index=True, copy=False, default='SA')
+    salary_month = fields.Date('Salary Month', store=True, default=date.today().strftime('%Y-%m-01'))
     adjustment_line = fields.One2many('salary.adjustment.line', 'adjustment_id', string='Adjustment Lines', store=True)
-    #company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda s: s.env.company.id, index=True)
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'SA') == 'SA':
+            vals['name'] = self.env['ir.sequence'].next_by_code('adjustment.code')
+        return super(SalaryAdjustment, self).create(vals) 
 
 
 class SalaryAdjustmentLine(models.Model):
