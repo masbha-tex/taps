@@ -15,7 +15,19 @@ class taps_expense(models.Model):
     _inherit = 'hr.expense'
 
     
-        
+    @api.depends('product_id', 'company_id')
+    def _compute_from_product_id_company_id(self):
+        for expense in self.filtered('product_id'):
+            expense = expense.with_company(expense.company_id)
+            expense.name = expense.name or expense.product_id.display_name
+            if not expense.attachment_number or (expense.attachment_number and not expense.unit_amount):
+                expense.unit_amount = expense.amount_total#expense.product_id.price_compute('standard_price')[expense.product_id.id]
+            expense.product_uom_id = expense.product_id.uom_id
+            expense.tax_ids = expense.product_id.supplier_taxes_id.filtered(lambda tax: tax.company_id == expense.company_id)  # taxes only from the same company
+            account = expense.product_id.product_tmpl_id._get_product_accounts()['expense']
+            if account:
+                expense.account_id = account
+                
     @api.depends('expense_line.price_total')
     def _amount_all(self):
         for expense in self:
@@ -33,9 +45,20 @@ class taps_expense(models.Model):
                 'total_amount': currency.round(amount_untaxed + amount_tax),
             })
     
-    
+    @api.model
+    def _default_product_uom_id(self):
+        return self.env['uom.uom'].search([], limit=1, order='id')    
 
-    unit_amount = fields.Float("Unit Price", compute='_compute_from_product_id_company_id', store=True, required=True, copy=True,states={'draft': [('readonly', False)], 'reported': [('readonly', False)], 'refused': [('readonly', False)]}, digits='Account')
+    product_uom_id = fields.Many2one('uom.uom', required=False, string='Unit of Measure',readonly=True, compute='_compute_from_product_id_company_id',
+        store=True, 
+        default=_default_product_uom_id, domain="[('category_id', '=', product_uom_category_id)]")
+    
+    unit_amount = fields.Float(required=False, string= 'Unit Price', compute='_compute_from_product_id_company_id', store=True, readonly=True, digits='Account')
+    
+    quantity = fields.Float(required=False, readonly=True, digits='Product Unit of Measure', default=1)
+    tax_ids = fields.Many2many('account.tax', 'expense_tax', 'expense_id', 'tax_id', compute='_compute_from_product_id_company_id', store=True, readonly=True,domain="[('company_id', '=', company_id), ('type_tax_use', '=', 'purchase')]", string='Taxes')
+    
+    
     
     expense_line = fields.One2many('hr.expense.line', 'expense_id', string='Expense Lines', copy=True)
     payment_mode = fields.Selection([
