@@ -34,6 +34,7 @@ class HrImprest(models.Model):
     state = fields.Selection([
         ('draft', 'To Submit'),
         ('submit', 'Submitted'),
+        ('checked', 'Checked'),
         ('approved', 'Approved'),
         ('refused', 'Refused')
     ], string='Status', copy=False, index=True, readonly=True, store=True, default='draft', help="Status of the imprest.")
@@ -51,7 +52,14 @@ class HrImprest(models.Model):
             if order.state not in ['draft', 'submit']:
                 continue
             order.write({'state': 'submit'})
-        return True    
+        return True        
+    
+    def button_check(self):
+        for order in self:
+            if order.state not in ['draft', 'submit', 'checked']:
+                continue
+            order.write({'state': 'checked'})
+        return True 
     
     def button_draft(self):
         self.write({'state': 'draft'})

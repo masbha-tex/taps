@@ -14,6 +14,7 @@
                     <field name="imprest_date"/>
                     <field name="imprest_amount_bdt" widget='monetary'/>
                     <field name="imprest_amount_usd" widget='monetary'/>
+                    <field name="state" optional="show" readonly="1" decoration-info="state == 'draft'" decoration-success="state in ['submit', 'checked', 'approved']" decoration-danger="state in 'refused'" widget="badge"/>
                 </tree>
             </field>
         </record>
@@ -24,11 +25,12 @@
         <field name="arch" type="xml">
             <form string="Employee Imprest"  class="o_expense_form">
                 <header>
-                    <button name="button_approve" type="object" states='submit' string="Approve" groups="hr_expense.group_hr_expense_team_approver" class="oe_highlight"/>
-                    <button name="button_confirm" type="object" states="draft" string="Submit" class="oe_highlight"/>
+                    <button name="button_approve" type="object" states='checked' string="Approve" groups="hr_expense.group_hr_expense_team_approver" class="oe_highlight"/>
+                    <button name="button_confirm" type="object" states="draft" string="HR Approval" class="oe_highlight"/>
+                    <button name="button_check" type="object" states="submit" string="Accounts Approval" class="oe_highlight"/>
                     <button name="button_draft" states="refused" string="Set to Draft" type="object" class="oe_highlight" />
-                    <button name="button_cancel" states="draft,submit,approved" string="Cancel" type="object" class="oe_highlight" />
-                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,refused" readonly="1"/>
+                    <button name="button_cancel" states="draft,submit,checked,approved" string="Cancel" type="object" class="oe_highlight" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,checked,approved,refused" readonly="1"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

@@ -19,6 +19,7 @@
         'data/attendance_flag_generate.xml',
         'data/overtime_calculate.xml',
         'data/salary_adjustment_code_generate.xml',
+        'data/employee_service_length_generate.xml',
         'views/attendance_views.xml',
         'views/employee_views.xml',
         'views/contract_views.xml',

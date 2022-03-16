@@ -55,7 +55,22 @@ class taps_expense(models.Model):
     @api.model
     def _default_product_uom_id(self):
         return self.env['uom.uom'].search([], limit=1, order='id')    
-
+    
+    @api.depends('sheet_id', 'sheet_id.account_move_id', 'sheet_id.state')
+    def _compute_state(self):
+        for expense in self:
+            if not expense.sheet_id or expense.sheet_id.state == 'draft':
+                expense.state = "draft"
+            elif expense.sheet_id.state == "checked":
+                expense.state = "checked"
+            elif expense.sheet_id.state == "cancel":
+                expense.state = "refused"
+            elif expense.sheet_id.state == "approve" or expense.sheet_id.state == "post":
+                expense.state = "approved"
+            elif not expense.sheet_id.account_move_id:
+                expense.state = "reported"
+            else:
+                expense.state = "done"
     
     #name = fields.Char('Code', store=True, readonly=True, default='New')#default=_('New')
     name = fields.Char('Expense Reference', required=True,  readonly=True, index=True, copy=False, default='New')
@@ -87,6 +102,15 @@ class taps_expense(models.Model):
     amount_tax = fields.Monetary(string='Total Taxes', store=True, readonly=True, compute='_amount_all')
     amount_total = fields.Monetary(string='Total Amount', store=True, readonly=True, compute='_amount_all')    
     
+    #state = fields.Selection(selection_add=[('checked', 'Checked')])
+    state = fields.Selection([
+        ('draft', 'To Submit'),
+        ('reported', 'Submitted'),
+        ('checked', 'Checked'),
+        ('approved', 'Approved'),
+        ('done', 'Paid'),
+        ('refused', 'Refused')
+    ], compute='_compute_state', string='Status', copy=False, index=True, readonly=True, store=True, default='draft', help="Status of the expense.")    
 
     def float_to_time(self,hours):
         if hours == 24.0:
@@ -120,9 +144,9 @@ class taps_expense(models.Model):
             cr_ad_amount = 0
             cr_used_amount = 0
             
-            pre_advance = self.env['hr.imprest'].search([('imprest_employee', '=', self.employee_id.id), ('imprest_date', '>=', pr_fromdate), ('imprest_date', '<=', pr_todate)])
+            pre_advance = self.env['hr.imprest'].search([('imprest_employee', '=', self.employee_id.id), ('imprest_date', '>=', pr_fromdate), ('imprest_date', '<=', pr_todate), ('state', '=', 'approved')])
             
-            cr_advance = self.env['hr.imprest'].search([('imprest_employee', '=', self.employee_id.id), ('imprest_date', '>=', cu_fromdate), ('imprest_date', '<=', cu_todate)])
+            cr_advance = self.env['hr.imprest'].search([('imprest_employee', '=', self.employee_id.id), ('imprest_date', '>=', cu_fromdate), ('imprest_date', '<=', cu_todate), ('state', '=', 'approved')])
             
             
             
@@ -209,3 +233,73 @@ class ExpenseLine(models.Model):
             'qty': 1,
             #'partner': self.partner_id,
         }
+    
+    
+class taps_expense_sheet(models.Model):
+    _inherit = 'hr.expense.sheet'
+    
+    #state = fields.Selection(selection_add=[('checked', 'Checked')], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('submit', 'Submitted'),
+        ('checked', 'Checked'),
+        ('approve', 'Approved'),
+        ('post', 'Posted'),
+        ('done', 'Paid'),
+        ('cancel', 'Refused')
+    ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
+    
+    def action_submit_sheet(self):
+        self.write({'state': 'submit'})
+        #self.activity_update()    
+    
+    def action_check_sheet(self):
+        self.write({'state': 'checked'})
+        self.activity_update()
+        
+        
+    def activity_update(self):
+        for expense_report in self.filtered(lambda hol: hol.state == 'checked'):
+            self.activity_schedule(
+                'hr_expense.mail_act_expense_approval',
+                user_id=expense_report.sudo()._get_responsible_for_approval().id or self.env.user.id)
+        self.filtered(lambda hol: hol.state == 'approve').activity_feedback(['hr_expense.mail_act_expense_approval'])
+        self.filtered(lambda hol: hol.state in ('draft', 'cancel')).activity_unlink(['hr_expense.mail_act_expense_approval'])        
+        
+        
+
+    def approve_expense_sheets(self):
+        if not self.user_has_groups('hr_expense.group_hr_expense_team_approver'):
+            raise UserError(_("Only Managers and HR Officers can approve expenses"))
+        elif not self.user_has_groups('hr_expense.group_hr_expense_manager'):
+            current_managers = self.employee_id.expense_manager_id | self.employee_id.parent_id.user_id | self.employee_id.department_id.manager_id.user_id
+
+            if self.employee_id.user_id == self.env.user:
+                raise UserError(_("You cannot approve your own expenses"))
+
+            if not self.env.user in current_managers and not self.user_has_groups('hr_expense.group_hr_expense_user') and self.employee_id.expense_manager_id != self.env.user:
+                raise UserError(_("You can only approve your department expenses"))
+        
+        notification = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('There are no expense reports to approve.'),
+                'type': 'warning',
+                'sticky': False,  #True/False will display for few seconds if false
+            },
+        }
+        filtered_sheet = self.filtered(lambda s: s.state in ['checked', 'draft'])
+        if not filtered_sheet:
+            return notification
+        for sheet in filtered_sheet:
+            sheet.write({'state': 'approve', 'user_id': sheet.user_id.id or self.env.user.id})
+        notification['params'].update({
+            'title': _('The expense reports were successfully approved.'),
+            'type': 'success',
+            'next': {'type': 'ir.actions.act_window_close'},
+        })
+            
+        self.activity_update()
+        return notification        

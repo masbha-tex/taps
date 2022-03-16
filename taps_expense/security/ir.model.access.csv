@@ -1,4 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_taps_expense,hr.expense,model_hr_expense,base.group_user,1,1,1,1
+access_taps_expense_sheet,access_hr_expense_sheet,model_hr_expense_sheet,base.group_user,1,1,1,1
 access_taps_expense,hr.imprest,model_hr_imprest,base.group_user,1,1,1,1
 access_hr_expense_line,access_hr_expense_line,model_hr_expense_line,base.group_user,1,1,1,1
