@@ -14,7 +14,7 @@
                         <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')]}"/>
                         <field name="from_date" required="True"/>
                         <field name="to_date" required="True"/>
-                        <field name="stock_type" options="{'horizontal': true}" class="oe_edit_only" widget="radio"  groups="base.group_no_one"/>                        
+                        <field name="stock_type" options="{'horizontal': true}" class="oe_edit_only" widget="radio"/>                        
                     </group>
                 </group>
                 <footer>
