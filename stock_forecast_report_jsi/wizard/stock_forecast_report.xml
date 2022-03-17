@@ -34,3 +34,13 @@
     </record>
     <menuitem name="RM Stock Report" id="menu_action_window_stock_forecast_report_jsi" action="action_window_stock_forecast_report_jsi" parent="stock.menu_warehouse_report" />
 </odoo>
+<!--       
+    <record id="hr_attendance_jobcard_kiosk_mode" model="ir.actions.client">
+        <field name="name">Attendances</field>
+        <field name="tag">jobcard_kiosk_mode</field>
+        <field name="target">fullscreen</field>
+    </record>
+      
+    <menuitem id="menu_hr_attendance_my_attendances" name="Check In / Check Out" parent="menu_hr_attendance_root" sequence="1" groups="hr_attendance.group_hr_attendance" action="hr_attendance_jobcard_kiosk_mode"/>      
+      
+       -->

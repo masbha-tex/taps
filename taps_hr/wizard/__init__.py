@@ -5,3 +5,4 @@ from . import salary_sheet_report_wizard
 from . import headwise_report_wizard
 from . import jobcard_report_wizard
 from . import att_reprocess
+from . import kiosk_jobcard

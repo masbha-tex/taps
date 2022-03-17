@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_kiosk" model="ir.ui.view">
+        <field name="name">view.form.kiosk</field>
+        <field name="model">kiosk.jobcard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="empID" string=''/>     
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="jobcard_kiosk_mode" model="ir.actions.act_window">
+        <field name="name">Job Card</field>
+        <field name="res_model">kiosk.jobcard</field>
+        <field name="view_id" ref="view_form_kiosk"/>
+        <field name="target">fullscreen</field>
+    </record>
+    
+    <menuitem id="menu_jobcard_kiosk_mode" name="KIOSK" parent="hr_attendance.menu_hr_attendance_root" action="jobcard_kiosk_mode"/>
+    
+</odoo>

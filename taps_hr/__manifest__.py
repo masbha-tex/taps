@@ -41,6 +41,7 @@
         'wizard/jobcard_report_wizard_view.xml',
         'wizard/salary_report_wizard_view.xml',
         'wizard/att_reprocess_wizard_view.xml',
+        'wizard/kiosk_jobcard.xml',
     ],
     # only loaded in demonstration mode
     'demo': [],

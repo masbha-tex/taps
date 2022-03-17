@@ -47,7 +47,7 @@
                       </center>
                   </h6>
   
-                  <table class="table table-sm">
+                  <table class="table table-sm display">
                       <thead>
                           <tr align="center" style="background-color:#E2E2E2;">
                               <th >Date</th>
@@ -132,6 +132,7 @@
                           </table>
                       </div>
                   </div>
+                      
               </div>
           </t>
         </t>

@@ -37,7 +37,7 @@ class HrAttendance(models.Model):
         lv_record = self.env['hr.leave'].search([('employee_id', '=', int(get_att_data.employee_id)),('state', '=', 'validate'),('request_date_from', '<=', att_date),('request_date_to', '>=', att_date)])
         lv_type = self.env['hr.leave.type'].search([('id', '=', int(lv_record.holiday_status_id))])        
         
-        if activeemplist.isOverTime is True:
+        if activeemplist.isOverTime is True and worked_hours > 4.0:
             if get_att_data.outHour > outTime:
                 if inTime > inHour:
                     delta = (get_att_data.outHour - outTime)
