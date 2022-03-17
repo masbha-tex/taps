@@ -1,42 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
-        <field name="name">hr.expense.sheet.form</field>
-        <field name="model">hr.expense.sheet</field>
-        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
-        <field eval="25" name="priority"/>
-        <field name="arch" type="xml">
-            <xpath expr="//button[@name='action_submit_sheet']" position="attributes">
-                <button string="HR Approval"/>
-                
-            </xpath>
-            <xpath expr="//button[@name='action_submit_sheet']" position="after">
-                <button name="action_check_sheet" states="submit" string="Accounts Approval" type="object" class="oe_highlight"/>
-            </xpath>
-            <xpath expr="//button[@name='approve_expense_sheets']" position="attributes">
-                <attribute name="states">checked</attribute>
-            </xpath>
-            
-            <xpath expr="//button[@name='%(hr_expense.hr_expense_refuse_wizard_action)d']" position="attributes">
-                <attribute name="states">submit,achecked,pprove</attribute>
-            </xpath>
-            <xpath expr="//field[@name='state']" position="attributes"> 
-                <attribute name="statusbar_visible">draft,submit,checked,approve,post,done</attribute>
-            </xpath>
-        </field>
-    </record>
-    
-    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
-        <field name="name">hr.expense.sheet.tree</field>
-        <field name="model">hr.expense.sheet</field>
-        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='state']" position="attributes">
-                <attribute name="decoration-success">state in ['submit', 'checked', 'approve', 'post', 'done']</attribute>
-            </xpath>
-        </field>
-    </record>    
-    
     <record id="hr_expense_view_tree_m" model="ir.ui.view">
         <field name="name">hr.expense.view.tree</field>
         <field name="model">hr.expense</field>
@@ -173,4 +136,42 @@
             </form>
         </field>
     </record>
+    
+    
+    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+        <field eval="25" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_submit_sheet']" position="attributes">
+                <button string="HR Approval"/>
+            </xpath>
+            <xpath expr="//button[@name='action_submit_sheet']" position="after">
+                <button name="action_check_sheet" states="submit" string="Accounts Approval" type="object" class="oe_highlight"/>
+            </xpath>
+            <xpath expr="//button[@name='approve_expense_sheets']" position="attributes">
+                <attribute name="states">checked</attribute>
+            </xpath>
+            
+            <xpath expr="//button[@name='%(hr_expense.hr_expense_refuse_wizard_action)d']" position="attributes">
+                <attribute name="states">submit,checked,pprove</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="attributes"> 
+                <attribute name="statusbar_visible">draft,submit,checked,approve,post,done</attribute>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="view_hr_expense_sheet_form" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.tree</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="decoration-success">state in ['submit', 'checked', 'approve', 'post', 'done']</attribute>
+            </xpath>
+        </field>
+    </record>    
+    
 </odoo>

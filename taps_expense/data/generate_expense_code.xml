@@ -11,6 +11,7 @@
             <field name="padding">5</field>
             <field name="number_increment">1</field>
             <field name="number_next_actual">1</field>
+            
         </record>
 <!--         <record id="expense_code_generate" model="base.automation">
             <field name="name">Expense: Code Generate</field>
