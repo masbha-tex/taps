@@ -222,6 +222,7 @@ class HolidaysRequest(models.Model):
             employee_requests.filtered(lambda holiday: holiday.validation_type != 'no_validation').activity_update()
         
         att_obj = self.env['hr.attendance']
+        
         t_date = self.date_to.date()
         st_date = self.date_from.date()
         endd = (t_date - st_date).days

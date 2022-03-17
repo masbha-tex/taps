@@ -15,4 +15,5 @@ class StockForecastReport(models.TransientModel):
     _name = 'kiosk.jobcard'
     _description = 'Job Card'
     
+    
     empID = fields.Char('')

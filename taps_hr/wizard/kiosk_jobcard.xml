@@ -16,6 +16,7 @@
         <field name="name">Job Card</field>
         <field name="res_model">kiosk.jobcard</field>
         <field name="view_id" ref="view_form_kiosk"/>
+        
         <field name="target">fullscreen</field>
     </record>
     

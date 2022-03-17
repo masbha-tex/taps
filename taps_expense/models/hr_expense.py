@@ -248,6 +248,7 @@ class taps_expense_sheet(models.Model):
         ('post', 'Posted'),
         ('done', 'Paid'),
         ('cancel', 'Refused')
+        
     ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
     
     def action_submit_sheet(self):
