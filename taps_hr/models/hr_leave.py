@@ -221,11 +221,11 @@ class HolidaysRequest(models.Model):
         if not self.env.context.get('leave_fast_create'):
             employee_requests.filtered(lambda holiday: holiday.validation_type != 'no_validation').activity_update()
         
-        att_obj = self.env['hr.attendance']
         
         t_date = self.date_to.date()
         st_date = self.date_from.date()
         endd = (t_date - st_date).days
+        att_obj = self.env['hr.attendance']
         #raise UserError(('sfe'))
         #raise UserError((self.employee_id.emp_id,self.mode_company_id.id,self.department_id.id,self.category_id.id))
         if self.holiday_type == "employee":
@@ -255,3 +255,18 @@ class HolidaysRequest(models.Model):
                 for cat in get_att_data:
                     get_att_data.generateAttFlag(cat.empID,cat.attDate,cat.inTime,cat.check_in, cat.outTime,cat.check_out)        
         return True
+
+#     def _validate_leave_request(self):
+#         """ Validate time off requests (holiday_type='employee')
+#         by creating a calendar event and a resource time off. """
+#         holidays = self.filtered(lambda request: request.holiday_type == 'employee')
+#         holidays._create_resource_leave()
+#         meeting_holidays = holidays.filtered(lambda l: l.holiday_status_id.create_calendar_meeting)
+#         if meeting_holidays:
+#             meeting_values = meeting_holidays._prepare_holidays_meeting_values()
+#             meetings = self.env['calendar.event'].with_context(
+#                 no_mail_to_attendees=True,
+#                 active_model=self._name
+#             ).create(meeting_values)
+#             for holiday, meeting in zip(meeting_holidays, meetings):
+#                 holiday.meeting_id = meeting
