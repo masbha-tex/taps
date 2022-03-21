@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record model="ir.ui.view" id="hris_pdf_report_form_view">
+        <field name="name">hris.pdf.report.form.view</field>
+        <field name="model">hris.pdf.report</field>
+        <field name="arch" type="xml">
+            <form string="HRIS Report">
+<!--                 <group> -->
+                    <group>
+                        <field name="report_type" string="Report Type"/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/> 
+                        <field name="bank_id"/>                        
+                        <field name="mode_type" string="Mode"/>
+                        <field name="employee_id" attrs="{
+                        'required': [('mode_type', '=', 'employee')],
+                        'invisible': [('mode_type', '!=', 'employee')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="mode_company_id" string="Company" attrs="{
+                        'required': [('mode_type', '=', 'company')],
+                        'invisible': [('mode_type', '!=', 'company')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="category_id" attrs="{
+                        'required': [('mode_type', '=', 'category')],
+                        'invisible': [('mode_type', '!=','category')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="department_id" attrs="{
+                        'required': [('mode_type', '=', 'department')],
+                        'invisible': [('mode_type', '!=','department')]
+                        }" options="{'no_create': True, 'no_open': True}"/> 
+                        <field name="employee_type" attrs="{
+                        'required': [('mode_type', '=', 'emptype')],
+                        'invisible': [('mode_type', '!=','emptype')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+<!--                 </group> -->
+                <footer>
+                    <button string="Print" name="action_print_report" type="object" class="btn-primary"/>
+<!--                     <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/> -->
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="hris_pdf_report" model="ir.actions.act_window">
+        <field name="name">HRIS Report</field>
+        <field name="res_model">hris.pdf.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem id="taps_hr.menu_employee_hris_report"
+              name="HRIS Report"
+              sequence="1"
+              action="hris_pdf_report"
+              parent="hr.hr_menu_hr_reports"/>
+    
+    
+    
+</odoo>

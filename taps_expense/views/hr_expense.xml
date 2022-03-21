@@ -168,6 +168,12 @@
         <field name="model">hr.expense.sheet</field>
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='total_amount']" position="before">
+                <field name="total_actual_amount" optional="show" sum="Total Actual Amount" decoration-bf="True"/>
+            </xpath>
+            <xpath expr="//field[@name='total_amount']" position="before">
+                <field name="ex_currency_id" optional="show"/>
+            </xpath>
             <xpath expr="//field[@name='state']" position="attributes">
                 <attribute name="decoration-success">state in ['submit', 'checked', 'approve', 'post', 'done']</attribute>
             </xpath>

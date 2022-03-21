@@ -120,10 +120,12 @@ class JobCardReportPDF(models.AbstractModel):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.id', '=', data.get('employee_id')))
         
+        #domain.append(('employee_id.active', '=', True))
+        
         
         #raise UserError((domain))    
         docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
-
+        #raise UserError((docs.id)) 
         emplist = docs.mapped('employee_id.id')
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
         fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
@@ -134,7 +136,7 @@ class JobCardReportPDF(models.AbstractModel):
         
         all_datelist = []
         dates = []
-        
+        #raise UserError((docs.id)) 
         delta = enddate - stdate       # as timedelta
         for i in range(delta.days + 1):
             day = stdate + timedelta(days=i)
@@ -164,7 +166,7 @@ class JobCardReportPDF(models.AbstractModel):
                 otTotal,
             ]
             allemp_data.append(emp_data)
-            
+        #raise UserError(('domain'))
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.attendance',

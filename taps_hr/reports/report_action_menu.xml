@@ -42,7 +42,7 @@
             <field name="report_file">taps_hr.employee_card_pdf_template</field>
             <field name="binding_model_id" ref="model_employee_profile_card_pdf_report"/>
             <field name="binding_type">report</field>
-<!--             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/> -->
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
         </record>
         <record id="action_salary_headwise_pdf_report" model="ir.actions.report">
             <field name="name">Headwise Report</field>
@@ -53,7 +53,149 @@
             <field name="binding_model_id" ref="model_salary_headwise_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_jobcard_report"/>
-        </record>        
+        </record>
+        <record id="action_hris_employee_card_pdf_report" model="ir.actions.report">
+            <field name="name">Employee Profile</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_employee_profile_pdf_template</field>
+            <field name="report_file">taps_hr.hris_employee_profile_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_hris_joining_pdf_report" model="ir.actions.report">
+            <field name="name">Joining Letter</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_joining_pdf_template</field>
+            <field name="report_file">taps_hr.hris_joining_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_hris_appointment_pdf_report" model="ir.actions.report">
+            <field name="name">Appointment Letter</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_appointment_pdf_template</field>
+            <field name="report_file">taps_hr.hris_appointment_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_hris_confirmation_pdf_report" model="ir.actions.report">
+            <field name="name">Confirmation Letter</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_hris_trail_extension_pdf_report" model="ir.actions.report">
+            <field name="name">Extension of Probation Period</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_hris_no_dues_pdf_report" model="ir.actions.report">
+            <field name="name">No Dues Letter</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_hris_pf_pdf_report" model="ir.actions.report">
+            <field name="name">PF Statement</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_hris_loan_pdf_report" model="ir.actions.report">
+            <field name="name">Loan Letter</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_hris_marriage_pdf_report" model="ir.actions.report">
+            <field name="name">Marriage Gift</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_hris_shift_pdf_report" model="ir.actions.report">
+            <field name="name">Shift Schedule Letter</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_hris_attcalendar_pdf_report" model="ir.actions.report">
+            <field name="name">Attendance Calendar</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+
+        <record id="action_hris_training_pdf_report" model="ir.actions.report">
+            <field name="name">Training Program</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_hris_birth_calendar_pdf_report" model="ir.actions.report">
+            <field name="name">Birth Calendar</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record> 
+        <record id="action_hris_retentionincentive_pdf_report" model="ir.actions.report">
+            <field name="name">Retention Incentive Letter</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_pdf_template</field>
+            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>         
+        
      
     </data>
    

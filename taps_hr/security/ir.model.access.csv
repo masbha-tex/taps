@@ -11,3 +11,4 @@ access_employee_card_pdf_report,access_employee_card_pdf_report,model_employee_p
 access_salary_sheet_pdf_report,access_salary_sheet_pdf_report,model_salary_sheet_pdf_report,base.group_user,1,1,1,1 
 access_att_reprocess,access_att_reprocess,model_att_reprocess,base.group_user,1,1,1,1
 access_kiosk_jobcard,access_kiosk_jobcard,model_kiosk_jobcard,base.group_user,1,1,1,1
+access_hris_report,access_hris_pdf_report,model_hris_pdf_report,base.group_user,1,1,1,1

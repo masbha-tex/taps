@@ -240,6 +240,9 @@ class taps_expense_sheet(models.Model):
     
     #state = fields.Selection(selection_add=[('checked', 'Checked')], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
     
+    ex_currency_id = fields.Many2one(related='expense_line_ids.currency_id', store=True, string='Expense Currency', readonly=True)
+    total_actual_amount = fields.Monetary('Total Actual Amount', compute='_compute_actual_amount', store=True, tracking=True, currency_field='ex_currency_id', digits='Account')    
+    
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submit', 'Submitted'),
@@ -250,6 +253,12 @@ class taps_expense_sheet(models.Model):
         ('cancel', 'Refused')
         
     ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
+
+    
+    @api.depends('expense_line_ids.total_amount')
+    def _compute_actual_amount(self):
+        for sheet in self:
+            sheet.total_actual_amount = sum(sheet.expense_line_ids.mapped('total_amount'))    
     
     def action_submit_sheet(self):
         self.write({'state': 'submit'})
