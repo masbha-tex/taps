@@ -239,7 +239,7 @@ class taps_expense_sheet(models.Model):
     _inherit = 'hr.expense.sheet'
     
     #state = fields.Selection(selection_add=[('checked', 'Checked')], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
-    
+    product_id = fields.Many2one(related='expense_line_ids.product_id', string='Product', store=False, readonly=True)
     ex_currency_id = fields.Many2one(related='expense_line_ids.currency_id', store=True, string='Expense Currency', readonly=True)
     total_actual_amount = fields.Monetary('Total Actual Amount', compute='_compute_actual_amount', store=True, tracking=True, currency_field='ex_currency_id', digits='Account')    
     

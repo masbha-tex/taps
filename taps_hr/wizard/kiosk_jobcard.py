@@ -7,9 +7,9 @@ from odoo.tools.misc import xlsxwriter
 from odoo.tools.float_utils import float_round as round
 from odoo.tools import format_date
 from datetime import date, datetime, time, timedelta
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 import math
-
+import pytz
 
 class StockForecastReport(models.TransientModel):
     _name = 'kiosk.jobcard'
@@ -17,3 +17,6 @@ class StockForecastReport(models.TransientModel):
     
     
     empID = fields.Char('')
+    
+    
+#     @api.onchange()

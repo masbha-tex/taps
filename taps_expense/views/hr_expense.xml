@@ -144,6 +144,9 @@
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
         <field eval="25" name="priority"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position="before">
+                <field name="product_id"/>
+            </xpath>
             <xpath expr="//button[@name='action_submit_sheet']" position="attributes">
                 <button string="HR Approval"/>
             </xpath>
@@ -168,6 +171,9 @@
         <field name="model">hr.expense.sheet</field>
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="product_id" optional="show"/>
+            </xpath>
             <xpath expr="//field[@name='total_amount']" position="before">
                 <field name="total_actual_amount" optional="show" sum="Total Actual Amount" decoration-bf="True"/>
             </xpath>
