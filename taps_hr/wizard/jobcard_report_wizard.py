@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 class JobCardPDFReport(models.TransientModel):
     _name = 'job.card.pdf.report'
-    _description = 'Employee Job Card'     
+    _description = 'Employee Job Card' #access_job_card_pdf_report,access_job_card_pdf_report,model_job_card_pdf_report,base.group_user,1,1,1,1     
 
     date_from = fields.Date('Date from', required=True, default=(date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
     date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))

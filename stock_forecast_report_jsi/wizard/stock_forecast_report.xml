@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-
     <record id="view_form_stock_forecast_report_jsi" model="ir.ui.view">
         <field name="name">view.form.stock.forecast.report.jsi</field>
         <field name="model">stock.forecast.report</field>

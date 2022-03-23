@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 class EmployeeCardPDFReport(models.TransientModel):
     _name = 'employee.profile.card.pdf.report'
-    _description = 'Employee Profile'
+    _description = 'Employee Profile'#access_employee_card_pdf_report,access_employee_card_pdf_report,model_employee_profile_card_pdf_report,base.group_user,1,1,1,1 
 
     date_from = fields.Date('Date from', required=True, default = date.today().strftime('2000-%m-01'))
     date_to = fields.Date('Date to', required=True, default = date.today())

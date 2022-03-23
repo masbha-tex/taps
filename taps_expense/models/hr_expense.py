@@ -72,8 +72,14 @@ class taps_expense(models.Model):
             else:
                 expense.state = "done"
     
-    #name = fields.Char('Code', store=True, readonly=True, default='New')#default=_('New')
+    #name = fields.Char('Code', store=True, readonly=True, default='New')#default=_('New')  
+    
     name = fields.Char('Expense Reference', required=True,  readonly=True, index=True, copy=False, default='New')
+    
+    employee_id = fields.Many2one('hr.employee', string="Employee",
+        store=True, required=True, readonly=False, tracking=True,
+        states={'approved': [('readonly', True)], 'done': [('readonly', True)]}, check_company=False)  
+    
     purpose = fields.Char('Description', store=True, required=False, readonly=False)
     
     product_uom_id = fields.Many2one('uom.uom', required=False, string='Unit of Measure',readonly=True, compute='_compute_from_product_id_company_id',
@@ -102,15 +108,15 @@ class taps_expense(models.Model):
     amount_tax = fields.Monetary(string='Total Taxes', store=True, readonly=True, compute='_amount_all')
     amount_total = fields.Monetary(string='Total Amount', store=True, readonly=True, compute='_amount_all')    
     
-    #state = fields.Selection(selection_add=[('checked', 'Checked')])
-    state = fields.Selection([
-        ('draft', 'To Submit'),
-        ('reported', 'Submitted'),
-        ('checked', 'Checked'),
-        ('approved', 'Approved'),
-        ('done', 'Paid'),
-        ('refused', 'Refused')
-    ], compute='_compute_state', string='Status', copy=False, index=True, readonly=True, store=True, default='draft', help="Status of the expense.")    
+    state = fields.Selection(selection_add=[('checked', 'Checked'),('approved',)])
+#     state = fields.Selection([
+#         ('draft', 'To Submit'),
+#         ('reported', 'Submitted'),
+#         ('checked', 'Checked'),
+#         ('approved', 'Approved'),
+#         ('done', 'Paid'),
+#         ('refused', 'Refused')
+#     ], compute='_compute_state', string='Status', copy=False, index=True, readonly=True, store=True, default='draft', help="Status of the expense.")    
 
     def float_to_time(self,hours):
         if hours == 24.0:
@@ -241,18 +247,19 @@ class taps_expense_sheet(models.Model):
     #state = fields.Selection(selection_add=[('checked', 'Checked')], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
     product_id = fields.Many2one(related='expense_line_ids.product_id', string='Product', store=False, readonly=True)
     ex_currency_id = fields.Many2one(related='expense_line_ids.currency_id', store=True, string='Expense Currency', readonly=True)
-    total_actual_amount = fields.Monetary('Total Actual Amount', compute='_compute_actual_amount', store=True, tracking=True, currency_field='ex_currency_id', digits='Account')    
+    total_actual_amount = fields.Monetary('Total Actual Amount', compute='_compute_actual_amount', store=True, tracking=True, currency_field='ex_currency_id')    
     
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('submit', 'Submitted'),
-        ('checked', 'Checked'),
-        ('approve', 'Approved'),
-        ('post', 'Posted'),
-        ('done', 'Paid'),
-        ('cancel', 'Refused')
+    state = fields.Selection(selection_add=[('checked', 'Checked'),('approve',)], ondelete={'checked': lambda records: record.write({'state': 'draft'})})
+#     state = fields.Selection([
+#         ('draft', 'Draft'),
+#         ('submit', 'Submitted'),
+#         ('checked', 'Checked'),
+#         ('approve', 'Approved'),
+#         ('post', 'Posted'),
+#         ('done', 'Paid'),
+#         ('cancel', 'Refused')
         
-    ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
+#     ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
 
     
     @api.depends('expense_line_ids.total_amount')

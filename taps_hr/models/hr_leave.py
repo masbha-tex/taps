@@ -36,7 +36,7 @@ class HolidaysRequest(models.Model):
             att_obj = self.env['hr.attendance']
             if holiday_type == "employee":
                 for d in range(0, endd+1):
-                    get_att_data = att_obj.search([('empID', '=', employee_id.emp_id),
+                    get_att_data = att_obj.search([('employee_id', '=', employee_id.id),
                                                    ('attDate', '=', (st_date + timedelta(days=d)))])
                     get_att_data.generateAttFlag(get_att_data.empID,get_att_data.attDate,
                                                  get_att_data.inTime,get_att_data.check_in,

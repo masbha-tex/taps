@@ -10,9 +10,7 @@
             <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
-            
         </record>
-
         <record id="report_salary_sheet" model="ir.actions.report">
             <field name="name">Salary Sheet</field>
             <field name="model">salary.sheet.pdf.report</field>
@@ -22,7 +20,6 @@
             <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
-            
         </record>
         <record id="action_job_card_pdf_report" model="ir.actions.report">
             <field name="name">Job Card</field>
@@ -164,7 +161,6 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
         </record>
-
         <record id="action_hris_training_pdf_report" model="ir.actions.report">
             <field name="name">Training Program</field>
             <field name="model">hris.pdf.report</field>
@@ -194,11 +190,167 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-        </record>         
-        
-     
+        </record>
+        <!--         Attendance Reporting -->
+        <record id="action_job_pdf_report" model="ir.actions.report">
+            <field name="name">Employee Job Card</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.job_pdf_template</field>
+            <field name="report_file">taps_hr.job_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_dailyatten_pdf_report" model="ir.actions.report">
+            <field name="name">Daily Attendance</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.dailyatten_pdf_template</field>
+            <field name="report_file">taps_hr.dailyatten_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_dailyatten_ot_pdf_report" model="ir.actions.report">
+            <field name="name">Daily Attendance OT</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.dailyattenot_pdf_template</field>
+            <field name="report_file">taps_hr.dailyattenot_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_dailyatten_ots_pdf_report" model="ir.actions.report">
+            <field name="name">Daily Attendance with OT</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.dailyattenots_pdf_template</field>
+            <field name="report_file">taps_hr.dailyattenots_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_daily_manpower_pdf_report" model="ir.actions.report">
+            <field name="name">Daily Manpower Summary</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.dailymanpower_pdf_template</field>
+            <field name="report_file">taps_hr.dailymanpower_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_ac_opening_pdf_report" model="ir.actions.report">
+            <field name="name">Account Opening Letter</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.acopening_pdf_template</field>
+            <field name="report_file">taps_hr.acopening_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_head_count_pdf_report" model="ir.actions.report">
+            <field name="name">Head Count Report</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.head_count_pdf_template</field>
+            <field name="report_file">taps_hr.head_count_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_payroll_planning_pdf_report" model="ir.actions.report">
+            <field name="name">Payroll Planning Report</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.payroll_planning_pdf_template</field>
+            <field name="report_file">taps_hr.payroll_planning_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_monthly_manhours_pdf_report" model="ir.actions.report">
+            <field name="name">Monthly Manhours Report</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.monthly_manhours_pdf_template</field>
+            <field name="report_file">taps_hr.monthly_manhours_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>  
+        <record id="action_daily_manhours_pdf_report" model="ir.actions.report">
+            <field name="name">Daily Manhours Report</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.daily_manhours_pdf_template</field>
+            <field name="report_file">taps_hr.daily_manhours_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_daily_ot_analysis_pdf_report" model="ir.actions.report">
+            <field name="name">Daily OT Analysis</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.daily_ot_analysis_pdf_template</field>
+            <field name="report_file">taps_hr.daily_ot_analysis_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_daily_atten_summary_pdf_report" model="ir.actions.report">
+            <field name="name">Daily Attendance Summary</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.daily_atten_summary_pdf_template</field>
+            <field name="report_file">taps_hr.daily_atten_summary_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record> 
+        <record id="action_monthly_atten_summary_pdf_report" model="ir.actions.report">
+            <field name="name">Monthly Attendance Summary</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.monthly_atten_summary_pdf_template</field>
+            <field name="report_file">taps_hr.monthly_atten_summary_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>
+        <record id="action_holiday_slip_pdf_report" model="ir.actions.report">
+            <field name="name">Off Day/Holiday Duty Slip</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.holiday_slip_pdf_template</field>
+            <field name="report_file">taps_hr.holiday_slip_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>       
+        <record id="action_daily_excess_ot_pdf_report" model="ir.actions.report">
+            <field name="name">Daily Excess OT</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.daily_excess_ot_pdf_template</field>
+            <field name="report_file">taps_hr.daily_excess_ot_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>     
+        <record id="action_daily_salary_cost_pdf_report" model="ir.actions.report">
+            <field name="name">Daily Salary Cost</field>
+            <field name="model">attendance.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.daily_salary_cost_pdf_template</field>
+            <field name="report_file">taps_hr.daily_salary_cost_pdf_template</field>
+            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+        </record>     
     </data>
-   
-    
-    
 </odoo>

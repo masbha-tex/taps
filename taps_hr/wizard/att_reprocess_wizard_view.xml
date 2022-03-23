@@ -47,8 +47,8 @@
     </record>
     <menuitem id="menu_att_reprocess"
               name="Attendance Reprocess"
-              sequence="21"
+              sequence="3"
               action="att_reprocess"
-              parent="hr_attendance.menu_hr_attendance_root"/>
+              parent="shift_setup.shift_setup_menu"/>
     
 </odoo>
