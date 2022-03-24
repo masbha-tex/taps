@@ -20,7 +20,7 @@ class taps_expense(models.Model):
         if vals.get('name', 'New') == 'New':
             #course_date = vals.get('course_date')
             vals['name'] = self.env['ir.sequence'].next_by_code('hr.expense.name')
-        return super(taps_expense, self).create(vals)    
+        return super(taps_expense, self).create(vals)
     
     @api.depends('product_id', 'company_id')
     def _compute_from_product_id_company_id(self):
@@ -71,14 +71,35 @@ class taps_expense(models.Model):
                 expense.state = "reported"
             else:
                 expense.state = "done"
-    
+
+                
+    @api.model
+    def _get_employee_id_domain(self):
+        res = [('id', '=', 0)] # Nothing accepted by domain, by default
+        if self.user_has_groups('hr_expense.group_hr_expense_user') or self.user_has_groups('account.group_account_user'):
+            res = "['|', ('company_id', '=', False)]"  # Then, domain accepts everything
+        elif self.user_has_groups('hr_expense.group_hr_expense_team_approver') and self.env.user.employee_ids:
+            user = self.env.user
+            employee = self.env.user.employee_id
+            res = [
+                '|', '|', '|',
+                ('department_id.manager_id', '=', employee.id),
+                ('parent_id', '=', employee.id),
+                ('id', '=', employee.id),
+                ('expense_manager_id', '=', user.id),
+            ]
+        elif self.env.user.employee_id:
+            employee = self.env.user.employee_id
+            res = [('id', '=', employee.id)]
+        return res                
+                
     #name = fields.Char('Code', store=True, readonly=True, default='New')#default=_('New')  
     
     name = fields.Char('Expense Reference', required=True,  readonly=True, index=True, copy=False, default='New')
     
-    employee_id = fields.Many2one('hr.employee', string="Employee",
+    employee_id = fields.Many2one('hr.employee', string="Billing Ref.",
         store=True, required=True, readonly=False, tracking=True,
-        states={'approved': [('readonly', True)], 'done': [('readonly', True)]}, check_company=False)  
+        states={'approved': [('readonly', True)], 'done': [('readonly', True)]}, check_company=False, domain=False)  
     
     purpose = fields.Char('Description', store=True, required=False, readonly=False)
     
@@ -123,6 +144,37 @@ class taps_expense(models.Model):
             return time.max
         fractional, integral = math.modf(hours)
         return time(int(integral), int(round(60 * fractional, precision_digits=0)), 0)    
+
+    def action_submit_expenses(self):
+        sheet = self._create_sheet_from_expenses()
+        return {
+            'name': _('New Expense Report'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'hr.expense.sheet',
+            'target': 'current',
+            'res_id': sheet.id,
+        }
+
+    def _create_sheet_from_expenses(self):
+        #raise UserError(('sdfefe'))
+        if any(expense.state != 'draft' or expense.sheet_id for expense in self):
+            raise UserError(_("You cannot report twice the same line!"))
+        if len(self.mapped('employee_id')) != 1:
+            raise UserError(_("You cannot report expenses for different employees in the same report."))
+        if any(not expense.product_id for expense in self):
+            raise UserError(_("You can not create report without product."))
+
+        todo = self.filtered(lambda x: x.payment_mode=='own_account') or self.filtered(lambda x: x.payment_mode=='company_account')
+        sheet = self.env['hr.expense.sheet'].create({
+            'company_id': self.company_id.id,
+            'employee_id': self[0].employee_id.id,
+            'name': todo[0].name if len(todo) == 1 else '',
+            'expense_line_ids': [(6, 0, todo.ids)],
+            'expense_lines': [(6, 0, todo.expense_line.ids)]
+        })
+        return sheet
+    
     
     @api.onchange('employee_id', 'date', 'currency_id')
     def _compute_advance(self): #for rec in self:
@@ -247,9 +299,23 @@ class taps_expense_sheet(models.Model):
     #state = fields.Selection(selection_add=[('checked', 'Checked')], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True, help='Expense Report State')
     product_id = fields.Many2one(related='expense_line_ids.product_id', string='Product', store=False, readonly=True)
     ex_currency_id = fields.Many2one(related='expense_line_ids.currency_id', store=True, string='Expense Currency', readonly=True)
-    total_actual_amount = fields.Monetary('Total Actual Amount', compute='_compute_actual_amount', store=True, tracking=True, currency_field='ex_currency_id')    
+    total_actual_amount = fields.Monetary('Total Actual Amount', compute='_compute_actual_amount', store=True, tracking=True, currency_field='ex_currency_id')
     
     state = fields.Selection(selection_add=[('checked', 'Checked'),('approve',)], ondelete={'checked': lambda records: record.write({'state': 'draft'})})
+    
+    expense_lines = fields.Many2many('hr.expense.line', string='Expense Lines', copy=False, domain="[('id', '=', expense_line_ids)]")
+    
+
+    amount_untaxed = fields.Monetary(related='expense_line_ids.amount_untaxed', string='Untaxed Amount', readonly=True, tracking=True, currency_field='ex_currency_id')
+    amount_tax = fields.Monetary(related='expense_line_ids.amount_tax', string='Total Taxes', readonly=True, currency_field='ex_currency_id')#, compute='_amount_all'
+    amount_total = fields.Monetary(related='expense_line_ids.amount_total', string='Total Amount', readonly=True, currency_field='ex_currency_id')
+    
+    purpose = fields.Char('Description', related='expense_line_ids.purpose', store=True, readonly=True)
+    
+    #employee_id = fields.Many2one('hr.employee', string="Employee", required=True, readonly=True, domain=False)
+    
+    employee_id = fields.Many2one('hr.employee', string="Employee",
+        store=True, required=True, readonly=False, tracking=True, check_company=False, domain=False)      
 #     state = fields.Selection([
 #         ('draft', 'Draft'),
 #         ('submit', 'Submitted'),
@@ -320,3 +386,4 @@ class taps_expense_sheet(models.Model):
             
         self.activity_update()
         return notification        
+    

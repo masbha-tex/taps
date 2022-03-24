@@ -5,10 +5,10 @@
         <field name="model">kiosk.jobcard</field>
         <field name="arch" type="xml">
             <form>
-                <button name="open_attendance" class="oe_highlight" type="object"/>
                 <group>
-                    <field name="empID" string=''/>
+                    <field name="employee_id" string='' options='{"no_create":true}'/>
                 </group>
+                <field name="attendance_ids" string='' options='{"no_create":true}' widget="section_and_note_one2many" mode="tree"/>
             </form>
         </field>
     </record>

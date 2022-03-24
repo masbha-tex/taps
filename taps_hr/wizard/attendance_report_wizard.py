@@ -35,6 +35,24 @@ class AttendancePDFReport(models.TransientModel):
         ('daily_salary_cost',	'Daily Salary Cost'),],
         string='Report Type', required=True, default='job_card',
         help='By Attendance Reporting')
+    atten_type = fields.Selection([
+        ('p',	'Present'),
+        ('l',	'Late'),
+        ('a',	'Absent'),
+        ('fp',	'Friday Present'),
+        ('hp',	'Holiday Present'),
+        ('eo',	'Early Out'),
+        ('po',	'Pending Out'),
+        ('cl',	'Casual Time Off'),
+        ('sl',	'Seek Time Off'),
+        ('el', 'Earn Time off'),
+        ('ml', 'Metarnity Time off'),
+        ('lw',	'Leave without pay'),
+        ('co',	'C-Off'),
+        ('aj',	'Adjustment Days'),],
+        string='Attendance Type', required=False, #default='p',
+        help='By Attendance Reporting')
+    
     mode_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
@@ -106,7 +124,8 @@ class AttendancePDFReport(models.TransientModel):
                         'department_id': False, 
                         'category_id': False, 
                         'employee_id': self.employee_id.id,
-                        'report_type': self.report_type}
+                        'report_type': self.report_type,
+                        'atten_type': self.atten_type}
 
             if self.mode_type == "company":
                 data = {'date_from': self.date_from, 
@@ -115,7 +134,8 @@ class AttendancePDFReport(models.TransientModel):
                         'department_id': False, 
                         'category_id': False, 
                         'employee_id': False, 
-                        'report_type': self.report_type}
+                        'report_type': self.report_type,
+                        'atten_type': self.atten_type}
 
             if self.mode_type == "department":
                 data = {'date_from': self.date_from, 
@@ -124,7 +144,8 @@ class AttendancePDFReport(models.TransientModel):
                         'department_id': self.department_id.id, 
                         'category_id': False, 
                         'employee_id': False, 
-                        'report_type': self.report_type}
+                        'report_type': self.report_type,
+                        'atten_type': self.atten_type}
 
             if self.mode_type == "category":
                 data = {'date_from': self.date_from, 
@@ -133,7 +154,8 @@ class AttendancePDFReport(models.TransientModel):
                         'department_id': False, 
                         'category_id': self.category_id.id, 
                         'employee_id': False, 
-                        'report_type': self.report_type}
+                        'report_type': self.report_type,
+                        'atten_type': self.atten_type}
         if self.report_type == 'job_card':
             return self.env.ref('taps_hr.action_job_pdf_report').report_action(self, data=data)
         if self.report_type == 'dailyatten':
@@ -200,6 +222,35 @@ class JobReportPDF(models.AbstractModel):
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('atten_type'):
+            if data.get('atten_type')=='p':
+                domain.append(('inFlag', '=', 'P'))
+            if data.get('atten_type')=='l':
+                domain.append(('inFlag', '=', 'L'))
+            if data.get('atten_type')=='a':
+                domain.append(('inFlag', '=', 'A'))
+            if data.get('atten_type')=='fp':
+                domain.append(('inFlag', '=', 'FP'))
+            if data.get('atten_type')=='hp':
+                domain.append(('inFlag', '=', 'HP'))
+            if data.get('atten_type')=='eo':
+                domain.append(('outFlag', '=', 'EO'))
+            if data.get('atten_type')=='po':
+                domain.append(('outFlag', '=', 'PO'))
+            if data.get('atten_type')=='cl':
+                domain.append(('inFlag', '=', 'CL'))
+            if data.get('atten_type')=='sl':
+                domain.append(('inFlag', '=', 'SL'))
+            if data.get('atten_type')=='el':
+                domain.append(('inFlag', '=', 'EL'))
+            if data.get('atten_type')=='ml':
+                domain.append(('inFlag', '=', 'ML'))
+            if data.get('atten_type')=='lw':
+                domain.append(('inFlag', '=', 'LW'))
+            if data.get('atten_type')=='co':
+                domain.append(('inFlag', '=', 'CO'))
+            if data.get('atten_type')=='aj':
+                domain.append(('inFlag', '=', 'AJ'))            
         
         #domain.append(('employee_id.active', '=', True))
         
@@ -278,6 +329,35 @@ class DailyattenReportPDF(models.AbstractModel):
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('atten_type'):
+            if data.get('atten_type')=='p':
+                domain.append(('inFlag', '=', 'P'))
+            if data.get('atten_type')=='l':
+                domain.append(('inFlag', '=', 'L'))
+            if data.get('atten_type')=='a':
+                domain.append(('inFlag', '=', 'A'))
+            if data.get('atten_type')=='fp':
+                domain.append(('inFlag', '=', 'FP'))
+            if data.get('atten_type')=='hp':
+                domain.append(('inFlag', '=', 'HP'))
+            if data.get('atten_type')=='eo':
+                domain.append(('outFlag', '=', 'EO'))
+            if data.get('atten_type')=='po':
+                domain.append(('outFlag', '=', 'PO'))
+            if data.get('atten_type')=='cl':
+                domain.append(('inFlag', '=', 'CL'))
+            if data.get('atten_type')=='sl':
+                domain.append(('inFlag', '=', 'SL'))
+            if data.get('atten_type')=='el':
+                domain.append(('inFlag', '=', 'EL'))
+            if data.get('atten_type')=='ml':
+                domain.append(('inFlag', '=', 'ML'))
+            if data.get('atten_type')=='lw':
+                domain.append(('inFlag', '=', 'LW'))
+            if data.get('atten_type')=='co':
+                domain.append(('inFlag', '=', 'CO'))
+            if data.get('atten_type')=='aj':
+                domain.append(('inFlag', '=', 'AJ'))
         
         #domain.append(('employee_id.active', '=', True))
         
@@ -357,7 +437,35 @@ class DailyattenotReportPDF(models.AbstractModel):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
         
         #domain.append(('employee_id.active', '=', True))
-        
+        if data.get('atten_type'):
+            if data.get('atten_type')=='p':
+                domain.append(('inFlag', '=', 'P'))
+            if data.get('atten_type')=='l':
+                domain.append(('inFlag', '=', 'L'))
+            if data.get('atten_type')=='a':
+                domain.append(('inFlag', '=', 'A'))
+            if data.get('atten_type')=='fp':
+                domain.append(('inFlag', '=', 'FP'))
+            if data.get('atten_type')=='hp':
+                domain.append(('inFlag', '=', 'HP'))
+            if data.get('atten_type')=='eo':
+                domain.append(('outFlag', '=', 'EO'))
+            if data.get('atten_type')=='po':
+                domain.append(('outFlag', '=', 'PO'))
+            if data.get('atten_type')=='cl':
+                domain.append(('inFlag', '=', 'CL'))
+            if data.get('atten_type')=='sl':
+                domain.append(('inFlag', '=', 'SL'))
+            if data.get('atten_type')=='el':
+                domain.append(('inFlag', '=', 'EL'))
+            if data.get('atten_type')=='ml':
+                domain.append(('inFlag', '=', 'ML'))
+            if data.get('atten_type')=='lw':
+                domain.append(('inFlag', '=', 'LW'))
+            if data.get('atten_type')=='co':
+                domain.append(('inFlag', '=', 'CO'))
+            if data.get('atten_type')=='aj':
+                domain.append(('inFlag', '=', 'AJ'))       
         
         #raise UserError((domain))    
         docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
@@ -434,7 +542,35 @@ class DailyattenotsReportPDF(models.AbstractModel):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
         
         #domain.append(('employee_id.active', '=', True))
-        
+        if data.get('atten_type'):
+            if data.get('atten_type')=='p':
+                domain.append(('inFlag', '=', 'P'))
+            if data.get('atten_type')=='l':
+                domain.append(('inFlag', '=', 'L'))
+            if data.get('atten_type')=='a':
+                domain.append(('inFlag', '=', 'A'))
+            if data.get('atten_type')=='fp':
+                domain.append(('inFlag', '=', 'FP'))
+            if data.get('atten_type')=='hp':
+                domain.append(('inFlag', '=', 'HP'))
+            if data.get('atten_type')=='eo':
+                domain.append(('outFlag', '=', 'EO'))
+            if data.get('atten_type')=='po':
+                domain.append(('outFlag', '=', 'PO'))
+            if data.get('atten_type')=='cl':
+                domain.append(('inFlag', '=', 'CL'))
+            if data.get('atten_type')=='sl':
+                domain.append(('inFlag', '=', 'SL'))
+            if data.get('atten_type')=='el':
+                domain.append(('inFlag', '=', 'EL'))
+            if data.get('atten_type')=='ml':
+                domain.append(('inFlag', '=', 'ML'))
+            if data.get('atten_type')=='lw':
+                domain.append(('inFlag', '=', 'LW'))
+            if data.get('atten_type')=='co':
+                domain.append(('inFlag', '=', 'CO'))
+            if data.get('atten_type')=='aj':
+                domain.append(('inFlag', '=', 'AJ'))        
         
         #raise UserError((domain))    
         docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
@@ -973,6 +1109,35 @@ class DailyotanalysisReportPDF(models.AbstractModel):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
         
         #domain.append(('employee_id.active', '=', True))
+        if data.get('atten_type'):
+            if data.get('atten_type')=='p':
+                domain.append(('inFlag', '=', 'P'))
+            if data.get('atten_type')=='l':
+                domain.append(('inFlag', '=', 'L'))
+            if data.get('atten_type')=='a':
+                domain.append(('inFlag', '=', 'A'))
+            if data.get('atten_type')=='fp':
+                domain.append(('inFlag', '=', 'FP'))
+            if data.get('atten_type')=='hp':
+                domain.append(('inFlag', '=', 'HP'))
+            if data.get('atten_type')=='eo':
+                domain.append(('outFlag', '=', 'EO'))
+            if data.get('atten_type')=='po':
+                domain.append(('outFlag', '=', 'PO'))
+            if data.get('atten_type')=='cl':
+                domain.append(('inFlag', '=', 'CL'))
+            if data.get('atten_type')=='sl':
+                domain.append(('inFlag', '=', 'SL'))
+            if data.get('atten_type')=='el':
+                domain.append(('inFlag', '=', 'EL'))
+            if data.get('atten_type')=='ml':
+                domain.append(('inFlag', '=', 'ML'))
+            if data.get('atten_type')=='lw':
+                domain.append(('inFlag', '=', 'LW'))
+            if data.get('atten_type')=='co':
+                domain.append(('inFlag', '=', 'CO'))
+            if data.get('atten_type')=='aj':
+                domain.append(('inFlag', '=', 'AJ'))        
         
         
         #raise UserError((domain))    
@@ -1050,6 +1215,35 @@ class DailyattensummaryReportPDF(models.AbstractModel):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
         
         #domain.append(('employee_id.active', '=', True))
+        if data.get('atten_type'):
+            if data.get('atten_type')=='p':
+                domain.append(('inFlag', '=', 'P'))
+            if data.get('atten_type')=='l':
+                domain.append(('inFlag', '=', 'L'))
+            if data.get('atten_type')=='a':
+                domain.append(('inFlag', '=', 'A'))
+            if data.get('atten_type')=='fp':
+                domain.append(('inFlag', '=', 'FP'))
+            if data.get('atten_type')=='hp':
+                domain.append(('inFlag', '=', 'HP'))
+            if data.get('atten_type')=='eo':
+                domain.append(('outFlag', '=', 'EO'))
+            if data.get('atten_type')=='po':
+                domain.append(('outFlag', '=', 'PO'))
+            if data.get('atten_type')=='cl':
+                domain.append(('inFlag', '=', 'CL'))
+            if data.get('atten_type')=='sl':
+                domain.append(('inFlag', '=', 'SL'))
+            if data.get('atten_type')=='el':
+                domain.append(('inFlag', '=', 'EL'))
+            if data.get('atten_type')=='ml':
+                domain.append(('inFlag', '=', 'ML'))
+            if data.get('atten_type')=='lw':
+                domain.append(('inFlag', '=', 'LW'))
+            if data.get('atten_type')=='co':
+                domain.append(('inFlag', '=', 'CO'))
+            if data.get('atten_type')=='aj':
+                domain.append(('inFlag', '=', 'AJ'))        
         
         
         #raise UserError((domain))    
@@ -1127,6 +1321,35 @@ class MonthlyattensummaryReportPDF(models.AbstractModel):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
         
         #domain.append(('employee_id.active', '=', True))
+        if data.get('atten_type'):
+            if data.get('atten_type')=='p':
+                domain.append(('inFlag', '=', 'P'))
+            if data.get('atten_type')=='l':
+                domain.append(('inFlag', '=', 'L'))
+            if data.get('atten_type')=='a':
+                domain.append(('inFlag', '=', 'A'))
+            if data.get('atten_type')=='fp':
+                domain.append(('inFlag', '=', 'FP'))
+            if data.get('atten_type')=='hp':
+                domain.append(('inFlag', '=', 'HP'))
+            if data.get('atten_type')=='eo':
+                domain.append(('outFlag', '=', 'EO'))
+            if data.get('atten_type')=='po':
+                domain.append(('outFlag', '=', 'PO'))
+            if data.get('atten_type')=='cl':
+                domain.append(('inFlag', '=', 'CL'))
+            if data.get('atten_type')=='sl':
+                domain.append(('inFlag', '=', 'SL'))
+            if data.get('atten_type')=='el':
+                domain.append(('inFlag', '=', 'EL'))
+            if data.get('atten_type')=='ml':
+                domain.append(('inFlag', '=', 'ML'))
+            if data.get('atten_type')=='lw':
+                domain.append(('inFlag', '=', 'LW'))
+            if data.get('atten_type')=='co':
+                domain.append(('inFlag', '=', 'CO'))
+            if data.get('atten_type')=='aj':
+                domain.append(('inFlag', '=', 'AJ'))        
         
         
         #raise UserError((domain))    
@@ -1204,6 +1427,35 @@ class HolidayslipReportPDF(models.AbstractModel):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
         
         #domain.append(('employee_id.active', '=', True))
+        if data.get('atten_type'):
+            if data.get('atten_type')=='p':
+                domain.append(('inFlag', '=', 'P'))
+            if data.get('atten_type')=='l':
+                domain.append(('inFlag', '=', 'L'))
+            if data.get('atten_type')=='a':
+                domain.append(('inFlag', '=', 'A'))
+            if data.get('atten_type')=='fp':
+                domain.append(('inFlag', '=', 'FP'))
+            if data.get('atten_type')=='hp':
+                domain.append(('inFlag', '=', 'HP'))
+            if data.get('atten_type')=='eo':
+                domain.append(('outFlag', '=', 'EO'))
+            if data.get('atten_type')=='po':
+                domain.append(('outFlag', '=', 'PO'))
+            if data.get('atten_type')=='cl':
+                domain.append(('inFlag', '=', 'CL'))
+            if data.get('atten_type')=='sl':
+                domain.append(('inFlag', '=', 'SL'))
+            if data.get('atten_type')=='el':
+                domain.append(('inFlag', '=', 'EL'))
+            if data.get('atten_type')=='ml':
+                domain.append(('inFlag', '=', 'ML'))
+            if data.get('atten_type')=='lw':
+                domain.append(('inFlag', '=', 'LW'))
+            if data.get('atten_type')=='co':
+                domain.append(('inFlag', '=', 'CO'))
+            if data.get('atten_type')=='aj':
+                domain.append(('inFlag', '=', 'AJ'))        
         
         
         #raise UserError((domain))    

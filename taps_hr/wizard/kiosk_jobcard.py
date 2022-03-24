@@ -13,14 +13,16 @@ import pytz
 
 class StockForecastReport(models.TransientModel):
     _name = 'kiosk.jobcard'
-    _description = 'Job Card'
+    _description = 'KIOSK'
     
-    empID = fields.Char('')
+    employee_id = fields.Char(string="", required=True)
+    attendance_ids = fields.One2many('hr.attendance','id', ondelete='cascade', string='')
     
 #     @api.onchange()
+    @api.model
     def open_attendance(self):
         data = {'empID': self.empID}
-        #raise UserError(('fefefe'))
+        raise UserError(('fefefe'))
         return self.env.ref('taps_hr.action_job_card_kiosk_report').report_action(self, data=data)
         #fromdate = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
         #todate = fields.Date.today().strftime('%Y-%m-25')

@@ -6,14 +6,13 @@
         <field name="model">hris.pdf.report</field>
         <field name="arch" type="xml">
             <form string="HRIS Report">
-<!--                 <group> -->
+                <group>
                     <group>
                         <field name="report_type" string="Report Type"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>                         
                     </group>
                     <group>
-                        <field name="date_from"/>
-                        <field name="date_to"/> 
-                        <field name="bank_id"/>                        
                         <field name="mode_type" string="Mode"/>
                         <field name="employee_id" attrs="{
                         'required': [('mode_type', '=', 'employee')],
@@ -35,8 +34,9 @@
                         'required': [('mode_type', '=', 'emptype')],
                         'invisible': [('mode_type', '!=','emptype')]
                         }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="bank_id"/>                         
                     </group>
-<!--                 </group> -->
+                </group>
                 <footer>
                     <button string="Print" name="action_print_report" type="object" class="btn-primary"/>
 <!--                     <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/> -->
