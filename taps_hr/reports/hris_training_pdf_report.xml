@@ -2,16 +2,201 @@
 <odoo>
 
  <template id="hris_training_pdf_template">
-     <t t-foreach="docs" t-as="employee">
-            <t t-call="web.html_container">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <h1>HI</h1>
-                     </div>
+      <t t-foreach="docs" t-as="employee">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <style>
+                    .training-template{
+                    padding:30px 50px;
+                    td{
+                    padding:5px 10px
+                    }
+                    table{
+                    width:100%
+                    }
+                    }
+                </style>
+                <div class="page">
+                    <div class="training-template">
+                        <p style="text-align: center;font-size:20px">
+                            <b>
+                                <u>WORKERs TRAINING PROGRAM</u>
+                            </b>
+                        </p>
+                        <br/>
+                        <br/>
+                        <b t-esc="employee.name" style="font-size:18px">
 
-                </t>
+                        </b>
+                        <br/>
+                        ID :&amp;nbsp;
+                        <strong t-esc="employee.emp_id"></strong>
+                        <br/>
+                        Date Of Joining :&amp;nbsp;
+                        <strong t-esc="employee.joining_date"></strong>
+                        <br/>
+                        Department / Section :&amp;nbsp;<strong t-esc="employee.department_id.parent_id.name"></strong>&amp;nbsp;<strong>
+                        /</strong>&amp;nbsp;
+                        <strong t-esc="employee.department_id.name"></strong>
+                        <br/>
+                        <p>
+                            <div>
+                                <b style="color:blue;">Induction Training:</b>
+                                Factory rules &amp; regulations, Employment conditions &amp; service benefits, Working
+                                hour
+                                &amp; Leave procedure, Grievances &amp; Diciplinary Action Procedure, Wages &amp;
+                                Allowances, and a short brief
+                                about BEPZA Instrctions 1989, 1 &amp; 2.
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="list-item-circle">
+                                        <b>Training Tools:</b>
+                                        Brief discussion/Presentation.
+                                    </li>
+                                </ul>
+                            </div>
+                        </p>
+                        <p>
+                            <div>
+                                <b style="color:blue;">Training on Workers Job Process (after joining):</b>
+                                How to run MCs, Precuation to operate MCs, Risk
+                                Factor, and Smooth operation of MCs, Rejection Control etc.
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="list-item-circle">
+                                        <b>Training Tools:</b>
+                                        On hand Training at Production Section wise, with HODs.
+                                    </li>
+                                </ul>
+                            </div>
+                        </p>
+                        <p>
+                            <div>
+                                <b style="color:blue;">PPE:</b>
+                                PPE Items, using of PPE, benefits of using PPE etc
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="list-item-circle">
+                                        <b>Training Tools:</b>
+                                        Brief Discussion/Presentation with Safety Measures &amp; PPE Items.
+                                    </li>
+                                </ul>
+                            </div>
+                        </p>
+                        <p>
+                            <div>
+                                <b style="color:blue;">Training on Chemical Uses:</b>
+                                How to handel chemical, list of chemicals with Hazardous involveness, giving
+                                idea on MSDS, Chemical identification/name in native Language while using in Production
+                                floor.
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="list-item-circle">
+                                        <b>Training Tools:</b>
+                                        Brief Discussion/Presentation with Safety Measures &amp; PPE Items.
+                                    </li>
+                                </ul>
+                            </div>
+                        </p>
+                        <p>
+                            <div>
+                                <b style="color:blue;">Fire Safety:</b>
+                                What is Fire, Causes of Fire, Fire Hazardous places and probable causes, The Fire
+                                Traingle, Types of Fire Extinguishers, How to Use a Fire Extinguisher, Rules for
+                                Fighting Fires, Emergency Action
+                                Plan, Contacts Etc.
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="list-item-circle">
+                                        <b>Training Tools:</b>
+                                        Brief Discussion/Practical Training &amp; Video for Awareness.
+                                    </li>
+                                </ul>
+                            </div>
+                        </p>
+                        <p>
+                            <div>
+                                <b style="color:blue;">ETI Base Code:</b>
+                                Employment is freely chosen, Freedom of association and the right to collective
+                                bargaining
+                                are respected, Working conditions are safe and hygienic, Child labour shall not be used,
+                                Living wages are
+                                paid, Working hours are not excessive, No discrimination is practiced, Regular
+                                employment is provided, No
+                                harsh or inhumane treatment is allowed.
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="list-item-circle">
+                                        <b>Training Tools:</b>
+                                        Brief discussion/Presentation.
+                                    </li>
+                                </ul>
+                            </div>
+                        </p>
+                        <p>
+                            <div>
+                                <b style="color:blue;">Environment, Health &amp; Safety:</b>
+                                Factory Environment, Health &amp; Safety, Canteen &amp; Toilets, Factory
+                                Security System &amp; Employee Security.
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="list-item-circle">
+                                        <b>Training Tools:</b>
+                                        Brief discussion/Presentation.
+                                    </li>
+                                </ul>
+                            </div>
+                        </p>
+                        <p>
+                            <div>
+                                <b style="color:blue;">First Aid:</b>
+                                First Aid Items &amp; Uses, What is First Aid Treatment, and How to act with First Aid,
+                                Train-up First
+                                Aider for every department/sections etc.
+                            </div>
+                            <div>
+                                <ul>
+                                    <li class="list-item-circle">
+                                        <b>Training Tools:</b>
+                                        Brief discussion/Presentation.
+                                    </li>
+                                </ul>
+                            </div>
+                        </p>
+                        <br/>
+
+                        <p>
+                            <div style="float:left;width:30%;">
+
+                                <hr/>
+                                Signature of Employee
+                            </div>
+                            <div style="float:right;width:30%;">
+                                <hr/>
+                                Signature of HRD
+                            </div>
+                        </p>
+                        <br/>
+
+
+                    </div>
+                    <br/>
+                    <footer style="text-align :center; font-size: 10px;">
+                        <b>Sales Office:</b>
+                        Flat No. 05/1, House No. 196, Road No. 02, DOSH Baridhara, Dhaka 1206, Bangladesh.
+                    </footer>
+                </div>
+
             </t>
         </t>
+    </t>
   </template>
 
 </odoo>

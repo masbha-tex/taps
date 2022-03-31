@@ -20,6 +20,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/shift_setup.xml',
+        'data/shift_setup_code.xml',
     ],
     # only loaded in demonstration mode
     'license': 'AGPL-3',

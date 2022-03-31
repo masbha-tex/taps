@@ -9,8 +9,8 @@ class ShiftSetup(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']    
     _description = 'Shift Setup'    
 
-    code = fields.Char('Code', store=True, readonly=True)
-    name = fields.Char(string="Shift Name")
+    code = fields.Char('Code', store=True, readonly=True, default='New', required=True)
+    name = fields.Char(string="Shift Name", index=True)
     types = fields.Selection([
         ('morning', 'Morning Shift'),
         ('evening', 'Evening Shift'),
@@ -38,3 +38,9 @@ class ShiftSetup(models.Model):
         if name:
             domain = ['|', ('name', operator, name), ('code', operator, name)]
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('code', 'New') == 'New':
+            vals['code'] = self.env['ir.sequence'].next_by_code('shift.setup.code')
+        return super(ShiftSetup, self).create(vals)

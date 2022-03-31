@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate='0'>
+        <record id="action_job_card_kiosk_report" model="ir.actions.report">
+            <field name="name">KIOSK</field>
+            <field name="model">kiosk.jobcard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.jobcard_kiosk_template</field>
+            <field name="report_file">taps_hr.jobcard_kiosk_template</field>
+            <field name="binding_model_id" ref="model_kiosk_jobcard"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_kiosk_report"/>
+<!--             <field name="default_print_option">open</field> -->
+        </record>          
         <record id="report_top_sheet_summary" model="ir.actions.report">
             <field name="name">Top Sheet Summary</field>
             <field name="model">salary.sheet.pdf.report</field>
@@ -10,7 +21,7 @@
             <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="report_salary_sheet" model="ir.actions.report">
             <field name="name">Salary Sheet</field>
@@ -21,7 +32,7 @@
             <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_job_card_pdf_report" model="ir.actions.report">
             <field name="name">Job Card</field>
@@ -32,7 +43,7 @@
             <field name="binding_model_id" ref="model_job_card_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_jobcard_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>           
         <record id="action_employee_card_pdf_report" model="ir.actions.report">
             <field name="name">Employee Profile</field>
@@ -43,7 +54,7 @@
             <field name="binding_model_id" ref="model_employee_profile_card_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_salary_headwise_pdf_report" model="ir.actions.report">
             <field name="name">Headwise Report</field>
@@ -54,7 +65,7 @@
             <field name="binding_model_id" ref="model_salary_headwise_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_jobcard_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_hris_employee_card_pdf_report" model="ir.actions.report">
             <field name="name">Employee Profile</field>
@@ -65,7 +76,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_hris_joining_pdf_report" model="ir.actions.report">
             <field name="name">Joining Letter</field>
@@ -76,7 +87,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_hris_appointment_pdf_report" model="ir.actions.report">
             <field name="name">Appointment Letter</field>
@@ -87,7 +98,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_hris_confirmation_pdf_report" model="ir.actions.report">
             <field name="name">Confirmation Letter</field>
@@ -98,7 +109,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_hris_trail_extension_pdf_report" model="ir.actions.report">
             <field name="name">Extension of Probation Period</field>
@@ -109,18 +120,18 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_hris_no_dues_pdf_report" model="ir.actions.report">
             <field name="name">No Dues Letter</field>
             <field name="model">hris.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_hr.hris_pdf_template</field>
-            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="report_name">taps_hr.hris_no_dues_pdf_template</field>
+            <field name="report_file">taps_hr.hris_no_dues_pdf_template</field>
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_hris_pf_pdf_report" model="ir.actions.report">
             <field name="name">PF Statement</field>
@@ -131,7 +142,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_hris_loan_pdf_report" model="ir.actions.report">
             <field name="name">Loan Letter</field>
@@ -142,7 +153,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_hris_marriage_pdf_report" model="ir.actions.report">
             <field name="name">Marriage Gift</field>
@@ -153,7 +164,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_hris_shift_pdf_report" model="ir.actions.report">
             <field name="name">Shift Schedule Letter</field>
@@ -164,7 +175,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_hris_attcalendar_pdf_report" model="ir.actions.report">
             <field name="name">Attendance Calendar</field>
@@ -175,7 +186,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_hris_training_pdf_report" model="ir.actions.report">
             <field name="name">Training Program</field>
@@ -186,7 +197,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_hris_birth_calendar_pdf_report" model="ir.actions.report">
             <field name="name">Birth Calendar</field>
@@ -197,7 +208,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record> 
         <record id="action_hris_retentionincentive_pdf_report" model="ir.actions.report">
             <field name="name">Retention Incentive Letter</field>
@@ -208,7 +219,7 @@
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <!--         Attendance Reporting -->
         <record id="action_job_pdf_report" model="ir.actions.report">
@@ -220,7 +231,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_dailyatten_pdf_report" model="ir.actions.report">
             <field name="name">Daily Attendance</field>
@@ -231,7 +242,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_dailyatten_ot_pdf_report" model="ir.actions.report">
             <field name="name">Daily Attendance OT</field>
@@ -242,7 +253,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_dailyatten_ots_pdf_report" model="ir.actions.report">
             <field name="name">Daily Attendance with OT</field>
@@ -253,7 +264,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_daily_manpower_pdf_report" model="ir.actions.report">
             <field name="name">Daily Manpower Summary</field>
@@ -264,7 +275,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_ac_opening_pdf_report" model="ir.actions.report">
             <field name="name">Account Opening Letter</field>
@@ -275,7 +286,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_head_count_pdf_report" model="ir.actions.report">
             <field name="name">Head Count Report</field>
@@ -286,7 +297,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_payroll_planning_pdf_report" model="ir.actions.report">
             <field name="name">Payroll Planning Report</field>
@@ -297,7 +308,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_monthly_manhours_pdf_report" model="ir.actions.report">
             <field name="name">Monthly Manhours Report</field>
@@ -308,7 +319,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_daily_manhours_pdf_report" model="ir.actions.report">
             <field name="name">Daily Manhours Report</field>
@@ -319,7 +330,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_daily_ot_analysis_pdf_report" model="ir.actions.report">
             <field name="name">Daily OT Analysis</field>
@@ -330,7 +341,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_daily_atten_summary_pdf_report" model="ir.actions.report">
             <field name="name">Daily Attendance Summary</field>
@@ -341,7 +352,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record> 
         <record id="action_monthly_atten_summary_pdf_report" model="ir.actions.report">
             <field name="name">Monthly Attendance Summary</field>
@@ -351,8 +362,8 @@
             <field name="report_file">taps_hr.monthly_atten_summary_pdf_template</field>
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
-            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_atten_summary_report"/>
+<!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_holiday_slip_pdf_report" model="ir.actions.report">
             <field name="name">Off Day/Holiday Duty Slip</field>
@@ -363,7 +374,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>       
         <record id="action_daily_excess_ot_pdf_report" model="ir.actions.report">
             <field name="name">Daily Excess OT</field>
@@ -374,7 +385,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>     
         <record id="action_daily_salary_cost_pdf_report" model="ir.actions.report">
             <field name="name">Daily Salary Cost</field>
@@ -385,7 +396,7 @@
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-            <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
         </record>     
     </data>
 </odoo>

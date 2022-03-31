@@ -14,6 +14,12 @@
                   <field name="inFlag"/>
                   <field name="inHour" widget="float_time"/>
               </field>
+              <xpath expr="//field[@name='check_in']" position="attributes">
+                  <attribute name="groups">hr.group_hr_user</attribute>
+              </xpath>
+              <xpath expr="//field[@name='check_out']" position="attributes">
+                  <attribute name="groups">hr.group_hr_user</attribute>
+              </xpath>
               <field name="check_in" position="after">
                   <field name="outTime" widget="float_time"/>
                   <field name="outFlag"/>

@@ -10,7 +10,7 @@
     'category': 'Generic Modules/Human Resources',
     "version": "14.0.1.0.0",
     "license": "OEEL-1",
-    'depends': ['base_setup', 'hr_attendance', 'web_studio','hr','hr_payroll_account','hr_payroll'],
+    'depends': ['base_setup', 'hr_attendance', 'web_studio','hr','hr_payroll_account','hr_payroll','barcodes'],
     # always loaded
     'data': [
         'security/ir.model.access.csv',
@@ -20,6 +20,7 @@
         'data/overtime_calculate.xml',
         'data/salary_adjustment_code_generate.xml',
         'data/employee_service_length_generate.xml',
+        'views/web_asset_backend_template.xml',        
         'views/attendance_views.xml',
         'views/employee_views.xml',
         'views/contract_views.xml',
@@ -33,7 +34,7 @@
         'reports/custom_header_footer.xml',
         'reports/header_footer.xml',
         'reports/salary_headwise_pdf_report.xml',
-#         'reports/jobcard_pdf_report.xml',
+        'reports/kiosk_job_pdf_template.xml',
         'reports/paperformat.xml',
 #         'reports/employee_card_pdf_report.xml',
         'reports/hris_employee_profile_pdf_report.xml',
@@ -75,8 +76,10 @@
         'wizard/hris_report_wizard_view.xml',
         'wizard/attendance_report_wizard_view.xml',
     ],
-    # only loaded in demonstration mode
     'demo': [],
+    'qweb': [
+        "static/src/xml/attendance.xml",
+    ],    
     'installable': True,
     'auto_install': True,
     'application': True,

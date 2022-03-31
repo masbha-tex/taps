@@ -274,7 +274,7 @@ class HeadwisePDFReport(models.TransientModel):
                 edata.employee_id.name,
                 format_date(self.env, edata.employee_id.joining_date),
                 edata.employee_id.bank_account_id.acc_number,
-                edata.total,
+                round(edata.total),
             ]
             report_data.append(emp_data)     
         

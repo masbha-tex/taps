@@ -11,18 +11,19 @@ from odoo import api, fields, models, _
 import math
 import pytz
 
-class StockForecastReport(models.TransientModel):
+class Kiosk(models.TransientModel):
     _name = 'kiosk.jobcard'
     _description = 'KIOSK'
     
-    employee_id = fields.Char(string="", required=True)
-    attendance_ids = fields.One2many('hr.attendance','id', ondelete='cascade', string='')
+    employee_id = fields.Char()
+#     attendance_ids = fields.One2many('hr.attendance','id', ondelete='cascade', string='')
     
 #     @api.onchange()
-    @api.model
+#     @api.model
     def open_attendance(self):
-        data = {'empID': self.empID}
-        raise UserError(('fefefe'))
+         
+        data = {'empID': self.employee_id}
+#         raise UserError((data.ids))
         return self.env.ref('taps_hr.action_job_card_kiosk_report').report_action(self, data=data)
         #fromdate = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
         #todate = fields.Date.today().strftime('%Y-%m-25')
@@ -36,11 +37,11 @@ class JobCardKiosk(models.AbstractModel):
     _description = 'Kiosk Job Card Template'      
     
     def _get_report_values(self, docids, data=None):
-        #raise UserError((domain))    
+#         raise UserError(('domain'))    
         fromdate = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
         todate = fields.Date.today().strftime('%Y-%m-25')
-        docs = self.env['hr.attendance'].search([('attDate', '>=', fromdate),('attDate', '<=', todate),
-                                                 ('	empID', 'like', data.get('empID'))]).sorted(key = 'attDate')
+#         raise UserError((fromdate,todate,data.get('empID')))  
+        docs = self.env['hr.attendance'].search([('attDate', '>=', fromdate),('attDate', '<=', todate),('empID', 'like', data.get('empID'))]).sorted(key = 'attDate')
         #raise UserError((docs.id)) 
         emplist = docs.mapped('employee_id.id')
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])

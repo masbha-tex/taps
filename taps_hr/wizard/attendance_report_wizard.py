@@ -1469,6 +1469,8 @@ class HolidayslipReportPDF(models.AbstractModel):
         stdate = fst_days.attDate
         enddate = lst_days.attDate
         
+        
+        
         all_datelist = []
         dates = []
         #raise UserError((docs.id)) 
