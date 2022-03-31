@@ -34,6 +34,10 @@
                         <field name="employee_type" groups="hr_holidays.group_hr_holidays_user" attrs="{
                         'required': [('holiday_type', '=', 'emptype')],
                         'invisible': [('holiday_type', '!=','emptype')]
+                        }" options="{'no_create': True, 'no_open': True}"/> 
+                        <field name="company_all" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'companyall')],
+                        'invisible': [('holiday_type', '!=','companyall')]
                         }" options="{'no_create': True, 'no_open': True}"/>
                     </group>
                 </group>

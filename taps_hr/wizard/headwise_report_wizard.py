@@ -46,6 +46,7 @@ class HeadwisePDFReport(models.TransientModel):
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
+        ('companyall', 'By All Company'),
         ('department', 'By Department'),
         ('category', 'By Employee Tag'),
         ('emptype', 'By Employee Type')],
@@ -67,12 +68,16 @@ class HeadwisePDFReport(models.TransientModel):
         'hr.department',  string='Department', readonly=False)
     
     employee_type = fields.Selection([
-        ('staf', 'Stafs'),
+        ('staff', 'Staffs'),
         ('worker', 'Workers'),
         ('expatriate', 'Expatriates'),
-        ('cstaf', 'C-Stafs'),
-        ('cworker', 'C-workers')],
-        string='Employee Type', required=False)    
+        ('cstaff', 'C-Staffs'),
+        ('cworker', 'C-Workers')],
+        string='Employee Type', required=False)
+    
+    company_all = fields.Selection([
+        ('allcompany', 'TEX ZIPPERS (BD) LIMITED')],
+        string='All Company', required=False)   
     
     file_data = fields.Binary(readonly=True, attachment=False)    
     
@@ -129,7 +134,9 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': self.employee_id.id,
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'company_all': False,
+                        'employee_type': False}
 
             if self.holiday_type == "company":
                 data = {'date_from': self.date_from, 
@@ -139,7 +146,9 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'company_all': False,
+                        'employee_type': False}
 
             if self.holiday_type == "department":
                 data = {'date_from': self.date_from, 
@@ -149,7 +158,9 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'company_all': False,
+                        'employee_type': False}
 
             if self.holiday_type == "category":
                 data = {'date_from': self.date_from, 
@@ -159,7 +170,32 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': self.category_id.id, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'company_all': False,
+                        'employee_type': False}
+                
+            if self.holiday_type == "emptype":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': self.employee_type,
+                        'company_all': False}              
+            if self.holiday_type == "companyall":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all}
                 
         return self.env.ref('taps_hr.action_salary_headwise_pdf_report').report_action(self, data=data)
 
@@ -184,7 +220,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': self.employee_id.id, 
                         'report_type': False,
-                        'bank_id': self.bank_id.id}
+                        'bank_id': self.bank_id.id,
+                        'company_all': False}
 
             if self.holiday_type == "company":
                 data = {'date_from': self.date_from, 
@@ -194,7 +231,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': False,
-                        'bank_id': self.bank_id.id}
+                        'bank_id': self.bank_id.id,
+                        'company_all': False}
 
             if self.holiday_type == "department":
                 data = {'date_from': self.date_from, 
@@ -204,7 +242,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': False,
-                        'bank_id': self.bank_id.id}
+                        'bank_id': self.bank_id.id,
+                        'company_all': False}
 
             if self.holiday_type == "category":
                 data = {'date_from': self.date_from, 
@@ -214,7 +253,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': self.category_id.id, 
                         'employee_id': False, 
                         'report_type': False,
-                        'bank_id': self.bank_id.id}
+                        'bank_id': self.bank_id.id,
+                        'company_all': False}
 
             if self.holiday_type == "emptype":
                 data = {'date_from': self.date_from, 
@@ -225,7 +265,18 @@ class HeadwisePDFReport(models.TransientModel):
                         'employee_id': False, 
                         'report_type': False,
                         'bank_id': self.bank_id.id,
-                        'employee_type': self.employee_type}
+                        'employee_type': self.employee_type,
+                        'company_all': False}
+            if self.holiday_type == "companyall":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': False,
+                        'bank_id': self.bank_id.id,
+                        'company_all': self.company_all}                
         
         domain = []
         if data.get('date_from'):
@@ -243,16 +294,19 @@ class HeadwisePDFReport(models.TransientModel):
         if data.get('bank_id'):
             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
         if data.get('employee_type'):
-            if data.get('employee_type')=='staf':
+            if data.get('employee_type')=='staff':
                 domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
             if data.get('employee_type')=='expatriate':
                 domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
             if data.get('employee_type')=='worker':
                 domain.append(('employee_id.category_ids.id', 'in',(20,30)))
-            if data.get('employee_type')=='cstaf':
+            if data.get('employee_type')=='cstaff':
                 domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
             if data.get('employee_type')=='cworker':
                 domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
         domain.append(('code', '=', 'NET'))
         
         #raise UserError((domain))
@@ -261,7 +315,18 @@ class HeadwisePDFReport(models.TransientModel):
         datefrom = data.get('date_from')
         dateto = data.get('date_to')
         bankname = self.bank_id.name
-        categname = self.category_id.name
+        if self.employee_type =='staff':
+            categname='Staffs'
+        if self.employee_type =='expatriate':
+            categname='Expatriates'
+        if self.employee_type =='worker':
+            categname='Workers'
+        if self.employee_type =='cstaff':
+            categname='C-Staffs'
+        if self.employee_type =='cworker':
+            categname='C-Workers'
+            
+        
         #raise UserError((datefrom,dateto,bankname,categname))
         report_data = []
         emp_data = []
@@ -286,9 +351,11 @@ class HeadwisePDFReport(models.TransientModel):
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
         worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
 
-        report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14})
-        worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-        worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
+#         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+        worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+        worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+#         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
         
         column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
@@ -300,7 +367,7 @@ class HeadwisePDFReport(models.TransientModel):
         worksheet.set_column(0, 5, 20)
         
         worksheet.write(4, 0, 'SL.', column_product_style)
-        worksheet.write(4, 1, 'Employee ID', column_product_style)        
+        worksheet.write(4, 1, 'Emp ID', column_product_style)        
         worksheet.write(4, 2, 'Name', column_product_style)
         worksheet.write(4, 3, 'Joining Date', column_product_style)
         worksheet.write(4, 4, 'Account Number', column_product_style)
@@ -322,7 +389,7 @@ class HeadwisePDFReport(models.TransientModel):
         #worksheet.write(4, 0, 'SL.', column_product_style)
         #raise UserError((row+1))
         worksheet.write(row, 4, 'Grand Total', report_small_title_style)
-        worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
+        worksheet.write(row, 5, round(grandtotal), report_small_title_style)
         #raise UserError((datefrom,dateto,bankname,categname))
         workbook.close()
         xlsx_data = output.getvalue()
@@ -334,7 +401,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, 'SalaryBankTransfer'),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s-%s TRANSFER LIST' % (categname,bankname))),
             'target': 'self',
         }    
 
@@ -370,6 +437,21 @@ class HeadwiseReportPDF(models.AbstractModel):
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staf':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaf':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
+        domain.append(('code', '=', 'NET'))        
         
         
 #         raise UserError((domain))
@@ -384,7 +466,7 @@ class HeadwiseReportPDF(models.AbstractModel):
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
-            otTotal,
+            round(otTotal),
             data.get('date_from'),
             data.get('date_to'),
         ]
