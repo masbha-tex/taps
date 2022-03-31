@@ -351,7 +351,7 @@
             <field name="report_file">taps_hr.monthly_atten_summary_pdf_template</field>
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
-            <field name="paperformat_id" ref="taps_hr.paperformat_atten_summary_report"/>
+<!--             <field name="paperformat_id" ref="taps_hr.paperformat_atten_summary_report"/> -->
 <!--             <field name="default_print_option">print</field> -->
         </record>
         <record id="action_holiday_slip_pdf_report" model="ir.actions.report">
