@@ -438,30 +438,28 @@ class HeadwiseReportPDF(models.AbstractModel):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
         if data.get('employee_type'):
-            if data.get('employee_type')=='staf':
+            if data.get('employee_type')=='staff':
                 domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
             if data.get('employee_type')=='expatriate':
                 domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
             if data.get('employee_type')=='worker':
                 domain.append(('employee_id.category_ids.id', 'in',(20,30)))
-            if data.get('employee_type')=='cstaf':
+            if data.get('employee_type')=='cstaff':
                 domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
             if data.get('employee_type')=='cworker':
                 domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
         if data.get('company_all'):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
-        domain.append(('code', '=', 'NET'))        
+#         domain.append(('code', '=', 'NET'))        
         
         
 #         raise UserError((domain))
         docs = self.env['hr.payslip.line'].search(domain).sorted(key = 'employee_id', reverse=False)
         
-
-        for details in docs:
-            otTotal = 0
-            for de in docs:
-                otTotal = otTotal + de.total
+        otTotal = 0
+        for de in docs:
+            otTotal = otTotal + de.total
             
         common_data = [
             data.get('report_type'),
