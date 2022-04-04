@@ -27,19 +27,39 @@ class HrPayslipEmployee(models.TransientModel):
             #raise UserError((calendar_start, calendar_end, outside))
             #if outside:
                 #raise UserError(_("Some part of %s's calendar is not covered by any work entry. Please complete the schedule.", contract.employee_id.name))
+#     def _input_compute_sheet(self, payslip_id, contract_id, employee_id, date_start, date_stop):
+#         others_adjust = self.env['hr.payslip.input']
+#         input = self.env['salary.adjustment'].search([('salary_month', '<=', date_stop), ('salary_month', '>=', date_start)])
+#         for line in input:
+#             input_entries = self.env['salary.adjustment.line'].search([('adjustment_id', '=', line.id),
+#                                                                        ('employee_id', '=', int(employee_id))])
+#             if input_entries:
+#                 others_adjust.create({'payslip_id': payslip_id,
+#                                       'sequence':10,
+#                                       'input_type_id': int(input_entries.adjustment_type),
+#                                       'contract_id':contract_id,
+#                                       'amount': sum(input_entries.mapped('amount'))})#input_entries.amount
     def _input_compute_sheet(self, payslip_id, contract_id, employee_id, date_start, date_stop):
         others_adjust = self.env['hr.payslip.input']
         input = self.env['salary.adjustment'].search([('salary_month', '<=', date_stop), ('salary_month', '>=', date_start)])
         for line in input:
             input_entries = self.env['salary.adjustment.line'].search([('adjustment_id', '=', line.id),
                                                                        ('employee_id', '=', int(employee_id))])
-            if input_entries:
-                others_adjust.create({'payslip_id': payslip_id,
-                                      'sequence':10,
-                                      'input_type_id': int(input_entries.adjustment_type),
-                                      'contract_id':contract_id,
-                                      'amount': sum(input_entries.mapped('amount'))})#input_entries.amount
             
+            if input_entries:
+                for type in input_entries:
+                    adjust_exist = self.env['hr.payslip.input'].search([('payslip_id', '=', payslip_id), ('input_type_id', '=', int(type.adjustment_type))])
+                    if adjust_exist:
+                        amount = sum(adjust_exist.mapped('amount'))
+                        amount = amount + sum(type.mapped('amount'))
+                        adjust_exist.write({'amount': amount})
+                    else:
+                        others_adjust.create({'payslip_id': payslip_id,
+                                              'sequence':10,
+                                              'input_type_id': int(type.adjustment_type),
+                                              'contract_id':contract_id,
+                                              'amount': sum(type.mapped('amount'))})
+                        #input_entries.amount            
     def compute_sheet(self):
         self.ensure_one()
         if not self.env.context.get('active_id'):

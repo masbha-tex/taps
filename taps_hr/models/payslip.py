@@ -464,12 +464,21 @@ class HrPayslipsss(models.Model):
         for line in input:
             input_entries = self.env['salary.adjustment.line'].search([('adjustment_id', '=', line.id),
                                                                        ('employee_id', '=', int(employee_id))])
+            
             if input_entries:
-                others_adjust.create({'payslip_id': payslip_id,
-                                      'sequence':10,
-                                      'input_type_id': int(input_entries.adjustment_type),
-                                      'contract_id':contract_id,
-                                      'amount': sum(input_entries.mapped('amount'))})#input_entries.amount
+                for type in input_entries:
+                    adjust_exist = self.env['hr.payslip.input'].search([('payslip_id', '=', payslip_id), ('input_type_id', '=', int(type.adjustment_type))])
+                    if adjust_exist:
+                        amount = sum(adjust_exist.mapped('amount'))
+                        amount = amount + sum(type.mapped('amount'))
+                        adjust_exist.write({'amount': amount})
+                    else:
+                        others_adjust.create({'payslip_id': payslip_id,
+                                              'sequence':10,
+                                              'input_type_id': int(type.adjustment_type),
+                                              'contract_id':contract_id,
+                                              'amount': sum(type.mapped('amount'))})
+                
     def action_refresh_from_work_entries(self):
         # Refresh the whole payslip in case the HR has modified some work entries
         # after the payslip generation

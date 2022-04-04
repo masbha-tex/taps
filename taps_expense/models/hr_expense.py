@@ -144,6 +144,27 @@ class taps_expense(models.Model):
             return time.max
         fractional, integral = math.modf(hours)
         return time(int(integral), int(round(60 * fractional, precision_digits=0)), 0)    
+    
+#     def unlink(self):
+#         for expense in self:
+#             if expense.state in ['done', 'approved']:
+#                 raise UserError(_('You cannot delete a posted or approved expense.'))
+#         return super(HrExpense, self).unlink()
+    
+    def action_view_sheet(self):
+        #self.env["hr.expense.sheet"].search([('id','=',self.sheet_id.id)]).unlink()
+        if self.sheet_id.state != 'approve':
+            self.env['hr.expense.sheet'].search([('id','=',self.sheet_id.id)]).write({'expense_lines':[(6, 0, '')]})
+            self.env['hr.expense.sheet'].search([('id','=',self.sheet_id.id)]).write({'expense_lines':[(6, 0, self.expense_line.ids)]})
+        #sheet = self._create_sheet_from_expenses()
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'hr.expense.sheet',
+            'target': 'current',
+            'res_id': self.sheet_id.id
+        }
 
     def action_submit_expenses(self):
         sheet = self._create_sheet_from_expenses()
@@ -157,7 +178,6 @@ class taps_expense(models.Model):
         }
 
     def _create_sheet_from_expenses(self):
-        #raise UserError(('sdfefe'))
         if any(expense.state != 'draft' or expense.sheet_id for expense in self):
             raise UserError(_("You cannot report twice the same line!"))
         if len(self.mapped('employee_id')) != 1:
@@ -175,6 +195,23 @@ class taps_expense(models.Model):
         })
         return sheet
     
+    def _create_sheet_from_expenses(self):
+        todo = self.filtered(lambda x: x.payment_mode=='own_account') or self.filtered(lambda x: x.payment_mode=='company_account')
+        sheet = self.env['hr.expense.sheet'].create({
+            'company_id': self.company_id.id,
+            'employee_id': self[0].employee_id.id,
+            'name': todo[0].name if len(todo) == 1 else '',
+            'expense_lines': [(6, 0, todo.expense_line.ids)]
+        })
+        return sheet    
+    
+
+    def _update_sheet_from_expenses(self):
+        todo = self.filtered(lambda x: x.payment_mode=='own_account') or self.filtered(lambda x: x.payment_mode=='company_account')
+        sheet = self.env['hr.expense.sheet'].write({
+            'expense_lines': [(6, 0, '')]
+        })
+        return sheet    
     
     @api.onchange('employee_id', 'date', 'currency_id')
     def _compute_advance(self): #for rec in self:

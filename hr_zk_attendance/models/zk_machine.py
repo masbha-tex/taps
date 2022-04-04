@@ -151,8 +151,7 @@ class ZkMachine(models.Model):
                         if user:
                             for uid in user:
                                 if uid.user_id == each.user_id:
-                                    get_user_id = self.env['hr.employee'].search(
-                                        [('barcode', '=', each.user_id)])
+                                    get_user_id = self.env['hr.employee'].search([('barcode', '=', each.user_id)])
                                     if get_user_id:
                                         duplicate_atten_ids = zk_attendance.search(
                                             [('barcode', '=', each.user_id), ('punching_time', '=', atten_time)])
