@@ -8,3 +8,4 @@ from . import payslip
 from . import hr_payroll_payslips_by_employees
 from . import salary_adjustment
 from . import hr_leave
+from . import increment_promotion

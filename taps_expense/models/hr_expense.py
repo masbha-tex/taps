@@ -194,24 +194,7 @@ class taps_expense(models.Model):
             'expense_lines': [(6, 0, todo.expense_line.ids)]
         })
         return sheet
-    
-    def _create_sheet_from_expenses(self):
-        todo = self.filtered(lambda x: x.payment_mode=='own_account') or self.filtered(lambda x: x.payment_mode=='company_account')
-        sheet = self.env['hr.expense.sheet'].create({
-            'company_id': self.company_id.id,
-            'employee_id': self[0].employee_id.id,
-            'name': todo[0].name if len(todo) == 1 else '',
-            'expense_lines': [(6, 0, todo.expense_line.ids)]
-        })
-        return sheet    
-    
 
-    def _update_sheet_from_expenses(self):
-        todo = self.filtered(lambda x: x.payment_mode=='own_account') or self.filtered(lambda x: x.payment_mode=='company_account')
-        sheet = self.env['hr.expense.sheet'].write({
-            'expense_lines': [(6, 0, '')]
-        })
-        return sheet    
     
     @api.onchange('employee_id', 'date', 'currency_id')
     def _compute_advance(self): #for rec in self:

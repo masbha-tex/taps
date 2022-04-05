@@ -6,3 +6,5 @@ access_salary_sheet_pdf_report,access_salary_sheet_pdf_report,model_salary_sheet
 access_att_reprocess,access_att_reprocess,model_att_reprocess,base.group_user,1,1,1,1
 access_hris_report,access_hris_pdf_report,model_hris_pdf_report,base.group_user,1,1,1,1
 access_attenance_report,access_attendance_pdf_report,model_attendance_pdf_report,base.group_user,1,1,1,1
+access_increment_promotion,increment.promotion,model_increment_promotion,base.group_user,1,1,1,1
+access_increment_promotion_line,increment.promotion.line,model_increment_promotion_line,base.group_user,1,1,1,1

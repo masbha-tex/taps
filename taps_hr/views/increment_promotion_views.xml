@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
-      <record id="view_salary_adjustment_form" model="ir.ui.view">
-        <field name="name">salary.adjustment.view.from</field>
-        <field name="model">salary.adjustment</field>
+      <record id="view_increment_promotion_form" model="ir.ui.view">
+        <field name="name">increment.promotion.view.from</field>
+        <field name="model">increment.promotion</field>
         <field name="arch" type="xml">
-            <form string="Salary Adjustment">
+            <form string="Increment Promotion">
                 <header/>
                 <sheet>
                     <div class="oe_title">
@@ -15,21 +15,25 @@
                     </div>
                     <group>
                         <group>
-                            <field name="salary_month"/>
+                            <field name="increment_month"/>
                         </group>
                     </group>
 <!--                     <div class="oe_title"> -->
-                        <field name="adjustment_line"
+                        <field name="increment_line"
                                widget="section_and_note_one2many"
                                mode="tree">
-                            <tree string="Salary Adjustment Lines" editable="bottom">
+                            <tree string="Increment Promotion Line" editable="bottom">
                                 <control>
                                     <create name="add_employee_control" string="Add a employee"/>
                                 </control>
                                 <field name="employee_id" options='{"no_create":true}'/>
-                                <field name="mode_type"/>
-                                <field name="adjustment_type"/>
-                                <field name="amount"/>
+                                <field name="job_id"/>
+                                <field name="new_job_id"/>
+                                <field name="grade"/>
+                                <field name="new_grade"/>
+                                <field name="ot_type"/>
+                                <field name="increment_percent"/>
+                                <field name="increment_amount"/>
                             </tree>
                         </field>
 <!--                     </div> -->
@@ -43,26 +47,30 @@
         </field>
     </record>
     <!-- explicit tree view definition -->
-    <record id="salary_adjustment_line_tree" model="ir.ui.view">
-        <field name="name">salary.adjustment.line.tree</field>
-        <field name="model">salary.adjustment.line</field>
+    <record id="increment_promotion_line_tree" model="ir.ui.view">
+        <field name="name">increment.promotion.line.tree</field>
+        <field name="model">increment.promotion.line</field>
         <field name="arch" type="xml">
-            <tree string="Salary Adjustment Lines" create="false">
+            <tree string="Increment Promotion Lines" create="false">
                 <field name="employee_id" options='{"no_create":true}'/>
-                <field name="mode_type"/>
-                <field name="adjustment_type"/>
-                <field name="amount"/>
+                <field name="job_id"/>
+                <field name="new_job_id"/>
+                <field name="grade"/>
+                <field name="new_grade"/>
+                <field name="ot_type"/>
+                <field name="increment_percent"/>
+                <field name="increment_amount"/>
             </tree>
         </field>
     </record>
-    <record id="view_salary_adjustment_tree" model="ir.ui.view">
-      <field name="name">salary.adjustment.view.tree</field>
-      <field name="model">salary.adjustment</field>
+    <record id="view_increment_promotion_tree" model="ir.ui.view">
+      <field name="name">increment.promotion.view.tree</field>
+      <field name="model">increment.promotion</field>
       <field name="arch" type="xml">
         <tree>
             <field name="name"/>
-            <field name="salary_month"/>
-            <field name="adjustment_line"/>
+            <field name="increment_month"/>
+            <field name="increment_line"/>
         </tree>
       </field>
     </record>
@@ -70,9 +78,9 @@
 
     <!-- actions opening views on models -->
 
-    <record id="salary_adjustment_action" model="ir.actions.act_window">
-      <field name="name">Salary Adjustment</field>
-      <field name="res_model">salary.adjustment</field>
+    <record id="increment_promotion_action" model="ir.actions.act_window">
+      <field name="name">Increment Promotion</field>
+      <field name="res_model">increment.promotion</field>
       <field name="view_mode">tree,form</field>
     </record>
 
@@ -97,11 +105,11 @@
       <menuitem id="shift_setup_menu" parent="hr_attendance.menu_hr_attendance_root"  name="Shift Setup" action="shift_setup_action" sequence="100"/>
     -->
       
-    <menuitem id="salary_adjustment_menu" 
+    <menuitem id="increment_promotion_menu" 
               parent="hr_work_entry_contract.menu_hr_payroll_root" 
               sequence="50" 
-              name="Adjustment" 
-              action="salary_adjustment_action"/>
+              name="Increment" 
+              action="increment_promotion_action"/>
 
       
 <!--

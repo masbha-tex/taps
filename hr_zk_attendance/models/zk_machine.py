@@ -206,7 +206,7 @@ class ZkMachine(models.Model):
                                                                   'outFlag': 'TO'})
                                                     
                                                 else:
-                                                    att_out = att_in.search([('employee_id', '=', get_user_id.id),
+                                                    att_out = att_var.search([('employee_id', '=', get_user_id.id),
                                                                              ('attDate','=', att_Date)])
                                                     att_out[-1].write({'check_out': zk_ck_out,
                                                                        'outHour' : zk_outhour,
