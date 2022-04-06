@@ -252,16 +252,16 @@ class JobReportPDF(models.AbstractModel):
             if data.get('atten_type')=='aj':
                 domain.append(('inFlag', '=', 'AJ'))
             
-        domain.append(('active', 'in',(False,True)))            
+#         domain.append(('active', 'in',(False,True)))            
         
         #domain.append(('employee_id.active', '=', True))
         
         
         #raise UserError((domain))    
         docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
-        #raise UserError((docs.id)) 
+#         raise UserError((docs.id)) 
         emplist = docs.mapped('employee_id.id')
-        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+        employee = self.env['hr.employee'].search([('id', 'in', (emplist)), ('active', 'in',(False,True))])
         fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
         lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
         
