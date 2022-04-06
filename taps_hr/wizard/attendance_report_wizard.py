@@ -1351,6 +1351,7 @@ class MonthlyattensummaryReportPDF(models.AbstractModel):
             if data.get('atten_type')=='aj':
                 domain.append(('inFlag', '=', 'AJ'))        
         
+        #department_id,parent_id,hr_department
         
         #raise UserError((domain))    
         docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
@@ -1359,6 +1360,14 @@ class MonthlyattensummaryReportPDF(models.AbstractModel):
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
         fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
         lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
+        
+        sectionlist = employee.mapped('department_id.id')
+        section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
+        
+        
+        parentdpt = section.mapped('parent_id.id')
+        department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
+        
         
         stdate = fst_days.attDate
         enddate = lst_days.attDate

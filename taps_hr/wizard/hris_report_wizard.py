@@ -50,7 +50,7 @@ class HRISPDFReport(models.TransientModel):
         'res.bank',  string='Bank', readonly=False, ondelete="restrict", required=False)
     
     employee_id = fields.Many2one(
-        'hr.employee', domain="[('active', '=', False)]",  string='Employee', index=True, readonly=False, ondelete="restrict")
+        'hr.employee', domain="['|', ('active', '=', False), ('active', '=', True)]",  string='Employee', index=True, readonly=False, ondelete="restrict")
     
     category_id = fields.Many2one(
         'hr.employee.category',  string='Employee Tag', help='Category of Employee', readonly=False)
@@ -215,11 +215,10 @@ class HRISReportPDF(models.AbstractModel):
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+            
+        domain.append(('active', 'in',(False,True)))
         
-        
-           
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
-#         raise UserError((docs.ids))
 
 #         for details in docs:
 #             otTotal = 0

@@ -79,6 +79,7 @@ class TapsHrEmployeeBase(models.AbstractModel):
     hours_last_month = fields.Float(compute='_compute_hours_last_month')
     hours_today = fields.Float(compute='_compute_hours_today')
     hours_last_month_display = fields.Char(compute='_compute_hours_last_month')
+         
 
     @api.depends('user_id.im_status', 'attendance_state')
     def _compute_presence_state(self):

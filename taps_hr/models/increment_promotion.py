@@ -19,6 +19,33 @@ class IncrementPromotion(models.Model):
     name = fields.Char('Code', store=True,required=True, readonly=True, index=True, copy=False, default='IP')
     increment_month = fields.Date('Increment Month', store=True, default=date.today().strftime('%Y-%m-01'))
     increment_line = fields.One2many('increment.promotion.line', 'increment_id', string='Increment Lines', store=True)
+    state = fields.Selection([
+    ('draft', 'To Submit'),
+    ('submit', 'Submitted'),
+    ('approved', 'Approved'),
+    ('refused', 'Refused')], string='Status', copy=False, 
+        index=True, readonly=True, store=True, default='draft', help="Status of the Increment")
+    
+
+    
+    def button_approve(self, force=False):
+        #self = self.filtered(lambda order: order._approval_allowed())
+        self.write({'state': 'approved'})
+        return {}
+
+    def button_confirm(self):
+        for order in self:
+            if order.state not in ['draft', 'submit']:
+                continue
+            order.write({'state': 'submit'})
+        return True     
+    
+    def button_draft(self):
+        self.write({'state': 'draft'})
+        return {}    
+    
+    def button_cancel(self):
+        self.write({'state': 'refused'})        
     
     @api.model
     def create(self, vals):
