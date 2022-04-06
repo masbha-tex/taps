@@ -64,7 +64,7 @@ class AttendancePDFReport(models.TransientModel):
     
     
     employee_id = fields.Many2one(
-        'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict")
+        'hr.employee', domain="['|', ('active', '=', False), ('active', '=', True)]",  string='Employee', index=True, readonly=False, ondelete="restrict")
     
     category_id = fields.Many2one(
         'hr.employee.category',  string='Employee Tag', help='Category of Employee', readonly=False)
@@ -250,7 +250,9 @@ class JobReportPDF(models.AbstractModel):
             if data.get('atten_type')=='co':
                 domain.append(('inFlag', '=', 'CO'))
             if data.get('atten_type')=='aj':
-                domain.append(('inFlag', '=', 'AJ'))            
+                domain.append(('inFlag', '=', 'AJ'))
+            
+        domain.append(('active', 'in',(False,True)))            
         
         #domain.append(('employee_id.active', '=', True))
         
@@ -1410,7 +1412,9 @@ class MonthlyattensummaryReportPDF(models.AbstractModel):
             'doc_model': 'hr.attendance',
             'docs': docs,
             'datas': allemp_data,
-            'alldays': all_datelist
+            'alldays': all_datelist,
+            'dpt': department,
+            'sec': section
         }
 class HolidayslipReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.holiday_slip_pdf_template'
