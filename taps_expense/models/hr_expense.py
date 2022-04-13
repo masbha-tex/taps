@@ -11,7 +11,7 @@ import calendar
 from odoo.exceptions import UserError, ValidationError
 import math
 
-class taps_expense(models.Model):
+class HrExpense(models.Model):
     _inherit = 'hr.expense'
 
     @api.model
@@ -20,7 +20,7 @@ class taps_expense(models.Model):
         if vals.get('name', 'New') == 'New':
             #course_date = vals.get('course_date')
             vals['name'] = self.env['ir.sequence'].next_by_code('hr.expense.name')
-        return super(taps_expense, self).create(vals)
+        return super(HrExpense, self).create(vals)
     
     @api.depends('product_id', 'company_id')
     def _compute_from_product_id_company_id(self):
@@ -176,6 +176,44 @@ class taps_expense(models.Model):
             'target': 'current',
             'res_id': sheet.id,
         }
+    
+    
+    
+#         attachment = self.env['ir.attachment'].search([('res_id','=',self.id),('res_model','=','hr.expense')])
+#         if attachment:
+#             attsheet = self.env['ir.attachment'].search([('res_id','=',sheet.id),('res_model','=','hr.expense.sheet')])
+#             if attsheet:
+#                 for atts in attsheet:
+#                     atts.unlink()
+#             for expatt in attachment:
+#                 #raise UserError((expatt.checksum,expatt.file_size,expatt.store_fname))
+#                 cm=expatt.checksum
+#                 fs=expatt.file_size
+#                 fn=expatt.store_fname
+#                 attsheet.create({'name':expatt.name,
+#                                  'description':expatt.description,
+#                                  'res_model':"hr.expense.sheet",
+#                                  'res_field':expatt.res_field,
+#                                  'res_id':sheet.id,
+#                                  'company_id':expatt.company_id.id,
+#                                  'type':expatt.type,
+#                                  'url':expatt.url,
+#                                  'public':expatt.public,
+#                                  'access_token':expatt.access_token,
+#                                  'db_datas':expatt.db_datas,
+#                                  'store_fname':fn,#expatt.store_fname,
+#                                  'file_size':fs,#expatt.file_size,
+#                                  'checksum':cm,#expatt.checksum,
+#                                  'mimetype':expatt.mimetype,
+#                                  'index_content':expatt.index_content,
+#                                  'create_uid':expatt.create_uid,
+#                                  'create_date':expatt.create_date,
+#                                  'write_uid':expatt.write_uid,
+#                                  'write_date':expatt.write_date,
+#                                  'original_id':expatt.original_id,
+#                                 })
+    
+    
 
     def _create_sheet_from_expenses(self):
         if any(expense.state != 'draft' or expense.sheet_id for expense in self):

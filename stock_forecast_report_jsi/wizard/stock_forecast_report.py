@@ -93,12 +93,12 @@ class StockForecastReport(models.TransientModel):
         return val
 
     def getclosing_qty(self,productid,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', to_date)])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<=', to_date)])
         qty = sum(stock_details.mapped('quantity'))
         return qty
     
     def getclosing_val(self,productid,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', to_date)])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<=', to_date)])
         #,('description','not like','%LC/%')
         val = sum(stock_details.mapped('value'))
         return val

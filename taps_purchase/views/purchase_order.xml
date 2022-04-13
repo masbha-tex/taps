@@ -9,6 +9,38 @@
                <xpath expr="//field[@name='user_id']" position="after">
                     <field name="last_approver" />
                </xpath>
+               <xpath expr="//field[@name='amount_total']" position="replace">
+                   <field name="amount_total" widget="monetary" optional="show" decoration-bf="1"/>
+               </xpath>
+            </field>
+        </record>
+        
+<!--         <record id="purchase_order_tree_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.tree.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="arch" type="xml">
+            </field>
+        </record> -->
+        
+        <record id="view_purchase_order_filter_customize" model="ir.ui.view">
+            <field name="name">request.po.select</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="arch" type="xml">
+               <xpath expr="//filter[@name='my_purchases']" position="after">
+                   <filter string="RM" name="rmtype" 
+                           domain="[('itemtype', '=', 'raw')]"/>
+                   <filter string="Spare" name="sparetype" 
+                           domain="[('itemtype', '=', 'spares')]"/>
+               </xpath>
+               <xpath expr="//filter[@name='order_date']" position="after">
+                   <filter name="po_order_date" string="PO Date" 
+                           domain="[('date_order', '>=', '2022-04-01 00:00:00'),('date_order','&lt;', '2022-04-30 23:59:59')]"/>
+                   
+<!--                    ["date_order",">=","2022-03-31 18:00:00"],["date_order","<=","2022-04-30 17:59:59"] ,('date_order','=', '2022-04-30 23:59:59') "search_default_rmtype": true, ('date_order', '>=', '2022-04-01 00:00:00'),('date_order','&lt;', '2022-04-30 23:59:59')-->
+                   
+               </xpath>
             </field>
         </record>
     </data>

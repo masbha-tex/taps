@@ -51,7 +51,7 @@
                         <td class="o_text">PO Budget (<t t-esc="values['company_currency_symbol']"/>)</td>
                         <td class="o_main o_dashboard_action"><a href="#"><span><t t-esc="values['all_avg_order_value']"/></span></a></td>
                         <td class="o_text">PO Value (RM) (<t t-esc="values['company_currency_symbol']"/>)</td>
-                        <td class="o_main o_dashboard_action"><a href="#"><span><t t-esc="values['all_total_last_7_days']"/></span></a></td>
+                        <td class="o_main o_dashboard_action" name="purchase.purchase_action_dashboard" context='{"search_default_rmtype": true, "search_default_approved": true, "search_default_po_order_date": true}'><a href="#"><span><t t-esc="values['all_total_last_7_days']"/></span></a></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,7 +59,7 @@
                         <td class="o_text">RM Consumed Percent (%)</td>
                         <td class="o_main o_dashboard_action"><a href="#"><span><t t-esc="values['all_avg_days_to_purchase']"/></span></a></td>
                         <td class="o_text">PO Value (Spares) (<t t-esc="values['company_currency_symbol']"/>)</td>
-                        <td class="o_main o_dashboard_action"><a href="#"><span><t t-esc="values['all_sent_rfqs']"/></span></a></td>
+                        <td class="o_main o_dashboard_action"  name="purchase.purchase_action_dashboard" context='{"search_default_sparetype": true, "search_default_approved": true, "search_default_po_order_date": true}'><a href="#"><span><t t-esc="values['all_sent_rfqs']"/></span></a></td>
                     </tr>
                 </tbody>
             </table></div>

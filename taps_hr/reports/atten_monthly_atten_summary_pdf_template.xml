@@ -1,17 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <template id="monthly_atten_summary_pdf_template">
-      <t t-call="web.html_container">
-        <t t-foreach="dpt" t-as="dp">
-        <t t-foreach="sec.filtered(lambda x: (x.parent_id == dp[0])" t-as="se">
-        <t t-foreach="datas.filtered(lambda x: (x.department_id == sec[0])" t-as="emp">
-          <t t-call="web.external_layout">
-             <div class="page">
-                    <h5 class="text-right">
-                        <strong>Monthly Attendance Summary(<span t-esc="datetime.datetime.strptime(emp[1], '%Y-%m-%d').strftime('%B  %Y')"/>)</strong>
-                    </h5>
-                    <div class="container">
-                      <div class="row justify-content-end">
+   <template id="monthly_atten_summary_pdf_template">
+       <t t-call="web.html_container">
+
+        <t t-call="web.external_layout">
+
+            <div class="page">
+                <h4 class="text-right">
+                    <strong>
+                       Monthly Attendance Summary 
+                       <span t-esc="month[0]"/>
+                    </strong>
+                </h4>
+                <div class="container">
+                    <div class="row justify-content-end">
                         <div class="col-6 table-sm table-bordered" style="font-size:11px;">
                             <center>
                                 <strong>
@@ -33,7 +35,6 @@
                                     <br/>
                                     <span class="small">H=Holiday</span>
                                     <br/>
-
                                 </div>
                                 <div class="col-4">
                                     <span class="small">F=Friday</span>
@@ -48,7 +49,6 @@
                                     <br/>
                                     <span class="small">EO=Early Out</span>
                                     <br/>
-
                                 </div>
                                 <div class="col-4">
                                     <span class="small">CL=Casual Leave</span>
@@ -63,162 +63,191 @@
                                     <br/>
                                     <span class="small">CO=Compensatory Off</span>
                                     <br/>
-
                                 </div>
                             </div>
-
                         </div>
+                    </div>
+                </div>
+                <t t-foreach="dpt" t-as="dp">
+                  <t t-set="total_sec_employee" t-value="0"/>
+                    
+
+                    <t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
+                        <div class="container">
+                        <!--<div class="row">-->
+                        <div style="font-size: 12px;">
+                            <strong>DEPARTMENT:</strong>
+                            <span t-esc="dp.name" style="color: blue"/>
+                        </div>
+                        <!--</div>-->
+                      </div>
+                        <div class="container">
+                            <!--<div class="row">-->
+                            <div style="font-size: 12px;">
+                                <strong>SECTION:</strong>
+                                <span t-esc="se.name" style="color: blue"/>
+                            </div>
+                            <!--</div>-->
+                        </div>
+                        <br/>
+
+                        <!--<div class="container">-->
+                        <!--   <div class="row">-->
+                        <!--      <div class="col-6">-->
+                        <!--         <div class="row">-->
+                        <!--            <div>-->
+                        <!--               <strong>DEPARTMENT:</strong>-->
+                        <!--               <span t-esc="emp[5]"/>-->
+                        <!--            </div>-->
+                        <!--         </div>-->
+                        <!--         <div class="row">-->
+                        <!--            <div>-->
+                        <!--               <strong>SECTION:</strong>-->
+                        <!--               <span t-esc="emp[6]"/>-->
+                        <!--            </div>-->
+                        <!--         </div>-->
+                        <!--         <div class="row">-->
+                        <!--            <div>-->
+                        <!--               <strong>EMPLOYEE CATEGORY:</strong>-->
+                        <!--               <span t-esc="emp[7]"/>-->
+                        <!--            </div>-->
+                        <!--         </div>-->
+                        <!--      </div>-->
+                        <!--   </div>-->
+                        <!--</div>-->
+
+                        <div class="container">
+
+                            <t t-foreach="datas" t-as="emp">
+                               
+                                <t t-if="emp[9] == se.id">
+                                 <t t-set="total_sec_employee" t-value="total_sec_employee+1"/>
+                                    <table class="table table-sm p-0 m-0" style="font-size:7px; table-layout:fixed; page-break-inside: avoid;">
+                                        <thead>
+                                            <!--<tr align="center" style="background-color:#E2E2E2;" t-foreach="alldays" t-as="ald">-->
+                                            <tr align="center" style="background-color:#E2E2E2;">
+                                                <th>Code</th>
+                                                <th colspan="3">
+                                                    Emloyee Name
+                                                </th>
+                                                <th colspan="3">Designation</th>
+                                                <t t-foreach="alldays" t-as="ald">
+                                                    <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att" style="border: 1pt solid black;border-collapse:separate;">
+                                                        <th>
+                                                            <span t-esc="att.attDate.strftime('%d')"/>
+                                                        </th>
+                                                    </t>
+                                                </t>
+                                                <th>P/TO</th>
+                                                <th>L/EO</th>
+                                                <th>A/PO</th>
+                                            </tr>
+                                            <!--</tr>-->
+                                        </thead>
+                                        <tbody>
+
+                                            <t t-set="p" t-value="0"/>
+                                            <t t-set="to" t-value="0"/>
+                                            <t t-set="l" t-value="0"/>
+                                            <t t-set="eo" t-value="0"/>
+                                            <t t-set="a" t-value="0"/>
+                                            <t t-set="po" t-value="0"/>
+                                            <t t-set="total_ot" t-value="0"/>
+                                            <tr>
+                                                <td rowspan="3">
+                                                    <t t-esc="emp[3]"/>
+                                                </td>
+                                                <td rowspan="3" colspan="3">
+                                                    <t t-esc="emp[4]"/>
+                                                </td>
+                                                <td rowspan="3" colspan="3">
+                                                    <t t-esc="emp[7]"/>
+                                                </td>
+                                                <t t-foreach="alldays" t-as="ald">
+                                                    <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
+                                                        <t t-if="att.outFlag == 'A'">
+                                                            <t t-set="line_style" t-value="'color:red;'"/>
+                                                        </t>
+                                                        <t t-set="total_ot" t-value="total_ot+att['otHours']"/>
+                                                        <t t-if="att.inFlag == 'P'">
+                                                            <t t-set="p" t-value="p+1"/>
+                                                        </t>
+                                                        <t t-if="att.outFlag == 'TO'">
+                                                            <t t-set="to" t-value="to+1"/>
+                                                        </t>
+                                                        <t t-if="att.inFlag == 'L'">
+                                                            <t t-set="l" t-value="l+1"/>
+                                                        </t>
+                                                        <t t-if="att.outFlag == 'EO'">
+                                                            <t t-set="eo" t-value="eo+1"/>
+                                                        </t>
+                                                        <t t-if="att.inFlag == 'A'">
+                                                            <t t-set="a" t-value="a+1"/>
+                                                        </t>
+                                                        <t t-if="att.outFlag == 'PO'">
+                                                            <t t-set="po" t-value="po+1"/>
+                                                        </t>
+                                                        <td>
+                                                           <span t-esc="att['inFlag']"/>
+                                                            <br/>
+                                                            <span t-esc="att['inHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                                        </td>
+                                                        
+                                                    </t>
+                                                </t>
+                                                 <td><span t-esc="p"/></td>
+                                                 <td><span t-esc="l"/></td>
+                                                 <td><span t-esc="a"/></td>
+                                            </tr>
+                                            <tr>
+                                              <t t-foreach="alldays" t-as="ald">
+                                              <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
+                                               <td>
+                                                            <span t-esc="att['outFlag']"/>
+                                                            <br/>
+                                                            <span t-esc="att['outHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                                </td>
+                                                </t>
+                                                </t>
+                                                
+                                                <td><span t-esc="to"/></td>
+                                                <td><span t-esc="eo"/></td>
+                                                <td><span t-esc="po"/></td>
+                                            </tr>
+                                            <tr>
+                                              <t t-foreach="alldays" t-as="ald">
+                                              <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
+                                               <td>
+                                                <span t-esc="att['otHours']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                                            
+                                                            
+                                                </td>
+                                                </t>
+                                                </t>
+                                                <td>Total</td>
+                                                <td>OT=</td>
+                                                <td><span t-esc="total_ot" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
+                                            </tr>
+                                            
+                                               
+                                        </tbody>
+                                    </table>
+                                </t>
+                            </t>
+                        </div>
+                        <div class="container">
+                      <div class="row justify-content-end" style="font-size:8px;">
+                    <p>Section <strong t-esc="se.name" style="color: blue;"></strong> total Employee : <strong t-esc="total_sec_employee" style="color: blue;"></strong></p>
                       </div>
                     </div>
-                    <div class="container">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="row">
-                                <div>
-                                    <strong>DEPARTMENT: </strong>
-                                    <span t-esc="emp[5]"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div>
-                                    <strong>SECTION: </strong>
-                                    <span t-esc="emp[6]"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div>
-                                    <strong>EMPLOYEE CATEGORY: </strong>
-                                    <span t-esc="emp[7]"/>
-                                </div>
-                            </div>
-                            
-                            
-                        </div>
-                        
-                    </div>
-                    </div>
-                
-                    <br/>
-                    
-                    <div class="container">
-                        <div class="row">
-                            <table class="table table-sm" style="font-size:11px; table-layout:fixed;">
-                                <thead>
-                                  
-                                    <!--<tr align="center" style="background-color:#E2E2E2;" t-foreach="alldays" t-as="ald">-->
-                                      <tr align="center" style="background-color:#E2E2E2;">
-                                        <th>Code</th>
-                                        <th><div>Emloyee Name</div></th>
-                                        <th>Designation</th>
-                                        <t t-foreach="alldays" t-as="ald">
-                                          <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att" style="border: 1pt solid black;border-collapse:separate;">
-                                          <th>
-                                          <span t-esc="att.attDate.strftime('%d')"></span>
-                                        </th>
-                                          </t>
-                                        </t>
-                                        
-                                        <th>P/TO</th>
-                                        <th>L/EO</th>
-                                        <th>A/PO</th>
-                                      </tr> 
-                                    <!--</tr>-->
-                                </thead>
-                                <tbody>
-                                  <t t-set="p" t-value="0"/>
-                                  <t t-set="to" t-value="0"/>
-                                  <t t-set="l" t-value="0"/>
-                                  <t t-set="eo" t-value="0"/>
-                                  <t t-set="a" t-value="0"/>
-                                  <t t-set="po" t-value="0"/>
-                                  <t t-set="total_ot" t-value="0"/>
-                                  <tr>
-                                    <td><t t-esc="emp[3]"/></td>
-                                    <td><t t-esc="emp[4]"/></td>
-                                    <td><t t-esc="emp[7]"/></td>
-                                    <t t-foreach="alldays" t-as="ald">
-                                    <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att" style="border: 1pt solid black;border-collapse:separate;">  
-                                    <t t-if="att.outFlag == 'A'">
-                                     <t t-set="line_style" t-value="'color:red;'"></t>
-                                    </t>
-                                    <t t-set="total_ot" t-value="total_ot+att['otHours']"/>
-                                  <t t-if="att.inFlag == 'P'">
-                                    <t t-set="p" t-value="p+1"></t>
-                                  </t>
-                                  <t t-if="att.outFlag == 'TO'">
-                                    <t t-set="to" t-value="to+1"></t>
-                                  </t>
-                                  <t t-if="att.inFlag == 'L'">
-                                    <t t-set="l" t-value="l+1"></t>
-                                  </t>
-                                  <t t-if="att.outFlag == 'EO'">
-                                    <t t-set="eo" t-value="eo+1"></t>
-                                  </t>
-                                  <t t-if="att.inFlag == 'A'">
-                                    <t t-set="a" t-value="a+1"></t>
-                                  </t>
-                                  <t t-if="att.outFlag == 'PO'">
-                                    <t t-set="po" t-value="po+1"></t>
-                                  </t>
-                                    <td><span t-esc="att['inFlag']"/>
-                                    <br/>
-                                    <span t-esc="att['inHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                    <hr style="border-top: 1px dashed blue;"/>
-                                    <span t-esc="att['outFlag']"/><br/>
-                                    <span t-esc="att['outHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                    <hr style="border-top: 1px dashed blue;"/>
-                                    <span t-esc="att['otHours']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                    </td>
-                                    
-                                    </t>
-                                    </t>
-                                    <td>
-                                      <span t-esc="p"></span>
-                                      <br/>
-                                      <br/>
-                                      <hr style="border-top: 1px dashed blue;"/>
-                                      <span t-esc="to"></span>
-                                      <br/>
-                                      <br/>
-                                      <hr style="border-top: 1px dashed blue;"/>
-                                      
-                                    </td>
-                                    <td>
-                                      <span t-esc="l"></span>
-                                      <br/>
-                                      <br/>
-                                      <hr style="border-top: 1px dashed blue;"/>
-                                      <span t-esc="eo"></span>
-                                      <br/>
-                                      <br/>
-                                      <hr style="border-top: 1px dashed blue;"/>
-                                    </td>
-                                    <td>
-                                      <span t-esc="a"></span>
-                                      <br/>
-                                      <br/>
-                                      <hr style="border-top: 1px dashed blue;"/>
-                                      <span t-esc="po"></span>
-                                      <br/>
-                                      <br/>
-                                      <hr style="border-top: 1px dashed blue;"/>
-                                      <span t-esc="total_ot" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"></span>
-                                    </td>
-                                    
-                                  </tr>
-                                 </tbody>
-                              </table>
-                    </div>
-                    
-                </div>
-              </div>
-                                
-             
-          </t>
-        </t>
-        </t>
-        </t>
-      </t>
-    </template>
 
+                    </t>
+                    
+                    
+                </t>
+            </div>
+
+        </t>
+    </t>
+   </template>
 </odoo>

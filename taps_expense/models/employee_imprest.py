@@ -37,7 +37,7 @@ class HrImprest(models.Model):
         ('checked', 'Checked'),
         ('approved', 'Approved'),
         ('refused', 'Refused')
-    ], string='Status', copy=False, index=True, readonly=True, store=True, default='draft', help="Status of the imprest.")
+    ], string='Status', copy=False, index=True, readonly=True, store=True, default='draft', help="Status of the imprest.", tracking=True)
     
     #["|",["x_studio_currency","=","USD"],["x_studio_currency","=",False]]
     #["|",["imprest_currency","=","USD"],["imprest_currency","=",False]

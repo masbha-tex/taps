@@ -83,53 +83,99 @@ class HrPayslipsss(models.Model):
         return sum([line.number_of_days for line in lines])    
     
     def _compute_basic_net(self):
-        for payslip in self:
-            payslip.basic_wage = payslip._get_salary_line_total('BASIC')
-            payslip.hra_wage = payslip._get_salary_line_total('HRA')
-            payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')
-            payslip.ot_wage = payslip._get_salary_line_total('OT')
-            payslip.arrear_wage = payslip._get_salary_line_total('ARREAR')
-            payslip.att_bonus_wage = payslip._get_salary_line_total('ATTBONUS')
-            payslip.convence_wage = payslip._get_salary_line_total('CONVENCE')
-            payslip.food_wage = payslip._get_salary_line_total('FOOD')
-            payslip.tiffin_wage = payslip._get_salary_line_total('TIFFIN')
-            payslip.snacks_wage = payslip._get_salary_line_total('SNACKS')
-            payslip.car_wage = payslip._get_salary_line_total('CAR')
-            payslip.others_alw_wage = payslip._get_salary_line_total('OTHERS_ALW')
-            payslip.incentive_wage = payslip._get_salary_line_total('INCENTIVE')
-            payslip.rpf_wage = payslip._get_salary_line_total('RPF')
-            payslip.earnings_total = (payslip._get_salary_line_earnings_deduction_total('EARNINGS') +
-                                      payslip._get_salary_line_earnings_deduction_total('BASIC') + 
-                                      payslip._get_salary_line_earnings_deduction_total('HRA') + 
-                                      payslip._get_salary_line_earnings_deduction_total('MEDICAL'))
-            payslip.pf_empr_wage = payslip._get_salary_line_total('PFR')
-            payslip.pf_empe_wage = payslip._get_salary_line_total('PFE')
-            payslip.ait_wage = payslip._get_salary_line_total('AIT')
-            payslip.basic_absent_wage = payslip._get_salary_line_total('BASIC_ABSENT')
-            payslip.gross_absent_wage = payslip._get_salary_line_total('GROSS_ABSENT')
-            payslip.loan_wage = payslip._get_salary_line_total('LOAN')
-            payslip.adv_salary_wage = payslip._get_salary_line_total('ADV_SALARY')
-            payslip.others_ded_wage = payslip._get_salary_line_total('OTHERS_DED')
-            payslip.deduction_total = payslip._get_salary_line_earnings_deduction_total('DED')
-            payslip.net_wage = payslip._get_salary_line_total('NET')
-            payslip.working_days = payslip._get_work_days_line_total('P')
-            payslip.basic_absent_days = payslip._get_work_days_line_total('A')
-            payslip.gross_absent_days = payslip._get_work_days_line_total('X')
-            payslip.friday_days = payslip._get_work_days_line_total('F')
-            payslip.holiday_days = payslip._get_work_days_line_total('H')
-            payslip.od_days = payslip._get_work_days_line_total('OD')
-            payslip.coff_days = payslip._get_work_days_line_total('CO')
-            payslip.adjust_days = payslip._get_work_days_line_total('AJ')
-            payslip.late_days = payslip._get_work_days_line_total('L')
-            payslip.cl_days = payslip._get_work_days_line_total('CL')
-            payslip.sl_days = payslip._get_work_days_line_total('SL')
-            payslip.el_days = payslip._get_work_days_line_total('EL')
-            payslip.ml_days = payslip._get_work_days_line_total('ML')
-            payslip.lw_days = payslip._get_work_days_line_total('LW')
-            payslip.total_payable_days = (payslip._get_work_days_line_total('P') + payslip._get_work_days_line_total('F') +
-                                          payslip._get_work_days_line_total('H') + payslip._get_work_days_line_total('AJ') + 
-                                          payslip._get_work_days_line_total('CL') + payslip._get_work_days_line_total('OD') +
-                                          payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL'))
+        payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
+        if payslip_run.is_bonus:
+            
+            for payslip in self:
+                payslip.basic_wage = payslip._get_salary_line_total('BASIC')
+                payslip.hra_wage = payslip._get_salary_line_total('HRA')
+                payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')
+                payslip.ot_wage = 0#payslip._get_salary_line_total('OT')
+                payslip.arrear_wage = 0 #payslip._get_salary_line_total('ARREAR')
+                payslip.att_bonus_wage = 0 #payslip._get_salary_line_total('ATTBONUS')
+                payslip.convence_wage = 0#payslip._get_salary_line_total('CONVENCE')
+                payslip.food_wage = 0#payslip._get_salary_line_total('FOOD')
+                payslip.tiffin_wage = 0#payslip._get_salary_line_total('TIFFIN')
+                payslip.snacks_wage = 0#payslip._get_salary_line_total('SNACKS')
+                payslip.car_wage = 0#payslip._get_salary_line_total('CAR')
+                payslip.others_alw_wage = 0#payslip._get_salary_line_total('OTHERS_ALW')
+                payslip.incentive_wage = 0#payslip._get_salary_line_total('INCENTIVE')
+                payslip.rpf_wage = 0 #payslip._get_salary_line_total('RPF')
+                payslip.earnings_total = payslip._get_salary_line_total('BASIC')
+                payslip.pf_empr_wage = 0 #payslip._get_salary_line_total('PFR')
+                payslip.pf_empe_wage = 0 #payslip._get_salary_line_total('PFE')
+                payslip.ait_wage = 0#payslip._get_salary_line_total('AIT')
+                payslip.basic_absent_wage = 0#payslip._get_salary_line_total('BASIC_ABSENT')
+                payslip.gross_absent_wage = 0#payslip._get_salary_line_total('GROSS_ABSENT')
+                payslip.loan_wage = 0#payslip._get_salary_line_total('LOAN')
+                payslip.adv_salary_wage = 0#payslip._get_salary_line_total('ADV_SALARY')
+                payslip.others_ded_wage = 0#payslip._get_salary_line_total('OTHERS_DED')
+                payslip.deduction_total = 0#payslip._get_salary_line_earnings_deduction_total('DED')
+                payslip.net_wage = payslip._get_salary_line_total('NET')
+                payslip.working_days = 0#payslip._get_work_days_line_total('P')
+                payslip.basic_absent_days = 0#payslip._get_work_days_line_total('A')
+                payslip.gross_absent_days = 0#payslip._get_work_days_line_total('X')
+                payslip.friday_days = 0#payslip._get_work_days_line_total('F')
+                payslip.holiday_days = 0#payslip._get_work_days_line_total('H')
+                payslip.od_days = 0#payslip._get_work_days_line_total('OD')
+                payslip.coff_days = 0#payslip._get_work_days_line_total('CO')
+                payslip.adjust_days = 0#payslip._get_work_days_line_total('AJ')
+                payslip.late_days = 0#payslip._get_work_days_line_total('L')
+                payslip.cl_days = 0#payslip._get_work_days_line_total('CL')
+                payslip.sl_days = 0#payslip._get_work_days_line_total('SL')
+                payslip.el_days = 0#payslip._get_work_days_line_total('EL')
+                payslip.ml_days = 0#payslip._get_work_days_line_total('ML')
+                payslip.lw_days = 0#payslip._get_work_days_line_total('LW')
+                payslip.total_payable_days = 0
+        else:
+            for payslip in self:
+                payslip.basic_wage = payslip._get_salary_line_total('BASIC')
+                payslip.hra_wage = payslip._get_salary_line_total('HRA')
+                payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')
+                payslip.ot_wage = payslip._get_salary_line_total('OT')
+                payslip.arrear_wage = payslip._get_salary_line_total('ARREAR')
+                payslip.att_bonus_wage = payslip._get_salary_line_total('ATTBONUS')
+                payslip.convence_wage = payslip._get_salary_line_total('CONVENCE')
+                payslip.food_wage = payslip._get_salary_line_total('FOOD')
+                payslip.tiffin_wage = payslip._get_salary_line_total('TIFFIN')
+                payslip.snacks_wage = payslip._get_salary_line_total('SNACKS')
+                payslip.car_wage = payslip._get_salary_line_total('CAR')
+                payslip.others_alw_wage = payslip._get_salary_line_total('OTHERS_ALW')
+                payslip.incentive_wage = payslip._get_salary_line_total('INCENTIVE')
+                payslip.rpf_wage = payslip._get_salary_line_total('RPF')
+                payslip.earnings_total = (payslip._get_salary_line_earnings_deduction_total('EARNINGS') +
+                                          payslip._get_salary_line_earnings_deduction_total('BASIC') + 
+                                          payslip._get_salary_line_earnings_deduction_total('HRA') + 
+                                          payslip._get_salary_line_earnings_deduction_total('MEDICAL'))
+                payslip.pf_empr_wage = payslip._get_salary_line_total('PFR')
+                payslip.pf_empe_wage = payslip._get_salary_line_total('PFE')
+                payslip.ait_wage = payslip._get_salary_line_total('AIT')
+                payslip.basic_absent_wage = payslip._get_salary_line_total('BASIC_ABSENT')
+                payslip.gross_absent_wage = payslip._get_salary_line_total('GROSS_ABSENT')
+                payslip.loan_wage = payslip._get_salary_line_total('LOAN')
+                payslip.adv_salary_wage = payslip._get_salary_line_total('ADV_SALARY')
+                payslip.others_ded_wage = payslip._get_salary_line_total('OTHERS_DED')
+                payslip.deduction_total = payslip._get_salary_line_earnings_deduction_total('DED')
+                payslip.net_wage = payslip._get_salary_line_total('NET')
+                payslip.working_days = payslip._get_work_days_line_total('P')
+                payslip.basic_absent_days = payslip._get_work_days_line_total('A')
+                payslip.gross_absent_days = payslip._get_work_days_line_total('X')
+                payslip.friday_days = payslip._get_work_days_line_total('F')
+                payslip.holiday_days = payslip._get_work_days_line_total('H')
+                payslip.od_days = payslip._get_work_days_line_total('OD')
+                payslip.coff_days = payslip._get_work_days_line_total('CO')
+                payslip.adjust_days = payslip._get_work_days_line_total('AJ')
+                payslip.late_days = payslip._get_work_days_line_total('L')
+                payslip.cl_days = payslip._get_work_days_line_total('CL')
+                payslip.sl_days = payslip._get_work_days_line_total('SL')
+                payslip.el_days = payslip._get_work_days_line_total('EL')
+                payslip.ml_days = payslip._get_work_days_line_total('ML')
+                payslip.lw_days = payslip._get_work_days_line_total('LW')
+                payslip.total_payable_days = (payslip._get_work_days_line_total('P') + payslip._get_work_days_line_total('F') +
+                                              payslip._get_work_days_line_total('H') + payslip._get_work_days_line_total('AJ') + 
+                                              payslip._get_work_days_line_total('CL') + payslip._get_work_days_line_total('OD') +
+                                              payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL'))
+                
             
     @api.depends('contract_id','date_from','date_to')
     def _compute_ot_rate(self):
@@ -174,14 +220,14 @@ class HrPayslipsss(models.Model):
             format_date(self.env, self.date_to, date_format="MMMM y", lang_code=lang)
         )
 
-        if date_to > date_utils.end_of(fields.Date.today(), 'month'):
-            self.warning_message = _(
-                "This payslip can be erroneous! Work entries may not be generated for the period from %(start)s to %(end)s.",
-                start=date_utils.add(date_utils.end_of(fields.Date.today(), 'month'), days=1),
-                end=date_to,
-            )
-        else:
-            self.warning_message = False
+#         if date_to > date_utils.end_of(fields.Date.today(), 'month'):
+#             self.warning_message = _(
+#                 "This payslip can be erroneous! Work entries may not be generated for the period from %(start)s to %(end)s.",
+#                 start=date_utils.add(date_utils.end_of(fields.Date.today(), 'month'), days=1),
+#                 end=date_to,
+#             )
+#         else:
+#             self.warning_message = False
 
         self.worked_days_line_ids = self._get_new_worked_days_lines()                
     
@@ -506,3 +552,49 @@ class HrPayslipInputType(models.Model):
     _description = 'Payslip Input Type'
     
     is_deduction = fields.Boolean(string="is Deduct", store=True)
+    
+    
+
+class HrPayslipRun(models.Model):
+    _inherit = 'hr.payslip.run'
+    _description = 'Payslip Batches'
+    _order = 'date_end desc'
+
+    is_bonus = fields.Boolean(string='Festival Bonus', readonly=True,
+        states={'draft': [('readonly', False)]},
+        help="If its checked, indicates that all payslips generated from here are Festival Bonus payslips.")
+
+    def _compute_payslip_count(self):
+        for payslip_run in self:
+            payslip_run.payslip_count = len(payslip_run.slip_ids)
+
+    def action_draft(self):
+        return self.write({'state': 'draft'})
+
+    def action_close(self):
+        if self._are_payslips_ready():
+            self.write({'state' : 'close'})
+
+    def action_validate(self):
+        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').action_payslip_done()
+        self.action_close()
+
+    def action_open_payslips(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "hr.payslip",
+            "views": [[False, "tree"], [False, "form"]],
+            "domain": [['id', 'in', self.slip_ids.ids]],
+            "name": "Payslips",
+        }
+
+    def unlink(self):
+        if any(self.filtered(lambda payslip_run: payslip_run.state not in ('draft'))):
+            raise UserError(_('You cannot delete a payslip batch which is not draft!'))
+        if any(self.mapped('slip_ids').filtered(lambda payslip: payslip.state not in ('draft','cancel'))):
+            raise UserError(_('You cannot delete a payslip which is not draft or cancelled!'))
+        return super(HrPayslipRun, self).unlink()
+
+    def _are_payslips_ready(self):
+        return all(slip.state in ['done', 'cancel'] for slip in self.mapped('slip_ids'))

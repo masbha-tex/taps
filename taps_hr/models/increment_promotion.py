@@ -16,20 +16,39 @@ class IncrementPromotion(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _description = 'Increment Promotion'
     
-    name = fields.Char('Code', store=True,required=True, readonly=True, index=True, copy=False, default='IP')
-    increment_month = fields.Date('Increment Month', store=True, default=date.today().strftime('%Y-%m-01'))
-    increment_line = fields.One2many('increment.promotion.line', 'increment_id', string='Increment Lines', store=True)
+    name = fields.Char('Code', store=True,required=True, readonly=True, index=True, copy=False, tracking=True, default='IP')
+    increment_month = fields.Date('Increment Month', store=True, tracking=True, default=date.today().strftime('%Y-%m-01'))
+    increment_line = fields.One2many('increment.promotion.line', 'increment_id', string='Increment Lines',tracking=True, store=True, required=True)
     state = fields.Selection([
     ('draft', 'To Submit'),
     ('submit', 'Submitted'),
     ('approved', 'Approved'),
     ('refused', 'Refused')], string='Status', copy=False, 
-        index=True, readonly=True, store=True, default='draft', help="Status of the Increment")
+        index=True, readonly=True, store=True, default='draft', tracking=True, help="Status of the Increment")
     
 
     
     def button_approve(self, force=False):
-        #self = self.filtered(lambda order: order._approval_allowed())
+        if self.increment_line:
+            for app in self.increment_line:
+                elist = self.env['hr.employee'].search([('id','=',app.employee_id.id)])
+                conlist = self.env['hr.contract'].search([('employee_id','=',app.employee_id.id)])
+                if app.new_job_id:
+                    elist[-1].write({'job_id': app.new_job_id.id})
+                    conlist[-1].write({'job_id': app.new_job_id.id})
+                if app.new_grade:
+                    conlist[-1].write({'structure_type_id': app.new_grade.id})
+                if app.increment_amount > 0:
+                    conlist[-1].write({'wage': app.employee_id.contract_id.wage + app.increment_amount})
+                if app.ot_type == "true":
+                    elist[-1].write({'isOverTime': True})
+                if app.ot_type == "false":
+                    elist[-1].write({'isOverTime': False})
+                
+                    
+                    
+                    
+                    
         self.write({'state': 'approved'})
         return {}
 
@@ -60,22 +79,55 @@ class IncrementPromotionLine(models.Model):
     
     increment_id = fields.Many2one('increment.promotion', string='Increment Reference', index=True, required=True, ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string='Employee', required=True, store=True)
-    job_id = fields.Char(related = 'employee_id.job_id.name', related_sudo=False, string='Position', readonly=True, store=True)
-    new_job_id = fields.Many2one('hr.job', 'New Job Position', store=True)
-    grade = fields.Char(related = 'employee_id.contract_id.structure_type_id.default_struct_id.name', related_sudo=False, string='Grade', readonly=True, store=True)
-    new_grade = fields.Many2one('hr.payroll.structure.type', 'New Grade', store=True)
-    ot_type = fields.Selection([('True', "Yes"),('False', "No")], string="OT Type", store=True)
-    increment_percent = fields.Float(string='Increment Percent', store=True)
-    increment_amount = fields.Float(string='Increment Amount', store=True)
+    job_id = fields.Many2one('hr.job', 'Position', store=True, readonly=True, compute='_compute_job_id')
+    new_job_id = fields.Many2one('hr.job', 'New Job Position', tracking=True, store=True)
+    grade = fields.Many2one('hr.payroll.structure.type', 'Grade', store=True, readonly=True, compute='_compute_job_id')
+    new_grade = fields.Many2one('hr.payroll.structure.type', 'New Grade', tracking=True, store=True)
+    old_ot_type = fields.Boolean("old OT Type", readonly=False, store=True, compute='_compute_job_id')
+    ot_type = fields.Selection([('true', "Yes"),('false', "No")], compute='onchange_ot_type', string="OT Type", store=True, tracking=True, readonly=False, required=True)
+    increment_percent = fields.Float(string='Increment Percent',readonly=False, compute='calculate_amount', tracking=True, store=True)
+    increment_amount = fields.Float(string='Increment Amount',readonly=False, compute='calculate_percent', tracking=True, store=True)
     
+    @api.depends('employee_id')
+    def _compute_job_id(self):
+        for line in self.filtered('employee_id'):
+            line.job_id = line.employee_id.job_id.id
+            line.grade = line.employee_id.contract_id.structure_type_id
+            line.old_ot_type = line.employee_id.isOverTime
+            
     
-#     @api.onchange('mode_type')
-#     def onchange_partner_id(self):
-#         self.increment_type = ''
-#         for rec in self:
-#             if rec.mode_type == 'False':
-#                 return {'domain':{'increment_type': [('is_deduction','=',False)]}}
-#             if rec.mode_type == 'True':
-#                 return {'domain':{'increment_type': [('is_deduction','=',True)]}}
+    @api.depends('employee_id')
+    def onchange_ot_type(self):
+        for ot in self:
+            if ot.employee_id:
+                ottype = ot.employee_id.isOverTime
+                if ottype:
+                    #raise UserError(('sfefefe'))
+                    ot.ot_type = 'true'
+                else:
+                    ot.ot_type = 'false'
+            #return ot.ot_type
+#             ot.department_id = ot.employee_id.department_id
     
-    
+    @api.onchange('employee_id','increment_percent')
+    def calculate_amount(self):
+        for inc in self:
+            gross = inc.employee_id.contract_id.wage
+            if inc.increment_percent:
+                inc.increment_amount = (gross*inc.increment_percent)/100
+            
+    @api.onchange('employee_id','increment_amount')
+    def calculate_percent(self):
+        for inc in self:
+            gross = inc.employee_id.contract_id.wage
+            if inc.increment_amount:
+                inc.increment_percent = (100*inc.increment_amount)/gross            
+            
+#     @api.onchange('employee_id')
+#     def onchange_ot_type(self):
+# #         self.ot_type = ''
+#         for ot in self:
+#             if ot.employee_id.isOverTime == False:
+#                 ot.ot_type = 'False'
+#             if ot.employee_id.isOverTime == True:
+#                 ot.ot_type = 'True'
