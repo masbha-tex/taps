@@ -1722,7 +1722,7 @@ class ShiftScheduleReportPDF(models.AbstractModel):
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             
-            domain.append(('name.id', '=', data.get('employee_id')))
+            domain.append(('name', '=', data.get('employee_id')))
             
         
         #domain.append(('employee_id.active', '=', True))
@@ -1760,14 +1760,18 @@ class ShiftScheduleReportPDF(models.AbstractModel):
         
         #raise UserError((domain))    
         docs = self.env['shift.transfer'].search(domain).sorted(key = 'activationDate', reverse=False)
-        #raise UserError((docs.id))
+#         raise UserError((docs.id))
         
         emplist = docs.mapped('name.id')
+        
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
-        fst_days = docs.search([('activationDate', '>=', data.get('date_from')),('activationDate', '<=', data.get('date_to'))]).sorted(key = 'activationDate', reverse=False)[:1]
-        lst_days = docs.search([('activationDate', '>=', data.get('date_from')),('activationDate', '<=', data.get('date_to'))]).sorted(key = 'activationDate', reverse=True)[:1]
+        
+        
+#         fst_days = docs.search([('activationDate', '>=', data.get('date_from')),('activationDate', '<=', data.get('date_to'))]).sorted(key = 'activationDate', reverse=False)[:1]
+#         lst_days = docs.search([('activationDate', '>=', data.get('date_from')),('activationDate', '<=', data.get('date_to'))]).sorted(key = 'activationDate', reverse=True)[:1]
         
         sectionlist = employee.mapped('department_id.id')
+        
         section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
         
         
@@ -1775,29 +1779,29 @@ class ShiftScheduleReportPDF(models.AbstractModel):
         department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
         
         
-        stdate = fst_days.activationDate
-        #raise UserError((stdate))
-        enddate = lst_days.activationDate
+#         stdate = fst_days.activationDate
+#         #raise UserError((stdate))
+#         enddate = lst_days.activationDate
         
-        all_datelist = []
-        dates = []
-        #raise UserError((docs.id)) 
-        delta = enddate - stdate       # as timedelta
-        for i in range(delta.days + 1):
-            day = stdate + timedelta(days=i)
-            dates = [
-                day,
-            ]
-            all_datelist.append(dates)
+#         all_datelist = []
+#         dates = []
+#         #raise UserError((docs.id)) 
+#         delta = enddate - stdate       # as timedelta
+#         for i in range(delta.days + 1):
+#             day = stdate + timedelta(days=i)
+#             dates = [
+#                 day,
+#             ]
+#             all_datelist.append(dates)
         
 
         allemp_data = []
         lstmonths_data = []
         for details in employee:
-            otTotal = 0
-            for de in docs:
-                if details.id == de.employee_id.id:
-                    otTotal = otTotal + de.otHours
+#             otTotal = 0
+#             for de in docs:
+#                 if details.id == de.name.id:
+#                     otTotal = otTotal + de.otHours
             
             emp_data = []
             emp_data = [
@@ -1809,7 +1813,7 @@ class ShiftScheduleReportPDF(models.AbstractModel):
                 details.department_id.parent_id.name,
                 details.department_id.name,
                 details.job_id.name,
-                otTotal,
+#                 otTotal,
                 details.department_id.id,
             ]
             allemp_data.append(emp_data)
@@ -1824,12 +1828,13 @@ class ShiftScheduleReportPDF(models.AbstractModel):
             lstmonths_data.append(lstmonth_data)
         #raise UserError((section.id, allemp_data[0][9],department.id,section.parent_id.id)) 
         #raise UserError((domain))
+        #raise UserError((allemp_data[0][1]))
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.attendance',
             'docs': docs,
             'datas': allemp_data,
-            'alldays': all_datelist,
+#             'alldays': all_datelist,
             'dpt': department,
             'sec': section,
             'month': lstmonths_data

@@ -315,6 +315,7 @@ class HeadwisePDFReport(models.TransientModel):
         datefrom = data.get('date_from')
         dateto = data.get('date_to')
         bankname = self.bank_id.name
+        categname=[]
         if self.employee_type =='staff':
             categname='Staffs'
         if self.employee_type =='expatriate':

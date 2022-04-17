@@ -211,7 +211,12 @@ class HrPayslipsss(models.Model):
 
         lang = employee.sudo().address_home_id.lang or self.env.user.lang
         context = {'lang': lang}
-        payslip_name = self.struct_id.payslip_name or _('Salary Slip')
+        
+        payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
+        if payslip_run.is_bonus:
+            payslip_name = self.struct_id.payslip_name or _('Festival Bonus Slip')
+        else:
+            payslip_name = self.struct_id.payslip_name or _('Salary Slip')
         del context
 
         self.name = '%s - %s - %s' % (
