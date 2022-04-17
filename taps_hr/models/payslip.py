@@ -83,10 +83,9 @@ class HrPayslipsss(models.Model):
         return sum([line.number_of_days for line in lines])    
     
     def _compute_basic_net(self):
-        payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
-        if payslip_run.is_bonus:
+        for payslip in self:
             
-            for payslip in self:
+            if self.struct_id.name == 'FESTIVAL BONUS':
                 payslip.basic_wage = payslip._get_salary_line_total('BASIC')
                 payslip.hra_wage = payslip._get_salary_line_total('HRA')
                 payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')
@@ -127,8 +126,7 @@ class HrPayslipsss(models.Model):
                 payslip.ml_days = 0#payslip._get_work_days_line_total('ML')
                 payslip.lw_days = 0#payslip._get_work_days_line_total('LW')
                 payslip.total_payable_days = 0
-        else:
-            for payslip in self:
+            else:
                 payslip.basic_wage = payslip._get_salary_line_total('BASIC')
                 payslip.hra_wage = payslip._get_salary_line_total('HRA')
                 payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')

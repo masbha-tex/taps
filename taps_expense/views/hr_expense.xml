@@ -5,9 +5,12 @@
         <field name="model">hr.expense</field>
         <field name="inherit_id" ref="hr_expense.hr_expense_view_expenses_analysis_tree"/>
         <field name="arch" type="xml">
-<!--             <xpath expr="//field[@name='state']" position="before">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="previous_balance" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="advance_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                <field name="used_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                 <field name="balance_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-            </xpath> -->
+            </xpath>
             <xpath expr="//field[@name='state']" position="attributes">
                 <attribute name="decoration-success">state in ['reported', 'checked', 'approved', 'done']</attribute>
             </xpath>

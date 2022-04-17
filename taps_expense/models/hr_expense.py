@@ -236,64 +236,64 @@ class HrExpense(models.Model):
     
     @api.onchange('employee_id', 'date', 'currency_id')
     def _compute_advance(self): #for rec in self:
-        
-        if self.employee_id:
-            prfromdate = self.date.replace(day=1) - relativedelta(months = 1)
-            prtodate = prfromdate.replace(day = calendar.monthrange(prfromdate.year, prfromdate.month)[1])
-            #raise UserError((pr_fromdate,pr_todate))
-            cufromdate = fields.datetime.now().replace(day=1).date()
-            cutodate = cufromdate.replace(day = calendar.monthrange(cufromdate.year, cufromdate.month)[1])
-            #raise UserError((cu_fromdate,cu_todate))
-            hour_from = 0.0
-            hour_to = 23.98
-            combine = datetime.combine
-            
-            pr_fromdate = combine(prfromdate, self.float_to_time(hour_from))
-            pr_todate = combine(prtodate, self.float_to_time(hour_to))
-            
-            cu_fromdate = combine(cufromdate, self.float_to_time(hour_from))
-            cu_todate = combine(cutodate, self.float_to_time(hour_to))
-            
-            
-            pre_ad_amount = 0
-            pre_used_amount = 0
-            cr_ad_amount = 0
-            cr_used_amount = 0
-            
-            pre_advance = self.env['hr.imprest'].search([('imprest_employee', '=', self.employee_id.id), ('imprest_date', '>=', pr_fromdate), ('imprest_date', '<=', pr_todate), ('state', '=', 'approved')])
-            
-            cr_advance = self.env['hr.imprest'].search([('imprest_employee', '=', self.employee_id.id), ('imprest_date', '>=', cu_fromdate), ('imprest_date', '<=', cu_todate), ('state', '=', 'approved')])
-            
-            
-            
-            pre_used = self.env['hr.expense'].search([('employee_id', '=', self.employee_id.id), ('date', '>=', pr_fromdate), ('date', '<=', pr_todate), ('currency_id', '=', self.currency_id.id)])
-            
-            cr_used = self.env['hr.expense'].search([('employee_id', '=', self.employee_id.id), ('date', '>=', cu_fromdate), ('date', '<=', cu_todate), ('currency_id', '=', self.currency_id.id)])
-            
-            if pre_advance:
-                if self.currency_id.name == "USD":
-                    pre_ad_amount = sum(pre_advance.mapped('imprest_amount_usd'))
-                if self.currency_id.name == "BDT":
-                    pre_ad_amount = sum(pre_advance.mapped('imprest_amount_bdt'))
-                
-            if pre_used:
-                    pre_used_amount = sum(pre_used.mapped('total_amount'))
-                    
+        for rec in self:
+            if rec.employee_id:
+                prfromdate = rec.date.replace(day=1) - relativedelta(months = 1)
+                prtodate = prfromdate.replace(day = calendar.monthrange(prfromdate.year, prfromdate.month)[1])
+                #raise UserError((pr_fromdate,pr_todate))
+                cufromdate = fields.datetime.now().replace(day=1).date()
+                cutodate = cufromdate.replace(day = calendar.monthrange(cufromdate.year, cufromdate.month)[1])
+                #raise UserError((cu_fromdate,cu_todate))
+                hour_from = 0.0
+                hour_to = 23.98
+                combine = datetime.combine
 
-            if cr_advance:
-                if self.currency_id.name == "USD":
-                    cr_ad_amount = sum(cr_advance.mapped('imprest_amount_usd'))
-                if self.currency_id.name == "BDT":
-                    cr_ad_amount = sum(cr_advance.mapped('imprest_amount_bdt'))
-                
-            if cr_used:
-                    cr_used_amount = sum(cr_used.mapped('total_amount'))                    
-                    
-            
-            self.previous_balance = pre_ad_amount-pre_used_amount
-            self.advance_amount = cr_ad_amount
-            self.used_amount = cr_used_amount
-            self.balance_amount = cr_ad_amount-cr_used_amount
+                pr_fromdate = combine(prfromdate, rec.float_to_time(hour_from))
+                pr_todate = combine(prtodate, rec.float_to_time(hour_to))
+
+                cu_fromdate = combine(cufromdate, rec.float_to_time(hour_from))
+                cu_todate = combine(cutodate, rec.float_to_time(hour_to))
+
+
+                pre_ad_amount = 0
+                pre_used_amount = 0
+                cr_ad_amount = 0
+                cr_used_amount = 0
+
+                pre_advance = self.env['hr.imprest'].search([('imprest_employee', '=', rec.employee_id.id), ('imprest_date', '>=', pr_fromdate), ('imprest_date', '<=', pr_todate), ('state', '=', 'approved')])
+
+                cr_advance = self.env['hr.imprest'].search([('imprest_employee', '=', rec.employee_id.id), ('imprest_date', '>=', cu_fromdate), ('imprest_date', '<=', cu_todate), ('state', '=', 'approved')])
+
+
+
+                pre_used = self.env['hr.expense'].search([('employee_id', '=', rec.employee_id.id), ('date', '>=', pr_fromdate), ('date', '<=', pr_todate), ('currency_id', '=', rec.currency_id.id)])
+
+                cr_used = self.env['hr.expense'].search([('employee_id', '=', rec.employee_id.id), ('date', '>=', cu_fromdate), ('date', '<=', cu_todate), ('currency_id', '=', rec.currency_id.id)])
+
+                if pre_advance:
+                    if rec.currency_id.name == "USD":
+                        pre_ad_amount = sum(pre_advance.mapped('imprest_amount_usd'))
+                    if rec.currency_id.name == "BDT":
+                        pre_ad_amount = sum(pre_advance.mapped('imprest_amount_bdt'))
+
+                if pre_used:
+                        pre_used_amount = sum(pre_used.mapped('total_amount'))
+
+
+                if cr_advance:
+                    if rec.currency_id.name == "USD":
+                        cr_ad_amount = sum(cr_advance.mapped('imprest_amount_usd'))
+                    if rec.currency_id.name == "BDT":
+                        cr_ad_amount = sum(cr_advance.mapped('imprest_amount_bdt'))
+
+                if cr_used:
+                        cr_used_amount = sum(cr_used.mapped('total_amount'))                    
+
+
+                rec.previous_balance = pre_ad_amount-pre_used_amount
+                rec.advance_amount = cr_ad_amount
+                rec.used_amount = cr_used_amount
+                rec.balance_amount = cr_ad_amount-cr_used_amount
             
             
             
