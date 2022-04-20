@@ -5,10 +5,37 @@
         <t t-foreach="datas" t-as="emp">
           <t t-call="web.external_layout">
              <div class="page">
-                    
-                        <strong>Shift Schedule</strong>
-                   
-            </div>
+                      
+                  <strong>Shift Schedule</strong>
+                  <t t-foreach="dpt" t-as="dp">
+                  <t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
+                     <t t-foreach="datas" t-as="emp">
+                                 
+                      <t t-if="emp[8] == se.id">
+                        <t t-foreach="docs" t-as="shift">
+                          <table>
+                            <thead>
+                              <th>Id</th>
+                              <th>Employee</th>
+                              <th>Shift</th>
+                            </thead>
+                            <tbody>
+                          <td><t t-esc="shift.name.emp_id"/></td>
+                          <td><t t-esc="shift.name.name"/></td>
+                          <!--<td><t t-esc="shift.activationDate"/></td>-->
+                          
+                          <td><t t-esc="shift.transferGroup.types"/></td>
+                            </tbody>
+                          </table>
+                          
+                        </t>
+                        
+                        </t>
+                        </t>
+                      </t>
+                      </t>
+                      
+              </div>
           </t>
         </t>
       </t>

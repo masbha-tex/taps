@@ -157,7 +157,7 @@
                 <field name="product_id"/>
             </xpath>
             <xpath expr="//button[@name='action_submit_sheet']" position="attributes">
-                <button string="HR Approval"/>
+                <attribute name="string">HR Approval</attribute>
             </xpath>
             <xpath expr="//button[@name='action_submit_sheet']" position="after">
                 <button name="action_check_sheet" states="submit" string="Accounts Approval" type="object" class="oe_highlight"/>

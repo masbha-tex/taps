@@ -24,7 +24,7 @@ class taps_inventory(models.Model):
                 if sc_date:
                     getvaluation[-1].write({'schedule_date':sc_date})
                 else:
-                    getvaluation[-1].write({'schedule_date':createdate})                    
+                    getvaluation[-1].write({'schedule_date':createdate}) 
 
 class StockQuantityHistory(models.TransientModel):
     _inherit = 'stock.quantity.history'

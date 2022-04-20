@@ -260,13 +260,13 @@ class HrExpense(models.Model):
                 cr_ad_amount = 0
                 cr_used_amount = 0
 
-                pre_advance = self.env['hr.imprest'].search([('imprest_employee', '=', rec.employee_id.id), ('imprest_date', '>=', pr_fromdate), ('imprest_date', '<=', pr_todate), ('state', '=', 'approved')])
+                pre_advance = self.env['hr.imprest'].search([('imprest_employee', '=', rec.employee_id.id), ('imprest_date', '<=', pr_todate), ('state', '=', 'approved')])#('imprest_date', '>=', pr_fromdate), 
 
                 cr_advance = self.env['hr.imprest'].search([('imprest_employee', '=', rec.employee_id.id), ('imprest_date', '>=', cu_fromdate), ('imprest_date', '<=', cu_todate), ('state', '=', 'approved')])
 
 
 
-                pre_used = self.env['hr.expense'].search([('employee_id', '=', rec.employee_id.id), ('date', '>=', pr_fromdate), ('date', '<=', pr_todate), ('currency_id', '=', rec.currency_id.id)])
+                pre_used = self.env['hr.expense'].search([('employee_id', '=', rec.employee_id.id), ('date', '<=', pr_todate), ('currency_id', '=', rec.currency_id.id)])#('date', '>=', pr_fromdate), 
 
                 cr_used = self.env['hr.expense'].search([('employee_id', '=', rec.employee_id.id), ('date', '>=', cu_fromdate), ('date', '<=', cu_todate), ('currency_id', '=', rec.currency_id.id)])
 

@@ -1715,10 +1715,10 @@ class ShiftScheduleReportPDF(models.AbstractModel):
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
-            domain.append(('department_id.id', '=', data.get('department_id')))
+            domain.append(('name.department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('name.category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             
@@ -1761,7 +1761,11 @@ class ShiftScheduleReportPDF(models.AbstractModel):
         #raise UserError((domain))    
         docs = self.env['shift.transfer'].search(domain).sorted(key = 'activationDate', reverse=False)
 #         raise UserError((docs.id))
-        
+#         inTime
+#         outTime
+        grouplist = docs.mapped('transferGroup.id')
+        transfergroup = self.env['shift.setup'].search([('id', 'in', (grouplist))])
+
         emplist = docs.mapped('name.id')
         
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
@@ -1837,7 +1841,8 @@ class ShiftScheduleReportPDF(models.AbstractModel):
 #             'alldays': all_datelist,
             'dpt': department,
             'sec': section,
-            'month': lstmonths_data
+            'month': lstmonths_data,
+            'shiftgroup': transfergroup
         }
 
 
