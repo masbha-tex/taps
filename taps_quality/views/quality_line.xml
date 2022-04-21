@@ -9,6 +9,25 @@
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field name="product_category"/>
                 </xpath>
+                <xpath expr="//button[@name='do_pass']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('quality_state', 'in', ('pass', 'deviation', 'check', 'informed', 'fail'))]}</attribute>
+                </xpath>
+                <xpath expr="//button[@name='do_fail']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('quality_state', 'in', ('pass', 'deviation', 'check', 'informed', 'confirm', 'fail'))]}</attribute>
+                </xpath>                
+<!--                 <xpath expr="//button[@name='do_fail']" position="attributes">
+                    <attribute attrs="{'invisible': [('quality_state', 'in', ('pass', 'deviation', 'check', 'informed', 'confirm', 'fail'))]}" />
+                </xpath> -->
+                <xpath expr="//button[@name='do_pass']" position="after">
+                    <button name="raise_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('pass', 'check', 'deviation', 'informed', 'confirm', 'fail'))]}" context="{'no_redirect': True}" string="Deviation"/>
+                    <button name="check_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'informed', 'check', 'confirm', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="Checked by SC"/>
+                    <button name="informed_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'deviation', 'informed', 'confirm', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="HOD Confirmation"/>
+                    <button name="confirm_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'deviation', 'check', 'confirm', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="Unit Head Approval"/>
+                </xpath>
+                <xpath expr="//field[@name='quality_state']" position="attributes"> 
+                    <attribute name="statusbar_visible">none,deviation,check,informed,confirm,pass,fail</attribute>
+                </xpath>
+                
                 <xpath expr="//page[@name='notes']" position="before">
                    <page name="check_line" string ="Quality Parameters">
                        <field name="quality_check_line" widget="section_and_note_one2many" mode="tree">

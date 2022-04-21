@@ -10,6 +10,48 @@ class QualityCheck(models.Model):
     _inherit = "quality.check"
     quality_check_line = fields.One2many('quality.check.line', 'check_id', string='Order Lines', copy=True)
     product_category = fields.Many2one(related='product_id.categ_id', string='Product Category', readonly=True)
+    
+#     quality_state = fields.Selection([
+#         ('none', 'To do'),
+#         ('pass', 'Passed'),
+#         ('fail', 'Failed')], string='Status', tracking=True,
+#         default='none', copy=False)
+    quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('confirm', 'Unit Head Approval'),('fail',)])
+    
+
+#     raise_deviation check_deviation informed_deviation confirm_deviation
+    
+    def raise_deviation(self):
+        self.write({'quality_state': 'deviation',
+                    'user_id': self.env.user.id,
+                    'control_date': datetime.now()})
+        if self.env.context.get('no_redirect'):
+            return True
+        return self.redirect_after_pass_fail() 
+
+    def check_deviation(self):
+        self.write({'quality_state': 'check',
+                    'user_id': self.env.user.id,
+                    'control_date': datetime.now()})
+        if self.env.context.get('no_redirect'):
+            return True
+        return self.redirect_after_pass_fail()  
+    
+    def informed_deviation(self):
+        self.write({'quality_state': 'informed',
+                    'user_id': self.env.user.id,
+                    'control_date': datetime.now()})
+        if self.env.context.get('no_redirect'):
+            return True
+        return self.redirect_after_pass_fail()      
+
+    def confirm_deviation(self):
+        self.write({'quality_state': 'confirm',
+                    'user_id': self.env.user.id,
+                    'control_date': datetime.now()})
+        if self.env.context.get('no_redirect'):
+            return True
+        return self.redirect_after_pass_fail()    
 #    quality_category = fields.Selection([
 #        ('n3_long_chain', 'N#3 Long Chain'),
 #        ('n3_long_chain_grs', 'N#3 Long Chain Grs')], string='Quality Category', tracking=True,

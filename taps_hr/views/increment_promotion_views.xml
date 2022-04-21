@@ -38,8 +38,11 @@
                                 <field name="grade"/>
                                 <field name="new_grade"/>
                                 <field name="ot_type"/>
+                                <field name="new_category" string="Category"/>
                                 <field name="increment_percent"/>
                                 <field name="increment_amount"/>
+<!--                                 <field name="new_gross"/> -->
+                                
                             </tree>
                         </field>
 <!--                     </div> -->
@@ -64,8 +67,10 @@
                 <field name="grade"/>
                 <field name="new_grade"/>
                 <field name="ot_type"/>
+                <field name="new_category" string="Category"/>
                 <field name="increment_percent"/>
                 <field name="increment_amount"/>
+<!--                 <field name="new_gross"/> -->
             </tree>
         </field>
     </record>
