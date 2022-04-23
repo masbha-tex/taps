@@ -6,6 +6,9 @@
             <field name="model">quality.check</field>
             <field name="inherit_id" ref="quality_control.quality_check_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="before">
+                    <field name="partner_name"/>
+                </xpath>
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field name="product_category"/>
                 </xpath>
@@ -31,6 +34,7 @@
                 <xpath expr="//page[@name='notes']" position="before">
                    <page name="check_line" string ="Quality Parameters">
                        <field name="quality_check_line" widget="section_and_note_one2many" mode="tree">
+                           
                            <tree string="Quality Check Lines" editable="bottom">
                                <control>
                                    <create name="add_product_control" string="Add a Parameter"/>
@@ -39,10 +43,10 @@
                                </control>
                                <field name="product_category" invisible="1"/>
                                <field name="display_type" invisible="1"/>
-                               
+                               <field name="mode_company_id"/>
                                <field name="parameter" invisible="0" options="{'no_create_edit': True, 'no_create': True}"/>
                                <field name="t_level" invisible="0"/>
-                               <field name="value1" invisible="0"/>
+                               <field name="value1"/>
                                <field name="value2" invisible="0"/>
                                <field name="value3" invisible="0"/>
                                <field name="value4" invisible="0"/>
@@ -54,7 +58,11 @@
                                <field name="value10" invisible="0"/>
                                <field name="status" invisible="0"/>
                                <field name="name" widget="section_and_note_text" string="Note"/>
+                               
                             </tree>
+                           
+                           
+                           
                             <form string="Quality Check Lines">
                                 <field name="display_type" invisible="1"/>
                                     <group attrs="{'invisible': [('display_type', '!=', False)]}">
@@ -84,6 +92,7 @@
                 <tree string="Quality Check Lines" create="false">
                     <field name="product_category" invisible="1"/>
                     <field name="display_type" invisible="1"/>
+                    <field name="mode_company_id"/>
                     <field name="parameter"/>
                     <field name="t_level"/>
                     <field name="value1"/>

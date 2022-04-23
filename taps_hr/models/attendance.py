@@ -224,6 +224,7 @@ class HrAttendance(models.Model):
                         else:
                             get_att_data[-1].write({'inFlag':lv_type.code,'outFlag':lv_type.code,'inHour' : False,'outHour' : False})
             if inHour and outHour:
+                #raise UserError((office_in_time,inHour))
                 if office_in_time>=inHour:
                     get_att_data[-1].write({'inFlag':'P','inHour' : inHour})
                 else:

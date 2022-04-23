@@ -10,14 +10,21 @@ class QualityCheck(models.Model):
     _inherit = "quality.check"
     quality_check_line = fields.One2many('quality.check.line', 'check_id', string='Order Lines', copy=True)
     product_category = fields.Many2one(related='product_id.categ_id', string='Product Category', readonly=True)
-    
+    #pocode = fields.Char(related='picking_id.origin', string='PO', readonly=True)
+    partner_name = fields.Char(string='Vendor', compute="_compute_partner_id", readonly=True, stored=True)
 #     quality_state = fields.Selection([
 #         ('none', 'To do'),
 #         ('pass', 'Passed'),
 #         ('fail', 'Failed')], string='Status', tracking=True,
 #         default='none', copy=False)
     quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('confirm', 'Unit Head Approval'),('fail',)])
-    
+
+    #raise UserError(('fefefe'))
+    #@api.depends('picking_id')
+    def _compute_partner_id(self):
+        for rec in self:
+            data = self.env['purchase.order'].search([('name','=',rec.x_studio_source_po)])
+            rec.partner_name = data.partner_id.name    
 
 #     raise_deviation check_deviation informed_deviation confirm_deviation
     
@@ -52,6 +59,8 @@ class QualityCheck(models.Model):
         if self.env.context.get('no_redirect'):
             return True
         return self.redirect_after_pass_fail()    
+    
+
 #    quality_category = fields.Selection([
 #        ('n3_long_chain', 'N#3 Long Chain'),
 #        ('n3_long_chain_grs', 'N#3 Long Chain Grs')], string='Quality Category', tracking=True,
@@ -109,7 +118,7 @@ class QualityCheckLine(models.Model):
         ('notok', 'Not Ok')], string='Status',
         copy=False, store = True, default='notok')
     
-    
+    mode_company_id = fields.Many2one(related="check_id.company_id", string='Company', readonly=True)
     display_type = fields.Selection([
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")

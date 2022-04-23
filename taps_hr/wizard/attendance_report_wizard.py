@@ -1830,9 +1830,9 @@ class ShiftScheduleReportPDF(models.AbstractModel):
                 
             ]
             lstmonths_data.append(lstmonth_data)
-        #raise UserError((section.id, allemp_data[0][9],department.id,section.parent_id.id)) 
-        #raise UserError((domain))
-        #raise UserError((allemp_data[0][1]))
+        #raise UserError((section.id, allemp_data[0][8],department.id,section.parent_id.id, transfergroup.id,docs.id)) 
+        #raise UserError((transfergroup.inTime))
+       #raise UserError((allemp_data[0][0]))
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.attendance',
