@@ -65,7 +65,13 @@ class HRISPDFReport(models.TransientModel):
         ('expatriate', 'Expatriates'),
         ('cstaf', 'C-Stafs'),
         ('cworker', 'C-workers')],
-        string='Employee Type', required=False)    
+        string='Employee Type', required=False)
+    
+    types = fields.Selection([
+        ('morning', 'Morning Shift'),
+        ('evening', 'Evening Shift'),
+        ('night', 'Night Shift')
+    ], string='Shift Type', index=True, store=True, copy=True)     
     
     file_data = fields.Binary(readonly=True, attachment=False)    
     
@@ -122,7 +128,8 @@ class HRISPDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': self.employee_id.id,
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'types': self.types}
 
             if self.mode_type == "company":
                 data = {'date_from': self.date_from, 
@@ -132,7 +139,8 @@ class HRISPDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'types': self.types}
 
             if self.mode_type == "department":
                 data = {'date_from': self.date_from, 
@@ -142,7 +150,8 @@ class HRISPDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'types': self.types}
 
             if self.mode_type == "category":
                 data = {'date_from': self.date_from, 
@@ -152,7 +161,8 @@ class HRISPDFReport(models.TransientModel):
                         'category_id': self.category_id.id, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'types': self.types}
         if self.report_type == 'employee_profile':
             return self.env.ref('taps_hr.action_hris_employee_card_pdf_report').report_action(self, data=data)
         if self.report_type == 'joining':

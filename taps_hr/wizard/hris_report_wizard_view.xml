@@ -13,6 +13,7 @@
                         <field name="date_to"/>                         
                     </group>
                     <group>
+                        <field name="types"/>
                         <field name="mode_type" string="Mode"/>
                         <field name="employee_id" attrs="{
                         'required': [('mode_type', '=', 'employee')],

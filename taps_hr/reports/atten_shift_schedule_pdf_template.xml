@@ -2,43 +2,76 @@
 <odoo>
     <template id="shift_schedule_pdf_template">
       <t t-call="web.html_container">
-        <t t-foreach="datas" t-as="emp">
+        
           <t t-call="web.external_layout">
-             <div class="page">
-                      
-                  <strong>Shift Schedule</strong>
+             
+               <div class="page">
+                    
+                
+
+                 <div class="col-12">  
                   <t t-foreach="dpt" t-as="dp">
+                    
                   <t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
-                     <t t-foreach="datas" t-as="emp">
-                                 
-                      <t t-if="emp[8] == se.id">
-                        <t t-foreach="docs" t-as="shift">
-                          <table>
+                  <t t-foreach="shiftgroup" t-as="sg">
+                             
+                            
+                          <table class="table-sm" style="table-layout: fixed; width:300px; font-size:7px">
                             <thead>
-                              <th>Id</th>
-                              <th>Employee</th>
-                              <th>Shift</th>
+                               
+                              <tr>
+                                <th colspan="7"><center><t t-esc="se.name"/></center></th>
+                              </tr>
+                               
+                              <tr  align="center" style="background-color:orange;">
+                                <th colspan="7">Duty Time: (<span t-esc="sg.inTime" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>-<span t-esc="sg.outTime" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>)</th>
+                              </tr>
+                              
+                              
+                              <tr>
+                              <th colspan="1">Sl</th>  
+                              <th colspan="1">Id</th>
+                              <th colspan="1">Emp Cat.</th>
+                              <th colspan="3">Name</th>
+                              <th colspan="1">Shift</th>
+                              </tr>
+                              
                             </thead>
                             <tbody>
-                          <td><t t-esc="shift.name.emp_id"/></td>
-                          <td><t t-esc="shift.name.name"/></td>
-                          <!--<td><t t-esc="shift.activationDate"/></td>-->
-                          
-                          <td><t t-esc="shift.transferGroup.types"/></td>
+                              <t t-set="sl" t-value="0"/>
+                              
+                                 <t t-foreach="shiftgroup" t-as="sh">
+                                 <t t-foreach="docs.filtered(lambda x: (x.transferGroup.id == sh.id))" t-as="shift">
+                                <t t-foreach="datas" t-as="emp">
+                                <t t-if="emp[8] == se.id and  emp[2]==shift.name.id">
+                              <tr>
+                                <t t-set="sl" t-value="sl+1"/>
+                                <td colspan="1"><t t-esc="sl"/></td>
+                                <td colspan="1"><t t-esc="shift.name.emp_id"/></td>
+                                <td colspan="1"><t t-esc="shift.name.grade"/></td>
+                                <td colspan="3"><t t-esc="shift.name.name"/></td>
+                                <!--<td><t t-esc="shift.activationDate"/></td>-->
+                              
+                                <td colspan="1"><t t-esc="shift.transferGroup.types"/></td>
+                              </tr>
+                              
+                              </t>    
+                              </t>
+                              </t>
+                             </t>
+                             
                             </tbody>
                           </table>
-                          
-                        </t>
-                        
-                        </t>
                         </t>
                       </t>
-                      </t>
-                      
-              </div>
+                    </t>
+                       </div> 
+                    
+              </div>           
+                 
           </t>
         </t>
-      </t>
+      
     </template>
 
 </odoo>

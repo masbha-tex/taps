@@ -10,9 +10,11 @@
                         <field name="report_type" string="Report Type"/>
                         <field name="date_from"/>
                         <field name="date_to"/>
+                        <field name="is_company" string="" widget="boolean_toggle"/>
                     </group>
                     <group>
                         <field name="atten_type" string="Attendance Type"/>
+                        <field name="types"/>
                         <field name="mode_type" string="Mode"/>
                         <field name="employee_id" attrs="{
                         'required': [('mode_type', '=', 'employee')],

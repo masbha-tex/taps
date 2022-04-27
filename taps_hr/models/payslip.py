@@ -85,7 +85,7 @@ class HrPayslipsss(models.Model):
     def _compute_basic_net(self):
         for payslip in self:
             
-            if self.struct_id.name == 'FESTIVAL BONUS':
+            if payslip.struct_id.name == 'FESTIVAL BONUS':
                 payslip.basic_wage = payslip._get_salary_line_total('BASIC')
                 payslip.hra_wage = payslip._get_salary_line_total('HRA')
                 payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')

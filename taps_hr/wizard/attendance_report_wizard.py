@@ -14,6 +14,7 @@ class AttendancePDFReport(models.TransientModel):
     _name = 'attendance.pdf.report'
     _description = 'Attendace Report'     
 
+    is_company = fields.Boolean(readonly=False, default=False)
     date_from = fields.Date('Date from', required=True, default=(date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
     date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))
     report_type = fields.Selection([
@@ -53,6 +54,11 @@ class AttendancePDFReport(models.TransientModel):
         ('aj',	'Adjustment Days'),],
         string='Attendance Type', required=False, #default='p',
         help='By Attendance Reporting')
+    types = fields.Selection([
+        ('morning', 'Morning Shift'),
+        ('evening', 'Evening Shift'),
+        ('night', 'Night Shift')
+    ], string='Shift Type', index=True, store=True, copy=True)    
     
     mode_type = fields.Selection([
         ('employee', 'By Employee'),
@@ -126,7 +132,8 @@ class AttendancePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': self.employee_id.id,
                         'report_type': self.report_type,
-                        'atten_type': self.atten_type}
+                        'atten_type': self.atten_type,
+                        'types': self.types}
 
             if self.mode_type == "company":
                 data = {'date_from': self.date_from, 
@@ -136,7 +143,8 @@ class AttendancePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'atten_type': self.atten_type}
+                        'atten_type': self.atten_type,
+                        'types': self.types}
 
             if self.mode_type == "department":
                 data = {'date_from': self.date_from, 
@@ -146,7 +154,8 @@ class AttendancePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'atten_type': self.atten_type}
+                        'atten_type': self.atten_type,
+                        'types': self.types}
 
             if self.mode_type == "category":
                 data = {'date_from': self.date_from, 
@@ -156,7 +165,8 @@ class AttendancePDFReport(models.TransientModel):
                         'category_id': self.category_id.id, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'atten_type': self.atten_type}
+                        'atten_type': self.atten_type,
+                        'types': self.types}
         if self.report_type == 'job_card':
             return self.env.ref('taps_hr.action_job_pdf_report').report_action(self, data=data)
         if self.report_type == 'dailyatten':
@@ -1712,7 +1722,7 @@ class ShiftScheduleReportPDF(models.AbstractModel):
             domain.append(('activationDate', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('name.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('name.department_id.id', '=', data.get('department_id')))
@@ -1723,44 +1733,19 @@ class ShiftScheduleReportPDF(models.AbstractModel):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             
             domain.append(('name', '=', data.get('employee_id')))
+        if data.get('types'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            
+            domain.append(('transferGroup.types', '=', data.get('types')))
             
         
-        #domain.append(('employee_id.active', '=', True))
-        if data.get('atten_type'):
-            if data.get('atten_type')=='p':
-                domain.append(('inFlag', '=', 'P'))
-            if data.get('atten_type')=='l':
-                domain.append(('inFlag', '=', 'L'))
-            if data.get('atten_type')=='a':
-                domain.append(('inFlag', '=', 'A'))
-            if data.get('atten_type')=='fp':
-                domain.append(('inFlag', '=', 'FP'))
-            if data.get('atten_type')=='hp':
-                domain.append(('inFlag', '=', 'HP'))
-            if data.get('atten_type')=='eo':
-                domain.append(('outFlag', '=', 'EO'))
-            if data.get('atten_type')=='po':
-                domain.append(('outFlag', '=', 'PO'))
-            if data.get('atten_type')=='cl':
-                domain.append(('inFlag', '=', 'CL'))
-            if data.get('atten_type')=='sl':
-                domain.append(('inFlag', '=', 'SL'))
-            if data.get('atten_type')=='el':
-                domain.append(('inFlag', '=', 'EL'))
-            if data.get('atten_type')=='ml':
-                domain.append(('inFlag', '=', 'ML'))
-            if data.get('atten_type')=='lw':
-                domain.append(('inFlag', '=', 'LW'))
-            if data.get('atten_type')=='co':
-                domain.append(('inFlag', '=', 'CO'))
-            if data.get('atten_type')=='aj':
-                domain.append(('inFlag', '=', 'AJ'))        
+        #domain.append(('employee_id.active', '=', True)) 
         
         #department_id,parent_id,hr_department
         
-        #raise UserError((domain))    
+#         raise UserError((domain))    
         docs = self.env['shift.transfer'].search(domain).sorted(key = 'activationDate', reverse=False)
-#         raise UserError((docs.id))
+ #        raise UserError((docs.id))
 #         inTime
 #         outTime
         grouplist = docs.mapped('transferGroup.id')
@@ -1831,7 +1816,7 @@ class ShiftScheduleReportPDF(models.AbstractModel):
             ]
             lstmonths_data.append(lstmonth_data)
         #raise UserError((section.id, allemp_data[0][8],department.id,section.parent_id.id, transfergroup.id,docs.id)) 
-        #raise UserError((transfergroup.inTime))
+        #raise UserError((docs.id,transfergroup.id))
        #raise UserError((allemp_data[0][0]))
         return {
             'doc_ids': docs.ids,

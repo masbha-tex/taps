@@ -11,9 +11,9 @@
                         <field name="report_type" string="Report Type" groups="hr_holidays.group_hr_holidays_user"/>
                         <field name="date_from"/>
                         <field name="date_to"/>
-                        <field name="bank_id"/>
+                        <field name="is_company" string="" widget="boolean_toggle"/>
                     </group>
-                    <group>                    
+                    <group>
                         <field name="holiday_type" string="Mode" groups="hr_holidays.group_hr_holidays_user"/>
                         <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
                         'required': [('holiday_type', '=', 'employee')],
@@ -39,6 +39,7 @@
                         'required': [('holiday_type', '=', 'companyall')],
                         'invisible': [('holiday_type', '!=','companyall')]
                         }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="bank_id"/>
                     </group>
                 </group>
                 <footer>
