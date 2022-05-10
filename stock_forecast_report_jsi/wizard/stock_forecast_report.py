@@ -193,12 +193,12 @@ class StockForecastReport(models.TransientModel):
                 
                 issued_value = round(abs(issued_value),2)
                 # Prepare Closing Quantity
-                closing_qty = self.getclosing_qty(product_id,to_date)# opening_qty + received_qty - issued_qty #
+                closing_qty = opening_qty + received_qty - issued_qty #self.getclosing_qty(product_id,to_date)# 
                 closing_qty = round(closing_qty,2)
                 if closing_qty<=0:
                     closing_value = 0
                 else:
-                    closing_value = self.getclosing_val(product_id,to_date)# opening_value + received_value - issued_value #
+                    closing_value = opening_value + received_value - issued_value #self.getclosing_val(product_id,to_date)# 
                 closing_value = round(closing_value,2)
                 
                 if abs(abs(opening_qty)+abs(received_qty)+abs(issued_qty))>0:

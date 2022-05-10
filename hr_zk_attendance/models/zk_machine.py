@@ -140,11 +140,11 @@ class ZkMachine(models.Model):
                         fromdatetime = datetime.now() + timedelta(hours=6)
                         #fromdatetime = datetime.strptime(fromdatetime.strftime('%Y-%m-%d 00:00:00'), '%Y-%m-%d 00:00:00')
                         myfromtime = datetime.strptime('000000','%H%M%S').time()
-                        fromdatetime = datetime.combine(fromdatetime, myfromtime)
+                        fromdatetime = datetime.combine(atten_time, myfromtime)
                         todatetime = datetime.now() + timedelta(hours=6)
                         #todatetime = datetime.strptime(todatetime.strftime('%Y-%m-%d 23:59:59'), '%Y-%m-%d 23:59:59')
                         mytotime = datetime.strptime('235959','%H%M%S').time()
-                        todatetime = datetime.combine(todatetime, mytotime)
+                        todatetime = datetime.combine(atten_time, mytotime)
                         
                         getDate = datetime.now() + timedelta(hours=6)
                         getDate = datetime.strptime(getDate.strftime('%Y-%m-%d'), '%Y-%m-%d')
@@ -199,44 +199,48 @@ class ZkMachine(models.Model):
                                                 if att_in:
                                                     #raise UserError(_(zk_ck_in))
                                                     att_in.write({'check_in': zk_ck_in,
-                                                                  'inHour': zk_inhour,
-                                                                  'inFlag': 'P',
-                                                                  'check_out': zk_ck_out,
-                                                                  'outHour' : zk_outhour,
-                                                                  'outFlag': 'TO'})
+                                                                  'check_out': zk_ck_out})
                                                     
                                                 else:
-                                                    att_out = att_var.search([('employee_id', '=', get_user_id.id),
-                                                                             ('attDate','=', att_Date)])
-                                                    att_out[-1].write({'check_out': zk_ck_out,
-                                                                       'outHour' : zk_outhour,
-                                                                       'outFlag': 'TO'})
+                                                    y = atten_time.strftime('%H:%M:%S')
+
+                                                    if str(y) < str(myfromtime):
+                                                        #raise UserError((str(y),str(myfromtime)))
+                                                        pre_date = att_Date - timedelta(days=1)
+                                                        att_pre = att_obj.search([('employee_id', '=', get_user_id.id),
+                                                                                  ('attDate','=', pre_date)])
+                                                        att_pre[-1].write({'check_out': atten_time})
+                                                    else:
+                                                        att_out = att_var.search([('employee_id', '=', get_user_id.id),
+                                                                                 ('attDate','=', att_Date)])
+                                                        att_out[-1].write({'check_out': zk_ck_out})
                                             else:
-                                                y = atten_time.strftime('%H:%M:%S')
+                                                pass
+#                                                 y = atten_time.strftime('%H:%M:%S')
                                                 
-                                                if str(y) < str(myfromtime):
-                                                    #raise UserError((str(y),str(myfromtime)))
-                                                    pre_date = att_Date - timedelta(days=1)
-                                                    att_pre = att_obj.search([('employee_id', '=', get_user_id.id),
-                                                                              ('attDate','=', pre_date)])
-                                                    att_pre[-1].write({'check_out': atten_time})
-                                                else:
-                                                    pass
-                                                    """get_tr = self.env['shift.transfer'].search([('name', '=',
-                                                                                                 get_user_id.id),
-                                                                                                ('activationDate',
-                                                                                                 '<=', getDate)])
-                                                    trans_data = get_tr.sorted(key = 'activationDate', reverse=True)[:1]
-                                                    att_var.create({'attDate' : getDate,
-                                                                    'employee_id': get_user_id.id,
-                                                                    'check_in': zk_ck_in,
-                                                                    'inHour': zk_inhour,
-                                                                    'inFlag': 'P',
-                                                                    'check_out': zk_ck_out,
-                                                                    'outHour' : zk_outhour,
-                                                                    'outFlag':'PO',
-                                                                    'inTime': trans_data.inTime,
-                                                                    'outTime': trans_data.outTime})"""
+#                                                 if str(y) < str(myfromtime):
+#                                                     #raise UserError((str(y),str(myfromtime)))
+#                                                     pre_date = att_Date - timedelta(days=1)
+#                                                     att_pre = att_obj.search([('employee_id', '=', get_user_id.id),
+#                                                                               ('attDate','=', pre_date)])
+#                                                     att_pre[-1].write({'check_out': atten_time})
+#                                                 else:
+#                                                     pass
+#                                                     get_tr = self.env['shift.transfer'].search([('name', '=',
+#                                                                                                  get_user_id.id),
+#                                                                                                 ('activationDate',
+#                                                                                                  '<=', getDate)])
+#                                                     trans_data = get_tr.sorted(key = 'activationDate', reverse=True)[:1]
+#                                                     att_var.create({'attDate' : getDate,
+#                                                                     'employee_id': get_user_id.id,
+#                                                                     'check_in': zk_ck_in,
+#                                                                     'inHour': zk_inhour,
+#                                                                     'inFlag': 'P',
+#                                                                     'check_out': zk_ck_out,
+#                                                                     'outHour' : zk_outhour,
+#                                                                     'outFlag':'PO',
+#                                                                     'inTime': trans_data.inTime,
+#                                                                     'outTime': trans_data.outTime})
                                     else:
                                         pass
                                 else:
