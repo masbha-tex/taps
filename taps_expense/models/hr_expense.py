@@ -168,6 +168,47 @@ class HrExpense(models.Model):
 
     def action_submit_expenses(self):
         sheet = self._create_sheet_from_expenses()
+        
+        attachment = self.env['ir.attachment'].search([('res_id','=',self.id),('res_model','=','hr.expense')])
+        if attachment:
+            attsheet = self.env['ir.attachment'].search([('res_id','=',sheet.id),('res_model','=','hr.expense.sheet')])
+            if attsheet:
+                for atts in attsheet:
+                    atts.unlink()
+            for expatt in attachment:
+                #raise UserError((expatt.checksum,expatt.file_size,expatt.store_fname))
+                cm=expatt.checksum
+                fs=expatt.file_size
+                fn=expatt.store_fname
+                attsheet.create({'name':expatt.name,
+                                 'description':expatt.description,
+                                 'res_model':"hr.expense.sheet",
+                                 'res_field':expatt.res_field,
+                                 'res_id':sheet.id,
+                                 'company_id':expatt.company_id.id,
+                                 'type':expatt.type,
+                                 'url':expatt.url,
+                                 'public':expatt.public,
+                                 'access_token':expatt.access_token,
+                                 'db_datas':expatt.db_datas,
+                                 'store_fname':fn,#expatt.store_fname,
+                                 'file_size':fs,#expatt.file_size,
+                                 'checksum':cm,#expatt.checksum,
+                                 'mimetype':expatt.mimetype,
+                                 'index_content':expatt.index_content,
+                                 'create_uid':expatt.create_uid,
+                                 'create_date':expatt.create_date,
+                                 'write_uid':expatt.write_uid,
+                                 'write_date':expatt.write_date,
+                                 'original_id':expatt.original_id,
+                                })
+                
+                query = """UPDATE ir_attachment SET store_fname='""" + fn + """', file_size=%s,checksum='""" + cm + """' where res_model='hr.expense.sheet' and res_id=%s"""
+                cr = self._cr
+                cr.execute(query, (fs, sheet.id))
+#                 self.env.cr.execute("UPDATE ir_attachment SET store_fname='""" + fn + """', file_size=%d where invoice_id = %d" % fs % sheet.id)
+                
+                
         return {
             'name': _('New Expense Report'),
             'type': 'ir.actions.act_window',
@@ -176,42 +217,6 @@ class HrExpense(models.Model):
             'target': 'current',
             'res_id': sheet.id,
         }
-    
-    
-    
-#         attachment = self.env['ir.attachment'].search([('res_id','=',self.id),('res_model','=','hr.expense')])
-#         if attachment:
-#             attsheet = self.env['ir.attachment'].search([('res_id','=',sheet.id),('res_model','=','hr.expense.sheet')])
-#             if attsheet:
-#                 for atts in attsheet:
-#                     atts.unlink()
-#             for expatt in attachment:
-#                 #raise UserError((expatt.checksum,expatt.file_size,expatt.store_fname))
-#                 cm=expatt.checksum
-#                 fs=expatt.file_size
-#                 fn=expatt.store_fname
-#                 attsheet.create({'name':expatt.name,
-#                                  'description':expatt.description,
-#                                  'res_model':"hr.expense.sheet",
-#                                  'res_field':expatt.res_field,
-#                                  'res_id':sheet.id,
-#                                  'company_id':expatt.company_id.id,
-#                                  'type':expatt.type,
-#                                  'url':expatt.url,
-#                                  'public':expatt.public,
-#                                  'access_token':expatt.access_token,
-#                                  'db_datas':expatt.db_datas,
-#                                  'store_fname':fn,#expatt.store_fname,
-#                                  'file_size':fs,#expatt.file_size,
-#                                  'checksum':cm,#expatt.checksum,
-#                                  'mimetype':expatt.mimetype,
-#                                  'index_content':expatt.index_content,
-#                                  'create_uid':expatt.create_uid,
-#                                  'create_date':expatt.create_date,
-#                                  'write_uid':expatt.write_uid,
-#                                  'write_date':expatt.write_date,
-#                                  'original_id':expatt.original_id,
-#                                 })
     
     
 

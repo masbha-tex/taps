@@ -980,6 +980,14 @@ class MonthlymanhoursReportPDF(models.AbstractModel):
         fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
         lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
         
+        sectionlist = employee.mapped('department_id.id')
+        section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
+        
+        
+        parentdpt = section.mapped('parent_id.id')
+        department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
+        
+        
         stdate = fst_days.attDate
         enddate = lst_days.attDate
         
@@ -996,11 +1004,14 @@ class MonthlymanhoursReportPDF(models.AbstractModel):
         
 
         allemp_data = []
+        lstmonths_data = []
         for details in employee:
             otTotal = 0
+            duty_hour = 0
             for de in docs:
                 if details.id == de.employee_id.id:
                     otTotal = otTotal + de.otHours
+                    duty_hour = abs(de.outTime-de.inTime)
             
             emp_data = []
             emp_data = [
@@ -1013,15 +1024,41 @@ class MonthlymanhoursReportPDF(models.AbstractModel):
                 details.department_id.name,
                 details.job_id.name,
                 otTotal,
+                details.department_id.id,
+                duty_hour,
             ]
             allemp_data.append(emp_data)
-        #raise UserError(('domain'))
+            
+            
+            stdate_data = []
+            stdate_data = [
+                datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime("%b %d, %Y"),
+                
+
+                
+            ]
+            stdate_data.append(stdate_data)
+            
+            lsdate_data = []
+            lsdate_data = [
+                
+                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%b %d, %Y'),
+
+                
+            ]
+            lsdate_data.append(lsdate_data)
+            
+        #raise UserError((section.id, allemp_data[0][9],department.id,section.parent_id.id))    
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.attendance',
             'docs': docs,
             'datas': allemp_data,
-            'alldays': all_datelist
+            'alldays': all_datelist,
+            'dpt': department,
+            'sec': section,
+            'stdate': stdate_data,
+            'lsdate': lsdate_data
         }
 class DailymanhoursReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.daily_manhours_pdf_template'
@@ -1049,6 +1086,8 @@ class DailymanhoursReportPDF(models.AbstractModel):
         #domain.append(('employee_id.active', '=', True))
         
         
+        #department_id,parent_id,hr_department
+        
         #raise UserError((domain))    
         docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
         #raise UserError((docs.id)) 
@@ -1056,6 +1095,14 @@ class DailymanhoursReportPDF(models.AbstractModel):
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
         fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
         lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
+        
+        sectionlist = employee.mapped('department_id.id')
+        section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
+        
+        
+        parentdpt = section.mapped('parent_id.id')
+        department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
+        
         
         stdate = fst_days.attDate
         enddate = lst_days.attDate
@@ -1073,11 +1120,14 @@ class DailymanhoursReportPDF(models.AbstractModel):
         
 
         allemp_data = []
+        lstmonths_data = []
         for details in employee:
             otTotal = 0
+            duty_hour = 0
             for de in docs:
                 if details.id == de.employee_id.id:
                     otTotal = otTotal + de.otHours
+                    duty_hour = abs(de.outTime-de.inTime)
             
             emp_data = []
             emp_data = [
@@ -1090,15 +1140,41 @@ class DailymanhoursReportPDF(models.AbstractModel):
                 details.department_id.name,
                 details.job_id.name,
                 otTotal,
+                details.department_id.id,
+                duty_hour,
             ]
             allemp_data.append(emp_data)
-        #raise UserError(('domain'))
+            
+            
+            stdate_data = []
+            stdate_data = [
+                datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime("%b %d, %Y"),
+                
+
+                
+            ]
+            stdate_data.append(stdate_data)
+            
+            lsdate_data = []
+            lsdate_data = [
+                
+                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%b %d, %Y'),
+
+                
+            ]
+            lsdate_data.append(lsdate_data)
+            
+        #raise UserError((section.id, allemp_data[0][9],department.id,section.parent_id.id))    
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.attendance',
             'docs': docs,
             'datas': allemp_data,
-            'alldays': all_datelist
+            'alldays': all_datelist,
+            'dpt': department,
+            'sec': section,
+            'stdate': stdate_data,
+            'lsdate': lsdate_data
         }
 class DailyotanalysisReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.daily_ot_analysis_pdf_template'

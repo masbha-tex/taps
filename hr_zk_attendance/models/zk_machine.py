@@ -137,14 +137,15 @@ class ZkMachine(models.Model):
                         #officeTime = format_datetime(self.env, atten_time, dt_format=False)
                         #officeTime = str((officeTime[-8:])[:-3])
                         
-                        fromdatetime = datetime.now() + timedelta(hours=6)
+                        fromdatetime = atten_time#datetime.now() + timedelta(hours=6)
                         #fromdatetime = datetime.strptime(fromdatetime.strftime('%Y-%m-%d 00:00:00'), '%Y-%m-%d 00:00:00')
                         myfromtime = datetime.strptime('000000','%H%M%S').time()
-                        fromdatetime = datetime.combine(atten_time, myfromtime)
+                        fromdatetime = datetime.combine(fromdatetime, myfromtime)
+                        
                         todatetime = datetime.now() + timedelta(hours=6)
                         #todatetime = datetime.strptime(todatetime.strftime('%Y-%m-%d 23:59:59'), '%Y-%m-%d 23:59:59')
                         mytotime = datetime.strptime('235959','%H%M%S').time()
-                        todatetime = datetime.combine(atten_time, mytotime)
+                        todatetime = datetime.combine(todatetime, mytotime)
                         
                         getDate = datetime.now() + timedelta(hours=6)
                         getDate = datetime.strptime(getDate.strftime('%Y-%m-%d'), '%Y-%m-%d')
@@ -167,55 +168,119 @@ class ZkMachine(models.Model):
                                             
                                             att_var = att_obj.search([('employee_id', '=', get_user_id.id),
                                                                       ('attDate','=', att_Date)])
+                                            shiftgroup = self.env['shift.transfer'].search([('name', '=',get_user_id.id),
+                                                                                            ('activationDate','<=', att_Date)])
+                                            shift_group = shiftgroup.sorted(key = 'activationDate', reverse=True)[:1]
+                                            dayHour = 24
+                                            
+                                            officeInTime = shift_group.inTime
+                                            officeOutTime = shift_group.outTime
+                                            
+#                                             if officeInTime == officeOutTime:
+#                                                 dayHour = 36
+                                            
+                                            
+                                            thresholdin = officeInTime - 5
+                                            
+                                            verifySlotDateTime = fromdatetime + timedelta(hours=thresholdin)
+                                            slot_beign = verifySlotDateTime
+                        
+                                            if verifySlotDateTime > (atten_time + timedelta(hours=6)):
+                                                slot_beign = verifySlotDateTime - timedelta(days=1)
+#                                             else:
+#                                                 slot_beign = verifySlotDateTime
+                                            slot_beign = slot_beign - timedelta(hours=6)
+                                            slot_end = slot_beign + timedelta(hours=dayHour)
+                                            #raise UserError((atten_time,slot_beign,slot_end))
                                             get_zk_att = zk_attendance.search([('employee_id', '=', get_user_id.id),
-                                                                               ('punching_time', '>=', fromdatetime), 
-                                                                               ('punching_time', '<=', todatetime)])
+                                                                               ('punching_time', '>=', slot_beign), 
+                                                                               ('punching_time', '<=', slot_end)])
+                                            #raise UserError((slot_beign,slot_end))
                                             get_zk_sort_asc = get_zk_att.sorted(key = 'punching_time')[:1]
                                             get_zk_sort_desc = get_zk_att.sorted(key = 'punching_time', reverse=True)[:1]
-                                            def get_sec(time_str):
-                                                h, m = time_str.split(':')
-                                                return int(h) * 3600 + int(m) * 60
+            
+                
+#                                             def get_sec(time_str):
+#                                                 h, m = time_str.split(':')
+#                                                 return int(h) * 3600 + int(m) * 60
                                             
                                             zk_ck_in = get_zk_sort_asc.punching_time
                                             zk_ck_out = get_zk_sort_desc.punching_time
+                                            
+                         
+            
+#                                             raise UserError((zk_ck_in,zk_ck_out))
+                                        
+#                                             if zk_ck_in:
+#                                                 zk_inhour = format_datetime(self.env, zk_ck_in, dt_format=False)
+#                                                 zk_inhour = str((zk_inhour[-8:])[:-3])
+#                                                 zk_inhour = get_sec(zk_inhour)/3600
+#                                             else:
+#                                                 zk_inhour = False
+#                                             if zk_ck_out:
+#                                                 zk_outhour = format_datetime(self.env, zk_ck_out, dt_format=False)
+#                                                 zk_outhour = str((zk_outhour[-8:])[:-3])
+#                                                 zk_outhour = get_sec(zk_outhour)/3600
+#                                             else:
+#                                                 zk_outhour = False
+                                            slot_beign = slot_beign + timedelta(hours=5)
+                                            slot_beign_date = datetime.strptime(slot_beign.strftime('%Y-%m-%d'), '%Y-%m-%d')
+#                                             zk_ck_in_date = datetime.strptime(str(zk_ck_in), "%Y-%m-%d %H:%M:%S")
+                                            #raise UserError((zk_ck_in,zk_ck_out))
+    
                                             if zk_ck_in:
-                                                zk_inhour = format_datetime(self.env, zk_ck_in, dt_format=False)
-                                                zk_inhour = str((zk_inhour[-8:])[:-3])
-                                                zk_inhour = get_sec(zk_inhour)/3600
-                                            else:
-                                                zk_inhour = False
-                                            if zk_ck_out:
-                                                zk_outhour = format_datetime(self.env, zk_ck_out, dt_format=False)
-                                                zk_outhour = str((zk_outhour[-8:])[:-3])
-                                                zk_outhour = get_sec(zk_outhour)/3600
-                                            else:
-                                                zk_outhour = False
-                                                
-                                            if att_var:
-                                                att_in = att_var.search([('employee_id', '=', get_user_id.id),
-                                                                         ('attDate','=', att_Date),
-                                                                         ('check_in', '=', False),
-                                                                         ('check_out', '=', False)])
-                                                if att_in:
-                                                    #raise UserError(_(zk_ck_in))
-                                                    att_in.write({'check_in': zk_ck_in,
-                                                                  'check_out': zk_ck_out})
-                                                    
-                                                else:
-                                                    y = atten_time.strftime('%H:%M:%S')
+                                                zk_in_date = datetime.strptime(zk_ck_in.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                                                #raise UserError((zk_ck_in,zk_ck_out,zk_in_date))
+                                                    #each.user_id,get_user_id.id,slot_beign,slot_end,atten_time,
+                                                if att_var:
+                                                    att_out = att_obj.search([('employee_id', '=', get_user_id.id),
+                                                                              ('attDate','=', slot_beign_date)])
 
-                                                    if str(y) < str(myfromtime):
-                                                        #raise UserError((str(y),str(myfromtime)))
-                                                        pre_date = att_Date - timedelta(days=1)
-                                                        att_pre = att_obj.search([('employee_id', '=', get_user_id.id),
-                                                                                  ('attDate','=', pre_date)])
-                                                        att_pre[-1].write({'check_out': atten_time})
-                                                    else:
-                                                        att_out = att_var.search([('employee_id', '=', get_user_id.id),
-                                                                                 ('attDate','=', att_Date)])
-                                                        att_out[-1].write({'check_out': zk_ck_out})
-                                            else:
-                                                pass
+                                                    if att_out:
+                                                        if slot_beign_date == zk_in_date:
+                                                            if zk_ck_in != zk_ck_out:
+                                                                att_out.write({'check_in': zk_ck_in,
+                                                                       'check_out': zk_ck_out})
+                                                            else:
+                                                                att_out.write({'check_in': zk_ck_in})
+                                                        else:
+                                                            att_out.write({'check_out': zk_ck_in})
+                                                        
+#                                                 if att_out:
+#                                                     att_out.write({'check_in': zk_ck_in,
+#                                                                    'check_out': zk_ck_out})
+#                                                 if verifySlotDateTime > (atten_time + timedelta(hours=6)):
+#                                                     att_pre = att_obj.search([('employee_id', '=', get_user_id.id),
+#                                                                               ('attDate','=', slot_beign_date)])
+#                                                     att_pre[-1].write({'check_out': atten_time})
+                                                
+                                                    
+                                                    
+                                                    
+                                                    
+#                                                 att_out = att_var.search([('employee_id', '=', get_user_id.id),
+#                                                                          ('attDate','=', slot_beign_date)])
+#                                                 if att_out:
+#                                                     att_in.write({'check_in': zk_ck_out,
+#                                                                   'inHour': zk_outhour})
+                                                
+                                                
+#                                                 if att_in:
+#                                                     #raise UserError(_(zk_ck_in))
+#                                                     att_in.write({'check_in': zk_ck_in,
+#                                                                   'inHour': zk_inhour,
+#                                                                   'inFlag': 'P',
+#                                                                   'check_out': zk_ck_out,
+#                                                                   'outHour' : zk_outhour,
+#                                                                   'outFlag': 'TO'})
+                                                    
+#                                                 else:
+#                                                     att_out = att_var.search([('employee_id', '=', get_user_id.id),
+#                                                                              ('attDate','=', att_Date)])
+#                                                     att_out[-1].write({'check_out': zk_ck_out,
+#                                                                        'outHour' : zk_outhour,
+#                                                                        'outFlag': 'TO'})
+#                                             else:
 #                                                 y = atten_time.strftime('%H:%M:%S')
                                                 
 #                                                 if str(y) < str(myfromtime):
