@@ -44,7 +44,13 @@ class ZkMachine(models.Model):
             return conn
         except:
             return False
-
+        
+    @api.model
+    def cron_clear(self):
+        machines = self.env['zk.machine'].search([])
+        for machine in machines :
+            machine.clear_attendance()
+    
     def clear_attendance(self):
         _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
         for info in self:
@@ -147,8 +153,8 @@ class ZkMachine(models.Model):
                         mytotime = datetime.strptime('235959','%H%M%S').time()
                         todatetime = datetime.combine(todatetime, mytotime)
                         
-                        getDate = datetime.now() + timedelta(hours=6)
-                        getDate = datetime.strptime(getDate.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                        #getDate = datetime.now() + timedelta(hours=6)
+                        #getDate = datetime.strptime(getDate.strftime('%Y-%m-%d'), '%Y-%m-%d')
                         if user:
                             for uid in user:
                                 if uid.user_id == each.user_id:
@@ -218,7 +224,7 @@ class ZkMachine(models.Model):
                                 else:
                                     pass
                     # zk.enableDevice()
-                    conn.clear_attendance()
+#                     conn.clear_attendance()
                     conn.disconnect
                     return True
                 else:

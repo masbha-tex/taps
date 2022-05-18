@@ -189,7 +189,8 @@ class HrAttendance(models.Model):
                 get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])                
                 if len(get_pre_att_data) == 0:
                     for d in range(0, endd):
-                        get_pre_att_data.create({'attDate':st_date + timedelta(days=d), 
+                        get_pre_att_data.create({'attDate':st_date + timedelta(days=d),
+                                                 'employee_id': get_pre_att_data.employee_id,
                                                  'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
         if len(get_att_data) == 1:
             if not inHour and not outHour:
