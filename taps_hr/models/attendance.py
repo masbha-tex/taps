@@ -132,6 +132,7 @@ class HrAttendance(models.Model):
                     
     def generateAttFlag(self,emp_id,att_date,office_in_time,in_time,office_out_time,out_time):
         
+#         raise UserError((emp_id,att_date,office_in_time,in_time,office_out_time,out_time))
         att_obj = self.env['hr.attendance']
         shift_record = self.env['shift.transfer'].search([('empid', '=', emp_id),('activationDate', '<=',att_date)])
         shift_data = shift_record.sorted(key = 'activationDate', reverse=True)[:1]
@@ -145,7 +146,8 @@ class HrAttendance(models.Model):
         holiday_type = self.env['hr.work.entry.type'].search([('id', '=', int(holiday_record.work_entry_type_id))])
         #,(att_date, 'between','request_date_from and request_date_to')
         #lv_emp = lv_record.filtered(lambda lv: att_date>=lv.request_date_from and att_date<=lv.request_date_to)
-        #raise UserError((att_date,get_att_data.employee_id.joining_date))
+        
+        
         def get_sec(time_str):
             h, m= time_str.split(':')
             return int(h) * 3600 + int(m) * 60
@@ -186,11 +188,12 @@ class HrAttendance(models.Model):
                     st_date = t_date.replace(day=26) - relativedelta(months = 1)
                 endd = (t_date - st_date).days
                 attdate = t_date - timedelta(days=1)
+                #activeemplist = self.env['hr.employee'].search([('active', '=', True), ('emp_id', '=', emp_id)])
                 get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])                
                 if len(get_pre_att_data) == 0:
                     for d in range(0, endd):
                         get_pre_att_data.create({'attDate':st_date + timedelta(days=d),
-                                                 'employee_id': get_pre_att_data.employee_id,
+                                                 'employee_id': get_pre_att_data.employee_id.id,
                                                  'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
         if len(get_att_data) == 1:
             if not inHour and not outHour:
