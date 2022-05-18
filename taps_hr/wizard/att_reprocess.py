@@ -189,6 +189,7 @@ class Attreprocess(models.TransientModel):
 
                     slot_beign = slot_beign + timedelta(hours=5)
                     slot_beign_date = datetime.strptime(slot_beign.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                    slot_end_date = datetime.strptime(slot_end.strftime('%Y-%m-%d'), '%Y-%m-%d')
 
 
                     if zk_ck_in:
@@ -204,7 +205,11 @@ class Attreprocess(models.TransientModel):
                                     else:
                                         att_out.write({'check_in': zk_ck_in})
                                 else:
-                                    att_out.write({'check_out': zk_ck_in})
+                                    if slot_beign_date == slot_end_date:
+                                        att_out.write({'check_in': zk_ck_in,
+                                                       'check_out': zk_ck_out})
+                                    else:
+                                        att_out.write({'check_out': zk_ck_in})
             
             
         
