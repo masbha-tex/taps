@@ -20,9 +20,9 @@
                     <group>
                         <field name="parameter_name"/>
                         <field name="quality_category" options="{'no_create_edit': True, 'no_create': True}"/>
+                        <field name="quality_unit"/>
                         <field name="initial_value"/>
                         <field name="last_value"/>
-                        <field name="quality_unit"/>
                         <field name="note"/>
                         <field name="t_level"/>
                     </group>

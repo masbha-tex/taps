@@ -21,6 +21,7 @@
         'security/ir.model.access.csv',
         'data/shift_code_generate.xml',
         'views/shift_transfer.xml',
+        'views/bulk_shift_transfer.xml',
     ],
     # only loaded in demonstration mode
     'license': 'OEEL-1',
