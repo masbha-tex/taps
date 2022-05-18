@@ -224,7 +224,7 @@ class ZkMachine(models.Model):
                                 else:
                                     pass
                     # zk.enableDevice()
-#                     conn.clear_attendance()
+                    conn.clear_attendance()
                     conn.disconnect
                     return True
                 else:

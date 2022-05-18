@@ -177,24 +177,24 @@ class HrAttendance(models.Model):
         #attdate = t_date - timedelta(days=1)
         #get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])
 
-        if len(get_att_data) == 1:
-            if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
-                t_date = att_date  
-                st_date = t_date
-                delta = t_date.replace(day=26).day - t_date.day
-                if delta<=0:
-                    st_date = t_date.replace(day=26)
-                else:
-                    st_date = t_date.replace(day=26) - relativedelta(months = 1)
-                endd = (t_date - st_date).days
-                attdate = t_date - timedelta(days=1)
-                #activeemplist = self.env['hr.employee'].search([('active', '=', True), ('emp_id', '=', emp_id)])
-                get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])                
-                if len(get_pre_att_data) == 0:
-                    for d in range(0, endd):
-                        get_pre_att_data.create({'attDate':st_date + timedelta(days=d),
-                                                 'employee_id': get_pre_att_data.employee_id.id,
-                                                 'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
+#         if len(get_att_data) == 1:
+#             if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
+#                 t_date = att_date  
+#                 st_date = t_date
+#                 delta = t_date.replace(day=26).day - t_date.day
+#                 if delta<=0:
+#                     st_date = t_date.replace(day=26)
+#                 else:
+#                     st_date = t_date.replace(day=26) - relativedelta(months = 1)
+#                 endd = (t_date - st_date).days
+#                 attdate = t_date - timedelta(days=1)
+#                 #activeemplist = self.env['hr.employee'].search([('active', '=', True), ('emp_id', '=', emp_id)])
+#                 get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])                
+#                 if len(get_pre_att_data) == 0:
+#                     for d in range(0, endd):
+#                         get_pre_att_data.create({'attDate':st_date + timedelta(days=d),
+#                                                  #'employee_id': get_pre_att_data.employee_id.id,
+#                                                  'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
         if len(get_att_data) == 1:
             if not inHour and not outHour:
                 get_att_data[-1].write({'inFlag':'A','outFlag':'A','inHour' : False,'outHour' : False})

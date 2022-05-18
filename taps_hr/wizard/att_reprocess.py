@@ -34,6 +34,7 @@ class Attreprocess(models.TransientModel):
         'res.company',  string='Company Mode', readonly=False)
     department_id = fields.Many2one(
         'hr.department',  string='Department', readonly=False)
+    is_download = fields.Boolean(readonly=False, default=False)
     
     
     file_data = fields.Binary(readonly=True, attachment=False)    
@@ -87,7 +88,8 @@ class Attreprocess(models.TransientModel):
                     'mode_company_id': False, 
                     'department_id': False, 
                     'category_id': False, 
-                    'employee_id': self.employee_id.id}
+                    'employee_id': self.employee_id.id,
+                    'is_download': self.is_download}
 
         if self.report_by == "company":
             data = {'date_from': self.date_from, 
@@ -95,7 +97,8 @@ class Attreprocess(models.TransientModel):
                     'mode_company_id': self.mode_company_id.id, 
                     'department_id': False, 
                     'category_id': False, 
-                    'employee_id': False}
+                    'employee_id': False,
+                    'is_download': self.is_download}
 
         if self.report_by == "department":
             data = {'date_from': self.date_from, 
@@ -103,7 +106,8 @@ class Attreprocess(models.TransientModel):
                     'mode_company_id': False, 
                     'department_id': self.department_id.id, 
                     'category_id': False, 
-                    'employee_id': False}
+                    'employee_id': False,
+                    'is_download': self.is_download}
 
         if self.report_by == "category":
             data = {'date_from': self.date_from, 
@@ -111,14 +115,18 @@ class Attreprocess(models.TransientModel):
                     'mode_company_id': False, 
                     'department_id': False, 
                     'category_id': self.category_id.id, 
-                    'employee_id': False}
+                    'employee_id': False,
+                    'is_download': self.is_download}
 #         raise UserError(('domain'))        
         #return self.env.ref('taps_hr.report_salary_sheet').report_action(self, data=data)
         domain = []
+        zkdomain = []
         if data.get('date_from'):
             domain.append(('attDate', '>=', data.get('date_from')))
+            zkdomain.append(('punching_time', '>=', data.get('date_from')))
         if data.get('date_to'):
             domain.append(('attDate', '<=', data.get('date_to')))
+            zkdomain.append(('punching_time', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
@@ -129,18 +137,88 @@ class Attreprocess(models.TransientModel):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
         
         
+        
+        
         emp_att = self.env['hr.attendance'].search(domain)#.sorted(key = 'employee_id', reverse=False)
         
-        if emp_att:
-            for record in emp_att:
-                if record.check_in == False:
-                    record[-1].write({'check_in': '2032-01-01 02:02:30','check_out': '2032-01-01 02:02:44'})
-                    record[-1].write({'check_in': '','check_out': ''})
-                else:
-                    if record.check_out == False:
-                        record[-1].write({'check_out': '2032-01-01 02:02:50'})
-                        record[-1].write({'check_out': ''})
+        emplist = emp_att.mapped('employee_id.id')
+        
+        zkdomain.append(('employee_id.id', 'in', (emplist)))
+        
+        
+        if self.is_download == True:
+            zk_attendance = self.env['zk.machine.attendance'].search(zkdomain).sorted(key = 'barcode').sorted(key = 'punching_time')
+            if zk_attendance:
+                for zkatt in zk_attendance:
+                    att_Date = datetime.strptime(zkatt.punching_time.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                    fromdatetime = zkatt.punching_time
+                    myfromtime = datetime.strptime('000000','%H%M%S').time()
+                    fromdatetime = datetime.combine(fromdatetime, myfromtime)
+
+                    todatetime = datetime.now() + timedelta(hours=6)
+                    mytotime = datetime.strptime('235959','%H%M%S').time()
+                    todatetime = datetime.combine(todatetime, mytotime)
+                    
+                    att_var = emp_att.search([('employee_id', '=', zkatt.employee_id.id),
+                                              ('attDate','=', att_Date)])
+                    shiftgroup = self.env['shift.transfer'].search([('name', '=',zkatt.employee_id.id),
+                                                                    ('activationDate','<=', att_Date)])
+                    shift_group = shiftgroup.sorted(key = 'activationDate', reverse=True)[:1]
+                    dayHour = 24
+
+                    officeInTime = shift_group.inTime
+                    officeOutTime = shift_group.outTime
+
+                    thresholdin = officeInTime - 5
+
+                    verifySlotDateTime = fromdatetime + timedelta(hours=thresholdin)
+                    slot_beign = verifySlotDateTime
+
+                    if verifySlotDateTime > (zkatt.punching_time + timedelta(hours=6)):
+                        slot_beign = verifySlotDateTime - timedelta(days=1)
+
+                    slot_beign = slot_beign - timedelta(hours=6)
+                    slot_end = slot_beign + timedelta(hours=dayHour)
+                    get_zk_att = zk_attendance.search([('employee_id', '=', zkatt.employee_id.id),
+                                                       ('punching_time', '>=', slot_beign), 
+                                                       ('punching_time', '<=', slot_end)])
+                    get_zk_sort_asc = get_zk_att.sorted(key = 'punching_time')[:1]
+                    get_zk_sort_desc = get_zk_att.sorted(key = 'punching_time', reverse=True)[:1]
+                    zk_ck_in = get_zk_sort_asc.punching_time
+                    zk_ck_out = get_zk_sort_desc.punching_time
+
+                    slot_beign = slot_beign + timedelta(hours=5)
+                    slot_beign_date = datetime.strptime(slot_beign.strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+
+                    if zk_ck_in:
+                        zk_in_date = datetime.strptime(zk_ck_in.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                        if att_var:
+                            att_out = emp_att.search([('employee_id', '=', zkatt.employee_id.id),
+                                                      ('attDate','=', slot_beign_date)])
+                            if att_out:
+                                if slot_beign_date == zk_in_date:
+                                    if zk_ck_in != zk_ck_out:
+                                        att_out.write({'check_in': zk_ck_in,
+                                               'check_out': zk_ck_out})
+                                    else:
+                                        att_out.write({'check_in': zk_ck_in})
+                                else:
+                                    att_out.write({'check_out': zk_ck_in})
+            
+            
+        
+        if self.is_download == False:
+            if emp_att:
+                for record in emp_att:
+                    if record.check_in == False:
+                        record[-1].write({'check_in': '2032-01-01 02:02:30','check_out': '2032-01-01 02:02:44'})
+                        record[-1].write({'check_in': '','check_out': ''})
                     else:
-                        record[-1].write({'check_out': record.check_out + timedelta(seconds=1)})
-                        record[-1].write({'check_out': record.check_out - timedelta(seconds=1)})
+                        if record.check_out == False:
+                            record[-1].write({'check_out': '2032-01-01 02:02:50'})
+                            record[-1].write({'check_out': ''})
+                        else:
+                            record[-1].write({'check_out': record.check_out + timedelta(seconds=1)})
+                            record[-1].write({'check_out': record.check_out - timedelta(seconds=1)})
         

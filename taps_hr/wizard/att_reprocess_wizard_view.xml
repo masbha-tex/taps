@@ -10,6 +10,7 @@
                     <group>
                         <field name="date_from"/>
                         <field name="date_to"/>
+                        <field name="is_download" string="" widget="boolean_toggle"/>
                     </group>
                     <group>                    
                         <field name="report_by" string="Mode"/>
