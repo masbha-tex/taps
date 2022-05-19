@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api,_
+from odoo.exceptions import UserError, ValidationError
 #from odoo.addons.hr.models.hr_employee import hr_employee
 
 class ShiftTransfer(models.Model):
@@ -25,14 +26,16 @@ class ShiftTransfer(models.Model):
         
     @api.model
     def create(self, vals):
-        for st in vals.emp_ids:
+        raise UserError((self.emp_ids.id))
+        for st in self.emp_ids:
+            raise UserError((st))
             self.env['shift.transfer'].create({
                             'name': st.id,
                             'empid': st.pin,
-                            'activationDate': vals.activationDate,
-                            'transferGroup': vals.transferGroup,
-                            'inTime': vals.inTime,
-                            'outTime': vals.outTime,
-                            'graceinTime': vals.graceinTime,
+                            'activationDate': self.activationDate,
+                            'transferGroup': self.transferGroup,
+                            'inTime': self.inTime,
+                            'outTime': self.outTime,
+                            'graceinTime': self.graceinTime,
                         })
         return super().create(vals)

@@ -6,6 +6,22 @@ from datetime import date, datetime, time, timedelta
 from dateutil.relativedelta import relativedelta
 
 class IncludeCateTypeInPT(models.Model):
+    _inherit = 'stock.picking'
+    partner_name = fields.Char(rreadonly=True, store=True, string='Vendor Name', compute='compute_partner')
+    
+    def compute_partner(self):
+        for rec in self:
+            po = self.env['purchase.order'].search([('name', '=', rec.origin)])
+            if po:
+                partner = self.env['res.partner'].search([('id', '=', po.partner_id.id)])
+                rec.partner_name = partner.name
+            
+        
+
+
+
+
+class IncludeCateTypeInPT(models.Model):
     _inherit = 'stock.move.line'
     parent_categ_type = fields.Char(related='product_id.categ_type.parent_id.name', related_sudo=False, readonly=True, store=True, string='Parent Category')
     category_type = fields.Char(related='product_id.categ_type.name', related_sudo=False, readonly=True, store=True, string='Category Type')    
