@@ -20,6 +20,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/shift_code_generate.xml',
+        'data/distribute_grouptosingle.xml',
         'views/shift_transfer.xml',
         'views/bulk_shift_transfer.xml',
     ],

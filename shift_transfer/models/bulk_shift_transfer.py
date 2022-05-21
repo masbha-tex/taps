@@ -24,19 +24,34 @@ class ShiftTransfer(models.Model):
     outTime = fields.Float(related= 'transferGroup.outTime', related_sudo=False, string='Out-Time')
     graceinTime = fields.Float(related= 'transferGroup.graceinTime', related_sudo=False, string="Grace In-Time")
         
-    @api.model
-    def create(self, vals):
-        raise UserError((self.activationDate))
-        for st in self.emp_ids:
-#             raise UserError((st))
+#     @api.model
+#     def create(self, vals):
+#         raise UserError((self.activationDate))
+#         for st in self.emp_ids:
+# #             raise UserError((st))
+#             self.env['shift.transfer'].create({
+#                             'name': st.id,
+#                             'empid': st.pin,
+#                             'activationDate': self.activationDate,
+#                             'transferGroup': self.transferGroup,
+#                             'inTime': self.inTime,
+#                             'outTime': self.outTime,
+#                             'graceinTime': self.graceinTime,
+#                         })
+#         return super().create(vals)
+    
+    
+    def bulk_to_shingle_transfer(self,emp_ids,activationDate,transferGroup,inTime,outTime,graceinTime):
+        for st in emp_ids:
+            #raise UserError((transferGroup.id))
             self.env['shift.transfer'].create({
                             'name': st.id,
                             'empid': st.pin,
-                            'activationDate': self.activationDate,
-                            'transferGroup': self.transferGroup,
-                            'inTime': self.inTime,
-                            'outTime': self.outTime,
-                            'graceinTime': self.graceinTime,
+                            'activationDate': activationDate,
+                            'transferGroup': transferGroup.id,
+                            'inTime': inTime,
+                            'outTime': outTime,
+                            'graceinTime': graceinTime,
                         })
-        return super().create(vals)
-#     bulk_to_shingle_transfer
+        
+        
