@@ -50,17 +50,16 @@ class StockForecastReport(models.TransientModel):
         return qty
     
     def getopening_val(self,productid,from_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', from_date),('description','not like','%LC/%')])#,('description','not like','%LC/%')
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', from_date)])#,('description','not like','%LC/%')
         val = sum(stock_details.mapped('value'))
+#         landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '<', from_date.date())])
         
-        landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '<', from_date.date())])
-        
-        lclist = landedcost.mapped('id')
-        lc_details = self.env['stock.valuation.adjustment.lines'].search([('product_id', '=', productid),('cost_id', 'in', (lclist))])
-        lc_val = 0
-        if len(lc_details)>0:
-           lc_val = sum(lc_details.mapped('additional_landed_cost'))
-           val = val + lc_val
+#         lclist = landedcost.mapped('id')
+#         lc_details = self.env['stock.valuation.adjustment.lines'].search([('product_id', '=', productid),('cost_id', 'in', (lclist))])
+#         lc_val = 0
+#         if len(lc_details)>0:
+#            lc_val = sum(lc_details.mapped('additional_landed_cost'))
+#            val = val + lc_val
         return val
     
     def getreceive_qty(self,productid,from_date,to_date):

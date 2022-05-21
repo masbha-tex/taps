@@ -9,9 +9,9 @@
                     <strong>(<span t-esc="stdate[0]"/> To <span t-esc="lsdate[0]"/>) Manhours Report</strong>
                 </h4>
                 <div class="container">
-                <table class="table table-sm table-bordered" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
-                    <thead>
-                        <tr align="center">
+                <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
+                    <thead style="font-size:7px;">
+                        <tr align="center" style="background-color: orange;">
                             <th>Section Name</th>
                             <th>Total Worker Present</th>
                             <th>Persentage</th>
@@ -84,7 +84,8 @@
                         </t>
                     </tbody>
                 </table>
-                <table class="table table-sm table-bordered" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
+                <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
+                  <tr align="center" style="font-weight: bold; background-color: orange;">
                   <td>Grand Total</td>
                   <td><span t-esc="intotal_employee"/></td>
                   <td></td>
@@ -92,6 +93,7 @@
                   <td><span t-esc="intotal_ot_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
                   <td><span t-esc="intotal_working_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
                   <td></td>
+                  </tr>
                 </table>
 
               </div>

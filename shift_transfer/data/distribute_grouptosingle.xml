@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+    <record id="shift_transfer_distribute" model="base.automation">
+        <field name="name">Bulk To Single Shift Transfer</field>
+        <field name="model_id" ref="model_shift_transfer_bulk"/>
+        <field name="state">code</field>
+        <field name="code">model.bulk_to_shingle_transfer(record.empID,record.attDate,record.inTime,record.check_in,record.outTime,record.check_out)</field>
+        <field name="trigger">on_create_or_write</field>
+        <field name="trigger_field_ids" eval="[(4, ref('shift_transfer_bulk.field_shift_transfer_bulk__id'))]"/>
+        <field name="active" eval="True"/>
+    </record>
+    </data>
+</odoo>

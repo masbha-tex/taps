@@ -1030,23 +1030,22 @@ class MonthlymanhoursReportPDF(models.AbstractModel):
             allemp_data.append(emp_data)
             
             
-            stdate_data = []
-            stdate_data = [
-                datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime("%b %d, %Y"),
+#             stdate_data = []
+#             stdate_data = [
+#                 datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime("%b %d, %Y"),
                 
 
                 
-            ]
-            stdate_data.append(stdate_data)
+#             ]
+#             stdate_data.append(stdate_data)
             
-            lsdate_data = []
-            lsdate_data = [
-                
-                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%b %d, %Y'),
+            lstmonth_data = []
+            lstmonth_data = [
+                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B  %Y'),
 
                 
             ]
-            lsdate_data.append(lsdate_data)
+            lstmonths_data.append(lstmonth_data)
             
         #raise UserError((section.id, allemp_data[0][9],department.id,section.parent_id.id))    
         return {
@@ -1057,8 +1056,7 @@ class MonthlymanhoursReportPDF(models.AbstractModel):
             'alldays': all_datelist,
             'dpt': department,
             'sec': section,
-            'stdate': stdate_data,
-            'lsdate': lsdate_data
+            'month': lstmonths_data
         }
 class DailymanhoursReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.daily_manhours_pdf_template'

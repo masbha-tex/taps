@@ -5,7 +5,7 @@ from odoo.tools import format_date
 from datetime import date, datetime, time, timedelta
 from dateutil.relativedelta import relativedelta
 
-class IncludeCateTypeInPT(models.Model):
+class PickingVendorNameINT(models.Model):
     _inherit = 'stock.picking'
     partner_name = fields.Char(rreadonly=True, store=True, string='Vendor Name', compute='compute_partner')
     
