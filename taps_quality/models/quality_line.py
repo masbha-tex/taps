@@ -37,7 +37,7 @@ class QualityCheck(models.Model):
             data = self.env['purchase.order'].search([('name','=',rec.x_studio_source_po)])
             rec.partner_name = data.partner_id.name
             dataline = self.env['purchase.order.line'].search([('order_id','=',data.id),('product_id','=',rec.product_id.id)])
-            rec.po_qty = dataline.product_qty
+            rec.po_qty = sum(dataline.mapped('product_qty'))
             #raise UserError((data.id,rec.picking_id.id,rec.product_id.id))
             receive_line = self.env['stock.move.line'].search([('picking_id','=',rec.picking_id.id),('product_id','=',rec.product_id.id)])
             rec.receive_qty = sum(receive_line.mapped('product_uom_qty'))
