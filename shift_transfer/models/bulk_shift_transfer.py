@@ -42,8 +42,8 @@ class ShiftTransfer(models.Model):
     
     
     def bulk_to_shingle_transfer(self,emp_ids,activationDate,transferGroup,inTime,outTime,graceinTime):
+        ii=0
         for st in emp_ids:
-            #raise UserError((transferGroup.id))
             self.env['shift.transfer'].create({
                             'name': st.id,
                             'empid': st.pin,
@@ -53,5 +53,3 @@ class ShiftTransfer(models.Model):
                             'outTime': outTime,
                             'graceinTime': graceinTime,
                         })
-        
-        
