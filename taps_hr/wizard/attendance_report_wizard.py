@@ -202,16 +202,7 @@ class AttendancePDFReport(models.TransientModel):
         if self.report_type == 'shift_schedule':
             return self.env.ref('taps_hr.action_shift_schedule_pdf_report').report_action(self, data=data)
             
-    
-
-    # Generate xlsx report
-#     def action_generate_xlsx_report(self):
-#         data = {
-#             'date_from': self.date_from,
-#             'date_to': self.date_to,
-#         }
-#         return self.env.ref('taps_hr.action_openacademy_xlsx_report').report_action(self, data=data)
-    
+ 
     
 class JobReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.job_pdf_template'
