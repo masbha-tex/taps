@@ -42,13 +42,13 @@ class HrEmployee(models.Model):
         for record in emp_obj:
             if record:
                 if record.resign_date:
-                    currentDate = datetime.datetime.strptime(str(record.resign_date),'%Y-%m-%d')
+                    currentDate = fields.datetime.strptime(str(record.resign_date),'%Y-%m-%d')
                 else:
-                    currentDate = datetime.datetime.now()
+                    currentDate = fields.datetime.now()
                 if record.joining_date:
-                    deadlineDate = datetime.datetime.strptime(str(record.joining_date),'%Y-%m-%d')
+                    deadlineDate = fields.datetime.strptime(str(record.joining_date),'%Y-%m-%d')
                 else:
-                    deadlineDate = datetime.datetime.now()
+                    deadlineDate = fields.datetime.now()
                 
                 daysLeft = deadlineDate - currentDate
                 years = ((daysLeft.total_seconds())/(365.242*24*3600))
