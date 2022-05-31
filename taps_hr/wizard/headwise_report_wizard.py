@@ -281,9 +281,9 @@ class HeadwisePDFReport(models.TransientModel):
         
         domain = []
         if data.get('date_from'):
-            domain.append(('date_from', '>=', data.get('date_from')))
+            domain.append(('date_from', '=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('date_to', '<=', data.get('date_to')))
+            domain.append(('date_to', '=', data.get('date_to')))
         if data.get('mode_company_id'):
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
