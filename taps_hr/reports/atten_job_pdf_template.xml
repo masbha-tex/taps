@@ -126,6 +126,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <t t-set="c_total_ot_hours" t-value="0"/>
                                     <t t-set="total" t-value="0"/>
                                     <t t-set="p" t-value="0"/>
                                     <t t-set="leave" t-value="0"/>
@@ -141,10 +142,14 @@
                                     <t t-set="po" t-value="0"/>
                                     <t t-set="lw" t-value="0"/>
                                     <t t-set="aj" t-value="0"/>
+                                    <t t-set="otHours" t-value="0"/>
+                                    
+                                    <t t-set="outTime" t-value="0"/>
 
                                     <tr t-foreach="alldays" t-as="ald">
                                         <tr t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att" style="border: 1pt solid black;border-collapse:separate;">
                                             <t t-set="line_style" t-value="'margin-bottom:0pt;margin-top:0pt;max-height:14pt;'"/>
+                                            <t t-set="inTime" t-value="att['inHour']"/>
                                             <t t-if="att.inFlag == 'A'">
                                                 <t t-set="line_style" t-value="'color:red;'"/>
                                                 <t t-set="a" t-value="a+1"/>
@@ -206,6 +211,37 @@
                                             <t t-if="att.inFlag == 'CL'">
                                                 <t t-set="leave" t-value="leave+1"/>
                                             </t>
+                                            <t t-if="is_com==True">
+                                                <t t-if="att.otHours &gt;2.0">
+                                                
+                                                <t t-set="outTime" t-value="(att.outHour-(att.otHours-2))"/>
+                                                <t t-set="otHours" t-value="2"/>
+                                                </t>
+                                                <t t-if="att.otHours &lt;=2.0">
+                                                  <t t-set="otHours" t-value="att.otHours"/>
+                                                  <t t-set="outTime" t-value="att.outHour"/>
+                                                </t>
+                                                <t t-if="att.inFlag == 'HP' or att.outFlag == 'HP'">
+                                                  <t t-set="otHours" t-value="0.0"/>
+                                                  <t t-set="outTime" t-value="0.0"/>
+                                                  <t t-set="inTime" t-value="0.0"/>
+                                                  <t t-set="h" t-value="h+1"/>
+                                                  <!--<t t-set="c_flag" t-value="H"/>-->
+                                                </t>
+                                                <t t-if="att.inFlag == 'FP' or att.outFlag == 'FP'">
+                                                  <t t-set="otHours" t-value="0.0"/>
+                                                  <t t-set="outTime" t-value="0.0"/>
+                                                  <t t-set="inTime" t-value="0.0"/>
+                                                  <!--<t t-set="c_flag" t-value="F"/>-->
+                                                  <t t-set="line_style" t-value="'color:green;'"/>
+                                                  <t t-set="f" t-value="f+1"/>
+                                                </t>
+                                                
+                                            </t>
+                                            <t t-if="is_com==False">
+                                                <t t-set="otHours" t-value="att.otHours"/>
+                                                <t t-set="outTime" t-value="att.outHour"/>
+                                            </t>
                                             <td>
                                                 <div t-att-style="line_style" align="center">
                                                     <span t-field="att.attDate"/>
@@ -217,13 +253,28 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div t-att-style="line_style" t-if="att.inHour != 0.0" align="center">
-                                                    <span t-esc="att['inHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                                <div t-att-style="line_style" t-if="inTime != 0.0" align="center">
+                                                    <span t-esc="inTime" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div t-att-style="line_style" align="center">
+                                                    
+                                                  <t t-if="is_com==True">
+                                                    <t t-if="att.inFlag == 'FP'">
+                                                      F
+                                                    </t>
+                                                    <t t-if="att.inFlag == 'HP'">
+                                                      H
+                                                    </t>
+                                                    <t t-if="att.inFlag != 'FP' and att.inFlag != 'HP'">
+                                                      <span t-esc="att['inFlag']"/>
+                                                    </t>
+                                                  </t>  
+                                                  <t t-if="is_com==False">
                                                     <span t-esc="att['inFlag']"/>
+                                                  </t>
+                                                  
                                                 </div>
                                             </td>
                                             <td>
@@ -232,18 +283,32 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div t-att-style="line_style" t-if="att.outHour != 0.0" align="center">
-                                                    <span t-esc="att['outHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                                <div t-att-style="line_style" t-if="outTime != 0.0" align="center">
+                                                    <span t-esc="outTime" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div t-att-style="line_style" align="center">
+                                                    <t t-if="is_com==True">
+                                                    <t t-if="att.outFlag == 'FP'">
+                                                      F
+                                                    </t>
+                                                    <t t-if="att.outFlag == 'HP'">
+                                                      H
+                                                    </t>
+                                                    <t t-if="att.outFlag != 'FP' and att.outFlag != 'HP'">
+                                                      <span t-esc="att['outFlag']"/>
+                                                    </t>
+                                                  </t>  
+                                                  <t t-if="is_com==False">
                                                     <span t-esc="att['outFlag']"/>
+                                                  </t>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div t-att-style="line_style" align="center">
-                                                    <span t-esc="att['otHours']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                                    <span t-esc="otHours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                                    <t t-set="c_total_ot_hours" t-value="c_total_ot_hours+otHours"/>
                                                 </div>
                                             </td>
                                         </tr>
@@ -260,7 +325,12 @@
                                         </td>
                                         <td class="text-left">
                                           <strong>
+                                            <t t-if="is_com==True">
+                                            <span t-esc="c_total_ot_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                            </t>
+                                            <t t-if="is_com==False">
                                             <span t-esc="emp[8]" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                            </t>
                                           </strong>
                                         </td>
                                     </tr>

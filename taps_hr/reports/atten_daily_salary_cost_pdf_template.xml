@@ -2,396 +2,118 @@
 <odoo>
     <template id="daily_salary_cost_pdf_template">
       <t t-call="web.html_container">
-        <t t-foreach="datas" t-as="emp">
+        
           <t t-call="web.external_layout">
              <div class="page">
-                    <h3 class="text-right">
-                        <strong>Daily Salary Cost</strong>
-                    </h3>
-                    <div class="container">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="row">
-                                <div>
-                                    <strong>ID: </strong>
-                                    <span t-esc="emp[3]"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div>
-                                    <strong>Name: </strong>
-                                    <span t-esc="emp[4]"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div>
-                                    <strong>Department: </strong>
-                                    <span t-esc="emp[5]"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div>
-                                    <strong>Section: </strong>
-                                    <span t-esc="emp[6]"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div>
-                                    <strong>Position: </strong>
-                                    <span t-esc="emp[7]"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 table-sm table-bordered" style="font-size:11px;">
-                            <center>
-                                <strong>
-                                    <u>Flag Defination</u>
-                                </strong>
-                            </center>
-                            <!--<br/>-->
-                            <div class="row">
-                                <div class="col-4">
-                                    <span class="small">P=Present</span>
-                                    <br/>
-                                    <span class="small">A=Absent</span>
-                                    <br/>
-                                    <span class="small">L=Late</span>
-                                    <br/>
-                                    <span class="small">R=Resigned</span>
-                                    <br/>
-                                    <span class="small">X=Not Yet Joined</span>
-                                    <br/>
-                                    <span class="small">H=Holiday</span>
-                                    <br/>
-
-                                </div>
-                                <div class="col-4">
-                                    <span class="small">F=Friday</span>
-                                    <br/>
-                                    <span class="small">OD=Outside Duty</span>
-                                    <br/>
-                                    <span class="small">TO=Timely Out</span>
-                                    <br/>
-                                    <span class="small">LW=Leave Without Pay</span>
-                                    <br/>
-                                    <span class="small">PO=Pending Out</span>
-                                    <br/>
-                                    <span class="small">EO=Early Out</span>
-                                    <br/>
-
-                                </div>
-                                <div class="col-4">
-                                    <span class="small">CL=Casual Leave</span>
-                                    <br/>
-                                    <span class="small">SL=Sick Leave</span>
-                                    <br/>
-                                    <span class="small">EL=Earn Leave</span>
-                                    <br/>
-                                    <span class="small">HP=Holiday Present</span>
-                                    <br/>
-                                    <span class="small">AJ=Adjustment Days</span>
-                                    <br/>
-                                    <span class="small">CO=Compensatory Off</span>
-                                    <br/>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    </div>
-                    <br/>
-                    <h5>
-                        <center>
-                          <strong>
-                            <u>
-                              <span t-esc="datetime.datetime.strptime(emp[1], '%Y-%m-%d').strftime('%B  %Y')"/>
-                            </u>
-                          </strong>
-                        </center>
-                    </h5>
-                    <div class="container">
-                        <div class="row">
-                            <table class="table table-sm" style="font-size:11px; table-layout:fixed;">
-                                <thead>
-                                    <tr align="center" style="background-color:#E2E2E2;">
-                                        <th>Date</th>
-                                        <th>Office In Time</th>
-                                        <th>In Time</th>
-                                        <th>In Flag</th>
-                                        <th>Office Out Time</th>
-                                        <th>Out Time</th>
-                                        <th>Out Flag</th>
-                                        <th>OT Hours</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <t t-set="total" t-value="0"/>
-                                    <t t-set="p" t-value="0"/>
-                                    <t t-set="leave" t-value="0"/>
-                                    <t t-set="a" t-value="0"/>
-                                    <t t-set="f" t-value="0"/>
-                                    <t t-set="l" t-value="0"/>
-                                    <t t-set="h" t-value="0"/>
-                                    <t t-set="od" t-value="0"/>
-                                    <t t-set="nw" t-value="0"/>
-                                    <t t-set="co" t-value="0"/>
-                                    <t t-set="to" t-value="0"/>
-                                    <t t-set="eo" t-value="0"/>
-                                    <t t-set="po" t-value="0"/>
-                                    <t t-set="lw" t-value="0"/>
-                                    <t t-set="aj" t-value="0"/>
-
-                                    <tr t-foreach="alldays" t-as="ald">
-                                        <tr t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att" style="border: 1pt solid black;border-collapse:separate;">
-                                            <t t-set="line_style" t-value="'margin-bottom:0pt;margin-top:0pt;max-height:14pt;'"/>
-                                            <t t-if="att.inFlag == 'A'">
-                                                <t t-set="line_style" t-value="'color:red;'"/>
-                                                <t t-set="a" t-value="a+1"/>
-                                            </t>
-                                            <t t-if="att.attDate != ''">
-
-                                                <t t-set="total" t-value="total+1"/>
-                                            </t>
-                                            <t t-if="att.outFlag == 'A'">
-                                                <t t-set="line_style" t-value="'color:red;'"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'F'">
-                                                <t t-set="line_style" t-value="'color:green;'"/>
-                                                <t t-set="f" t-value="f+1"/>
-                                            </t>
-                                            <t t-if="att.outFlag == 'F'">
-                                                <t t-set="line_style" t-value="'color:green;'"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'P'">
-                                                <t t-set="p" t-value="p+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'leave'">
-                                                <t t-set="leave" t-value="leave+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'L'">
-                                                <t t-set="l" t-value="l+1"/>
-                                                <t t-set="p" t-value="p+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'H'">
-                                                <t t-set="h" t-value="h+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'OD'">
-                                                <t t-set="od" t-value="od+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'X'">
-                                                <t t-set="nw" t-value="nw+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'CO'">
-                                                <t t-set="co" t-value="co+1"/>
-                                            </t>
-                                            <t t-if="att.outFlag == 'TO'">
-                                                <t t-set="to" t-value="to+1"/>
-                                            </t>
-                                            <t t-if="att.outFlag == 'EO'">
-                                                <t t-set="eo" t-value="eo+1"/>
-                                            </t>
-                                            <t t-if="att.outFlag == 'PO'">
-                                                <t t-set="po" t-value="po+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'LW'">
-                                                <t t-set="lw" t-value="lw+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'AJ'">
-                                                <t t-set="aj" t-value="aj+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'SL'">
-                                                <t t-set="leave" t-value="leave+1"/>
-                                            </t>
-                                            <t t-if="att.inFlag == 'CL'">
-                                                <t t-set="leave" t-value="leave+1"/>
-                                            </t>
-                                            <td>
-                                                <div t-att-style="line_style" align="center">
-                                                    <span t-field="att.attDate"/>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div t-att-style="line_style" align="center">
-                                                    <span t-esc="att['inTime']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div t-att-style="line_style" t-if="att.inHour != 0.0" align="center">
-                                                    <span t-esc="att['inHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div t-att-style="line_style" align="center">
-                                                    <span t-esc="att['inFlag']"/>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div t-att-style="line_style" align="center">
-                                                    <span t-esc="att['outTime']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div t-att-style="line_style" t-if="att.outHour != 0.0" align="center">
-                                                    <span t-esc="att['outHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div t-att-style="line_style" align="center">
-                                                    <span t-esc="att['outFlag']"/>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div t-att-style="line_style" align="center">
-                                                    <span t-esc="att['otHours']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row justify-content-end" style="margin-bottom:0pt;margin-top:0pt;">
-                            <div class="col-2" style="margin-bottom:0pt;margin-top:0pt;">
-                                <table class="table table-sm text-nowrap" style="font-size:10px; table-layout:fixed; margin-bottom:0pt;margin-top:0pt;">
-                                    <tr>
-                                        <td class="text-center">
-                                          <strong>Total OT :</strong>
-                                        </td>
-                                        <td class="text-left">
-                                          <strong>
-                                            <span t-esc="emp[8]" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                          </strong>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>                           
-
-                        <div class="row table-bordered mt-2" id="last" style="font-size:11px;justify-content:center;border:1pt solid black;">
-                            <div class="col-2">
-                                <span class="small">Total
-                                </span>
-                                <br/>
-                                <span class="small">Present
-                                </span>
-                                <br/>
-                                <span class="small">Leave
-                                </span>
-                                <br/>
-                                <span class="small">Absent
-                                </span>
-                                <br/>
-                                <span class="small">Friday
-                                </span>
-                                <br/>
-                            </div>
-                            <div class="col-2">
-                                <span class="small">:
-                                    <strong><span t-esc="total"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="p"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="leave"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="a"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="f"/></strong>
-                                </span>
-                                <br/>
-                            </div>                            
-                            <div class="col-2">
-                                <span class="small">Late
-                                </span>
-                                <br/>
-                                <span class="small">Holidays
-                                </span>
-                                <br/>
-                                <span class="small">Outside Duty
-                                </span>
-                                <br/>
-                                <span class="small">Not Working
-                                </span>
-                                <br/>
-                                <span class="small">C-Off
-                                </span>
-                                <br/>
-                            </div>
-                            <div class="col-2">
-                                <span class="small">:
-                                    <strong><span t-esc="l"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="h"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="od"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="nw"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="co"/></strong>
-                                </span>
-                                <br/>
-                            </div>                            
-                            <div class="col-2">
-                                <span class="small">Timely Out
-                                </span>
-                                <br/>
-                                <span class="small">Early Out
-                                </span>
-                                <br/>
-                                <span class="small">Pending Out
-                                </span>
-                                <br/>
-                                <span class="small">Leave Without Pay
-                                </span>
-                                <br/>
-                                <span class="small">Adjustment Days
-                                </span>
-                                <br/>
-                            </div>
-                            <div class="col-2">
-                                <span class="small">:
-                                    <strong><span t-esc="to"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="eo"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="po"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="lw"/></strong>
-                                </span>
-                                <br/>
-                                <span class="small">:
-                                    <strong><span t-esc="aj"/></strong>
-                                </span>
-                                <br/>
-                            </div>                            
-                        </div>
-                    </div>
+                <div class="text-center mb-3 mt-3" style="font-size: 16px">
+                    <i><strong>(<span t-esc="stdate[0]"/> To <span t-esc="lsdate[0]"/>) SALARY COST REPORT</strong></i>
                 </div>
+                
+                <div class="container">
+                <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
+                    <thead>
+                        <tr align="center" style="background-color: orange;">
+                            <th colspan="2">Department</th>
+                            <th colspan="2">Section</th>
+                            <th>Total Head</th>
+                            <th>Salary Cost</th>
+                            <th>OT Cost</th>
+                            <th>Total Cost</th>
+                            <th>Remarks</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <t t-set="intotal_head" t-value="0"/>
+                        <t t-set="intotal_employee_gross" t-value="0"/>
+                        <t t-set="intotal_employee_ot_cost" t-value="0"/>
+                        <t t-set="intotal_cost" t-value="0"/>
+                        
+                        <t t-foreach="dpt" t-as="dp">
+                            <t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
+                                <t t-set="total_sec_employee" t-value="0"/>
+                                <t t-set="employee_basic" t-value="0"/>
+                                <t t-set="employee_ot_cost" t-value="0"/>
+                                <t t-set="total_employee_ot_cost" t-value="0"/>
+                                <t t-set="employee_gross" t-value="0"/>
+                                <t t-set="total_employee_gross" t-value="0"/>
+                                <t t-set="total_cost" t-value="0"/>
+
+                                <tr align="center" style="font-size:7px;border: 1pt solid black;border-collapse:separate;">
+                                    <td colspan="2">
+                                        <span t-esc="dp.name" style="color:  #cc7000"/>
+                                    </td>
+                                    <td colspan="2">
+                                        <span t-esc="se.name" style="color:  #cc7000"/>
+                                    </td>
+                                    <t t-foreach="datas" t-as="emp">
+                                        <t t-if="emp[9] == se.id">
+                                            
+
+                                            <t t-foreach="alldays" t-as="ald">
+                                                <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
+
+                                                    <t t-if="att.inFlag == 'P' or att.inFlag == 'L'">
+                                                       <t t-set="total_sec_employee" t-value="total_sec_employee+1"/>
+                                                       <t t-set="employee_basic" t-value="emp[10]"/>
+                                                       <t t-set="employee_ot_cost" t-value="(((emp[10]/208)*2)*emp[8])"/>
+                                                       <t t-set="employee_gross" t-value="emp[10]"/>
+                                                       <t t-set="total_employee_gross" t-value="total_employee_gross+employee_gross"/>
+                                                       <t t-set="total_employee_ot_cost" t-value="total_employee_ot_cost+employee_ot_cost"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </t>
+                                    <td>
+                                        
+                                        <span t-esc="total_sec_employee"/>
+                                        <t t-set="intotal_head" t-value="intotal_head+total_sec_employee"/>
+                                    </td>
+                                    <td>
+                                        
+                                       <span t-esc="total_employee_gross" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                       <t t-set="intotal_employee_gross" t-value="intotal_employee_gross+total_employee_gross"/>
+                                    </td>
+                                    
+                                    <td>
+                                        <span t-esc="total_employee_ot_cost" t-options='{"widget": "float", "precision": 2}'/>
+                                        <t t-set="intotal_employee_ot_cost" t-value="intotal_employee_ot_cost+total_employee_ot_cost"/>
+                                    </td>
+                                    <td>
+                                        <t t-set="total_cost" t-value="((total_employee_gross/26)+total_employee_ot_cost)"/>
+                                        <span t-esc="total_cost" t-options='{"widget": "float", "precision": 2}'/>
+                                        <t t-set="intotal_cost" t-value="intotal_cost+total_cost"/>
+                                        
+                                    </td>
+                                    <td/>
+                                </tr>
+
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+                <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
+                  <tr align="center" style="font-weight: bold; background-color: orange;">
+                  <td colspan="4">Grand Total</td>
+                  
+                  <td><span t-esc="intotal_head"/></td>
+                  
+                  <td><span t-esc="intotal_employee_gross" t-options='{"widget": "float", "precision": 2}'/></td>
+                  <td><span t-esc="intotal_employee_ot_cost" t-options='{"widget": "float", "precision": 2}'/></td>
+                  <td><span t-esc="intotal_cost" t-options='{"widget": "float", "precision": 2}'/></td>
+                  
+                  <td/>
+                  </tr>
+                </table>
+
+              </div>
+              
+            </div>
           </t>
         </t>
-      </t>
+     
     </template>
 
 </odoo>

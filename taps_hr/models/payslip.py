@@ -579,7 +579,10 @@ class HrPayslipRun(models.Model):
             self.write({'state' : 'close'})
 
     def action_validate(self):
-        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').action_payslip_done()
+        if self.is_bonus == False:
+            att = self.env['hr.attendance'].search([('attDate', '>=', self.date_start),('attDate', '<=', self.date_end)])
+            att.write({'is_lock' : True})
+        self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').action_payslip_done()    
         self.action_close()
 
     def action_open_payslips(self):

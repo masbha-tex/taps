@@ -16,6 +16,48 @@ class PickingVendorNameINT(models.Model):
                 partner = self.env['res.partner'].search([('id', '=', po.partner_id.id)])
                 rec.partner_name = partner.name
             
+    def createupdate_qc(self,id,name,company,state):
+        if "/INT/" in name and state=="assigned":
+            transferdata = self.env['stock.move.line'].search([('picking_id', '=', id)]).sorted(key = 'id')
+            if transferdata:
+                qcdata = self.env['quality.check'].search([('picking_id', '=', id)]).sorted(key = 'id')
+                for tr in transferdata:
+                    qcproduct = qcdata.search([('product_id', '=', tr.product_id.id),('lot_id', '=', False)])
+                    qclotexist = qcdata.search([('product_id', '=', tr.product_id.id),('lot_id', '=', tr.lot_id.id)])
+                    if qcproduct:
+                        qcproduct.write({'lot_id': tr.lot_id.id})
+                    elif qclotexist:
+                        qty=1
+                    else:
+                        qcdata.create({'point_id': 4,
+                                       'quality_state': 'none',
+                                       'product_id': tr.product_id.id,
+                                       'picking_id': id,
+                                       'lot_id': tr.lot_id.id,
+                                       'team_id': 1,
+                                       'company_id': company.id,
+                                       'test_type_id': 3})
+                        
+# name
+# point_id
+# quality_state
+# product_id
+# picking_id
+# lot_id
+# team_id
+# company_id
+# test_type_id
+# create_uid
+# create_date
+# write_uid
+# write_date
+# measure
+# measure_success
+# x_studio_source_po
+# x_studio_schedule_po_date
+# x_studio_sample_qty                        
+                    
+                    
         
 
 

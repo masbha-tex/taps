@@ -1,10 +1,11 @@
 import pytz
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 from datetime import timedelta, datetime, time
 import datetime
 from odoo.tools import format_datetime
 from dateutil.relativedelta import relativedelta
+import warnings
 
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
@@ -19,8 +20,24 @@ class HrAttendance(models.Model):
     outFlag = fields.Char("Out-Flag", readonly=True)
     otHours = fields.Float(string = "OT Hours")
     check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
+    is_lock = fields.Boolean(readonly=False, default=False)
+    
+#     ad_in = fields.Float(string = "IN", compute="_calculate_inout")
+#     ad_out = fields.Float(string = "OUT", compute="_calculate_inout")
     
     
+    
+#     @api.model
+#     def create(self,vals):
+
+#     @api.onchange('ad_in','ad_out')
+#     def _calculate_inout(self):
+#         for inout in self:
+# #             raise UserError((inout.ad_in))
+#             inout.ad_in = 12.133333333333
+#             inout.ad_out = 12.133333333333
+        
+
     
     def _calculate_ot(self,att_date,emp_id,inTime,outTime,inHour,worked_hours):
          
@@ -310,11 +327,16 @@ class HrAttendance(models.Model):
         """ verifies if check_in is earlier than check_out. """
         pass
 
-    @api.constrains('check_in', 'check_out', 'employee_id')
+    @api.constrains('check_in', 'check_out', 'employee_id', 'attDate', 'ad_in', 'ad_out')
     def _check_validity(self):
         """ Verifies the validity of the attendance record compared to the others from the same employee.
             For the same employee we must have :
                 * maximum 1 "open" attendance record (without check_out)
                 * no overlapping time slices with previous employee records
         """
-        pass
+        for attendance in self:
+            if attendance.is_lock == True:
+                raise Warning(_('This Attendance is lock'))
+                
+                
+            

@@ -2,23 +2,22 @@
 <odoo>
     <template id="monthly_manhours_pdf_template">
       <t t-call="web.html_container">
-<!--         <t t-foreach="datas" t-as="emp"> -->
           <t t-call="web.external_layout">
              <div class="page">
                
                 <div class="container">
                   
-                  <h4 class="text-right">
-                    <strong><span t-esc="month[0]"/> Manhours Report</strong>
+                  <div class="text-center mb-3 mt-3" style="font-size: 16px">
+                    <i><strong><span t-esc="month[0]"/> Manhours Report</strong></i>
                 
-                  </h4>
+                  </div>
                 </div>
                 <div class="container">
                 
                 <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
                     <thead style="font-size:7px;">
                         <tr align="center" style="background-color: orange;">
-                            <th>Section Name</th>
+                            <th colspan="3">Section Name</th>
                             <th>Total Worker</th>
                             <th>Total Working Days</th>
                             <th>Total Duty Hours</th>
@@ -47,9 +46,9 @@
                                 <t t-set="total_duty_hours" t-value="0"/>
                                 <t t-set="total_working_hours" t-value="0"/>
 
-                                <tr align="center">
-                                    <td>
-                                        <span t-esc="se.name" style="font-weight: bold"/>
+                                <tr align="center" style="font-size:7px;border: 1pt solid black;border-collapse:separate;">
+                                    <td colspan="3">
+                                        <span t-esc="se.name" style="font-weight: bold;color: #cc7000"/>
                                     </td>
                                     <t t-foreach="datas" t-as="emp">
                                         <t t-if="emp[9] == se.id">
@@ -63,7 +62,7 @@
 
                                                         <t t-set="total_working_days" t-value="total_working_days+1"/>
                                                     </t>
-                                                    <t t-if="att.inFlag == 'P' or att.inFlag == 'L'">
+                                                    <t t-if="att.inFlag == 'P' or att.inFlag == 'L' or att.inFlag == 'HP' or att.inFlag == 'FP'">
                                                         <!--<t t-set="total_sec_employee" t-value="total_sec_employee+1"/>-->
                                                         <t t-set="total_ot_hours" t-value="total_ot_hours+emp[8]"/>
                                                         <t t-set="total_duty_hours" t-value="total_duty_hours+emp[10]"/>
@@ -103,7 +102,7 @@
                                         <span t-esc="monthly_head_count/total_working_days" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
                                         <t t-set="intotal_daily_head_count" t-value="intotal_daily_head_count+intotal_monthly_head_count"/>
                                     </td>
-                                    <td></td>
+                                    <td/>
                                   
                                 </tr>
 
@@ -113,7 +112,7 @@
                 </table>
                 <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
                   <tr align="center" style="font-weight: bold; background-color: orange;">
-                  <td>Grand Total</td>
+                  <td colspan="3">Grand Total</td>
                   <td><span t-esc="intotal_employee"/></td>
                   <td><span t-esc="total_working_days"/></td>
                   <td><span t-esc="intotal_duty_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
@@ -121,14 +120,14 @@
                   <td><span t-esc="intotal_working_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
                   <td><span t-esc="intotal_monthly_head_count" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
                   <td><span t-esc="intotal_daily_head_count" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
-                  <td></td>
+                  <td/>
                   </tr>
                 </table>
 
               </div>
             </div>
           </t>
-<!--         </t> -->
+
       </t>
     </template>
 

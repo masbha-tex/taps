@@ -5,14 +5,14 @@
 <!--         <t t-foreach="datas" t-as="emp"> -->
           <t t-call="web.external_layout">
              <div class="page">
-                <h4 class="text-center">
-                    <strong>(<span t-esc="stdate[0]"/> To <span t-esc="lsdate[0]"/>) Manhours Report</strong>
-                </h4>
+                <div class="text-center mb-3 mt-3" style="font-size: 16px">
+                    <i><strong>(<span t-esc="stdate[0]"/> To <span t-esc="lsdate[0]"/>) Manhours Report</strong></i>
+                </div>
                 <div class="container">
                 <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
                     <thead style="font-size:7px;">
                         <tr align="center" style="background-color: orange;">
-                            <th>Section Name</th>
+                            <th colspan="3">Section Name</th>
                             <th>Total Worker Present</th>
                             <th>Persentage</th>
                             <th>Total Duty Hours</th>
@@ -35,8 +35,8 @@
                                 <t t-set="total_duty_hours" t-value="0"/>
                                 <t t-set="total_working_hours" t-value="0"/>
 
-                                <tr align="center">
-                                    <td>
+                                <tr align="center" style="border: 1pt solid black;border-collapse:separate;">
+                                    <td colspan="3">
                                         <span t-esc="se.name" style="color:  #cc7000"/>
                                     </td>
                                     <t t-foreach="datas" t-as="emp">
@@ -46,7 +46,7 @@
                                             <t t-foreach="alldays" t-as="ald">
                                                 <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
 
-                                                    <t t-if="att.inFlag == 'P' or att.inFlag == 'L'">
+                                                    <t t-if="att.inFlag == 'P' or att.inFlag == 'L' or att.inFlag == 'HP' or att.inFlag == 'FP'">
                                                         <t t-set="total_sec_employee" t-value="total_sec_employee+1"/>
                                                         <t t-set="total_ot_hours" t-value="total_ot_hours+emp[8]"/>
                                                         <t t-set="total_duty_hours" t-value="total_duty_hours+emp[10]"/>
@@ -86,13 +86,13 @@
                 </table>
                 <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
                   <tr align="center" style="font-weight: bold; background-color: orange;">
-                  <td>Grand Total</td>
+                  <td colspan="3">Grand Total</td>
                   <td><span t-esc="intotal_employee"/></td>
-                  <td></td>
+                  <td/>
                   <td><span t-esc="intotal_duty_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
                   <td><span t-esc="intotal_ot_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
                   <td><span t-esc="intotal_working_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
-                  <td></td>
+                  <td/>
                   </tr>
                 </table>
 

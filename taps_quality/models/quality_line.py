@@ -17,7 +17,7 @@ class QualityCheck(models.Model):
 #         ('pass', 'Passed'),
 #         ('fail', 'Failed')], string='Status', tracking=True,
 #         default='none', copy=False)
-    quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('confirm', 'Unit Head Approval'),('fail',)])
+    quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('confirm', 'Unit Head Approval'),('refuse', 'Refuse'),('fail',)])
 
     po_qty = fields.Float(compute='_compute_partner_id', string='PO Qty', readonly=True)
     receive_qty = fields.Float(compute='_compute_partner_id', string='Receive Qty', readonly=True)
@@ -26,7 +26,7 @@ class QualityCheck(models.Model):
     
     
 #     def compute_po_qty(self):
-#         for rec in self:
+#         for rec in self: 
 #             data = self.env['purchase.order'].search([('name','=',rec.x_studio_source_po)])
 #             rec.partner_name = data.partner_id.name
     
@@ -39,7 +39,7 @@ class QualityCheck(models.Model):
             dataline = self.env['purchase.order.line'].search([('order_id','=',data.id),('product_id','=',rec.product_id.id)])
             rec.po_qty = sum(dataline.mapped('product_qty'))
             #raise UserError((data.id,rec.picking_id.id,rec.product_id.id))
-            receive_line = self.env['stock.move.line'].search([('picking_id','=',rec.picking_id.id),('product_id','=',rec.product_id.id)])
+            receive_line = self.env['stock.move.line'].search([('picking_id','=',rec.picking_id.id),('product_id','=',rec.product_id.id),('lot_id','=',rec.lot_id.id)])
             rec.receive_qty = sum(receive_line.mapped('product_uom_qty'))
 
 #     raise_deviation check_deviation informed_deviation confirm_deviation
@@ -74,7 +74,15 @@ class QualityCheck(models.Model):
                     'control_date': datetime.now()})
         if self.env.context.get('no_redirect'):
             return True
-        return self.redirect_after_pass_fail()    
+        return self.redirect_after_pass_fail()
+
+    def refuse_deviation(self):
+        self.write({'quality_state': 'refuse',
+                    'user_id': self.env.user.id,
+                    'control_date': datetime.now()})
+        if self.env.context.get('no_redirect'):
+            return True
+        return self.redirect_after_pass_fail()
     
 
 #    quality_category = fields.Selection([
