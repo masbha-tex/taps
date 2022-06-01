@@ -22,10 +22,10 @@ class HrAttendance(models.Model):
     check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
     is_lock = fields.Boolean(readonly=False, default=False)
     
-#     ad_in = fields.Float(string = "IN", compute="_calculate_inout")
-#     ad_out = fields.Float(string = "OUT", compute="_calculate_inout")
+#     ad_in = fields.Float(string = "IN")
+#     ad_out = fields.Float(string = "OUT")
     
-    
+    #, compute="_calculate_inout"
     
 #     @api.model
 #     def create(self,vals):

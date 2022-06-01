@@ -29,7 +29,8 @@ class PickingVendorNameINT(models.Model):
                     elif qclotexist:
                         qty=1
                     else:
-                        qcdata.create({'point_id': 4,
+                        qcpoint = self.env['quality.point'].search([('company_id', '=', company.id)]).sorted(key = 'id')[:1]
+                        qcdata.create({'point_id': qcpoint.id,
                                        'quality_state': 'none',
                                        'product_id': tr.product_id.id,
                                        'picking_id': id,
