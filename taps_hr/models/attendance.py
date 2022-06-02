@@ -85,12 +85,7 @@ class HrAttendance(models.Model):
                 out_dttime = chkout_datetime - timedelta(hours=6)
                 if out_dttime<inout.check_in:
                     out_dttime = out_dttime + timedelta(days=1)
-<<<<<<< HEAD
                 inout.check_out = out_dttime
-
-=======
-                inout.check_out = out_dttime#chkout_datetime - timedelta(hours=6)
->>>>>>> d33e0a73eb9e5d06dcb550148aeabdfd3a22bb2c
     
     def _calculate_ot(self,att_date,emp_id,inTime,outTime,inHour,worked_hours):
          
