@@ -63,12 +63,12 @@ class StockForecastReport(models.TransientModel):
         return val
     
     def getreceive_qty(self,productid,from_date,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('quantity', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%')])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('quantity', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%'),('description','not like','%/MR/%')])
         qty = sum(stock_details.mapped('quantity'))
         return qty
     
     def getreceive_val(self,productid,from_date,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('value', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%'),('description','not like','%LC/%')])
+        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('value', '>=', 0),('schedule_date', '>=', from_date),('schedule_date', '<=', to_date),('description','not like','%Product Quantity Updated%'),('description','not like','%/MR/%'),('description','not like','%LC/%')])
         val = sum(stock_details.mapped('value'))
         
         landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '>=', from_date.date()),('date', '<=', to_date.date())])

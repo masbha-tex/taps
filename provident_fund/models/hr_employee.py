@@ -7,6 +7,14 @@ class HrEmployeePrivate(models.Model):
 
     providient_pay_line_ids = fields.One2many('hr.payslip.line', 'employee_id', string='', domain=[('salary_rule_id.is_providient_found', '=', 'True'), ('slip_id.state', '=', 'done')])
     contribution_sum = fields.Float("Provident Fund Contribution", compute='_compute_contribution_sum')
+    
+    
 
     def _compute_contribution_sum(self):
-        self.contribution_sum = abs(sum(self.providient_pay_line_ids.mapped('total')))
+        odoo_pf = abs(sum(self.providient_pay_line_ids.mapped('total')))
+        tms_pf_record = self.env['provident.fund.line'].search([('employee_id', '=', self.id)])
+        tms_pf = 0
+        if tms_pf_record:
+            tms_pf = abs(sum(tms_pf_record.mapped('pf_amount')))
+        self.contribution_sum = odoo_pf+tms_pf
+        

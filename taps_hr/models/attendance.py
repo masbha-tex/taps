@@ -22,22 +22,70 @@ class HrAttendance(models.Model):
     check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
     is_lock = fields.Boolean(readonly=False, default=False)
     
-#     ad_in = fields.Float(string = "IN")
-#     ad_out = fields.Float(string = "OUT")
+    ad_in = fields.Float(string = "IN")
+    ad_out = fields.Float(string = "OUT")
     
     #, compute="_calculate_inout"
     
 #     @api.model
 #     def create(self,vals):
 
-#     @api.onchange('ad_in','ad_out')
-#     def _calculate_inout(self):
-#         for inout in self:
-# #             raise UserError((inout.ad_in))
-#             inout.ad_in = 12.133333333333
-#             inout.ad_out = 12.133333333333
-        
-
+    @api.onchange('ad_in')
+    def _calculate_in(self):
+        for inout in self:
+            #raise UserError((len(str(inout.ad_in))-2))
+            ac_time_len = len(str(inout.ad_in))-2
+            time_len = len(str(inout.ad_in))-2
+            #raise UserError((time_len))
+            if time_len == 3:
+                time_len = 4
+            #raise UserError((time_len))
+            #raise UserError((inout.ad_in))
+            if time_len<4:
+                raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
+            if time_len>4:
+                raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
+            if time_len==4:
+                str_time = str(inout.ad_in).rpartition('.')[0]
+                if ac_time_len == 3:
+                    str_time = '0'+str(inout.ad_in).rpartition('.')[0]
+                hh_ = str_time[0:2]
+                mm_ = str_time[2:4]
+                int_hh = float(int(hh_))
+                int_mm = float(int(mm_))
+                mm_calculate = int_mm/100
+                total_time = int_hh+ ((mm_calculate/60)*100)
+                inout.ad_in = total_time
+                chkin_datetime = datetime.datetime.fromordinal(inout.attDate.toordinal()) + datetime.timedelta(seconds=total_time*3600)
+                inout.check_in = chkin_datetime - timedelta(hours=6)
+    
+    @api.onchange('ad_out')
+    def _calculate_out(self):
+        for inout in self:
+            ac_time_len = len(str(inout.ad_out))-2
+            time_len = len(str(inout.ad_out))-2
+            if time_len == 3:
+                time_len = 4
+            if time_len<4:
+                raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
+            if time_len>4:
+                raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
+            if time_len==4:
+                str_time = str(inout.ad_out).rpartition('.')[0]
+                if ac_time_len == 3:
+                    str_time = '0'+str(inout.ad_out).rpartition('.')[0]
+                hh_ = str_time[0:2]
+                mm_ = str_time[2:4]
+                int_hh = float(int(hh_))
+                int_mm = float(int(mm_))
+                mm_calculate = int_mm/100
+                total_time = int_hh+ ((mm_calculate/60)*100)
+                inout.ad_out = total_time
+                chkout_datetime = datetime.datetime.fromordinal(inout.attDate.toordinal()) + datetime.timedelta(seconds=total_time*3600)
+                out_dttime = chkout_datetime - timedelta(hours=6)
+                if out_dttime<inout.check_in:
+                    out_dttime = out_dttime + timedelta(days=1)
+                inout.check_out = out_dttime#chkout_datetime - timedelta(hours=6)
     
     def _calculate_ot(self,att_date,emp_id,inTime,outTime,inHour,worked_hours):
          
@@ -327,7 +375,7 @@ class HrAttendance(models.Model):
         """ verifies if check_in is earlier than check_out. """
         pass
 
-    @api.constrains('check_in', 'check_out', 'employee_id', 'attDate', 'ad_in', 'ad_out')
+    @api.constrains('check_in', 'check_out', 'employee_id', 'attDate')
     def _check_validity(self):
         """ Verifies the validity of the attendance record compared to the others from the same employee.
             For the same employee we must have :

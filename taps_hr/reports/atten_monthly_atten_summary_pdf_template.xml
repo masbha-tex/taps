@@ -203,7 +203,7 @@
                                                         		
                                                         		
                                                         		<t t-set="inTime" t-value="0.0"/>
-                                                        		<t t-set="h" t-value="h+1"/>
+                                                        		<!--<t t-set="h" t-value="h+1"/>-->
                                                         		<!--<t t-set="c_flag" t-value="H"/>-->
                                                         	</t>
                                                         	<t t-if="att.inFlag == 'FP'">
@@ -211,7 +211,7 @@
                                                         		<t t-set="inTime" t-value="0.0"/>
                                                         		<!--<t t-set="c_flag" t-value="F"/>-->
                                                         		<t t-set="line_style" t-value="'color:green;'"/>
-                                                        		<t t-set="f" t-value="f+1"/>
+                                                        		<!--<t t-set="f" t-value="f+1"/>-->
                                                         	</t>
                                                                                                         
                                                         </t>

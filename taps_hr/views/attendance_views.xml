@@ -13,8 +13,8 @@
                   <field name="inTime" widget="float_time"/>
                   <field name="inFlag"/>
                   <field name="inHour" widget="float_time"/>
-<!--                   <field name="ad_in" widget="float_time"/>
-                  <field name="ad_out" widget="float_time"/> -->
+                  <field name="ad_in" widget="float_time"/>
+                  <field name="ad_out" widget="float_time"/>
               </field>
               <xpath expr="//field[@name='check_in']" position="attributes">
                   <attribute name="groups">hr.group_hr_user</attribute>
