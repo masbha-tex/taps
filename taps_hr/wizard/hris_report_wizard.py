@@ -128,7 +128,7 @@ class HRISPDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': self.employee_id.id,
                         'report_type': self.report_type,
-                        'bank_id': False,
+                        'bank_id': self.bank_id.id,
                         'types': self.types}
 
             if self.mode_type == "company":
@@ -139,7 +139,7 @@ class HRISPDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False,
+                        'bank_id': self.bank_id.id,
                         'types': self.types}
 
             if self.mode_type == "department":
@@ -150,7 +150,7 @@ class HRISPDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False,
+                        'bank_id': self.bank_id.id,
                         'types': self.types}
 
             if self.mode_type == "category":
@@ -161,7 +161,7 @@ class HRISPDFReport(models.TransientModel):
                         'category_id': self.category_id.id, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False,
+                        'bank_id': self.bank_id.id,
                         'types': self.types}
         if self.report_type == 'employee_profile':
             return self.env.ref('taps_hr.action_hris_employee_card_pdf_report').report_action(self, data=data)
@@ -588,6 +588,72 @@ class HRISReportPDF7(models.AbstractModel):
 #             otTotal,
             data.get('date_from'),
             data.get('date_to'),
+        ]
+        common_data.append(common_data)
+        #raise UserError((common_data[2]))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.employee',
+            'docs': docs,
+            'datas': common_data,
+#             'alldays': all_datelist
+        }
+    
+class HRISReportPDF8(models.AbstractModel):
+    _name = 'report.taps_hr.hris_loan_pdf_template'
+    _description = 'HRIS Report Template'     
+
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        
+#         if data.get('bank_id')==False:
+#             domain.append(('code', '=', data.get('report_type')))
+#         if data.get('date_from'):
+#             domain.append(('date_from', '>=', data.get('date_from')))
+#         if data.get('date_to'):
+#             domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('id', '=', data.get('employee_id')))
+#         if data.get('bank_id'):
+#             #str = re.sub("[^0-9]","",data.get('employee_id'))
+#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+         
+            
+        domain.append(('active', 'in',(False,True)))
+        
+        
+           
+        docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
+        domains=[]
+        if data.get('bank_id'):
+            domains.append(('id', '=', data.get('bank_id')))
+        bank = self.env['res.bank'].search(domains)
+        
+        #raise UserError((domains))
+
+#         for details in docs:
+#             bank_name = False
+#             for de in docs:
+#                 otTotal = otTotal + de.total
+       
+        
+        common_data=[]    
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            data.get('date_from'),
+            data.get('date_to'),
+            bank.name,
         ]
         common_data.append(common_data)
         #raise UserError((common_data[2]))

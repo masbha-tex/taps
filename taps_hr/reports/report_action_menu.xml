@@ -137,8 +137,8 @@
             <field name="name">Loan Letter</field>
             <field name="model">hris.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_hr.hris_pdf_template</field>
-            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="report_name">taps_hr.hris_loan_pdf_template</field>
+            <field name="report_file">taps_hr.hris_loan_pdf_template</field>
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
