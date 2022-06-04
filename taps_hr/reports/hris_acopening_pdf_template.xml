@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="acopening_pdf_template">
+      <t t-foreach="docs" t-as="employee">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                   <style>
+                    .joining-letter{
+                    padding:30px 50px;
+                    td,tr{
+                    padding:5px 10px;
+                    }
+                    table{
+                    width:100%
+                    }
+                    
+                    }
+                    
+                </style>
+                    <div class="page">
+                      <div class="joining-letter">
+                        <p style="text-align: center;font-size:20px">
+                            <i><b><u>Account Opening Letter of Introduction</u></b></i>
+                        </p>
+                        <br/>
+                        <br/>
+                        <p> 
+                        <div style="float:right;">
+                          <img style="background-size: 122px;width: 112px;height: 122px;" t-if="employee.image_1920" t-att-src="image_data_uri(employee.image_1920)"/>
+                          
+                            
+                                   
+                        </div>
+                        </p>
+                        <p>Date:
+                            <span t-esc="datas[2]"/>
+                            <br/>
+
+                        </p>
+                        <p>
+                          The Manager<br/>
+                          <span t-esc="datas[4]"/><br/>
+                          Dhaka.<br/>  
+                        </p>
+                        <br/>
+
+                        <p>
+                          <div>
+                            <b>Subject : 
+                                    <u>Payroll Account Opening.</u>
+                                </b>
+                          </div>
+                        </p>
+                        <br/>
+                        <p><div>
+                         Please arrange to open a Payroll Account for the following employee of <strong>"TEX ZIPPERS (BD) LIMITED"</strong>. He/she is a Bangladeshi Citizen.
+His/Her particular information are given below:
+                        </div></p>
+                        <br/>
+
+                        <p>
+                          <div>
+                            <table class="table table-sm table-bordered">
+                              <tbody>
+                              <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Name</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.name"/></td>
+                              </tr>
+                               <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Date of Birth</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.birthday.strftime('%m-%d-%Y')"/></td>
+                              </tr>
+                              <!-- <tr>-->
+                              <!--  <th>Present Address</th>-->
+                              <!--  <td><span t-esc="employee.birthday"/></td>-->
+                              <!--</tr>-->
+                               <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Permanent Adress</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.address_home_id.street"/></td>
+                              </tr>
+                               <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Date of Joinning</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.joining_date.strftime('%m-%d-%Y')"/></td>
+                              </tr>
+                               <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Designation</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.job_id.name"/></td>
+                              </tr>
+                              <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Type of Employment</th>
+                                <td style="border: 1px solid black;"><t t-if="employee.company_id.partner_id =='Contract Employees'">
+                                  <span>Contractual</span>
+                                </t>
+                                <t t-if="employee.company_id.partner_id !='Contract Employees'">
+                                  <span>Regular</span>
+                                </t>
+                                </td>
+                              </tr>
+                              <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Monthly Salary Amount</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.contract_id.wage"/></td>
+                              </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </p>
+                        <br/>
+                        <br/>
+                        <p><div>
+                          __________________________
+                          <br/>
+                          Name <br/>
+                          Designation <br/>
+                          Seal <br/>
+                          
+                        </div></p>
+                      </div>
+
+
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

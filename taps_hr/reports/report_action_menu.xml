@@ -155,6 +155,17 @@
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
 <!--             <field name="default_print_option">print</field> -->
         </record>
+        <record id="action_ac_opening_pdf_report" model="ir.actions.report">
+            <field name="name">Account Opening Letter</field>
+            <field name="model">hris.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.acopening_pdf_template</field>
+            <field name="report_file">taps_hr.acopening_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+<!--             <field name="default_print_option">print</field> -->
+        </record>        
         <record id="action_hris_shift_pdf_report" model="ir.actions.report">
             <field name="name">Shift Schedule Letter</field>
             <field name="model">hris.pdf.report</field>
@@ -266,17 +277,7 @@
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
 <!--             <field name="default_print_option">print</field> -->
         </record>  
-        <record id="action_ac_opening_pdf_report" model="ir.actions.report">
-            <field name="name">Account Opening Letter</field>
-            <field name="model">attendance.pdf.report</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_hr.acopening_pdf_template</field>
-            <field name="report_file">taps_hr.acopening_pdf_template</field>
-            <field name="binding_model_id" ref="model_attendance_pdf_report"/>
-            <field name="binding_type">report</field>
-            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-<!--             <field name="default_print_option">print</field> -->
-        </record>
+
         <record id="action_head_count_pdf_report" model="ir.actions.report">
             <field name="name">Head Count Report</field>
             <field name="model">attendance.pdf.report</field>

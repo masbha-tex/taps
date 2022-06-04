@@ -24,7 +24,6 @@ class AttendancePDFReport(models.TransientModel):
         ('dailyatten_ot',	'Daily Attendance OT'),
         ('dailyatten_ots',	'Daily Attendance with OT'),
         ('daily_manpower',	'Daily Manpower Summary'),
-        ('ac_opening',	'Account Opening Letter'),
         ('head_count',	'Head Count Report'),
         ('payroll_planning', 'Payroll Planning Report'),
         ('monthly_manhours', 'Monthly Manhours Report'),
@@ -182,8 +181,6 @@ class AttendancePDFReport(models.TransientModel):
             return self.env.ref('taps_hr.action_dailyatten_ots_pdf_report').report_action(self, data=data)
         if self.report_type == 'daily_manpower':
             return self.env.ref('taps_hr.action_daily_manpower_pdf_report').report_action(self, data=data)
-        if self.report_type == 'ac_opening':
-            return self.env.ref('taps_hr.action_ac_opening_pdf_report').report_action(self, data=data)
         if self.report_type == 'head_count':
             return self.env.ref('taps_hr.action_head_count_pdf_report').report_action(self, data=data)
         if self.report_type == 'payroll_planning':
@@ -319,78 +316,73 @@ class DailyattenReportPDF(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         domain = []
         if data.get('date_from'):
-            domain.append(('attDate', '>=', data.get('date_from')))
+            domain.append(('activationDate', '>=', data.get('date_from')))
+            
         if data.get('date_to'):
-            domain.append(('attDate', '<=', data.get('date_to')))
+            domain.append(('activationDate', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('name.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
-            domain.append(('department_id.id', '=', data.get('department_id')))
+            domain.append(('name.department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('name.category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.id', '=', data.get('employee_id')))
-        if data.get('atten_type'):
-            if data.get('atten_type')=='p':
-                domain.append(('inFlag', '=', 'P'))
-            if data.get('atten_type')=='l':
-                domain.append(('inFlag', '=', 'L'))
-            if data.get('atten_type')=='a':
-                domain.append(('inFlag', '=', 'A'))
-            if data.get('atten_type')=='fp':
-                domain.append(('inFlag', '=', 'FP'))
-            if data.get('atten_type')=='hp':
-                domain.append(('inFlag', '=', 'HP'))
-            if data.get('atten_type')=='eo':
-                domain.append(('outFlag', '=', 'EO'))
-            if data.get('atten_type')=='po':
-                domain.append(('outFlag', '=', 'PO'))
-            if data.get('atten_type')=='cl':
-                domain.append(('inFlag', '=', 'CL'))
-            if data.get('atten_type')=='sl':
-                domain.append(('inFlag', '=', 'SL'))
-            if data.get('atten_type')=='el':
-                domain.append(('inFlag', '=', 'EL'))
-            if data.get('atten_type')=='ml':
-                domain.append(('inFlag', '=', 'ML'))
-            if data.get('atten_type')=='lw':
-                domain.append(('inFlag', '=', 'LW'))
-            if data.get('atten_type')=='co':
-                domain.append(('inFlag', '=', 'CO'))
-            if data.get('atten_type')=='aj':
-                domain.append(('inFlag', '=', 'AJ'))
-          
-        docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
-        emplist = docs.mapped('employee_id.id')
+            
+            domain.append(('name', '=', data.get('employee_id')))
+        if data.get('types'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            
+            domain.append(('transferGroup.types', '=', data.get('types')))
+            
+        
+        docs = self.env['shift.transfer'].search(domain).sorted(key = 'activationDate', reverse=False)
+        grouplist = docs.mapped('transferGroup.id')
+        transfergroup = self.env['shift.setup'].search([('id', 'in', (grouplist))])
+
+        emplist = docs.mapped('name.id')
+        
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
-        fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
-        lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
         
-        stdate = fst_days.attDate
-        enddate = lst_days.attDate
         
-        all_datelist = []
-        dates = []
-        #raise UserError((docs.id)) 
-        delta = enddate - stdate
-        for i in range(delta.days + 1):
-            day = stdate + timedelta(days=i)
-            dates = [
-                day,
-            ]
-            all_datelist.append(dates)
+#         fst_days = docs.search([('activationDate', '>=', data.get('date_from')),('activationDate', '<=', data.get('date_to'))]).sorted(key = 'activationDate', reverse=False)[:1]
+#         lst_days = docs.search([('activationDate', '>=', data.get('date_from')),('activationDate', '<=', data.get('date_to'))]).sorted(key = 'activationDate', reverse=True)[:1]
+        
+        sectionlist = employee.mapped('department_id.id')
+        
+        section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
+        
+        
+        parentdpt = section.mapped('parent_id.id')
+        department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
+        
+        
+#         stdate = fst_days.activationDate
+#         #raise UserError((stdate))
+#         enddate = lst_days.activationDate
+        
+#         all_datelist = []
+#         dates = []
+#         #raise UserError((docs.id)) 
+#         delta = enddate - stdate       # as timedelta
+#         for i in range(delta.days + 1):
+#             day = stdate + timedelta(days=i)
+#             dates = [
+#                 day,
+#             ]
+#             all_datelist.append(dates)
         
 
         allemp_data = []
+        lstmonths_data = []
         for details in employee:
-            otTotal = 0
-            for de in docs:
-                if details.id == de.employee_id.id:
-                    otTotal = otTotal + de.otHours
+#             otTotal = 0
+#             for de in docs:
+#                 if details.id == de.name.id:
+#                     otTotal = otTotal + de.otHours
             
             emp_data = []
             emp_data = [
@@ -402,16 +394,28 @@ class DailyattenReportPDF(models.AbstractModel):
                 details.department_id.parent_id.name,
                 details.department_id.name,
                 details.job_id.name,
-                otTotal,
+#                 otTotal,
+                details.department_id.id,
             ]
             allemp_data.append(emp_data)
-        #raise UserError(('domain'))
+            
+            
+            lstmonth_data = []
+            lstmonth_data = [
+                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B  %Y'),
+
+                
+            ]
+            lstmonths_data.append(lstmonth_data)
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.attendance',
             'docs': docs,
             'datas': allemp_data,
-            'alldays': all_datelist,
+            'dpt': department,
+            'sec': section,
+            'month': lstmonths_data,
+            'shiftgroup': transfergroup,
             'is_com' : data.get('is_company')
         }
 class DailyattenotReportPDF(models.AbstractModel):
@@ -520,6 +524,7 @@ class DailyattenotReportPDF(models.AbstractModel):
             'alldays': all_datelist,
             'is_com' : data.get('is_company')
         }
+    
 class DailyattenotsReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.dailyattenots_pdf_template'
     _description = 'Dailyattenots Template'      
@@ -704,84 +709,7 @@ class DailymanpowerReportPDF(models.AbstractModel):
             'alldays': all_datelist,
             'is_com' : data.get('is_company')
         }
-class ACopeningReportPDF(models.AbstractModel):
-    _name = 'report.taps_hr.acopening_pdf_template'
-    _description = 'AC opening Template'      
-    
-    def _get_report_values(self, docids, data=None):
-        domain = []
-        if data.get('date_from'):
-            domain.append(('attDate', '>=', data.get('date_from')))
-        if data.get('date_to'):
-            domain.append(('attDate', '<=', data.get('date_to')))
-        if data.get('mode_company_id'):
-            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
-        if data.get('department_id'):
-            #str = re.sub("[^0-9]","",data.get('department_id'))
-            domain.append(('department_id.id', '=', data.get('department_id')))
-        if data.get('category_id'):
-            #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
-        if data.get('employee_id'):
-            #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.id', '=', data.get('employee_id')))
-        
-        #domain.append(('employee_id.active', '=', True))
-        
-        
-        #raise UserError((domain))    
-        docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
-        #raise UserError((docs.id)) 
-        emplist = docs.mapped('employee_id.id')
-        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
-        fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
-        lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
-        
-        stdate = fst_days.attDate
-        enddate = lst_days.attDate
-        
-        all_datelist = []
-        dates = []
-        #raise UserError((docs.id)) 
-        delta = enddate - stdate       # as timedelta
-        for i in range(delta.days + 1):
-            day = stdate + timedelta(days=i)
-            dates = [
-                day,
-            ]
-            all_datelist.append(dates)
-        
 
-        allemp_data = []
-        for details in employee:
-            otTotal = 0
-            for de in docs:
-                if details.id == de.employee_id.id:
-                    otTotal = otTotal + de.otHours
-            
-            emp_data = []
-            emp_data = [
-                data.get('date_from'),
-                data.get('date_to'),
-                details.id,
-                details.emp_id,
-                details.name,
-                details.department_id.parent_id.name,
-                details.department_id.name,
-                details.job_id.name,
-                otTotal,
-            ]
-            allemp_data.append(emp_data)
-        #raise UserError(('domain'))
-        return {
-            'doc_ids': docs.ids,
-            'doc_model': 'hr.attendance',
-            'docs': docs,
-            'datas': allemp_data,
-            'alldays': all_datelist,
-            'is_com' : data.get('is_company')
-        }
 class HeadcountReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.head_count_pdf_template'
     _description = 'Head count Template'      
