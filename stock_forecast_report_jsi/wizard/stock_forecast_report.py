@@ -54,7 +54,7 @@ class StockForecastReport(models.TransientModel):
         if from_date>prev_date:
             stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', prev_date)])#,('description','not like','%LC/%')
             val = sum(stock_details.mapped('value'))
-            stock_details_wolc = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', from_date),('schedule_date', '>', prev_date),('description','not like','%LC/%')])#
+            stock_details_wolc = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', from_date),('schedule_date', '>=', prev_date),('description','not like','%LC/%')])#
             val = val + sum(stock_details_wolc.mapped('value'))
             
             landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '>=', prev_date),('date', '<', from_date.date())])
@@ -113,9 +113,26 @@ class StockForecastReport(models.TransientModel):
         return qty
     
     def getclosing_val(self,productid,to_date):
-        stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<=', to_date)])
-        #,('description','not like','%LC/%')
-        val = sum(stock_details.mapped('value'))
+        prev_date = datetime.strptime('2022-04-01', '%Y-%m-%d')
+        if to_date>prev_date:
+            stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', prev_date)])#,('description','not like','%LC/%')
+            val = sum(stock_details.mapped('value'))
+            stock_details_wolc = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<=', to_date),('schedule_date', '>=', prev_date),('description','not like','%LC/%')])#
+            val = val + sum(stock_details_wolc.mapped('value'))
+            
+            landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '>=', prev_date),('date', '<=', to_date.date())])
+
+            lclist = landedcost.mapped('id')
+            lc_details = self.env['stock.valuation.adjustment.lines'].search([('product_id', '=', productid),('cost_id', 'in', (lclist))])
+            lc_val = 0
+            if len(lc_details)>0:
+                lc_val = sum(lc_details.mapped('additional_landed_cost'))
+                val = val + lc_val
+        
+        else:
+            stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<=', to_date)])
+            #,('description','not like','%LC/%')
+            val = sum(stock_details.mapped('value'))
         return val
         #landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '<', to_date.date())])
         
@@ -208,12 +225,12 @@ class StockForecastReport(models.TransientModel):
                 
                 issued_value = round(abs(issued_value),2)
                 # Prepare Closing Quantity
-                closing_qty = opening_qty + received_qty - issued_qty #self.getclosing_qty(product_id,to_date)# 
+                closing_qty = self.getclosing_qty(product_id,to_date)# opening_qty + received_qty - issued_qty #
                 closing_qty = round(closing_qty,2)
                 if closing_qty<=0:
                     closing_value = 0
                 else:
-                    closing_value = opening_value + received_value - issued_value #self.getclosing_val(product_id,to_date)# 
+                    closing_value = self.getclosing_val(product_id,to_date)# opening_value + received_value - issued_value #
                 closing_value = round(closing_value,2)
                 
                 if abs(abs(opening_qty)+abs(received_qty)+abs(issued_qty))>0:

@@ -8,13 +8,15 @@
                    <style>
                     .joining-letter{
                     padding:30px 50px;
-                    td{
-                    padding:5px 10px
+                    td,tr{
+                    padding:5px 10px;
                     }
                     table{
                     width:100%
                     }
+                    
                     }
+                    
                 </style>
                     <div class="page">
                       <div class="joining-letter">
@@ -23,6 +25,14 @@
                         </p>
                         <br/>
                         <br/>
+                        <p> 
+                        <div style="float:right;">
+                          <img style="background-size: 122px;width: 112px;height: 122px;" t-if="employee.image_1920" t-att-src="image_data_uri(employee.image_1920)"/>
+                          
+                            
+                                   
+                        </div>
+                        </p>
                         <p>Date:
                             <span t-esc="datas[2]"/>
                             <br/>
@@ -44,41 +54,42 @@
                         </p>
                         <br/>
                         <p><div>
-                         Please arrange to open a Payroll Account for the following employee of TEX ZIPPERS (BD) LIMITED. He/she is a Bangladeshi Citizen.
+                         Please arrange to open a Payroll Account for the following employee of <strong>"TEX ZIPPERS (BD) LIMITED"</strong>. He/she is a Bangladeshi Citizen.
 His/Her particular information are given below:
                         </div></p>
                         <br/>
 
                         <p>
                           <div>
-                            <table class="table table-bordered">
-                              <tr>
-                                <th>Name</th>
-                                <td><span t-esc="employee.name"/></td>
+                            <table class="table table-sm table-bordered">
+                              <tbody>
+                              <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Name</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.name"/></td>
                               </tr>
-                               <tr>
-                                <th>Date of Birth</th>
-                                <td><span t-esc="employee.birthday"/></td>
+                               <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Date of Birth</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.birthday.strftime('%m-%d-%Y')"/></td>
                               </tr>
-                               <tr>
-                                <th>Present Address</th>
-                                <td><span t-esc="employee.birthday"/></td>
+                              <!-- <tr>-->
+                              <!--  <th>Present Address</th>-->
+                              <!--  <td><span t-esc="employee.birthday"/></td>-->
+                              <!--</tr>-->
+                               <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Permanent Adress</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.address_home_id.street"/></td>
                               </tr>
-                               <tr>
-                                <th>Permanent Adress</th>
-                                <td><span t-esc="employee.address_home_id.street"/></td>
+                               <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Date of Joinning</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.joining_date.strftime('%m-%d-%Y')"/></td>
                               </tr>
-                               <tr>
-                                <th>Date of Joinning</th>
-                                <td><span t-esc="employee.joining_date"/></td>
+                               <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Designation</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.job_id.name"/></td>
                               </tr>
-                               <tr>
-                                <th>Designation</th>
-                                <td></td>
-                              </tr>
-                              <tr>
-                                <th>Type of Employment</th>
-                                <td><t t-if="employee.company_id.partner_id =='Contract Employees'">
+                              <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Type of Employment</th>
+                                <td style="border: 1px solid black;"><t t-if="employee.company_id.partner_id =='Contract Employees'">
                                   <span>Contractual</span>
                                 </t>
                                 <t t-if="employee.company_id.partner_id !='Contract Employees'">
@@ -86,22 +97,23 @@ His/Her particular information are given below:
                                 </t>
                                 </td>
                               </tr>
-                              <tr>
-                                <th>Monthly Salary Amount</th>
-                                <td><span t-esc="employee.contract_id.wage"/></td>
+                              <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;">Monthly Salary Amount</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.contract_id.wage"/></td>
                               </tr>
+                              </tbody>
                             </table>
                           </div>
                         </p>
                         <br/>
                         <br/>
                         <p><div>
-                          বিনীত নিবেদক-
+                          __________________________
                           <br/>
-                          নাম :<strong t-esc="employee.name"/> <br/>
-                          বিভাগ :  <strong t-esc="employee.department_id.name"/> <br/>
-                          শাখা :  <strong t-esc="employee.job_id.name"/> <br/>
-                          তারিখ :  <strong t-esc="datetime.datetime.now().strftime('%d-%m-%Y')"/> <br/>
+                          Name <br/>
+                          Designation <br/>
+                          Seal <br/>
+                          
                         </div></p>
                       </div>
 

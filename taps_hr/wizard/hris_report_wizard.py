@@ -651,7 +651,7 @@ class HRISReportPDF8(models.AbstractModel):
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
-            data.get('date_from'),
+            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%m-%d-%Y'),
             data.get('date_to'),
             bank.name,
         ]
