@@ -674,6 +674,7 @@ class ACopeningReportPDF(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         domain = []
         
+        
 #         if data.get('bank_id')==False:
 #             domain.append(('code', '=', data.get('report_type')))
 #         if data.get('date_from'):
@@ -719,7 +720,7 @@ class ACopeningReportPDF(models.AbstractModel):
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
-            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%m-%d-%Y'),
+            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%d %b, %Y'),
             data.get('date_to'),
             bank.name,
         ]

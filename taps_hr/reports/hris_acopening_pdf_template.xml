@@ -3,7 +3,7 @@
     <template id="acopening_pdf_template">
       <t t-foreach="docs" t-as="employee">
             <t t-call="web.html_container">
-                <t t-call="web.external_layout">
+                <t t-call="web.basic_layout">
                    <style>
                     .joining-letter{
                     padding:30px 50px;
@@ -19,21 +19,11 @@
                 </style>
                     <div class="page">
                       <div class="joining-letter">
-                        <p style="text-align: center;font-size:20px">
-                            <i><b><u>Account Opening Letter of Introduction</u></b></i>
-                        </p>
                         <br/>
                         <br/>
-                        <p> 
-                        <div style="float:right;">
-                          <img style="background-size: 122px;width: 112px;height: 122px;" t-if="employee.image_1920" t-att-src="image_data_uri(employee.image_1920)"/>
-                          
-                            
-                                   
-                        </div>
-                        </p>
-                        <p>Date:
-                            <span t-esc="datas[2]"/>
+                        <br/>
+                        
+                        <p>Date: <span t-esc="datas[2]"/>
                             <br/>
 
                         </p>
@@ -47,58 +37,105 @@
                         <p>
                           <div>
                             <b>Subject : 
-                                    <u>Payroll Account Opening.</u>
+                                    <u>Payroll Account Opening for Salary Transfer.</u>
                                 </b>
                           </div>
                         </p>
                         <br/>
                         <p><div>
-                         Please arrange to open a Payroll Account for the following employee of <strong>"TEX ZIPPERS (BD) LIMITED"</strong>. He/she is a Bangladeshi Citizen.
+                         Please arrange to open a Payroll Account for the following employee of <strong>TEX ZIPPERS (BD) Ltd</strong>. He/She is a Bangladeshi Citizen.The salary of the below employee would be transferred to the SCB account from 07 onwards.<br/>
+<br/>                            
 His/Her particular information are given below:
                         </div></p>
                         <br/>
 
                         <p>
                           <div>
-                            <table class="table table-sm table-bordered">
+                            <table class="table table-sm table-bordered" style="font-size:12px">
                               <tbody>
                               <tr style="border: 1px solid black;">
-                                <th style="border: 1px solid black;">Name</th>
-                                <td style="border: 1px solid black;"><span t-esc="employee.name"/></td>
+                                <th colspan="2" style="border: 1px solid black;">Name</th>
+                                <td  style="border: 1px solid black;"><span t-esc="employee.name"/></td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
+                              </tr>
+                              <tr style="border: 1px solid black;">
+                                <th colspan="2" style="border: 1px solid black;">Date of Joinning</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/></td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
                               </tr>
                                <tr style="border: 1px solid black;">
-                                <th style="border: 1px solid black;">Date of Birth</th>
-                                <td style="border: 1px solid black;"><span t-esc="employee.birthday.strftime('%m-%d-%Y')"/></td>
+                                <th colspan="2" style="border: 1px solid black;">Designation</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.job_id.name"/></td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
                               </tr>
+                              <tr style="border: 1px solid black;">
+                                <th colspan="2" style="border: 1px solid black;">Employee ID</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.emp_id"/></td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
+                              </tr>
+<!--                                <tr style="border: 1px solid black;">
+                                <th colspan="2" style="border: 1px solid black;">Date of Birth</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.birthday.strftime('%d-%m-%Y')"/></td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
+                              </tr> -->
                               <!-- <tr>-->
                               <!--  <th>Present Address</th>-->
                               <!--  <td><span t-esc="employee.birthday"/></td>-->
                               <!--</tr>-->
-                               <tr style="border: 1px solid black;">
-                                <th style="border: 1px solid black;">Permanent Adress</th>
+<!--                               <tr style="border: 1px solid black;">
+                                <th colspan="2" style="border: 1px solid black;">Permanent Adress</th>
                                 <td style="border: 1px solid black;"><span t-esc="employee.address_home_id.street"/></td>
-                              </tr>
-                               <tr style="border: 1px solid black;">
-                                <th style="border: 1px solid black;">Date of Joinning</th>
-                                <td style="border: 1px solid black;"><span t-esc="employee.joining_date.strftime('%m-%d-%Y')"/></td>
-                              </tr>
-                               <tr style="border: 1px solid black;">
-                                <th style="border: 1px solid black;">Designation</th>
-                                <td style="border: 1px solid black;"><span t-esc="employee.job_id.name"/></td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
+                              </tr> -->
+                              <tr style="border: 1px solid black;">
+                                <th colspan="2" style="border: 1px solid black;">Residence Address</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.address_home_id.street"/></td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
                               </tr>
                               <tr style="border: 1px solid black;">
-                                <th style="border: 1px solid black;">Type of Employment</th>
-                                <td style="border: 1px solid black;"><t t-if="employee.company_id.partner_id =='Contract Employees'">
-                                  <span>Contractual</span>
-                                </t>
-                                <t t-if="employee.company_id.partner_id !='Contract Employees'">
-                                  <span>Regular</span>
-                                </t>
+                                <th colspan="2" style="border: 1px solid black; vertical-align : middle;">Office Address/ Workstation of Customer</th>
+                                <td style="border: 1px solid black;"><span t-esc="employee.address_id.street"/>,<br/>
+                                <span t-esc="employee.address_id.street2"/>, <span t-esc="employee.address_id.city"/>, <span t-esc="employee.address_id.country_id.name"/>.
                                 </td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
+                              </tr>
+                               
+                               
+                              <tr style="border: 1px solid black;">
+                                <th colspan="2" style="border: 1px solid black;">Type of Employment</th>
+                                <td style="border: 1px solid black;">
+                                  <span>Permanent</span>
+                                </td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
                               </tr>
                               <tr style="border: 1px solid black;">
-                                <th style="border: 1px solid black;">Monthly Salary Amount</th>
-                                <td style="border: 1px solid black;"><span t-esc="employee.contract_id.wage"/></td>
+                                <th rowspan="2" colspan="2" style="border: 1px solid black; vertical-align : middle;">Mode of Salary Payment</th>
+                                <td rowspan="1" style="border: 1px solid black;">Account payee in BDT</td>
+                                <td colspan="2" style="border: 1px solid black;"><span t-esc="employee.contract_id.wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/></td>
+                                
+                              </tr>
+                              <tr style="border: 1px solid black;">
+                                <td rowspan="1" style="border: 1px solid black;">Cash amount in BDT 0</td>
+                                <td colspan="2" style="border: 1px solid black;"></td>
+                                
+                              </tr>
+                              <tr style="border: 1px solid black;">
+                                <th rowspan="3" colspan="2" style="border: 1px solid black; vertical-align : middle;">Monthly Salary Amount</th>
+                                <td rowspan="1" style="border: 1px solid black;">Net Fixed Salary-BDT</td>
+                                <td colspan="2" style="border: 1px solid black;"><span t-esc="employee.contract_id.wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/></td>
+                                
+                              </tr>
+                              <tr style="border: 1px solid black;">
+                                <td rowspan="1" style="border: 1px solid black;">Variable Allowance of last month (if any) - BDT</td>
+                                <td colspan="2" style="border: 1px solid black;">
+                                </td>
+                                
+                              </tr>
+                              <tr style="border: 1px solid black;">
+                                <td rowspan="1" style="border: 1px solid black;">Annual Bonus - BDT</td>
+                                <td colspan="2" style="border: 1px solid black;"><span t-esc="(employee.contract_id.basic*2)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                </td>
+                                
                               </tr>
                               </tbody>
                             </table>
@@ -109,9 +146,12 @@ His/Her particular information are given below:
                         <p><div>
                           __________________________
                           <br/>
-                          Name <br/>
-                          Designation <br/>
-                          Seal <br/>
+                          (Authorized Signature)<br/>
+                          Name: <strong>Md. Shahid Hossain</strong><br/>
+                          Designation: <strong>Head of HR, Admin &amp; Compliance</strong><br/>
+                          Department: <strong>HR &amp; Admin</strong><br/>
+                          Official E-mail: <strong>shahid.hossain@texzipperbd.com</strong><br/>
+                          Contact: <strong>+8801918990450</strong><br/>
                           
                         </div></p>
                       </div>

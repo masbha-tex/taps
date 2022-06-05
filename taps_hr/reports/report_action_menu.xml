@@ -163,7 +163,7 @@
             <field name="report_file">taps_hr.acopening_pdf_template</field>
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
-            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+            <field name="paperformat_id" ref="taps_hr.paperformat_acopening_report"/>
 <!--             <field name="default_print_option">print</field> -->
         </record>        
         <record id="action_hris_shift_pdf_report" model="ir.actions.report">
