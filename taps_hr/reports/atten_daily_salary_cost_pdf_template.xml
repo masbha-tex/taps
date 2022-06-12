@@ -1,119 +1,121 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <template id="daily_salary_cost_pdf_template">
-      <t t-call="web.html_container">
-        
-          <t t-call="web.external_layout">
-             <div class="page">
-                <div class="text-center mb-3 mt-3" style="font-size: 16px">
-                    <i><strong>(<span t-esc="stdate[0]"/> To <span t-esc="lsdate[0]"/>) SALARY COST REPORT</strong></i>
-                </div>
-                
-                <div class="container">
-                <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
-                    <thead>
-                        <tr align="center" style="background-color: orange;">
-                            <th colspan="2">Department</th>
-                            <th colspan="2">Section</th>
-                            <th>Total Head</th>
-                            <th>Salary Cost</th>
-                            <th>OT Cost</th>
-                            <th>Total Cost</th>
-                            <th>Remarks</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                        <t t-set="intotal_head" t-value="0"/>
-                        <t t-set="intotal_employee_gross" t-value="0"/>
-                        <t t-set="intotal_employee_ot_cost" t-value="0"/>
-                        <t t-set="intotal_cost" t-value="0"/>
-                        
-                        <t t-foreach="dpt" t-as="dp">
-                            <t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
-                                <t t-set="total_sec_employee" t-value="0"/>
-                                <t t-set="employee_basic" t-value="0"/>
-                                <t t-set="employee_ot_cost" t-value="0"/>
-                                <t t-set="total_employee_ot_cost" t-value="0"/>
-                                <t t-set="employee_gross" t-value="0"/>
-                                <t t-set="total_employee_gross" t-value="0"/>
-                                <t t-set="total_cost" t-value="0"/>
-
-                                <tr align="center" style="font-size:7px;border: 1pt solid black;border-collapse:separate;">
-                                    <td colspan="2">
-                                        <span t-esc="dp.name" style="color:  #cc7000"/>
-                                    </td>
-                                    <td colspan="2">
-                                        <span t-esc="se.name" style="color:  #cc7000"/>
-                                    </td>
-                                    <t t-foreach="datas" t-as="emp">
-                                        <t t-if="emp[9] == se.id">
-                                            
-
-                                            <t t-foreach="alldays" t-as="ald">
-                                                <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
-
-                                                    <t t-if="att.inFlag == 'P' or att.inFlag == 'L'">
-                                                       <t t-set="total_sec_employee" t-value="total_sec_employee+1"/>
-                                                       <t t-set="employee_basic" t-value="emp[10]"/>
-                                                       <t t-set="employee_ot_cost" t-value="(((emp[10]/208)*2)*emp[8])"/>
-                                                       <t t-set="employee_gross" t-value="emp[10]"/>
-                                                       <t t-set="total_employee_gross" t-value="total_employee_gross+employee_gross"/>
-                                                       <t t-set="total_employee_ot_cost" t-value="total_employee_ot_cost+employee_ot_cost"/>
-                                                    </t>
-                                                </t>
-                                            </t>
-                                        </t>
-                                    </t>
-                                    <td>
-                                        
-                                        <span t-esc="total_sec_employee"/>
-                                        <t t-set="intotal_head" t-value="intotal_head+total_sec_employee"/>
-                                    </td>
-                                    <td>
-                                        
-                                       <span t-esc="total_employee_gross" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-                                       <t t-set="intotal_employee_gross" t-value="intotal_employee_gross+total_employee_gross"/>
-                                    </td>
-                                    
-                                    <td>
-                                        <span t-esc="total_employee_ot_cost" t-options='{"widget": "float", "precision": 2}'/>
-                                        <t t-set="intotal_employee_ot_cost" t-value="intotal_employee_ot_cost+total_employee_ot_cost"/>
-                                    </td>
-                                    <td>
-                                        <t t-set="total_cost" t-value="((total_employee_gross/26)+total_employee_ot_cost)"/>
-                                        <span t-esc="total_cost" t-options='{"widget": "float", "precision": 2}'/>
-                                        <t t-set="intotal_cost" t-value="intotal_cost+total_cost"/>
-                                        
-                                    </td>
-                                    <td/>
-                                </tr>
-
-                            </t>
-                        </t>
-                    </tbody>
-                </table>
-                <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
-                  <tr align="center" style="font-weight: bold; background-color: orange;">
-                  <td colspan="4">Grand Total</td>
-                  
-                  <td><span t-esc="intotal_head"/></td>
-                  
-                  <td><span t-esc="intotal_employee_gross" t-options='{"widget": "float", "precision": 2}'/></td>
-                  <td><span t-esc="intotal_employee_ot_cost" t-options='{"widget": "float", "precision": 2}'/></td>
-                  <td><span t-esc="intotal_cost" t-options='{"widget": "float", "precision": 2}'/></td>
-                  
-                  <td/>
-                  </tr>
-                </table>
-
-              </div>
-              
-            </div>
-          </t>
-        </t>
-     
-    </template>
-
+	<template id="daily_salary_cost_pdf_template">
+		<t t-call="web.html_container">
+			<t t-call="web.external_layout">
+				<div class="page">
+					<h4 class="text-right">
+						<i>
+							<strong>Daily Salary Cost Report</strong>
+						</i>
+					</h4>
+					<div class="container">
+						<strong>Date: <span class="text-right" t-esc="stdate[0]" style="color:  #cc7000"/>
+						</strong>
+						<br/>
+						<strong>Employee Category: <span t-esc="category" style="color:  #cc7000"/>
+						</strong>
+						<br/>
+						<br/>
+					</div>
+					<div class="container">
+						<table class="table table-sm" style="font-size:12px; table-layout:fixed; page-break-inside: avoid;">
+							<thead>
+								<tr align="center" style="background-color: orange;">
+									<th colspan="2">Department</th>
+									<th colspan="2">Section</th>
+									<th>Total Head</th>
+									<th>Salary Cost</th>
+									<th>OT Cost</th>
+									<th>Total Cost</th>
+									<th>Remarks</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="intotal_head" t-value="0"/>
+								<t t-set="intotal_employee_gross" t-value="0"/>
+								<t t-set="intotal_employee_ot_cost" t-value="0"/>
+								<t t-set="intotal_cost" t-value="0"/>
+								<t t-foreach="dpt" t-as="dp">
+									<t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
+										<t t-set="total_sec_employee" t-value="0"/>
+										<t t-set="employee_basic" t-value="0"/>
+										<t t-set="employee_ot_cost" t-value="0"/>
+										<t t-set="total_employee_ot_cost" t-value="0"/>
+										<t t-set="employee_gross" t-value="0"/>
+										<t t-set="total_employee_gross" t-value="0"/>
+										<t t-set="total_cost" t-value="0"/>
+										<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
+											<td align="left" colspan="2">
+												<strong>
+													<span t-esc="dp.name"/>
+												</strong>
+											</td>
+											<td align="left" colspan="2">
+												<strong>
+													<span t-esc="se.name"/>
+												</strong>
+											</td>
+											<t t-foreach="datas" t-as="emp">
+												<t t-if="emp[9] == se.id">
+													<t t-foreach="alldays" t-as="ald">
+														<t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
+															<t t-if="att.inFlag == 'P' or att.inFlag == 'L'">
+																<t t-set="total_sec_employee" t-value="total_sec_employee+1"/>
+																<!--<t t-set="employee_basic" t-value="emp[10]"/>-->
+																<t t-set="employee_ot_cost" t-value="(((emp[11]/208)*2)*emp[8])"/>
+																<!--<t t-set="employee_gross" t-value="emp[10]"/>-->
+																<t t-set="total_employee_gross" t-value="total_employee_gross+emp[10]"/>
+																<t t-set="total_employee_ot_cost" t-value="total_employee_ot_cost+employee_ot_cost"/>
+															</t>
+														</t>
+													</t>
+												</t>
+											</t>
+											<td>
+												<span t-esc="total_sec_employee"/>
+												<t t-set="intotal_head" t-value="intotal_head+total_sec_employee"/>
+											</td>
+											<td>
+												<span t-esc="total_employee_gross" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+												<t t-set="intotal_employee_gross" t-value="intotal_employee_gross+total_employee_gross"/>
+											</td>
+											<td>
+												<span t-esc="total_employee_ot_cost" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+												<t t-set="intotal_employee_ot_cost" t-value="intotal_employee_ot_cost+total_employee_ot_cost"/>
+											</td>
+											<td>
+												<t t-set="total_cost" t-value="((total_employee_gross/26)+total_employee_ot_cost)"/>
+												<span t-esc="total_cost" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+												<t t-set="intotal_cost" t-value="intotal_cost+total_cost"/>
+											</td>
+											<td/>
+										</tr>
+									</t>
+								</t>
+							</tbody>
+						</table>
+						<table class="table table-sm" style="font-size:12px; table-layout:fixed; page-break-inside: avoid;">
+							<tr align="center" style="font-weight: bold; background-color: orange;">
+								<td colspan="4">Grand Total</td>
+								<td>
+									<span t-esc="intotal_head"/>
+								</td>
+								<td>
+									<span t-esc="intotal_employee_gross" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+								</td>
+								<td>
+									<span t-esc="intotal_employee_ot_cost" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+								</td>
+								<td>
+									<span t-esc="intotal_cost" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+								</td>
+								<td/>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
 </odoo>

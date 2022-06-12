@@ -55,23 +55,23 @@ His/Her particular information are given below:
                               <tbody>
                               <tr style="border: 1px solid black;">
                                 <th colspan="2" style="border: 1px solid black;">Name</th>
-                                <td  style="border: 1px solid black;"><span t-esc="employee.name"/></td>
-                                <td colspan="2" style="border: 1px solid black;"></td>
+                                <td style="border: 1px solid black;"><span t-esc="employee.name"/></td>
+                                <td colspan="2" style="border: 1px solid black;"/>
                               </tr>
                               <tr style="border: 1px solid black;">
                                 <th colspan="2" style="border: 1px solid black;">Date of Joinning</th>
                                 <td style="border: 1px solid black;"><span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/></td>
-                                <td colspan="2" style="border: 1px solid black;"></td>
+                                <td colspan="2" style="border: 1px solid black;"/>
                               </tr>
                                <tr style="border: 1px solid black;">
                                 <th colspan="2" style="border: 1px solid black;">Designation</th>
                                 <td style="border: 1px solid black;"><span t-esc="employee.job_id.name"/></td>
-                                <td colspan="2" style="border: 1px solid black;"></td>
+                                <td colspan="2" style="border: 1px solid black;"/>
                               </tr>
                               <tr style="border: 1px solid black;">
                                 <th colspan="2" style="border: 1px solid black;">Employee ID</th>
                                 <td style="border: 1px solid black;"><span t-esc="employee.emp_id"/></td>
-                                <td colspan="2" style="border: 1px solid black;"></td>
+                                <td colspan="2" style="border: 1px solid black;"/>
                               </tr>
 <!--                                <tr style="border: 1px solid black;">
                                 <th colspan="2" style="border: 1px solid black;">Date of Birth</th>
@@ -90,14 +90,12 @@ His/Her particular information are given below:
                               <tr style="border: 1px solid black;">
                                 <th colspan="2" style="border: 1px solid black;">Residence Address</th>
                                 <td style="border: 1px solid black;"><span t-esc="employee.address_home_id.street"/></td>
-                                <td colspan="2" style="border: 1px solid black;"></td>
+                                <td colspan="2" style="border: 1px solid black;"/>
                               </tr>
                               <tr style="border: 1px solid black;">
                                 <th colspan="2" style="border: 1px solid black; vertical-align : middle;">Office Address/ Workstation of Customer</th>
-                                <td style="border: 1px solid black;"><span t-esc="employee.address_id.street"/>,<br/>
-                                <span t-esc="employee.address_id.street2"/>, <span t-esc="employee.address_id.city"/>, <span t-esc="employee.address_id.country_id.name"/>.
-                                </td>
-                                <td colspan="2" style="border: 1px solid black;"></td>
+                                <td style="border: 1px solid black;">Plot# 180, 264 &amp; 273, AEPZ, Siddhirganj, Narayanganj.</td>
+                                <td colspan="2" style="border: 1px solid black;"/>
                               </tr>
                                
                                
@@ -106,7 +104,7 @@ His/Her particular information are given below:
                                 <td style="border: 1px solid black;">
                                   <span>Permanent</span>
                                 </td>
-                                <td colspan="2" style="border: 1px solid black;"></td>
+                                <td colspan="2" style="border: 1px solid black;"/>
                               </tr>
                               <tr style="border: 1px solid black;">
                                 <th rowspan="2" colspan="2" style="border: 1px solid black; vertical-align : middle;">Mode of Salary Payment</th>
@@ -116,7 +114,7 @@ His/Her particular information are given below:
                               </tr>
                               <tr style="border: 1px solid black;">
                                 <td rowspan="1" style="border: 1px solid black;">Cash amount in BDT 0</td>
-                                <td colspan="2" style="border: 1px solid black;"></td>
+                                <td colspan="2" style="border: 1px solid black;"/>
                                 
                               </tr>
                               <tr style="border: 1px solid black;">
@@ -143,15 +141,16 @@ His/Her particular information are given below:
                         </p>
                         <br/>
                         <br/>
-                        <p><div>
+                        <br/>
+                        <p><div style="font-size:12px">
                           __________________________
                           <br/>
                           (Authorized Signature)<br/>
-                          Name: <strong>Md. Shahid Hossain</strong><br/>
-                          Designation: <strong>Head of HR, Admin &amp; Compliance</strong><br/>
-                          Department: <strong>HR &amp; Admin</strong><br/>
-                          Official E-mail: <strong>shahid.hossain@texzipperbd.com</strong><br/>
-                          Contact: <strong>+8801918990450</strong><br/>
+                          Name: Md. Shahid Hossain<br/>
+                          Designation: Head of HR, Admin &amp; Compliance<br/>
+                          Department: HR &amp; Admin<br/>
+                          Official E-mail: shahid.hossain@texzipperbd.com<br/>
+                          Contact: +8801918990450<br/>
                           
                         </div></p>
                       </div>

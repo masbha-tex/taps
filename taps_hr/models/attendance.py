@@ -37,6 +37,11 @@ class HrAttendance(models.Model):
             ac_time_len = len(str(inout.ad_in))-2
             time_len = len(str(inout.ad_in))-2
             #raise UserError((time_len))
+            
+            if inout.ad_in == 0:
+                inout.ad_in = 0
+                inout.check_in = 0
+                return
             if time_len == 3:
                 time_len = 4
             #raise UserError((time_len))
@@ -64,10 +69,15 @@ class HrAttendance(models.Model):
         for inout in self:
             ac_time_len = len(str(inout.ad_out))-2
             time_len = len(str(inout.ad_out))-2
+            #raise UserError((time_len))
+            if inout.ad_out == 0:
+                inout.ad_out = 0
+                inout.check_out = 0
+                return
             if time_len == 3:
                 time_len = 4
             if time_len<4:
-                raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
+                raise UserError(('Please Enter Value With 4 Degit ex(0905) ---'))
             if time_len>4:
                 raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
             if time_len==4:
@@ -86,6 +96,7 @@ class HrAttendance(models.Model):
                 if out_dttime<inout.check_in:
                     out_dttime = out_dttime + timedelta(days=1)
                 inout.check_out = out_dttime
+                return
     
     def _calculate_ot(self,att_date,emp_id,inTime,outTime,inHour,worked_hours):
          

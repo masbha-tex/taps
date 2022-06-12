@@ -967,6 +967,17 @@ class MonthlymanhoursReportPDF(models.AbstractModel):
             ]
             lstmonths_data.append(lstmonth_data)
             
+        emp = employee.sorted(key = 'id')[:1]
+
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name
+            
         #raise UserError((section.id, allemp_data[0][9],department.id,section.parent_id.id))    
         return {
             'doc_ids': docs.ids,
@@ -977,6 +988,7 @@ class MonthlymanhoursReportPDF(models.AbstractModel):
             'dpt': department,
             'sec': section,
             'month': lstmonths_data,
+            'category': heading_type,
             'is_com' : data.get('is_company')
         }
 class DailymanhoursReportPDF(models.AbstractModel):
@@ -1080,6 +1092,18 @@ class DailymanhoursReportPDF(models.AbstractModel):
             ]
             lsdate_data.append(lsdate_data)
             
+            
+        emp = employee.sorted(key = 'id')[:1]
+
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name
+            
         #raise UserError((section.id, allemp_data[0][9],department.id,section.parent_id.id))    
         return {
             'doc_ids': docs.ids,
@@ -1091,6 +1115,7 @@ class DailymanhoursReportPDF(models.AbstractModel):
             'sec': section,
             'stdate': stdate_data,
             'lsdate': lsdate_data,
+            'category': heading_type,
             'is_com' : data.get('is_company')
         }
 class DailyotanalysisReportPDF(models.AbstractModel):
@@ -1148,9 +1173,9 @@ class DailyotanalysisReportPDF(models.AbstractModel):
                 domain.append(('inFlag', '=', 'AJ'))        
         
         
-        #raise UserError((domain))    
+#         raise UserError((domain))    
         docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
-        #raise UserError((docs.id)) 
+#         raise UserError((docs.id)) 
         emplist = docs.mapped('employee_id.id')
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
         fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
@@ -1181,6 +1206,9 @@ class DailyotanalysisReportPDF(models.AbstractModel):
 
         allemp_data = []
         lstmonths_data = []
+        stdate_data = []
+        lsdate_data = []
+        heading_type = []
         for details in employee:
             otTotal = 0
             duty_hour = 0
@@ -1204,23 +1232,32 @@ class DailyotanalysisReportPDF(models.AbstractModel):
                 details.contract_id.basic,
             ]
             allemp_data.append(emp_data)
-            
-            
-            stdate_data = []
-            stdate_data = [
+
+        stdate_data = []
+        stdate_data = [
                 datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime("%b %d, %Y"),
                
-            ]
-            stdate_data.append(stdate_data)
-            
-            lsdate_data = []
-            lsdate_data = [
-                
-                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%b %d, %Y'),
+        ]
+        stdate_data.append(stdate_data)
 
-            ]
-            lsdate_data.append(lsdate_data)
-            
+        lsdat_data = []
+        lsdat_data = [
+
+            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%b %d, %Y'),
+
+        ]
+        lsdate_data.append(lsdat_data)
+
+        emp = employee.sorted(key = 'id')[:1]
+
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name            
         #raise UserError((section.id, allemp_data[0][9],department.id,section.parent_id.id))    
         return {
             'doc_ids': docs.ids,
@@ -1232,6 +1269,7 @@ class DailyotanalysisReportPDF(models.AbstractModel):
             'sec': section,
             'stdate': stdate_data,
             'lsdate': lsdate_data,
+            'category':heading_type,
             'is_com' : data.get('is_company')
         }
 class DailyattensummaryReportPDF(models.AbstractModel):
@@ -1759,7 +1797,7 @@ class DailysalarycostReportPDF(models.AbstractModel):
             
             stdate_data = []
             stdate_data = [
-                datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime("%b %d-%Y"),
+                datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime("%b %d, %Y"),
                
             ]
             stdate_data.append(stdate_data)
@@ -1767,10 +1805,22 @@ class DailysalarycostReportPDF(models.AbstractModel):
             lsdate_data = []
             lsdate_data = [
                 
-                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%b %d-%Y'),
+                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%b %d, %Y'),
 
             ]
             lsdate_data.append(lsdate_data)
+            
+            
+        emp = employee.sorted(key = 'id')[:1]
+
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name 
             
         #raise UserError(('domain'))
         return {
@@ -1784,6 +1834,7 @@ class DailysalarycostReportPDF(models.AbstractModel):
             'sec': section,
             'stdate': stdate_data,
             'lsdate': lsdate_data,
+            'category': heading_type,
             'is_com' : data.get('is_company')
             
             

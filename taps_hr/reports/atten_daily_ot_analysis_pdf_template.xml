@@ -1,301 +1,353 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <template id="daily_ot_analysis_pdf_template">
-      <t t-call="web.html_container">
-        
-          <t t-call="web.external_layout">
-             <div class="page">
-                    <h3 class="text-right">
-                        <strong>Daily OT Analysis</strong>
-                    </h3>
-                    <div class="container">
-                <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
-                    <thead style="font-size:7px;">
-                        <tr align="center" style="background-color: orange;">
-                            <th colspan="4" rowspan="2">Section Name</th>
-                            <th rowspan="2" colspan="2">Total Employee</th>
-                            <th rowspan="2" colspan="2">Present</th>
-                            <th rowspan="2" colspan="2">OT Hours</th>
-                            <th rowspan="2" colspan="2">OT Amount</th>
-                            <th colspan="11">Overtime Schedule</th>
-                        </tr>
-                        <tr align="center" style="background-color:#FAD34F;">
-                          <th>No OT</th>
-                          <th>0:30</th>
-                          <th>1:00</th>
-                          <th>1:30</th>
-                          <th>2:00</th>
-                          <th>2:30</th>
-                          <th>3:00</th>
-                          <th>3:30</th>
-                          <th>4:00</th>
-                          <th colspan="2">Above 4:00</th>
-                        </tr>
-                        
-                    </thead>
-                    <tbody>
-                        <t t-set="intotal_employee" t-value="0"/>
-                        <t t-set="intotal_sec_employee" t-value="0"/>
-                        <t t-set="intotal_ot_amount" t-value="0"/>
-                        <t t-set="intotal_ot_hours" t-value="0"/>
-                        <t t-set="intotal_half_ot" t-value="0"/>
-                        <t t-set="intotal_one_ot" t-value="0"/>
-                        <t t-set="intotal_oneHalf_ot" t-value="0"/>
-                        <t t-set="intotal_two_ot" t-value="0"/>
-                        <t t-set="intotal_twoHalf_ot" t-value="0"/>
-                        <t t-set="intotal_three_ot" t-value="0"/>
-                        <t t-set="intotal_threeHalf_ot" t-value="0"/>
-                        <t t-set="intotal_four_ot" t-value="0"/>
-                        <t t-set="intotal_abovefour_ot" t-value="0"/>
-                        <t t-set="intotal_no_ot" t-value="0"/>
-                        
-                        <t t-foreach="dpt" t-as="dp">
-                            <t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
-                                <t t-set="total_employee" t-value="0"/>
-                                <t t-set="total_sec_employee_present" t-value="0"/>
-                                <t t-set="employee_basic" t-value="0"/>
-                                <t t-set="employee_ot_cost" t-value="0"/>
-                                <t t-set="total_employee_ot_cost" t-value="0"/>
-                                <t t-set="total_ot_hours" t-value="0"/>
-                                <t t-set="half_ot" t-value="0"/>
-                                <t t-set="one_ot" t-value="0"/>
-                                <t t-set="oneHalf_ot" t-value="0"/>
-                                <t t-set="two_ot" t-value="0"/>
-                                <t t-set="twoHalf_ot" t-value="0"/>
-                                <t t-set="three_ot" t-value="0"/>
-                                <t t-set="threeHalf_ot" t-value="0"/>
-                                <t t-set="four_ot" t-value="0"/>
-                                <t t-set="abovefour_ot" t-value="0"/>
-                                <t t-set="no_ot" t-value="0"/>
-                                <!--<t t-set="total_duty_hours" t-value="0"/>-->
-                                <!--<t t-set="total_working_hours" t-value="0"/>-->
-                                
-
-                                <tr align="center" style="border: 1pt solid black;border-collapse:separate;">
-                                    <td colspan="4">
-                                        <span t-esc="se.name" style="color:  #cc7000"/>
-                                    </td>
-                                    <t t-foreach="datas" t-as="emp">
-                                        <t t-if="emp[9] == se.id">
-                                            <t t-set="total_employee" t-value="total_employee+1"/>
-
-                                            <t t-foreach="alldays" t-as="ald">
-                                                <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
-
-                                                    <t t-if="att.inFlag == 'P' or att.inFlag == 'L' or att.inFlag == 'HP' or att.inFlag == 'FP'">
-                                                        <t t-set="total_sec_employee_present" t-value="total_sec_employee_present+1"/>
-                                                        <t t-set="total_ot_hours" t-value="total_ot_hours+emp[8]"/>
-                                                        <t t-set="employee_ot_cost" t-value="(((emp[10]/208)*2)*emp[8])"/>
-                                                        <t t-set="total_employee_ot_cost" t-value="total_employee_ot_cost+employee_ot_cost"/>
-                                                        <t t-if="emp[8] &gt;0 and emp[8] &lt;= .5">
-                                                          <t t-set="half_ot" t-value="half_ot+1"/>
-                                                          <t t-set="no_ot" t-value="no_ot+1"/>
-                                                          
-                                                        </t>
-                                                        <t t-if="emp[8] &gt;.5 and emp[8] &lt;= 1">
-                                                          <t t-set="one_ot" t-value="one_ot+1"/>
-                                                          <t t-set="no_ot" t-value="no_ot+1"/>
-                                                        </t>
-                                                        <t t-if="emp[8] &gt;1 and emp[8] &lt;= 1.5">
-                                                          <t t-set="oneHalf_ot" t-value="oneHalf_ot+1"/>
-                                                          <t t-set="no_ot" t-value="no_ot+1"/>
-                                                        </t>
-                                                        <t t-if="emp[8] &gt;1.5 and emp[8] &lt;= 2">
-                                                          <t t-set="two_ot" t-value="two_ot+1"/>
-                                                          <t t-set="no_ot" t-value="no_ot+1"/>
-                                                        </t>
-                                                        <t t-if="emp[8] &gt;2 and emp[8] &lt;= 2.5">
-                                                          <t t-set="twoHalf_ot" t-value="twoHalf_ot+1"/>
-                                                          <t t-set="no_ot" t-value="no_ot+1"/>
-                                                        </t>
-                                                        <t t-if="emp[8] &gt;2.5 and emp[8] &lt;= 3">
-                                                          <t t-set="three_ot" t-value="three_ot+1"/>
-                                                          <t t-set="no_ot" t-value="no_ot+1"/>
-                                                        </t>
-                                                        <t t-if="emp[8] &gt;3 and emp[8] &lt;= 3.5">
-                                                          <t t-set="threeHalf_ot" t-value="threeHalf_ot+1"/>
-                                                          <t t-set="no_ot" t-value="no_ot+1"/>
-                                                        </t>
-                                                        <t t-if="emp[8] &gt;3.5 and emp[8] &lt;= 4">
-                                                          <t t-set="four_ot" t-value="four_ot+1"/>
-                                                          <t t-set="no_ot" t-value="no_ot+1"/>
-                                                        </t>
-                                                        <t t-if="emp[8] &gt;4">
-                                                          <t t-set="abovefour_ot" t-value="abovefour_ot+1"/>
-                                                          <t t-set="no_ot" t-value="no_ot+1"/>
-                                                        </t>
-                                                    </t>
-                                                </t>
-                                            </t>
-                                        </t>
-                                    </t>
-                                    <td colspan="2">
-                                        
-                                        <span t-esc="total_employee"/>
-                                        <t t-set="intotal_employee" t-value="intotal_employee+total_employee"/>
-                                    </td>
-                                    <td colspan="2">
-                                        
-                                        <span t-esc="total_sec_employee_present"/>
-                                        <t t-set="intotal_sec_employee" t-value="intotal_sec_employee + total_sec_employee_present"/>
-                                    </td>
-                                    <td colspan="2">
-                                        <span t-esc="total_ot_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
-                                        <t t-set="intotal_ot_hours" t-value="intotal_ot_hours+total_ot_hours"/>
-                                    </td>
-                                    
-                                    <td colspan="2">
-                                      <span t-esc="total_employee_ot_cost" t-options='{"widget": "float", "precision": 2}'/>
-                                      <t t-set="intotal_ot_amount" t-value="intotal_ot_amount+total_employee_ot_cost"/>
-                                    </td>
-                                    <td style="background-color: #08D6FF;">
-                                      <span t-esc="no_ot"/>
-                                      <t t-set="intotal_no_ot" t-value="intotal_no_ot+no_ot"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="half_ot"/>
-                                        <t t-set="intotal_half_ot" t-value="intotal_half_ot+half_ot"/>
-                                        
-                                    </td>
-                                    <td>
-                                        <span t-esc="one_ot"/>
-                                        <t t-set="intotal_one_ot" t-value="intotal_one_ot+one_ot"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="oneHalf_ot"/>
-                                        <t t-set="intotal_oneHalf_ot" t-value="intotal_oneHalf_ot+oneHalf_ot"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="two_ot"/>
-                                        <t t-set="intotal_two_ot" t-value="intotal_two_ot+two_ot"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="twoHalf_ot"/>
-                                        <t t-set="intotal_twoHalf_ot" t-value="intotal_twoHalf_ot+twoHalf_ot"/>
-                                    </td>
-                                    <td style="background-color: #DDFF08;">
-                                        <span t-esc="three_ot"/>
-                                        <t t-set="intotal_three_ot" t-value="intotal_three_ot+three_ot"/>
-                                    </td>
-                                    <td style="background-color: #DDFF08;">
-                                        <span t-esc="threeHalf_ot"/>
-                                        <t t-set="intotal_threeHalf_ot" t-value="intotal_threeHalf_ot+threeHalf_ot"/>
-                                    </td>
-                                    <td style="background-color: #FF5308;color: white">
-                                        <span t-esc="four_ot"/>
-                                        <t t-set="intotal_four_ot" t-value="intotal_four_ot+four_ot"/>
-                                    </td>
-                                    <td colspan="2" style="background-color: #FF5308; color: white">
-                                        <span t-esc="abovefour_ot"/>
-                                        <t t-set="intotal_abovefour_ot" t-value="intotal_abovefour_ot+abovefour_ot"/>
-                                    </td>
-                                  
-                                </tr>
-                              
-
-                            </t>
-                        </t>
-                    </tbody>
-                </table>
-                <table class="table table-sm" style="font-size:10px; table-layout:fixed; page-break-inside: avoid;">
-                  <tr align="center" style="font-weight: bold; background-color: orange;">
-                  <td colspan="4">Grand Total</td>
-                  <td colspan="2"><span t-esc="intotal_employee"/></td>
-                  <td colspan="2"><span t-esc="intotal_sec_employee"/></td>
-                  <td colspan="2"><span t-esc="intotal_ot_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
-                  <td colspan="2"><span t-esc="intotal_ot_amount" t-options='{"widget": "float", "precision": 2}'/></td>
-                  <td style="background-color: #08D6FF;"><span t-esc="intotal_no_ot"/></td>
-                  <td><span t-esc="intotal_half_ot"/></td>
-                  <td><span t-esc="intotal_one_ot"/></td>
-                  <td><span t-esc="intotal_oneHalf_ot"/></td>
-                  <td><span t-esc="intotal_two_ot"/></td>
-                  <td><span t-esc="intotal_twoHalf_ot"/></td>
-                  <td style="background-color: #DDFF08;"><span t-esc="intotal_three_ot"/></td>
-                  <td style="background-color: #DDFF08;"><span t-esc="intotal_threeHalf_ot"/></td>
-                  <td style="background-color: #FF5308; color: white"><span t-esc="intotal_four_ot"/></td>
-                  <td colspan="2" style="background-color: #FF5308; color: white"><span t-esc="intotal_abovefour_ot"/></td>
-                  </tr>
-                </table>
-                <table align="center" class="table table-sm" style="font-size:10px;">
-                <thead>
-                  <tr align="center" style="font-weight: bold; background-color: orange;">
-                  <th rowspan="2">Overtime Status</th>
-                  <th colspan="2"><span t-esc="stdate[0]"/></th>
-                  </tr>
-                  <tr align="center" style="font-weight: bold; background-color: orange;">
-                    <th>Nos.</th>
-                    <th>%</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;">
-                      <td>Total Employee</td>
-                      <td><span t-esc="intotal_employee"/></td>
-                      <td>100%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #08D6FF;">
-                      <td>No of Overtime</td>
-                      <td><span t-esc="intotal_no_ot"/></td>
-                      <td><span t-esc="((intotal_no_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;">
-                      <td>00:30 Hours Overtime</td>
-                      <td><span t-esc="intotal_half_ot"/></td>
-                      <td><span t-esc="((intotal_half_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;">
-                      <td>01:00 Hours Overtime</td>
-                      <td><span t-esc="intotal_one_ot"/></td>
-                      <td><span t-esc="((intotal_one_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;">
-                      <td>01:30 Hours Overtime</td>
-                      <td><span t-esc="intotal_oneHalf_ot"/></td>
-                      <td><span t-esc="((intotal_oneHalf_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;">
-                      <td>02:00 Hours Overtime</td>
-                      <td><span t-esc="intotal_two_ot"/></td>
-                      <td><span t-esc="((intotal_two_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;">
-                      <td>02:30 Hours Overtime</td>
-                      <td><span t-esc="intotal_twoHalf_ot"/></td>
-                      <td><span t-esc="((intotal_twoHalf_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #DDFF08;">
-                      <td>03:00 Hours Overtime</td>
-                      <td><span t-esc="intotal_three_ot"/></td>
-                      <td><span t-esc="((intotal_three_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #DDFF08;">
-                      <td>03:30 Hours Overtime</td>
-                      <td><span t-esc="intotal_threeHalf_ot"/></td>
-                      <td><span t-esc="((intotal_threeHalf_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #FF5308; color: white">
-                      <td>04:00 Hours Overtime</td>
-                      <td><span t-esc="intotal_four_ot"/></td>
-                      <td><span t-esc="((intotal_four_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #FF5308; color: white">
-                      <td>Avove 04:00 Hours Overtime</td>
-                      <td><span t-esc="intotal_abovefour_ot"/></td>
-                      <td><span t-esc="((intotal_abovefour_ot*100)/intotal_employee)" t-options='{"widget": "float", "precision": 2}'/>%</td>
-                    </tr>
-                    <tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: orange;">
-                      <td>Total OT Hours:</td>
-                      <td><span t-esc="intotal_ot_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-
-              </div>
-                </div>
-          </t>
-        </t>
-      
-    </template>
-
+	<template id="daily_ot_analysis_pdf_template">
+		<t t-call="web.html_container">
+			<t t-call="web.external_layout">
+				<div class="page">
+					<h4 class="text-right">
+						<i>
+							<strong>Daily OT Analysis</strong>
+						</i>
+					</h4>
+					<div class="container">
+						<strong>Date: <span class="text-right" t-esc="stdate[0]" style="color:  #cc7000"/>
+						</strong>
+						<br/>
+						<strong>Employee Category: <span t-esc="category" style="color:  #cc7000"/>
+						</strong>
+						<br/>
+					</div>
+					<div class="container">
+						<table class="table table-sm" style="font-size:9px; table-layout:fixed; page-break-inside: avoid;">
+							<thead style="font-size:7px;">
+								<tr align="center" style="background-color: orange;">
+									<th colspan="4" rowspan="2">Section Name</th>
+									<th rowspan="2" colspan="2">Total Employee</th>
+									<th rowspan="2" colspan="2">Present</th>
+									<th rowspan="2" colspan="2">OT Hours</th>
+									<th rowspan="2" colspan="2">OT Amount</th>
+									<th colspan="11">Overtime Schedule</th>
+								</tr>
+								<tr align="center" style="background-color:#FAD34F;">
+									<th>No OT</th>
+									<th>0:30</th>
+									<th>1:00</th>
+									<th>1:30</th>
+									<th>2:00</th>
+									<th>2:30</th>
+									<th>3:00</th>
+									<th>3:30</th>
+									<th>4:00</th>
+									<th colspan="2">Above 4:00</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="intotal_employee" t-value="0"/>
+								<t t-set="intotal_sec_employee" t-value="0"/>
+								<t t-set="intotal_ot_amount" t-value="0"/>
+								<t t-set="intotal_ot_hours" t-value="0"/>
+								<t t-set="intotal_half_ot" t-value="0"/>
+								<t t-set="intotal_one_ot" t-value="0"/>
+								<t t-set="intotal_oneHalf_ot" t-value="0"/>
+								<t t-set="intotal_two_ot" t-value="0"/>
+								<t t-set="intotal_twoHalf_ot" t-value="0"/>
+								<t t-set="intotal_three_ot" t-value="0"/>
+								<t t-set="intotal_threeHalf_ot" t-value="0"/>
+								<t t-set="intotal_four_ot" t-value="0"/>
+								<t t-set="intotal_abovefour_ot" t-value="0"/>
+								<t t-set="intotal_no_ot" t-value="0"/>
+								<t t-foreach="dpt" t-as="dp">
+									<t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
+										<t t-set="total_employee" t-value="0"/>
+										<t t-set="total_sec_employee_present" t-value="0"/>
+										<t t-set="employee_basic" t-value="0"/>
+										<t t-set="employee_ot_cost" t-value="0"/>
+										<t t-set="total_employee_ot_cost" t-value="0"/>
+										<t t-set="total_ot_hours" t-value="0"/>
+										<t t-set="half_ot" t-value="0"/>
+										<t t-set="one_ot" t-value="0"/>
+										<t t-set="oneHalf_ot" t-value="0"/>
+										<t t-set="two_ot" t-value="0"/>
+										<t t-set="twoHalf_ot" t-value="0"/>
+										<t t-set="three_ot" t-value="0"/>
+										<t t-set="threeHalf_ot" t-value="0"/>
+										<t t-set="four_ot" t-value="0"/>
+										<t t-set="abovefour_ot" t-value="0"/>
+										<t t-set="no_ot" t-value="0"/>
+										<!--<t t-set="total_duty_hours" t-value="0"/>-->
+										<!--<t t-set="total_working_hours" t-value="0"/>-->
+										<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
+											<td align="left" colspan="4">
+												<strong>
+													<span t-esc="se.name"/>
+												</strong>
+											</td>
+											<t t-foreach="datas" t-as="emp">
+												<t t-if="emp[9] == se.id">
+													<t t-set="total_employee" t-value="total_employee+1"/>
+													<t t-foreach="alldays" t-as="ald">
+														<t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
+															<t t-if="att.inFlag == 'P' or att.inFlag == 'L' or att.inFlag == 'HP' or att.inFlag == 'FP'">
+																<t t-set="total_sec_employee_present" t-value="total_sec_employee_present+1"/>
+																<t t-set="total_ot_hours" t-value="total_ot_hours+emp[8]"/>
+																<t t-set="employee_ot_cost" t-value="(((emp[10]/208)*2)*emp[8])"/>
+																<t t-set="total_employee_ot_cost" t-value="total_employee_ot_cost+employee_ot_cost"/>
+																<t t-if="emp[8] == 0.0">
+																	<t t-set="no_ot" t-value="no_ot+1"/>
+																</t>
+																<t t-if="emp[8] &gt;0 and emp[8] &lt;= .5">
+																	<t t-set="half_ot" t-value="half_ot+1"/>
+																</t>
+																<t t-if="emp[8] &gt;.5 and emp[8] &lt;= 1">
+																	<t t-set="one_ot" t-value="one_ot+1"/>
+																</t>
+																<t t-if="emp[8] &gt;1 and emp[8] &lt;= 1.5">
+																	<t t-set="oneHalf_ot" t-value="oneHalf_ot+1"/>
+																</t>
+																<t t-if="emp[8] &gt;1.5 and emp[8] &lt;= 2">
+																	<t t-set="two_ot" t-value="two_ot+1"/>
+																</t>
+																<t t-if="emp[8] &gt;2 and emp[8] &lt;= 2.5">
+																	<t t-set="twoHalf_ot" t-value="twoHalf_ot+1"/>
+																</t>
+																<t t-if="emp[8] &gt;2.5 and emp[8] &lt;= 3">
+																	<t t-set="three_ot" t-value="three_ot+1"/>
+																</t>
+																<t t-if="emp[8] &gt;3 and emp[8] &lt;= 3.5">
+																	<t t-set="threeHalf_ot" t-value="threeHalf_ot+1"/>
+																</t>
+																<t t-if="emp[8] &gt;3.5 and emp[8] &lt;= 4">
+																	<t t-set="four_ot" t-value="four_ot+1"/>
+																</t>
+																<t t-if="emp[8] &gt;4">
+																	<t t-set="abovefour_ot" t-value="abovefour_ot+1"/>
+																</t>
+															</t>
+														</t>
+													</t>
+												</t>
+											</t>
+											<td colspan="2">
+												<span t-esc="total_employee"/>
+												<t t-set="intotal_employee" t-value="intotal_employee+total_employee"/>
+											</td>
+											<td colspan="2">
+												<span t-esc="total_sec_employee_present"/>
+												<t t-set="intotal_sec_employee" t-value="intotal_sec_employee + total_sec_employee_present"/>
+											</td>
+											<td colspan="2">
+												<span t-esc="total_ot_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+												<t t-set="intotal_ot_hours" t-value="intotal_ot_hours+total_ot_hours"/>
+											</td>
+											<td colspan="2">
+												<span t-esc="total_employee_ot_cost" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+												<t t-set="intotal_ot_amount" t-value="intotal_ot_amount+total_employee_ot_cost"/>
+											</td>
+											<td style="background-color: #08D6FF;">
+												<span t-esc="no_ot"/>
+												<t t-set="intotal_no_ot" t-value="intotal_no_ot+no_ot"/>
+											</td>
+											<td>
+												<span t-esc="half_ot"/>
+												<t t-set="intotal_half_ot" t-value="intotal_half_ot+half_ot"/>
+											</td>
+											<td>
+												<span t-esc="one_ot"/>
+												<t t-set="intotal_one_ot" t-value="intotal_one_ot+one_ot"/>
+											</td>
+											<td>
+												<span t-esc="oneHalf_ot"/>
+												<t t-set="intotal_oneHalf_ot" t-value="intotal_oneHalf_ot+oneHalf_ot"/>
+											</td>
+											<td>
+												<span t-esc="two_ot"/>
+												<t t-set="intotal_two_ot" t-value="intotal_two_ot+two_ot"/>
+											</td>
+											<td>
+												<span t-esc="twoHalf_ot"/>
+												<t t-set="intotal_twoHalf_ot" t-value="intotal_twoHalf_ot+twoHalf_ot"/>
+											</td>
+											<td style="background-color: #DDFF08;">
+												<span t-esc="three_ot"/>
+												<t t-set="intotal_three_ot" t-value="intotal_three_ot+three_ot"/>
+											</td>
+											<td style="background-color: #DDFF08;">
+												<span t-esc="threeHalf_ot"/>
+												<t t-set="intotal_threeHalf_ot" t-value="intotal_threeHalf_ot+threeHalf_ot"/>
+											</td>
+											<td style="background-color: #FF5308;color: white">
+												<span t-esc="four_ot"/>
+												<t t-set="intotal_four_ot" t-value="intotal_four_ot+four_ot"/>
+											</td>
+											<td colspan="2" style="background-color: #FF5308; color: white">
+												<span t-esc="abovefour_ot"/>
+												<t t-set="intotal_abovefour_ot" t-value="intotal_abovefour_ot+abovefour_ot"/>
+											</td>
+										</tr>
+									</t>
+								</t>
+							</tbody>
+						</table>
+						<table class="table table-sm" style="font-size:9px; table-layout:fixed; page-break-inside: avoid;">
+							<tr align="center" style="font-weight: bold; background-color: orange;">
+								<td colspan="4">Grand Total</td>
+								<td colspan="2">
+									<span t-esc="intotal_employee"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="intotal_sec_employee"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="intotal_ot_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="intotal_ot_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+								</td>
+								<td style="background-color: #08D6FF;">
+									<span t-esc="intotal_no_ot"/>
+								</td>
+								<td>
+									<span t-esc="intotal_half_ot"/>
+								</td>
+								<td>
+									<span t-esc="intotal_one_ot"/>
+								</td>
+								<td>
+									<span t-esc="intotal_oneHalf_ot"/>
+								</td>
+								<td>
+									<span t-esc="intotal_two_ot"/>
+								</td>
+								<td>
+									<span t-esc="intotal_twoHalf_ot"/>
+								</td>
+								<td style="background-color: #DDFF08;">
+									<span t-esc="intotal_three_ot"/>
+								</td>
+								<td style="background-color: #DDFF08;">
+									<span t-esc="intotal_threeHalf_ot"/>
+								</td>
+								<td style="background-color: #FF5308; color: white">
+									<span t-esc="intotal_four_ot"/>
+								</td>
+								<td colspan="2" style="background-color: #FF5308; color: white">
+									<span t-esc="intotal_abovefour_ot"/>
+								</td>
+							</tr>
+						</table>
+						<table class="table table-sm center" style="font-size:10px; width:500px;margin-left: auto; margin-right: auto;">
+							<thead>
+								<tr align="center" style="font-weight: bold; background-color: orange;">
+									<th rowspan="2">Overtime Status</th>
+									<th colspan="2">
+										<span t-esc="stdate[0]"/>
+									</th>
+								</tr>
+								<tr align="center" style="font-weight: bold; background-color: orange;">
+									<th>Nos.</th>
+									<th>%</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;">
+									<td>Total Employee</td>
+									<td>
+										<span t-esc="intotal_employee"/>
+									</td>
+									<td>100%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #08D6FF;">
+									<td>No of Overtime</td>
+									<td>
+										<span t-esc="intotal_no_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_no_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;">
+									<td>00:30 Hours Overtime</td>
+									<td>
+										<span t-esc="intotal_half_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_half_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;">
+									<td>01:00 Hours Overtime</td>
+									<td>
+										<span t-esc="intotal_one_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_one_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;">
+									<td>01:30 Hours Overtime</td>
+									<td>
+										<span t-esc="intotal_oneHalf_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_oneHalf_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;">
+									<td>02:00 Hours Overtime</td>
+									<td>
+										<span t-esc="intotal_two_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_two_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;">
+									<td>02:30 Hours Overtime</td>
+									<td>
+										<span t-esc="intotal_twoHalf_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_twoHalf_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #DDFF08;">
+									<td>03:00 Hours Overtime</td>
+									<td>
+										<span t-esc="intotal_three_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_three_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #DDFF08;">
+									<td>03:30 Hours Overtime</td>
+									<td>
+										<span t-esc="intotal_threeHalf_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_threeHalf_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #FF5308; color: white">
+									<td>04:00 Hours Overtime</td>
+									<td>
+										<span t-esc="intotal_four_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_four_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: #FF5308; color: white">
+									<td>Avove 04:00 Hours Overtime</td>
+									<td>
+										<span t-esc="intotal_abovefour_ot"/>
+									</td>
+									<td>
+										<span t-esc="((intotal_abovefour_ot*100)/intotal_employee)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>%</td>
+								</tr>
+								<tr align="center" style="font-weight: bold;border: 1pt solid black;background-color: orange;">
+									<td>Total OT Hours:</td>
+									<td>
+										<span t-esc="intotal_ot_hours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+									</td>
+									<td/>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
 </odoo>

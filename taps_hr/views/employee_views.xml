@@ -49,6 +49,25 @@
             <xpath expr="//field[@name='category_ids']" position="attributes">
                 <attribute name="string">Category</attribute>
             </xpath>
+            
+            <xpath expr="//page[@name='hr_settings']" position="after">
+                <page name="hr_contact" string="Contact Setup" groups="hr.group_hr_user">
+                    <group>
+                        <field name="street" placeholder="Street..."/>
+                        <field name="street2" placeholder="Street 2..."/>
+                        <field name="city" placeholder="City"/>
+                        <field name="state_id" placeholder="State" options="{'no_open': True, 'no_quick_create': True}" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
+                        <field name="zip" placeholder="ZIP"/>
+                    </group>
+                    <group>
+                        <field name="phone" widget="phone"/>
+                        <field name="mobile" widget="phone"/>
+                        <field name="email" widget="email" context="{'gravatar_image': True}"/>
+                        <field name="bank_id"/>
+                        <field name="account_number"/>
+                    </group>
+                </page>
+            </xpath>
         </field>
     </record>
     <record id="view_employee_tree_inherit" model="ir.ui.view">

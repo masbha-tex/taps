@@ -5,12 +5,19 @@
           <t t-call="web.external_layout">
              <div class="page">
                
+               <h4 class="text-right">
+                	<i>
+                		<strong>Monthly ManHours Report</strong>
+                	</i>
+                </h4>
                 <div class="container">
-                  
-                  <div class="text-center mb-3 mt-3" style="font-size: 16px">
-                    <i><strong><span t-esc="month[0]"/> Manhours Report</strong></i>
-                
-                  </div>
+                	<strong>Date: <span class="text-right" t-esc="stdate[0]" style="color:  #cc7000"/>
+                	</strong>
+                	<br/>
+                	<strong>Employee Category: <span t-esc="category" style="color:  #cc7000"/>
+                	</strong>
+                	<br/>
+                	<br/>
                 </div>
                 <div class="container">
                 

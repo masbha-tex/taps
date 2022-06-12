@@ -299,6 +299,26 @@
                                             <t t-esc="employee.bank_account_id.acc_number"/>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h6 class="mb-0">
+                                                <strong>Employee PF Contribution</strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-6 text-secondary">
+                                            <t t-esc="employee.contribution_sum"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h6 class="mb-0">
+                                                <strong>Company PF Contribution</strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-6 text-secondary">
+                                            <t t-esc="employee.contribution_sum"/>
+                                        </div>
+                                    </div>
                                     
                                 </div>
                                 

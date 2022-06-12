@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="view_bulk_attendance_tree" model="ir.ui.view">
+      <field name="name">bulk.attendance.view.tree</field>
+      <field name="model">hr.attendance</field>
+      <field name="arch" type="xml">
+        <tree string="Employee attendances" edit="0" sample="1">
+            <field name="attDate"/>
+            <field name="employee_id"/>
+            <field name="inHour" widget="float_time" string="Old IN"/>
+            <field name="outHour" widget="float_time" string="Old OUT"/>
+            <field name="inTime" widget="float_time"/>
+            <field name="ad_in" widget="float_time" string="New IN"/>
+            <field name="outTime" widget="float_time"/>
+            <field name="ad_out" widget="float_time" string="New OUT"/>
+        </tree>
+      </field>
+    </record>
+      
+    <record id="view_bulk_attendance_tree_inherit" model="ir.ui.view">
+        <field name="name">bulk.attendance.tree.inherit</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="view_bulk_attendance_tree"/>
+        <field name="groups_id" eval="[(4, ref('hr_attendance.group_hr_attendance_user'))]"/>
+        <field name="arch" type="xml">
+            <tree position="attributes">
+                <attribute name="edit">1</attribute>
+                <attribute name="editable">bottom</attribute>
+            </tree>
+        </field>
+    </record>      
+
+
+    <!-- actions opening views on models -->
+      
+    <record id="bulk_attendance_view_filter" model="ir.ui.view">
+        <field name="name">bulk_attendance_view_filter</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <search string="Hr Attendance Search">
+                <field name="employee_id"/>
+                <field name="department_id" operator="child_of"/>
+                <filter string="My Attendances" name="myattendances" domain="[('employee_id.user_id.id', '=', uid)]" />
+                <separator/>
+                <filter string="Check In" name="check_in_filter" date="check_in" default_period="last_month"/>
+                <filter string="No Check Out" name="nocheckout" domain="[('check_out', '=', False)]" />
+                <group expand="0" string="Group By">
+                    <filter string="Employee" name="employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Check In" name="groupby_name" context="{'group_by': 'check_in'}"/>
+                    <filter string="Check Out" name="groupby_check_out" context="{'group_by': 'check_out'}"/>
+                </group>
+            </search>
+        </field>
+    </record>      
+
+    <record id="bulk_attendance_action" model="ir.actions.act_window">
+        <field name="name">Bulk Attendance</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{"search_default_today":1}</field>
+        <field name="search_view_id" ref="bulk_attendance_view_filter" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No attendance records found
+            </p><p>
+                The attendance records of your employees will be displayed here.
+            </p>
+        </field>        
+    </record>
+
+
+      
+    <menuitem id="bulk_attendance_menu" 
+              parent="hr_attendance.menu_hr_attendance_manage_attendances" 
+              sequence="11" 
+              name="Bulk Attendance" 
+              action="bulk_attendance_action"/>
+
+  </data>
+</odoo>

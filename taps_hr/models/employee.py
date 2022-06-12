@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 class HrEmployee(models.Model):
     _inherit = 'hr.employee' 
     
-    emp_id = fields.Char(string="Emp ID", readonly=True, store=True, tracking=True) 
+    emp_id = fields.Char(string="Emp ID", readonly=True, store=True, tracking=True)
     isOverTime = fields.Boolean("Over Time", readonly=False, store=True, tracking=True)
     service_length = fields.Char( string="Service Length")#compute='_calculate_serviceLength',
     joining_date = fields.Date(related = 'contract_id.date_start', related_sudo=False, string='Joining Date', store=True, tracking=True)
@@ -20,6 +20,114 @@ class HrEmployee(models.Model):
     fathers_name = fields.Char(string="Father's Name", store=True, tracking=True)
     mothers_name = fields.Char(string="Mother's Name", store=True, tracking=True)
     marriageDate = fields.Date(string='Date of Marriages', store=True, tracking=True)
+    
+    street = fields.Char()
+    street2 = fields.Char()
+    zip = fields.Char(change_default=True)
+    city = fields.Char()
+    state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
+#     country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
+    email = fields.Char()
+    email_formatted = fields.Char(
+        'Formatted Email', compute='_compute_email_formatted',
+        help='Format email address "Name <email@domain>"')
+    phone = fields.Char()
+    mobile = fields.Char()
+    
+    bank_id = fields.Many2one('res.bank', string='Bank')
+    account_number = fields.Char('Account Number', readonly=False)
+    #bank_name = fields.Char(related='bank_id.name', readonly=False)
+    
+    
+    def create_emp_contact(self, e_id, emp_id, emp_name, emp_company, cat_name, street,street2,zip,city,state_id,country_id,email,phone,mobile,bank,acc_num):
+        
+        partner_info = self.env['res.partner'].search([('name', 'like', emp_id)])
+        partner_cat = self.env['res.partner.category'].search([('name', '=', cat_name)])
+        if partner_info:
+            partner_info.write({
+                'name':emp_id+' - '+emp_name,
+                'display_name':emp_id+'-'+emp_name,
+                'category_id':partner_cat,
+                'street':street,
+                'street2':street2,
+                'zip':zip,
+                'city':city,
+                'state_id':state_id,
+                'country_id':country_id,
+                'email':email,
+                'phone':phone,
+                'mobile':mobile,
+            })
+        else:
+            self.env['res.partner'].create({
+                'name':emp_id+' - '+emp_name,
+                'display_name':emp_id+'-'+emp_name,
+                'company_type':'person',
+                'lang':'en_US',
+                'tz':'Asia/Dhaka',
+                'active':True,
+                'type':'contact',
+                'is_company':False,
+                'category_id':partner_cat,
+                # 'color':'',
+                'partner_share':True,
+                # 'email_normalized':'',
+                # 'contact_address_complete':'',
+                # 'phone_sanitized':'',
+                'invoice_warn':'no-message',
+                'sale_warn':'no-message',
+                'picking_warn':'no-message',
+                'purchase_warn':'no-message',
+                'street':street,
+                'street2':street2,
+                'zip':zip,
+                'city':city,
+                'state_id':state_id,
+                'country_id':country_id,
+                'email':email,
+                'phone':phone,
+                'mobile':mobile,
+            })
+        partner_data = self.env['res.partner'].search([('name', '=', emp_id+' - '+emp_name)])
+        bank_info = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)])
+        if bank_info:
+            bank_info.write({
+                'acc_number':acc_num,
+                'acc_holder_name':emp_id,
+                'bank_id':bank,
+                'company_id':emp_company,
+            })
+        elif len(acc_num)>0:
+            self.env['res.partner.bank'].create({
+                #'active':'',
+                'acc_number':acc_num,
+                #'sanitized_acc_number':'',
+                'acc_holder_name':emp_id,
+                'partner_id':partner_data.id,
+                'bank_id':bank,
+                #'sequence':'',
+                #'currency_id':'',
+                'company_id':emp_company,
+            })
+        emp_details = self.env['hr.employee'].search([('id', '=', e_id)])
+        if bank_info:
+            emp_details.write({
+                'address_home_id':bank_info.partner_id.id,
+                'private_email':email,
+                'phone':phone,
+                'bank_account_id':bank_info.id,
+            })
+        else:
+            bank_info_ = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)])
+            emp_details.write({
+                'address_home_id':bank_info_.partner_id.id,
+                'private_email':email,
+                'phone':phone,
+                'bank_account_id':bank_info_.id,
+            })
+
+
+    
 
     def name_get(self):
         result = []

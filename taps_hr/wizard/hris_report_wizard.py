@@ -636,10 +636,10 @@ class HRISReportPDF8(models.AbstractModel):
         
            
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
-        domains=[]
-        if data.get('bank_id'):
-            domains.append(('id', '=', data.get('bank_id')))
-        bank = self.env['res.bank'].search(domains)
+#         domains=[]
+#         if data.get('bank_id'):
+#             domains.append(('id', '=', data.get('bank_id')))
+#         bank = self.env['res.bank'].search(domains)
         
         #raise UserError((domains))
 
@@ -653,9 +653,9 @@ class HRISReportPDF8(models.AbstractModel):
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
-            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%m-%d-%Y'),
+            datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%d-%m-%Y'),
             data.get('date_to'),
-            bank.name,
+            
         ]
         common_data.append(common_data)
         #raise UserError((common_data[2]))
