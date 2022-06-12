@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate='0'>     
-        <record id="report_top_sheet_summary" model="ir.actions.report">
+    <data noupdate='0'>
+        <record id="action_pay_slip_pdf_report" model="ir.actions.report">
+            <field name="name">Pay Slip</field>
+            <field name="model">salary.sheet.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.pay_slip_pdf_template</field>
+            <field name="report_file">taps_hr.pay_slip_pdf_template</field>
+            <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_payslip_report"/>
+<!--             <field name="default_print_option">print</field> -->
+        </record>          
+        <record id="action_top_sheet_summary_pdf_report" model="ir.actions.report">
             <field name="name">Top Sheet Summary</field>
             <field name="model">salary.sheet.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
@@ -12,7 +23,7 @@
             <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
 <!--             <field name="default_print_option">print</field> -->
         </record>
-        <record id="report_salary_sheet" model="ir.actions.report">
+        <record id="action_salary_sheet_pdf_report" model="ir.actions.report">
             <field name="name">Salary Sheet</field>
             <field name="model">salary.sheet.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
@@ -23,6 +34,28 @@
             <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
 <!--             <field name="default_print_option">print</field> -->
         </record>
+        <record id="action_bonus_top_sheet_summary_pdf_report" model="ir.actions.report">
+            <field name="name">Bonus Top Sheet Summary</field>
+            <field name="model">salary.sheet.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.bonus_top_sheet_pdf_template</field>
+            <field name="report_file">taps_hr.bonus_top_sheet_pdf_template</field>
+            <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
+<!--             <field name="default_print_option">print</field> -->
+        </record>
+        <record id="action_bonus_sheet_pdf_report" model="ir.actions.report">
+            <field name="name">Bonus Sheet</field>
+            <field name="model">salary.sheet.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.bonus_sheet_pdf_template</field>
+            <field name="report_file">taps_hr.bonus_sheet_pdf_template</field>
+            <field name="binding_model_id" ref="model_salary_sheet_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
+<!--             <field name="default_print_option">print</field> -->
+        </record>        
         <record id="action_job_card_pdf_report" model="ir.actions.report">
             <field name="name">Job Card</field>
             <field name="model">job.card.pdf.report</field>
@@ -398,6 +431,7 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_shift_schedule_report"/>
 <!--             <field name="default_print_option">print</field> -->
-        </record>  
+        </record>
+
     </data>
 </odoo>

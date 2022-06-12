@@ -8,8 +8,10 @@
             <form string="Payroll Report">
                 <group>
                     <group>
-                        <field name="date_from"/>
-                        <field name="date_to"/>
+                        <field name="report_type" string="Report Type" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="date_from" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="date_to" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="is_company" string="" widget="boolean_toggle"/>
                     </group>
                     <group>                    
                         <field name="holiday_type" string="Mode" groups="hr_holidays.group_hr_holidays_user"/>
@@ -32,12 +34,17 @@
                         <field name="employee_type" groups="hr_holidays.group_hr_holidays_user" attrs="{
                         'required': [('holiday_type', '=', 'emptype')],
                         'invisible': [('holiday_type', '!=','emptype')]
+                        }" options="{'no_create': True, 'no_open': True}"/> 
+                        <field name="company_all" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'companyall')],
+                        'invisible': [('holiday_type', '!=','companyall')]
                         }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="bank_id"/>
                     </group>
                 </group>
                 <footer>
                     <button string="Print" name="action_print_report" type="object" class="btn-primary"/>
-                    <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+<!--                     <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/> -->
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

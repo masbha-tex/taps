@@ -14,44 +14,30 @@ class SalarySheet(models.TransientModel):
     _name = 'salary.sheet.pdf.report'
     _description = 'Salary Sheet'      
 
+    is_company = fields.Boolean(readonly=False, default=False)
     date_from = fields.Date('Date from', required=True, default = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
     date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))
     report_type = fields.Selection([
-        ('BASIC',	'Basic'),
-        ('HRA',	'HRA'),
-        ('MEDICAL',	'Medical'),
-        ('ARREAR',	'Arrear'),
-        ('ATTBONUS',	'Attendance Bonus'),
-        ('OT',	'Overtime'),
-        ('CONVENCE',	'Convence'),
-        ('FOOD',	'Food'),
-        ('TIFFIN',	'Tiffin'),
-        ('SNACKS',	'Strength Snacks'),
-        ('CAR',	'Car'),
-        ('OTHERS_ALW',	'Others Allowance'),
-        ('INCENTIVE',	'Incentive'), 
-        ('RPF',	'PF (Employer)'),
-        ('PFR',	'PF (Employer)'),
-        ('PFE',	'PF (Employee)'),
-        ('AIT',	'TDS (AIT)'),
-        ('BASIC_ABSENT',	'Basic Absent'),
-        ('GROSS_ABSENT',	'Gross Absent'),
-        ('LOAN',	'Loan'),
-        ('ADV_SALARY',	'Advance Salary'),
-        ('OTHERS_DED',	'Others Deduction'),
-        ('NET',	'Net Payable'),],
-        string='Report Type', required=False,
-        help='By Salary Head Wise Report')
+        ('PAYSLIP',	'Pay Slip'),
+        ('SALARYTOP',	'Salary Top Sheet Summary'),
+        ('SALARY',	'Salary Sheet'),
+        ('BONUSTOP',	'Bonus Top Sheet Summary'),
+        ('BONUS',	'Bonus Sheet'),],
+        string='Report Type', required=True, default='PAYSLIP',
+        help='By Payroll Report')
     
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
+        ('companyall', 'By All Company'),
         ('department', 'By Department'),
         ('category', 'By Employee Tag'),
         ('emptype', 'By Employee Type')],
         string='Report Mode', required=True, default='employee',
         help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')
-    
+    company_all = fields.Selection([
+        ('allcompany', 'TEX ZIPPERS (BD) LIMITED')],
+        string='All Company', required=False)     
     
     bank_id = fields.Many2one(
         'res.bank',  string='Bank', readonly=False, ondelete="restrict", required=False)
@@ -129,7 +115,10 @@ class SalarySheet(models.TransientModel):
                         'category_id': False, 
                         'employee_id': self.employee_id.id,
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}
 
             if self.holiday_type == "company":
                 data = {'date_from': self.date_from, 
@@ -139,7 +128,10 @@ class SalarySheet(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}
 
             if self.holiday_type == "department":
                 data = {'date_from': self.date_from, 
@@ -149,7 +141,10 @@ class SalarySheet(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False}
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}
 
             if self.holiday_type == "category":
                 data = {'date_from': self.date_from, 
@@ -159,29 +154,54 @@ class SalarySheet(models.TransientModel):
                         'category_id': self.category_id.id, 
                         'employee_id': False, 
                         'report_type': self.report_type,
-                        'bank_id': False}
-#         raise UserError(('domain'))        
-        return self.env.ref('taps_hr.report_salary_sheet').report_action(self, data=data)
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}
+            if self.holiday_type == "emptype":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': self.employee_type,
+                        'company_all': False,
+                        'is_company': self.is_company}              
+            if self.holiday_type == "companyall":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}                
+        if self.report_type == 'PAYSLIP':
+            return self.env.ref('taps_hr.action_pay_slip_pdf_report').report_action(self, data=data)
+        if self.report_type == 'SALARYTOP':
+            return self.env.ref('taps_hr.action_top_sheet_summary_pdf_report').report_action(self, data=data)
+        if self.report_type == 'SALARY':
+            return self.env.ref('taps_hr.action_salary_sheet_pdf_report').report_action(self, data=data)
+        if self.report_type == 'BONUSTOP':
+            return self.env.ref('taps_hr.action_bonus_top_sheet_summary_pdf_report').report_action(self, data=data)
+        if self.report_type == 'BONUS':
+            return self.env.ref('taps_hr.action_bonus_sheet_pdf_report').report_action(self, data=data)
 
-    # Generate xlsx report
-    def action_generate_xlsx_report(self):
-        data = {
-            'date_from': self.date_from,
-            'date_to': self.date_to,
-        }
-#         return self.env.ref('taps_hr.action_openacademy_xlsx_report').report_action(self, data=data)
-        return False
-    
-    
-class SalarySheetReportPDF(models.AbstractModel):
-    _name = 'report.taps_hr.salary_sheet_pdf_template'
-    _description = 'Salary Sheet Template'       
+class PaySlipReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.pay_slip_pdf_template'
+    _description = 'Pay Slip Template'       
     
     def _get_report_values(self, docids, data=None):
         domain = []
-        raise UserError(("domain"))
-        if data.get('bank_id')==False:
-            domain.append(('code', '=', data.get('report_type')))
+        #raise UserError(("pay_slip_pdf_template"))
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
             domain.append(('date_from', '>=', data.get('date_from')))
         if data.get('date_to'):
@@ -201,21 +221,34 @@ class SalarySheetReportPDF(models.AbstractModel):
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
         
         
 #         raise UserError((domain))
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
         
 
-        for details in docs:
-            otTotal = 0
-            for de in docs:
-                otTotal = otTotal + de.total
+#         for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                 otTotal = otTotal + de.total
             
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
-            otTotal,
             data.get('date_from'),
             data.get('date_to'),
         ]
@@ -226,5 +259,287 @@ class SalarySheetReportPDF(models.AbstractModel):
             'doc_model': 'hr.payslip',
             'docs': docs,
             'datas': common_data,
-#             'alldays': all_datelist
+#             'alldays': all_datelist,
+            'is_com' : data.get('is_company')
+        }    
+
+class SalaryTopSheetReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.top_sheet_pdf_template'
+    _description = 'Salary Top Sheet Template'       
+    
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        #raise UserError(("top_sheet_pdf_template"))
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
+        if data.get('date_from'):
+            domain.append(('date_from', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
+        
+        
+#         raise UserError((domain))
+        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        
+
+#         for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                 otTotal = otTotal + de.total
+            
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            data.get('date_from'),
+            data.get('date_to'),
+        ]
+        common_data.append(common_data)
+        #raise UserError((common_data[2]))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.payslip',
+            'docs': docs,
+            'datas': common_data,
+#             'alldays': all_datelist,
+            'is_com' : data.get('is_company')
         }
+    
+class SalarySheetReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.salary_sheet_pdf_template'
+    _description = 'Salary Sheet Template'       
+    
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        #raise UserError(("salary_sheet_pdf_template"))
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
+        if data.get('date_from'):
+            domain.append(('date_from', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
+        
+        
+#         raise UserError((domain))
+        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        
+
+#         for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                 otTotal = otTotal + de.total
+            
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            data.get('date_from'),
+            data.get('date_to'),
+        ]
+        common_data.append(common_data)
+        #raise UserError((common_data[2]))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.payslip',
+            'docs': docs,
+            'datas': common_data,
+#             'alldays': all_datelist,
+            'is_com' : data.get('is_company')
+        }
+    
+class BonusTopSheetReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.bonus_top_sheet_pdf_template'
+    _description = 'Bonus Top Sheet Template'       
+    
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        #raise UserError(("bonus_top_sheet_pdf_template"))
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
+        if data.get('date_from'):
+            domain.append(('date_from', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
+        
+        
+#         raise UserError((domain))
+        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        
+
+#         for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                 otTotal = otTotal + de.total
+            
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            data.get('date_from'),
+            data.get('date_to'),
+        ]
+        common_data.append(common_data)
+        #raise UserError((common_data[2]))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.payslip',
+            'docs': docs,
+            'datas': common_data,
+#             'alldays': all_datelist,
+            'is_com' : data.get('is_company')
+        }
+    
+class BonusSheetReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.bonus_sheet_pdf_template'
+    _description = 'Bonus Sheet Template'       
+    
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        #raise UserError(("bonus_sheet_pdf_template"))
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
+        if data.get('date_from'):
+            domain.append(('date_from', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
+        
+        
+#         raise UserError((domain))
+        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        
+
+#         for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                 otTotal = otTotal + de.total
+            
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            data.get('date_from'),
+            data.get('date_to'),
+        ]
+        common_data.append(common_data)
+        #raise UserError((common_data[2]))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.payslip',
+            'docs': docs,
+            'datas': common_data,
+#             'alldays': all_datelist,
+            'is_com' : data.get('is_company')
+        }
+    
