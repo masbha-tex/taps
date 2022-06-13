@@ -104,7 +104,6 @@ class HrEmployee(models.Model):
                         'company_id':emp_company,
                     })
                 elif acc_num:
-                    raise UserError((acc_num))
                     self.env['res.partner.bank'].create({
                         #'active':'',
                         'acc_number':acc_num,
