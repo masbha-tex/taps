@@ -42,7 +42,7 @@
 											<br/>
 											<strong>:</strong>
 										</div>
-										<div class="col-5">
+										<div class="col-7">
 											<strong>
 												<t t-esc="employee.name"/>
 											</strong>
@@ -73,8 +73,8 @@
 											<br/>
 											<strong>:</strong>
 										</div>
-										<div class="col-5">
-											<strong style="font-size:13px">
+										<div class="col-7">
+											<strong>
 												<t t-esc="employee.service_length"/>
 											</strong>
 											<br/>

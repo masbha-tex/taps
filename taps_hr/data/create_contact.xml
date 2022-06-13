@@ -5,9 +5,7 @@
         <field name="name">Create Contact</field>
         <field name="model_id" ref="model_hr_employee"/>
         <field name="state">code</field>
-        <field name="code">model.create_emp_contact(record.id,record.emp_id, record.name, record.company_id.id, record.category_ids.name,record.street,record.street2,record.zip,record.city,record.state_id.id,record.country_id.id,record.email,record.phone,record.mobile,record.bank_id.id,record.account_number)</field>
-        
-        
+        <field name="code">model.create_emp_contact(record.id,record.emp_id, record.name, record.company_id.id, record.category_ids.name,record.street,record.street2,record.zip,record.city,record.state_id.id,record.country_id.id,record.email,record.phone,record.mobile,record.bank_id.id,record.account_number,record.active)</field>
         <field name="trigger">on_create_or_write</field>
         <field name="active" eval="True"/>
     </record>

@@ -39,92 +39,99 @@ class HrEmployee(models.Model):
     #bank_name = fields.Char(related='bank_id.name', readonly=False)
     
     
-    def create_emp_contact(self, e_id, emp_id, emp_name, emp_company, cat_name, street,street2,zip,city,state_id,country_id,email,phone,mobile,bank,acc_num):
-        
-        partner_info = self.env['res.partner'].search([('name', 'like', emp_id)])
-        partner_cat = self.env['res.partner.category'].search([('name', '=', cat_name)])
-        if partner_info:
-            partner_info.write({
-                'name':emp_id+' - '+emp_name,
-                'display_name':emp_id+'-'+emp_name,
-                'category_id':partner_cat,
-                'street':street,
-                'street2':street2,
-                'zip':zip,
-                'city':city,
-                'state_id':state_id,
-                'country_id':country_id,
-                'email':email,
-                'phone':phone,
-                'mobile':mobile,
-            })
-        else:
-            self.env['res.partner'].create({
-                'name':emp_id+' - '+emp_name,
-                'display_name':emp_id+'-'+emp_name,
-                'company_type':'person',
-                'lang':'en_US',
-                'tz':'Asia/Dhaka',
-                'active':True,
-                'type':'contact',
-                'is_company':False,
-                'category_id':partner_cat,
-                # 'color':'',
-                'partner_share':True,
-                # 'email_normalized':'',
-                # 'contact_address_complete':'',
-                # 'phone_sanitized':'',
-                'invoice_warn':'no-message',
-                'sale_warn':'no-message',
-                'picking_warn':'no-message',
-                'purchase_warn':'no-message',
-                'street':street,
-                'street2':street2,
-                'zip':zip,
-                'city':city,
-                'state_id':state_id,
-                'country_id':country_id,
-                'email':email,
-                'phone':phone,
-                'mobile':mobile,
-            })
-        partner_data = self.env['res.partner'].search([('name', '=', emp_id+' - '+emp_name)])
-        bank_info = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)])
-        if bank_info:
-            bank_info.write({
-                'acc_number':acc_num,
-                'acc_holder_name':emp_id,
-                'bank_id':bank,
-                'company_id':emp_company,
-            })
-        elif len(acc_num)>0:
-            self.env['res.partner.bank'].create({
-                #'active':'',
-                'acc_number':acc_num,
-                #'sanitized_acc_number':'',
-                'acc_holder_name':emp_id,
-                'partner_id':partner_data.id,
-                'bank_id':bank,
-                #'sequence':'',
-                #'currency_id':'',
-                'company_id':emp_company,
-            })
-        emp_details = self.env['hr.employee'].search([('id', '=', e_id)])
-        if bank_info:
-            emp_details.write({
-                'address_home_id':bank_info.partner_id.id,
-                'private_email':email,
-                'phone':phone,
-                'bank_account_id':bank_info.id,
-            })
-        else:
-            bank_info_ = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)])
-            emp_details.write({
-                'address_home_id':bank_info_.partner_id.id,
-                'private_email':email,
-                'phone':phone,
-                'bank_account_id':bank_info_.id,
-            })
+    def create_emp_contact(self, e_id, emp_id, emp_name, emp_company, cat_name, street,street2,zip,city,state_id,country_id,email,phone,mobile,bank,acc_num,active):
+        if active == True:
+            partner_info = self.env['res.partner'].search([('name', 'like', emp_id)])
+            inactive_partner_info = self.env['res.partner'].search([('name', 'like', emp_id),('active', '=', False)])
+            unarchive=True
+#             raise UserError((partner_info.id,inactive_partner_info.id))
+            partner_cat = self.env['res.partner.category'].search([('name', '=', cat_name)])
+            if inactive_partner_info:
+                unarchive=False
+            if unarchive:
+                if partner_info:
+                    partner_info.write({
+                        'name':emp_id+' - '+emp_name,
+                        'display_name':emp_id+'-'+emp_name,
+                        'category_id':partner_cat,
+                        'street':street,
+                        'street2':street2,
+                        'zip':zip,
+                        'city':city,
+                        'state_id':state_id,
+                        'country_id':country_id,
+                        'email':email,
+                        'phone':phone,
+                        'mobile':mobile,
+                    })
+                else:
+                    self.env['res.partner'].create({
+                        'name':emp_id+' - '+emp_name,
+                        'display_name':emp_id+'-'+emp_name,
+                        'company_type':'person',
+                        'lang':'en_US',
+                        'tz':'Asia/Dhaka',
+                        'active':True,
+                        'type':'contact',
+                        'is_company':False,
+                        'category_id':partner_cat,
+                        # 'color':'',
+                        'partner_share':True,
+                        # 'email_normalized':'',
+                        # 'contact_address_complete':'',
+                        # 'phone_sanitized':'',
+                        'invoice_warn':'no-message',
+                        'sale_warn':'no-message',
+                        'picking_warn':'no-message',
+                        'purchase_warn':'no-message',
+                        'street':street,
+                        'street2':street2,
+                        'zip':zip,
+                        'city':city,
+                        'state_id':state_id,
+                        'country_id':country_id,
+                        'email':email,
+                        'phone':phone,
+                        'mobile':mobile,
+                    })
+                partner_data = self.env['res.partner'].search([('name', '=', emp_id+' - '+emp_name)])
+                bank_info = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)])
+                if bank_info:
+                    bank_info.write({
+                        'acc_number':acc_num,
+                        'acc_holder_name':emp_id,
+                        'bank_id':bank,
+                        'company_id':emp_company,
+                    })
+                elif acc_num:
+        #             raise UserError((acc_num))
+                    self.env['res.partner.bank'].create({
+                        #'active':'',
+                        'acc_number':acc_num,
+                        #'sanitized_acc_number':'',
+                        'acc_holder_name':emp_id,
+                        'partner_id':partner_data.id,
+                        'bank_id':bank,
+                        #'sequence':'',
+                        #'currency_id':'',
+                        'company_id':emp_company,
+                    })
+                emp_details = self.env['hr.employee'].search([('id', '=', e_id)])
+                if bank_info:
+                    emp_details.write({
+                        'address_home_id':bank_info.partner_id.id,
+                        'private_email':email,
+                        'phone':phone,
+                        'bank_account_id':bank_info.id,
+                    })
+                else:
+                    bank_info_ = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)])
+                    emp_details.write({
+                        'address_home_id':bank_info_.partner_id.id,
+                        'private_email':email,
+                        'phone':phone,
+                        'bank_account_id':bank_info_.id,
+                    })
 
 
     
