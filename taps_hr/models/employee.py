@@ -41,11 +41,11 @@ class HrEmployee(models.Model):
     
     def create_emp_contact(self, e_id, emp_id, emp_name, emp_company, cat_name, street,street2,zip,city,state_id,country_id,email,phone,mobile,bank,acc_num,active):
         if active == True:
-            partner_info = self.env['res.partner'].search([('name', 'like', emp_id)])
-            inactive_partner_info = self.env['res.partner'].search([('name', 'like', emp_id),('active', '=', False)])
+            partner_info = self.env['res.partner'].search([('name', 'like', emp_id)]).sorted(key = 'id', reverse=True)[:1]
+            inactive_partner_info = self.env['res.partner'].search([('name', 'like', emp_id),('active', '=', False)]).sorted(key = 'id', reverse=True)[:1]
             unarchive=True
 #             raise UserError((partner_info.id,inactive_partner_info.id))
-            partner_cat = self.env['res.partner.category'].search([('name', '=', cat_name)])
+            partner_cat = self.env['res.partner.category'].search([('name', '=', cat_name)]).sorted(key = 'id', reverse=True)[:1]
             if inactive_partner_info:
                 unarchive=False
             if unarchive:
@@ -94,8 +94,8 @@ class HrEmployee(models.Model):
                         'phone':phone,
                         'mobile':mobile,
                     })
-                partner_data = self.env['res.partner'].search([('name', '=', emp_id+' - '+emp_name)])
-                bank_info = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)])
+                partner_data = self.env['res.partner'].search([('name', '=', emp_id+' - '+emp_name)]).sorted(key = 'id', reverse=True)[:1]
+                bank_info = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)]).sorted(key = 'id', reverse=True)[:1]
                 if bank_info:
                     bank_info.write({
                         'acc_number':acc_num,
@@ -125,7 +125,7 @@ class HrEmployee(models.Model):
                         'bank_account_id':bank_info.id,
                     })
                 else:
-                    bank_info_ = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)])
+                    bank_info_ = self.env['res.partner.bank'].search([('partner_id', '=', partner_data.id)]).sorted(key = 'id', reverse=True)[:1]
                     emp_details.write({
                         'address_home_id':bank_info_.partner_id.id,
                         'private_email':email,
