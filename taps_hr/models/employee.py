@@ -132,6 +132,7 @@ class HrEmployee(models.Model):
                         'phone':phone,
                         'bank_account_id':bank_info_.id,
                     })
+                    #lsdkjfsdklf
 
 
     
