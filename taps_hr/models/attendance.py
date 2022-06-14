@@ -186,7 +186,8 @@ class HrAttendance(models.Model):
         activeemplist = self.env['hr.employee'].search([('active', '=', True)])
         for employeelist in activeemplist:
             att_obj = self.env['hr.attendance']
-            dateGenerate = datetime.datetime.now() + timedelta(hours=6)
+            dGenerate = datetime.datetime.now() + timedelta(hours=6)
+            dateGenerate = dGenerate - timedelta(days=1)
             get_transfer = self.env['shift.transfer'].search([('empid', '=', employeelist.emp_id),
                                                               ('activationDate', '<=', dateGenerate)])
             trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]
