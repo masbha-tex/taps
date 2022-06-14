@@ -30,73 +30,73 @@ class HrAttendance(models.Model):
 #     @api.model
 #     def create(self,vals):
 
-#     @api.onchange('ad_in')
-#     def _calculate_in(self):
-#         for inout in self:
-#             #raise UserError((len(str(inout.ad_in))-2))
-#             ac_time_len = len(str(inout.ad_in))-2
-#             time_len = len(str(inout.ad_in))-2
-#             #raise UserError((time_len))
+    @api.onchange('ad_in')
+    def _calculate_in(self):
+        for inout in self:
+            #raise UserError((len(str(inout.ad_in))-2))
+            ac_time_len = len(str(inout.ad_in))-2
+            time_len = len(str(inout.ad_in))-2
+            #raise UserError((time_len))
             
-#             if inout.ad_in == 0:
-#                 inout.ad_in = 0
-#                 inout.check_in = 0
-#                 return
-#             if time_len == 3:
-#                 time_len = 4
-#             #raise UserError((time_len))
-#             #raise UserError((inout.ad_in))
-#             if time_len<4:
-#                 raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
-#             if time_len>4:
-#                 raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
-#             if time_len==4:
-#                 str_time = str(inout.ad_in).rpartition('.')[0]
-#                 if ac_time_len == 3:
-#                     str_time = '0'+str(inout.ad_in).rpartition('.')[0]
-#                 hh_ = str_time[0:2]
-#                 mm_ = str_time[2:4]
-#                 int_hh = float(int(hh_))
-#                 int_mm = float(int(mm_))
-#                 mm_calculate = int_mm/100
-#                 total_time = int_hh+ ((mm_calculate/60)*100)
-#                 inout.ad_in = total_time
-#                 chkin_datetime = datetime.datetime.fromordinal(inout.attDate.toordinal()) + datetime.timedelta(seconds=total_time*3600)
-#                 inout.check_in = chkin_datetime - timedelta(hours=6)
+            if inout.ad_in == 0:
+                inout.ad_in = 0
+                inout.check_in = 0
+                return
+            if time_len == 3:
+                time_len = 4
+            #raise UserError((time_len))
+            #raise UserError((inout.ad_in))
+            if time_len<4:
+                raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
+            if time_len>4:
+                raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
+            if time_len==4:
+                str_time = str(inout.ad_in).rpartition('.')[0]
+                if ac_time_len == 3:
+                    str_time = '0'+str(inout.ad_in).rpartition('.')[0]
+                hh_ = str_time[0:2]
+                mm_ = str_time[2:4]
+                int_hh = float(int(hh_))
+                int_mm = float(int(mm_))
+                mm_calculate = int_mm/100
+                total_time = int_hh+ ((mm_calculate/60)*100)
+                inout.ad_in = total_time
+                chkin_datetime = datetime.datetime.fromordinal(inout.attDate.toordinal()) + datetime.timedelta(seconds=total_time*3600)
+                inout.check_in = chkin_datetime - timedelta(hours=6)
     
-#     @api.onchange('ad_out')
-#     def _calculate_out(self):
-#         for inout in self:
-#             ac_time_len = len(str(inout.ad_out))-2
-#             time_len = len(str(inout.ad_out))-2
-#             #raise UserError((time_len))
-#             if inout.ad_out == 0:
-#                 inout.ad_out = 0
-#                 inout.check_out = 0
-#                 return
-#             if time_len == 3:
-#                 time_len = 4
-#             if time_len<4:
-#                 raise UserError(('Please Enter Value With 4 Degit ex(0905) ---'))
-#             if time_len>4:
-#                 raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
-#             if time_len==4:
-#                 str_time = str(inout.ad_out).rpartition('.')[0]
-#                 if ac_time_len == 3:
-#                     str_time = '0'+str(inout.ad_out).rpartition('.')[0]
-#                 hh_ = str_time[0:2]
-#                 mm_ = str_time[2:4]
-#                 int_hh = float(int(hh_))
-#                 int_mm = float(int(mm_))
-#                 mm_calculate = int_mm/100
-#                 total_time = int_hh+ ((mm_calculate/60)*100)
-#                 inout.ad_out = total_time
-#                 chkout_datetime = datetime.datetime.fromordinal(inout.attDate.toordinal()) + datetime.timedelta(seconds=total_time*3600)
-#                 out_dttime = chkout_datetime - timedelta(hours=6)
-#                 if out_dttime<inout.check_in:
-#                     out_dttime = out_dttime + timedelta(days=1)
-#                 inout.check_out = out_dttime
-#                 return
+    @api.onchange('ad_out')
+    def _calculate_out(self):
+        for inout in self:
+            ac_time_len = len(str(inout.ad_out))-2
+            time_len = len(str(inout.ad_out))-2
+            #raise UserError((time_len))
+            if inout.ad_out == 0:
+                inout.ad_out = 0
+                inout.check_out = 0
+                return
+            if time_len == 3:
+                time_len = 4
+            if time_len<4:
+                raise UserError(('Please Enter Value With 4 Degit ex(0905) ---'))
+            if time_len>4:
+                raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
+            if time_len==4:
+                str_time = str(inout.ad_out).rpartition('.')[0]
+                if ac_time_len == 3:
+                    str_time = '0'+str(inout.ad_out).rpartition('.')[0]
+                hh_ = str_time[0:2]
+                mm_ = str_time[2:4]
+                int_hh = float(int(hh_))
+                int_mm = float(int(mm_))
+                mm_calculate = int_mm/100
+                total_time = int_hh+ ((mm_calculate/60)*100)
+                inout.ad_out = total_time
+                chkout_datetime = datetime.datetime.fromordinal(inout.attDate.toordinal()) + datetime.timedelta(seconds=total_time*3600)
+                out_dttime = chkout_datetime - timedelta(hours=6)
+                if out_dttime<inout.check_in:
+                    out_dttime = out_dttime + timedelta(days=1)
+                inout.check_out = out_dttime
+                return
     
     def _calculate_ot(self,att_date,emp_id,inTime,outTime,inHour,worked_hours):
          
