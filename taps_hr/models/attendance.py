@@ -187,6 +187,7 @@ class HrAttendance(models.Model):
         for employeelist in activeemplist:
             att_obj = self.env['hr.attendance']
             dateGenerate = datetime.datetime.now() + timedelta(hours=6)
+            #raise UserError((dateGenerate))
             get_transfer = self.env['shift.transfer'].search([('empid', '=', employeelist.emp_id),
                                                               ('activationDate', '<=', dateGenerate)])
             trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]

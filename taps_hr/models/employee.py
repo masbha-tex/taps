@@ -40,6 +40,7 @@ class HrEmployee(models.Model):
     
     
     def create_emp_contact(self, e_id, emp_id, emp_name, emp_company, cat_name, street,street2,zip,city,state_id,country_id,email,phone,mobile,bank,acc_num,active):
+#         raise UserError(('fefefe'))
         if active == True:
             partner_info = self.env['res.partner'].search([('name', 'like', emp_id)]).sorted(key = 'id', reverse=True)[:1]
             inactive_partner_info = self.env['res.partner'].search([('name', 'like', emp_id),('active', '=', False)]).sorted(key = 'id', reverse=True)[:1]

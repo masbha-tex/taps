@@ -35,12 +35,12 @@
             <field name="page_height">0</field>
             <field name="page_width">0</field>
             <field name="orientation">Landscape</field>
-            <field name="margin_top">10</field>
-            <field name="margin_bottom">4</field>
-            <field name="margin_left">3</field>
-            <field name="margin_right">5</field>
+            <field name="margin_top">20</field>
+            <field name="margin_bottom">6</field>
+            <field name="margin_left">1</field>
+            <field name="margin_right">3</field>
             <field name="header_line" eval="False"/>
-            <field name="header_spacing">35</field>
+            <field name="header_spacing">20</field>
             <field name="dpi">90</field>
         </record>
         <record id="paperformat_profile_report" model="report.paperformat">

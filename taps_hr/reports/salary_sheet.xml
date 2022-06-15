@@ -1,154 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
-    <template id="salary_sheet_pdf_template">
-    <t t-call="web.html_container">
-          <t t-call="web.external_layout">
-              <t t-value="docs.with_context(lang=docs.employee_id.address_home_id.lang or docs.env.lang)"/>
-              <div class="page">
-                  <table class="table-sm table-bordered">
-                    <t t-set="line_style" t-value="'margin-bottom:0pt;margin-top:0pt;font-size:8pt;'"/>
-                      <thead>
-                          <tr t-att-style="line_style" align="center">
-                              <th rowspan="6">SL</th>
-                              <th rowspan="6">Section</th>
-                              <th rowspan="6">ID</th>
-                              <th rowspan="6">Employee Name</th>
-                              <th rowspan="6">Designation</th>
-                              <th rowspan="3">Join Date</th>
-                              <th>Working Days</th>
-                              <th>Late Days</th>
-                              <th rowspan="6">Total Payable Days</th>
-                              <th rowspan="6">Gross Salary</th>
-                              
-                              <th rowspan="2" colspan="16">Earnings Details</th>
-                              <th rowspan="6">Total Earnings</th>
-                              <th rowspan="2" colspan="8">Deduction Details</th>
-                              <th rowspan="6">Total Deduction</th>
-                              <th rowspan="6">Net Payable</th>
-                              <th rowspan="6">Bank A/C Details</th>
-                              
-                          </tr>
-                          <tr t-att-style="line_style" align="center">
-                            <th>Gross Absent Days</th>
-                            <th>CL</th>
-                          </tr>
-                          <tr t-att-style="line_style" align="center">
-                            <th>Basic Absent Days</th>
-                            <th>SL</th>
-                            <th colspan="3">Salary Breakup</th>
-                            <th colspan="3">Over Time</th>
-                            <th rowspan="4">Arrear</th>
-                            <th rowspan="4">Att. Bonus</th>
-                            <th rowspan="4">Convence Allowance</th>
-                            <th rowspan="4">Food Allowance</th>
-                            <th rowspan="4">Tiffin Allowance</th>
-                            <th rowspan="4">Strength Snacks Allowance</th>
-                            <th rowspan="4">Mobile Allowance</th>
-                            <th rowspan="4">Others Allowance</th>
-                            <th rowspan="4">Incentive Allowance</th>
-                            <th rowspan="4">PF (Emp'r) 8.33%</th> 
-                            <th rowspan="4">PF (Emp'r) 8.33%</th> 
-                            <th rowspan="4">PF (Emp'ee) 8.33%</th> 
-                            <th rowspan="4">TDS (AIT)</th> 
-                            <th rowspan="4">Basic Absent Deduct</th> 
-                            <th rowspan="4">Gross Absent Deduct</th> 
-                            <th rowspan="4">Loan</th> 
-                            <th rowspan="4">Adv. Salary</th> 
-                            <th rowspan="4">Others Deduct</th>
-                          </tr> 
-                          <tr t-att-style="line_style" align="center">
-                            <th rowspan="3">Grade</th>
-                            <th>Friday</th>
-                            <th>EL</th>
-                            <th rowspan="3">Basic</th>
-                            <th rowspan="3">House Rent</th>
-                            <th rowspan="3">Medical</th>
-                            <th rowspan="3">HRS</th>
-                            <th rowspan="3">Rate</th>
-                            <th rowspan="3">Amount</th>
-                          </tr>
-                          <tr t-att-style="line_style" align="center">
-                              <th>Holiday</th>
-                              <th>ML</th>
-                          </tr>
-                          <tr t-att-style="line_style" align="center">
-                            <th>CO | AJ</th>
-                            <th>LW</th>
-
-                          </tr>                            
-                      </thead>
-                      <tbody>
-                        <tr t-foreach="inside_foreach_docs or docs" t-as="o" t-att-style="line_style" align="center">
-                          <tr t-att-style="line_style" align="center">
-                            <td rowspan="6"><span t-esc="o_index+1" class="text-nowrap"/></td>
-                            <td rowspan="6"><span t-field="o.employee_id.department_id.name"/></td>
-                            <td rowspan="6"><span t-field="o.employee_id.emp_id"/></td>
-                            <td rowspan="6"><span t-field="o.employee_id"/></td>
-                            <td rowspan="6"><span t-field="o.employee_id.job_title"/></td>
-                            <td rowspan="3"><span t-field="o.contract_id.date_start"/></td>
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/></td>
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days"/></td>
-                            <td rowspan="6"><span t-field="o.total_payable_days"/></td>
-                            <td rowspan="6"><span t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{'widget':'decimal'}"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{'widget':'decimal'}"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'HRA').total" t-options="{'widget':'decimal'}"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{'widget':'decimal'}"/></td>
-                            <td rowspan="6"><span t-field="o.otHours"/></td>
-                            <td rowspan="6"><span t-field="o.otRate"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'OT').total"/></td>              
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'ARREAR').total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'ATTBONUS').total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'FOOD').total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'TIFFIN').total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'SNACKS').total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'MOBILE').total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'RPF').total"/></td>
-                            <td rowspan="6"><span t-field="o.earnings_total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'PFR').total"/></td> 
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'PFE').total"/></td> 
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'AIT').total"/></td> 
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC_ABSENT').total"/></td> 
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'GROSS_ABSENT').total"/></td> 
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'LOAN').total"/></td> 
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total"/></td> 
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_DED').total"/></td>
-                            <td rowspan="6"><span t-field="o.deduction_total"/></td>
-                            <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'NET').total"/></td>
-                            <td rowspan="6"><span t-field="o.employee_id.bank_account_id"/></td>
-                          </tr>
-                          <tr t-att-style="line_style" align="center">
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/></td>
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days"/></td>
-                          </tr>
-                          <tr t-att-style="line_style" align="center">
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/></td>
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days"/></td>
-                          </tr> 
-                          <tr t-att-style="line_style" align="center">
-                            <td rowspan="3"> <span t-field="o.struct_id.name"/></td>
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/></td>
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days"/></td>
-
-
-                          </tr>
-                          <tr t-att-style="line_style" align="center">
-                              <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/></td>
-                              <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days"/></td>
-                          </tr>
-                          <tr t-att-style="line_style" align="center">
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/> | <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/></td>
-                            <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days"/></td>
-
-                          </tr>   
-                        </tr>
-                      </tbody>
-                  </table>
-              </div>
-          </t>
-      </t>
-    </template>
+	<template id="salary_sheet_pdf_template">
+		<t t-call="web.html_container">
+			<t t-call="web.external_layout">
+				<t t-value="docs.with_context(lang=docs.employee_id.address_home_id.lang or docs.env.lang)"/>
+				<div class="page">
+					<table class="table-sm table-bordered" style="table-layout:fixed; page-break-inside: avoid;">
+						<t t-set="line_style" t-value="'margin-bottom:0pt;margin-top:0pt; margin-left:0pt;margin-right:0pt;font-size:8pt;'"/>
+						<thead>
+							<tr t-att-style="line_style" align="center">
+								<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">SL</th>
+								<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Section</th>
+								<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">ID</th>
+								<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Employee Name</th>
+								<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Designation</th>
+								<th rowspan="3" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Join Date</th>
+								<th colspan="2" style="background-color: green;color: white">Worked Days</th>
+								<th colspan="2" style="background-color: yellow;">Late Days</th>
+								<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Total Payable Days</th>
+								<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Gross Salary</th>
+								<th rowspan="2" colspan="16" style="vertical-align : middle;">Earnings Details</th>
+								<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Total Earnings</th>
+								<th rowspan="2" colspan="8" style="vertical-align : middle;">Deduction Details</th>
+								<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Total Deduction</th>
+								<th rowspan="6" style="vertical-align : middle;">Net Payable</th>
+								<th rowspan="6" style="vertical-align : middle;">Bank A/C Details</th>
+							</tr>
+							<tr t-att-style="line_style" align="center">
+								<th colspan="2" style="background-color: red;color: white">Gross A. Days</th>
+								<th colspan="2" style="background-color: yellow;">CL</th>
+							</tr>
+							<tr t-att-style="line_style" align="center">
+								<th colspan="2" style="background-color: red;color: white">Basic A. Days</th>
+								<th colspan="2" style="background-color: yellow;">SL</th>
+								<th colspan="3" style="vertical-align : middle;">Salary Breakup</th>
+								<th colspan="3" style="vertical-align : middle;">Over Time</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Arrear</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Att. Bonus</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Convence Allowance</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Food Allowance</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Tiffin Allowance</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Strength Snacks Allowance</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Mobile Allowance</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Others Allowance</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Incentive Allowance</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">PF (Emp'r) 8.33%</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">PF (Emp'r) 8.33%</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">PF (Emp'ee) 8.33%</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">TDS (AIT)</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Basic Absent Deduct</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Gross Absent Deduct</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Loan</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Adv. Salary</th>
+								<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Others Deduct</th>
+							</tr>
+							<tr t-att-style="line_style" align="center">
+								<th rowspan="3">Grade</th>
+								<th colspan="2" style="background-color: purple;color: white">Friday</th>
+								<th colspan="2" Style="background-color: yellow">EL</th>
+								<th rowspan="3">Basic</th>
+								<th rowspan="3">House Rent</th>
+								<th rowspan="3">Medical</th>
+								<th rowspan="3">HRS</th>
+								<th rowspan="3">Rate</th>
+								<th rowspan="3">Amount</th>
+							</tr>
+							<tr t-att-style="line_style" align="center">
+								<th colspan="2" style="background-color: purple;color: white">Holiday</th>
+								<th colspan="2" style="background-color: yellow;">ML</th>
+							</tr>
+							<tr t-att-style="line_style" align="center">
+								<th colspan="1" style="background-color: blue;color: white">CO</th>
+								<th colspan="1" style="background-color: blue;color: white">Aj</th>
+								<th colspan="2" style="background-color: yellow;">LW</th>
+							</tr>
+						</thead>
+						<!--<tbody>-->
+						<!--  <tr t-foreach="inside_foreach_docs or docs" t-as="o" t-att-style="line_style" align="center">-->
+						<!--    <tr t-att-style="line_style" align="center">-->
+						<!--      <td rowspan="6"><span t-esc="o_index+1" class="text-nowrap"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.employee_id.department_id.name"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.employee_id.emp_id"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.employee_id"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.employee_id.job_title"/></td>-->
+						<!--      <td rowspan="3"><span t-field="o.contract_id.date_start"/></td>-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/></td>-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.total_payable_days"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{'widget':'decimal'}"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{'widget':'decimal'}"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'HRA').total" t-options="{'widget':'decimal'}"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{'widget':'decimal'}"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.otHours"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.otRate"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'OT').total"/></td>              -->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'ARREAR').total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'ATTBONUS').total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'FOOD').total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'TIFFIN').total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'SNACKS').total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'MOBILE').total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'RPF').total"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.earnings_total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'PFR').total"/></td> -->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'PFE').total"/></td> -->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'AIT').total"/></td> -->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC_ABSENT').total"/></td> -->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'GROSS_ABSENT').total"/></td> -->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'LOAN').total"/></td> -->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total"/></td> -->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_DED').total"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.deduction_total"/></td>-->
+						<!--      <td rowspan="6"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'NET').total"/></td>-->
+						<!--      <td rowspan="6"><span t-field="o.employee_id.bank_account_id"/></td>-->
+						<!--    </tr>-->
+						<!--    <tr t-att-style="line_style" align="center">-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/></td>-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days"/></td>-->
+						<!--    </tr>-->
+						<!--    <tr t-att-style="line_style" align="center">-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/></td>-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days"/></td>-->
+						<!--    </tr> -->
+						<!--    <tr t-att-style="line_style" align="center">-->
+						<!--      <td rowspan="3"> <span t-field="o.struct_id.name"/></td>-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/></td>-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days"/></td>-->
+						<!--    </tr>-->
+						<!--    <tr t-att-style="line_style" align="center">-->
+						<!--        <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/></td>-->
+						<!--        <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days"/></td>-->
+						<!--    </tr>-->
+						<!--    <tr t-att-style="line_style" align="center">-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/> | <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/></td>-->
+						<!--      <td><span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days"/></td>-->
+						<!--    </tr>   -->
+						<!--  </tr>-->
+						<!--</tbody>  -->
+					</table>
+				</div>
+			</t>
+		</t>
+	</template>
 </odoo>
