@@ -11,7 +11,7 @@ class QualityCheck(models.Model):
     quality_check_line = fields.One2many('quality.check.line', 'check_id', string='Order Lines', copy=True)
     product_category = fields.Many2one(related='product_id.categ_id', string='Product Category', readonly=True)
     #pocode = fields.Char(related='picking_id.origin', string='PO', readonly=True)
-    partner_name = fields.Char(string='Vendor', compute="_compute_partner_id", readonly=True, stored=True)
+    partner_name = fields.Char(string='Vendor', compute="_compute_partner_id", readonly=True, store=True)
 #     quality_state = fields.Selection([
 #         ('none', 'To do'),
 #         ('pass', 'Passed'),

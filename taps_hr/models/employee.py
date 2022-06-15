@@ -14,8 +14,7 @@ class HrEmployee(models.Model):
     joining_date = fields.Date(related = 'contract_id.date_start', related_sudo=False, string='Joining Date', store=True, tracking=True)
     probation_date = fields.Date(related = 'contract_id.trial_date_end', related_sudo=False, store=True, tracking=True)
     resign_date = fields.Date(related = 'contract_id.date_end', related_sudo=False, string='Resign Date', store=True, tracking=True)
-    grade = fields.Char(related = 'contract_id.structure_type_id.default_struct_id.name', 
-                              related_sudo=False, string='Grade', store=True, tracking=True)
+    grade = fields.Char(related = 'contract_id.structure_type_id.default_struct_id.name', related_sudo=False, string='Grade', store=True, tracking=True)
     shift_group = fields.Many2one('shift.setup', string="Attendance Group", store=True, tracking=True)
     fathers_name = fields.Char(string="Father's Name", store=True, tracking=True)
     mothers_name = fields.Char(string="Mother's Name", store=True, tracking=True)
@@ -26,11 +25,9 @@ class HrEmployee(models.Model):
     zip = fields.Char(change_default=True)
     city = fields.Char()
     state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
-#     country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
+    #country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
     email = fields.Char()
-    email_formatted = fields.Char(
-        'Formatted Email', compute='_compute_email_formatted',
-        help='Format email address "Name <email@domain>"')
+    email_formatted = fields.Char('Formatted Email', compute='_compute_email_formatted', help='Format email address "Name <email@domain>"')
     phone = fields.Char()
     mobile = fields.Char()
     
@@ -40,12 +37,11 @@ class HrEmployee(models.Model):
     
     
     def create_emp_contact(self, e_id, emp_id, emp_name, emp_company, cat_name, street,street2,zip,city,state_id,country_id,email,phone,mobile,bank,acc_num,active):
-#         raise UserError(('fefefe'))
         if active == True:
             partner_info = self.env['res.partner'].search([('name', 'like', emp_id)]).sorted(key = 'id', reverse=True)[:1]
             inactive_partner_info = self.env['res.partner'].search([('name', 'like', emp_id),('active', '=', False)]).sorted(key = 'id', reverse=True)[:1]
             unarchive=True
-#             raise UserError((partner_info.id,inactive_partner_info.id))
+            #raise UserError((partner_info.id,inactive_partner_info.id))
             partner_cat = self.env['res.partner.category'].search([('name', '=', cat_name)]).sorted(key = 'id', reverse=True)[:1]
             if inactive_partner_info:
                 unarchive=False
@@ -133,10 +129,6 @@ class HrEmployee(models.Model):
                         'bank_account_id':bank_info_.id,
                     })
                     
-
-
-    
-
     def name_get(self):
         result = []
         for record in self:

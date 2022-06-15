@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 class PickingVendorNameINT(models.Model):
     _inherit = 'stock.picking'
-    partner_name = fields.Char(rreadonly=True, store=True, string='Vendor Name', compute='compute_partner')
+    partner_name = fields.Char(readonly=True, store=True, string='Vendor Name', compute='compute_partner')
     
     def compute_partner(self):
         for rec in self:

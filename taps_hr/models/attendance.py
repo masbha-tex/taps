@@ -21,22 +21,14 @@ class HrAttendance(models.Model):
     otHours = fields.Float(string = "OT Hours")
     check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
     is_lock = fields.Boolean(readonly=False, default=False)
-    
     ad_in = fields.Float(string = "IN")
     ad_out = fields.Float(string = "OUT")
-    
-    #, compute="_calculate_inout"
-    
-#     @api.model
-#     def create(self,vals):
 
     @api.onchange('ad_in')
     def _calculate_in(self):
         for inout in self:
-            #raise UserError((len(str(inout.ad_in))-2))
             ac_time_len = len(str(inout.ad_in))-2
             time_len = len(str(inout.ad_in))-2
-            #raise UserError((time_len))
             
             if inout.ad_in == 0:
                 inout.ad_in = 0
@@ -44,8 +36,6 @@ class HrAttendance(models.Model):
                 return
             if time_len == 3:
                 time_len = 4
-            #raise UserError((time_len))
-            #raise UserError((inout.ad_in))
             if time_len<4:
                 raise UserError(('Please Enter Value With 4 Degit ex(0905)'))
             if time_len>4:
@@ -69,7 +59,6 @@ class HrAttendance(models.Model):
         for inout in self:
             ac_time_len = len(str(inout.ad_out))-2
             time_len = len(str(inout.ad_out))-2
-            #raise UserError((time_len))
             if inout.ad_out == 0:
                 inout.ad_out = 0
                 inout.check_out = 0
@@ -184,10 +173,12 @@ class HrAttendance(models.Model):
 
     def generate_attdate(self):
         activeemplist = self.env['hr.employee'].search([('active', '=', True)])
+        base_auto = self.env['base.automation'].search([('id', '=', 23)])
+        if base_auto:
+            base_auto.write({'active': False})
         for employeelist in activeemplist:
             att_obj = self.env['hr.attendance']
             dateGenerate = datetime.datetime.now() + timedelta(hours=6)
-            #raise UserError((dateGenerate))
             get_transfer = self.env['shift.transfer'].search([('empid', '=', employeelist.emp_id),
                                                               ('activationDate', '<=', dateGenerate)])
             trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]
@@ -205,11 +196,11 @@ class HrAttendance(models.Model):
                                 'inTime': trans_data.inTime,
                                 'outTime': trans_data.outTime})
                 self.generateAttFlag(att_obj.empID,dateGenerate,att_obj.inTime,att_obj.inHour,att_obj.outTime,att_obj.outHour)
-            
+        
+        if base_auto:
+            base_auto.write({'active': True})
                     
     def generateAttFlag(self,emp_id,att_date,office_in_time,in_time,office_out_time,out_time):
-        
-#         raise UserError((emp_id,att_date,office_in_time,in_time,office_out_time,out_time))
         att_obj = self.env['hr.attendance']
         shift_record = self.env['shift.transfer'].search([('empid', '=', emp_id),('activationDate', '<=',att_date)])
         shift_data = shift_record.sorted(key = 'activationDate', reverse=True)[:1]
@@ -254,24 +245,24 @@ class HrAttendance(models.Model):
         #attdate = t_date - timedelta(days=1)
         #get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])
 
-#         if len(get_att_data) == 1:
-#             if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
-#                 t_date = att_date  
-#                 st_date = t_date
-#                 delta = t_date.replace(day=26).day - t_date.day
-#                 if delta<=0:
-#                     st_date = t_date.replace(day=26)
-#                 else:
-#                     st_date = t_date.replace(day=26) - relativedelta(months = 1)
-#                 endd = (t_date - st_date).days
-#                 attdate = t_date - timedelta(days=1)
-#                 #activeemplist = self.env['hr.employee'].search([('active', '=', True), ('emp_id', '=', emp_id)])
-#                 get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])                
-#                 if len(get_pre_att_data) == 0:
-#                     for d in range(0, endd):
-#                         get_pre_att_data.create({'attDate':st_date + timedelta(days=d),
-#                                                  #'employee_id': get_pre_att_data.employee_id.id,
-#                                                  'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
+        #if len(get_att_data) == 1:
+            #if get_att_data.employee_id.joining_date and get_att_data.employee_id.joining_date > att_date:
+                #t_date = att_date  
+                #st_date = t_date
+                #delta = t_date.replace(day=26).day - t_date.day
+                #if delta<=0:
+                    #st_date = t_date.replace(day=26)
+                #else:
+                    #st_date = t_date.replace(day=26) - relativedelta(months = 1)
+                #endd = (t_date - st_date).days
+                #attdate = t_date - timedelta(days=1)
+                ###activeemplist = self.env['hr.employee'].search([('active', '=', True), ('emp_id', '=', emp_id)])
+                #get_pre_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', attdate)])                
+                #if len(get_pre_att_data) == 0:
+                    #for d in range(0, endd):
+                        #get_pre_att_data.create({'attDate':st_date + timedelta(days=d),
+                                                 ##'employee_id': get_pre_att_data.employee_id.id,
+                                                 #'inFlag':'X','outFlag':'X','inHour' : False,'outHour' : False})
         if len(get_att_data) == 1:
             if not inHour and not outHour:
                 get_att_data[-1].write({'inFlag':'A','outFlag':'A','inHour' : False,'outHour' : False})
@@ -288,7 +279,6 @@ class HrAttendance(models.Model):
                         else:
                             get_att_data[-1].write({'inFlag':lv_type.code,'outFlag':lv_type.code,'inHour' : False,'outHour' : False})
             if inHour and outHour:
-                #raise UserError((office_in_time,inHour))
                 if office_in_time>=inHour:
                     get_att_data[-1].write({'inFlag':'P','inHour' : inHour})
                 else:
@@ -397,6 +387,3 @@ class HrAttendance(models.Model):
         for attendance in self:
             if attendance.is_lock == True:
                 raise Warning(_('This Attendance is lock'))
-                
-                
-            

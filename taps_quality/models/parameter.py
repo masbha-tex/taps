@@ -14,9 +14,6 @@ class Parameter(models.Model):
     _name = "quality.parameter"
     _description = "Quality Parameter"
     _rec_name = "parameter_name"
-    
-    
-    
             
            
     parameter_name = fields.Char(string="Parameter Name")
