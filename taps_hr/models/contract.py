@@ -46,6 +46,51 @@ class HrContract(models.Model):
                                 help="Employee's monthly PF Contribution is Active.")
     pf_activationDate = fields.Date('PF Active Date', store=True, tracking=True, help="Activation Date of the PF Contribution.")
 
+    def create_att_atjoin(self, empid, joindate, leavdate, state):
+        if state == 'open':
+            base_auto = self.env['base.automation'].search([('id', '=', 23)])
+            attendance = self.env['hr.attendance'].search([('employee_id', '=', empid)])
+            if attendance:
+                a='a'
+            else:
+                if base_auto:
+                    base_auto.write({'active': False})
+                date_join = datetime.strptime(joindate.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                stdate = date_join.replace(day=26)
+                c_date = datetime.now()
+                end_date = c_date.strptime(c_date.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                #st_date = t_date.replace(day=26) - relativedelta(months = 1)
+                if joindate.day<26:
+                    stdate = stdate - relativedelta(months = 1)
+
+                #raise UserError((end_date,stdate))
+                delta = end_date - stdate
+                for i in range(delta.days + 1):
+                    day = stdate + timedelta(days=i)
+                    if date_join > day:
+                        attendance.create({'attDate': day,
+                                           'employee_id': empid,
+                                           'inTime': False,
+                                           'outTime': False,
+                                           'inFlag':'X',
+                                           'outFlag':'X',
+                                           'inHour' : False,
+                                           'outHour' : False})
+                    else:
+                        attendance.create({'attDate': day,
+                                           'employee_id': empid,
+                                           'inTime': False,
+                                           'outTime': False,
+                                           'inFlag':'A',
+                                           'outFlag':'A',
+                                           'inHour' : False,
+                                           'outHour' : False})
+
+                if base_auto:
+                    base_auto.write({'active': True})
+        
+        #date_start
+    
     def float_to_time(self,hours):
         if hours == 24.0:
             return time.max

@@ -26,7 +26,7 @@ class Attreprocess(models.TransientModel):
         string='Report Mode', required=True, default='employee')
     
     employee_id = fields.Many2one(
-        'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict")    
+        'hr.employee', domain="['|', ('active', '=', False), ('active', '=', True)]",  string='Employee', index=True, readonly=False, ondelete="restrict")
     
     category_id = fields.Many2one(
         'hr.employee.category',  string='Employee Tag', help='Category of Employee', readonly=False)

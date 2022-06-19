@@ -377,9 +377,12 @@ class SalarySheetReportPDF(models.AbstractModel):
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
         
         
-#         raise UserError((domain))
+        #raise UserError((domain))
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
-        
+        #raise UserError((docs.id)) 
+        emplist = docs.mapped('employee_id.id')
+        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+#        raise UserError((emplist))
         
         
         sectionlist = employee.mapped('department_id.id')
@@ -390,24 +393,8 @@ class SalarySheetReportPDF(models.AbstractModel):
         department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
         
         
-        
-        
-       
-        
-        
-#         flag_datelist = []
-#         flag_dates = []
-#         #raise UserError((docs.id)) 
-#         delta = flag_enddate - flag_stdate
-#         for i in range(delta.days + 1):
-#             day = stdate + timedelta(days=i)
-#             flag_dates = [
-#                 day,
-#             ]
-#             flag_datelist.append(flag_dates)
-        
-
         allemp_data = []
+        
         for details in employee:
             otTotal = 0
             for de in docs:
@@ -426,27 +413,30 @@ class SalarySheetReportPDF(models.AbstractModel):
                 details.job_id.name,
                 otTotal,
                 details.department_id.id,
-                details.contract_id.wage,
-                details.contract_id.basic
-               
             ]
-            allemp_data.append(emp_data)
-            
-            
-            stdate_data = []
-            stdate_data = [
-                datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime("%b %d, %Y"),
-               
-            ]
-            stdate_data.append(stdate_data)
-            
-            lsdate_data = []
-            lsdate_data = [
-                
-                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%b %d, %Y'),
+        allemp_data.append(emp_data)
+        #raise UserError((allemp_data[3]))
+        
+        
+        
+       
+        
+        
+#         flag_datelist = []
+#         flag_dates = []
+#         #raise UserError((docs.id)) 
+#         delta = flag_enddate - flag_stdate
+#         for i in range(delta.days + 1):
+#             day = stdate + timedelta(days=i)
+#             flag_dates = [
+#                 day,
+#             ]
+#             flag_datelist.append(flag_dates)
+        
 
-            ]
-            lsdate_data.append(lsdate_data)
+    
+            
+
             
             
         emp = employee.sorted(key = 'id')[:1]
@@ -471,7 +461,7 @@ class SalarySheetReportPDF(models.AbstractModel):
             data.get('date_to'),
         ]
         common_data.append(common_data)
-        #raise UserError((common_data[2]))
+#        raise UserError((common_data[2]))
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.payslip',
@@ -481,8 +471,8 @@ class SalarySheetReportPDF(models.AbstractModel):
 #             'alldays': all_datelist,
             'dpt': department,
             'sec': section,
-            'stdate': stdate_data,
-            'lsdate': lsdate_data,
+#             'stdate': stdate_data,
+#             'lsdate': lsdate_data,
             'is_com' : data.get('is_company')
         }
     

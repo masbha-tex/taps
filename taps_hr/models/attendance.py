@@ -9,7 +9,7 @@ import warnings
 
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
-    
+
     attDate = fields.Date(string = "Date")
     empID = fields.Char(related = 'employee_id.emp_id', related_sudo=False, string='Emp ID')
     inTime = fields.Float(compute="_calculate_office_start_time", string = "Office In-Time", readonly=True)
@@ -88,20 +88,15 @@ class HrAttendance(models.Model):
                 return
     
     def _calculate_ot(self,att_date,emp_id,inTime,outTime,inHour,worked_hours):
-         
         att_obj = self.env['hr.attendance']
-        
         get_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', att_date)])
-        
-        
-        activeemplist = self.env['hr.employee'].search([('emp_id', '=', emp_id),
-                                                            ('active', '=', True)])
-        
+        activeemplist = self.env['hr.employee'].search([('emp_id', '=', emp_id), ('active', 'in',(False,True))])
+                
         holiday_record = self.env['resource.calendar.leaves'].search([('resource_id', '=', False),('date_from', '<=', att_date),('date_to', '>=', att_date)])
         
         lv_record = self.env['hr.leave'].search([('employee_id', '=', int(get_att_data.employee_id)),('state', '=', 'validate'),('request_date_from', '<=', att_date),('request_date_to', '>=', att_date)])
         lv_type = self.env['hr.leave.type'].search([('id', '=', int(lv_record.holiday_status_id))])        
-        
+        #raise UserError((get_att_data.id,activeemplist.id,emp_id,att_date))
         if activeemplist.isOverTime is True:
             if get_att_data.outHour > outTime:
                 if inTime > inHour:
@@ -386,4 +381,5 @@ class HrAttendance(models.Model):
         """
         for attendance in self:
             if attendance.is_lock == True:
-                raise Warning(_('This Attendance is lock'))
+                if attendance.employee_id.active == True:
+                    raise Warning(_('This Attendance is lock'))
