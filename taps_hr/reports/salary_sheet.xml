@@ -4,7 +4,31 @@
 		<t t-call="web.html_container">
 			<t t-call="web.external_layout">
 				<t t-value="docs.with_context(lang=docs.employee_id.address_home_id.lang or docs.env.lang)"/>
-				<div class="page">
+				<div class="page p-2 m-2">
+				  <style>
+				    
+				    
+				    table {
+				    font-size:8px;
+				    table-layout:fixed;
+				    
+				    
+				    
+				    }
+				    
+				    table, th, tr , td{
+				    border: 1px solid black;
+				    page-break-inside: avoid;
+				    
+				    }
+            
+            
+				  </style>
+				  
+				    
+				  
+				    
+				  
 					<div class="container">
 						<h4 class="text-right">
 							<strong>
@@ -12,9 +36,10 @@
                 <span t-esc="1"/>
 							</strong>
 						</h4>
-						<t t-foreach="dpt" t-as="dp">
+                        <t t-foreach="com" t-as="cm">
+						<t t-foreach="dpt.filtered(lambda x: (x.company_id.id == com.id))" t-as="dp">
 							<t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
-								<div class="container">
+								<div class="container dep">
 									<div style="font-size: 12px;">
 										<strong>DEPARTMENT:</strong>
 										<span t-esc="dp.name" style="color:  #cc7000"/>
@@ -27,17 +52,22 @@
 									</div>
 								</div>
 								<br/>
-								<t t-foreach="docs.filtered(lambda x: (x.department_id.id == se.id))" t-as="o">
+								
 									<div class="container">
-										<table class="table table-sm p-0 m-0" style="font-size:6px; table-layout:fixed; page-break-inside: avoid;">
-											<thead>
+									  
+									    
+									  
+										<table class="table table-sm tr_bottom_line_dark_grey">
+											<!--<thead>-->
+											  
 												<tr>
 													<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">SL</th>
-													<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Section</th>
+													<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Section</th>
 													<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">ID</th>
-													<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Employee Name</th>
-													<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Designation</th>
-													<th rowspan="3" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Join Date</th>
+													<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Employee Name</th>
+													<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Designation</th>
+													<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Join Date</th>
+													<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Grade</th>
 													<th colspan="2" style="background-color: green;color: white">Worked Days</th>
 													<th colspan="2" style="background-color: yellow;">Late Days</th>
 													<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Total Payable Days</th>
@@ -78,7 +108,7 @@
 													<th rowspan="4" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Others Deduct</th>
 												</tr>
 												<tr>
-													<th rowspan="3" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Grade</th>
+													
 													<th colspan="2" style="background-color: purple;color: white">Friday</th>
 													<th colspan="2" Style="background-color: yellow">EL</th>
 													<th rowspan="3">Basic</th>
@@ -97,179 +127,203 @@
 													<th colspan="1" style="background-color: blue;color: white">Aj</th>
 													<th colspan="2" style="background-color: yellow;">LW</th>
 												</tr>
-											</thead>
+												
+												  
+												
+											<!--</thead>-->
+										  
 											<tbody>
+											  <t id="myFooter" t-foreach="docs.filtered(lambda x: (x.department_id.id == se.id))" t-as="o">
+											    
 												<tr>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o_index+1" class="text-nowrap"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o_index+1" class="text-nowrap"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-field="o.employee_id.department_id.name"/>
+													<td  colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<span t-esc="o.employee_id.department_id.name"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-field="o.employee_id.emp_id"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.employee_id.emp_id"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-field="o.employee_id.name"/>
+													<td  colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg); font-size:12px;">
+														<t t-esc="o.employee_id.name"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-field="o.employee_id.job_title"/>
+													<td  colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<span t-esc="o.employee_id.job_title"/>
 													</td>
-													<td rowspan="3" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-field="o.contract_id.date_start"/>
+													<td  colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.contract_id.date_start"/>
+													</td>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.struct_id.name"/>
 													</td>
 													<td colspan="2" style="background-color: green;color: white">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/>
+														<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/><br/>
+														0<br/>
+														0<br/>
+														0<br/>
+														0<br/>
+														0<br/>
+													
 													</td>
 													<td colspan="2" style="background-color: yellow;">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days"/>
+														<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days"/><br/>
+														0<br/>
+														0<br/>
+														0<br/>
+														0<br/>
+														0<br/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-field="o.total_payable_days"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.total_payable_days"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{'widget':'decimal'}"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{'widget':'decimal'}"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{'widget':'decimal'}"/>
+													<td  style="vertical-align : middle;">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{'widget':'decimal'}"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'HRA').total" t-options="{'widget':'decimal'}"/>
+													<td  style="vertical-align : middle;">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'HRA').total" t-options="{'widget':'decimal'}"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{'widget':'decimal'}"/>
+													<td  style="vertical-align : middle;">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{'widget':'decimal'}"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;">
-														<span t-field="o.otHours"/>
+													<td  style="vertical-align : middle;">
+														<t t-esc="o.otHours"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;">
-														<span t-field="o.otRate"/>
+													<td  style="vertical-align : middle;">
+														<t t-esc="o.otRate"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'OT').total"/>
+													<td  style="vertical-align : middle;">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OT').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'ARREAR').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'ARREAR').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'ATTBONUS').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'ATTBONUS').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'FOOD').total"/>
+													<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'FOOD').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'TIFFIN').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'TIFFIN').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'SNACKS').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'SNACKS').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'MOBILE').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'MOBILE').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'RPF').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'RPF').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-field="o.earnings_total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.earnings_total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'PFR').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'PFR').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'PFE').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'PFE').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'AIT').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'AIT').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC_ABSENT').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC_ABSENT').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'GROSS_ABSENT').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'GROSS_ABSENT').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'LOAN').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'LOAN').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_DED').total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_DED').total"/>
 													</td>
-													<td rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-field="o.deduction_total"/>
+													<td  style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+														<t t-esc="o.deduction_total"/>
 													</td>
-													<td rowspan="6" colspan="2" style="vertical-align : middle;">
-														<span t-esc="o.line_ids.filtered(lambda line: line.code == 'NET').total"/>
+													<td  colspan="2" style="vertical-align : middle;">
+														<t t-esc="o.line_ids.filtered(lambda line: line.code == 'NET').total"/>
 													</td>
-													<td rowspan="6" colspan="3" style="vertical-align : middle;">
-														<span t-field="o.employee_id.bank_account_id"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" style="background-color: red;color: white">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/>
-													</td>
-													<td colspan="2" style="background-color: yellow;">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days"/>
+													<td  colspan="3" style="vertical-align : middle;">
+														<t t-esc="o.employee_id.bank_account_id"/>
 													</td>
 												</tr>
-												<tr>
-													<td colspan="2" style="background-color: red;color: white">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/>
-													</td>
-													<td colspan="2" style="background-color: yellow;">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days"/>
-													</td>
-												</tr>
-												<tr>
-													<td rowspan="3" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-														<span t-field="o.struct_id.name"/>
-													</td>
-													<td colspan="2" style="background-color: purple;color: white">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/>
-													</td>
-													<td colspan="2" Style="background-color: yellow">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" style="background-color: purple;color: white">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/>
-													</td>
-													<td colspan="2" style="background-color: yellow;">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days"/>
-													</td>
-												</tr>
-												<tr>
-													<td colspan="1" style="background-color: blue;color: white">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/>
-													</td>
-													<td colspan="1" style="background-color: blue;color: white">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/>
-													</td>
-													<td colspan="2" style="background-color: yellow;">
-														<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days"/>
-													</td>
-												</tr>
+												<!--<tr>-->
+												<!--	<td colspan="2" style="background-color: red;color: white">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/>-->
+												<!--	</td>-->
+												<!--	<td colspan="2" style="background-color: yellow;">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days"/>-->
+												<!--	</td>-->
+												<!--</tr>-->
+												<!--<tr>-->
+												<!--	<td colspan="2" style="background-color: red;color: white">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/>-->
+												<!--	</td>-->
+												<!--	<td colspan="2" style="background-color: yellow;">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days"/>-->
+												<!--	</td>-->
+												<!--</tr>-->
+												<!--<tr>-->
+													
+												<!--	<td colspan="2" style="background-color: purple;color: white">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/>-->
+												<!--	</td>-->
+												<!--	<td colspan="2" Style="background-color: yellow">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days"/>-->
+												<!--	</td>-->
+												<!--</tr>-->
+												<!--<tr>-->
+												<!--	<td colspan="2" style="background-color: purple;color: white">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/>-->
+												<!--	</td>-->
+												<!--	<td colspan="2" style="background-color: yellow;">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days"/>-->
+												<!--	</td>-->
+												<!--</tr>-->
+												<!--<tr>-->
+												<!--	<td colspan="1" style="background-color: blue;color: white">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/>-->
+												<!--	</td>-->
+												<!--	<td colspan="1" style="background-color: blue;color: white">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/>-->
+												<!--	</td>-->
+												<!--	<td colspan="2" style="background-color: yellow;">-->
+												<!--		<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days"/>-->
+												<!--	</td>-->
+													
+												<!--</tr>-->
+												
+												</t>
 											</tbody>
+											
 										</table>
-									</div>
-								</t>
+									
+								</div>
 							</t>
 						</t>
+                        </t>
 					</div>
 				</div>
 			</t>
+            
 		</t>
 	</template>
 </odoo>

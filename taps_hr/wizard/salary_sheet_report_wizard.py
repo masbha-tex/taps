@@ -393,6 +393,10 @@ class SalarySheetReportPDF(models.AbstractModel):
         department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
         
         
+        com = employee.mapped('company_id.id')
+        company = self.env['hr.employee'].search([('company_id', 'in', (com))])
+        
+        
         allemp_data = []
         
         for details in employee:
@@ -413,6 +417,7 @@ class SalarySheetReportPDF(models.AbstractModel):
                 details.job_id.name,
                 otTotal,
                 details.department_id.id,
+                details.company_id.id
             ]
         allemp_data.append(emp_data)
         #raise UserError((allemp_data[3]))
@@ -471,6 +476,7 @@ class SalarySheetReportPDF(models.AbstractModel):
 #             'alldays': all_datelist,
             'dpt': department,
             'sec': section,
+            'com': company,
 #             'stdate': stdate_data,
 #             'lsdate': lsdate_data,
             'is_com' : data.get('is_company')

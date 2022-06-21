@@ -6,7 +6,7 @@ from odoo.tools import format_datetime
 from dateutil.relativedelta import relativedelta
 
 class HrEmployee(models.Model):
-    _inherit = 'hr.employee' 
+    _inherit = 'hr.employee'
     
     emp_id = fields.Char(string="Emp ID", readonly=True, store=True, tracking=True)
     isOverTime = fields.Boolean("Over Time", readonly=False, store=True, tracking=True)
