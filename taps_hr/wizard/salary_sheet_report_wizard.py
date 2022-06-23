@@ -382,8 +382,7 @@ class SalarySheetReportPDF(models.AbstractModel):
         #raise UserError((docs.id)) 
         emplist = docs.mapped('employee_id.id')
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
-#        raise UserError((emplist))
-        
+        #raise UserError((emplist)) ,department_id.parent_id.id,department_id.id
         
         sectionlist = employee.mapped('department_id.id')
         section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
@@ -394,35 +393,59 @@ class SalarySheetReportPDF(models.AbstractModel):
         
         
         com = employee.mapped('company_id.id')
-        company = self.env['hr.employee'].search([('company_id', 'in', (com))])
-        
+        company = self.env['res.company'].search([('id', 'in', (com))])
         
         allemp_data = []
-        
+        dept_data = []
+        emp_data = []
+        add = True
         for details in employee:
-            otTotal = 0
-            for de in docs:
-                if details.id == de.employee_id.id:
-                    otTotal = otTotal + de.otHours
-            
             emp_data = []
-            emp_data = [
-                data.get('date_from'),
-                data.get('date_to'),
-                details.id,
-                details.emp_id,
-                details.name,
-                details.department_id.parent_id.name,
-                details.department_id.name,
-                details.job_id.name,
-                otTotal,
-                details.department_id.id,
-                details.company_id.id
-            ]
-        allemp_data.append(emp_data)
-        #raise UserError((allemp_data[3]))
+            #raise UserError(('allemp_data'))
+            if allemp_data:
+                i = 0
+                for r in allemp_data:
+                    if (allemp_data[i][0] == details.company_id.id) and (allemp_data[i][2] == details.department_id.parent_id.id) and (allemp_data[i][4] == details.department_id.id):
+                        i = i+1
+                        add = False
+                        break
+                    else:
+                        i = i+1
+            if add == True:
+                emp_data = [
+                    details.company_id.id,
+                    details.company_id.name,
+                    details.department_id.parent_id.id, # Department ID
+                    details.department_id.parent_id.name, # Department Name
+                    details.department_id.id, # Section ID
+                    details.department_id.name # Section Name
+                ]
+                allemp_data.append(emp_data)
+            add = True
+        #raise UserError((allemp_data))
         
-        
+        add = True
+        j = 0
+        for dep in allemp_data:
+            emp_data = []
+            if dept_data:
+                i = 0
+                for r in dept_data:
+                    if (dept_data[i][0] == details.company_id.id) and (dept_data[i][2] == details.department_id.parent_id.id):
+                        i = i+1
+                        add = False
+                        break
+                    else:
+                        i = i+1
+            if add == True:
+                emp_data = [
+                    allemp_data[j][0],#company id
+                    allemp_data[j][2],#department id
+                    allemp_data[j][3] #department name
+                ]
+                dept_data.append(emp_data)
+            add = True
+            j = j+1
         
        
         
@@ -474,7 +497,7 @@ class SalarySheetReportPDF(models.AbstractModel):
             'datas': allemp_data,
 #            'datas': common_data,
 #             'alldays': all_datelist,
-            'dpt': department,
+            'dpt': dept_data,
             'sec': section,
             'com': company,
 #             'stdate': stdate_data,

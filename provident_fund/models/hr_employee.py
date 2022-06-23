@@ -11,10 +11,11 @@ class HrEmployeePrivate(models.Model):
     
 
     def _compute_contribution_sum(self):
-        odoo_pf = abs(sum(self.providient_pay_line_ids.mapped('total')))
-        tms_pf_record = self.env['provident.fund.line'].search([('employee_id', '=', self.id)])
-        tms_pf = 0
-        if tms_pf_record:
-            tms_pf = abs(sum(tms_pf_record.mapped('pf_amount')))
-        self.contribution_sum = odoo_pf+tms_pf
+        for rec in self:
+            odoo_pf = abs(sum(rec.providient_pay_line_ids.mapped('total')))
+            tms_pf_record = self.env['provident.fund.line'].search([('employee_id', '=', rec.id)])
+            tms_pf = 0
+            if tms_pf_record:
+                tms_pf = abs(sum(tms_pf_record.mapped('pf_amount')))
+            rec.contribution_sum = odoo_pf+tms_pf
         
