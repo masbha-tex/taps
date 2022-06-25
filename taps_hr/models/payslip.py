@@ -24,6 +24,7 @@ class HrPayslipsss(models.Model):
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", string='Job Position')    
     join_date = fields.Date(related = 'contract_id.date_start', related_sudo=False, string="Join Date", readonly=True, store=True)
     emp_type = fields.Selection(related = 'contract_id.category', related_sudo=False, string="Emp Type", readonly=True, store=True)
+    com_otHours = fields.Float(compute="_compute_ot_rate", string = "C-OT Hours", store=True, copy=True)
     otHours = fields.Float(compute="_compute_ot_rate", string = "OT Hours", store=True, copy=True)
     otRate = fields.Float(compute="_compute_ot_rate", string = "OT Rate", store=True, copy=True)
     gross_wage = fields.Monetary(related = 'contract_id.wage', related_sudo=False, readonly=True, store=True)
@@ -183,9 +184,11 @@ class HrPayslipsss(models.Model):
             if emp_list.isOverTime is True:
                 payslip.otRate = round(((payslip.contract_id.basic/208)*2),2)
                 payslip.otHours = sum(att_record.mapped('otHours'))
+                payslip.com_otHours = sum(att_record.mapped('com_otHours'))
             else:
                 payslip.otRate = 0.0
                 payslip.otHours = 0.0
+                payslip.com_otHours = 0.0
                 
     @api.onchange('employee_id', 'struct_id', 'contract_id', 'date_from', 'date_to')
     def _onchange_employee(self):

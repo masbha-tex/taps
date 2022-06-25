@@ -203,9 +203,9 @@ class PaySlipReportPDF(models.AbstractModel):
         #if data.get('bank_id')==False:
             #domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
-            domain.append(('date_from', '>=', data.get('date_from')))
+            domain.append(('date_from', '=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('date_to', '<=', data.get('date_to')))
+            domain.append(('date_to', '=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
@@ -273,9 +273,9 @@ class SalaryTopSheetReportPDF(models.AbstractModel):
         #if data.get('bank_id')==False:
             #domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
-            domain.append(('date_from', '>=', data.get('date_from')))
+            domain.append(('date_from', '=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('date_to', '<=', data.get('date_to')))
+            domain.append(('date_to', '=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
@@ -343,9 +343,9 @@ class SalarySheetReportPDF(models.AbstractModel):
         #if data.get('bank_id')==False:
             #domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
-            domain.append(('date_from', '>=', data.get('date_from')))
+            domain.append(('date_from', '=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('date_to', '<=', data.get('date_to')))
+            domain.append(('date_to', '=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
@@ -384,6 +384,47 @@ class SalarySheetReportPDF(models.AbstractModel):
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
         #raise UserError((emplist)) ,department_id.parent_id.id,department_id.id
         
+        
+        catlist = employee.mapped('category_ids.id')
+        category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
+        
+        categ_data = []
+        cdata = []
+        for c in category:
+            categ_data = []
+            if c.name=='Z-Worker' or c.name=='Z-Staff' or c.name=='Z-Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    1  #company id
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='B-Worker' or c.name=='B-Staff' or c.name=='B-Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    3  #company id
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='C-Zipper Worker' or c.name=='C-Zipper Staff' or c.name=='C-Button Worker' or c.name=='C-Button Staff' or c.name=='C-Worker' or c.name=='C-Staff':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    4  #company id
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='Staff' or c.name=='Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    2  #company id
+                ]
+                cdata.append(categ_data)
+                continue  
+        
         sectionlist = employee.mapped('department_id.id')
         section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
         
@@ -403,14 +444,10 @@ class SalarySheetReportPDF(models.AbstractModel):
             emp_data = []
             #raise UserError(('allemp_data'))
             if allemp_data:
-                i = 0
                 for r in allemp_data:
-                    if (allemp_data[i][0] == details.company_id.id) and (allemp_data[i][2] == details.department_id.parent_id.id) and (allemp_data[i][4] == details.department_id.id):
-                        i = i+1
+                    if (r[0] == details.company_id.id) and (r[2] == details.department_id.parent_id.id) and (r[4] == details.department_id.id and r[6]== details.category_ids.id):
                         add = False
                         break
-                    else:
-                        i = i+1
             if add == True:
                 emp_data = [
                     details.company_id.id,
@@ -418,55 +455,35 @@ class SalarySheetReportPDF(models.AbstractModel):
                     details.department_id.parent_id.id, # Department ID
                     details.department_id.parent_id.name, # Department Name
                     details.department_id.id, # Section ID
-                    details.department_id.name # Section Name
+                    details.department_id.name, # Section Name
+                    details.category_ids.id # Category Id
                 ]
                 allemp_data.append(emp_data)
             add = True
         #raise UserError((allemp_data))
-        
+        d_data = []
         add = True
-        j = 0
         for dep in allemp_data:
-            emp_data = []
+            d_data = []
             if dept_data:
                 i = 0
                 for r in dept_data:
-                    if (dept_data[i][0] == details.company_id.id) and (dept_data[i][2] == details.department_id.parent_id.id):
+                    if (r[0] == dep[0]) and (r[1] == dep[2]) and (r[3]== dep[6]):
                         i = i+1
                         add = False
                         break
-                    else:
-                        i = i+1
             if add == True:
-                emp_data = [
-                    allemp_data[j][0],#company id
-                    allemp_data[j][2],#department id
-                    allemp_data[j][3] #department name
+                d_data = [
+                    dep[0],#0 company id
+                    dep[2],#1 department id
+                    dep[3],#2 department name
+                    dep[6] #3 category id
                 ]
-                dept_data.append(emp_data)
+                dept_data.append(d_data)
             add = True
-            j = j+1
-        
+            
        
         
-        
-#         flag_datelist = []
-#         flag_dates = []
-#         #raise UserError((docs.id)) 
-#         delta = flag_enddate - flag_stdate
-#         for i in range(delta.days + 1):
-#             day = stdate + timedelta(days=i)
-#             flag_dates = [
-#                 day,
-#             ]
-#             flag_datelist.append(flag_dates)
-        
-
-    
-            
-
-            
-            
         emp = employee.sorted(key = 'id')[:1]
 
         if data.get('mode_company_id'):
@@ -477,19 +494,27 @@ class SalarySheetReportPDF(models.AbstractModel):
             heading_type = emp.category_ids.name
         if data.get('employee_id'):
             heading_type = emp.name 
+        
 #         for details in docs:
 #             otTotal = 0
 #             for de in docs:
+#                if de.total >2:
+#                  de.total=2
+#                else:
 #                 otTotal = otTotal + de.total
             
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
             data.get('date_from'),
-            data.get('date_to'),
+            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B, %Y'),
+#            data.get('date_to'),
         ]
         common_data.append(common_data)
-#        raise UserError((common_data[2]))
+        #raise UserError((allemp_data))
+
+        
+        
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.payslip',
@@ -500,8 +525,10 @@ class SalarySheetReportPDF(models.AbstractModel):
             'dpt': dept_data,
             'sec': section,
             'com': company,
+            'cat': cdata,
+            'cd' : common_data,
 #             'stdate': stdate_data,
-#             'lsdate': lsdate_data,
+#            'lsdate': lsdate_data,
             'is_com' : data.get('is_company')
         }
     
@@ -515,9 +542,9 @@ class BonusTopSheetReportPDF(models.AbstractModel):
         #if data.get('bank_id')==False:
             #domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
-            domain.append(('date_from', '>=', data.get('date_from')))
+            domain.append(('date_from', '=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('date_to', '<=', data.get('date_to')))
+            domain.append(('date_to', '=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
@@ -585,9 +612,9 @@ class BonusSheetReportPDF(models.AbstractModel):
         #if data.get('bank_id')==False:
             #domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
-            domain.append(('date_from', '>=', data.get('date_from')))
+            domain.append(('date_from', '=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('date_to', '<=', data.get('date_to')))
+            domain.append(('date_to', '=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
@@ -622,7 +649,129 @@ class BonusSheetReportPDF(models.AbstractModel):
 #         raise UserError((domain))
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
         
+        #raise UserError((docs.id)) 
+        emplist = docs.mapped('employee_id.id')
+        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+        #raise UserError((emplist)) ,department_id.parent_id.id,department_id.id
+        
+        
+        catlist = employee.mapped('category_ids.id')
+        category = self.env['hr.employee.category'].search([('id', 'in', (catlist))])
+        
+        categ_data = []
+        cdata = []
+        for c in category:
+            categ_data = []
+            if c.name=='Z-Worker' or c.name=='Z-Staff' or c.name=='Z-Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    1  #company id
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='B-Worker' or c.name=='B-Staff' or c.name=='B-Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    3  #company id
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='C-Zipper Worker' or c.name=='C-Zipper Staff' or c.name=='C-Button Worker' or c.name=='C-Button Staff' or c.name=='C-Worker' or c.name=='C-Staff':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    4  #company id
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='Staff' or c.name=='Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    2  #company id
+                ]
+                cdata.append(categ_data)
+                continue  
+        
+        sectionlist = employee.mapped('department_id.id')
+        section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
+        
+        
+        parentdpt = section.mapped('parent_id.id')
+        department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
+        
+        
+        com = employee.mapped('company_id.id')
+        company = self.env['res.company'].search([('id', 'in', (com))])
+        
+        allemp_data = []
+        dept_data = []
+        emp_data = []
+        add = True
+        for details in employee:
+            emp_data = []
+            #raise UserError(('allemp_data'))
+            if allemp_data:
+                i = 0
+                for r in allemp_data:
+                    if (allemp_data[i][0] == details.company_id.id) and (allemp_data[i][2] == details.department_id.parent_id.id) and (allemp_data[i][4] == details.department_id.id and allemp_data[i][6]== details.category_ids.id):
+                        i = i+1
+                        add = False
+                        break
+                    else:
+                        i = i+1
+            if add == True:
+                emp_data = [
+                    details.company_id.id,
+                    details.company_id.name,
+                    details.department_id.parent_id.id, # Department ID
+                    details.department_id.parent_id.name, # Department Name
+                    details.department_id.id, # Section ID
+                    details.department_id.name, # Section Name
+                    details.category_ids.id # Category Id
+                ]
+                allemp_data.append(emp_data)
+            add = True
+        #raise UserError((allemp_data))
+        
+        add = True
+        j = 0
+        for dep in allemp_data:
+            emp_data = []
+            if dept_data:
+                i = 0
+                for r in dept_data:
+                    if (dept_data[i][0] == details.company_id.id) and (dept_data[i][2] == details.department_id.parent_id.id and dept_data[i][6]== details.category_ids.id):
+                        i = i+1
+                        add = False
+                        break
+                    else:
+                        i = i+1
+            if add == True:
+                emp_data = [
+                    allemp_data[j][0],#0 company id
+                    allemp_data[j][2],#1 department id
+                    allemp_data[j][3],#2 department name
+                    allemp_data[j][6] #3 category id
+                ]
+                dept_data.append(emp_data)
+            add = True
+            j = j+1
+            
+       
+        
+        emp = employee.sorted(key = 'id')[:1]
 
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name 
 #         for details in docs:
 #             otTotal = 0
 #             for de in docs:
@@ -632,16 +781,28 @@ class BonusSheetReportPDF(models.AbstractModel):
             data.get('report_type'),
             data.get('bank_id'),
             data.get('date_from'),
-            data.get('date_to'),
+            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B, %Y'),
+#            data.get('date_to'),
         ]
         common_data.append(common_data)
-        #raise UserError((common_data[2]))
+#        raise UserError((common_data[2]))
+
+        
+        
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.payslip',
             'docs': docs,
-            'datas': common_data,
+            'datas': allemp_data,
+#            'datas': common_data,
 #             'alldays': all_datelist,
+            'dpt': dept_data,
+            'sec': section,
+            'com': company,
+            'cat': cdata,
+            'cd' : common_data,
+#             'stdate': stdate_data,
+#            'lsdate': lsdate_data,
             'is_com' : data.get('is_company')
         }
     
