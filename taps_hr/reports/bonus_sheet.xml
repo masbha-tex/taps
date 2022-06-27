@@ -1,1957 +1,323 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
-    <template id="bonus_sheet_pdf_template">
-    <t t-call="web.html_container">
-          <t t-call="web.external_layout">
-              <t t-value="docs.with_context(lang=docs.employee_id.address_home_id.lang or docs.env.lang)"/>
-              <div class="page">
+	<template id="bonus_sheet_pdf_template">
+		<t t-call="web.html_container">
+			<t t-call="web.external_layout">
+				<div class="page">
 					<style>
 				    table{
 				    table-layout:fixed;
-				    font-size: 7px;
+				    font-size: 9px;
 				    page-break-inside: avoid;
 				    }
-				    table, th, tr, td
+				    table, th, tr, td, tbody
 				    {
 				    border: 1px solid black;
 				    }
 				   
+
 				  </style>
-					<t t-if="is_com == False">
-						<div class="container">
-							<h4 class="text-right">
-								<strong>
-                Bonus Sheet
-                <span t-esc="cd[3]"/>
-								</strong>
-							</h4>
-							<t t-foreach="com" t-as="cm">
-								<t t-set="payable_days" t-value="0"/>
-								<t t-set="workdays" t-value="0"/>
-								<t t-set="grossAdays" t-value="0"/>
-								<t t-set="basicAdays" t-value="0"/>
-								<t t-set="friday" t-value="0"/>
-								<t t-set="holiday" t-value="0"/>
-								<t t-set="co" t-value="0"/>
-								<t t-set="aj" t-value="0"/>
-								<t t-set="latedays" t-value="0"/>
-								<t t-set="cl" t-value="0"/>
-								<t t-set="sl" t-value="0"/>
-								<t t-set="el" t-value="0"/>
-								<t t-set="ml" t-value="0"/>
-								<t t-set="lw" t-value="0"/>
-								<t t-set="com_gross_salary" t-value="0"/>
-								<t t-set="com_basic" t-value="0"/>
-								<t t-set="com_houseRent" t-value="0"/>
-								<t t-set="com_medical" t-value="0"/>
-								<t t-set="com_hrs" t-value="0"/>
-								<t t-set="com_rate" t-value="0"/>
-								<t t-set="com_amount" t-value="0"/>
-								<t t-set="com_arrear" t-value="0"/>
-								<t t-set="com_attBonus" t-value="0"/>
-								<t t-set="com_convence" t-value="0"/>
-								<t t-set="com_food" t-value="0"/>
-								<t t-set="com_tiffin" t-value="0"/>
-								<t t-set="com_strength" t-value="0"/>
-								<t t-set="com_mobile" t-value="0"/>
-								<t t-set="com_othersAllowance" t-value="0"/>
-								<t t-set="com_incentive" t-value="0"/>
-								<t t-set="com_rpf" t-value="0"/>
-								<t t-set="com_totalEarn" t-value="0"/>
-								<t t-set="com_pfr" t-value="0"/>
-								<t t-set="com_pfe" t-value="0"/>
-								<t t-set="com_tds" t-value="0"/>
-								<t t-set="com_basicAbsent" t-value="0"/>
-								<t t-set="com_grossAbsent" t-value="0"/>
-								<t t-set="com_loan" t-value="0"/>
-								<t t-set="com_advSalary" t-value="0"/>
-								<t t-set="com_othersDeduct" t-value="0"/>
-								<t t-set="com_totalDeduct" t-value="0"/>
-								<t t-set="com_net" t-value="0"/>
-								<div class="container" style="page-break-inside:break;">
-									<div style="font-size: 12px;">
-										<strong>COMPANY:</strong>
-										<span t-esc="cm.name" style="color:  #cc7000"/>
-									</div>
+					<div class="container">
+						<t t-foreach="com" t-as="cm">
+							<div class="container mb-2">
+								<div align="center">
+									<img t-if="cm.logo" t-att-src="image_data_uri(cm.logo)" style="max-height:65pt;max-width:90%;margin-top:2pt;margin-bottom:4pt;" alt="Company Logo"/>
 								</div>
-								<t t-foreach="cat" t-as="ct">
-									<t t-if="ct[2] == cm.id">
-										<t t-set="cat_gross_salary" t-value="0"/>
-										<t t-set="cat_basic" t-value="0"/>
-										<t t-set="cat_houseRent" t-value="0"/>
-										<t t-set="cat_medical" t-value="0"/>
-										<t t-set="cat_hrs" t-value="0"/>
-										<t t-set="cat_rate" t-value="0"/>
-										<t t-set="cat_amount" t-value="0"/>
-										<t t-set="cat_arrear" t-value="0"/>
-										<t t-set="cat_attBonus" t-value="0"/>
-										<t t-set="cat_convence" t-value="0"/>
-										<t t-set="cat_food" t-value="0"/>
-										<t t-set="cat_tiffin" t-value="0"/>
-										<t t-set="cat_strength" t-value="0"/>
-										<t t-set="cat_mobile" t-value="0"/>
-										<t t-set="cat_othersAllowance" t-value="0"/>
-										<t t-set="cat_incentive" t-value="0"/>
-										<t t-set="cat_rpf" t-value="0"/>
-										<t t-set="cat_totalEarn" t-value="0"/>
-										<t t-set="cat_pfr" t-value="0"/>
-										<t t-set="cat_pfe" t-value="0"/>
-										<t t-set="cat_tds" t-value="0"/>
-										<t t-set="cat_basicAbsent" t-value="0"/>
-										<t t-set="cat_grossAbsent" t-value="0"/>
-										<t t-set="cat_loan" t-value="0"/>
-										<t t-set="cat_advSalary" t-value="0"/>
-										<t t-set="cat_othersDeduct" t-value="0"/>
-										<t t-set="cat_totalDeduct" t-value="0"/>
-										<t t-set="cat_net" t-value="0"/>
-										<div class="container mt-4" style="page-break-inside:break;">
-											<div style="font-size: 12px;">
-												<strong>Category:</strong>
-												<span t-esc="ct[1]" style="color:  #cc7000"/>
-											</div>
+								<div align="center">
+									<strong style="font-size:18px;">TEX ZIPPERS (BD) LIMITED</strong>
+									<br/>
+									<p style="font-size:12px;">Plot# 180 &amp; 264-273, AEPZ, Adamjee Nagar, Shiddhirganj, Narayanganj, Bangladesh.</p>
+								</div>
+								<div align="center">
+									<strong style="font-size:20px;outline: thin solid black;">
+										<span style="margin-left:10%;margin-right:10%;margin-top:5px;margin-bottom:5px">Festival Bonus (Month: <span t-esc="cd[3]"/>)</span>
+									</strong>
+								</div>
+								<div>
+									<p>
+										<div style="float: left;font-size:8px">USD Conversion Rate (1 USD = Tk. 84.5)<br/>Payment Currency: BDT</div>
+									</p>
+									<p>
+										<div style="float:right;font-size:8px">
+					        Date of Payment : <t t-esc="cd[4]"/>
 										</div>
-										<t t-foreach="dpt" t-as="dp">
-											<t t-if="((ct[2] == dp[0])and(ct[0] == dp[3])) ">
-												<t t-set="dep_gross_salary" t-value="0"/>
-												<t t-set="dep_basic" t-value="0"/>
-												<t t-set="dep_houseRent" t-value="0"/>
-												<t t-set="dep_medical" t-value="0"/>
-												<t t-set="dep_hrs" t-value="0"/>
-												<t t-set="dep_rate" t-value="0"/>
-												<t t-set="dep_amount" t-value="0"/>
-												<t t-set="dep_arrear" t-value="0"/>
-												<t t-set="dep_attBonus" t-value="0"/>
-												<t t-set="dep_convence" t-value="0"/>
-												<t t-set="dep_food" t-value="0"/>
-												<t t-set="dep_tiffin" t-value="0"/>
-												<t t-set="dep_strength" t-value="0"/>
-												<t t-set="dep_mobile" t-value="0"/>
-												<t t-set="dep_othersAllowance" t-value="0"/>
-												<t t-set="dep_incentive" t-value="0"/>
-												<t t-set="dep_rpf" t-value="0"/>
-												<t t-set="dep_totalEarn" t-value="0"/>
-												<t t-set="dep_pfr" t-value="0"/>
-												<t t-set="dep_pfe" t-value="0"/>
-												<t t-set="dep_tds" t-value="0"/>
-												<t t-set="dep_basicAbsent" t-value="0"/>
-												<t t-set="dep_grossAbsent" t-value="0"/>
-												<t t-set="dep_loan" t-value="0"/>
-												<t t-set="dep_advSalary" t-value="0"/>
-												<t t-set="dep_othersDeduct" t-value="0"/>
-												<t t-set="dep_totalDeduct" t-value="0"/>
-												<t t-set="dep_net" t-value="0"/>
-												<t t-foreach="datas" t-as="emp">
-													<t t-if="((dp[0] == emp[0])and (dp[1] == emp[2]) and(dp[3] == emp[6]))">
-														<div class="container" style="page-break-inside:break;">
-															<div style="font-size: 12px;">
-																<strong>DEPARTMENT:</strong>
-																<span t-esc="emp[3]" style="color:  #cc7000"/>
-															</div>
+									</p>
+									<br/>
+								</div>
+							</div>
+							<t t-set="com_emp_total" t-value="0"/>
+							<t t-set="com_gross_salary" t-value="0"/>
+							<t t-set="com_basic" t-value="0"/>
+							<t t-set="com_houseRent" t-value="0"/>
+							<t t-set="com_medical" t-value="0"/>
+							<t t-set="com_othersAllowance" t-value="0"/>
+							<t t-set="com_net" t-value="0"/>
+							<div class="container" style="page-break-inside:break;">
+								<div style="font-size: 12px;">
+									<strong>COMPANY:</strong>
+									<span t-esc="cm.name" style="color:  #cc7000"/>
+								</div>
+							</div>
+							<t t-foreach="cat" t-as="ct">
+								<t t-if="ct[2] == cm.id">
+									<t t-set="cat_emp_total" t-value="0"/>
+									<t t-set="cat_gross_salary" t-value="0"/>
+									<t t-set="cat_basic" t-value="0"/>
+									<t t-set="cat_houseRent" t-value="0"/>
+									<t t-set="cat_medical" t-value="0"/>
+									<t t-set="cat_othersAllowance" t-value="0"/>
+									<t t-set="cat_net" t-value="0"/>
+									<div class="container" style="page-break-inside:break;">
+										<div style="font-size: 12px;">
+											<strong>Category:</strong>
+											<span t-esc="ct[1]" style="color:  #cc7000"/>
+										</div>
+									</div>
+									<t t-foreach="dpt" t-as="dp">
+										<t t-if="((ct[2] == dp[0]) and (ct[0] == dp[3])) ">
+											<t t-set="dep_emp_total" t-value="0"/>
+											<t t-set="dep_gross_salary" t-value="0"/>
+											<t t-set="dep_basic" t-value="0"/>
+											<t t-set="dep_houseRent" t-value="0"/>
+											<t t-set="dep_medical" t-value="0"/>
+											<t t-set="dep_othersAllowance" t-value="0"/>
+											<t t-set="dep_net" t-value="0"/>
+											<t t-foreach="datas" t-as="emp">
+												<t t-if="((dp[0] == emp[0]) and (dp[1] == emp[2]) and (dp[3] == emp[6]))">
+													<div class="container" style="page-break-inside:break;">
+														<div style="font-size: 12px;">
+															<strong>DEPARTMENT:</strong>
+															<span t-esc="emp[3]" style="color:  #cc7000"/>
 														</div>
-														<div class="container" style="page-break-inside:break;">
-															<div style="font-size: 12px;">
-																<strong>SECTION:</strong>
-																<span t-esc="emp[5]" style="color:  #cc7000"/>
-															</div>
+													</div>
+													<div class="container" style="page-break-inside:break;">
+														<div style="font-size: 12px;">
+															<strong>SECTION:</strong>
+															<span t-esc="emp[5]" style="color:  #cc7000"/>
 														</div>
-														<br/>
-														<div class="container">
-															<table class="table table-sm mb-4">
-																<!--<thead>-->
-																<tr align="center">
-																	<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">SL</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">Section</th>
-																	<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">ID</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">Employee Name</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px;white-space:nowrap">Designation</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">Join Date</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size:10px">Grade</th>
-																	<th colspan="2" style="background-color: green;color: white">Worked Days</th>
-																	<th style="background-color: yellow;">Late Days</th>
-																	<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size:10px">Payable Days</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:8px">Gross Salary</th>
-																	<th rowspan="1" colspan="20" style="vertical-align : middle;font-size:10px">Earnings Details</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px;white-space:nowrap">Total Earnings</th>
-																	<th rowspan="1" colspan="8" style="vertical-align : middle;font-size:10px">Deduction Details</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px;white-space:nowrap">Total Deduction</th>
-																	<th rowspan="6" colspan="5" style="vertical-align : middle;font-size:12px">Net Payable</th>
-																	<th rowspan="6" colspan="4" style="vertical-align : middle;font-size:12px">Bank A/C Details</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="2" style="background-color: red;color: white">Gross A. Days</th>
-																	<th style="background-color: yellow;">CL</th>
-																	<th colspan="6" style="vertical-align : middle;font-size:10px">Salary Breakup</th>
-																	<th colspan="4" style="vertical-align : middle;font-size:10px">Over Time</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Arrear</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Att. Bonus</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Convence</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Food</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Tiffin</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Strength</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Mobile</th>
-																	<th rowspan="5" style="-webkit-transform: rotate(-90.0deg);white-space:nowrap;vertical-align : middle;">Others Allowance</th>
-																	<th rowspan="5" style="vertical-align :middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Incentive</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">PF (Emp'r) 8.33%</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">PF (Emp'r) 8.33%</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">PF (Emp'ee) 8.33%</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">TDS (AIT)</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Basic A. Deduct</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Gross A. Deduct</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Loan</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Adv. Salary</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Others Deduct</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="2" style="background-color: red;color: white">Basic A. Days</th>
-																	<th style="background-color: yellow;">SL</th>
-																	<th rowspan="4" colspan="2" style="vertical-align : middle;font-size:10px">Basic</th>
-																	<th rowspan="4" colspan="2" style="vertical-align : middle;font-size:10px">House Rent</th>
-																	<th rowspan="4" colspan="2" style="vertical-align : middle;font-size:10px">Medical</th>
-																	<th rowspan="4" style="vertical-align : middle;">HRS</th>
-																	<th rowspan="4" style="vertical-align : middle;">Rate</th>
-																	<th rowspan="4" colspan="2" style="vertical-align : middle;">Amount</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="2" style="background-color: purple;color: white">Friday</th>
-																	<th Style="background-color: yellow">EL</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="2" style="background-color: purple;color: white">Holiday</th>
-																	<th style="background-color: yellow;">ML</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="1" style="background-color: blue;color: white">CO</th>
-																	<th colspan="1" style="background-color: blue;color: white">Aj</th>
-																	<th style="background-color: yellow;">LW</th>
-																</tr>
-																<!--</thead>-->
-																<tbody>
-																	<t t-set="sec_gross_salary" t-value="0"/>
-																	<t t-set="sec_basic" t-value="0"/>
-																	<t t-set="sec_houseRent" t-value="0"/>
-																	<t t-set="sec_medical" t-value="0"/>
-																	<t t-set="sec_hrs" t-value="0"/>
-																	<t t-set="sec_rate" t-value="0"/>
-																	<t t-set="sec_amount" t-value="0"/>
-																	<t t-set="sec_arrear" t-value="0"/>
-																	<t t-set="sec_attBonus" t-value="0"/>
-																	<t t-set="sec_convence" t-value="0"/>
-																	<t t-set="sec_food" t-value="0"/>
-																	<t t-set="sec_tiffin" t-value="0"/>
-																	<t t-set="sec_strength" t-value="0"/>
-																	<t t-set="sec_mobile" t-value="0"/>
-																	<t t-set="sec_othersAllowance" t-value="0"/>
-																	<t t-set="sec_incentive" t-value="0"/>
-																	<t t-set="sec_rpf" t-value="0"/>
-																	<t t-set="sec_totalEarn" t-value="0"/>
-																	<t t-set="sec_pfr" t-value="0"/>
-																	<t t-set="sec_pfe" t-value="0"/>
-																	<t t-set="sec_tds" t-value="0"/>
-																	<t t-set="sec_basicAbsent" t-value="0"/>
-																	<t t-set="sec_grossAbsent" t-value="0"/>
-																	<t t-set="sec_loan" t-value="0"/>
-																	<t t-set="sec_advSalary" t-value="0"/>
-																	<t t-set="sec_othersDeduct" t-value="0"/>
-																	<t t-set="sec_totalDeduct" t-value="0"/>
-																	<t t-set="sec_net" t-value="0"/>
-																	<t t-foreach="docs.filtered(lambda x: (x.department_id.id == emp[4]))" t-as="o">
-																		<t t-if="o.struct_id.name == 'FESTIVAL BONUS'">
-																			<tr align="center">
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-																					<t t-esc="o_index+1" class="text-nowrap"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 10px">
-																					<span t-esc="o.employee_id.department_id.name"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 10px; white-space:nowrap">
-																					<t t-esc="o.employee_id.emp_id"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:8px;">
-																					<t t-esc="o.employee_id.name"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 8px;">
-																					<span t-esc="o.employee_id.job_title"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 10px;white-space:nowrap">
-																					<t t-esc="o.contract_id.date_start"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 8px;">
-																					<t t-esc="o.struct_id.name"/>
-																				</td>
-																				<td colspan="2" style="font-size: 10px">
-																					<span style="color: green;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/>
-																					<t t-set="workdays" t-value="workdays+o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/>
-																					<br/>
-																					<span style="color: red;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/>
-																					<t t-set="grossAdays" t-value="grossAdays+o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/>
-																					<br/>
-																					<span style="color: red;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/>
-																					<t t-set="basicAdays" t-value="basicAdays+o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/>
-																					<br/>
-																					<span style="color: purple;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/>
-																					<t t-set="friday" t-value="friday+o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/>
-																					<br/>
-																					<span style="color: purple;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/>
-																					<t t-set="holiday" t-value="holiday+o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/>
-																					<br/>
-																					<span style="color: blue;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/> | <t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/>
-																					<t t-set="co" t-value="co+o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/>
-																					<t t-set="aj" t-value="aj+o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/>
-																					<br/>
-																				</td>
-																				<td style="font-size: 10px">
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																					<t t-set="latedays" t-value="latedays+o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																					<t t-set="cl" t-value="cl+o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																					<t t-set="sl" t-value="sl+o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																					<t t-set="el" t-value="el+o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																					<t t-set="ml" t-value="ml+o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																					<t t-set="lw" t-value="lw+o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days"/>
-																					<br/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-weight:bold;font-size: 10px;white-space:nowrap">
-																					<t t-esc="o.total_payable_days"/>
-																					<t t-set="payable_days" t-value="payable_days+o.total_payable_days"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_gross_salary" t-value="o.contract_id.filtered(lambda contract: contract).wage + sec_gross_salary"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_basic" t-value="sec_basic+o.line_ids.filtered(lambda line: line.code == 'BASIC').total"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'HRA').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_houseRent" t-value="sec_houseRent+o.line_ids.filtered(lambda line: line.code == 'HRA').total"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_medical" t-value="sec_medical+o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.otHours"/>
-																					<t t-set="sec_hrs" t-value="sec_hrs+o.otHours"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.otRate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_rate" t-value="sec_rate+o.otRate"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_amount" t-value="sec_amount+o.line_ids.filtered(lambda line: line.code == 'OT').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'ARREAR').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_arrear" t-value="sec_arrear+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'ATTBONUS').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_attBonus" t-value="sec_attBonus+o.line_ids.filtered(lambda line: line.code == 'ATTBONUS').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_convence" t-value="sec_convence+o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'FOOD').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_food" t-value="sec_food+o.line_ids.filtered(lambda line: line.code == 'FOOD').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'TIFFIN').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_tiffin" t-value="sec_tiffin+o.line_ids.filtered(lambda line: line.code == 'TIFFIN').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'SNACKS').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_strength" t-value="sec_strength+o.line_ids.filtered(lambda line: line.code == 'SNACKS').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'MOBILE').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_mobile" t-value="sec_mobile+o.line_ids.filtered(lambda line: line.code == 'MOBILE').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_othersAllowance" t-value="sec_othersAllowance+o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_incentive" t-value="sec_incentive+o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'RPF').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_rpf" t-value="sec_rpf+o.line_ids.filtered(lambda line: line.code == 'RPF').total"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="o.earnings_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_totalEarn" t-value="sec_totalEarn+o.earnings_total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'PFR').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_pfr" t-value="sec_pfr+o.line_ids.filtered(lambda line: line.code == 'PFR').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'PFE').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_pfe" t-value="sec_pfe+o.line_ids.filtered(lambda line: line.code == 'PFE').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'AIT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_tds" t-value="sec_tds+o.line_ids.filtered(lambda line: line.code == 'AIT').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC_ABSENT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_basicAbsent" t-value="sec_basicAbsent+o.line_ids.filtered(lambda line: line.code == 'BASIC_ABSENT').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'GROSS_ABSENT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_grossAbsent" t-value="sec_grossAbsent+o.line_ids.filtered(lambda line: line.code == 'GROSS_ABSENT').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'LOAN').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_loan" t-value="sec_loan+o.line_ids.filtered(lambda line: line.code == 'LOAN').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_advSalary" t-value="sec_advSalary+o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_DED').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_othersDeduct" t-value="sec_othersDeduct+o.line_ids.filtered(lambda line: line.code == 'OTHERS_DED').total"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="o.deduction_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_totalDeduct" t-value="sec_totalDeduct+o.deduction_total"/>
-																				</td>
-																				<td colspan="5" style="vertical-align : middle;font-size: 14px;font-weight:bold;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'NET').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_net" t-value="sec_net+o.line_ids.filtered(lambda line: line.code == 'NET').total"/>
-																				</td>
-																				<td colspan="4" style="vertical-align : middle;font-size: 12px;">
-																					<t t-esc="o.employee_id.bank_account_id.bank_id.name"/>
-																					<br/>
-																					<t t-esc="o.employee_id.bank_account_id.acc_number"/>
-																				</td>
-																			</tr>
+													</div>
+													<br/>
+													<div class="container">
+														<table class="table table-sm" style="table-layout:fixed;font-size: 10px;page-break-inside: avoid;">
+															<!--<thead>-->
+															<tr align="center">
+																<th rowspan="6" style="vertical-align : middle;">
+																	<br/>
+																	<br/>
+																	  SL<br/>
+																	<br/>
+																	<br/>
+																</th>
+																<th rowspan="6" colspan="3" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Section</th>
+																<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">ID</th>
+																<th rowspan="6" colspan="5" style="vertical-align : middle;">Employee Name</th>
+																<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size:12px">Designation</th>
+																<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Join Date</th>
+																<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Grade</th>
+																<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Length Of Service</th>
+																<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">Gross Salary</th>
+																<th rowspan="3" colspan="9" style="vertical-align : middle;">Salary Break Up</th>
+																<th rowspan="6" colspan="3" style="vertical-align : middle;">Bonus Payable(Basic Salary)</th>
+																<th rowspan="6" colspan="3" style="vertical-align : middle;">Others Allowance</th>
+																<th rowspan="6" colspan="5" style="vertical-align : middle;">Net Payable</th>
+																<th rowspan="6" colspan="4" style="vertical-align : middle;">Bank A/C Number</th>
+															</tr>
+															<tr>
+																  
+														</tr>
+															<tr>
+																  
+														</tr>
+															<tr align="center">
+																<th rowspan="3" colspan="3" style="vertical-align : middle;">Basic</th>
+																<th rowspan="3" colspan="3" style="vertical-align : middle;">House Rent</th>
+																<th rowspan="3" colspan="3" style="vertical-align : middle;">Medical Allowance</th>
+															</tr>
+															<!--</thead>-->
+															<tbody>
+																<t t-set="sec_emp_total" t-value="0"/>
+																<t t-set="sec_gross_salary" t-value="0"/>
+																<t t-set="sec_basic" t-value="0"/>
+																<t t-set="sec_houseRent" t-value="0"/>
+																<t t-set="sec_medical" t-value="0"/>
+																<t t-set="sec_othersAllowance" t-value="0"/>
+																<t t-set="sec_net" t-value="0"/>
+																<t t-foreach="docs.filtered(lambda x:  (x.company_id.id == emp[0])and (x.employee_id.category_ids.id == emp[6]) and (x.department_id.parent_id.id == emp[2]) and (x.department_id.id == emp[4]))" t-as="o">
+																	<t t-foreach="length" t-as="leng">
+																		<t t-if="leng[0] == o.employee_id.id">
+																			<t t-if="o.struct_id.name == 'FESTIVAL BONUS'">
+																				<t t-set="sec_emp_total" t-value="sec_emp_total+1"/>
+																				<t t-set="dep_emp_total" t-value="dep_emp_total+1"/>
+																				<t t-set="cat_emp_total" t-value="cat_emp_total+1"/>
+																				<t t-set="com_emp_total" t-value="com_emp_total+1"/>
+																				<tr align="center">
+																					<td style="vertical-align : middle;">
+																						<br/>
+																						<br/>
+																						<t t-esc="o_index+1" class="text-nowrap"/>
+																						<br/>
+																						<br/>
+																						<br/>
+																					</td>
+																					<td colspan="3" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+																						<span t-esc="o.employee_id.department_id.name"/>
+																					</td>
+																					<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+																						<t t-esc="o.employee_id.emp_id"/>
+																					</td>
+																					<td colspan="5" style="vertical-align : middle;">
+																						<t t-esc="o.employee_id.name"/>
+																					</td>
+																					<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+																						<span t-esc="o.employee_id.job_title"/>
+																					</td>
+																					<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+																						<t t-esc="o.contract_id.date_start"/>
+																					</td>
+																					<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+																						<t t-esc="o.contract_id.structure_type_id.name"/>
+																					</td>
+																					<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+																						<t t-esc="leng[1]"/>
+																					</td>
+																					<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
+																						<t t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+																					</td>
+																					<td colspan="3" style="vertical-align : middle;">
+																						<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+																					</td>
+																					<td colspan="3" style="vertical-align : middle;">
+																						<t t-esc="o.line_ids.filtered(lambda line: line.code == 'HRA').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+																					</td>
+																					<td colspan="3" style="vertical-align : middle;">
+																						<t t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+																					</td>
+																					<td colspan="3" style="vertical-align : middle;">
+																						<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BONUS').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+																						<t t-set="sec_basic" t-value="sec_basic+o.line_ids.filtered(lambda line: line.code == 'BONUS').total"/>
+																					</td>
+																					<td colspan="3" style="vertical-align : middle;">
+																						<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+																						<t t-set="sec_othersAllowance" t-value="sec_othersAllowance+o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total"/>
+																					</td>
+																					<td colspan="5" style="vertical-align : middle;">
+																						<t t-esc="o.line_ids.filtered(lambda line: line.code == 'NET').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+																						<t t-set="sec_net" t-value="sec_net+o.line_ids.filtered(lambda line: line.code == 'NET').total"/>
+																					</td>
+																					<td colspan="4" style="vertical-align : middle;">
+																						<t t-esc="o.employee_id.bank_account_id.bank_id.name"/>
+																						<br/>
+																						<t t-esc="o.employee_id.bank_account_id.acc_number"/>
+																					</td>
+																				</tr>
+																			</t>
 																		</t>
 																	</t>
-																</tbody>
-															</table>
-															<table class="table table-sm">
-																<tbody>
-																	<tr align="center">
-																		<td colspan="16" style="vertical-align : middle;font-size:12px">
-																			<br/>
-																			<br/>
-																			<br/>
-																			<b>
-																				<span style="font-size:14px">
-																					<t t-esc="emp[5]" class="text-nowrap"/> Section Total(<t t-esc="ct[1]"/>):</span>
-																			</b>
-																			<br/>
-																			<br/>
-																			<br/>
-																			<br/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																			<t t-esc="sec_gross_salary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_gross_salary" t-value="dep_gross_salary+sec_gross_salary"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_basic" t-value="dep_basic+sec_basic"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_houseRent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_houseRent" t-value="dep_houseRent+sec_houseRent"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_medical" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_medical" t-value="dep_medical+sec_medical"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_hrs"/>
-																			<t t-set="dep_hrs" t-value="dep_hrs+sec_hrs"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_rate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_rate" t-value="dep_rate+sec_rate"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																			<t t-esc="sec_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_amount" t-value="dep_amount+sec_amount"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_arrear" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_arrear" t-value="dep_arrear+sec_arrear"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_attBonus" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_attBonus" t-value="dep_attBonus+sec_attBonus"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_convence" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_convence" t-value="dep_convence+sec_convence"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_food" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_food" t-value="dep_food+sec_food"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_tiffin" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_tiffin" t-value="dep_tiffin+sec_tiffin"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_strength" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_strength" t-value="dep_strength+sec_strength"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_mobile" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_mobile" t-value="dep_mobile+sec_mobile"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_othersAllowance" t-value="dep_othersAllowance+sec_othersAllowance"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_incentive" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_incentive" t-value="dep_incentive+sec_incentive"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_rpf" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_rpf" t-value="dep_rpf+sec_rpf"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																			<t t-esc="sec_totalEarn" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_totalEarn" t-value="dep_totalEarn+sec_totalEarn"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_pfr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_pfr" t-value="dep_pfr+sec_pfr"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_pfe" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_pfe" t-value="dep_pfe+sec_pfe"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_tds" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_tds" t-value="dep_tds+sec_tds"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_basicAbsent"/>
-																			<t t-set="dep_basicAbsent" t-value="dep_basicAbsent+sec_basicAbsent"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_grossAbsent"/>
-																			<t t-set="dep_grossAbsent" t-value="dep_grossAbsent+sec_grossAbsent"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_loan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_loan" t-value="dep_loan+sec_loan"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_advSalary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_advSalary" t-value="dep_advSalary+sec_advSalary"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_othersDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_othersDeduct" t-value="dep_othersDeduct+sec_othersDeduct"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																			<t t-esc="sec_totalDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_totalDeduct" t-value="dep_totalDeduct+sec_totalDeduct"/>
-																		</td>
-																		<td colspan="9" style="vertical-align : middle;font-size: 14px;font-weight:bold;">
-																			<t t-esc="sec_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_net" t-value="dep_net+sec_net"/>
-																		</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-													</t>
+																</t>
+															</tbody>
+														</table>
+														<table class="table table-sm">
+															<tbody>
+																<tr align="center">
+																	<td colspan="30" style="text-align:right">
+																		<span>
+																			<t t-esc="emp[5]"/> - Section Total: [<t t-esc="sec_emp_total"/>]</span>
+																	</td>
+																	<td colspan="3">
+																		<span t-esc="sec_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+																		<t t-set="dep_basic" t-value="dep_basic+sec_basic"/>
+																	</td>
+																	<td colspan="3">
+																		<span t-esc="sec_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+																		<t t-set="dep_othersAllowance" t-value="dep_othersAllowance+sec_othersAllowance"/>
+																	</td>
+																	<td colspan="9">
+																		<span t-esc="sec_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+																		<t t-set="dep_net" t-value="dep_net+sec_net"/>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
 												</t>
-												<!--</t>-->
-												<div class="container">
-													<table class="table table-sm">
-														<tbody>
-															<tr align="center">
-																<td colspan="16" style="vertical-align : middle;font-size:12px">
-																	<br/>
-																	<br/>
-																	<br/>
-																	<b>
-																		<span style="font-size:14px">
-																			<t t-esc="dp[2]" class="text-nowrap"/> Department Total(<t t-esc="ct[1]"/>):</span>
-																	</b>
-																	<br/>
-																	<br/>
-																	<br/>
-																	<br/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																	<t t-esc="dep_gross_salary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_gross_salary" t-value="cat_gross_salary+dep_gross_salary"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_basic" t-value="cat_basic+dep_basic"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_houseRent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_houseRent" t-value="cat_houseRent+dep_houseRent"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_medical" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_medical" t-value="cat_medical+dep_medical"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_hrs"/>
-																	<t t-set="cat_hrs" t-value="cat_hrs+dep_hrs"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_rate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_rate" t-value="cat_rate+dep_rate"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																	<t t-esc="dep_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_amount" t-value="cat_amount+dep_amount"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_arrear" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_arrear" t-value="cat_arrear+dep_arrear"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_attBonus" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_attBonus" t-value="cat_attBonus+dep_attBonus"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_convence" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_convence" t-value="cat_convence+dep_convence"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_food" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_food" t-value="cat_food+dep_food"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_tiffin" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_tiffin" t-value="cat_tiffin+dep_tiffin"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_strength" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_strength" t-value="cat_strength+dep_strength"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_mobile" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_mobile" t-value="cat_mobile+dep_mobile"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_othersAllowance" t-value="cat_othersAllowance+dep_othersAllowance"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_incentive" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_incentive" t-value="cat_incentive+dep_incentive"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_rpf" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_rpf" t-value="cat_rpf+dep_rpf"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																	<t t-esc="dep_totalEarn" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_totalEarn" t-value="cat_totalEarn+dep_totalEarn"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_pfr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_pfr" t-value="cat_pfr+dep_pfr"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_pfe" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_pfe" t-value="cat_pfe+dep_pfe"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_tds" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_tds" t-value="cat_tds+dep_tds"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_basicAbsent"/>
-																	<t t-set="cat_basicAbsent" t-value="cat_basicAbsent+dep_basicAbsent"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_grossAbsent"/>
-																	<t t-set="cat_grossAbsent" t-value="cat_grossAbsent+dep_grossAbsent"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_loan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_loan" t-value="cat_loan+dep_loan"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_advSalary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_advSalary" t-value="cat_advSalary+dep_advSalary"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_othersDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_othersDeduct" t-value="cat_othersDeduct+dep_othersDeduct"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																	<t t-esc="dep_totalDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_totalDeduct" t-value="cat_totalDeduct+dep_totalDeduct"/>
-																</td>
-																<td colspan="9" style="vertical-align : middle;font-size: 14px;font-weight:bold;" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}">
-																	<t t-esc="dep_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_net" t-value="cat_net+dep_net"/>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
 											</t>
-										</t>
-										<div class="container mb-4">
-											<table class="table table-sm">
-												<tbody>
-													<tr align="center">
-														<td colspan="16" style="vertical-align : middle;font-size:12px">
-															<br/>
-															<br/>
-															<br/>
-															<b>
-																<span style="font-size:14px">
-																	<t t-esc="ct[1]" class="text-nowrap"/> Category Total:</span>
-															</b>
-															<br/>
-															<br/>
-															<br/>
-															<br/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-															<t t-esc="cat_gross_salary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_gross_salary" t-value="com_gross_salary+cat_gross_salary"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_basic" t-value="com_basic+cat_basic"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_houseRent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_houseRent" t-value="com_houseRent+cat_houseRent"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_medical" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_medical" t-value="com_medical+cat_medical"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_hrs"/>
-															<t t-set="com_hrs" t-value="com_hrs+cat_hrs"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_rate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_rate" t-value="com_rate+cat_rate"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-															<t t-esc="cat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_amount" t-value="com_amount+cat_amount"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_arrear" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_arrear" t-value="com_arrear+cat_arrear"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_attBonus" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_attBonus" t-value="com_attBonus+cat_attBonus"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_convence" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_convence" t-value="com_convence+cat_convence"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_food" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_food" t-value="com_food+cat_food"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_tiffin" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_tiffin" t-value="com_tiffin+cat_tiffin"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_strength" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_strength" t-value="com_strength+cat_strength"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_mobile" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_mobile" t-value="com_mobile+cat_mobile"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_othersAllowance" t-value="com_othersAllowance+cat_othersAllowance"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_incentive" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_incentive" t-value="com_incentive+cat_incentive"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_rpf" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_rpf" t-value="com_rpf+cat_rpf"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-															<t t-esc="cat_totalEarn" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_totalEarn" t-value="com_totalEarn+cat_totalEarn"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_pfr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_pfr" t-value="com_pfr+cat_pfr"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_pfe" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_pfe" t-value="com_pfe+cat_pfe"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_tds" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_tds" t-value="com_tds+cat_tds"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_basicAbsent"/>
-															<t t-set="com_basicAbsent" t-value="com_basicAbsent+cat_basicAbsent"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_grossAbsent"/>
-															<t t-set="com_grossAbsent" t-value="com_grossAbsent+cat_grossAbsent"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_loan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_loan" t-value="com_loan+cat_loan"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_advSalary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_advSalary" t-value="com_advSalary+cat_advSalary"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_othersDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_othersDeduct" t-value="com_othersDeduct+cat_othersDeduct"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-															<t t-esc="cat_totalDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_totalDeduct" t-value="com_totalDeduct+cat_totalDeduct"/>
-														</td>
-														<td colspan="9" style="vertical-align : middle;font-size: 14px;font-weight:bold;" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}">
-															<t t-esc="cat_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_net" t-value="com_net+cat_net"/>
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</t>
-								</t>
-								<div class="container">
-									<table class="table table-sm">
-										<tbody>
-											<tr align="center">
-												<td colspan="11" style="vertical-align : middle; font-size:12px">
-													<b>
-														<span style="font-size:14px">
-															<t t-esc="cm.name" class="text-nowrap"/> Company Total:</span>
-													</b>
-													<br/>
-												</td>
-												<td colspan="2" style="font-size: 10px">
-													<span style="color: green;" t-esc="workdays" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: red;" t-esc="grossAdays" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: red;" t-esc="basicAdays" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: purple;" t-esc="friday" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: purple;" t-esc="holiday" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: blue;" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}" t-esc="co"/> | <t t-esc="aj" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-												</td>
-												<td colspan="2" style="font-size: 10px">
-													<t t-esc="latedays" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="cl" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="sl" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="el" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="ml" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="lw" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;font-weight:bold;">
-													<t t-esc="payable_days"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-													<t t-esc="com_gross_salary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_houseRent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_medical" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_hrs"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_rate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-													<t t-esc="com_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_arrear" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_attBonus" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_convence" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_food" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_tiffin" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_strength" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_mobile" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_incentive" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_rpf" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-													<t t-esc="com_totalEarn" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_pfr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_pfe" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_tds" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_basicAbsent"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_grossAbsent"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_loan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_advSalary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_othersDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-													<t t-esc="com_totalDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="9" style="vertical-align : middle;font-size: 14px;font-weight:bold;" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}">
-													<t t-esc="com_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</t>
-						</div>
-					</t>
-					<t t-if="is_com == True">
-						<div class="container">
-							<h4 class="text-right">
-								<strong>
-                Bonus Sheet
-                <span t-esc="cd[3]"/>
-								</strong>
-							</h4>
-							<t t-foreach="com" t-as="cm">
-								<t t-set="payable_days" t-value="0"/>
-								<t t-set="workdays" t-value="0"/>
-								<t t-set="grossAdays" t-value="0"/>
-								<t t-set="basicAdays" t-value="0"/>
-								<t t-set="friday" t-value="0"/>
-								<t t-set="holiday" t-value="0"/>
-								<t t-set="co" t-value="0"/>
-								<t t-set="aj" t-value="0"/>
-								<t t-set="latedays" t-value="0"/>
-								<t t-set="cl" t-value="0"/>
-								<t t-set="sl" t-value="0"/>
-								<t t-set="el" t-value="0"/>
-								<t t-set="ml" t-value="0"/>
-								<t t-set="lw" t-value="0"/>
-								<t t-set="com_gross_salary" t-value="0"/>
-								<t t-set="com_basic" t-value="0"/>
-								<t t-set="com_houseRent" t-value="0"/>
-								<t t-set="com_medical" t-value="0"/>
-								<t t-set="com_hrs" t-value="0"/>
-								<t t-set="com_rate" t-value="0"/>
-								<t t-set="com_amount" t-value="0"/>
-								<t t-set="com_arrear" t-value="0"/>
-								<t t-set="com_attBonus" t-value="0"/>
-								<t t-set="com_convence" t-value="0"/>
-								<t t-set="com_food" t-value="0"/>
-								<t t-set="com_tiffin" t-value="0"/>
-								<t t-set="com_strength" t-value="0"/>
-								<t t-set="com_mobile" t-value="0"/>
-								<t t-set="com_othersAllowance" t-value="0"/>
-								<t t-set="com_incentive" t-value="0"/>
-								<t t-set="com_rpf" t-value="0"/>
-								<t t-set="com_totalEarn" t-value="0"/>
-								<t t-set="com_pfr" t-value="0"/>
-								<t t-set="com_pfe" t-value="0"/>
-								<t t-set="com_tds" t-value="0"/>
-								<t t-set="com_basicAbsent" t-value="0"/>
-								<t t-set="com_grossAbsent" t-value="0"/>
-								<t t-set="com_loan" t-value="0"/>
-								<t t-set="com_advSalary" t-value="0"/>
-								<t t-set="com_othersDeduct" t-value="0"/>
-								<t t-set="com_totalDeduct" t-value="0"/>
-								<t t-set="com_net" t-value="0"/>
-								<div class="container" style="page-break-inside:break;">
-									<div style="font-size: 12px;">
-										<strong>COMPANY:</strong>
-										<span t-esc="cm.name" style="color:  #cc7000"/>
-									</div>
-								</div>
-								<t t-foreach="cat" t-as="ct">
-									<t t-if="ct[2] == cm.id">
-										<t t-set="cat_gross_salary" t-value="0"/>
-										<t t-set="cat_basic" t-value="0"/>
-										<t t-set="cat_houseRent" t-value="0"/>
-										<t t-set="cat_medical" t-value="0"/>
-										<t t-set="cat_hrs" t-value="0"/>
-										<t t-set="cat_rate" t-value="0"/>
-										<t t-set="cat_amount" t-value="0"/>
-										<t t-set="cat_arrear" t-value="0"/>
-										<t t-set="cat_attBonus" t-value="0"/>
-										<t t-set="cat_convence" t-value="0"/>
-										<t t-set="cat_food" t-value="0"/>
-										<t t-set="cat_tiffin" t-value="0"/>
-										<t t-set="cat_strength" t-value="0"/>
-										<t t-set="cat_mobile" t-value="0"/>
-										<t t-set="cat_othersAllowance" t-value="0"/>
-										<t t-set="cat_incentive" t-value="0"/>
-										<t t-set="cat_rpf" t-value="0"/>
-										<t t-set="cat_totalEarn" t-value="0"/>
-										<t t-set="cat_pfr" t-value="0"/>
-										<t t-set="cat_pfe" t-value="0"/>
-										<t t-set="cat_tds" t-value="0"/>
-										<t t-set="cat_basicAbsent" t-value="0"/>
-										<t t-set="cat_grossAbsent" t-value="0"/>
-										<t t-set="cat_loan" t-value="0"/>
-										<t t-set="cat_advSalary" t-value="0"/>
-										<t t-set="cat_othersDeduct" t-value="0"/>
-										<t t-set="cat_totalDeduct" t-value="0"/>
-										<t t-set="cat_net" t-value="0"/>
-										<div class="container mt-4" style="page-break-inside:break;">
-											<div style="font-size: 12px;">
-												<strong>Category:</strong>
-												<span t-esc="ct[1]" style="color:  #cc7000"/>
+											<div class="container">
+												<table class="table table-sm">
+													<tbody>
+														<tr align="center">
+															<td colspan="30" style="text-align:right">
+																<span>
+																	<t t-esc="dp[2]"/> - Department Total: [<t t-esc="dep_emp_total"/>]</span>
+															</td>
+															<td colspan="3">
+																<span t-esc="dep_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+																<t t-set="cat_basic" t-value="cat_basic+dep_basic"/>
+															</td>
+															<td colspan="3">
+																<span t-esc="dep_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+																<t t-set="cat_othersAllowance" t-value="cat_othersAllowance+dep_othersAllowance"/>
+															</td>
+															<td colspan="9">
+																<span t-esc="dep_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+																<t t-set="cat_net" t-value="cat_net+dep_net"/>
+															</td>
+														</tr>
+													</tbody>
+												</table>
 											</div>
-										</div>
-										<t t-foreach="dpt" t-as="dp">
-											<t t-if="((ct[2] == dp[0])and(ct[0] == dp[3])) ">
-												<t t-set="dep_gross_salary" t-value="0"/>
-												<t t-set="dep_basic" t-value="0"/>
-												<t t-set="dep_houseRent" t-value="0"/>
-												<t t-set="dep_medical" t-value="0"/>
-												<t t-set="dep_hrs" t-value="0"/>
-												<t t-set="dep_rate" t-value="0"/>
-												<t t-set="dep_amount" t-value="0"/>
-												<t t-set="dep_arrear" t-value="0"/>
-												<t t-set="dep_attBonus" t-value="0"/>
-												<t t-set="dep_convence" t-value="0"/>
-												<t t-set="dep_food" t-value="0"/>
-												<t t-set="dep_tiffin" t-value="0"/>
-												<t t-set="dep_strength" t-value="0"/>
-												<t t-set="dep_mobile" t-value="0"/>
-												<t t-set="dep_othersAllowance" t-value="0"/>
-												<t t-set="dep_incentive" t-value="0"/>
-												<t t-set="dep_rpf" t-value="0"/>
-												<t t-set="dep_totalEarn" t-value="0"/>
-												<t t-set="dep_pfr" t-value="0"/>
-												<t t-set="dep_pfe" t-value="0"/>
-												<t t-set="dep_tds" t-value="0"/>
-												<t t-set="dep_basicAbsent" t-value="0"/>
-												<t t-set="dep_grossAbsent" t-value="0"/>
-												<t t-set="dep_loan" t-value="0"/>
-												<t t-set="dep_advSalary" t-value="0"/>
-												<t t-set="dep_othersDeduct" t-value="0"/>
-												<t t-set="dep_totalDeduct" t-value="0"/>
-												<t t-set="dep_net" t-value="0"/>
-												<t t-foreach="datas" t-as="emp">
-													<t t-if="((dp[0] == emp[0])and (dp[1] == emp[2]) and(dp[3] == emp[6]))">
-														<div class="container" style="page-break-inside:break;">
-															<div style="font-size: 12px;">
-																<strong>DEPARTMENT:</strong>
-																<span t-esc="emp[3]" style="color:  #cc7000"/>
-															</div>
-														</div>
-														<div class="container" style="page-break-inside:break;">
-															<div style="font-size: 12px;">
-																<strong>SECTION:</strong>
-																<span t-esc="emp[5]" style="color:  #cc7000"/>
-															</div>
-														</div>
-														<br/>
-														<div class="container">
-															<table class="table table-sm mb-4">
-																<!--<thead>-->
-																<tr align="center">
-																	<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">SL</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">Section</th>
-																	<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">ID</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">Employee Name</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px;white-space:nowrap">Designation</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px">Join Date</th>
-																	<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size:10px">Grade</th>
-																	<th colspan="2" style="background-color: green;color: white">Worked Days</th>
-																	<th style="background-color: yellow;">Late Days</th>
-																	<th rowspan="6" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size:10px">Payable Days</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:8px">Gross Salary</th>
-																	<th rowspan="1" colspan="17" style="vertical-align : middle;font-size:10px">Earnings Details</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px;white-space:nowrap">Total Earnings</th>
-																	<th rowspan="1" colspan="8" style="vertical-align : middle;font-size:10px">Deduction Details</th>
-																	<th rowspan="6" colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:10px;white-space:nowrap">Total Deduction</th>
-																	<th rowspan="6" colspan="5" style="vertical-align : middle;font-size:12px">Net Payable</th>
-																	<th rowspan="6" colspan="4" style="vertical-align : middle;font-size:12px">Bank A/C Details</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="2" style="background-color: red;color: white">Gross A. Days</th>
-																	<th style="background-color: yellow;">CL</th>
-																	<th colspan="6" style="vertical-align : middle;font-size:10px">Salary Breakup</th>
-																	<th colspan="4" style="vertical-align : middle;font-size:10px">Over Time</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Arrear</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Att. Bonus</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Convence</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Food</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Tiffin</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Strength</th>
-																	<!--<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Mobile</th>-->
-																	<!--<th rowspan="5" style="-webkit-transform: rotate(-90.0deg);white-space:nowrap;vertical-align : middle;">Others Allowance</th>-->
-																	<!--<th rowspan="5" style="vertical-align :middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Incentive</th>-->
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">PF (Emp'r) 8.33%</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">PF (Emp'r) 8.33%</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">PF (Emp'ee) 8.33%</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">TDS (AIT)</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Basic A. Deduct</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Gross A. Deduct</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Loan</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Adv. Salary</th>
-																	<th rowspan="5" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap">Others Deduct</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="2" style="background-color: red;color: white">Basic A. Days</th>
-																	<th style="background-color: yellow;">SL</th>
-																	<th rowspan="4" colspan="2" style="vertical-align : middle;font-size:10px">Basic</th>
-																	<th rowspan="4" colspan="2" style="vertical-align : middle;font-size:10px">House Rent</th>
-																	<th rowspan="4" colspan="2" style="vertical-align : middle;font-size:10px">Medical</th>
-																	<th rowspan="4" style="vertical-align : middle;">HRS</th>
-																	<th rowspan="4" style="vertical-align : middle;">Rate</th>
-																	<th rowspan="4" colspan="2" style="vertical-align : middle;">Amount</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="2" style="background-color: purple;color: white">Friday</th>
-																	<th Style="background-color: yellow">EL</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="2" style="background-color: purple;color: white">Holiday</th>
-																	<th style="background-color: yellow;">ML</th>
-																</tr>
-																<tr align="center">
-																	<th colspan="1" style="background-color: blue;color: white">CO</th>
-																	<th colspan="1" style="background-color: blue;color: white">Aj</th>
-																	<th style="background-color: yellow;">LW</th>
-																</tr>
-																<!--</thead>-->
-																<tbody>
-																	<t t-set="sec_gross_salary" t-value="0"/>
-																	<t t-set="sec_basic" t-value="0"/>
-																	<t t-set="sec_houseRent" t-value="0"/>
-																	<t t-set="sec_medical" t-value="0"/>
-																	<t t-set="sec_hrs" t-value="0"/>
-																	<t t-set="sec_rate" t-value="0"/>
-																	<t t-set="sec_amount" t-value="0"/>
-																	<t t-set="sec_arrear" t-value="0"/>
-																	<t t-set="sec_attBonus" t-value="0"/>
-																	<t t-set="sec_convence" t-value="0"/>
-																	<t t-set="sec_food" t-value="0"/>
-																	<t t-set="sec_tiffin" t-value="0"/>
-																	<t t-set="sec_strength" t-value="0"/>
-																	<t t-set="sec_mobile" t-value="0"/>
-																	<t t-set="sec_othersAllowance" t-value="0"/>
-																	<t t-set="sec_incentive" t-value="0"/>
-																	<t t-set="sec_rpf" t-value="0"/>
-																	<t t-set="sec_totalEarn" t-value="0"/>
-																	<t t-set="sec_pfr" t-value="0"/>
-																	<t t-set="sec_pfe" t-value="0"/>
-																	<t t-set="sec_tds" t-value="0"/>
-																	<t t-set="sec_basicAbsent" t-value="0"/>
-																	<t t-set="sec_grossAbsent" t-value="0"/>
-																	<t t-set="sec_loan" t-value="0"/>
-																	<t t-set="sec_advSalary" t-value="0"/>
-																	<t t-set="sec_othersDeduct" t-value="0"/>
-																	<t t-set="sec_totalDeduct" t-value="0"/>
-																	<t t-set="sec_net" t-value="0"/>
-																	<t t-foreach="docs.filtered(lambda x: (x.department_id.id == emp[4]))" t-as="o">
-																		<t t-if="o.struct_id.name == 'FESTIVAL BONUS'">
-																			<tr align="center">
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);">
-																					<t t-esc="o_index+1" class="text-nowrap"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 10px">
-																					<span t-esc="o.employee_id.department_id.name"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 10px; white-space:nowrap">
-																					<t t-esc="o.employee_id.emp_id"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size:8px;">
-																					<t t-esc="o.employee_id.name"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 8px;">
-																					<span t-esc="o.employee_id.job_title"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 10px;white-space:nowrap">
-																					<t t-esc="o.contract_id.date_start"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-size: 8px;">
-																					<t t-esc="o.struct_id.name"/>
-																				</td>
-																				<td colspan="2" style="font-size: 10px">
-																					<span style="color: green;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/>
-																					<t t-set="workdays" t-value="workdays+o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/>
-																					<br/>
-																					<span style="color: red;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/>
-																					<t t-set="grossAdays" t-value="grossAdays+o.worked_days_line_ids.filtered(lambda line: line.code == 'X').number_of_days"/>
-																					<br/>
-																					<span style="color: red;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/>
-																					<t t-set="basicAdays" t-value="basicAdays+o.worked_days_line_ids.filtered(lambda line: line.code == 'A').number_of_days"/>
-																					<br/>
-																					<span style="color: purple;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/>
-																					<t t-set="friday" t-value="friday+o.worked_days_line_ids.filtered(lambda line: line.code == 'F').number_of_days"/>
-																					<br/>
-																					<span style="color: purple;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/>
-																					<t t-set="holiday" t-value="holiday+o.worked_days_line_ids.filtered(lambda line: line.code == 'H').number_of_days"/>
-																					<br/>
-																					<span style="color: blue;" t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/> | <t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/>
-																					<t t-set="co" t-value="co+o.worked_days_line_ids.filtered(lambda line: line.code == 'CO').number_of_days"/>
-																					<t t-set="aj" t-value="aj+o.worked_days_line_ids.filtered(lambda line: line.code == 'AJ').number_of_days"/>
-																					<br/>
-																				</td>
-																				<td style="font-size: 10px">
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days"/>
-																					<t t-set="latedays" t-value="latedays+o.worked_days_line_ids.filtered(lambda line: line.code == 'L').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days"/>
-																					<t t-set="cl" t-value="cl+o.worked_days_line_ids.filtered(lambda line: line.code == 'CL').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days"/>
-																					<t t-set="sl" t-value="sl+o.worked_days_line_ids.filtered(lambda line: line.code == 'SL').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days"/>
-																					<t t-set="el" t-value="el+o.worked_days_line_ids.filtered(lambda line: line.code == 'EL').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days"/>
-																					<t t-set="ml" t-value="ml+o.worked_days_line_ids.filtered(lambda line: line.code == 'ML').number_of_days"/>
-																					<br/>
-																					<t t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days"/>
-																					<t t-set="lw" t-value="lw+o.worked_days_line_ids.filtered(lambda line: line.code == 'LW').number_of_days"/>
-																					<br/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);font-weight:bold;font-size: 10px;white-space:nowrap">
-																					<t t-esc="o.total_payable_days"/>
-																					<t t-set="payable_days" t-value="payable_days+o.total_payable_days"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_gross_salary" t-value="o.contract_id.filtered(lambda contract: contract).wage + sec_gross_salary"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_basic" t-value="sec_basic+o.line_ids.filtered(lambda line: line.code == 'BASIC').total"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'HRA').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_houseRent" t-value="sec_houseRent+o.line_ids.filtered(lambda line: line.code == 'HRA').total"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_medical" t-value="sec_medical+o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.otHours"/>
-																					<t t-set="sec_hrs" t-value="sec_hrs+o.otHours"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.otRate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_rate" t-value="sec_rate+o.otRate"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_amount" t-value="sec_amount+o.line_ids.filtered(lambda line: line.code == 'OT').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'ARREAR').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_arrear" t-value="sec_arrear+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'ATTBONUS').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_attBonus" t-value="sec_attBonus+o.line_ids.filtered(lambda line: line.code == 'ATTBONUS').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_convence" t-value="sec_convence+o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'FOOD').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_food" t-value="sec_food+o.line_ids.filtered(lambda line: line.code == 'FOOD').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'TIFFIN').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_tiffin" t-value="sec_tiffin+o.line_ids.filtered(lambda line: line.code == 'TIFFIN').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'SNACKS').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_strength" t-value="sec_strength+o.line_ids.filtered(lambda line: line.code == 'SNACKS').total"/>
-																				</td>
-																				<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-																				<!--	<t t-esc="o.line_ids.filtered(lambda line: line.code == 'MOBILE').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
-																				<!--	<t t-set="sec_mobile" t-value="sec_mobile+o.line_ids.filtered(lambda line: line.code == 'MOBILE').total"/>-->
-																				<!--</td>-->
-																				<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-																				<!--	<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
-																				<!--	<t t-set="sec_othersAllowance" t-value="sec_othersAllowance+o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total"/>-->
-																				<!--</td>-->
-																				<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-																				<!--	<t t-esc="o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
-																				<!--	<t t-set="sec_incentive" t-value="sec_incentive+o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total"/>-->
-																				<!--</td>-->
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'RPF').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_rpf" t-value="sec_rpf+o.line_ids.filtered(lambda line: line.code == 'RPF').total"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="(o.earnings_total-(o.line_ids.filtered(lambda line: line.code == 'MOBILE').total+o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total+o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total))" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_totalEarn" t-value="sec_totalEarn+(o.earnings_total-(o.line_ids.filtered(lambda line: line.code == 'MOBILE').total+o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total+o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total))"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'PFR').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_pfr" t-value="sec_pfr+o.line_ids.filtered(lambda line: line.code == 'PFR').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'PFE').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_pfe" t-value="sec_pfe+o.line_ids.filtered(lambda line: line.code == 'PFE').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'AIT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_tds" t-value="sec_tds+o.line_ids.filtered(lambda line: line.code == 'AIT').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC_ABSENT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_basicAbsent" t-value="sec_basicAbsent+o.line_ids.filtered(lambda line: line.code == 'BASIC_ABSENT').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'GROSS_ABSENT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_grossAbsent" t-value="sec_grossAbsent+o.line_ids.filtered(lambda line: line.code == 'GROSS_ABSENT').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'LOAN').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_loan" t-value="sec_loan+o.line_ids.filtered(lambda line: line.code == 'LOAN').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_advSalary" t-value="sec_advSalary+o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total"/>
-																				</td>
-																				<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'OTHERS_DED').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_othersDeduct" t-value="sec_othersDeduct+o.line_ids.filtered(lambda line: line.code == 'OTHERS_DED').total"/>
-																				</td>
-																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="o.deduction_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_totalDeduct" t-value="sec_totalDeduct+o.deduction_total"/>
-																				</td>
-																				<td colspan="5" style="vertical-align : middle;font-size: 14px;font-weight:bold;">
-																					<t t-esc="(o.earnings_total-(o.line_ids.filtered(lambda line: line.code == 'MOBILE').total+o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total+o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total))                    -o.deduction_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_net" t-value="sec_net+((o.earnings_total-(o.line_ids.filtered(lambda line: line.code == 'MOBILE').total+o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total+o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total))                    -o.deduction_total)"/>
-																				</td>
-																				<td colspan="4" style="vertical-align : middle;font-size: 12px;">
-																					<t t-esc="o.employee_id.bank_account_id.bank_id.name"/>
-																					<br/>
-																					<t t-esc="o.employee_id.bank_account_id.acc_number"/>
-																				</td>
-																			</tr>
-																		</t>
-																	</t>
-																</tbody>
-															</table>
-															<table class="table table-sm">
-																<tbody>
-																	<tr align="center">
-																		<td colspan="16" style="vertical-align : middle;font-size:12px">
-																			<br/>
-																			<br/>
-																			<br/>
-																			<b>
-																				<span style="font-size:14px">
-																					<t t-esc="emp[5]" class="text-nowrap"/> Section Total(<t t-esc="ct[1]"/>):</span>
-																			</b>
-																			<br/>
-																			<br/>
-																			<br/>
-																			<br/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																			<t t-esc="sec_gross_salary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_gross_salary" t-value="dep_gross_salary+sec_gross_salary"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_basic" t-value="dep_basic+sec_basic"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_houseRent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_houseRent" t-value="dep_houseRent+sec_houseRent"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_medical" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_medical" t-value="dep_medical+sec_medical"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_hrs"/>
-																			<t t-set="dep_hrs" t-value="dep_hrs+sec_hrs"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_rate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_rate" t-value="dep_rate+sec_rate"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																			<t t-esc="sec_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_amount" t-value="dep_amount+sec_amount"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_arrear" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_arrear" t-value="dep_arrear+sec_arrear"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_attBonus" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_attBonus" t-value="dep_attBonus+sec_attBonus"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_convence" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_convence" t-value="dep_convence+sec_convence"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_food" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_food" t-value="dep_food+sec_food"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_tiffin" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_tiffin" t-value="dep_tiffin+sec_tiffin"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_strength" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_strength" t-value="dep_strength+sec_strength"/>
-																		</td>
-																		<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-																		<!--	<t t-esc="sec_mobile" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-																		<!--	<t t-set="dep_mobile" t-value="dep_mobile+sec_mobile"/>-->
-																		<!--</td>-->
-																		<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-																		<!--	<t t-esc="sec_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-																		<!--	<t t-set="dep_othersAllowance" t-value="dep_othersAllowance+sec_othersAllowance"/>-->
-																		<!--</td>-->
-																		<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-																		<!--	<t t-esc="sec_incentive" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-																		<!--	<t t-set="dep_incentive" t-value="dep_incentive+sec_incentive"/>-->
-																		<!--</td>-->
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_rpf" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_rpf" t-value="dep_rpf+sec_rpf"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																			<t t-esc="sec_totalEarn" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_totalEarn" t-value="dep_totalEarn+sec_totalEarn"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_pfr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_pfr" t-value="dep_pfr+sec_pfr"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_pfe" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_pfe" t-value="dep_pfe+sec_pfe"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_tds" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_tds" t-value="dep_tds+sec_tds"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_basicAbsent"/>
-																			<t t-set="dep_basicAbsent" t-value="dep_basicAbsent+sec_basicAbsent"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_grossAbsent"/>
-																			<t t-set="dep_grossAbsent" t-value="dep_grossAbsent+sec_grossAbsent"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_loan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_loan" t-value="dep_loan+sec_loan"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_advSalary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_advSalary" t-value="dep_advSalary+sec_advSalary"/>
-																		</td>
-																		<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																			<t t-esc="sec_othersDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_othersDeduct" t-value="dep_othersDeduct+sec_othersDeduct"/>
-																		</td>
-																		<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																			<t t-esc="sec_totalDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_totalDeduct" t-value="dep_totalDeduct+sec_totalDeduct"/>
-																		</td>
-																		<td colspan="9" style="vertical-align : middle;font-size: 14px;font-weight:bold;">
-																			<t t-esc="sec_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																			<t t-set="dep_net" t-value="dep_net+sec_net"/>
-																		</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-													</t>
-												</t>
-												<!--</t>-->
-												<div class="container">
-													<table class="table table-sm">
-														<tbody>
-															<tr align="center">
-																<td colspan="16" style="vertical-align : middle;font-size:12px">
-																	<br/>
-																	<br/>
-																	<br/>
-																	<b>
-																		<span style="font-size:14px">
-																			<t t-esc="dp[2]" class="text-nowrap"/> Department Total(<t t-esc="ct[1]"/>):</span>
-																	</b>
-																	<br/>
-																	<br/>
-																	<br/>
-																	<br/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																	<t t-esc="dep_gross_salary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_gross_salary" t-value="cat_gross_salary+dep_gross_salary"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_basic" t-value="cat_basic+dep_basic"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_houseRent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_houseRent" t-value="cat_houseRent+dep_houseRent"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_medical" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_medical" t-value="cat_medical+dep_medical"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_hrs"/>
-																	<t t-set="cat_hrs" t-value="cat_hrs+dep_hrs"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_rate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_rate" t-value="cat_rate+dep_rate"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																	<t t-esc="dep_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_amount" t-value="cat_amount+dep_amount"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_arrear" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_arrear" t-value="cat_arrear+dep_arrear"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_attBonus" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_attBonus" t-value="cat_attBonus+dep_attBonus"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_convence" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_convence" t-value="cat_convence+dep_convence"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_food" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_food" t-value="cat_food+dep_food"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_tiffin" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_tiffin" t-value="cat_tiffin+dep_tiffin"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_strength" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_strength" t-value="cat_strength+dep_strength"/>
-																</td>
-																<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-																<!--	<t t-esc="dep_mobile" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-																<!--	<t t-set="cat_mobile" t-value="cat_mobile+dep_mobile"/>-->
-																<!--</td>-->
-																<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-																<!--	<t t-esc="dep_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-																<!--	<t t-set="cat_othersAllowance" t-value="cat_othersAllowance+dep_othersAllowance"/>-->
-																<!--</td>-->
-																<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-																<!--	<t t-esc="dep_incentive" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-																<!--	<t t-set="cat_incentive" t-value="cat_incentive+dep_incentive"/>-->
-																<!--</td>-->
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_rpf" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_rpf" t-value="cat_rpf+dep_rpf"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																	<t t-esc="dep_totalEarn" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_totalEarn" t-value="cat_totalEarn+dep_totalEarn"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_pfr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_pfr" t-value="cat_pfr+dep_pfr"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_pfe" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_pfe" t-value="cat_pfe+dep_pfe"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_tds" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_tds" t-value="cat_tds+dep_tds"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_basicAbsent"/>
-																	<t t-set="cat_basicAbsent" t-value="cat_basicAbsent+dep_basicAbsent"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_grossAbsent"/>
-																	<t t-set="cat_grossAbsent" t-value="cat_grossAbsent+dep_grossAbsent"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_loan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_loan" t-value="cat_loan+dep_loan"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_advSalary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_advSalary" t-value="cat_advSalary+dep_advSalary"/>
-																</td>
-																<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-																	<t t-esc="dep_othersDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_othersDeduct" t-value="cat_othersDeduct+dep_othersDeduct"/>
-																</td>
-																<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																	<t t-esc="dep_totalDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_totalDeduct" t-value="cat_totalDeduct+dep_totalDeduct"/>
-																</td>
-																<td colspan="9" style="vertical-align : middle;font-size: 14px;font-weight:bold;" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}">
-																	<t t-esc="dep_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-																	<t t-set="cat_net" t-value="cat_net+dep_net"/>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-											</t>
 										</t>
-										<div class="container mb-4">
-											<table class="table table-sm">
-												<tbody>
-													<tr align="center">
-														<td colspan="16" style="vertical-align : middle;font-size:12px">
-															<br/>
-															<br/>
-															<br/>
-															<b>
-																<span style="font-size:14px">
-																	<t t-esc="ct[1]" class="text-nowrap"/> Category Total:</span>
-															</b>
-															<br/>
-															<br/>
-															<br/>
-															<br/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-															<t t-esc="cat_gross_salary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_gross_salary" t-value="com_gross_salary+cat_gross_salary"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_basic" t-value="com_basic+cat_basic"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_houseRent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_houseRent" t-value="com_houseRent+cat_houseRent"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_medical" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_medical" t-value="com_medical+cat_medical"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_hrs"/>
-															<t t-set="com_hrs" t-value="com_hrs+cat_hrs"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_rate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_rate" t-value="com_rate+cat_rate"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-															<t t-esc="cat_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_amount" t-value="com_amount+cat_amount"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_arrear" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_arrear" t-value="com_arrear+cat_arrear"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_attBonus" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_attBonus" t-value="com_attBonus+cat_attBonus"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_convence" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_convence" t-value="com_convence+cat_convence"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_food" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_food" t-value="com_food+cat_food"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_tiffin" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_tiffin" t-value="com_tiffin+cat_tiffin"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_strength" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_strength" t-value="com_strength+cat_strength"/>
-														</td>
-														<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-														<!--	<t t-esc="cat_mobile" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-														<!--	<t t-set="com_mobile" t-value="com_mobile+cat_mobile"/>-->
-														<!--</td>-->
-														<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-														<!--	<t t-esc="cat_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-														<!--	<t t-set="com_othersAllowance" t-value="com_othersAllowance+cat_othersAllowance"/>-->
-														<!--</td>-->
-														<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-														<!--	<t t-esc="cat_incentive" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-														<!--	<t t-set="com_incentive" t-value="com_incentive+cat_incentive"/>-->
-														<!--</td>-->
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_rpf" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_rpf" t-value="com_rpf+cat_rpf"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-															<t t-esc="cat_totalEarn" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_totalEarn" t-value="com_totalEarn+cat_totalEarn"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_pfr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_pfr" t-value="com_pfr+cat_pfr"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_pfe" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_pfe" t-value="com_pfe+cat_pfe"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_tds" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_tds" t-value="com_tds+cat_tds"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_basicAbsent"/>
-															<t t-set="com_basicAbsent" t-value="com_basicAbsent+cat_basicAbsent"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_grossAbsent"/>
-															<t t-set="com_grossAbsent" t-value="com_grossAbsent+cat_grossAbsent"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_loan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_loan" t-value="com_loan+cat_loan"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_advSalary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_advSalary" t-value="com_advSalary+cat_advSalary"/>
-														</td>
-														<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-															<t t-esc="cat_othersDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_othersDeduct" t-value="com_othersDeduct+cat_othersDeduct"/>
-														</td>
-														<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-															<t t-esc="cat_totalDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_totalDeduct" t-value="com_totalDeduct+cat_totalDeduct"/>
-														</td>
-														<td colspan="9" style="vertical-align : middle;font-size: 14px;font-weight:bold;" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}">
-															<t t-esc="cat_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-															<t t-set="com_net" t-value="com_net+cat_net"/>
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
 									</t>
+									<div class="container">
+										<table class="table table-sm">
+											<tbody>
+												<tr align="center">
+													<td colspan="30" style="text-align:right">
+														<span>
+															<t t-esc="ct[1]"/> - Category Total: [<t t-esc="cat_emp_total"/>]</span>
+													</td>
+													<td colspan="3">
+														<span t-esc="cat_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+														<t t-set="com_basic" t-value="com_basic+cat_basic"/>
+													</td>
+													<td colspan="3">
+														<span t-esc="cat_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+														<t t-set="com_othersAllowance" t-value="com_othersAllowance+cat_othersAllowance"/>
+													</td>
+													<td colspan="9">
+														<span t-esc="cat_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+														<t t-set="com_net" t-value="com_net+cat_net"/>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
 								</t>
-								<div class="container">
-									<table class="table table-sm">
-										<tbody>
-											<tr align="center">
-												<td colspan="11" style="vertical-align : middle; font-size:12px">
-													<b>
-														<span style="font-size:14px">
-															<t t-esc="cm.name" class="text-nowrap"/> Company Total:</span>
-													</b>
-													<br/>
-												</td>
-												<td colspan="2" style="font-size: 10px">
-													<span style="color: green;" t-esc="workdays" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: red;" t-esc="grossAdays" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: red;" t-esc="basicAdays" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: purple;" t-esc="friday" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: purple;" t-esc="holiday" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<span style="color: blue;" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}" t-esc="co"/> | <t t-esc="aj" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-												</td>
-												<td colspan="2" style="font-size: 10px">
-													<t t-esc="latedays" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="cl" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="sl" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="el" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="ml" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-													<t t-esc="lw" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-													<br/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;font-weight:bold;">
-													<t t-esc="payable_days"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-													<t t-esc="com_gross_salary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_houseRent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_medical" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_hrs"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_rate" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-													<t t-esc="com_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_arrear" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_attBonus" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_convence" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_food" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_tiffin" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_strength" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-												<!--	<t t-esc="com_mobile" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-												<!--</td>-->
-												<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-												<!--	<t t-esc="com_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-												<!--</td>-->
-												<!--<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">-->
-												<!--	<t t-esc="com_incentive" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>-->
-												<!--</td>-->
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_rpf" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-													<t t-esc="com_totalEarn" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_pfr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_pfe" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_tds" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_basicAbsent"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_grossAbsent"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_loan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_advSalary" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_othersDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-													<t t-esc="com_totalDeduct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-												<td colspan="9" style="vertical-align : middle;font-size: 14px;font-weight:bold;" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}">
-													<t t-esc="com_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
 							</t>
-						</div>
-					</t>
+							<div class="container">
+								<table class="table table-sm" style="page-break-after:always">
+									<tbody>
+										<tr align="center">
+											<td colspan="30" style="text-align:right">
+												<span>
+													<span style="color:  #cc7000" t-esc="cm.name"/> - Company Grand Total: [<t t-esc="com_emp_total"/>]</span>
+											</td>
+											<td colspan="3">
+												<span t-esc="com_basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+											</td>
+											<td colspan="3">
+												<span t-esc="com_othersAllowance" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+											</td>
+											<td colspan="9">
+												<span t-esc="com_net" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</t>
+					</div>
 				</div>
-          </t>
-      </t>
-    </template>
+			</t>
+		</t>
+	</template>
 </odoo>

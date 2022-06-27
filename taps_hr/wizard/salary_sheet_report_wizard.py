@@ -648,15 +648,39 @@ class BonusSheetReportPDF(models.AbstractModel):
         
 #         raise UserError((domain))
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
-        
         #raise UserError((docs.id)) 
         emplist = docs.mapped('employee_id.id')
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
         #raise UserError((emplist)) ,department_id.parent_id.id,department_id.id
+        service_length = []
+        s_length = []
         
+        for record in employee:
+            if record:
+                s_length = []
+                currentDate = fields.datetime.strptime(str(data.get('date_to')),'%Y-%m-%d')
+                deadlineDate = fields.datetime.strptime(str(record.joining_date),'%Y-%m-%d')
+                
+                daysLeft = deadlineDate - currentDate
+                years = ((daysLeft.total_seconds())/(365.242*24*3600))
+                years = abs(years)
+                yearsInt=int(years)
+                months=(years-yearsInt)*12
+                months = abs(months)
+                monthsInt=int(months)
+                days=(months-monthsInt)*(365.242/12)
+                days = abs(days)
+                daysInt=int(days)
+                
+                length = str(int(yearsInt)) + ' Years ' + str(int(monthsInt)) + ' Months ' + str(int(daysInt)) + ' Days '
+                s_length =[
+                    record.id,
+                    length
+                ]
+                service_length.append(s_length)
         
         catlist = employee.mapped('category_ids.id')
-        category = self.env['hr.employee.category'].search([('id', 'in', (catlist))])
+        category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
         
         categ_data = []
         cdata = []
@@ -714,14 +738,10 @@ class BonusSheetReportPDF(models.AbstractModel):
             emp_data = []
             #raise UserError(('allemp_data'))
             if allemp_data:
-                i = 0
                 for r in allemp_data:
-                    if (allemp_data[i][0] == details.company_id.id) and (allemp_data[i][2] == details.department_id.parent_id.id) and (allemp_data[i][4] == details.department_id.id and allemp_data[i][6]== details.category_ids.id):
-                        i = i+1
+                    if (r[0] == details.company_id.id) and (r[2] == details.department_id.parent_id.id) and (r[4] == details.department_id.id and r[6]== details.category_ids.id):
                         add = False
                         break
-                    else:
-                        i = i+1
             if add == True:
                 emp_data = [
                     details.company_id.id,
@@ -735,30 +755,26 @@ class BonusSheetReportPDF(models.AbstractModel):
                 allemp_data.append(emp_data)
             add = True
         #raise UserError((allemp_data))
-        
+        d_data = []
         add = True
-        j = 0
         for dep in allemp_data:
-            emp_data = []
+            d_data = []
             if dept_data:
                 i = 0
                 for r in dept_data:
-                    if (dept_data[i][0] == details.company_id.id) and (dept_data[i][2] == details.department_id.parent_id.id and dept_data[i][6]== details.category_ids.id):
+                    if (r[0] == dep[0]) and (r[1] == dep[2]) and (r[3]== dep[6]):
                         i = i+1
                         add = False
                         break
-                    else:
-                        i = i+1
             if add == True:
-                emp_data = [
-                    allemp_data[j][0],#0 company id
-                    allemp_data[j][2],#1 department id
-                    allemp_data[j][3],#2 department name
-                    allemp_data[j][6] #3 category id
+                d_data = [
+                    dep[0],#0 company id
+                    dep[2],#1 department id
+                    dep[3],#2 department name
+                    dep[6] #3 category id
                 ]
-                dept_data.append(emp_data)
+                dept_data.append(d_data)
             add = True
-            j = j+1
             
        
         
@@ -772,22 +788,27 @@ class BonusSheetReportPDF(models.AbstractModel):
             heading_type = emp.category_ids.name
         if data.get('employee_id'):
             heading_type = emp.name 
+        
 #         for details in docs:
 #             otTotal = 0
 #             for de in docs:
+#                if de.total >2:
+#                  de.total=2
+#                else:
 #                 otTotal = otTotal + de.total
-            
+        p_date= datetime.strptime(data.get('date_to'), '%Y-%m-%d')
+        p_date+=timedelta(days=1)
+        
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
             data.get('date_from'),
             datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B, %Y'),
-#            data.get('date_to'),
+            p_date.strftime('%d-%m-%Y'),
         ]
         common_data.append(common_data)
-#        raise UserError((common_data[2]))
-
         
+       
         
         return {
             'doc_ids': docs.ids,
@@ -801,7 +822,8 @@ class BonusSheetReportPDF(models.AbstractModel):
             'com': company,
             'cat': cdata,
             'cd' : common_data,
-#             'stdate': stdate_data,
+           
+            'length': service_length,
 #            'lsdate': lsdate_data,
             'is_com' : data.get('is_company')
         }

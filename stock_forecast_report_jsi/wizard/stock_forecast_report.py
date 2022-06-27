@@ -47,6 +47,17 @@ class StockForecastReport(models.TransientModel):
     def getopening_qty(self,productid,fr_date):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),('schedule_date', '<', fr_date)])
         qty = sum(stock_details.mapped('quantity'))
+        
+        
+        #query = """select * from stock SET store_fname='""" + fn + """', file_size=%s,checksum='""" + cm + """' where res_model='hr.expense.sheet' and res_id=%s"""
+        #cr = self._cr
+        #cr.execute(query, (fs, sheet.id))
+        
+        
+        
+        #mobile_records = cursor.fetchall()
+        
+        
         return qty
     
     def getopening_val(self,productid,from_date):
@@ -151,7 +162,7 @@ class StockForecastReport(models.TransientModel):
     
     def print_date_wise_stock_register(self):
         Move = self.env['stock.valuation.layer']
-        Product = self.env['product.product'].search([('default_code', 'like', 'R_')])
+        product = self.env['product.product'].search([('default_code', 'like', 'R_')])
         start_time = fields.datetime.now()
         f_date = self.from_date
         t_date = self.to_date
@@ -162,18 +173,25 @@ class StockForecastReport(models.TransientModel):
         to_date = combine(t_date, self.float_to_time(hour_to))
         #raise UserError((from_date,to_date))
         if not (self.product_ids or self.categ_ids or self.is_spare == 1):
-            products = Product.search([('type', '=', 'product'),('default_code', 'like', 'R_')])
+            products = product.search([('type', '=', 'product'),('default_code', 'like', 'R_')])
         elif not (self.product_ids or self.categ_ids or self.is_spare == 0):
-            products = Product.search([('type', '=', 'product'),('default_code', 'like', 'S_')])
+            products = product.search([('type', '=', 'product'),('default_code', 'like', 'S_')])
         elif self.report_by == 'by_items':
             products = self.product_ids
         elif (self.is_spare == 0):
-            products = Product.search([('categ_type', 'in', self.categ_ids.ids),('default_code', 'like', 'R_')])
+            products = product.search([('categ_type', 'in', self.categ_ids.ids),('default_code', 'like', 'R_')])
         else:
-            products = Product.search([('categ_type', 'in', self.categ_ids.ids),('default_code', 'like', 'S_')])
+            products = product.search([('categ_type', 'in', self.categ_ids.ids),('default_code', 'like', 'S_')])
         # Date wise opening quantity
         #product_quantities = products._compute_quantities_dict(False, False, False, from_date, to_date)
         #products = products.sorted(key = 'categ_type')
+        
+        #product_id = products.mapped('id')
+        
+        #lot_details = self.env['stock.move.line'].search([('product_id', 'in', (product_id))])
+        
+        
+        
         report_data = []
         
         
