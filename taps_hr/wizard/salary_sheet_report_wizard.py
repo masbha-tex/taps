@@ -789,13 +789,6 @@ class BonusSheetReportPDF(models.AbstractModel):
         if data.get('employee_id'):
             heading_type = emp.name 
         
-#         for details in docs:
-#             otTotal = 0
-#             for de in docs:
-#                if de.total >2:
-#                  de.total=2
-#                else:
-#                 otTotal = otTotal + de.total
         p_date= datetime.strptime(data.get('date_to'), '%Y-%m-%d')
         p_date+=timedelta(days=1)
         
