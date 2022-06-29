@@ -93,8 +93,9 @@ class StockForecastReport(models.TransientModel):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid)
                                                                   ,('schedule_date', '>=', from_date),
                                                                   ('schedule_date', '<=', to_date),
-                                                                  ('|',('description','like','%/IN/%')
-                                                                   ,('description','like','%/OUT/%'))
+                                                                  '|',
+                                                                  ('description','like','%/IN/%')
+                                                                  ,('description','like','%/OUT/%')
                                                                  ])
         
         #,('quantity', '>=', 0),('description','not like','%Product Quantity Updated%'),('description','not like','%/MR/%')
@@ -105,8 +106,9 @@ class StockForecastReport(models.TransientModel):
         stock_details = self.env['stock.valuation.layer'].search([('product_id', '=', productid),
                                                                   ('schedule_date', '>=', from_date),
                                                                   ('schedule_date', '<=', to_date),
-                                                                  ('|',('description','like','%/IN/%')
-                                                                   ,('description','like','%/OUT/%'))
+                                                                  '|',
+                                                                  ('description','like','%/IN/%')
+                                                                  ,('description','like','%/OUT/%')
                                                                  ])
         val = sum(stock_details.mapped('value'))
         
