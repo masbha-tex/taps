@@ -3,9 +3,11 @@ import io
 import logging
 from odoo import models, fields, api
 from datetime import datetime, date, timedelta, time
+import datetime
+from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.misc import xlsxwriter
-from odoo.tools import format_date
+from odoo.tools import format_date, format_datetime
 import re
 import math
 _logger = logging.getLogger(__name__)
@@ -732,6 +734,118 @@ class ACopeningReportPDF(models.AbstractModel):
             'docs': docs,
             'datas': common_data,
 #             
-        }    
+        }
+    
+    
+class BirthCalenderReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.hris_birth_calendar_pdf_template'
+    _description = 'Birth Calender Template'      
+    
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        
+        query = """ """
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
+        #if data.get('date_from'):
+            #domain.append(('date_from', '>=', data.get('date_from')))
+        #if data.get('date_to'):
+            #domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('id', '=', data.get('employee_id')))
+#         if data.get('bank_id'):
+#             #str = re.sub("[^0-9]","",data.get('employee_id'))
+#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+         
+            
+        domain.append(('active', 'in',(False,True)))
+        
+        
+           
+        docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
+        
+        emplist = docs.mapped('id')
+        #dfsdfj = datetime.datetime.now()
+        birth_month = data.get('date_from')
+        birth_month = birth_month[5:7]
+        b_m = int(birth_month)
+        
+        
+        #raise UserError((domain))
+        query = """ select *,cast(birthday as varchar) AS birth_date, AGE(current_date,birthday) as age_ from hr_employee where id in (%s) and EXTRACT(MONTH FROM birthday)=%s """
+        cr = self._cr
+        cursor = self.env.cr
+        cr.execute(query, (emplist[0],b_m))
+        birthday = cursor.fetchall()
+        
+        #raise UserError((b_m))
+        for r in birthday:
+            raise UserError((r[0]))
+        
+        #birthday = docs.search([('EXTRACT(MONTH FROM birthday)', '=', b_m)]).sorted(key = 'birthday', reverse=False)[:1]
+        #raise UserError((birthday.id))
+        
+#         lst_days = docs.search([('birthday', '>=', data.get('date_from')),('birthday', '<=', data.get('date_to'))]).sorted(key = 'birthday', reverse=True)[:1]
+        
+    
+#         domains=[]
+#         if data.get('bank_id'):
+#             domains.append(('id', '=', data.get('bank_id')))
+#         bank = self.env['res.bank'].search(domains)
+        
+        #raise UserError((domains))
+
+#         for details in docs:
+#             bank_name = False
+#             for de in docs:
+#                 otTotal = otTotal + de.total
+        allemp_data = []
+        for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                 if details.id == de.employee_id.id:
+#                     otTotal = otTotal + de.otHours
+            
+            emp_data = []
+            emp_data = [
+                data.get('date_from'),
+                data.get('date_to'),
+                details.id,
+                details.emp_id,
+                details.name,
+                details.department_id.parent_id.name,
+                details.department_id.name,
+                details.job_id.name,
+                
+            ]
+            allemp_data.append(emp_data)
+        
+        common_data=[]    
+        common_data = [
+            data.get('report_type'),
+#             data.get('bank_id'),
+            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%d %b, %Y'),
+            data.get('date_to'),
+            
+        ]
+        common_data.append(common_data)
+        #raise UserError((docs.ids))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.employee',
+            'docs': docs,
+            'datas': allemp_data,
+            'cd' : common_data,
+#             
+        }
     
     

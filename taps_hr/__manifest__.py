@@ -23,6 +23,7 @@
         'data/employee_service_length_generate.xml',
         'data/create_contact.xml',
         'data/create_att_atjoin.xml',
+        'data/create_leave_allocation.xml',
         'views/web_asset_backend_template.xml',        
         'views/attendance_views.xml',
         'views/employee_views.xml',
