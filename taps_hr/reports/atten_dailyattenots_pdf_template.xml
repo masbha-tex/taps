@@ -11,6 +11,11 @@
 		    div, textarea{
 		    page-break-inside:avoid;
 		    }
+		    td
+		    {
+		      font-size: 10px;
+		      font-color: solid black;
+		    }
 		  
   
 		  </style>
@@ -97,11 +102,11 @@
 								</div>
 							</div>
 							<div class="container">
-								<table class="table table-sm" style="font-size:8px; table-layout:fixed;">
+								<table class="table table-sm" style="font-size:9px; table-layout:fixed;">
 									<thead>
 										<tr align="center">
-											<th t-att-rowspan="2" style="vertical-align:middle">S.L</th>
-											<th t-att-rowspan="2" t-att-colspan="3" style="vertical-align:middle">Employee Id</th>
+											<th t-att-rowspan="2" t-att-colspan="2" style="vertical-align:middle">S.L</th>
+											<th t-att-rowspan="2" t-att-colspan="3" style="vertical-align:middle">Emp. Id</th>
 											<th t-att-rowspan="2" t-att-colspan="5" style="vertical-align:middle">Employee Name</th>
 											<th t-att-rowspan="2" t-att-colspan="5" style="vertical-align:middle">Designation</th>
 											<th t-att-rowspan="1" t-att-colspan="9" style="vertical-align:middle">IN</th>
@@ -126,12 +131,12 @@
 											<t t-if="emp[9] == se.id">
 												<t t-foreach="alldays" t-as="ald">
 													<t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
-														<t t-if="att.inFlag == 'P' or att.inFlag == 'L' or att.inFlag == 'HP' or att.inFlag == 'FP'">
+														
 															<t t-set="total_dep_employee" t-value="total_dep_employee+1"/>
 															<t t-set="total_sec_employee" t-value="total_sec_employee+1"/>
 															<t t-set="sl" t-value="sl+1"/>
 															<tr align="center">
-																<td style="vertical-align:middle">
+																<td t-att-colspan="2" style="vertical-align:middle">
 																	<t t-esc="sl"/>
 																</td>
 																<td t-att-colspan="3" style="vertical-align:middle">
@@ -162,20 +167,20 @@
 																	<span t-esc="att['outFlag']"/>
 																</td>
 																<td t-att-colspan="7">
-																	<table>
+																	<table style="font-size: 8px">
 																		<tr>
-																			<td>0.5</td>
-																			<td>1.0</td>
-																			<td>1.5</td>
-																			<td>2.0</td>
-																			<td>2.5</td>
-																			<td>3.0</td>
-																			<td>3.5</td>
+																			<td style="font-size: 8px;">0.5</td>
+																			<td style="font-size: 8px;">1.0</td>
+																			<td style="font-size: 8px;">1.5</td>
+																			<td style="font-size: 8px;">2.0</td>
+																			<td style="font-size: 8px;">2.5</td>
+																			<td style="font-size: 8px;">3.0</td>
+																			<td style="font-size: 8px;">3.5</td>
 																		</tr>
 																	</table>
 																</td>
 															</tr>
-														</t>
+														
 													</t>
 												</t>
 											</t>
@@ -200,20 +205,28 @@
 								<br/>
 								<div class="row">
 									<div class="mr-4 col-3">
-							      _____________________<br/>
-										<p>Supervisor</p>
+									  <div align="center">
+							      <div>_____________________</div>
+										<div style="text-align: center">Supervisor</div>
+										</div>
 									</div>
 									<div class="mr-4 col-3">
-							      _____________________<br/>
-										<p>Section Incharge</p>
+									  <div align="center">
+							      <div>_____________________</div>
+										<div style="text-align: center">Section Incharge</div>
+										</div>
 									</div>
 									<div class="mr-4 col-3">
-							      _____________________<br/>
-										<p>Production Head</p>
+									  <div align="center">
+							     <div>_____________________</div>
+										<div>Production Head</div>
+										</div>
 									</div>
 									<div class="mr-4 col-3">
-							      _____________________<br/>
-										<p>HOD(HR)</p>
+									  <div align="center">
+							     <div> _____________________</div>
+										<div>HOD(HR)</div>
+										</div>
 									</div>
 								</div>
 							</div>
