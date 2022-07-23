@@ -655,7 +655,7 @@ class HRISReportPDF8(models.AbstractModel):
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
-            datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%d-%m-%Y'),
+            datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%d-%m-%Y'),
             data.get('date_to'),
             
         ]
@@ -716,18 +716,18 @@ class ACopeningReportPDF(models.AbstractModel):
 #             bank_name = False
 #             for de in docs:
 #                 otTotal = otTotal + de.total
-       
+        
         
         common_data=[]    
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
-            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%d %b, %Y'),
+            datetime.datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%d %b, %Y'),
             data.get('date_to'),
             bank.name,
         ]
         common_data.append(common_data)
-        #raise UserError((common_data[2]))
+        
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.employee',
@@ -752,13 +752,13 @@ class BirthCalenderReportPDF(models.AbstractModel):
         #if data.get('date_to'):
             #domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
@@ -772,8 +772,9 @@ class BirthCalenderReportPDF(models.AbstractModel):
         
            
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
-        
+#         raise UserError((docs.id))
         emplist = docs.mapped('id')
+        
         #dfsdfj = datetime.datetime.now()
         birth_month = data.get('date_from')
         birth_month = birth_month[5:7]
@@ -781,15 +782,15 @@ class BirthCalenderReportPDF(models.AbstractModel):
         
         
         #raise UserError((domain))
-        query = """ select *,cast(birthday as varchar) AS birth_date, AGE(current_date,birthday) as age_ from hr_employee where id in (%s) and EXTRACT(MONTH FROM birthday)=%s """
+        query = """ select id, emp_id, name, cast(birthday as varchar) AS birth_date, cast((AGE(current_date,birthday)) as varchar) as age_ from hr_employee where id in (%s) and EXTRACT(MONTH FROM birthday)=%s """
         cr = self._cr
         cursor = self.env.cr
         cr.execute(query, (emplist[0],b_m))
         birthday = cursor.fetchall()
-        
-        #raise UserError((b_m))
-        for r in birthday:
-            raise UserError((r[0]))
+#         raise UserError((birthday, emplist[0]))
+#         raise UserError((birthday[1][1]))#
+#         for r in birthday:
+#             raise UserError((r[1]))
         
         #birthday = docs.search([('EXTRACT(MONTH FROM birthday)', '=', b_m)]).sorted(key = 'birthday', reverse=False)[:1]
         #raise UserError((birthday.id))
@@ -833,8 +834,8 @@ class BirthCalenderReportPDF(models.AbstractModel):
         common_data = [
             data.get('report_type'),
 #             data.get('bank_id'),
-            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%d %b, %Y'),
-            data.get('date_to'),
+#            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%d %b, %Y'),
+#            data.get('date_to'),
             
         ]
         common_data.append(common_data)
@@ -845,6 +846,7 @@ class BirthCalenderReportPDF(models.AbstractModel):
             'docs': docs,
             'datas': allemp_data,
             'cd' : common_data,
+            'birth': birthday,
 #             
         }
     
