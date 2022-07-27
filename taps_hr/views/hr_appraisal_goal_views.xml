@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="hr_appraisal_goal_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.view.form.inherit</field>
+        <field name="model">hr.appraisal.goal</field>
+        <field name="inherit_id" ref="hr_appraisal.hr_appraisal_goal_view_form"/>
+        <field name="arch" type="xml">
+                <xpath expr="//field[@name='progression']" position="attributes">
+                    <attribute name="string">Weight</attribute>
+                </xpath>
+                <xpath expr="//field[@name='manager_id']" position="after">
+                    <label for="ytd"/>
+                    <div class="o_row" name="ytd">
+                        <field name="ytd" nolabel="1"/>
+                        <span>&#37;</span>
+                    </div>
+<!--                     <field name="ytd" widget="badge"/> -->
+                </xpath>
+                <xpath expr="/form[1]/sheet[1]/group[1]" position="after">
+                    <group>
+                        <group>
+                            <field name="apr"/>
+                            <field name="may"/>
+                            <field name="jun"/>
+                            <field name="jul"/>
+                            <field name="aug"/>
+                            <field name="sep"/>
+                        </group>
+                        <group>
+                            <field name="oct"/>
+                            <field name="nov"/>
+                            <field name="dec"/>
+                            <field name="jan"/>
+                            <field name="feb"/>
+                            <field name="mar"/>
+                        </group>
+                    </group>
+                </xpath>
+        </field>
+    </record>
+
+    <record id="hr_appraisal_goal_view_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.view.tree.inherit</field>
+        <field name="model">hr.appraisal.goal</field>
+        <field name="inherit_id" ref="hr_appraisal.hr_appraisal_goal_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='progression']" position="attributes">
+                <attribute name="string">Weight</attribute>
+            </xpath>
+            <tree sample="1">
+                <field name="ytd" widget="badge"/>
+                <field name="apr"/>
+                <field name="may"/>
+                <field name="jun"/>
+                <field name="jul"/>
+                <field name="aug"/>
+                <field name="sep"/>
+                <field name="oct"/>
+                <field name="nov"/>
+                <field name="dec"/>
+                <field name="jan"/>
+                <field name="feb"/>
+                <field name="mar"/>
+            </tree>
+        </field>
+    </record>
+
+
+
+<!--     <record id="hr_appraisal_goal_view_search" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.view.search</field>
+        <field name="model">hr.appraisal.goal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="manager_id"/>
+                <filter string="My Goals" name="filter_my_goals" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter string="People I Manage" name="people_i_manage" domain="[('employee_id.parent_id.user_id', '=', uid)]" groups="hr_appraisal.group_hr_appraisal_user"/>
+                <separator/>
+                <filter string="Late" name="filter_late" domain="[('deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Deadline" name="filter_deadline" date="deadline"/> 
+           </search>
+        </field>
+    </record> -->
+
+<!--     <record id="action_hr_appraisal_goal" model="ir.actions.act_window">
+        <field name="name">Goals</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.appraisal.goal</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record> -->
+
+<!--     <menuitem name="Goals"
+        parent="menu_hr_appraisal_root"
+        id="menu_hr_appraisal_goal"
+        action="action_hr_appraisal_goal"
+        sequence="2"/>
+ -->
+    <!-- YTI Manage goal security -->
+
+</odoo>

@@ -17,6 +17,7 @@
     # Check data order
     "data": [
         "views/purchase_order.xml",
+        "views/purchase_req.xml",
     ],
     'qweb': [
         "static/src/xml/purchase_dashboard.xml",

@@ -33,6 +33,7 @@ class HRISPDFReport(models.TransientModel):
         ('attcalendar',	'Attendance Calendar'),
         ('training',	'Worker Training Program'), 
         ('birthcalendar',	'Birthday Calendar'),
+        ('anniversarycalendar', 'Anniversary Calendar'),
 #         ('leave',	'Leave Form'),
         ('retentionincentive',	'Retention Incentive'),],
         string='Report Type', required=True, default='employee_profile',
@@ -195,6 +196,9 @@ class HRISPDFReport(models.TransientModel):
             return self.env.ref('taps_hr.action_hris_birth_calendar_pdf_report').report_action(self, data=data)
         if self.report_type == 'retentionincentive':
             return self.env.ref('taps_hr.action_hris_retentionincentive_pdf_report').report_action(self, data=data)
+        if self.report_type == 'anniversarycalendar':
+            return self.env.ref('taps_hr.action_hris_anniversary_calendar_pdf_report').report_action(self, data=data)
+        
     
     
         
@@ -772,20 +776,22 @@ class BirthCalenderReportPDF(models.AbstractModel):
         
            
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
-#         raise UserError((docs.id))
+        #raise UserError((docs.id))
         emplist = docs.mapped('id')
-        
+        em_list = '0'
+        for e in emplist:
+            em_list = em_list + ',' + str(e)
         #dfsdfj = datetime.datetime.now()
         birth_month = data.get('date_from')
         birth_month = birth_month[5:7]
         b_m = int(birth_month)
         
         
-        #raise UserError((domain))
-        query = """ select id, emp_id, name, cast(birthday as varchar) AS birth_date, cast((AGE(current_date,birthday)) as varchar) as age_ from hr_employee where id in (%s) and EXTRACT(MONTH FROM birthday)=%s """
+        #raise UserError((em_list))
+        query = """ select emp_id, name, to_char(birthday,'DD Month YYYY') AS birth_date, cast((AGE(current_date,birthday)) as varchar) as age_, mobile_phone, work_email from hr_employee where id in (""" + em_list + """) and EXTRACT(MONTH FROM birthday)=%s and 1=%s order by birth_date ASC """
         cr = self._cr
         cursor = self.env.cr
-        cr.execute(query, (emplist[0],b_m))
+        cr.execute(query, (b_m, 1))
         birthday = cursor.fetchall()
 #         raise UserError((birthday, emplist[0]))
 #         raise UserError((birthday[1][1]))#
@@ -834,11 +840,22 @@ class BirthCalenderReportPDF(models.AbstractModel):
         common_data = [
             data.get('report_type'),
 #             data.get('bank_id'),
-#            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%d %b, %Y'),
+            datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%B-%Y'),
 #            data.get('date_to'),
             
         ]
         common_data.append(common_data)
+        
+        emp = docs.sorted(key = 'id')[:1]
+        
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name
         #raise UserError((docs.ids))
         return {
             'doc_ids': docs.ids,
@@ -847,7 +864,264 @@ class BirthCalenderReportPDF(models.AbstractModel):
             'datas': allemp_data,
             'cd' : common_data,
             'birth': birthday,
+            'category' : heading_type,
 #             
         }
+    
+class AnniversaryCalenderReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.hris_anniversary_calendar_pdf_template'
+    _description = 'Anniversary Calender Template'      
+    
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        
+        query = """ """
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
+        #if data.get('date_from'):
+            #domain.append(('date_from', '>=', data.get('date_from')))
+        #if data.get('date_to'):
+            #domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('id', '=', data.get('employee_id')))
+#         if data.get('bank_id'):
+#             #str = re.sub("[^0-9]","",data.get('employee_id'))
+#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+         
+            
+        domain.append(('active', 'in',(False,True)))
+        
+        
+           
+        docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
+        #raise UserError((docs.id))
+        emplist = docs.mapped('id')
+        em_list = '0'
+        for e in emplist:
+            em_list = em_list + ',' + str(e)
+        #dfsdfj = datetime.datetime.now()
+        marriage_month = data.get('date_from')
+        marriage_month = marriage_month[5:7]
+        m_m = int(marriage_month)
+        
+        
+        #raise UserError((em_list))
+        query = """ select emp_id, name, to_char("marriageDate",'DD Month YYYY') AS marriage_date, cast((date_part('year', current_date))-(date_part('year', "marriageDate")) as varchar) as marriage_age_, mobile_phone, work_email from hr_employee where id in (""" + em_list + """) and EXTRACT(MONTH FROM "marriageDate")=%s and 1=%s order by marriage_date ASC """
+        cr = self._cr
+        cursor = self.env.cr
+        cr.execute(query, (m_m, 1))
+        marriageday = cursor.fetchall()
+#         raise UserError((marriageday))
+#         raise UserError((birthday[1][1]))#
+#         for r in birthday:
+#             raise UserError((r[1]))
+        
+        #birthday = docs.search([('EXTRACT(MONTH FROM birthday)', '=', b_m)]).sorted(key = 'birthday', reverse=False)[:1]
+        #raise UserError((birthday.id))
+        
+#         lst_days = docs.search([('birthday', '>=', data.get('date_from')),('birthday', '<=', data.get('date_to'))]).sorted(key = 'birthday', reverse=True)[:1]
+        
+    
+#         domains=[]
+#         if data.get('bank_id'):
+#             domains.append(('id', '=', data.get('bank_id')))
+#         bank = self.env['res.bank'].search(domains)
+        
+        #raise UserError((domains))
+
+#         for details in docs:
+#             bank_name = False
+#             for de in docs:
+#                 otTotal = otTotal + de.total
+        allemp_data = []
+        for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                 if details.id == de.employee_id.id:
+#                     otTotal = otTotal + de.otHours
+            
+            emp_data = []
+            emp_data = [
+                data.get('date_from'),
+                data.get('date_to'),
+                details.id,
+                details.emp_id,
+                details.name,
+                details.department_id.parent_id.name,
+                details.department_id.name,
+                details.job_id.name,
+                
+            ]
+            allemp_data.append(emp_data)
+        
+        common_data=[]    
+        common_data = [
+            data.get('report_type'),
+#             data.get('bank_id'),
+            datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%B-%Y'),
+#            data.get('date_to'),
+            
+        ]
+        common_data.append(common_data)
+        
+        emp = docs.sorted(key = 'id')[:1]
+        
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name
+        #raise UserError((docs.ids))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.employee',
+            'docs': docs,
+            'datas': allemp_data,
+            'cd' : common_data,
+            'marriage': marriageday,
+            'category' : heading_type,
+#             
+        }
+    
+class PfReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.hris_pf_pdf_template'
+    _description = 'Monthly PF Template'      
+    
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        
+        query = """ """
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
+        #if data.get('date_from'):
+            #domain.append(('date_from', '>=', data.get('date_from')))
+        #if data.get('date_to'):
+            #domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('id', '=', data.get('employee_id')))
+#         if data.get('bank_id'):
+#             #str = re.sub("[^0-9]","",data.get('employee_id'))
+#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+         
+            
+        domain.append(('active', 'in',(False,True)))
+        domain.append(('id.contract_id.isActivePF', '=', True))
+        
+        
+           
+        docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
+        #raise UserError((docs.id))
+        emplist = docs.mapped('id')
+        em_list = '0'
+        for e in emplist:
+            em_list = em_list + ',' + str(e)
+        #dfsdfj = datetime.datetime.now()
+#         marriage_month = data.get('date_from')
+#         marriage_month = marriage_month[5:7]
+#         m_m = int(marriage_month)
+        
+        
+        #raise UserError((em_list))
+        query = """ select id, employee_id, year, to_char(salary_month, 'Month') AS month_, pf_amount from provident_fund_line  where employee_id in (""" + em_list + """) order by salary_month asc; """
+        cr = self._cr
+        cursor = self.env.cr
+        cr.execute(query)
+        pf = cursor.fetchall()
+#         raise UserError((marriageday))
+#         raise UserError((birthday[1][1]))#
+#         for r in birthday:
+#             raise UserError((r[1]))
+        
+        #birthday = docs.search([('EXTRACT(MONTH FROM birthday)', '=', b_m)]).sorted(key = 'birthday', reverse=False)[:1]
+        #raise UserError((birthday.id))
+        
+#         lst_days = docs.search([('birthday', '>=', data.get('date_from')),('birthday', '<=', data.get('date_to'))]).sorted(key = 'birthday', reverse=True)[:1]
+        
+    
+#         domains=[]
+#         if data.get('bank_id'):
+#             domains.append(('id', '=', data.get('bank_id')))
+#         bank = self.env['res.bank'].search(domains)
+        
+        #raise UserError((domains))
+
+#         for details in docs:
+#             bank_name = False
+#             for de in docs:
+#                 otTotal = otTotal + de.total
+        allemp_data = []
+        for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                 if details.id == de.employee_id.id:
+#                     otTotal = otTotal + de.otHours
+            
+            emp_data = []
+            emp_data = [
+                data.get('date_from'),
+                data.get('date_to'),
+                details.id,
+                details.emp_id,
+                details.name,
+                details.department_id.parent_id.name,
+                details.department_id.name,
+                details.job_id.name,
+                
+            ]
+            allemp_data.append(emp_data)
+        
+        common_data=[]    
+        common_data = [
+            data.get('report_type'),
+#             data.get('bank_id'),
+            datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%B-%Y'),
+#            data.get('date_to'),
+            
+        ]
+        common_data.append(common_data)
+        
+        emp = docs.sorted(key = 'id')[:1]
+        
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name
+        #raise UserError((docs.ids))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.employee',
+            'docs': docs,
+            'datas': allemp_data,
+            'cd' : common_data,
+            'pf': pf,
+            'category' : heading_type,
+#             
+        }    
+
     
     

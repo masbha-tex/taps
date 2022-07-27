@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-	<template id="hris_birth_calendar_pdf_template">
+	<template id="hris_anniversary_calendar_pdf_template">
 		<t t-call="web.html_container">
 			<t t-call="web.external_layout">
 				<div class="page">
 					<style>
+					  
 					              table
 					              {
 					                font-size: 13px;
@@ -33,12 +34,12 @@
 						</div>
 					</div>
 					<h4 class="text-right">
-						<strong><i>Employee Birth Calendar</i></strong>
+						<strong><i>Employee Anniversary Calendar</i></strong>
 					</h4>
 					<br/>
 					<div align="center">
 						<strong style="font-size:20px;">
-							<span>EMPLOYEE's BIRTHDAY LIST (<span t-esc="cd[1]"/>)</span>
+							<span>EMPLOYEE's ANNIVERSARY LIST (<span t-esc="cd[1]"/>)</span>
 						</strong>
 					</div>
 					<br/>
@@ -52,32 +53,32 @@
 								<th t-att-colspan="2">SL</th>
 								<th t-att-colspan="3">EMPLOYEE ID</th>
 								<th t-att-colspan="7">EMPLOYEE NAME</th>
-								<th t-att-colspan="5">DATE OF BIRTH</th>
-								<th t-att-colspan="5">AGE</th>
-								<th t-att-colspan="4">Work Mobile</th>
+								<th t-att-colspan="5">DATE OF MARRIAGE</th>
+								<th t-att-colspan="5">ANNIVERSARY</th>
+								<th t-att-colspan="4">WORK MOBILE</th>
 								<!--<th>Work Email</th>-->
 							</tr>
 						</thead>
 						<tbody>
-							<t t-foreach="birth" t-as="bd">
+							<t t-foreach="marriage" t-as="md">
 								<tr align="center">
 									<td t-att-colspan="2">
-										<span t-esc="bd_index+1"/>
+										<span t-esc="md_index+1"/>
 									</td>
 									<td t-att-colspan="3">
-										<span t-esc="bd[0]"/>
+										<span t-esc="md[0]"/>
 									</td>
 									<td class="text-left" t-att-colspan="7">
-										<span t-esc="bd[1]"/>
+										<span t-esc="md[1]"/>
 									</td>
 									<td t-att-colspan="5">
-										<span t-esc="bd[2]"/>
+										<span t-esc="md[2]"/>
 									</td>
 									<td t-att-colspan="5">
-										<span t-esc="bd[3]"/>
+										<span t-esc="md[3]"/>
 									</td>
 									<td t-att-colspan="4">
-										<span t-esc="bd[4]"/>
+										<span t-esc="md[4]"/>
 									</td>
 									<!--<td><span t-esc="bd[5]"/></td>-->
 								</tr>

@@ -10,3 +10,4 @@ from . import salary_adjustment
 from . import hr_leave
 from . import increment_promotion
 from . import provident_fund
+from . import hr_appraisal_goal

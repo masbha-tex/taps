@@ -2,469 +2,96 @@
 <odoo>
 
  <template id="hris_pf_pdf_template">
-     <t t-foreach="docs" t-as="employee">
+     
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
-                    <div class="page">
-                        <h3 class="text-right">
-                            <strong>Employee Monthly PF Statement</strong>
-                        </h3>
-                        <br/>
-
-                        <div class="row">
-                            <div class="col-4 text-center py-4 bg-dark">
-                                <div class="header-left">
-                                  
-                                    <img class="img-fluid rounded-circle mb-2" style="height:120pt;width:120pt;" t-if="employee.image_1920" t-att-src="image_data_uri(employee.image_1920)"/>
-                                
-                                    <h3>
-                                        <t t-esc="employee.name"/>
-                                    </h3>
-                                    <h5 class="lead text-white-50 mb-4">
-                                        <t t-esc="employee.job_id.name"/>
-                                    </h5>
-
-                                </div>
-
-                                <div>
-                                    <h5 class="text-uppercase bg-white text-dark py-2 squared-pill">Contact</h5>
-                                    
-                                    <ul class="list-unstyled text-white ml-2 py-2 text-left">
-                                        <li class="list-item">Mobile :
-                                            <span>
-                                                <t t-esc="employee.mobile_phone"/>
-                                            </span>
-                                        </li>
-
-                                        <li class="list-item">Email :
-                                            <span>
-                                                <t t-esc="employee.work_email"/>
-                                            </span>
-                                        </li>
-                                        <li class="list-item">Joining Date :
-                                            <span>
-                                                <t t-esc="employee.joining_date"/>
-                                            </span>
-                                        </li>
-                                        <li class="list-item">Probation Ended :
-                                            <span>
-                                                <t t-esc="employee.probation_date"/>
-                                            </span>
-                                        </li>
-                                        <li class="list-item">Resign Date :
-                                            <span>
-                                                <t t-esc="employee.resign_date"/>
-                                            </span>
-                                        </li>
-                                        <li class="list-item">Service Length :
-                                            <span>
-                                                <t t-esc="employee.service_length"/>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h5 class="text-uppercase bg-white text-dark py-2 squared-pill">Address</h5>
-                                    <!--<ul class="list-unstyled text-white ml-5 py-2 text-left">-->
-                                    <t t-esc="employee.address_home_id.street"/>      
-                                </div>
-
-
-                            </div>
-                            <div class="col-8 bg-light py-4 px-5">
-                                <div class="header-right">
-                                    <h4 class="text-uppercase">Service Details</h4>
-                                    <hr style="height:2px; width:100%; border-width:0; color:red; background-color:black"></hr>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>ID</strong>
-                                            </h6>
-                                        </div>
-                                        <!--<div class="col-2">-->
-                                        <!--    <h6 class="mb-0">:</h6>-->
-                                        <!--</div>-->
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.emp_id"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Unit</strong>
-                                            </h6>
-                                        </div>
-                                        <!--<div class="col-2">-->
-                                        <!--    <h6 class="mb-0">:</h6>-->
-                                        <!--</div>-->
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.company_id.name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Category</strong>
-                                            </h6>
-                                        </div>
-                                        <!--<div class="col-2">-->
-                                        <!--    <h6 class="mb-0">:</h6>-->
-                                        <!--</div>-->
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.category_ids.name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Department</strong>
-                                            </h6>
-                                        </div>
-                                        <!--<div class="col-2">-->
-                                        <!--    <h6 class="mb-0">:</h6>-->
-                                        <!--</div>-->
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.department_id.parent_id.name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Section</strong>
-                                            </h6>
-                                        </div>
-                                        <!--<div class="col-2">-->
-                                        <!--    <h6 class="mb-0">:</h6>-->
-                                        <!--</div>-->
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.department_id.name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Job Position</strong>
-                                            </h6>
-                                        </div>
-                                        <!--<div class="col-2">-->
-                                        <!--    <h6 class="mb-0">:</h6>-->
-                                        <!--</div>-->
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.job_id.name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Grade</strong>
-                                            </h6>
-                                        </div>
-                                        <!--<div class="col-2">-->
-                                        <!--    <h6 class="mb-0">:</h6>-->
-                                        <!--</div>-->
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.grade"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Attendance Group</strong>
-                                            </h6>
-                                        </div>
-                                        <!--<div class="col-2">-->
-                                        <!--    <h6 class="mb-0">:</h6>-->
-                                        <!--</div>-->
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.shift_group.name"/>
-                                        </div>
-                                    </div>
-                                    
-
-
-                                </div>
-
-
-                                <div class="mt-4">
-                                    <h4 class="text-uppercase">Salary Details</h4>
-                                    <hr style="height:2px; width:100%; border-width:0; color:red; background-color:black"></hr>
-                                    
-                                    <div class="row">
-                                      <div class="col-6">
-                                        <table class="table table-sm table-bordered">
-                                          <thead>
-                                            <tr>
-                                              <th colspan="2" class="text-center">Earnings</th>
-                                            </tr>
-                                            <tr>
-                                              <th>Headings</th>
-                                              <th>Values</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            <tr style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Basic</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.basic"/></th>
-                                            </tr>
-                                            <tr style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">House Rent</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.houseRent"/></th>
-                                            </tr>
-                                            <tr style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Medical</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.medical"/></th>
-                                            </tr>
-                                            <tr t-if="employee.contract_id.e_convence&gt;0" style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Conveyance</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.e_convence"/></th>
-                                            </tr>
-                                            <tr t-if="employee.contract_id.e_food=='True'" style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Food</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.e_food"/></th>
-                                            </tr>
-                                            <tr t-if="employee.contract_id.e_tiffin&gt;0" style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Tiffin</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.e_tiffin"/></th>
-                                            </tr>
-                                            <tr t-if="employee.contract_id.e_strenghtSnacks&gt;0" style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Snacks</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.e_strenghtSnacks"/></th>
-                                            </tr>
-                                            <tr t-if="employee.contract_id.e_attBonus&gt;0" style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Att. Bonus</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.e_attBonus"/></th>
-                                            </tr>
-                                            <tr t-if="employee.contract_id.e_car&gt;0" style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Car Allowance</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.e_car"/></th>
-                                            </tr>
-                                            <tr t-if="employee.contract_id.e_others&gt;0" style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Other Allowance</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.e_others"/></th>
-                                            </tr>
-                                          </tbody>
-                                        </table>
-                                      </div>
-                                      <div class="col-6">
-                                        <table class="table table-sm table-bordered">
-                                          <thead>
-                                            <tr>
-                                              <th colspan="2" class="text-center">Deduction</th>
-                                            </tr>
-                                            <tr>
-                                              <th>Headings</th>
-                                              <th>Values</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            <tr t-if="employee.contract_id.d_ait&gt;0" style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">AIT</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.d_ait"/></th>
-                                            </tr>
-                                            <tr t-if="employee.contract_id.d_others&gt;0" style="border: 1px solid black;">
-                                              <th style="border: 1px solid black;">Others</th>
-                                              <th style="border: 1px solid black;"><t t-esc="employee.contract_id.d_others"/></th>
-                                            </tr>
-                                          </tbody>
-                                        </table>
-                                      </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Gross Amount</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.contract_id.wage"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Salary Bank Name</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.bank_account_id.bank_id.name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Salary Bank Acount</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.bank_account_id.acc_number"/>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                
-                              
-                                <div class="mt-4">
-                                    <h4 class="text-uppercase">Personal Details</h4>
-                                    <hr style="height:2px; width:100%; border-width:0; color:red; background-color:black"></hr>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Name</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Father's Name</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.fathers_name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Mother's Name</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.mothers_name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Marital Status</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.marital"/>
-                                        </div>
-                                    </div>
-                                    <div class="row" t-if="employee.marital=='married'">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Date of Marriage</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.marriageDate"/>
-                                        </div>
-                                    </div>
-                                    <div class="row" t-if="employee.marital=='married'">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Spouse Name</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.spouse_complete_name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row" t-if="employee.marital=='married'">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Spouse Birthdate</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.spouse_birthdate"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Nationality(country)</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.country_id.name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>NID Or Birth Certificate</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.identification_id"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Gender</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.gender"/>
-                                        </div>
-                                    </div>
-                                    <!--<div class="row">-->
-                                    <!--    <div class="col-6">-->
-                                    <!--        <h6 class="mb-0">-->
-                                    <!--            <strong>Blood Group</strong>-->
-                                    <!--        </h6>-->
-                                    <!--    </div>-->
-                                    <!--    <div class="col-6 text-secondary">-->
-                                    <!--        <t t-esc="employee.gender"/>-->
-                                    <!--    </div>-->
-                                    <!--</div>-->
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Date of Birth</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.birthday"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Country of Birth</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.country_of_birth.name"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Number of Children</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.children"/>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h6 class="mb-0">
-                                                <strong>Field of Study</strong>
-                                            </h6>
-                                        </div>
-                                        <div class="col-6 text-secondary">
-                                            <t t-esc="employee.study_field"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                  <div class="page">
+					<style>
+					  
+					              table
+					              {
+					                font-size: 13px;
+					                table-layout: fixed;
+					              }
+                        table, td, tr, th
+                        {
+                          border: 1px solid black ! important;
+                        }
+                        thead
+                        {
+                          background-color: Orange;
+                        }
+                      </style>
+					<div class="footer" style="margin:0px; padding:0px;">
+						<div class="row">
+							<div class="col-4">
+                        Print Date: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/>
+							</div>
+							<div class="col-4 text-center">
+                      Page: <span class="page"/>/<span class="topage"/>
+							</div>
+							<div class="col-4 text-left">
+                      Category: <span t-esc="category"/>
+							</div>
+						</div>
+					</div>
+					<h4 class="text-right">
+						<strong><i>Employee Anniversary Calendar</i></strong>
+					</h4>
+					<br/>
+					<div align="center">
+						<strong style="font-size:20px;">
+							<span>EMPLOYEE's ANNIVERSARY LIST (<span t-esc="cd[1]"/>)</span>
+						</strong>
+					</div>
+					<br/>
+<!-- 					<div style="font-size:12px">
+						<p><b>Category:</b> <span t-esc="category" style="color: #cc7000"/>
+						</p>
+					</div> -->
+					<table class="table table-sm table-bordered">
+						<thead>
+							<tr align="center">
+								<th t-att-colspan="2">SL</th>
+								<th t-att-colspan="3">EMPLOYEE ID</th>
+								<th t-att-colspan="7">EMPLOYEE NAME</th>
+								<th t-att-colspan="5">DATE OF MARRIAGE</th>
+								<th t-att-colspan="5">ANNIVERSARY</th>
+								<th t-att-colspan="4">WORK MOBILE</th>
+								<!--<th>Work Email</th>-->
+							</tr>
+						</thead>
+						<tbody>
+							<t t-foreach="marriage" t-as="md">
+								<tr align="center">
+									<td t-att-colspan="2">
+										<span t-esc="md_index+1"/>
+									</td>
+									<td t-att-colspan="3">
+										<span t-esc="md[0]"/>
+									</td>
+									<td class="text-left" t-att-colspan="7">
+										<span t-esc="md[1]"/>
+									</td>
+									<td t-att-colspan="5">
+										<span t-esc="md[2]"/>
+									</td>
+									<td t-att-colspan="5">
+										<span t-esc="md[3]"/>
+									</td>
+									<td t-att-colspan="4">
+										<span t-esc="md[4]"/>
+									</td>
+									<!--<td><span t-esc="bd[5]"/></td>-->
+								</tr>
+							</t>
+						</tbody>
+					</table>
+				</div>  
 
                 </t>
             </t>
-        </t>
+        
   </template>
 
 </odoo>

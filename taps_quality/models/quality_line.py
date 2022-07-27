@@ -12,23 +12,24 @@ class QualityCheck(models.Model):
     product_category = fields.Many2one(related='product_id.categ_id', string='Product Category', readonly=True)
     #pocode = fields.Char(related='picking_id.origin', string='PO', readonly=True)
     partner_name = fields.Char(string='Vendor', compute="_compute_partner_id", readonly=True, store=True)
-#     quality_state = fields.Selection([
-#         ('none', 'To do'),
-#         ('pass', 'Passed'),
-#         ('fail', 'Failed')], string='Status', tracking=True,
-#         default='none', copy=False)
+    #quality_state = fields.Selection([
+        #('none', 'To do'),
+        #('pass', 'Passed'),
+        #('fail', 'Failed')], string='Status', tracking=True,
+        #default='none', copy=False)
     quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('confirm', 'Unit Head Approval'),('refuse', 'Refuse'),('fail',)])
 
     po_qty = fields.Float(compute='_compute_partner_id', string='PO Qty', readonly=True)
     receive_qty = fields.Float(compute='_compute_partner_id', string='Receive Qty', readonly=True)
     uom = fields.Many2one(related='product_id.uom_id', string='UOM', readonly=True)
+    is_deviation = fields.Boolean("Is Deviation", readonly=True, store=True)
     #product_id picking_id
     
     
-#     def compute_po_qty(self):
-#         for rec in self: 
-#             data = self.env['purchase.order'].search([('name','=',rec.x_studio_source_po)])
-#             rec.partner_name = data.partner_id.name
+    #def compute_po_qty(self):
+        #for rec in self: 
+            #data = self.env['purchase.order'].search([('name','=',rec.x_studio_source_po)])
+            #rec.partner_name = data.partner_id.name
     
     #raise UserError(('fefefe'))
     #@api.depends('picking_id')
@@ -42,12 +43,14 @@ class QualityCheck(models.Model):
             receive_line = self.env['stock.move.line'].search([('picking_id','=',rec.picking_id.id),('product_id','=',rec.product_id.id),('lot_id','=',rec.lot_id.id)])
             rec.receive_qty = sum(receive_line.mapped('product_uom_qty'))
 
-#     raise_deviation check_deviation informed_deviation confirm_deviation
+    #raise_deviation check_deviation informed_deviation confirm_deviation
     
     def raise_deviation(self):
         self.write({'quality_state': 'deviation',
                     'user_id': self.env.user.id,
-                    'control_date': datetime.now()})
+                    'control_date': datetime.now(),
+                    'is_deviation': True
+                   })
         if self.env.context.get('no_redirect'):
             return True
         return self.redirect_after_pass_fail() 
