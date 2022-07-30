@@ -1026,7 +1026,7 @@ class PfReportPDF(models.AbstractModel):
          
             
         domain.append(('active', 'in',(False,True)))
-        domain.append(('id.contract_id.isActivePF', '=', True))
+        domain.append(('contract_id.isActivePF', '=', True))
         
         
            
@@ -1043,12 +1043,12 @@ class PfReportPDF(models.AbstractModel):
         
         
         #raise UserError((em_list))
-        query = """ select id, employee_id, year, to_char(salary_month, 'Month') AS month_, pf_amount from provident_fund_line  where employee_id in (""" + em_list + """) order by salary_month asc; """
+        query = """ select id, employee_id, year, to_char(salary_month, 'Month') AS month_, pf_amount from provident_fund_line where employee_id in (""" + em_list + """) order by salary_month asc; """
         cr = self._cr
         cursor = self.env.cr
         cr.execute(query)
         pf = cursor.fetchall()
-#         raise UserError((marriageday))
+#         raise UserError((query))
 #         raise UserError((birthday[1][1]))#
 #         for r in birthday:
 #             raise UserError((r[1]))
@@ -1087,6 +1087,11 @@ class PfReportPDF(models.AbstractModel):
                 details.department_id.parent_id.name,
                 details.department_id.name,
                 details.job_id.name,
+                details.joining_date,
+                details.service_length,
+                details.grade,
+                details.contract_id.wage,
+                details.contract_id.pf_activationDate,
                 
             ]
             allemp_data.append(emp_data)

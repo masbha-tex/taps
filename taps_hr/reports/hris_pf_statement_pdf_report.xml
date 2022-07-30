@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-
- <template id="hris_pf_pdf_template">
-     
-            <t t-call="web.html_container">
-                <t t-call="web.external_layout">
-                  <div class="page">
-					<style>
-					  
+	<template id="hris_pf_pdf_template">
+		<t t-foreach="docs" t-as="o">
+			<t t-foreach="datas" t-as="emp">
+				<t t-if="o.id == emp[2]">
+					<t t-call="web.html_container">
+						<t t-call="web.external_layout">
+							<div class="page">
+								<style>
+					              p
+					              {
+					                margin:0;
+					                padding:0;
+					              }
 					              table
 					              {
 					                font-size: 13px;
@@ -22,76 +27,165 @@
                           background-color: Orange;
                         }
                       </style>
-					<div class="footer" style="margin:0px; padding:0px;">
-						<div class="row">
-							<div class="col-4">
+								<div class="footer" style="margin:0px; padding:0px;">
+									<div class="row">
+										<div class="col-4">
                         Print Date: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/>
-							</div>
-							<div class="col-4 text-center">
+										</div>
+										<div class="col-4 text-center">
                       Page: <span class="page"/>/<span class="topage"/>
+										</div>
+										<div class="col-4">
+                      
 							</div>
-							<div class="col-4 text-left">
-                      Category: <span t-esc="category"/>
-							</div>
-						</div>
-					</div>
-					<h4 class="text-right">
-						<strong><i>Employee Anniversary Calendar</i></strong>
-					</h4>
-					<br/>
-					<div align="center">
-						<strong style="font-size:20px;">
-							<span>EMPLOYEE's ANNIVERSARY LIST (<span t-esc="cd[1]"/>)</span>
-						</strong>
-					</div>
-					<br/>
-<!-- 					<div style="font-size:12px">
+									</div>
+								</div>
+								<h4 class="text-right">
+									<strong>
+										<i>Monthly PF Statement</i>
+									</strong>
+								</h4>
+								<br/>
+								<!-- 					<div style="font-size:12px">
 						<p><b>Category:</b> <span t-esc="category" style="color: #cc7000"/>
 						</p>
 					</div> -->
-					<table class="table table-sm table-bordered">
-						<thead>
-							<tr align="center">
-								<th t-att-colspan="2">SL</th>
-								<th t-att-colspan="3">EMPLOYEE ID</th>
-								<th t-att-colspan="7">EMPLOYEE NAME</th>
-								<th t-att-colspan="5">DATE OF MARRIAGE</th>
-								<th t-att-colspan="5">ANNIVERSARY</th>
-								<th t-att-colspan="4">WORK MOBILE</th>
-								<!--<th>Work Email</th>-->
-							</tr>
-						</thead>
-						<tbody>
-							<t t-foreach="marriage" t-as="md">
-								<tr align="center">
-									<td t-att-colspan="2">
-										<span t-esc="md_index+1"/>
-									</td>
-									<td t-att-colspan="3">
-										<span t-esc="md[0]"/>
-									</td>
-									<td class="text-left" t-att-colspan="7">
-										<span t-esc="md[1]"/>
-									</td>
-									<td t-att-colspan="5">
-										<span t-esc="md[2]"/>
-									</td>
-									<td t-att-colspan="5">
-										<span t-esc="md[3]"/>
-									</td>
-									<td t-att-colspan="4">
-										<span t-esc="md[4]"/>
-									</td>
-									<!--<td><span t-esc="bd[5]"/></td>-->
-								</tr>
-							</t>
-						</tbody>
-					</table>
-				</div>  
-
-                </t>
-            </t>
-        
-  </template>
-
+								<div class="row" style="font-size: 13px">
+									<div class="col-6">
+										<div class="row">
+											<div class="col-4">
+												<p>Employee Name</p>
+												<p>Eployee ID</p>
+												<p>Designation</p>
+												<p>Department</p>
+											</div>
+											<div class="col-1">
+												<p>:</p>
+												<p>:</p>
+												<p>:</p>
+												<p>:</p>
+											</div>
+											<div class="col-7">
+												<p>
+													<span t-esc="emp[4]"/>
+												</p>
+												<p>
+													<span t-esc="emp[3]"/>
+												</p>
+												<p>
+													<span t-esc="emp[7]"/>
+												</p>
+												<p>
+													<span t-esc="emp[5]"/>
+												</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="row">
+											<div class="col-4">
+												<p>Date of Joining</p>
+												<p>Service Length</p>
+												<p>Grade</p>
+												<p>Section</p>
+											</div>
+											<div class="col-1">
+												<p>:</p>
+												<p>:</p>
+												<p>:</p>
+												<p>:</p>
+											</div>
+											<div class="col-7">
+												<p>
+													<span t-esc="emp[8].strftime('%d-%m-%Y')"/>
+												</p>
+												<p>
+													<span t-esc="emp[9]"/>
+												</p>
+												<p>
+													<span t-esc="emp[10]"/>
+												</p>
+												<p>
+													<span t-esc="emp[6]"/>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<br/>
+								<div align="center">
+									<strong style="font-size:20px;">
+										<span>EMPLOYEE's MONTHLY PF STATEMENT TILL <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+										</span>
+									</strong>
+								</div>
+								<div align="center" style="font-size:12px;">
+								  <span><b>Pf Effective Date: <t t-esc="emp[12].strftime('%d-%m-%Y')"/></b></span>
+								</div>
+								<table class="table table-sm table-bordered">
+									<thead>
+										<tr align="center">
+											<th>Year</th>
+											<th>Month</th>
+											<!--<th>Basic Amount</th>-->
+											<th>PF Employee</th>
+											<th>PF Employeer</th>
+											<th>Total CPF</th>
+											<th>Remarks</th>
+										</tr>
+									</thead>
+									<tbody>
+										<t t-set="pf_employee" t-value="0"/>
+										<t t-foreach="pf" t-as="p">
+											<t t-if="emp[2] == p[1]">
+												<tr align="center">
+													<td>
+														<span t-esc="p[2]"/>
+													</td>
+													<td>
+														<span t-esc="p[3]"/>
+													</td>
+													<!--<td>-->
+													<!--	<span t-esc="p[5]"/>-->
+													<!--</td>-->
+													<td>
+														<span t-esc="p[4]"/>
+														<t t-set="pf_employee" t-value="pf_employee+p[4]"/>
+													</td>
+													<td>
+														<span t-esc="p[4]"/>
+													</td>
+													<td>
+														<span t-esc="2*p[4]"/>
+													</td>
+													<td/>
+												</tr>
+											</t>
+										</t>
+									</tbody>
+								</table>
+								<table class="table table-sm table-bordered">
+									<tr align="right">
+										<td t-att-colspan="2" style="border-left : hidden!important;border-bottom : hidden!important;border-top : hidden!important;text-align:right">
+											<b>TOTAL:</b>
+										</td>
+										<td>
+											<t t-esc="pf_employee" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										</td>
+										<td>
+											<t t-esc="pf_employee" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										</td>
+										<td>
+											<t t-esc="2*pf_employee" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										</td>
+										<td/>
+									</tr>
+								</table>
+							</div>
+						</t>
+					</t>
+				</t>
+			</t>
+		</t>
+	</template>
 </odoo>

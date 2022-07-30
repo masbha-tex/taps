@@ -19,20 +19,80 @@
                 <xpath expr="/form[1]/sheet[1]/group[1]" position="after">
                     <group>
                         <group>
-                            <field name="apr"/>
-                            <field name="may"/>
-                            <field name="jun"/>
-                            <field name="jul"/>
-                            <field name="aug"/>
-                            <field name="sep"/>
+                            <label for="apr"/>
+                            <div class="o_row" name="apr">
+                                <field name="apr" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="may"/>
+                            <div class="o_row" name="may">
+                                <field name="may" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="jun"/>
+                            <div class="o_row" name="jun">
+                                <field name="jun" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="jul"/>
+                            <div class="o_row" name="jul">
+                                <field name="jul" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="aug"/>
+                            <div class="o_row" name="aug">
+                                <field name="aug" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="sep"/>
+                            <div class="o_row" name="sep">
+                                <field name="sep" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+<!--                             <field name="apr"/> -->
+<!--                             <field name="may"/> -->
+<!--                             <field name="jun"/> -->
+<!--                             <field name="jul"/> -->
+<!--                             <field name="aug"/> -->
+<!--                             <field name="sep"/> -->
                         </group>
                         <group>
-                            <field name="oct"/>
-                            <field name="nov"/>
-                            <field name="dec"/>
-                            <field name="jan"/>
-                            <field name="feb"/>
-                            <field name="mar"/>
+                            <label for="oct"/>
+                            <div class="o_row" name="oct">
+                                <field name="oct" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="nov"/>
+                            <div class="o_row" name="nov">
+                                <field name="nov" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="dec"/>
+                            <div class="o_row" name="dec">
+                                <field name="dec" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="jan"/>
+                            <div class="o_row" name="jan">
+                                <field name="jan" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="feb"/>
+                            <div class="o_row" name="feb">
+                                <field name="feb" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+                            <label for="mar"/>
+                            <div class="o_row" name="mar">
+                                <field name="mar" nolabel="1"/>
+                                <span>&#37;</span>
+                            </div>
+<!--                             <field name="oct"/> -->
+<!--                             <field name="nov"/> -->
+<!--                             <field name="dec"/> -->
+<!--                             <field name="jan"/> -->
+<!--                             <field name="feb"/> -->
+<!--                             <field name="mar"/> -->
                         </group>
                     </group>
                 </xpath>
