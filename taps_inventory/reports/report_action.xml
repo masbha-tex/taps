@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate='0'>
+        <record id="action_report_sample_print_outk" model="ir.actions.report">
+            <field name="name">Sample Print Out</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_inventory.report_sample_print_out</field>
+            <field name="report_file">taps_inventory.report_sample_print_out</field>
+            <field name="binding_model_id" ref="model_stock_picking"/>
+            <field name="binding_type">report</field>
+<!--             <field name="paperformat_id" ref="taps_hr.paperformat_payslip_report"/> -->
+<!--             <field name="default_print_option">print</field> -->
+        </record>
+    </data>
+</odoo>

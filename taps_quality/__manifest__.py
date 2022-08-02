@@ -24,9 +24,12 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'reports/report_action.xml',
+        'reports/quality_check_report_pdf.xml',
         'views/quality_line.xml',
         'views/parameter.xml',
         'views/quality_unit.xml',
+        
     ],
     # only loaded in demonstration mode
     #'demo': [

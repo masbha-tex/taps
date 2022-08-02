@@ -86,7 +86,7 @@ class PurchaseOrder(models.Model):
         #(select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and itemtype='spares' and company_id=po.company_id) SpareBudget,
         #and itemtype='raw' 
         query = """SELECT SUM(RawBudget),SUM(SpareBudget),SUM(RawPOvalue) FROM (SELECT (select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and company_id=po.company_id) RawBudget,0 as SpareBudget,
-                          SUM(CASE WHEN po.date_approve >= %s THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END) RawPOvalue
+                          SUM(CASE WHEN date(po.date_approve) >= date(%s) THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END) RawPOvalue
                    FROM purchase_order po
                    JOIN res_company comp ON (po.company_id = comp.id)
                    WHERE po.state in ('purchase', 'done') AND po.itemtype='raw'
@@ -95,7 +95,6 @@ class PurchaseOrder(models.Model):
                      select 0 as RawBudget,0 as SpareBudget,0 as RawPOvalue
                      ) as a
                 """
-        
         self._cr.execute(query, (one_week_ago, self.env.company.id))
         res = self.env.cr.fetchone()
         currency = self.env.company.currency_id

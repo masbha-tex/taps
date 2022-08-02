@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_quality_check">
+      <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+          <t t-call="web.external_layout">
+             <div class="page">
+               	<h4 class="text-right">
+								<strong>
+                <i>Quality Check Report</i>
+                
+								</strong>
+							</h4>
+                 <h1><t t-esc="o.display_name"/></h1>
+                 <diV class="row">
+                  <div class="col-4">
+                    <Span><b>Vendor:</b></Span><br/>
+                    <span t-esc="o.partner_name"/>
+                  </div>
+                  <div class="col-4">
+                    <Span><b>Scheduled Po Date:</b></Span><br/>
+                    <span t-esc="o.x_studio_schedule_po_date"/>
+                  </div>
+                  <div class="col-4">
+                    <Span><b>Picking:</b></Span><br/>
+                    <span t-esc="o.picking_id.name"/>
+                  </div>
+                 </diV>
+                 <diV class="row">
+                  <div class="col-4">
+                    <Span><b>Lot/Serial:</b></Span><br/>
+                    <span t-esc="o.lot_id.name"/>
+                  </div>
+                  
+                  <div class="col-4">
+                    <Span><b>Fail &amp; Deviation:</b></Span><br/>
+                    <t t-if="o.x_studio_fail_deviation == True">
+                    <span>True</span>
+                    </t>
+                    <t t-if="o.x_studio_fail_deviation == False">
+                    <span>False</span>
+                    </t>
+                  </div>
+                  <div class="col-4">
+                    <Span><b>Unit:</b></Span><br/>
+                    <span t-esc="o.company_id.name"/>
+                  </div>
+                 </diV>
+                 <br/>
+                 <div>
+                   <table class="table o_report_block_table">
+                     <thead>
+                       <tr align="center">
+                       <th>PRODUCT</th>
+                       <th>INTERNAL REFERANCE</th>
+                       <th>SOURCE PO</th>
+                       <th>PO QTY</th>
+                       <th>RECEIVE QTY</th>
+                       <th>SAMPLE QTY</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       <tr align="center">
+                       <td><span t-esc="o.product_id.name"/></td>
+                       <td><span t-esc="o.product_id.default_code"/></td>
+                       <td><span t-esc="o.x_studio_source_po"/></td>
+                       <td><span t-esc="o.po_qty"/></td>
+                       <td><span t-esc="o.receive_qty"/></td>
+                       <td><span t-esc="o.x_studio_sample_qty"/></td>
+                       </tr>
+                     </tbody>
+                   </table>
+                 </div>
+                 
+                 <br/>
+                 <div class="row">
+                   <div class="col-4">
+                     <span><b>Status:</b></span><br/>
+                     <t t-if="(o.quality_state == 'pass')">
+                       <t t-if="o.is_deviation == True">
+                        <span style="color: Red">Deviated-<span t-field="o.quality_state"/></span>
+                      </t>
+                      <t t-if="o.is_deviation == False">
+                        <span style="color: Red" t-field="o.quality_state"/>
+                      </t>
+                     </t>
+                     <t t-if="(o.quality_state != 'pass')">
+                       <span style="color: Red" t-field="o.quality_state"/>
+                    </t>
+                   </div>
+                   <div class="col-4">
+                     <span><b>Head Of Supply Chain Approval</b></span><br/>
+                     <t t-if="(o.quality_state == 'pass')">
+                       <span>Rabindranath Chatterjee</span>
+                      </t>
+                   </div>
+                   <div class="col-4">
+                     <span><b>Unit Head Approval</b></span><br/>
+                     <t t-if="(o.quality_state == 'pass')">
+                       <t t-if="(o.company_id.name == 'Metal Trims')">
+                       <span>Khurram Anwar Khan</span>
+                       </t>
+                       <t t-if="(o.company_id.name == 'Zipper')">
+                       <span>Nitish Bassi</span>
+                       </t>
+                      </t>
+                   </div>
+                 </div>
+                 
+              </div>
+            </t>
+          </t>
+        </t>
+    </template>
+</odoo>   
+    
