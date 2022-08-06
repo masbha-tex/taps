@@ -274,7 +274,7 @@
             <field name="report_file">taps_hr.dailyatten_pdf_template</field>
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
-            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+            <field name="paperformat_id" ref="taps_hr.paperformat_pf_report"/>
 <!--             <field name="default_print_option">print</field> -->
         </record>  
         <record id="action_dailyatten_ot_pdf_report" model="ir.actions.report">
@@ -407,7 +407,7 @@
             <field name="report_file">taps_hr.daily_excess_ot_pdf_template</field>
             <field name="binding_model_id" ref="model_attendance_pdf_report"/>
             <field name="binding_type">report</field>
-            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+            <field name="paperformat_id" ref="taps_hr.paperformat_daily_excess_ot_report"/>
 <!--             <field name="default_print_option">print</field> -->
         </record>     
         <record id="action_daily_salary_cost_pdf_report" model="ir.actions.report">

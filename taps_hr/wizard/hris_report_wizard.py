@@ -1043,7 +1043,11 @@ class PfReportPDF(models.AbstractModel):
         
         
         #raise UserError((em_list))
-        query = """ select id, employee_id, year, to_char(salary_month, 'Month') AS month_, pf_amount from provident_fund_line where employee_id in (""" + em_list + """) order by salary_month asc; """
+        query = """ select employee_id, year, to_char(salary_month, 'Month') AS month_, pf_amount,0 as basic_wage,salary_month
+from provident_fund_line where employee_id in (""" + em_list + """)
+union
+select employee_id,cast(DATE_PART('year',date_to) as varchar) as year,to_char(date(date_to), 'Month') AS month_,pf_empe_wage as pf_amount,basic_wage, date(date_to) as salary_month
+from hr_payslip where  employee_id in (""" + em_list + """) and pf_empe_wage>0 order by salary_month; """
         cr = self._cr
         cursor = self.env.cr
         cr.execute(query)
@@ -1096,7 +1100,7 @@ class PfReportPDF(models.AbstractModel):
             ]
             allemp_data.append(emp_data)
         
-        common_data=[]    
+        common_data=[]
         common_data = [
             data.get('report_type'),
 #             data.get('bank_id'),

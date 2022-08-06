@@ -127,7 +127,7 @@
 										<tr align="center">
 											<th>Year</th>
 											<th>Month</th>
-											<!--<th>Basic Amount</th>-->
+											<th>Basic Amount</th>
 											<th>PF Employee</th>
 											<th>PF Employeer</th>
 											<th>Total CPF</th>
@@ -137,26 +137,26 @@
 									<tbody>
 										<t t-set="pf_employee" t-value="0"/>
 										<t t-foreach="pf" t-as="p">
-											<t t-if="emp[2] == p[1]">
+											<t t-if="emp[2] == p[0]">
 												<tr align="center">
+													<td>
+														<span t-esc="p[1]"/>
+													</td>
 													<td>
 														<span t-esc="p[2]"/>
 													</td>
 													<td>
+														<span t-esc="p[4]"/>
+													</td>
+													<td>
+														<span t-esc="p[3]"/>
+														<t t-set="pf_employee" t-value="pf_employee+p[3]"/>
+													</td>
+													<td>
 														<span t-esc="p[3]"/>
 													</td>
-													<!--<td>-->
-													<!--	<span t-esc="p[5]"/>-->
-													<!--</td>-->
 													<td>
-														<span t-esc="p[4]"/>
-														<t t-set="pf_employee" t-value="pf_employee+p[4]"/>
-													</td>
-													<td>
-														<span t-esc="p[4]"/>
-													</td>
-													<td>
-														<span t-esc="2*p[4]"/>
+														<span t-esc="2*p[3]"/>
 													</td>
 													<td/>
 												</tr>
@@ -166,7 +166,7 @@
 								</table>
 								<table class="table table-sm table-bordered">
 									<tr align="right">
-										<td t-att-colspan="2" style="border-left : hidden!important;border-bottom : hidden!important;border-top : hidden!important;text-align:right">
+										<td t-att-colspan="3" style="border-left : hidden!important;border-bottom : hidden!important;border-top : hidden!important;text-align:right">
 											<b>TOTAL:</b>
 										</td>
 										<td>

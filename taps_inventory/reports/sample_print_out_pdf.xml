@@ -25,7 +25,9 @@
                            <th t-att-colspan="3">REFERENCE</th>
                            <th t-att-colspan="2">QUANTITY</th>
                            <th t-att-colspan="3">INTERNAL REF.</th>
-                           <th t-att-colspan="2">QC SAMPLE QTY</th>
+                           <th t-att-colspan="2">PO REF.</th>
+                           <th t-att-colspan="2">LOT REF.</th>
+                           <th t-att-colspan="3">QC SAMPLE QTY</th>
                          </tr>
                          </thead>
                          <tbody>
@@ -33,9 +35,11 @@
                            <td t-att-colspan="3" style="vertical-align:middle;"><span t-esc="o.partner_name"/></td>
                            <td t-att-colspan="4" style="vertical-align:middle;"><span t-esc="ml.product_id.name"/></td>
                            <td t-att-colspan="3" style="vertical-align:middle;"><span t-esc="ml.product_id.default_code"/></td>
-                           <td t-att-colspan="2" style="vertical-align:middle;"><span t-esc="ml.qty_done"/> <span t-esc="ml.product_uom_id.name"/></td>
+                           <td t-att-colspan="2" style="vertical-align:middle;"><span t-esc="ml.product_uom_qty"/> <span t-esc="ml.product_uom_id.name"/></td>
                            <td t-att-colspan="3" style="vertical-align:middle;"><span t-esc="o.name"/></td>
-                           <td t-att-colspan="2" style="vertical-align:middle;"><span t-esc="ml.x_studio_sa_qc_qty"/></td>
+                           <td t-att-colspan="2" style="vertical-align:middle;"><span t-esc="ml.origin"/></td>
+                           <td t-att-colspan="2" style="vertical-align:middle;"><span t-esc="ml.lot_id.name"/></td>
+                           <td t-att-colspan="3" style="vertical-align:middle;"><span t-esc="ml.x_studio_sa_qc_qty"/></td>
                            </tr>
                          </tbody>
                        </table>

@@ -4,151 +4,204 @@
       <t t-call="web.html_container">
        
           <t t-call="web.external_layout">
-              <div class="page">
-                <h4 class="text-right">
-                    <strong>
-                       Daily Attendance
-                       <!--<span t-esc="month[0]"/>-->
-                    </strong>
-                </h4>
-                <div class="container">
-                    <div class="row justify-content-end">
-                        <div class="col-6 table-sm table-bordered" style="font-size:11px;">
-                            <center>
-                                <strong>
-                                    <u>Flag Defination</u>
-                                </strong>
-                            </center>
-                            <!--<br/>-->
-                            <div class="row">
-                                <div class="col-6">
-                                    <span class="small">P=Present</span>
-                                    <br/>
-                                    <span class="small">A=Absent</span>
-                                    <br/>
-                                    <span class="small">L=Late</span>
-                                    <br/>
-                                    
-                                </div>
-                                <div class="col-6">
-                                    <span class="small">TO=Timely Out</span>
-                                    <br/>
-                                    <span class="small">PO=Pending Out</span>
-                                    <br/>
-                                    <span class="small">EO=Early Out</span>
-                                    <br/>
-                                </div>
-                                
-                            </div>
-                        </div>
+              <style>
+		    table, tr, td
+		    {
+		     border: 1px solid black;
+		    }
+		    div, textarea{
+		    page-break-inside:avoid;
+		    }
+		    td
+		    {
+		      font-size: 10px;
+		      font-color: solid black;
+		    }
+		  
+  
+		  </style>
+				<div class="page">
+                    <div class="footer text-center" style="margin:0px; padding:0px;">
+                    Page: <span class="page"/>/<span class="topage"/>
                     </div>
-                </div>
-                <t t-foreach="dpt" t-as="dp">
-                  <t t-set="total_dep_employee" t-value="0"/>
-                    
-
-                    <t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
-                       <t t-set="total_sec_employee" t-value="0"/>
-                        <div class="container">
-                        <!--<div class="row">-->
-                        <div style="font-size: 12px;">
-                            <strong>DEPARTMENT:</strong>
-                            <span t-esc="dp.name" style="color:  #cc7000"/>
-                        </div>
-                        <!--</div>-->
-                      </div>
-                        <div class="container">
-                            <!--<div class="row">-->
-                            <div style="font-size: 12px;">
-                                <strong>SECTION:</strong>
-                                <span t-esc="se.name" style="color:  #cc7000"/>
-                            </div>
-                            <!--</div>-->
-                        </div>
-                        <br/>
-
-                        <!--<div class="container">-->
-                        <!--   <div class="row">-->
-                        <!--      <div class="col-6">-->
-                        <!--         <div class="row">-->
-                        <!--            <div>-->
-                        <!--               <strong>DEPARTMENT:</strong>-->
-                        <!--               <span t-esc="emp[5]"/>-->
-                        <!--            </div>-->
-                        <!--         </div>-->
-                        <!--         <div class="row">-->
-                        <!--            <div>-->
-                        <!--               <strong>SECTION:</strong>-->
-                        <!--               <span t-esc="emp[6]"/>-->
-                        <!--            </div>-->
-                        <!--         </div>-->
-                        <!--         <div class="row">-->
-                        <!--            <div>-->
-                        <!--               <strong>EMPLOYEE CATEGORY:</strong>-->
-                        <!--               <span t-esc="emp[7]"/>-->
-                        <!--            </div>-->
-                        <!--         </div>-->
-                        <!--      </div>-->
-                        <!--   </div>-->
-                        <!--</div>-->
-
-                        <div class="container">
-
-                            <t t-foreach="datas" t-as="emp">
-                               
-                                <t t-if="emp[9] == se.id">
-                                
-                                    <table class="table table-sm p-0 m-0" style="font-size:7px; table-layout:fixed; page-break-inside: avoid;">
-                                        <thead>
-                                            <!--<tr align="center" style="background-color:#E2E2E2;" t-foreach="alldays" t-as="ald">-->
-                                            <tr align="center" style="background-color:orange;">
-                                                <th>Code</th>
-                                                <th colspan="3">
-                                                    <center>Emloyee Name</center>
-                                                </th>
-                                                <th colspan="3">Designation</th>
-                                                <t t-foreach="alldays" t-as="ald">
-                                                    <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att" style="border: 1pt solid black;border-collapse:separate;">
-                                                        <th>
-                                                            <span t-esc="att.attDate.strftime('%d')"/>
-                                                            <br/>
-                                                            <span t-esc="att.attDate.strftime('%b')"/>
-                                                        </th>
-                                                    </t>
-                                                </t>
-                                                <th>P/TO</th>
-                                                <th>L/EO</th>
-                                                <th>A/PO</th>
-                                            </tr>
-                                            <!--</tr>-->
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                            
-                                          
-                                            
-                                    </table>
-                                </t>
-                            </t>
-                        </div>
-                        <br/>
-                    <!--    <div class="container">-->
-                    <!--  <div class="row justify-content-end" style="font-size:12px;">-->
-                    <!--<p>Section <strong t-esc="se.name" style="color: #cc7000"/> Total Employee : <strong t-esc="total_sec_employee" style="color: #cc7000"/></p>-->
-                    <!--  </div>-->
-                    <!--</div>-->
-                    <!--<br/>-->
-
-                    </t>
-                    <!--<div class="container">-->
-                    <!--  <div class="row justify-content-end" style="font-size:12px;">-->
-                    <!--<p>Department <strong t-esc="dp.name" style="color: #cc7000"/> total Employee : <strong t-esc="total_dep_employee" style="color: #cc7000"/></p>-->
-                    <!--  </div>-->
-                    <!--</div>-->
-                   
-                    
-                </t>
-            </div>
+					<h3 class="text-right" style="font-size:20px">
+						<strong>Daily Attendance</strong>
+					</h3>
+					<div class="container">
+						<div class="row">
+							<div class="col-3">
+								<div style="font-size:8px">
+									<strong>Category: </strong>
+									<span t-esc="category" style="color: #cc7000"/>
+								</div>
+							</div>
+							<div class="col-6">
+								<div align="center" style="font-size:10px">
+									<u>
+										<strong>Date: </strong>
+										<b>
+											<span t-esc="stdate[0]"/>
+										</b>
+									</u>
+								</div>
+							</div>
+							<div class="col-3 table-sm table-bordered" style="font-size:9px;">
+								<center>
+									<strong>
+										<u>Flag Defination</u>
+									</strong>
+								</center>
+								<!--<br/>-->
+								<div class="row">
+									<div class="col-6">
+										<span class="small">P=Present</span>
+										<br/>
+										<span class="small">A=Absent</span>
+										<br/>
+										<span class="small">L=Late</span>
+										<br/>
+									</div>
+									<div class="col-6">
+										<span class="small">TO=Timely Out</span>
+										<br/>
+										<span class="small">PO=Pending Out</span>
+										<br/>
+										<span class="small">EO=Early Out</span>
+										<br/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br/>
+					<t t-set="sl" t-value="0"/>
+					<t t-foreach="dpt" t-as="dp">
+						<t t-set="total_dep_employee" t-value="0"/>
+						<t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
+							<t t-set="total_sec_employee" t-value="0"/>
+							<div class="col-4 mb-2" style="font-size:9px">
+								<div class="row">
+									<div class="col-4">
+										<b>
+											<span>Department</span>
+										</b>
+										<br/>
+										<b>
+											<span>Section</span>
+										</b>
+										<br/>
+									</div>
+									<div class="col-1">
+										<span>:</span>
+										<br/>
+										<span>:</span>
+										<br/>
+									</div>
+									<div class="col-7">
+										<span t-esc="dp.name" style="color: #cc7000"/>
+										<br/>
+										<span t-esc="se.name" style="color: #cc7000"/>
+										<br/>
+									</div>
+								</div>
+							</div>
+							<div class="container">
+								<table class="table table-sm" style="font-size:8px; table-layout:fixed;">
+									<thead>
+										<tr align="center">
+											<th t-att-rowspan="2" t-att-colspan="2" style="vertical-align:middle">S.L</th>
+											<th t-att-rowspan="2" t-att-colspan="3" style="vertical-align:middle">Emp. Id</th>
+											<th t-att-rowspan="2" t-att-colspan="6" style="vertical-align:middle">Employee Name</th>
+											<th t-att-rowspan="2" t-att-colspan="6" style="vertical-align:middle">Designation</th>
+											<th t-att-rowspan="2" t-att-colspan="2" style="vertical-align:middle">Shift</th>
+											<th t-att-rowspan="1" t-att-colspan="6" style="vertical-align:middle">IN</th>
+											<th t-att-rowspan="1" t-att-colspan="6" style="vertical-align:middle">OUT</th>
+											
+										</tr>
+										<tr align="center">
+											<th t-att-colspan="2" style="vertical-align:middle;">
+												<span>Cut Off</span>
+											</th>
+											<th t-att-colspan="2" style="vertical-align:middle">In Time</th>
+											<th t-att-colspan="2" style="vertical-align:middle">In Flag</th>
+											<th t-att-colspan="2" style="vertical-align:middle">
+												<span>Cut Off</span>
+											</th>
+											<th t-att-colspan="2" style="vertical-align:middle">Out Time</th>
+											<th t-att-colspan="2" style="vertical-align:middle">Out Flag</th>
+										</tr>
+									</thead>
+									<tbody>
+										<t t-foreach="datas" t-as="emp">
+											<t t-if="emp[9] == se.id">
+												<t t-foreach="alldays" t-as="ald">
+													<t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
+														
+															<t t-set="total_dep_employee" t-value="total_dep_employee+1"/>
+															<t t-set="total_sec_employee" t-value="total_sec_employee+1"/>
+															<t t-set="sl" t-value="sl+1"/>
+															<tr align="center">
+																<td t-att-colspan="2" style="vertical-align:middle">
+																	<t t-esc="sl"/>
+																</td>
+																<td t-att-colspan="3" style="vertical-align:middle">
+																	<t t-esc="emp[3]"/>
+																</td>
+																<td t-att-colspan="6" style="vertical-align:middle;text-align:left">
+																	<t t-esc="emp[4]"/>
+																</td>
+																<td t-att-colspan="6" style="vertical-align:middle;text-align:left">
+																	<t t-esc="emp[7]"/>
+																</td>
+																<td t-att-colspan="2">
+																	<span t-esc="emp[11]" />
+																</td>
+																<td t-att-colspan="2" style="vertical-align:middle">
+																	<span t-esc="emp[12]" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+																</td>
+																<td t-att-colspan="2" style="vertical-align:middle">
+																	<span t-esc="att['inHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+																</td>
+																<td t-att-colspan="2" style="vertical-align:middle">
+																	<span t-esc="att['inFlag']"/>
+																</td>
+																<td t-att-colspan="2" style="vertical-align:middle">
+																	<span t-esc="att['outTime']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+																</td>
+																<td t-att-colspan="2" style="vertical-align:middle">
+																	<!--<span t-esc="att['outHour']" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>-->
+																</td>
+																<td t-att-colspan="2" style="vertical-align:middle">
+																	<span t-esc="att['outFlag']"/>
+																</td>
+																
+															</tr>
+														
+													</t>
+												</t>
+											</t>
+										</t>
+									</tbody>
+								</table>
+							</div>
+							<div class="container">
+								<div style="float:right;white-space:nowrap">
+									<span style="font-size:9px;">Section <strong t-esc="se.name" style="color: #cc7000"/> Total Employee : <strong t-esc="total_sec_employee" style="color: #cc7000"/>
+									</span>
+								</div>
+							</div>
+							<br/>
+						</t>
+						<div class="container">
+							<div style="float:right;white-space:nowrap">
+								<span style="font-size:9px;">Department <strong t-esc="dp.name" style="color: #cc7000"/> total Employee : <strong t-esc="total_dep_employee" style="color: #cc7000"/>
+								</span>
+							</div>
+						</div>
+						<br/>
+						<br/>
+					</t>
+				</div>
              
           </t>
         </t>

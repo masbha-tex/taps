@@ -7,6 +7,7 @@
                 <t t-call="web.external_layout">
                     <style>
                         .appointment-letter{
+                        page-break-inside:avoid;
                         padding:30px 50px;
                         td{
                         padding:5px 10px
@@ -14,6 +15,7 @@
                         table{
                         width:100%
                         }
+                        
                         }
                     </style>
                     <div class="page">
@@ -22,26 +24,26 @@
                             <p style="text-align: center;font-size:15px">
                                 <u>Appointment Letter</u>
                             </p>
-                            <p style="text-align: center;font-size:15px">
+                            <p style="text-align: center;font-size:18px">
                                 <u>বিষয়: নিয়োগ পত্র</u>
                             </p>
                             <p>Ref : TEX/HR/Appt/
-                                <span t-esc="employee.emp_id"></span>
+                                <span t-esc="employee.emp_id"/>
                                 <br/>
-                                Current Date
+                                Date: <span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
                             </p>
                             <p>
-                                Address
+                                Address: <span t-esc="employee.address_home_id.street"/>
                                 <br/>
 
                             </p>
                             <p>
-                                জনাব
+                                <span style="font-size: 16px">জনাব </span>
                                 <span t-esc="employee.name">,</span>
                             </p>
-                            <p>আপনার আবেদন এবং পরীক্ষার ফলাফলের ভিত্তিতে কর্তৃপক্ষ আপনাকে নিম্ন লিখিত শর্ত সাপেক্ষে
+                            <p><span style="font-size: 16px">আপনার আবেদন এবং পরীক্ষার ফলাফলের ভিত্তিতে কর্তৃপক্ষ আপনাকে নিম্ন লিখিত শর্ত সাপেক্ষে
                                 নিয়োগ
-                                প্রদানে সম্মত হয়েছেন।
+                                প্রদানে সম্মত হয়েছেন। </span>
                             </p>
                             <p>
                                 Dear
@@ -54,16 +56,16 @@
                             </p>
                             <p>
                                 <div class="row">
-                                    <div class="col-5">
-                                        <p>১.পদবী/Designation</p>
-                                        <p>২.গ্রেড/Designation</p>
-                                        <p>৩.সেকশন/Designation</p>
-                                        <p>৪.যোগদানের তারিখ</p>
-                                        <p>4.Date of joining</p>
-                                        <p>5.আপনার বেতন হিসাব হবে নিম্ন রূপ</p>
-                                        <p>5.You salary will be paid as follows</p>
+                                    <div class="col-4">
+                                        <p>১. পদবী/Designation</p>
+                                        <p>২. গ্রেড/Grade</p>
+                                        <p>৩. সেকশন/Section</p>
+                                        <p>৪. যোগদানের তারিখ</p>
+                                        <p>4. Date of joining</p>
+                                        <p>5. আপনার বেতন হিসাব হবে নিম্ন রূপ</p>
+                                        <p>5. Your salary will be paid as follows</p>
                                     </div>
-                                    <div class="col-2">
+                                    <div class="col-1">
                                         <p>:</p>
                                         <p>:</p>
                                         <p>:</p>
@@ -72,85 +74,84 @@
                                         <p>:</p>
                                         <p>:</p>
                                     </div>
-                                    <div class="col-5">
+                                    <div class="col-7">
                                         <p>
-                                            <span t-esc="employee.job_id.name"></span>
+                                            <span t-esc="employee.job_id.name"/>
                                         </p>
                                         <p>
-                                            <span t-esc="employee.grade"></span>
+                                            <span t-esc="employee.grade"/>
                                         </p>
                                         <p>
-                                            <span t-esc="employee.grade"></span>
+                                            <span t-esc="employee.department_id.name"/>
                                         </p>
-                                        <p>আপনাকে আগামী <span t-esc="employee.joining_date"></span> তারিখের মধ্যে যোগদান
+                                        <p>আপনাকে আগামী <span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/> তারিখের মধ্যে যোগদান
                                             করার জন্য অনুরোধ করা হইল।
                                         </p>
                                         <p>You are requested to join on or before
-                                            <span t-esc="employee.joining_date"></span>
+                                            <span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
                                         </p>
-                                        <p></p>
-                                        <p></p>
+                                        <p/>
+                                        <p/>
                                     </div>
                                 </div>
                             </p>
                             <p>
                                 <div class="row">
-                                    <table class="table-sm center table-bordered"
-                                           style="margin-left: auto; margin-right: auto; break-after:always;">
+                                    <table class="table-sm center " style="margin-left: auto; margin-right: auto;">
                                         <thead>
                                             <tr>
                                                 <th colspan="3" class="text-center">Salary Breakup</th>
                                             </tr>
                                             <tr>
                                                 <th>Particulars</th>
-                                                <th>BDT</th>
-                                                <th>USD</th>
+                                                <th class="text-center">BDT</th>
+                                                <th class="text-center">USD</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
+                                            <tr style="border: 1px solid black ! important">
                                                 <td>মূল বেতন/Basic Salary</td>
-                                                <td>
-                                                    <span t-esc="employee.contract_id.basic"></span>
+                                                <td class="text-center">
+                                                    <span t-esc="employee.contract_id.basic" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
                                                 </td>
-                                                <td>
-                                                    <span t-esc="employee.contract_id.basic/82"></span>
+                                                <td class="text-center">
+                                                    <span t-esc="employee.contract_id.basic/84" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr style="border: 1px solid black ! important">
                                                 <td>বাড়ী ভাড়া/H.R.A</td>
-                                                <td>
-                                                    <span t-esc="employee.contract_id.houseRent"></span>
+                                                <td class="text-center">
+                                                    <span t-esc="employee.contract_id.houseRent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
                                                 </td>
-                                                <td>
-                                                    <span t-esc="employee.contract_id.houseRent/82"></span>
+                                                <td class="text-center">
+                                                    <span t-esc="employee.contract_id.houseRent/84" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr style="border: 1px solid black ! important">
                                                 <td>চিকিৎসা ভাতা/Medical</td>
-                                                <td>
-                                                    <span t-esc="employee.contract_id.medical"></span>
+                                                <td class="text-center">
+                                                    <span t-esc="employee.contract_id.medical" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
                                                 </td>
-                                                <td>
-                                                    <span t-esc="employee.contract_id.medical/82"></span>
+                                                <td class="text-center">
+                                                    <span t-esc="employee.contract_id.medical/84" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr style="border: 1px solid black ! important">
                                                 <td>মোট/Total</td>
-                                                <td>
-                                                    <span t-esc="employee.contract_id.wage"></span>
+                                                <td class="text-center">
+                                                    <span t-esc="employee.contract_id.wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
                                                 </td>
-                                                <td>
-                                                    <span t-esc="employee.contract_id.wage/82"></span>
+                                                <td class="text-center">
+                                                    <span t-esc="employee.contract_id.wage/84" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <th colspan="3" class="text-center">
+                                            <tr style="border: 1px solid black ! important">
+                                                <td colspan="3" class="text-center">
                                                     <p>অতিরিক্ত সময়কাজের মজুরী বেপজা নীতিমালা অনুযায়ী প্রদানকরা হইবে।
                                                     </p>
                                                     <p class="text-center">(Overtime will be paid as per BEPZA rules)
                                                     </p>
-                                                </th>
+                                                </td>
                                             </tr>
                                         </tbody>
 
@@ -159,18 +160,18 @@
                             </p>
                         </div>
                         <div class="page">
-                            <p style="page-break-after:always;"></p>
+                            <p style="page-break-after:always;"/>
                             <div class="appointment-letter">
-                                <p class="mt-4">৬।
+                                <p class="mt-4"><span style="font-size:16px;">৬।
                                     <b>
                                         <u>প্রবেশন পিরিয়ড / পর্যবেক্ষণকাল :</u>
                                     </b>
-                                    আপনার চাকুরীর প্রম ০৩ (তিন) মাস প্রবেশনারী / পর্যবেক্ষণকাল হিসাবে গন্য হবে।
+                                    আপনার চাকুরীর প্রথম ০৩ (তিন) মাস প্রবেশনারী / পর্যবেক্ষণকাল হিসাবে গন্য হবে।
                                     প্রয়োজনে অদক্ষ শ্রমিকের ক্ষেত্রে এই প্রবেশনারী কাল আরও তিন মাস বর্ধিত করা হতে পারে।
                                     প্রবেশন কালীন সময়ে কোন প্রকার
                                     নোটিশ ব্যতিরেকে আপনাকে চাকুরীচ্যুত করার অধিকার কর্তৃপক্ষ সংরক্ষন করে অথবা আপনিও
                                     চাকুরী
-                                    থেকে ইস্তফা নিতে পারবেন।
+                                    থেকে ইস্তফা নিতে পারবেন।</span>
                                 </p>
                                 <p>6.
                                     <b>
@@ -184,13 +185,13 @@
                                     notice
                                     period.
                                 </p>
-                                <p>৭।
+                                <p><span style="font-size:16px;">৭।
                                     <b>
                                         <u>চাকুরী থেকে ইস্তফা:</u>
                                     </b>
                                     চাকুরী স্থায়ী হবার পর ১ মাসের নোটিশ অথবা তদপরিবর্তে সমপরিমান অর্থ কোম্পানীকে প্রদান
                                     সাপেক্ষে
-                                    আপনি স্বেচ্ছায় চাকুরী হতে ইস্তফা নিতে পারবেন।
+                                    আপনি স্বেচ্ছায় চাকুরী হতে ইস্তফা নিতে পারবেন।</span>
                                 </p>
                                 <p>7.
                                     <b>
@@ -205,19 +206,19 @@
                                             required notice shall
                                             surrender pay in lieu of such notice thereof.
                                         </li>
-                                        <li>ক) একজন স্থায়ী শ্রমিক চাকুরী থেকে ইস্তফা দিয়েছে কিন্তু একমাস সময় দিতে পারেনি
+                                        <li><span style="font-size:16px;">ক) একজন স্থায়ী শ্রমিক চাকুরী থেকে ইস্তফা দিয়েছে কিন্তু একমাস সময় দিতে পারেনি
                                             সেই
                                             ক্ষেত্রে নোটিশ সময়ের
-                                            পরিবর্তে তাকে একমাসের বেতন ত্যাগ করতে হবে।
+                                            পরিবর্তে তাকে একমাসের বেতন ত্যাগ করতে হবে।</span>
                                         </li>
                                         <li>B) The employer shall accept the resignation if due notice is given or due
                                             payment in lieu of
                                             notice is made or pay is surrendered in lieu of such notice.
                                         </li>
-                                        <li>খ) নিয়োগকর্তা একজন শ্রমিকের ইস্তফা পত্র গ্রহন করবেন তখনই যদি সেই শ্রমিক
+                                        <li><span style="font-size:16px;">খ) নিয়োগকর্তা একজন শ্রমিকের ইস্তফা পত্র গ্রহন করবেন তখনই যদি সেই শ্রমিক
                                             একমাসের
                                             নোটিশ অথবা একমাসের
-                                            বেতন ফেরত দেয় বা ত্যাগ করে।
+                                            বেতন ফেরত দেয় বা ত্যাগ করে।</span>
                                         </li>
                                         <li>C) Not withstanding anything stated above no employee against whom a
                                             disciplinary proceeding
@@ -226,20 +227,20 @@
                                             drawing up of the
                                             departmental proceeding.
                                         </li>
-                                        <li>গ) কোন শ্রমিক যদি তার কৃত কর্মের জন্য বিচারাধীন থাকে তবে বিচারকার্য শেষ না
+                                        <li><span style="font-size:16px;">গ) কোন শ্রমিক যদি তার কৃত কর্মের জন্য বিচারাধীন থাকে তবে বিচারকার্য শেষ না
                                             হওয়া
                                             অথবা ৬০ দিন পার না হওয়া
-                                            পর্যন্ত সে চাকুরী থেকে ইস্তফা দিতে পারবে না।
+                                            পর্যন্ত সে চাকুরী থেকে ইস্তফা দিতে পারবে না।</span>
                                         </li>
                                     </ul>
                                 </p>
-                                <p>৮।
+                                <p><span style="font-size:16px;">৮।
                                     <b>
                                         <u>চাকুরীর অবসান</u>
                                     </b>
                                     চাকুরী স্থায়ী হবার পর কর্তৃপক্ষ আপনার চাকুরীর অবসান করতে চাইলে ১২০ দিনের লিখিত নোটিশ
                                     অথবা
-                                    নোটিশের পরিবর্তে ১২০ দিনের মূল মজুরী প্রদান করবেন।
+                                    নোটিশের পরিবর্তে ১২০ দিনের মূল মজুরী প্রদান করবেন।</span>
                                 </p>
                                 <p>8.
                                     <b>
@@ -250,11 +251,11 @@
                                     paid, in lieu of such notice
                                     provided further that the worker whose employment is so terminated.
                                 </p>
-                                <p>৯।
+                                <p><span style="font-size:16px;">৯।
                                     <b>
                                         <u>ক র্ম দিবস, কাজের সময়:</u>
                                     </b>
-                                    আপনার কর্মদিবস এবং কর্মঘন্টা কোম্পানী নীতিমালা অনুযায়ী পরিচালিত হবে।
+                                    আপনার কর্মদিবস এবং কর্মঘন্টা কোম্পানী নীতিমালা অনুযায়ী পরিচালিত হবে।</span>
                                 </p>
 
                                 <p>9.
@@ -263,10 +264,10 @@
                                     </b>
                                     Your duty time &amp; hours will be as per the company policy.
                                 </p>
-                                <p>১০।
+                                <p><span style="font-size:16px;">১০।
                                     <b>
                                         <u>ছুটি:</u>
-                                    </b>
+                                    </b></span>
                                 </p>
                                 <p>10.
                                     <b>
@@ -276,34 +277,34 @@
                                 <p>
                                     <ul>
                                         <li class="list-style-circle">
-                                            <b>সাপ্তাহিক ছুটি:</b>
-                                            ০১(এক) দিন (শুক্রবার)।
+                                            <span style="font-size:16px;"><b>সাপ্তাহিক ছুটি:</b>
+                                            ০১(এক) দিন (শুক্রবার)।</span>
                                             <p>
                                                 <u>Day-Off:</u>
                                                 01 (one) Weekly Off day will be on Friday.
                                             </p>
                                         </li>
                                         <li class="list-style-star">
-                                            <b>নৈমিত্তিক ছুটি:</b>
-                                            বছরে ১০ (দশ) দিন (পূর্ন বেতনে)।
+                                            <span style="font-size:16px;"><b>নৈমিত্তিক ছুটি:</b>
+                                            বছরে ১০ (দশ) দিন (পূর্ন বেতনে)।</span>
                                             <p>
                                                 <u>Casual Leave:</u>
                                                 Ten days in a year with full pay.
                                             </p>
                                         </li>
                                         <li class="list-style-star">
-                                            <b>অসুস্থতা জনিত ছুটি :</b>
-                                            বছরে ১৪ (চৌদ্দ) দিন (পূর্ন বেতনে)।
+                                            <span style="font-size:16px;"><b>অসুস্থতা জনিত ছুটি :</b>
+                                            বছরে ১৪ (চৌদ্দ) দিন (পূর্ন বেতনে)।</span>
                                             <p>
                                                 <u>Sick Leave:</u>
                                                 14 (fourteen) days with full pay in a year.
                                             </p>
                                         </li>
                                         <li class="list-style-star">
-                                            <b>অর্জিত ছুটি:</b>
+                                            <span style="font-size:16px;"><b>অর্জিত ছুটি:</b>
                                             এই ফ্যাক্টরীতে ১২ (বার) মাস কাজ করার পর পূর্ববর্তী বৎসরের জন্য প্রতি ১৮ কর্ম
                                             দিবসে এক দিন
-                                            হিসাবে প্রদেয় হবে।
+                                            হিসাবে প্রদেয় হবে।</span>
                                             <p>
                                                 <u>Earn Leave:</u>
                                                 On completion of one year regular service one day for every eighteen
@@ -312,27 +313,20 @@
                                             </p>
                                         </li>
                                         <li class="list-style-star">
-                                            <b>Festival Leave:</b>
-                                            বছরে ১১ (এগার) দিন (ইপিজেড আইন অনুযায়ী)।
+                                            <span style="font-size:16px;"><b>উৎসব ছুটি:</b>
+                                            বছরে ১১ (এগার) দিন (ইপিজেড আইন অনুযায়ী)।  </span>
                                             <p>
-                                                <u>Casual Leave:</u>
+                                                <u>Festival Leave:</u>
                                                 11 (eleven) days in a year with Bangladesh EPZ Law-2019.
                                             </p>
                                         </li>
+                                        
                                         <li class="list-style-star">
-                                            <b>Festival Leave:</b>
-                                            বছরে ১১ (এগার) দিন (ইপিজেড আইন অনুযায়ী)।
-                                            <p>
-                                                <u>Casual Leave:</u>
-                                                11 (eleven) days in a year with Bangladesh EPZ Law-2019.
-                                            </p>
-                                        </li>
-                                        <li class="list-style-star">
-                                            <b>মাতৃত্বকালীন ছুটি:</b>
+                                            <span style="font-size:16px;"><b>মাতৃত্বকালীন ছুটি:</b>
                                             কোন মহিলা শ্রমিকের চাকুরীর মেয়াদ কমপক্ষে ০৬ (ছয়) মাস হলে তিনি মোট ১৬ সপ্তাহ
                                             (১১২ দিন) পূর্ন বেতনে মাতৃত্বকালীন ছুটি পাবেন, তবে দুই বা ততোধিক সন্তান এর
                                             ক্ষেত্রে এই
-                                            সুবিধা পাবেন না।
+                                            সুবিধা পাবেন না।</span>
                                             <p>
                                                 <u>Maternity Leave:</u>
                                                 Every woman worker will be entitle for 16 weeks (112 days) leave with
@@ -344,13 +338,13 @@
                                     </ul>
                                 </p>
 
-                                <p>১১।
+                                <p><span style="font-size:16px;">১১।
                                     <b>
                                         <u>কোম্পানী প্রদত্ত আইটেম ফেরত প্রসঙ্গে :</u>
                                     </b>
                                     চাকুরী স্থায়ী হবার পর কর্তৃপক্ষ আপনার চাকুরীর অবসান করতে চাইলে ১২০ দিনের লিখিত নোটিশ
                                     অথবা
-                                    নোটিশের পরিবর্তে ১২০ দিনের মূল মজুরী প্রদান করবেন।
+                                    নোটিশের পরিবর্তে ১২০ দিনের মূল মজুরী প্রদান করবেন।</span>
                                 </p>
                                 <p>11.
                                     <b>
@@ -361,16 +355,16 @@
                                     you have got from
                                     the company, otherwise company can deduct that much amount from your wages..
                                 </p>
-                                <p>১২।
+                                <p><span style="font-size:16px;">১২।
                                     <b>
                                         <u>অভিযোগ/পরামর্শ পদ্ধতি :</u>
                                     </b>
-                                    অত্র ফ্যাক্টরীতে চাকুরী /কর্ম সংμান্ত অসন্তোষ অথবা কোন পরামর্শ থাকলে তৎক্ষনাৎ তা
+                                    অত্র ফ্যাক্টরীতে চাকুরী /কর্ম সংক্রান্ত অসন্তোষ অথবা কোন পরামর্শ থাকলে তৎক্ষনাৎ তা
                                     উর্ধতন
                                     কর্তৃপক্ষকে জানাতে হবে। পরিচয় গোপন করতে চাইলে কারখানায় রক্ষিত অভিযোগ বাক্সে লিখিত
                                     অভিযোগ ফেলতে পারেন।
                                     পরামর্শ বা অভিযোগ প্রাপ্তির পর কর্তৃপক্ষের জবাব কোম্পানীর নোটিশ বোর্ডে লাগিয়ে দেওয়া
-                                    হবে।
+                                    হবে।</span>
                                 </p>
                                 <p>12.
                                     <b>
@@ -383,12 +377,12 @@
                                     complained
                                     or suggestion reply from the management will be given in the notice board.
                                 </p>
-                                <p>১৩।
+                                <p><span style="font-size:16px;">১৩।
                                     <b>
                                         <u>বদলী :</u>
                                     </b>
                                     কর্তৃপক্ষ প্রতিষ্ঠানের বৃহৎ স্বার্থে আপনাকে অত্র প্রতিষ্ঠানের যে কোন বিভাগে বদলী
-                                    করার অধীকার রাখে।
+                                    করার অধীকার রাখে।</span>
                                 </p>
                                 <p>13.
                                     <b>
@@ -396,13 +390,13 @@
                                     </b>
                                     Company has the right to transfer you in any other Department.
                                 </p>
-                                <p>১৪।
+                                <p><span style="font-size:16px;">১৪।
                                     <b>
                                         <u>গোপনীয়তা :</u>
                                     </b>
                                     আপনি অত্র প্রতিষ্ঠানে কর্মরত অবস্থায় কোন ভাবেই প্রতিষ্ঠানের গোপন এবং প্রয়োজনীয় তথ্য
                                     অপব্যবহার এবং
-                                    অপপ্রচার করতে পারবেন না।
+                                    অপপ্রচার করতে পারবেন না।</span>
                                 </p>
                                 <p>14.
                                     <b>
@@ -413,30 +407,15 @@
                                     secret matters of the company to anywhere.
                                 </p>
 
-                                <p>১৪।
-                                    <b>
-                                        <u>গোপনীয়তা :</u>
-                                    </b>
-                                    আপনি অত্র প্রতিষ্ঠানে কর্মরত অবস্থায় কোন ভাবেই প্রতিষ্ঠানের গোপন এবং প্রয়োজনীয় তথ্য
-                                    অপব্যবহার এবং
-                                    অপপ্রচার করতে পারবেন না।
-                                </p>
-                                <p>14.
-                                    <b>
-                                        <u>Secrecy:</u>
-                                    </b>
-                                    During your service in the company in no case you are allowed to disclose or misused
-                                    any
-                                    secret matters of the company to anywhere.
-                                </p>
+                                
 
-                                <p>১৫।
+                                <p><span style="font-size:16px;">১৫।
                                     <b>
                                         <u>অসদাচরন এবং শাস্তি:</u>
                                     </b>
                                     যে কোন ধরনের অসদাচরনের (প্রমাণিত হলে) জন্য সর্ব্বোচ্চ শাস্তি (আইনের আওতাভুক্ত হলে)
                                     হতে
-                                    পারে চাকুরী থেকে বরখা¯ত করণ।
+                                    পারে চাকুরী থেকে বরখাস্ত করণ।</span>
                                 </p>
                                 <p>15.
                                     <b>
@@ -445,13 +424,13 @@
                                     For any kind of misbehave and if it is proved will be taken under law &amp;
                                     highest punishment will be dismiss from the service.
                                 </p>
-                                <p>১৬।
+                                <p><span style="font-size:16px;">১৬।
                                     <b>
                                         <u>অবহিতকরন:</u>
                                     </b>
                                     অত্র প্রতিষ্ঠানে আপনার প্রদত্ত তথ্যাবলীর কোন প্রকার পরিবর্তন, সংশোধন বা পরিমার্জন
                                     হলে বা করলে তা
-                                    অবশ্যই এইচ আর ডিপার্টমেন্টকে লিখিত ভাবে অবহিত করতে হবে।
+                                    অবশ্যই এইচ আর ডিপার্টমেন্টকে লিখিত ভাবে অবহিত করতে হবে।</span>
                                 </p>
                                 <p>16.
                                     <b>
@@ -460,11 +439,11 @@
                                     If you want to change, add or to rectify any information given to this organization
                                     must be informed to the H.R Department in writing.
                                 </p>
-                                <p>১৭।
+                                <p><span style="font-size:16px;">১৭।
                                     <b>
                                         <u>প্রতিষ্ঠানের নীতিমালা :</u>
                                     </b>
-                                    বাংলাদেশ ইপিজেড আইন অনুযায়ী কর্তৃপক্ষ নীতিমালার পরিবতৃন করতে পারবেন।
+                                    বাংলাদেশ ইপিজেড আইন অনুযায়ী কর্তৃপক্ষ নীতিমালার পরিবতৃন করতে পারবেন।</span>
                                 </p>
                                 <p>17.
                                     <b>
@@ -473,12 +452,14 @@
                                     Company can change its Policy at any moment of time without any prior notice
                                     considering the BEPZA Law.
                                 </p>
-                                <p>১৮।
+                                
+                                <p><span style="font-size:16px;">১৮।
                                     <b>
                                         <u>অন্যান্য সুবিধাদি :</u>
                                     </b>
-                                    অন্যান্য সুবিধাদি কোম্পানীর নিয়ম অনুযায়ী দেওয়া হবে ।
+                                    অন্যান্য সুবিধাদি কোম্পানীর নিয়ম অনুযায়ী দেওয়া হবে ।</span>
                                 </p>
+                                
                                 <p>18.
                                     <b>
                                         <u>Others Benifit:</u>
@@ -492,33 +473,33 @@
                         </div>
                         <div class="appointment-letter">
                             <p>
-                                <div style="float:right;width:30%;">
-                                    <p>আমি অত্র নিয়োগপত্রে বর্নিত শর্তা দি সম্পুর্নরূপে অবগত হয়ে
-                                        স্বেচ্ছায়, সজ্ঞানে স্বাাক্ষর করে গ্রহন করলাম।
+                                <div style="float:right;width:40%;">
+                                    <p><span style="font-size:16px;">আমি অত্র নিয়োগপত্রে বর্নিত শর্তা দি সম্পুর্নরূপে অবগত হয়ে
+                                        স্বেচ্ছায়, সজ্ঞানে স্বাাক্ষর করে গ্রহন করলাম।</span>
                                     </p>
                                     <p>I myself read, understood &amp; accept the terms &amp;
                                         Conditions mentioned in this Appointment letter with my full of sense.
                                     </p>
                                     <br/>
-                                    ________________________
+                                    _________________________________
                                     <br/>
-                                    শ্রমিকের স্বাক্ষর/Signature of Employee
+                                    <span style="font-size:16px;">শ্রমিকের স্বাক্ষর/</span>Signature of Employee
                                     <br/>
 
                                 </div>
                             </p>
                             <p>
 
-                                <div style="float:left;width:30%;">
+                                <div style="float:left;width:40%;">
                                     <p>For, Tex Zippers (BD) Limited,</p>
                                     <br/>
-                                    ________________________
+                                    ____________________________________
                                     <br/>
-                                    অনুমোদিত স্বাাক্ষর /Authorised Signature
+                                    <span style="font-size:16px;">অনুমোদিত স্বাাক্ষর /</span>Authorised Signature
                                     <br/>
                                     <ul>অনুলিপি /Copy To:
                                         <li>১. হিসাব বিভাগ/Accounts Dept.</li>
-                                        <li>২. ব্যক্তিগত/H R File.</li>
+                                        <li>২. ব্যক্তিগত/HR File.</li>
                                     </ul>
                                 </div>
                             </p>
