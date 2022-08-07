@@ -6,95 +6,111 @@
         <field name="inherit_id" ref="hr_appraisal.hr_appraisal_goal_view_form"/>
         <field name="arch" type="xml">
                 <xpath expr="//field[@name='progression']" position="attributes">
-                    <attribute name="string">Weight</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='progression']" position="after">
+                    <field name="target"/>
+                </xpath>
+                <xpath expr="//field[@name='deadline']" position="after">
+                    <field name="condition"/>
                 </xpath>
                 <xpath expr="//field[@name='manager_id']" position="after">
-                    <label for="ytd"/>
-                    <div class="o_row" name="ytd">
-                        <field name="ytd" nolabel="1"/>
+                    <label for="weight"/>
+                    <div class="o_row" name="weight">
+                        <field name="weight" nolabel="1"/>
                         <span>&#37;</span>
                     </div>
 <!--                     <field name="ytd" widget="badge"/> -->
                 </xpath>
                 <xpath expr="/form[1]/sheet[1]/group[1]" position="after">
-                    <group>
-                        <group>
-                            <label for="apr"/>
-                            <div class="o_row" name="apr">
-                                <field name="apr" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="may"/>
-                            <div class="o_row" name="may">
-                                <field name="may" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="jun"/>
-                            <div class="o_row" name="jun">
-                                <field name="jun" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="jul"/>
-                            <div class="o_row" name="jul">
-                                <field name="jul" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="aug"/>
-                            <div class="o_row" name="aug">
-                                <field name="aug" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="sep"/>
-                            <div class="o_row" name="sep">
-                                <field name="sep" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-<!--                             <field name="apr"/> -->
-<!--                             <field name="may"/> -->
-<!--                             <field name="jun"/> -->
-<!--                             <field name="jul"/> -->
-<!--                             <field name="aug"/> -->
-<!--                             <field name="sep"/> -->
-                        </group>
-                        <group>
-                            <label for="oct"/>
-                            <div class="o_row" name="oct">
-                                <field name="oct" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="nov"/>
-                            <div class="o_row" name="nov">
-                                <field name="nov" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="dec"/>
-                            <div class="o_row" name="dec">
-                                <field name="dec" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="jan"/>
-                            <div class="o_row" name="jan">
-                                <field name="jan" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="feb"/>
-                            <div class="o_row" name="feb">
-                                <field name="feb" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-                            <label for="mar"/>
-                            <div class="o_row" name="mar">
-                                <field name="mar" nolabel="1"/>
-                                <span>&#37;</span>
-                            </div>
-<!--                             <field name="oct"/> -->
-<!--                             <field name="nov"/> -->
-<!--                             <field name="dec"/> -->
-<!--                             <field name="jan"/> -->
-<!--                             <field name="feb"/> -->
-<!--                             <field name="mar"/> -->
-                        </group>
-                    </group>
+                    <table class="table table-sm p-0 m-0" style="table-layout:fixed;">
+                        <thead>
+                            <tr align="center" style="background-color:orange;">
+                                <th colspan="2" style="border-style: ridge;">April</th>
+                                <th colspan="2" style="border-style: ridge;">May</th>
+                                <th colspan="2" style="border-style: ridge;">Jun</th>
+                                <th colspan="2" style="border-style: ridge;">July</th>
+                                <th colspan="2" style="border-style: ridge;">August</th>
+                                <th colspan="2" style="border-style: ridge;">September</th>
+                                <th colspan="2" style="border-style: ridge;">October</th>
+                                <th colspan="2" style="border-style: ridge;">November</th>
+                                <th colspan="2" style="border-style: ridge;">December</th>
+                                <th colspan="2" style="border-style: ridge;">January</th>
+                                <th colspan="2" style="border-style: ridge;">February</th>
+                                <th colspan="2" style="border-style: ridge;">March</th>
+                                <th colspan="2" style="border-style: ridge;">YTD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr align="center">
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_apr"/>
+                                    <br/>
+                                    <field name="apr"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_may"/>
+                                    <br/>
+                                    <field name="may"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_jun"/>
+                                    <br/>
+                                    <field name="jun"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_jul"/>
+                                    <br/>
+                                    <field name="jul"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_aug"/>
+                                    <br/>
+                                    <field name="aug"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_sep"/>
+                                    <br/>
+                                    <field name="sep"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_oct"/>
+                                    <br/>
+                                    <field name="oct"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_nov"/>
+                                    <br/>
+                                    <field name="nov"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_dec"/>
+                                    <br/>
+                                    <field name="dec"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_jan"/>
+                                    <br/>
+                                    <field name="jan"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_feb"/>
+                                    <br/>
+                                    <field name="feb"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_mar"/>
+                                    <br/>
+                                    <field name="mar"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="t_ytd"/>
+                                    <br/>
+                                    <field name="ytd"/><span>&#37;</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </xpath>
         </field>
     </record>
@@ -104,12 +120,12 @@
         <field name="model">hr.appraisal.goal</field>
         <field name="inherit_id" ref="hr_appraisal.hr_appraisal_goal_view_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='progression']" position="attributes">
+<!--             <xpath expr="//field[@name='progression']" position="attributes">
                 <attribute name="string">Weight</attribute>
-            </xpath>
+            </xpath> -->
             <tree sample="1">
                 <field name="ytd" widget="badge"/>
-                <field name="apr"/>
+<!--                 <field name="apr"/>
                 <field name="may"/>
                 <field name="jun"/>
                 <field name="jul"/>
@@ -120,7 +136,7 @@
                 <field name="dec"/>
                 <field name="jan"/>
                 <field name="feb"/>
-                <field name="mar"/>
+                <field name="mar"/> -->
             </tree>
         </field>
     </record>
