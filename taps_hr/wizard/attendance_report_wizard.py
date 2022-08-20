@@ -34,6 +34,7 @@ class AttendancePDFReport(models.TransientModel):
         ('holiday_slip',	'Off Day/Holiday Duty Slip'),
         ('daily_excess_ot',	'Daily Excess OT'),
         ('daily_salary_cost',	'Daily Salary Cost'),
+        ('atten_calender',	'Attendance Calender'),
         ('shift_schedule',       'Shift Schedule')],
         string='Report Type', required=True, default='job_card',
         help='By Attendance Reporting')
@@ -201,6 +202,8 @@ class AttendancePDFReport(models.TransientModel):
             return self.env.ref('taps_hr.action_daily_excess_ot_pdf_report').report_action(self, data=data)
         if self.report_type == 'daily_salary_cost':
             return self.env.ref('taps_hr.action_daily_salary_cost_pdf_report').report_action(self, data=data)
+        if self.report_type == 'atten_calender':
+            return self.env.ref('taps_hr.action_atten_calender_pdf_report').report_action(self, data=data)
         if self.report_type == 'shift_schedule':
             return self.env.ref('taps_hr.action_shift_schedule_pdf_report').report_action(self, data=data)
             
@@ -2015,7 +2018,198 @@ class DailysalarycostReportPDF(models.AbstractModel):
             
         } 
     
+class AttendanceCalenderReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.atten_calender_pdf_template'
+    _description = 'Attendance Calender'      
     
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        domain_ = []
+        if data.get('date_from'):
+            domain.append(('attDate', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('attDate', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain_.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+            domain_.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain_.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+            domain_.append(('employee_id.id', '=', data.get('employee_id')))
+        
+        #domain.append(('employee_id.active', '=', True))
+        if data.get('atten_type'):
+            if data.get('atten_type')=='p':
+                domain.append(('inFlag', '=', 'P'))
+            if data.get('atten_type')=='l':
+                domain.append(('inFlag', '=', 'L'))
+            if data.get('atten_type')=='a':
+                domain.append(('inFlag', '=', 'A'))
+            if data.get('atten_type')=='fp':
+                domain.append(('inFlag', '=', 'FP'))
+            if data.get('atten_type')=='hp':
+                domain.append(('inFlag', '=', 'HP'))
+            if data.get('atten_type')=='eo':
+                domain.append(('outFlag', '=', 'EO'))
+            if data.get('atten_type')=='po':
+                domain.append(('outFlag', '=', 'PO'))
+            if data.get('atten_type')=='cl':
+                domain.append(('inFlag', '=', 'CL'))
+            if data.get('atten_type')=='sl':
+                domain.append(('inFlag', '=', 'SL'))
+            if data.get('atten_type')=='el':
+                domain.append(('inFlag', '=', 'EL'))
+            if data.get('atten_type')=='ml':
+                domain.append(('inFlag', '=', 'ML'))
+            if data.get('atten_type')=='lw':
+                domain.append(('inFlag', '=', 'LW'))
+            if data.get('atten_type')=='co':
+                domain.append(('inFlag', '=', 'CO'))
+            if data.get('atten_type')=='aj':
+                domain.append(('inFlag', '=', 'AJ'))       
+        
+        
+        
+        #raise UserError((domain))    
+        docs = self.env['hr.attendance'].search(domain).sorted(key = 'attDate', reverse=False)
+        #raise UserError((docs.id)) 
+        emplist = docs.mapped('employee_id.id')
+        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+        employee_leave = self.env['hr.leave.report'].search([('employee_id', 'in', (emplist))])
+        #raise UserError((employee_leave.id)) 
+        fst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=False)[:1]
+        lst_days = docs.search([('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to'))]).sorted(key = 'attDate', reverse=True)[:1]
+        
+        
+        prev_date = fields.datetime.strptime(data.get('date_from'), '%Y-%m-%d')
+        last_date = fields.datetime.strptime(data.get('date_to'), '%Y-%m-%d')
+        a_date = data.get('date_from')
+        a_date = a_date[8:10]
+        a_d = int(a_date)
+
+        if (a_d > 26) :
+            prev_date = prev_date.replace(day= 26).strftime('%Y-%m-%d')
+            last_date = (last_date+ timedelta(days=10)).strftime('%Y-%m-25')
+        if (a_d <= 26) :
+            prev_date = (prev_date.replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
+            last_date = last_date.strftime('%Y-%m-25')
+        
+        att_docs = self.env['hr.attendance'].search(domain_).sorted(key = 'attDate', reverse=False)
+        att_fst_days = att_docs.search([('attDate', '>=', prev_date),('attDate', '<=', last_date)]).sorted(key = 'attDate', reverse=False)[:1]
+        att_lst_days = att_docs.search([('attDate', '>=', prev_date),('attDate', '<=', last_date)]).sorted(key = 'attDate', reverse=True)[:1]
+        
+        
+#         prev_date = fields.datetime.strptime(data.get('date_from'), '%Y-%m-%d')
+        
+        
+        
+        
+        
+    
+        stdate = fst_days.attDate
+        enddate = lst_days.attDate
+        att_stdate = att_fst_days.attDate
+        att_enddate = att_lst_days.attDate
+        #raise UserError((att_fst_days.attDate)) 
+        
+        all_att_datelist = []
+        att_dates = []
+        #raise UserError((docs.id)) 
+        att_delta = att_enddate - att_stdate       # as timedelta
+        for i in range(att_delta.days + 1):
+            day = att_stdate + timedelta(days=i)
+            att_dates = [
+                day,
+            ]
+            all_att_datelist.append(att_dates)
+            
+            
+        all_datelist = []
+        dates = []
+        #raise UserError((docs.id)) 
+        delta = enddate - stdate       # as timedelta
+        for i in range(delta.days + 1):
+            day = stdate + timedelta(days=i)
+            dates = [
+                day,
+            ]
+            all_datelist.append(dates)
+            
+        all_datelist_ = []
+        dates_ = []
+        #raise UserError((docs.id)) 
+        delta_ = fields.datetime.strptime(last_date,'%Y-%m-%d') - fields.datetime.strptime(prev_date, '%Y-%m-%d')      # as timedelta
+        for i in range(delta_.days + 1):
+            day =fields.datetime.strptime(prev_date, '%Y-%m-%d').date()   + timedelta(days=i)
+            dates_ = [
+                day,
+            ]
+            all_datelist_.append(dates_)
+        
+
+        allemp_data = []
+        for details in employee:
+            otTotal = 0
+            for de in docs:
+                if details.id == de.employee_id.id:
+                    otTotal = otTotal + de.otHours
+            
+            emp_data = []
+            emp_data = [
+                data.get('date_from'),
+                data.get('date_to'),
+                details.id,
+                details.emp_id,
+                details.name,
+                details.department_id.parent_id.name,
+                details.department_id.name,
+                details.job_id.name,
+                details.joining_date,
+                details.service_length,
+                details.grade,
+                details.contract_id.wage,
+                details.contract_id.pf_activationDate,
+                
+            ]
+            allemp_data.append(emp_data)
+            
+            
+            em_list = '0'
+        for e in emplist:
+            em_list = em_list + ',' + str(e)
+            
+        query = """ select r.employee_id,t.name,r.number_of_days,
+COALESCE((select sum(av.number_of_days) from hr_leave_report as av where av.holiday_status_id=r.holiday_status_id and av.employee_id=r.employee_id and av.leave_type='request' and av.state='validate'),0)
+from hr_leave_report as r inner join hr_leave_type as t on r.holiday_status_id=t.id where r.employee_id in (""" + em_list + """) and r.leave_type='allocation' and r.state='validate'; """
+        cr = self._cr
+        cursor = self.env.cr
+        cr.execute(query)
+        atten_calendar = cursor.fetchall()
+        #raise UserError(('domain'))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.attendance',
+            'docs': docs,
+            'att_docs' : att_docs,
+            'datas': allemp_data,
+            'alldays': all_datelist,
+            'alldays_' : all_datelist_,
+            'allattdays' : all_att_datelist,
+            'is_com' : data.get('is_company'),
+            'a_y' : fields.datetime.strptime(data.get('date_from'), '%Y-%m-%d'),
+            'a_c' : atten_calendar
+            
+            
+        }   
     
 class ShiftScheduleReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.shift_schedule_pdf_template'

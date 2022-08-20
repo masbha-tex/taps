@@ -79,6 +79,7 @@
         'reports/atten_holiday_slip_pdf_template.xml',
         'reports/atten_daily_excess_ot_pdf_template.xml',
         'reports/atten_daily_salary_cost_pdf_template.xml',
+        'reports/atten_atten_calender_pdf_template.xml',
         'reports/atten_shift_schedule_pdf_template.xml',
 #         'wizard/employee_profile_report_wizard_view.xml',
         'wizard/headwise_report_wizard_view.xml',

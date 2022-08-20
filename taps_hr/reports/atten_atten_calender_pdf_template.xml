@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<template id="atten_calender_pdf_template">
+		<t t-call="web.html_container">
+			<t t-foreach="datas" t-as="emp">
+				<t t-call="web.external_layout">
+					<div class="page">
+						<style>
+					              p
+					              {
+					                margin:0;
+					                padding:0;
+					              }
+					              
+                        table, td, tr, th
+                        {
+                          border: 1px solid black ! important;
+                        }
+                        table
+                        {
+                          table-layout: fixed;
+                        }
+                        th, td
+                        {
+                        vertical-align: middle ! important;
+                        }
+                        <!--thead-->
+							<!--{-->
+							<!--  background-color: Orange;-->
+							<!--}-->
+						</style>
+						<div class="footer" style="margin:0px; padding:0px;">
+							<div class="row">
+								<div class="col-4">
+                        Print Date: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y  %H:%M')"/>
+								</div>
+								<div class="col-4 text-center">
+                      
+										</div>
+								<div class="col-4 text-right ! important">
+									<span>Page: <span class="page"/>/<span class="topage"/>
+									</span>
+								</div>
+							</div>
+						</div>
+						<h4 class="text-right">
+							<strong>
+								<i>Attendance Calender</i>
+							</strong>
+						</h4>
+						<div class="row" style="font-size: 13px">
+							<div class="col-6">
+								<div class="row">
+									<div class="col-4">
+										<p>Employee Name</p>
+										<p>Eployee ID</p>
+										<p>Designation</p>
+										<p>Department</p>
+									</div>
+									<div class="col-1">
+										<p>:</p>
+										<p>:</p>
+										<p>:</p>
+										<p>:</p>
+									</div>
+									<div class="col-7">
+										<p>
+											<span t-esc="emp[4]"/>
+										</p>
+										<p>
+											<span t-esc="emp[3]"/>
+										</p>
+										<p>
+											<span t-esc="emp[7]"/>
+										</p>
+										<p>
+											<span t-esc="emp[5]"/>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="row">
+									<div class="col-4">
+										<p>Date of Joining</p>
+										<p>Service Length</p>
+										<p>Grade</p>
+										<p>Section</p>
+									</div>
+									<div class="col-1">
+										<p>:</p>
+										<p>:</p>
+										<p>:</p>
+										<p>:</p>
+									</div>
+									<div class="col-7">
+										<p>
+											<span t-esc="emp[8].strftime('%d-%m-%Y')"/>
+										</p>
+										<p>
+											<span t-esc="emp[9]"/>
+										</p>
+										<p>
+											<span t-esc="emp[10]"/>
+										</p>
+										<p>
+											<span t-esc="emp[6]"/>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="container">
+							<br/>
+							<t t-set="total" t-value="0"/>
+							<t t-set="p" t-value="0"/>
+							<t t-set="a" t-value="0"/>
+							<t t-set="f" t-value="0"/>
+							<t t-set="h" t-value="0"/>
+							<t t-set="cl" t-value="0"/>
+							<t t-set="sl" t-value="0"/>
+							<t t-set="el" t-value="0"/>
+							<t t-set="ml" t-value="0"/>
+							<t t-set="co" t-value="0"/>
+							<t t-set="lw" t-value="0"/>
+							<t t-set="aj" t-value="0"/>
+							<t t-foreach="allattdays" t-as="aald">
+								<t t-foreach="att_docs.filtered(lambda x:(x.attDate == aald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
+									<t t-if="att.inFlag == 'A'">
+										<t t-set="a" t-value="a+1"/>
+									</t>
+									<t t-if="att.attDate != ''">
+										<t t-set="total" t-value="total+1"/>
+									</t>
+									<t t-if="att.inFlag == 'F'">
+										<t t-set="f" t-value="f+1"/>
+									</t>
+									<t t-if="att.inFlag == 'P'">
+										<t t-set="p" t-value="p+1"/>
+									</t>
+									<t t-if="att.inFlag == 'L'">
+										<t t-set="p" t-value="p+1"/>
+									</t>
+									<t t-if="att.inFlag == 'H'">
+										<t t-set="h" t-value="h+1"/>
+									</t>
+									<t t-if="att.inFlag == 'HP'">
+										<t t-set="p" t-value="p+1"/>
+									</t>
+									<t t-if="att.inFlag == 'FP'">
+										<t t-set="p" t-value="p+1"/>
+									</t>
+									<t t-if="att.inFlag == 'CO'">
+										<t t-set="co" t-value="co+1"/>
+									</t>
+									<t t-if="att.inFlag == 'AJ'">
+										<t t-set="aj" t-value="aj+1"/>
+									</t>
+									<t t-if="att.inFlag == 'SL'">
+										<t t-set="sl" t-value="sl+1"/>
+									</t>
+									<t t-if="att.inFlag == 'CL'">
+										<t t-set="cl" t-value="cl+1"/>
+									</t>
+									<t t-if="att.inFlag == 'EL'">
+										<t t-set="el" t-value="el+1"/>
+									</t>
+									<t t-if="att.inFlag == 'ML'">
+										<t t-set="el" t-value="el+1"/>
+									</t>
+								</t>
+							</t>
+							<div align="center">
+								<strong style="font-size:18px;">
+									<span>
+										</span>
+									<u>Attendance</u>
+								</strong>
+							</div>
+							<table class="table table-sm center" style="font-size:8px; width:80%; margin-left: auto; margin-right: auto;">
+								<thead style="background-color: #FFA500">
+									<tr align="center">
+										<t t-foreach="alldays_" t-as="ald_">
+											<th>
+												<span t-esc="ald_[0].strftime('%d')"/>
+											</th>
+										</t>
+									</tr>
+								</thead>
+								<tbody>
+									<tr align="center">
+										<t t-foreach="alldays_" t-as="ald_">
+											<t t-foreach="alldays" t-as="ald">
+												<t t-if="ald_[0] == ald[0]">
+													<t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0])  and (x.employee_id.id == emp[2]))" t-as="attn">
+														<td>
+															<b>
+																<span>
+																	<t t-esc="attn['inFlag']"/>
+																</span>
+															</b>
+														</td>
+													</t>
+												</t>
+												<t t-if="ald_[0] != ald[0]">
+													<td/>
+												</t>
+											</t>
+										</t>
+									</tr>
+								</tbody>
+							</table>
+							<table class="table table-sm" style="font-size:10px">
+								<thead style="background-color: #F5F5F5">
+									<tr align="center">
+										<th t-att-rowspan="2" t-att-colspan="1">Year</th>
+										<th t-att-rowspan="2" t-att-colspan="1">Month</th>
+										<th t-att-rowspan="2">Working<br/>Days</th>
+										<th t-att-rowspan="2">Present<br/>Days</th>
+										<th t-att-rowspan="2">Friday</th>
+										<th t-att-rowspan="2">Holiday</th>
+										<th t-att-rowspan="2">CO</th>
+										<th t-att-rowspan="2">AJ</th>
+										<th t-att-colspan="4" t-att-rowspan="1">Leave Status</th>
+										<th t-att-rowspan="2">Absent<br/>Days</th>
+									</tr>
+									<tr align="center">
+										<th t-att-colspan="1">CL</th>
+										<th t-att-colspan="1">SL</th>
+										<th t-att-colspan="1">EL</th>
+										<th t-att-colspan="1">ML</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr align="center">
+										<td t-att-colspan="1">
+											<t t-esc="a_y.strftime('%Y')"/>
+										</td>
+										<td t-att-colspan="1">
+											<t t-esc="a_y.strftime('%B')"/>
+										</td>
+										<td style="background-color: #fed8b1">
+											<t t-esc="total"/>
+										</td>
+										<td style="background-color: #fed8b1">
+											<t t-esc="p"/>
+										</td>
+										<td style="background-color:#FFFFE0">
+											<t t-esc="f"/>
+										</td>
+										<td style="background-color:#FFFFE0">
+											<t t-esc="h"/>
+										</td>
+										<td style="background-color:#90ee90">
+											<t t-esc="co"/>
+										</td>
+										<td style="background-color:#90ee90">
+											<t t-esc="aj"/>
+										</td>
+										<td style="background-color:#ADD8E6">
+											<t t-esc="cl"/>
+										</td>
+										<td style="background-color:#ADD8E6">
+											<t t-esc="sl"/>
+										</td>
+										<td style="background-color:#ADD8E6">
+											<t t-esc="el"/>
+										</td>
+										<td style="background-color:#ADD8E6">
+											<t t-esc="ml"/>
+										</td>
+										<td style="background-color:#ffcccb">
+											<t t-esc="a"/>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div align="center">
+								<strong style="font-size:20px;">
+									<span>
+										</span>
+									<u>Leave Record</u>
+								</strong>
+							</div>
+						</div>
+						<table class="table table-sm center" style="font-size:13px; width:80%; margin-left: auto; margin-right: auto;">
+							<thead>
+								<tr align="center">
+									<th>Leave Type</th>
+									<th>Entitle Leave</th>
+									<th>Availed Leave</th>
+									<th>Balance Leave</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-foreach="a_c" t-as="ac">
+									<t t-if="ac[0] == emp[2]">
+										<tr align="center">
+											<td>
+												<t t-esc="ac[1]"/>
+											</td>
+											<td>
+												<t t-esc="ac[2]"/>
+											</td>
+											<td>
+												<t t-esc="abs(ac[3])"/>
+											</td>
+											<td>
+												<t t-esc="ac[2]-abs(ac[3])"/>
+											</td>
+										</tr>
+									</t>
+								</t>
+							</tbody>
+						</table>
+						<br/>
+						<div class="container">
+							<div align="center">
+								<div>Notes: __________________________________________________________________________________</div>
+							</div>
+						</div>
+						<br/>
+						<br/>
+						<br/>
+						<div class="container">
+							<div class="row">
+								<div class="col-6">
+									<div align="center">
+										<div>_____________________</div>
+										<div style="text-align: center">Signature of Employee</div>
+									</div>
+								</div>
+								<div class="col-6">
+									<div align="center">
+										<div>_____________________</div>
+										<div style="text-align: center">Signature of HRD</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</t>
+			</t>
+		</t>
+	</template>
+</odoo>

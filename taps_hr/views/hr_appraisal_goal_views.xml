@@ -9,6 +9,7 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='progression']" position="after">
+                    <field name="baseline"/>
                     <field name="target"/>
                 </xpath>
                 <xpath expr="//field[@name='deadline']" position="after">
@@ -25,87 +26,153 @@
                 <xpath expr="/form[1]/sheet[1]/group[1]" position="after">
                     <table class="table table-sm p-0 m-0" style="table-layout:fixed;">
                         <thead>
-                            <tr align="center" style="background-color:orange;">
-                                <th colspan="2" style="border-style: ridge;">April</th>
-                                <th colspan="2" style="border-style: ridge;">May</th>
-                                <th colspan="2" style="border-style: ridge;">Jun</th>
-                                <th colspan="2" style="border-style: ridge;">July</th>
-                                <th colspan="2" style="border-style: ridge;">August</th>
-                                <th colspan="2" style="border-style: ridge;">September</th>
-                                <th colspan="2" style="border-style: ridge;">October</th>
-                                <th colspan="2" style="border-style: ridge;">November</th>
-                                <th colspan="2" style="border-style: ridge;">December</th>
-                                <th colspan="2" style="border-style: ridge;">January</th>
-                                <th colspan="2" style="border-style: ridge;">February</th>
-                                <th colspan="2" style="border-style: ridge;">March</th>
-                                <th colspan="2" style="border-style: ridge;">YTD</th>
+                            <tr align="center" style="background-color:#714B67; color: white;">
+                                <td colspan="2" style="border-style: ridge;">Month</td>
+                                <td colspan="2" style="border-style: ridge;">April</td>
+                                <td colspan="2" style="border-style: ridge;">May</td>
+                                <td colspan="2" style="border-style: ridge;">Jun</td>
+                                <td colspan="2" style="border-style: ridge;">July</td>
+                                <td colspan="2" style="border-style: ridge;">August</td>
+                                <td colspan="2" style="border-style: ridge;">September</td>
+                                <td colspan="2" style="border-style: ridge;">October</td>
+                                <td colspan="2" style="border-style: ridge;">November</td>
+                                <td colspan="2" style="border-style: ridge;">December</td>
+                                <td colspan="2" style="border-style: ridge;">January</td>
+                                <td colspan="2" style="border-style: ridge;">February</td>
+                                <td colspan="2" style="border-style: ridge;">March</td>
+                                <td colspan="2" style="border-style: ridge;">YTD</td>
                             </tr>
                         </thead>
                         <tbody>
                             <tr align="center">
+                                <td colspan="2" style="color:white; border-style: ridge; text-align: left;background-color:#714B67;">
+                                    <span>Target</span>
+                                </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_apr"/>
-                                    <br/>
-                                    <field name="apr"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_may"/>
-                                    <br/>
-                                    <field name="may"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_jun"/>
-                                    <br/>
-                                    <field name="jun"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_jul"/>
-                                    <br/>
-                                    <field name="jul"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_aug"/>
-                                    <br/>
-                                    <field name="aug"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_sep"/>
-                                    <br/>
-                                    <field name="sep"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_oct"/>
-                                    <br/>
-                                    <field name="oct"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_nov"/>
-                                    <br/>
-                                    <field name="nov"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_dec"/>
-                                    <br/>
-                                    <field name="dec"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_jan"/>
-                                    <br/>
-                                    <field name="jan"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_feb"/>
-                                    <br/>
-                                    <field name="feb"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_mar"/>
-                                    <br/>
-                                    <field name="mar"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
+                                    <field name="t_ytd"/>
+                                </td>
+                            </tr>
+                            <tr align="center">
+                                <td colspan="2" style="color:white; border-style: ridge; text-align: left;background-color:#714B67;">
+                                    <span>ACVD</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_ytd"/>
-                                    <br/>
+                                    <field name="a_apr"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_may"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_jun"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_jul"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_aug"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_sep"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_oct"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_nov"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_dec"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_jan"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_feb"/>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="a_mar"/>
+                                </td>
+                                <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
+                                    <field name="a_ytd"/>
+                                </td>
+                            </tr>
+                            <tr align="center">
+                                <td colspan="2" style="color:white; border-style: ridge; text-align: left;background-color:#714B67;">
+                                    <span>Weightage</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="apr"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="may"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="jun"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="jul"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="aug"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="sep"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="oct"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="nov"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="dec"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="jan"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="feb"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:black; border-style: ridge;">
+                                    <field name="mar"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="ytd"/><span>&#37;</span>
                                 </td>
                             </tr>
@@ -120,11 +187,24 @@
         <field name="model">hr.appraisal.goal</field>
         <field name="inherit_id" ref="hr_appraisal.hr_appraisal_goal_view_tree"/>
         <field name="arch" type="xml">
-<!--             <xpath expr="//field[@name='progression']" position="attributes">
-                <attribute name="string">Weight</attribute>
-            </xpath> -->
+            <xpath expr="//field[@name='progression']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_confirm']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='progression']" position="after">
+                <field name="baseline" widget="badge"/>
+                <field name="target" widget="badge"/>
+                <field name="weight" widget="progressbar"/>
+            </xpath>
             <tree sample="1">
-                <field name="ytd" widget="badge"/>
+                <field name="t_ytd"/>
+                <field name="a_ytd"/>
+                <field name="ytd" widget="progressbar"/>
 <!--                 <field name="apr"/>
                 <field name="may"/>
                 <field name="jun"/>
