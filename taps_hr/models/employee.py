@@ -187,8 +187,29 @@ class TapsHrEmployeeBase(models.AbstractModel):
     hours_last_month = fields.Float(compute='_compute_hours_last_month')
     hours_today = fields.Float(compute='_compute_hours_today')
     hours_last_month_display = fields.Char(compute='_compute_hours_last_month')
+    parent_id = fields.Many2one('hr.employee', 'Manager', compute="_compute_parent_id", store=True, readonly=False,
+                                domain="['|', ('company_id', '=', False), ('company_id', 'in', (1,2,3,4))]")
+    coach_id = fields.Many2one('hr.employee', 'Coach', compute='_compute_coach', store=True, readonly=False,
+                               domain="['|', ('company_id', '=', False), ('company_id', 'in', (1,2,3,4))]",
+                               help='Select the "Employee" who is the coach of this employee.\n'
+                               'The "Coach" has no specific rights or responsibilities by default.')
          
 
+    @api.depends('department_id')
+    def _compute_parent_id(self):
+        for employee in self.filtered('department_id.manager_id'):
+            employee.parent_id = employee.department_id.manager_id
+            
+    @api.depends('parent_id')
+    def _compute_coach(self):
+        for employee in self:
+            manager = employee.parent_id
+            previous_manager = employee._origin.parent_id
+            if manager and (employee.coach_id == previous_manager or not employee.coach_id):
+                employee.coach_id = manager
+            elif not employee.coach_id:
+                employee.coach_id = False
+                
     @api.depends('user_id.im_status', 'attendance_state')
     def _compute_presence_state(self):
         """

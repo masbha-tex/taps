@@ -1705,7 +1705,13 @@ class HolidayslipReportPDF(models.AbstractModel):
                 details.department_id.parent_id.name,
                 details.department_id.name,
                 details.job_id.name,
-                otTotal,
+                details.joining_date,
+                details.service_length,
+                details.grade,
+                details.category_ids.name,
+                details.contract_id.isActivePF,
+                
+                
             ]
             allemp_data.append(emp_data)
         #raise UserError(('domain'))
