@@ -196,10 +196,14 @@
             <xpath expr="//button[@name='action_confirm']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="string">Objective</attribute>
+            </xpath>
             <xpath expr="//field[@name='progression']" position="after">
                 <field name="baseline" widget="badge"/>
                 <field name="target" widget="badge"/>
                 <field name="weight" widget="progressbar"/>
+                <field name="condition"/>
             </xpath>
             <tree sample="1">
                 <field name="t_ytd"/>

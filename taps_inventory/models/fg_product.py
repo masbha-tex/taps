@@ -17,7 +17,7 @@ class ProductBomFormula(models.Model):
     product_name = fields.Char(string='Name')
     product_type = fields.Char(required=True)
     unit_type = fields.Char(required=True)
-    amount_python_compute = fields.Text(string='Tap')
+    tape_python_compute = fields.Text(string='Tap')
     wair_python_compute = fields.Text(string='Wair')
     slider_python_compute = fields.Text(string='Slider')
     twair_python_compute = fields.Text(string='Top Wair')

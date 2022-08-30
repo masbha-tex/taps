@@ -16,18 +16,6 @@ import re
 
 from werkzeug.urls import url_encode
 
-class Replenishment(models.Model):
-    _inherit = "stock.warehouse.orderpoint"
-    
-    sale_order_id = fields.Many2one('sale.order', string='Sale Order', readonly=True)
-    sale_order_line = fields.Many2one('sale.order.line', string='Sale Order', readonly=True)
-    #bom_id = fields.Many2one('mrp.bom', string='BOM', readonly=True)
-    
-    @api.model
-    def action_open_orderpoints(self):
-        fsdf = 'sfe'
-        #return self._get_orderpoint_action()
-
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -48,6 +36,29 @@ class SaleOrder(models.Model):
             #raise UserError((len(or_line)))
             #raise UserError((orderline))
             if len(or_line)>1:
+                orderline.write({'bom_id':or_line[1].bom_id})
+                
+                order_point = {
+                    'name':'Replenishment Report',
+                    'trigger':'manual',
+                    'active':True,
+                    'warehouse_id':1,
+                    'location_id':8,
+                    'product_id':orderline.product_id.id,
+                    'product_category_id':orderline.product_id.categ_id.id,
+                    'product_min_qty':0,
+                    'product_max_qty':0,
+                    'qty_multiple':1,
+                    #'group_id':0.0,
+                    'company_id':self.company_id.id,
+                    'route_id':1,
+                    'qty_to_order':orderline.product_uom_qty,
+                    'bom_id':or_line[1].bom_id,
+                    #'supplier_id':0.0,
+                    'sale_order_line':orderline.id,
+                    'sale_order_id':orderline.order_id.id
+                }
+                self.env['stock.warehouse.orderpoint'].create(order_point)
                 continue
             else:
                 bom_info = {
@@ -71,12 +82,23 @@ class SaleOrder(models.Model):
                 seq = 0
                 if orderline.slidercodesfg:
                     seq = seq + 1
+                    size_type = "inch"
+                    consumption = 0.0
                     product_temp = self.env['product.template'].search([('name', '=', orderline.slidercodesfg)]).sorted(key = 'id', reverse=True)[:1]
-                    product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)])
+                    product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
+                    
+                    product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                    formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
+                    #result = contract.basic
+                    formula_ = formula.slider_python_compute
+                    #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
+                    consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
+                    consumption = round(consumption,4)
+                    
                     bom_line_info = {
                         'product_id':product_.id,
                         'company_id':self.company_id.id,
-                        'product_qty':1,
+                        'product_qty':consumption,
                         'product_uom_id':product_temp.uom_id.id,
                         'sequence':seq,
                         'bom_id':bomrec.id,
@@ -88,7 +110,7 @@ class SaleOrder(models.Model):
                     seq = seq + 1
                     size_type = "inch"
                     size = 0
-                    tapewaight = 0.0
+                    consumption = 0.0
                     if orderline.sizein == "N/A":
                         size_type = "cm"
                         size = orderline.sizecm
@@ -100,15 +122,15 @@ class SaleOrder(models.Model):
                     product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                     formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
                     #result = contract.basic
-                    formula_ = formula.amount_python_compute
+                    formula_ = formula.tape_python_compute
                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
-                    tapewaight = safe_eval(formula_, {'s': size, 'g': orderline.gap})# or 0.0, None, mode='exec', nocopy=True
-                    tapewaight = round(tapewaight,4)
+                    consumption = safe_eval(formula_, {'s': size, 'g': orderline.gap})# or 0.0, None, mode='exec', nocopy=True
+                    consumption = round(consumption,4)
                     
                     bom_line_info = {
                         'product_id':product_.id,
                         'company_id':self.company_id.id,
-                        'product_qty':tapewaight,
+                        'product_qty':consumption,
                         'product_uom_id':product_temp.uom_id.id,
                         'sequence':seq,
                         'bom_id':bomrec.id,
@@ -119,12 +141,23 @@ class SaleOrder(models.Model):
                     
                 if orderline.ptopfinish:
                     seq = seq + 1
+                    size_type = "inch"
+                    consumption = 0.0
                     product_temp = self.env['product.template'].search([('name', 'like', orderline.ptopfinish)]).sorted(key = 'id', reverse=True)[:1]
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
+                    
+                    product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                    formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
+                    #result = contract.basic
+                    formula_ = formula.twair_python_compute
+                    #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
+                    consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
+                    consumption = round(consumption,4)
+                    
                     bom_line_info = {
                         'product_id':product_.id,
                         'company_id':self.company_id.id,
-                        'product_qty':1,
+                        'product_qty':consumption,
                         'product_uom_id':product_temp.uom_id.id,
                         'sequence':seq,
                         'bom_id':bomrec.id,
@@ -135,13 +168,23 @@ class SaleOrder(models.Model):
 
                 if orderline.pbotomfinish:
                     seq = seq + 1
+                    size_type = "inch"
+                    consumption = 0.0
                     product_temp = self.env['product.template'].search([('name', 'like', orderline.pbotomfinish)]).sorted(key = 'id', reverse=True)[:1]
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
+                    
+                    product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                    formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
+                    #result = contract.basic
+                    formula_ = formula.bwire_python_compute
+                    #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
+                    consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
+                    consumption = round(consumption,4)
                     
                     bom_line_info = {
                         'product_id':product_.id,
                         'company_id':self.company_id.id,
-                        'product_qty':1,
+                        'product_qty':consumption,
                         'product_uom_id':product_temp.uom_id.id,
                         'sequence':seq,
                         'bom_id':bomrec.id,
@@ -166,13 +209,29 @@ class SaleOrder(models.Model):
                 
                 if orderline.dippingfinish:
                     seq = seq + 1
+                    size_type = "inch"
+                    size = 0
+                    consumption = 0.0
+                    if orderline.sizein == "N/A":
+                        size_type = "cm"
+                        size = orderline.sizecm
+                    else:
+                        size = orderline.sizein
                     product_temp = self.env['product.template'].search([('name', 'like', orderline.dippingfinish)]).sorted(key = 'id', reverse=True)[:1]
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
+                    
+                    product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                    formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
+                    #result = contract.basic
+                    formula_ = formula.wair_python_compute
+                    #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
+                    consumption = safe_eval(formula_, {'s': size, 'g': orderline.gap})# or 0.0, None, mode='exec', nocopy=True
+                    consumption = round(consumption,4)
                     #raise UserError((orderline.dippingfinish,product_temp.id))
                     bom_line_info = {
                         'product_id':product_.id,
                         'company_id':self.company_id.id,
-                        'product_qty':1,
+                        'product_qty':consumption,
                         'product_uom_id':product_temp.uom_id.id,
                         'sequence':seq,
                         'bom_id':bomrec.id,
@@ -181,6 +240,33 @@ class SaleOrder(models.Model):
                     self.env['mrp.bom.line'].create(bom_line_info)
                     
                 orderline.write({'bom_id':bomrec.id})
+                
+                order_point = {
+                    'name':'Replenishment Report',
+                    'trigger':'manual',
+                    'active':True,
+                    'warehouse_id':1,
+                    'location_id':8,
+                    'product_id':orderline.product_id.id,
+                    'product_category_id':orderline.product_id.categ_id.id,
+                    'product_min_qty':0,
+                    'product_max_qty':0,
+                    'qty_multiple':1,
+                    #'group_id':0.0,
+                    'company_id':self.company_id.id,
+                    'route_id':1,
+                    'qty_to_order':orderline.product_uom_qty,
+                    'bom_id':bomrec.id,
+                    #'supplier_id':0.0,
+                    'sale_order_line':orderline.id,
+                    'sale_order_id':orderline.order_id.id
+                }
+                self.env['stock.warehouse.orderpoint'].create(order_point) 
+                
+# name='Replenishment Report',trigger='manual',active=True,snoozed_until,warehouse_id=1,location_id=8,
+# product_id=113643,product_category_id=873,product_min_qty=0,product_max_qty=0,qty_multiple=1,group_id,
+# company_id=1,route_id=17,qty_to_order=312,
+# bom_id,supplier_id,sale_order_id,sale_order_line                
 
         # Context key 'default_name' is sometimes propagated up to here.
         # We don't need it and it creates issues in the creation of linked records.
@@ -195,15 +281,15 @@ class SaleOrder(models.Model):
         #sale_order_id sale_order_line bom_id
         return True
 
-    def write(self):
-        if self.state == 'sale':
-            for or_line in self.order_line:
-                replenish = self.env['stock.warehouse.orderpoint'].search([
-                    ('product_id', '=', or_line.product_id.id),
-                    ('sale_order_id', '=', ''),
-                    ('sale_order_line', '=', '')
-                ]).sorted(key = 'attribute_id', reverse = True)[:1]
-                replenish.write({'sale_order_id':or_line.order_id.id,'sale_order_line':or_line.id})
+#     def write(self):
+#         if self.state == 'sale':
+#             for or_line in self.order_line:
+#                 replenish = self.env['stock.warehouse.orderpoint'].search([
+#                     ('product_id', '=', or_line.product_id.id),
+#                     ('sale_order_id', '=', ''),
+#                     ('sale_order_line', '=', '')
+#                 ]).sorted(key = 'attribute_id', reverse = True)[:1]
+#                 replenish.write({'sale_order_id':or_line.order_id.id,'sale_order_line':or_line.id})
             
 
 class SaleOrderLine(models.Model):
