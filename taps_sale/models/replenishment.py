@@ -24,11 +24,12 @@ class Orderpoint(models.Model):
     
     @api.depends('qty_multiple', 'qty_forecast', 'product_min_qty', 'product_max_qty')
     def _compute_qty_to_order(self):
-        for orderpoint in self:#orderpoint.qty_to_order = orderpoint.qty_to_order
+        for orderpoint in self:
+            orderpoint.qty_to_order = orderpoint.qty_to_order
             if not orderpoint.product_id or not orderpoint.location_id:
                 orderpoint.qty_to_order = False
                 continue
-            qty_to_order = 0.0
+            qty_to_order = orderpoint.qty_to_order#0.0
             rounding = orderpoint.product_uom.rounding
             if float_compare(orderpoint.qty_forecast, orderpoint.product_min_qty, precision_rounding=rounding) < 0:
                 qty_to_order = max(orderpoint.product_min_qty, orderpoint.product_max_qty) - orderpoint.qty_forecast
@@ -36,7 +37,7 @@ class Orderpoint(models.Model):
                 remainder = orderpoint.qty_multiple > 0 and qty_to_order % orderpoint.qty_multiple or 0.0
                 if float_compare(remainder, 0.0, precision_rounding=rounding) > 0:
                     qty_to_order += orderpoint.qty_multiple - remainder
-            orderpoint.qty_to_order = qty_to_order    
+            orderpoint.qty_to_order = qty_to_order
     
     
     #bom_id = fields.Many2one('mrp.bom', string='BOM', readonly=True)
@@ -122,10 +123,10 @@ class Orderpoint(models.Model):
         # Group orderpoint by product-warehouse
         orderpoint_by_product_warehouse = self.env['stock.warehouse.orderpoint'].read_group(
             [('id', 'in', orderpoints.ids)],
-            ['product_id', 'warehouse_id', 'qty_to_order'],#'sale_order_line', 
-            ['product_id', 'warehouse_id'], lazy=False)#, 'sale_order_line'
+            ['product_id', 'warehouse_id', 'sale_order_line', 'qty_to_order'],# 
+            ['product_id', 'warehouse_id', 'sale_order_line'], lazy=False)#
         orderpoint_by_product_warehouse = {
-            (record.get('product_id')[0], record.get('warehouse_id')[0]): record.get('qty_to_order')#, record.get('sale_order_line')[0]
+            (record.get('product_id')[0], record.get('warehouse_id')[0], record.get('sale_order_line')[0]): record.get('qty_to_order')#
             for record in orderpoint_by_product_warehouse
         }
         for (product, warehouse), product_qty in to_refill.items():

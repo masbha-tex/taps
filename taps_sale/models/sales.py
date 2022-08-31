@@ -37,7 +37,6 @@ class SaleOrder(models.Model):
             #raise UserError((orderline))
             if len(or_line)>1:
                 orderline.write({'bom_id':or_line[1].bom_id})
-                
                 order_point = {
                     'name':'Replenishment Report',
                     'trigger':'manual',

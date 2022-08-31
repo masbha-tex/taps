@@ -14,6 +14,8 @@
                 </xpath>
                 <xpath expr="//field[@name='deadline']" position="after">
                     <field name="condition"/>
+                    <field name="month"/>
+                    
                 </xpath>
                 <xpath expr="//field[@name='manager_id']" position="after">
                     <label for="weight"/>
@@ -41,6 +43,7 @@
                                 <td colspan="2" style="border-style: ridge;">February</td>
                                 <td colspan="2" style="border-style: ridge;">March</td>
                                 <td colspan="2" style="border-style: ridge;">YTD</td>
+                                <td colspan="2" style="border-style: ridge;">TOTAL</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,6 +86,9 @@
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
                                     <field name="t_mar"/>
+                                </td>
+                                <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
+                                    <field name="y_t_ytd"/>
                                 </td>
                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="t_ytd"/>
@@ -129,6 +135,9 @@
                                     <field name="a_mar"/>
                                 </td>
                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
+                                    <field name="y_a_ytd"/>
+                                </td>
+                                <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="a_ytd"/>
                                 </td>
                             </tr>
@@ -173,6 +182,9 @@
                                     <field name="mar"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
+                                    <field name="y_ytd"/><span>&#37;</span>
+                                </td>
+                                <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="ytd"/><span>&#37;</span>
                                 </td>
                             </tr>
@@ -204,11 +216,15 @@
                 <field name="target" widget="badge"/>
                 <field name="weight" widget="progressbar"/>
                 <field name="condition"/>
+                <field name="month"/>
             </xpath>
             <tree sample="1">
-                <field name="t_ytd"/>
+                <field name="y_t_ytd"/>
+                <field name="y_a_ytd"/>
+                <field name="y_ytd" widget="progressbar"/>
+<!--                 <field name="t_ytd"/>
                 <field name="a_ytd"/>
-                <field name="ytd" widget="progressbar"/>
+                <field name="ytd" widget="progressbar"/> -->
 <!--                 <field name="apr"/>
                 <field name="may"/>
                 <field name="jun"/>
