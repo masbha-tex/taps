@@ -76,6 +76,20 @@ class SaleOrder(models.Model):
                     'consumption':'warning',#expatt.store_fname,
                 }
                 bomrec = self.env['mrp.bom'].create(bom_info)
+                
+                bom_option = {
+                    'name':'Metal Assembly',
+                    'workcenter_id':6,
+                    'sequence':100,
+                    'bom_id':bomrec.id,
+                    'company_id':self.company_id.id,
+                    'worksheet_type':'text',
+                    'time_mode':'auto',
+                    'time_mode_batch':10,
+                    'time_cycle_manual':60
+                }
+                self.env['mrp.routing.workcenter'].create(bom_option)
+                
                 #orderline.write({'bom_id':bomrec.id})
                 #bom_line = self.env['mrp.bom']
                 

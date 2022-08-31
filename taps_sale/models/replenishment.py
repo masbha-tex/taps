@@ -18,14 +18,13 @@ _logger = logging.getLogger(__name__)
 class Orderpoint(models.Model):
     _inherit = "stock.warehouse.orderpoint"
     
-    qty_to_order = fields.Float('To Order', store=True, readonly=False)
+    #qty_to_order = fields.Float('To Order', store=True, readonly=False)
     sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', readonly=True)
     sale_order_id = fields.Many2one(string='Sales Order', related='sale_order_line.order_id', store=True, readonly=True)
     
     @api.depends('qty_multiple', 'qty_forecast', 'product_min_qty', 'product_max_qty')
     def _compute_qty_to_order(self):
-        for orderpoint in self:
-            #orderpoint.qty_to_order = orderpoint.qty_to_order
+        for orderpoint in self:#orderpoint.qty_to_order = orderpoint.qty_to_order
             if not orderpoint.product_id or not orderpoint.location_id:
                 orderpoint.qty_to_order = False
                 continue
@@ -123,10 +122,10 @@ class Orderpoint(models.Model):
         # Group orderpoint by product-warehouse
         orderpoint_by_product_warehouse = self.env['stock.warehouse.orderpoint'].read_group(
             [('id', 'in', orderpoints.ids)],
-            ['product_id', 'warehouse_id', 'sale_order_line', 'qty_to_order'],
-            ['product_id', 'warehouse_id', 'sale_order_line'], lazy=False)
+            ['product_id', 'warehouse_id', 'qty_to_order'],#'sale_order_line', 
+            ['product_id', 'warehouse_id'], lazy=False)#, 'sale_order_line'
         orderpoint_by_product_warehouse = {
-            (record.get('product_id')[0], record.get('warehouse_id')[0], record.get('sale_order_line')[0]): record.get('qty_to_order')
+            (record.get('product_id')[0], record.get('warehouse_id')[0]): record.get('qty_to_order')#, record.get('sale_order_line')[0]
             for record in orderpoint_by_product_warehouse
         }
         for (product, warehouse), product_qty in to_refill.items():
