@@ -19,6 +19,7 @@ from werkzeug.urls import url_encode
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
+    delivery_date = fields.Datetime(string='Delivery Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)
         
     def action_confirm(self):
         if self._get_forbidden_state_confirm() & set(self.mapped('state')):
@@ -103,6 +104,9 @@ class SaleOrder(models.Model):
                     product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                     formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
                     #result = contract.basic
+                    
+                    inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
+                    
                     formula_ = formula.slider_python_compute
                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
                     consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
@@ -135,6 +139,7 @@ class SaleOrder(models.Model):
                     product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                     formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
                     #result = contract.basic
+                    inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.tape_python_compute
                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
                     consumption = safe_eval(formula_, {'s': size, 'g': orderline.gap})# or 0.0, None, mode='exec', nocopy=True
@@ -162,6 +167,7 @@ class SaleOrder(models.Model):
                     product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                     formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
                     #result = contract.basic
+                    inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.twair_python_compute
                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
                     consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
@@ -189,6 +195,7 @@ class SaleOrder(models.Model):
                     product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                     formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
                     #result = contract.basic
+                    inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.bwire_python_compute
                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
                     consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
@@ -209,6 +216,7 @@ class SaleOrder(models.Model):
                     seq = seq + 1
                     product_temp = self.env['product.template'].search([('name', 'like', orderline.ppinboxfinish)]).sorted(key = 'id', reverse=True)[:1]
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
+                    
                     bom_line_info = {
                         'product_id':product_.id,
                         'company_id':self.company_id.id,
@@ -236,6 +244,7 @@ class SaleOrder(models.Model):
                     product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                     formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
                     #result = contract.basic
+                    inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.wair_python_compute
                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
                     consumption = safe_eval(formula_, {'s': size, 'g': orderline.gap})# or 0.0, None, mode='exec', nocopy=True
@@ -274,12 +283,7 @@ class SaleOrder(models.Model):
                     'sale_order_line':orderline.id,
                     'sale_order_id':orderline.order_id.id
                 }
-                self.env['stock.warehouse.orderpoint'].create(order_point) 
-                
-# name='Replenishment Report',trigger='manual',active=True,snoozed_until,warehouse_id=1,location_id=8,
-# product_id=113643,product_category_id=873,product_min_qty=0,product_max_qty=0,qty_multiple=1,group_id,
-# company_id=1,route_id=17,qty_to_order=312,
-# bom_id,supplier_id,sale_order_id,sale_order_line                
+                self.env['stock.warehouse.orderpoint'].create(order_point)
 
         # Context key 'default_name' is sometimes propagated up to here.
         # We don't need it and it creates issues in the creation of linked records.
@@ -293,17 +297,6 @@ class SaleOrder(models.Model):
         
         #sale_order_id sale_order_line bom_id
         return True
-
-#     def write(self):
-#         if self.state == 'sale':
-#             for or_line in self.order_line:
-#                 replenish = self.env['stock.warehouse.orderpoint'].search([
-#                     ('product_id', '=', or_line.product_id.id),
-#                     ('sale_order_id', '=', ''),
-#                     ('sale_order_line', '=', '')
-#                 ]).sorted(key = 'attribute_id', reverse = True)[:1]
-#                 replenish.write({'sale_order_id':or_line.order_id.id,'sale_order_line':or_line.id})
-            
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
