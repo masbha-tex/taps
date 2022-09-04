@@ -14,5 +14,6 @@ class PurchaseOrder(models.Model):
         ('stationaryadmin', 'Stationary (Admin)'),
         ('stationaryothers', 'Stationary (Others)'),
         ('othersitem', 'Others Item'),
-        ('civil', 'Project (Civil)')
+        ('civil', 'Project (Civil)'),
+        ('chemicaltest', 'Chemical Test')
     ], string='Item Type', index=True, tracking=True, store=True, copy=True)
