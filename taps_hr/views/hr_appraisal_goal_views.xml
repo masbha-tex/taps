@@ -212,16 +212,16 @@
                 <attribute name="string">Objective</attribute>
             </xpath>
             <xpath expr="//field[@name='progression']" position="after">
-                <field name="baseline" widget="badge"/>
-                <field name="target" widget="badge"/>
-                <field name="weight" widget="progressbar"/>
+                <field name="baseline"/>
+                <field name="target"/>
+                <field name="weight"/>
                 <field name="condition"/>
                 <field name="month"/>
             </xpath>
             <tree sample="1">
                 <field name="y_t_ytd"/>
                 <field name="y_a_ytd"/>
-                <field name="y_ytd" widget="progressbar"/>
+                <field name="y_ytd"/>
 <!--                 <field name="t_ytd"/>
                 <field name="a_ytd"/>
                 <field name="ytd" widget="progressbar"/> -->
