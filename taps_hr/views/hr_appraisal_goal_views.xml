@@ -225,18 +225,42 @@
 <!--                 <field name="t_ytd"/>
                 <field name="a_ytd"/>
                 <field name="ytd" widget="progressbar"/> -->
-<!--                 <field name="apr"/>
+                <field name="t_apr"/>
+                <field name="a_apr"/>
+                <field name="apr"/>
+                <field name="t_may"/>
+                <field name="a_may"/>
                 <field name="may"/>
+                <field name="t_jun"/>
+                <field name="a_jun"/>
                 <field name="jun"/>
+                <field name="t_jul"/>
+                <field name="a_jul"/>
                 <field name="jul"/>
+                <field name="t_aug"/>
+                <field name="a_aug"/>
                 <field name="aug"/>
+                <field name="t_sep"/>
+                <field name="a_sep"/>
                 <field name="sep"/>
+                <field name="t_oct"/>
+                <field name="a_oct"/>
                 <field name="oct"/>
+                <field name="t_nov"/>
+                <field name="a_nov"/>
                 <field name="nov"/>
+                <field name="t_dec"/>
+                <field name="a_dec"/>
                 <field name="dec"/>
+                <field name="t_jan"/>
+                <field name="a_jan"/>
                 <field name="jan"/>
+                <field name="t_feb"/>
+                <field name="a_feb"/>
                 <field name="feb"/>
-                <field name="mar"/> -->
+                <field name="t_mar"/>
+                <field name="a_mar"/>
+                <field name="mar"/>
             </tree>
         </field>
     </record>

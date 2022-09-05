@@ -373,6 +373,31 @@ class HrAppraisalGoal(models.Model):
             if app.mar == "":
                 app.mar = 0
                 
+            if app.month == 'apr':
+                s = app.apr
+            elif app.month == 'may':
+                s = app.apr + app.may
+            elif app.month == 'jun':
+                s = app.apr + app.may + app.jun
+            elif app.month == 'jul':
+                s = app.apr + app.may + app.jun + app.jul
+            elif app.month == 'aug':
+                s = app.apr + app.may + app.jun + app.jul + app.aug
+            elif app.month == 'sep':
+                s = app.apr + app.may + app.jun + app.jul + app.aug + app.sep
+            elif app.month == 'oct':
+                s = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct
+            elif app.month == 'nov':
+                s = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct + app.nov
+            elif app.month == 'dec':
+                s = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct + app.nov + app.dec
+            elif app.month == 'jan':
+                s = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct + app.nov + app.dec + app.jan
+            elif app.month == 'feb':
+                s = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct + app.nov + app.dec + app.jan + app.feb
+            elif app.month == 'mar':
+                s = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct + app.nov + app.dec + app.jan + app.feb + app.mar
+                
             if int(app.y_t_ytd)>0 and int(app.y_a_ytd)>0:
                 if app.condition == 'less':
                     s = ((int(app.y_t_ytd)/int(app.y_a_ytd))*int(app.weight))+0.01999
