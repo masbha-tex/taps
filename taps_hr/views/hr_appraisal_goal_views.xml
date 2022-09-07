@@ -43,7 +43,6 @@
                                 <td colspan="2" style="border-style: ridge;">February</td>
                                 <td colspan="2" style="border-style: ridge;">March</td>
                                 <td colspan="2" style="border-style: ridge;">YTD</td>
-                                <td colspan="2" style="border-style: ridge;">TOTAL</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,9 +89,9 @@
                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="y_t_ytd"/>
                                 </td>
-                                <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
+<!--                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="t_ytd"/>
-                                </td>
+                                </td> -->
                             </tr>
                             <tr align="center">
                                 <td colspan="2" style="color:white; border-style: ridge; text-align: left;background-color:#714B67;">
@@ -137,9 +136,9 @@
                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="y_a_ytd"/>
                                 </td>
-                                <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
+<!--                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="a_ytd"/>
-                                </td>
+                                </td> -->
                             </tr>
                             <tr align="center">
                                 <td colspan="2" style="color:white; border-style: ridge; text-align: left;background-color:#714B67;">
@@ -184,9 +183,9 @@
                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="y_ytd"/><span>&#37;</span>
                                 </td>
-                                <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
+<!--                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="ytd"/><span>&#37;</span>
-                                </td>
+                                </td> -->
                             </tr>
                         </tbody>
                     </table>

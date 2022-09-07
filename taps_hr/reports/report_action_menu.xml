@@ -454,6 +454,17 @@
             <field name="paperformat_id" ref="taps_hr.paperformat_birth_marriage_report"/>
 <!--             <field name="default_print_option">print</field> -->
         </record>
+        <record id="action_kpi_objective_pdf_report" model="ir.actions.report">
+            <field name="name">KPI Objective Report</field>
+            <field name="model">kpi.objective.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.kpi_objective_pdf_template</field>
+            <field name="report_file">taps_hr.kpi_objective_pdf_template</field>
+            <field name="binding_model_id" ref="model_kpi_objective_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_atten_summary_report"/>
+<!--             <field name="default_print_option">print</field> -->
+        </record>        
         
 
     </data>
