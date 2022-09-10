@@ -249,22 +249,23 @@ class StockForecastReport(models.TransientModel):
 
         
         landedcost = self.env['stock.landed.cost'].search([('state', '=', 'done'),('date', '>=', from_date.date()),('date', '<=', to_date.date())])
-        
-        pickinglist = landedcost.mapped('picking_ids.id')
-        lclist = landedcost.mapped('id')
-        
-        picking_details = self.env['stock.move.line'].search([('state', '=', 'done'),('product_id', '=', productid)
-                                                              ,('lot_id', '=', lotid),('picking_id', 'in', pickinglist)])
-        lot_qty = sum(picking_details.mapped('qty_done'))
-        
-        _query = """ select COALESCE(sum(additional_landed_cost/quantity),0) as price from stock_valuation_adjustment_lines where product_id=%s and cost_id in (%s) """
-        _cr_ = self._cr
-        _cursor = self.env.cr
-        _cr_.execute(_query, (productid, lclist[0]))
-        result = _cursor.fetchall()
-        val_1 = result[0][0]
-        val_1 = val_1*lot_qty
-        val = val + val_1
+        if landedcost:
+            pickinglist = landedcost.mapped('picking_ids.id')
+            lclist = landedcost.mapped('id')
+
+            picking_details = self.env['stock.move.line'].search([('state', '=', 'done'),('product_id', '=', productid)
+                                                                  ,('lot_id', '=', lotid),('picking_id', 'in', pickinglist)])
+            lot_qty = sum(picking_details.mapped('qty_done'))
+
+            _query = """ select COALESCE(sum(additional_landed_cost/quantity),0) as price from stock_valuation_adjustment_lines where product_id=%s and cost_id in (%s) """
+            _cr_ = self._cr
+            _cursor = self.env.cr
+            _cr_.execute(_query, (productid, lclist[0]))
+            result = _cursor.fetchall()
+            val_1 = result[0][0]
+            val_1 = val_1*lot_qty
+            val = val + val_1
+            
         return val
     
     def getissue_lot_qty(self,productid,lotid,from_date,to_date):
@@ -305,7 +306,6 @@ class StockForecastReport(models.TransientModel):
     def getclosing_lot_val(self,productid,lotid,to_date):
         prev_date = datetime.strptime('2022-04-01', '%Y-%m-%d')
         if to_date>prev_date:
-            
             query = """ select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as op_val from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=%s and  a.product_id=%s and a.schedule_date<%s """
             cr = self._cr
             cursor = self.env.cr

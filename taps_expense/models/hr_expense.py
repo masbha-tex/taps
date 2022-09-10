@@ -450,3 +450,93 @@ class taps_expense_sheet(models.Model):
         self.activity_update()
         return notification        
     
+    
+    
+    @api.model
+    def retrieve_dashboard(self):
+        """ This function returns the values to populate the custom dashboard in
+            the purchase order views.
+        """
+        self.check_access_rights('read')
+        povalue = 0
+
+        result = {
+            'hr_approvals': 0,#all_to_send
+            'accounts_approvals': 0,#all_waiting
+            'ceo_approvals': 0,#all_late
+            
+            'my_to_send': 0,
+            'my_waiting': 0,
+            'my_late': 0,
+            
+            'budget_value': 0,#all_avg_order_value
+            'expense_value': 0,#all_avg_days_to_purchase
+            'expense_percent': 0,#all_total_last_7_days
+            'due_amount': 0,#all_sent_rfqs
+            'company_currency_symbol': self.env.company.currency_id.symbol
+        }
+
+        one_week_ago = fields.Datetime.to_string(fields.Datetime.now().replace(day=1))# - relativedelta(days=7)
+        # This query is brittle since it depends on the label values of a selection field
+        # not changing, but we don't have a direct time tracker of when a state changes
+        query = """SELECT SUM(RawPOvalue) FROM(SELECT SUM(CASE WHEN po.date_approve >= %s THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END) as RawPOvalue
+                   FROM purchase_order po
+                   JOIN res_company comp ON (po.company_id = comp.id)
+                   WHERE po.state in ('purchase', 'done') AND po.itemtype='spares'
+                     AND po.company_id = %s
+                     UNION
+                     select 0 as RawPOvalue) as a
+                """
+
+        #self.env.cr.execute(query, (one_week_ago, self.env.company.id))
+        self._cr.execute(query, (one_week_ago, self.env.company.id))
+        res = self.env.cr.fetchone()
+        currency = self.env.company.currency_id
+        #result['due_amount'] = res[0] or 0
+        povalues = round(res[0] or 0, 2)
+        result['expense_value'] = format_amount(self.env, povalues, currency)
+        # easy counts
+        po = self.env['hr.expense.sheet']
+        result['hr_approvals'] = po.search_count([('state', '=', 'draft')])
+        result['my_to_send'] = 0#po.search_count([('state', '=', 'draft'), ('user_id', '=', self.env.uid)])
+        result['accounts_approvals'] = po.search_count([('state', '=', 'submit')])
+        result['my_waiting'] = 0#po.search_count([('state', '=', 'sent'), ('date_order', '>=', fields.Datetime.now()), ('user_id', '=', self.env.uid)])
+        result['ceo_approvals'] = po.search_count([('state', 'checked')])
+        result['my_late'] = 0#po.search_count([('state', 'in', ['draft', 'sent', 'to approve']), ('date_order', '<', fields.Datetime.now()), ('user_id', '=', self.env.uid)])
+
+        # Calculated values ('avg order value', 'avg days to purchase', and 'total last 7 days') note that 'avg order value' and
+        # 'total last 7 days' takes into account exchange rate and current company's currency's precision. Min of currency precision
+        # is taken to easily extract it from query.
+        # This is done via SQL for scalability reasons
+        # AVG(COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total)),
+        #(select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and itemtype='spares' and company_id=po.company_id) SpareBudget,
+        #and itemtype='raw' 
+        query = """SELECT SUM(RawBudget),SUM(SpareBudget),SUM(RawPOvalue) FROM (SELECT (select sum(planned_amount) from crossovered_budget_lines where date_part('month',date_from)=date_part('month',CURRENT_DATE) and company_id=po.company_id) RawBudget,0 as SpareBudget,
+                          SUM(CASE WHEN date(po.date_approve) >= date(%s) THEN COALESCE(po.amount_total / NULLIF(po.currency_rate, 0), po.amount_total) ELSE 0 END) RawPOvalue
+                   FROM purchase_order po
+                   JOIN res_company comp ON (po.company_id = comp.id)
+                   WHERE po.state in ('purchase', 'done') AND po.itemtype='raw'
+                     AND po.company_id = %s group by po.company_id
+                     Union
+                     select 0 as RawBudget,0 as SpareBudget,0 as RawPOvalue
+                     ) as a
+                """
+        self._cr.execute(query, (one_week_ago, self.env.company.id))
+        res = self.env.cr.fetchone()
+        currency = self.env.company.currency_id
+        povalue = round(res[2] or 0, 2)
+        #povalues + round(res[2] or 0, 2)
+        budgetalue = round(res[0] or 0, 2)
+        due = 0
+        if povalue*budgetalue==0:
+            percent=0
+        else:
+            percent = round((povalue/budgetalue)*100,2)
+            due = budgetalue-povalue
+        result['budget_value'] = format_amount(self.env, budgetalue, currency)
+        result['expense_value'] = percent
+        #format_amount(self.env, res[1] or 0, currency)
+        result['expense_percent'] = format_amount(self.env, povalue, currency)
+        result['due_amount'] = format_amount(self.env, due, currency)
+
+        return result
