@@ -222,13 +222,21 @@ class HeadwiseReportPDF(models.AbstractModel):
         if data.get('company_all'):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
-#         domain.append(('code', '=', 'NET'))        
+#         domain.append( ('id', 'in', (25,26,27,28)))        
         
         
         
-        docs = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
-
-        month = docs.mapped('month')[:1]
+        docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
+        if docs1.employee_id.company_id.id == 1:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
+        elif docs1.employee_id.company_id.id == 3:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
+        else:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
+        
+        docs = docs2 | docs1
+#         raise UserError((docs.id))
+        month = docs.mapped('month')[1:]
         mm = 'Month'
         for m in month:
             if m == 'apr':

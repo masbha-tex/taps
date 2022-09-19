@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="fg_product_formula_list" model="ir.ui.view">
+        <field name="name">fg.product.formula.list</field>
+        <field name="model">fg.product.formula</field>
+        <field name="arch" type="xml">
+            <tree string="FgProductFormula Tree">
+                <field name="product_id"/>
+                <field name="product_name"/>
+                <field name="product_type"/>
+                <field name="unit_type"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Form View -->
+    <record id="fg_product_formula_form" model="ir.ui.view">
+        <field name="name">fg.product.formula.form</field>
+        <field name="model">fg.product.formula</field>
+        <field name="arch" type="xml">
+            <form string="FgProductFormula Form">
+                <sheet>
+                    <div class="oe_title">
+                            <h1>
+                                <strong>FG Product Formula</strong>
+                            </h1>
+                        </div>
+                  <group>
+                       
+                    <group>
+                        
+                        <field name="product_id" options="{'no_create_edit': True, 'no_create': True}"/>
+                        <field name="product_name"/>
+                        <field name="product_type"/>
+                        <field name="unit_type"/>
+                     </group>
+                     <group>
+                        <field name="tape_python_compute"/>
+                        <field name="wair_python_compute"/>
+                        <field name="slider_python_compute"/>
+                        <field name="twair_python_compute"/>
+                        <field name="bwire_python_compute"/>
+                    </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="fg_product_formula_action_config" model="ir.actions.act_window">
+        <field name="name">Fg Product Formula</field>
+        <field name="res_model">fg.product.formula</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem
+        id="menu_fg_product_formula"
+        name="Fg Product Formula"
+        action="fg_product_formula_action_config"
+        parent="sale.menu_sale_config"
+        sequence="15"/>
+</odoo>    
