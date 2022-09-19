@@ -26,7 +26,7 @@ var QWeb = core.qweb;
 // Add mock of method 'retrieve_dashboard' in SampleServer, so that we can have
 // the sample data in empty purchase kanban and list view
 let dashboardValues;
-SampleServer.mockRegistry.add('hr.expense/retrieve_dashboard', () => {
+SampleServer.mockRegistry.add('hr.expense.sheet/retrieve_dashboard', () => {
     return Object.assign({}, dashboardValues);
 });
 
@@ -48,7 +48,7 @@ var ExpenseListDashboardRenderer = ListRenderer.extend({
         var self = this;
         return this._super.apply(this, arguments).then(function () {
             var values = self.state.dashboardValues;
-            var expense_dashboard = QWeb.render('expense.ExpenseDashboard', {
+            var expense_dashboard = QWeb.render('hr_expense.ExpenseDashboard', {
                 values: values,
             });
             self.$el.prepend(expense_dashboard);
@@ -111,7 +111,7 @@ var ExpenseListDashboardModel = ListModel.extend({
     _loadDashboard: function (super_def) {
         var self = this;
         var dashboard_def = this._rpc({
-            model: 'hr.expense',
+            model: 'hr.expense.sheet',
             method: 'retrieve_dashboard',
         });
         return Promise.all([super_def, dashboard_def]).then(function(results) {
@@ -227,7 +227,7 @@ var ExpenseKanbanDashboardModel = KanbanModel.extend({
     _loadDashboard: function (super_def) {
         var self = this;
         var dashboard_def = this._rpc({
-            model: 'hr.expense',
+            model: 'hr.expense.sheet',
             method: 'retrieve_dashboard',
         });
         return Promise.all([super_def, dashboard_def]).then(function(results) {
@@ -262,8 +262,8 @@ var ExpenseKanbanDashboardView = KanbanView.extend({
     }),
 });
 
-view_registry.add('expense_list_dashboard', ExpenseListDashboardView);
-view_registry.add('expense_kanban_dashboard', ExpenseKanbanDashboardView);
+view_registry.add('hr_expense_tree_dashboard_upload', ExpenseListDashboardView);
+view_registry.add('hr_expense_kanban', ExpenseKanbanDashboardView);
 
 return {
     ExpenseListDashboardModel: ExpenseListDashboardModel,

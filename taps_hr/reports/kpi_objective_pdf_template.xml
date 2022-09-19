@@ -1,250 +1,275 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-
- <template id="kpi_objective_pdf_template">
-     <t t-call="web.html_container">
-                <t t-call="web.external_layout">
-                    <div class="page">
-
-                        <div class="row">
-                            <div class="col-4 text-center py-4 bg-dark">
-                                <div class="header-left">
-                                  <div>
-                                    <!--<h5 class="bg-white text-dark py-2 squared-pill">Owner</h5>-->
-                                  
-                                    <img class="img-fluid rounded-circle mb-2" style="height:120pt;width:120pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/>
-                                
-                                    <h3>
-                                        <t t-esc="docs.employee_id.name"/>
-                                    </h3>
-                                    <h5 class="lead text-white-50 mb-4">
-                                        <t t-esc="docs.employee_id.job_id.name"/>
-                                    </h5>
-                                  </div>
-
-                                </div>
-                            </div>
-                            <div class="col-4 text-center py-4 bg-dark">
-                              <div class="header-center">
-                                <h2 class="bg-white text-dark py-2 rounded-pill">KPI Scorecard</h2>
-                              </div>
-                                
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                              <div class="header-center">
-                                <h5 class="bg-dark text-white py-2">Challenged By</h5>
-                              </div>
-                              <br/>
-                                <br/>
-                              <div class="header-left">
-                                <!--<h6 class="bg-dark text-white py-2">Calculate YTD:</h6>-->
-                                <span>Calculate YTD: <t t-esc="datas[1]"/></span>
-                              </div>
-                              
-                            </div>
-                            <div class="col-4 text-center py-4 bg-dark">
-                                <div>
-                                    <!--<h5 class="text-uppercase bg-white text-dark py-2 squared-pill">Challenged By</h5>-->
-                                    
-                                    <div class="header-right">
-                                  
-                                      <img class="img-fluid rounded-circle mb-2" style="height:120pt;width:120pt;" t-if="docs.manager_id.image_1920" t-att-src="image_data_uri(docs.manager_id.image_1920)"/>
-                                  
-                                      <h3>
-                                          <t t-esc="docs.manager_id.name"/>
-                                      </h3>
-                                      <h5 class="lead text-white-50 mb-4">
-                                          <t t-esc="docs.manager_id.job_id.name"/>
-                                      </h5>
-
-                                    </div>
-                                </div>
+	<template id="kpi_objective_pdf_template">
+		<t t-call="web.html_container">
+			<t t-call="web.external_layout">
+				<div class="page">
+					<div class="footer" style="margin:0px; padding:0px;">
+						<div class="row">
+							<div class="col-4">
+                        Print Date: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y  %H:%M')"/>
+							</div>
+							<div class="col-4 text-center">
                       
-                            </div>
-                            
-                        </div>
-                        <div class="row justify-content-end">
-                          
-                              <table class="table table-sm p-0 m-0" style="table-layout:auto;font-size:10pt">
-                                  <thead>
-                                      <tr align="center" style="background-color:#714B67; color: white;">
-                                          <td colspan="2" style="border: 1pt solid black;">SL</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Objectives</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Baseline</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Target</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Particulars</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Apr</td>
-                                          <td colspan="2" style="border: 1pt solid black;">May</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Jun</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Jul</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Aug</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Sep</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Oct</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Nov</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Dec</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Jan</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Feb</td>
-                                          <td colspan="2" style="border: 1pt solid black;">Mar</td>
-                                          <td colspan="2" style="border: 1pt solid black;">YTD</td>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                    <t t-foreach="docs" t-as="o">
-                                      <tr align="center" style="border: 1pt solid black;">
-                                          <td rowspan="3" colspan="2" style="text-align: center;">
-                                              <t t-esc="o_index+1"/>
-                                          </td>
-                                          <td rowspan="3" colspan="2" style="text-align: left;">
-                                              <t t-esc="o.name"/>
-                                          </td>
-                                          <td rowspan="3" colspan="2" style="text-align: left;">
-                                              <t t-esc="o.baseline"/>
-                                          </td>
-                                          <td rowspan="3" colspan="2" style="text-align: left;">
-                                              <t t-esc="o.target"/>
-                                          </td>
-                                          <td colspan="2" style="color:white; text-align: left;background-color:#714B67;">
-                                            <span>Target</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_apr"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_may"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_jun"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_jul"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_aug"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_sep"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_oct"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_nov"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_dec"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_jan"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_feb"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.t_mar"/>
-                                          </td>
-                                          <td colspan="2" style="color:white;background-color:#714B67;">
-                                              <t t-esc="o.y_t_ytd"/>
-                                          </td>
-                                      </tr>
-                                      <tr align="center" style="border: 1pt solid black;border-collapse:separate;">
-                                          <td colspan="2" style="color:white; text-align: left;background-color:#714B67;">
-                                              <span>ACVD</span>
-                                          </td>
-                                          
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_apr"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_may"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_jun"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_jul"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_aug"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_sep"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_oct"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_nov"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_dec"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_jan"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_feb"/>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.a_mar"/>
-                                          </td>
-                                          <td colspan="2" style="color:white;background-color:#714B67;">
-                                              <t t-esc="o.y_a_ytd"/>
-                                          </td>
-                                      </tr>
-                                      <tr align="center" style="border: 1pt solid black;border-collapse:separate;">
-                                          <td colspan="2" style="color:white; text-align: left;background-color:#714B67;">
-                                              <span>Weightage</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.apr"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.may"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.jun"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.jul"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.aug"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.sep"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.oct"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.nov"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.dec"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.jan"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.feb"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:black;">
-                                              <t t-esc="o.mar"/><span>&#37;</span>
-                                          </td>
-                                          <td colspan="2" style="color:white;background-color:#714B67;">
-                                              <t t-esc="o.y_ytd"/><span>&#37;</span>
-                                          </td>
-                                      </tr>
-                                    </t>
-                                  </tbody>
-                              </table>
-                            </div>
-                    </div>
-
-                </t>
-            </t>
-  </template>
-
+										</div>
+							<div class="col-4 text-right ! important">
+								<span>Page: <span class="page"/>/<span class="topage"/>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="container">
+						<div class="row">
+							<div class="col-4 text-center py-4 bg-dark">
+								<div class="header-left">
+									<div>
+										<!--<h5 class="bg-white text-dark py-2 squared-pill">Owner</h5>-->
+										<img class="img-fluid rounded-circle mb-2" style="height:120pt;width:120pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/>
+										<h3>
+											<t t-esc="docs.employee_id.name"/>
+										</h3>
+										<h5 class="lead text-white-50 mb-4">
+											<t t-esc="docs.employee_id.job_id.name"/>
+										</h5>
+									</div>
+								</div>
+							</div>
+							<div class="col-4 text-center py-4 bg-dark">
+								<div class="header-center">
+									<h2 class="bg-white text-dark py-2 rounded-pill">KPI Scorecard</h2>
+								</div>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<div class="header-center">
+									<h5 class="bg-dark text-white py-2">Challenged By</h5>
+								</div>
+								<br/>
+								<br/>
+								<div class="header-left">
+									<!--<h6 class="bg-dark text-white py-2">Calculate YTD:</h6>-->
+									<span>Calculate YTD: <t t-esc="datas[1]"/>
+									</span>
+								</div>
+							</div>
+							<div class="col-4 text-center py-4 bg-dark">
+								<div>
+									<!--<h5 class="text-uppercase bg-white text-dark py-2 squared-pill">Challenged By</h5>-->
+									<div class="header-right">
+										<img class="img-fluid rounded-circle mb-2" style="height:120pt;width:120pt;" t-if="docs.manager_id.image_1920" t-att-src="image_data_uri(docs.manager_id.image_1920)"/>
+										<h3>
+											<t t-esc="docs.manager_id.name"/>
+										</h3>
+										<h5 class="lead text-white-50 mb-4">
+											<t t-esc="docs.manager_id.job_id.name"/>
+										</h5>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row py-4">
+							<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:10pt">
+								<thead>
+									<tr align="center" style="background-color:#714B67; color: white;">
+										<td colspan="2" style="border: 1pt solid black;">SL</td>
+										<td colspan="10" style="border: 1pt solid black;">Objectives</td>
+										<td colspan="3" style="border: 1pt solid black;">Baseline</td>
+										<td colspan="3" style="border: 1pt solid black;">Target</td>
+										<td colspan="31" style="border: 1pt solid black;">
+											<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:10pt">
+												<tr align="center" style="background-color:#714B67; color: white;">
+													<td colspan="3" style="border: 1pt solid black;">Particulars</td>
+													<td colspan="2" style="border: 1pt solid black;">Apr</td>
+													<td colspan="2" style="border: 1pt solid black;">May</td>
+													<td colspan="2" style="border: 1pt solid black;">Jun</td>
+													<td colspan="2" style="border: 1pt solid black;">Jul</td>
+													<td colspan="2" style="border: 1pt solid black;">Aug</td>
+													<td colspan="2" style="border: 1pt solid black;">Sep</td>
+													<td colspan="2" style="border: 1pt solid black;">Oct</td>
+													<td colspan="2" style="border: 1pt solid black;">Nov</td>
+													<td colspan="2" style="border: 1pt solid black;">Dec</td>
+													<td colspan="2" style="border: 1pt solid black;">Jan</td>
+													<td colspan="2" style="border: 1pt solid black;">Feb</td>
+													<td colspan="2" style="border: 1pt solid black;">Mar</td>
+													<td colspan="2" style="border: 1pt solid black;">YTD</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-foreach="docs" t-as="o">
+										<tr align="center" style="border: 1pt solid black;">
+											<td colspan="2" style="text-align: center;vertical-align:middle">
+												<t t-esc="o_index+1"/>
+											</td>
+											<td colspan="10" style="text-align: left; vertical-align:middle">
+												<t t-esc="o.name"/>
+											</td>
+											<td colspan="3" style="text-align: left; vertical-align:middle">
+												<t t-esc="o.baseline" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+											</td>
+											<td colspan="3" style="text-align: left; vertical-align:middle">
+												<t t-esc="o.target" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+											</td>
+											<td colspan="31">
+												<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:10pt">
+													<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
+														<td colspan="3" style="color:white; text-align: left;background-color:#714B67;">
+															<span>Target</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_apr" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_may" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_jun" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_jul" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_aug" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_sep" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_oct" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_nov" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_dec" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_jan" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_feb" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.t_mar" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:white;background-color:#714B67;">
+															<t t-esc="o.y_t_ytd"/>
+														</td>
+													</tr>
+													<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
+														<td colspan="3" style="color:white; text-align: left;background-color:#714B67;">
+															<span>ACVD</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_apr" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_may" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_jun" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_jul" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_aug" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_sep" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_oct" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_nov" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_dec" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_jan" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_feb" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_mar" t-options='{"widget": "float", "precision": 1}'/>
+														</td>
+														<td colspan="2" style="color:white;background-color:#714B67;">
+															<t t-esc="o.y_a_ytd"/>
+														</td>
+													</tr>
+													<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
+														<td colspan="3" style="color:white; text-align: left;background-color:#714B67;">
+															<span>Weightage</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.apr" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.may" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.jun" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.jul" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.aug" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.sep" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.oct" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.nov" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.dec" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.jan" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.feb" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.mar" t-options='{"widget": "float", "precision": 1}'/>
+															<span>%</span>
+														</td>
+														<td colspan="2" style="color:white;background-color:#714B67;">
+															<t t-esc="o.y_ytd"/>
+															<span>%</span>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</t>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
 </odoo>

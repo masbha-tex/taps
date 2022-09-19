@@ -19,12 +19,16 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','hr_expense'],
+    'depends': ['base','hr_expense','web_studio'],
     'data': [
         'security/ir.model.access.csv',
-        'views/hr_expense.xml',
         'views/hr_emp_imprest.xml',
+        'views/hr_expense.xml',
         'data/generate_expense_code.xml',
         'data/generate_imprest_code.xml',
+        
+    ],
+    'qweb': [
+        "static/src/xml/expense_dashboard.xml",
     ],
 }

@@ -242,9 +242,47 @@
         <field name="model">hr.expense.sheet</field>
         <field name="inherit_id" ref="hr_expense.hr_expense_sheet_view_search"/>
         <field name="arch" type="xml">
+            <xpath expr="//filter[@name='submitted']" position="attributes">
+                    <attribute name="string">To Check</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='submitted']" position="before">
+                <filter domain="[('state', '=', 'draft')]" string="Draft" name="draft" help="HR Approval"/>
+                <filter domain="[('state', '=', 'checked')]" string="To Approve" name="checked" help="Checked by Accounts"/>
+                <filter name="ex_approve_date" string="Approve Date" domain="[('date_approve','&gt;=', (context_today()).strftime('%%Y-%%m-1'))]"/>
+            </xpath>
             <xpath expr="//filter[@name='employee']" position="after">
                 <filter string="Product" name="product_id" domain="[]" context="{'group_by': 'product_id'}"/>
             </xpath>
         </field>
-    </record>    
+    </record>
+    
+    <record id="expense_action_dashboard_list" model="ir.actions.act_window">
+        <field name="name">Expense</field>
+        <field name="res_model">hr.expense.sheet</field>
+        <field name="view_mode">form,tree,kanban,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
+<!--         <field name="search_view_id" ref="hr_expense_sheet_view_search"/> -->
+        <field name="target">main</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No Expense to display
+            </p>
+        </field>
+    </record>
+
+    <!-- Dashboard action buttons: End in Kanban view-->
+    <record id="expense_action_dashboard_kanban" model="ir.actions.act_window">
+        <field name="name">Expense</field>
+        <field name="res_model">hr.expense.sheet</field>
+        <field name="view_mode">form,tree,kanban,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="hr_expense.view_hr_expense_sheet_kanban_no_header"/>
+<!--         <field name="search_view_id" ref="hr_expense_sheet_view_search"/> -->
+        <field name="target">main</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No Expense to display
+            </p>
+        </field>
+    </record>
+    
 </odoo>

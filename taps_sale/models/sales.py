@@ -38,35 +38,35 @@ class SaleOrder(models.Model):
             #raise UserError((orderline))
             if len(or_line)>1:
                 orderline.write({'bom_id':or_line[1].bom_id})
-                order_point = {
-                    'name':'Replenishment Report',
-                    'trigger':'manual',
-                    'active':True,
-                    'warehouse_id':1,
-                    'location_id':8,
-                    'product_id':orderline.product_id.id,
-                    'product_category_id':orderline.product_id.categ_id.id,
-                    'product_min_qty':0,
-                    'product_max_qty':0,
-                    'qty_multiple':1,
-                    #'group_id':0.0,
-                    'company_id':self.company_id.id,
-                    'route_id':1,
-                    'qty_to_order':orderline.product_uom_qty,
-                    'bom_id':or_line[1].bom_id,
-                    #'supplier_id':0.0,
-                    'sale_order_line':orderline.id,
-                    'sale_order_id':orderline.order_id.id
-                }
-                self.env['stock.warehouse.orderpoint'].create(order_point)
                 continue
+#                 order_point = {
+#                     'name':'Replenishment Report',
+#                     'trigger':'manual',
+#                     'active':True,
+#                     'warehouse_id':1,
+#                     'location_id':8,
+#                     'product_id':orderline.product_id.id,
+#                     'product_category_id':orderline.product_id.categ_id.id,
+#                     'product_min_qty':0,
+#                     'product_max_qty':0,
+#                     'qty_multiple':1,
+#                     #'group_id':0.0,
+#                     'company_id':self.company_id.id,
+#                     'route_id':1,
+#                     'qty_to_order':orderline.product_uom_qty,
+#                     'bom_id':or_line[1].bom_id,
+#                     #'supplier_id':0.0,
+#                     'sale_order_line':orderline.id,
+#                     'sale_order_id':orderline.order_id.id
+#                 }
+#                 self.env['stock.warehouse.orderpoint'].create(order_point)
             else:
                 bom_info = {
                     'code':'',
                     'active':True,
                     'type':'normal',
                     'product_tmpl_id':orderline.product_id.product_tmpl_id.id,
-                    'product_id':'',
+                    'product_id':orderline.product_id.id,
                     'product_qty':1,
                     'product_uom_id':orderline.product_id.product_tmpl_id.uom_id.id,
                     'sequence':'',
@@ -263,27 +263,27 @@ class SaleOrder(models.Model):
                     
                 orderline.write({'bom_id':bomrec.id})
                 
-                order_point = {
-                    'name':'Replenishment Report',
-                    'trigger':'manual',
-                    'active':True,
-                    'warehouse_id':1,
-                    'location_id':8,
-                    'product_id':orderline.product_id.id,
-                    'product_category_id':orderline.product_id.categ_id.id,
-                    'product_min_qty':0,
-                    'product_max_qty':0,
-                    'qty_multiple':1,
-                    #'group_id':0.0,
-                    'company_id':self.company_id.id,
-                    'route_id':1,
-                    'qty_to_order':orderline.product_uom_qty,
-                    'bom_id':bomrec.id,
-                    #'supplier_id':0.0,
-                    'sale_order_line':orderline.id,
-                    'sale_order_id':orderline.order_id.id
-                }
-                self.env['stock.warehouse.orderpoint'].create(order_point)
+#                 order_point = {
+#                     'name':'Replenishment Report',
+#                     'trigger':'manual',
+#                     'active':True,
+#                     'warehouse_id':1,
+#                     'location_id':8,
+#                     'product_id':orderline.product_id.id,
+#                     'product_category_id':orderline.product_id.categ_id.id,
+#                     'product_min_qty':0,
+#                     'product_max_qty':0,
+#                     'qty_multiple':1,
+#                     #'group_id':0.0,
+#                     'company_id':self.company_id.id,
+#                     'route_id':1,
+#                     'qty_to_order':orderline.product_uom_qty,
+#                     'bom_id':bomrec.id,
+#                     #'supplier_id':0.0,
+#                     'sale_order_line':orderline.id,
+#                     'sale_order_id':orderline.order_id.id
+#                 }
+#                 self.env['stock.warehouse.orderpoint'].create(order_point)
 
         # Context key 'default_name' is sometimes propagated up to here.
         # We don't need it and it creates issues in the creation of linked records.

@@ -35,9 +35,8 @@
                            domain="[('itemtype', '=', 'spares')]"/>
                </xpath>
                <xpath expr="//filter[@name='order_date']" position="after">
-                   <filter name="po_order_date" string="PO Date" 
-                           domain="[('date_order', '>=', '2022-04-01 00:00:00'),('date_order','&lt;', '2022-04-30 23:59:59')]"/>
-                   
+                   <filter name="po_order_date" string="PO Date" domain="[('date_order','&gt;=', (context_today()).strftime('%%Y-%%m-1'))]"/>
+<!--                    domain="[('date_order', '>=', '2022-04-01 00:00:00'),('date_order','&lt;', '2022-04-30 23:59:59')]" -->
 <!--                    ["date_order",">=","2022-03-31 18:00:00"],["date_order","<=","2022-04-30 17:59:59"] ,('date_order','=', '2022-04-30 23:59:59') "search_default_rmtype": true, ('date_order', '>=', '2022-04-01 00:00:00'),('date_order','&lt;', '2022-04-30 23:59:59')-->
                    
                </xpath>
