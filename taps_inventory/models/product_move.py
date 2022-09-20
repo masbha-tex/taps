@@ -7,14 +7,19 @@ from dateutil.relativedelta import relativedelta
 
 class PickingVendorNameINT(models.Model):
     _inherit = 'stock.picking'
-    partner_name = fields.Char(readonly=True, store=True, string='Vendor Name', compute='compute_partner')
+    partner_name = fields.Char(readonly=True, string='Vendor Name', compute='compute_partner')
     
     def compute_partner(self):
         for rec in self:
             po = self.env['purchase.order'].search([('name', '=', rec.origin)])
             if po:
                 partner = self.env['res.partner'].search([('id', '=', po.partner_id.id)])
-                rec.partner_name = partner.name
+                if partner:
+                    rec.partner_name = partner.name
+                else:
+                    rec.partner_name = ''
+            else:
+                rec.partner_name = ''
             
     def createupdate_qc(self,id,name,company,state):
         if "/INT/" in name and state=="assigned":
