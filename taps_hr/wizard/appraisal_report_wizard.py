@@ -19,7 +19,7 @@ class HeadwisePDFReport(models.TransientModel):
     date_to = fields.Date('Date to', required=False, default = fields.Date.today().strftime('%Y-%m-25'))
     report_type = fields.Selection([
         ('score',	'Scorecard'),],
-        string='Report Type', required=False,
+        string='Report Type', required=True,
         help='Report Type')
     
     holiday_type = fields.Selection([
@@ -263,11 +263,53 @@ class HeadwiseReportPDF(models.AbstractModel):
                 mm = 'February'
             elif m == 'mar':
                 mm = 'March'
-
+        weight = 0
+        apr = 0
+        may = 0
+        jun = 0
+        jul = 0
+        aug = 0
+        sep = 0
+        oct = 0
+        nov = 0
+        dec = 0
+        jan = 0
+        feb = 0
+        mar = 0
+        ytd = 0
+        for de in docs1:
+            weight = weight + de.weight
+            apr = apr + de.apr
+            may = may + de.may
+            jun = jun + de.jun
+            jul = jul + de.jul
+            aug = aug + de.aug
+            sep = sep + de.sep
+            oct = oct + de.oct
+            nov = nov + de.nov
+            dec = dec + de.dec
+            jan = jan + de.jan
+            feb = feb + de.feb
+            mar = mar + de.mar
+            ytd = ytd + de.y_ytd
             
         common_data = [
             data.get('report_type'),
             mm,
+            weight,
+            apr,
+            may,
+            jun,
+            jul,
+            aug,
+            sep,
+            oct,
+            nov,
+            dec,
+            jan,
+            feb,
+            mar,
+            ytd,
 #             round(otTotal),
             data.get('date_from'),
             data.get('date_to'),

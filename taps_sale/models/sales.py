@@ -105,11 +105,12 @@ class SaleOrder(models.Model):
                     formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     
-                    inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
-                    
+                    #inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.slider_python_compute
                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
+                    
                     consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
+                    
                     consumption = round(consumption,4)
                     
                     bom_line_info = {
@@ -122,6 +123,7 @@ class SaleOrder(models.Model):
                         'operation_id':'',
                     }
                     self.env['mrp.bom.line'].create(bom_line_info)
+                    
                 
                 if orderline.dyedtape:
                     seq = seq + 1
@@ -247,7 +249,9 @@ class SaleOrder(models.Model):
                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.wair_python_compute
                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
+                    
                     consumption = safe_eval(formula_, {'s': size, 'g': orderline.gap})# or 0.0, None, mode='exec', nocopy=True
+                    
                     consumption = round(consumption,4)
                     #raise UserError((orderline.dippingfinish,product_temp.id))
                     bom_line_info = {

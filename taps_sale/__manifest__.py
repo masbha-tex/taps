@@ -23,8 +23,8 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        #'views/sale.xml',
-        'views/fg_product.xml',
+        'views/sale.xml',
+        #'views/fg_product.xml',
     ],
     # only loaded in demonstration mode
 }

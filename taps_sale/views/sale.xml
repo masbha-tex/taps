@@ -1,60 +1,24 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="taps_sale.list">
-      <field name="name">taps_sale list</field>
-      <field name="model">taps_sale.taps_sale</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
-    </record>
--->
-
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="taps_sale.action_window">
-      <field name="name">taps_sale window</field>
-      <field name="res_model">taps_sale.taps_sale</field>
-      <field name="view_mode">tree,form</field>
-    </record>
--->
-
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="taps_sale.action_server">
-      <field name="name">taps_sale server</field>
-      <field name="model_id" ref="model_taps_sale_taps_sale"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
--->
-
-    <!-- Top menu item -->
-<!--
-    <menuitem name="taps_sale" id="taps_sale.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="taps_sale.menu_1" parent="taps_sale.menu_root"/>
-    <menuitem name="Menu 2" id="taps_sale.menu_2" parent="taps_sale.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="taps_sale.menu_1_list" parent="taps_sale.menu_1"
-              action="taps_sale.action_window"/>
-    <menuitem name="Server to list" id="taps_sale" parent="taps_sale.menu_2"
-              action="taps_sale.action_server"/>
--->
+      <record id="sale_order_varient_columns" model="ir.ui.view">
+          <field name="name">sale.order.lineview</field>
+          <field name="model">sale.order</field>
+          <field name="inherit_id" ref="sale.view_order_form"/>
+          <field name="arch" type="xml">  
+              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="after">
+                  <field name="dippingfinish"/>
+                  <field name="slidercodesfg"/>
+                  <field name="ptopfinish"/>
+                  <field name="pbotomfinish"/>
+                  <field name="topbottom"/>
+                  <field name="gap"/>
+                  <field name="sizein"/>
+                  <field name="sizecm"/>
+                  <field name="sizemm"/>
+                  <field name="finish"/>
+                  <field name="shade"/>
+              </xpath>
+          </field>
+      </record>
   </data>
 </odoo>

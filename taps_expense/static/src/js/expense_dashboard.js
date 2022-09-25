@@ -166,6 +166,7 @@ var ExpenseKanbanDashboardRenderer = KanbanRenderer.extend({
             var expense_dashboard = QWeb.render('hr_expense.ExpenseDashboard', {
                 values: values,
             });
+            
             self.$el.parent().find(".o_expense_dashboard").remove();
             self.$el.before(expense_dashboard);
         });

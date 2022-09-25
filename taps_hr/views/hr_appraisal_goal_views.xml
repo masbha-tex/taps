@@ -224,42 +224,42 @@
 <!--                 <field name="t_ytd"/>
                 <field name="a_ytd"/>
                 <field name="ytd" widget="progressbar"/> -->
-                <field name="t_apr" digits="[3,1]"/>
-                <field name="a_apr" digits="[3,1]"/>
-                <field name="apr" digits="[3,1]"/>
-                <field name="t_may" digits="[3,1]"/>
-                <field name="a_may" digits="[3,1]"/>
-                <field name="may" digits="[3,1]"/>
-                <field name="t_jun" digits="[3,1]"/>
-                <field name="a_jun" digits="[3,1]"/>
-                <field name="jun" digits="[3,1]"/>
-                <field name="t_jul" digits="[3,1]"/>
-                <field name="a_jul" digits="[3,1]"/>
-                <field name="jul" digits="[3,1]"/>
-                <field name="t_aug" digits="[3,1]"/>
-                <field name="a_aug" digits="[3,1]"/>
-                <field name="aug" digits="[3,1]"/>
-                <field name="t_sep" digits="[3,1]"/>
-                <field name="a_sep" digits="[3,1]"/>
-                <field name="sep" digits="[3,1]"/>
-                <field name="t_oct" digits="[3,1]"/>
-                <field name="a_oct" digits="[3,1]"/>
-                <field name="oct" digits="[3,1]"/>
-                <field name="t_nov" digits="[3,1]"/>
-                <field name="a_nov" digits="[3,1]"/>
-                <field name="nov" digits="[3,1]"/>
-                <field name="t_dec" digits="[3,1]"/>
-                <field name="a_dec" digits="[3,1]"/>
-                <field name="dec" digits="[3,1]"/>
-                <field name="t_jan" digits="[3,1]"/>
-                <field name="a_jan" digits="[3,1]"/>
-                <field name="jan" digits="[3,1]"/>
-                <field name="t_feb" digits="[3,1]"/>
-                <field name="a_feb" digits="[3,1]"/>
-                <field name="feb" digits="[3,1]"/>
-                <field name="t_mar" digits="[3,1]"/>
-                <field name="a_mar" digits="[3,1]"/>
-                <field name="mar" digits="[3,1]"/>
+                <field name="t_apr" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="a_apr" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="apr" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_may" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="a_may" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="may" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_jun" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="a_jun" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="jun" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_jul" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="a_jul" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="jul" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_aug" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="a_aug" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="aug" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_sep" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="a_sep" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="sep" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_oct" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="a_oct" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="oct" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_nov" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="a_nov" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="nov" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_dec" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="a_dec" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="dec" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_jan" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="a_jan" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="jan" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_feb" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="a_feb" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="feb" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_mar" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="a_mar" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="mar" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
             </tree>
         </field>
     </record>
