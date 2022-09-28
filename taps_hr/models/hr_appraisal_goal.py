@@ -439,10 +439,9 @@ class HrAppraisalGoal(models.Model):
                 ss = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct + app.nov + app.dec + app.jan + app.feb + app.mar
                 d = 1+1+1+1+1+1+1+1+1+1+1+1
                 
-#             if int(app.y_t_ytd)>0 and int(app.y_a_ytd)>0:
-            
-            aaa = round((ss/(int(app.weight)*d))*int(app.weight),2)
-            app.write({'y_ytd': aaa})
+            if ss>0:
+                aaa = round((ss/(int(app.weight)*d))*int(app.weight),2)
+                app.write({'y_ytd': aaa})
 #                 if app.condition == 'less':
 #                     s = ((int(app.y_t_ytd)/int(app.y_a_ytd))*int(app.weight))+0.01999
 #                     if int(app.weight) < s:
