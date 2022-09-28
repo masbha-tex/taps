@@ -11,7 +11,10 @@ class HrAppraisalGoal(models.Model):
     
     condition = fields.Selection(selection=[
         ('less', 'Less than'),
-        ('more', 'More than')], string="Improve Condition")
+        ('more', 'More than')], string="Improve Condition", tracking=True)
+    calculate = fields.Selection(selection=[
+        ('sum', 'Sum'),
+        ('avg', 'AVG')], string="Calculate", default="sum")    
     month = fields.Selection(selection=[
         ('apr', 'April'),
         ('may', 'May'),
@@ -26,11 +29,11 @@ class HrAppraisalGoal(models.Model):
         ('feb', 'February'),
         ('mar', 'March'),], string="Calculate YTD")
     employee_id = fields.Many2one('hr.employee', string="Owner",
-        default=lambda self: self.env.user.employee_id, required=False)
-    manager_id = fields.Many2one('hr.employee', string="Challenged By", required=False)
-    weight = fields.Integer(string="Weight", store=True, copy=True, default="0", required=True)
-    target = fields.Float(string="Target", store=True, copy=True, default="0", required=True)
-    baseline = fields.Float(string="Baseline", store=True, copy=True, default="0")
+        default=lambda self: self.env.user.employee_id, required=False, tracking=True)
+    manager_id = fields.Many2one('hr.employee', string="Challenged By", required=False, tracking=True)
+    weight = fields.Integer(string="Weight", store=True, copy=True, default="0", required=True, tracking=True)
+    target = fields.Float(string="Target", store=True, copy=True, default="0", required=True, tracking=True)
+    baseline = fields.Float(string="Baseline", store=True, copy=True, default="0", tracking=True)
     
     ytd = fields.Float(string="Weight Total", store=True, copy=True, compute='compute_ytd')
     t_ytd = fields.Float(string="Target Total", store=True, copy=True, compute='compute_target_ytd')
@@ -40,31 +43,31 @@ class HrAppraisalGoal(models.Model):
     y_t_ytd = fields.Float(string="Target YTD",store=True, copy=True, compute='compute_y_target_ytd')
     y_a_ytd = fields.Float(string="ACHV YTD",store=True, copy=True, compute='compute_y_acvd_ytd')   
     
-    t_apr = fields.Float('T-Apr', store=True, copy=True, default="0")
-    t_may = fields.Float('T-May', store=True, copy=True, default="0")
-    t_jun = fields.Float('T-Jun', store=True, copy=True, default="0")
-    t_jul = fields.Float('T-Jul', store=True, copy=True, default="0")
-    t_aug = fields.Float('T-Aug', store=True, copy=True, default="0")
-    t_sep = fields.Float('T-Sep', store=True, copy=True, default="0")
-    t_oct = fields.Float('T-Oct', store=True, copy=True, default="0")
-    t_nov = fields.Float('T-Nov', store=True, copy=True, default="0")
-    t_dec = fields.Float('T-Dec', store=True, copy=True, default="0")
-    t_jan = fields.Float('T-Jan', store=True, copy=True, default="0")
-    t_feb = fields.Float('T-Feb', store=True, copy=True, default="0")
-    t_mar = fields.Float('T-Mar', store=True, copy=True, default="0")
+    t_apr = fields.Float('T-Apr', store=True, copy=True, default="0", tracking=True)
+    t_may = fields.Float('T-May', store=True, copy=True, default="0", tracking=True)
+    t_jun = fields.Float('T-Jun', store=True, copy=True, default="0", tracking=True)
+    t_jul = fields.Float('T-Jul', store=True, copy=True, default="0", tracking=True)
+    t_aug = fields.Float('T-Aug', store=True, copy=True, default="0", tracking=True)
+    t_sep = fields.Float('T-Sep', store=True, copy=True, default="0", tracking=True)
+    t_oct = fields.Float('T-Oct', store=True, copy=True, default="0", tracking=True)
+    t_nov = fields.Float('T-Nov', store=True, copy=True, default="0", tracking=True)
+    t_dec = fields.Float('T-Dec', store=True, copy=True, default="0", tracking=True)
+    t_jan = fields.Float('T-Jan', store=True, copy=True, default="0", tracking=True)
+    t_feb = fields.Float('T-Feb', store=True, copy=True, default="0", tracking=True)
+    t_mar = fields.Float('T-Mar', store=True, copy=True, default="0", tracking=True)
 
-    a_apr = fields.Float('A_Apr', store=True, copy=True, default="0")
-    a_may = fields.Float('A_May', store=True, copy=True, default="0")
-    a_jun = fields.Float('A_Jun', store=True, copy=True, default="0")
-    a_jul = fields.Float('A_Jul', store=True, copy=True, default="0")
-    a_aug = fields.Float('A_Aug', store=True, copy=True, default="0")
-    a_sep = fields.Float('A_Sep', store=True, copy=True, default="0")
-    a_oct = fields.Float('A_Oct', store=True, copy=True, default="0")
-    a_nov = fields.Float('A_Nov', store=True, copy=True, default="0")
-    a_dec = fields.Float('A_Dec', store=True, copy=True, default="0")
-    a_jan = fields.Float('A_Jan', store=True, copy=True, default="0")
-    a_feb = fields.Float('A_Feb', store=True, copy=True, default="0")
-    a_mar = fields.Float('A_Mar', store=True, copy=True, default="0")
+    a_apr = fields.Float('A_Apr', store=True, copy=True, default="0", tracking=True)
+    a_may = fields.Float('A_May', store=True, copy=True, default="0", tracking=True)
+    a_jun = fields.Float('A_Jun', store=True, copy=True, default="0", tracking=True)
+    a_jul = fields.Float('A_Jul', store=True, copy=True, default="0", tracking=True)
+    a_aug = fields.Float('A_Aug', store=True, copy=True, default="0", tracking=True)
+    a_sep = fields.Float('A_Sep', store=True, copy=True, default="0", tracking=True)
+    a_oct = fields.Float('A_Oct', store=True, copy=True, default="0", tracking=True)
+    a_nov = fields.Float('A_Nov', store=True, copy=True, default="0", tracking=True)
+    a_dec = fields.Float('A_Dec', store=True, copy=True, default="0", tracking=True)
+    a_jan = fields.Float('A_Jan', store=True, copy=True, default="0", tracking=True)
+    a_feb = fields.Float('A_Feb', store=True, copy=True, default="0", tracking=True)
+    a_mar = fields.Float('A_Mar', store=True, copy=True, default="0", tracking=True)
     
     apr = fields.Float('W-Apr', store=True, copy=True, default="0", compute='compute_weight')
     may = fields.Float('W-May', store=True, copy=True, default="0", compute='compute_weight')
@@ -91,6 +94,7 @@ class HrAppraisalGoal(models.Model):
                         a = round(((app.a_apr and app.t_apr/app.a_apr)*int(app.weight))+0.01999,1)
                         if int(app.weight) < a or (int(app.t_apr) == 0 and int(app.a_apr) > 0) or (int(app.t_apr) == 0 and int(app.a_apr) == 0):
                             app.write({'apr': int(app.weight)})
+                            
                         else:
                             app.write({'apr': a})
                     if int(app.t_may)>=0 and int(app.a_may)>=0:
@@ -233,12 +237,34 @@ class HrAppraisalGoal(models.Model):
                             app.write({'mar': int(app.weight)})
                         else:
                             app.write({'mar': ma})
+            if app.month == 'apr':
+                app.write({'may':False, 'jun':False, 'jul':False, 'aug':False, 'sep':False, 'oct':False, 'nov':False, 'dec':False, 'jan':False, 'feb':False, 'mar':False })
+            elif app.month == 'may':
+                app.write({'jun':False, 'jul':False, 'aug':False, 'sep':False, 'oct':False, 'nov':False, 'dec':False, 'jan':False, 'feb':False, 'mar':False })
+            elif app.month == 'jun':
+                app.write({'jul':False, 'aug':False, 'sep':False, 'oct':False, 'nov':False, 'dec':False, 'jan':False, 'feb':False, 'mar':False })
+            elif app.month == 'jul':
+                app.write({'aug':False, 'sep':False, 'oct':False, 'nov':False, 'dec':False, 'jan':False, 'feb':False, 'mar':False })
+            elif app.month == 'aug':
+                app.write({'sep':False, 'oct':False, 'nov':False, 'dec':False, 'jan':False, 'feb':False, 'mar':False })
+            elif app.month == 'sep':
+                app.write({'oct':False, 'nov':False, 'dec':False, 'jan':False, 'feb':False, 'mar':False })
+            elif app.month == 'oct':
+                app.write({'nov':False, 'dec':False, 'jan':False, 'feb':False, 'mar':False })
+            elif app.month == 'nov':
+                app.write({'dec':False, 'jan':False, 'feb':False, 'mar':False })
+            elif app.month == 'dec':
+                app.write({'jan':False, 'feb':False, 'mar':False })
+            elif app.month == 'jan':
+                app.write({'feb':False, 'mar':False })
+            elif app.month == 'feb':
+                app.write({'mar':False })        
     
                        
     @api.depends('apr','may','jun','jul','aug','sep','oct','nov','dec','jan','feb','mar','month')
     def compute_ytd(self):
         self.ytd = 0
-        d = 0
+        s = 0
         for app in self:
             if app.apr == "":
                 app.apr = 0
@@ -275,7 +301,7 @@ class HrAppraisalGoal(models.Model):
     @api.depends('t_apr','t_may','t_jun','t_jul','t_aug','t_sep','t_oct','t_nov','t_dec','t_jan','t_feb','t_mar','month')
     def compute_target_ytd(self):
         self.t_ytd = 0
-        d = 0
+        t = 0
         for app in self:
             if app.t_apr == "":
                 app.t_apr = 0
@@ -311,7 +337,7 @@ class HrAppraisalGoal(models.Model):
     @api.depends('a_apr','a_may','a_jun','a_jul','a_aug','a_sep','a_oct','a_nov','a_dec','a_jan','a_feb','a_mar','month')
     def compute_acvd_ytd(self):
         self.a_ytd = 0
-        d = 0
+        a = 0
         for app in self:
             if app.a_apr == "":
                 app.a_apr = 0
@@ -347,6 +373,8 @@ class HrAppraisalGoal(models.Model):
     @api.depends('apr','may','jun','jul','aug','sep','oct','nov','dec','jan','feb','mar','month')
     def compute_y_ytd(self):
         self.y_ytd = 0
+        aaa = 0
+        ss = 0
         d = 0
         for app in self:
             if app.apr == "":
@@ -411,10 +439,10 @@ class HrAppraisalGoal(models.Model):
                 ss = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct + app.nov + app.dec + app.jan + app.feb + app.mar
                 d = 1+1+1+1+1+1+1+1+1+1+1+1
                 
-            if int(app.y_t_ytd)>0 and int(app.y_a_ytd)>0:
-                aaa = 0
-                aaa = round((ss/(int(app.weight)*d))*int(app.weight),2)
-                app.write({'y_ytd': aaa})
+#             if int(app.y_t_ytd)>0 and int(app.y_a_ytd)>0:
+            
+            aaa = round((ss/(int(app.weight)*d))*int(app.weight),2)
+            app.write({'y_ytd': aaa})
 #                 if app.condition == 'less':
 #                     s = ((int(app.y_t_ytd)/int(app.y_a_ytd))*int(app.weight))+0.01999
 #                     if int(app.weight) < s:
@@ -428,10 +456,11 @@ class HrAppraisalGoal(models.Model):
 #                     else:
 #                         app.write({'y_ytd': round(s)})
     
-    @api.depends('t_apr','t_may','t_jun','t_jul','t_aug','t_sep','t_oct','t_nov','t_dec','t_jan','t_feb','t_mar','month')
+    @api.depends('t_apr','t_may','t_jun','t_jul','t_aug','t_sep','t_oct','t_nov','t_dec','t_jan','t_feb','t_mar','month','calculate')
     def compute_y_target_ytd(self):
         self.y_t_ytd = 0
         t = 0
+        d = 0
         for app in self:
             if app.t_apr == "":
                 app.t_apr = 0
@@ -460,35 +489,51 @@ class HrAppraisalGoal(models.Model):
             
             if app.month == 'apr':
                 t = app.t_apr
+                d = 1
             elif app.month == 'may':
                 t = app.t_apr + app.t_may
+                d = 1+1
             elif app.month == 'jun':
                 t = app.t_apr + app.t_may + app.t_jun
+                d = 1+1+1
             elif app.month == 'jul':
                 t = app.t_apr + app.t_may + app.t_jun + app.t_jul
+                d = 1+1+1+1
             elif app.month == 'aug':
                 t = app.t_apr + app.t_may + app.t_jun + app.t_jul + app.t_aug
+                d = 1+1+1+1+1
             elif app.month == 'sep':
                 t = app.t_apr + app.t_may + app.t_jun + app.t_jul + app.t_aug + app.t_sep
+                d = 1+1+1+1+1+1
             elif app.month == 'oct':
                 t = app.t_apr + app.t_may + app.t_jun + app.t_jul + app.t_aug + app.t_sep + app.t_oct
+                d = 1+1+1+1+1+1+1
             elif app.month == 'nov':
                 t = app.t_apr + app.t_may + app.t_jun + app.t_jul + app.t_aug + app.t_sep + app.t_oct + app.t_nov
+                d = 1+1+1+1+1+1+1+1
             elif app.month == 'dec':
                 t = app.t_apr + app.t_may + app.t_jun + app.t_jul + app.t_aug + app.t_sep + app.t_oct + app.t_nov + app.t_dec
+                d = 1+1+1+1+1+1+1+1+1
             elif app.month == 'jan':
                 t = app.t_apr + app.t_may + app.t_jun + app.t_jul + app.t_aug + app.t_sep + app.t_oct + app.t_nov + app.t_dec + app.t_jan
+                d = 1+1+1+1+1+1+1+1+1+1
             elif app.month == 'feb':
                 t = app.t_apr + app.t_may + app.t_jun + app.t_jul + app.t_aug + app.t_sep + app.t_oct + app.t_nov + app.t_dec + app.t_jan + app.t_feb
+                d = 1+1+1+1+1+1+1+1+1+1+1
             elif app.month == 'mar':
                 t = app.t_apr + app.t_may + app.t_jun + app.t_jul + app.t_aug + app.t_sep + app.t_oct + app.t_nov + app.t_dec + app.t_jan + app.t_feb + app.t_mar
+                d = 1+1+1+1+1+1+1+1+1+1+1+1
             if t >0:
-                app.write({'y_t_ytd': round(t)})  
+                if app.calculate == 'avg':
+                    app.write({'y_t_ytd': round((t/d),2)})
+                else:
+                    app.write({'y_t_ytd': round(t,2)})  
     
-    @api.depends('a_apr','a_may','a_jun','a_jul','a_aug','a_sep','a_oct','a_nov','a_dec','a_jan','a_feb','a_mar','month')
+    @api.depends('a_apr','a_may','a_jun','a_jul','a_aug','a_sep','a_oct','a_nov','a_dec','a_jan','a_feb','a_mar','month','calculate')
     def compute_y_acvd_ytd(self):
         self.y_a_ytd = 0
         a = 0
+        d = 0
         for app in self:
             if app.a_apr == "":
                 app.a_apr = 0
@@ -517,30 +562,45 @@ class HrAppraisalGoal(models.Model):
                 
             if app.month == 'apr':
                 a = app.a_apr
+                d = 1
             elif app.month == 'may':
                 a = app.a_apr + app.a_may
+                d = 1+1
             elif app.month == 'jun':
                 a = app.a_apr + app.a_may + app.a_jun
+                d = 1+1+1
             elif app.month == 'jul':
                 a = app.a_apr + app.a_may + app.a_jun + app.a_jul
+                d = 1+1+1+1
             elif app.month == 'aug':
                 a = app.a_apr + app.a_may + app.a_jun + app.a_jul + app.a_aug
+                d = 1+1+1+1+1
             elif app.month == 'sep':
                 a = app.a_apr + app.a_may + app.a_jun + app.a_jul + app.a_aug + app.a_sep
+                d = 1+1+1+1+1+1
             elif app.month == 'oct':
                 a = app.a_apr + app.a_may + app.a_jun + app.a_jul + app.a_aug + app.a_sep + app.a_oct
+                d = 1+1+1+1+1+1+1
             elif app.month == 'nov':
                 a = app.a_apr + app.a_may + app.a_jun + app.a_jul + app.a_aug + app.a_sep + app.a_oct + app.a_nov
+                d = 1+1+1+1+1+1+1+1
             elif app.month == 'dec':
                 a = app.a_apr + app.a_may + app.a_jun + app.a_jul + app.a_aug + app.a_sep + app.a_oct + app.a_nov + app.a_dec
+                d = 1+1+1+1+1+1+1+1+1
             elif app.month == 'jan':
                 a = app.a_apr + app.a_may + app.a_jun + app.a_jul + app.a_aug + app.a_sep + app.a_oct + app.a_nov + app.a_dec + app.a_jan
+                d = 1+1+1+1+1+1+1+1+1+1
             elif app.month == 'feb':
                 a = app.a_apr + app.a_may + app.a_jun + app.a_jul + app.a_aug + app.a_sep + app.a_oct + app.a_nov + app.a_dec + app.a_jan + app.a_feb
+                d = 1+1+1+1+1+1+1+1+1+1+1
             elif app.month == 'mar':
                 a = app.a_apr + app.a_may + app.a_jun + app.a_jul + app.a_aug + app.a_sep + app.a_oct + app.a_nov + app.a_dec + app.a_jan + app.a_feb + app.a_mar
+                d = 1+1+1+1+1+1+1+1+1+1+1+1
             if a >0:
-                app.write({'y_a_ytd': round(a)})                
+                if app.calculate == 'avg':
+                    app.write({'y_a_ytd': round((a/d),2)})
+                else:
+                    app.write({'y_a_ytd': round(a,2)})                
     
             
               

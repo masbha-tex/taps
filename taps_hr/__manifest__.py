@@ -82,6 +82,7 @@
         'reports/atten_atten_calender_pdf_template.xml',
         'reports/atten_shift_schedule_pdf_template.xml',
         'reports/kpi_objective_pdf_template.xml',
+        'reports/kpi_objective_score_pdf_template.xml',
 #         'wizard/employee_profile_report_wizard_view.xml',
         'wizard/headwise_report_wizard_view.xml',
 #         'wizard/jobcard_report_wizard_view.xml',

@@ -18,9 +18,11 @@ class HeadwisePDFReport(models.TransientModel):
     date_from = fields.Date('Date from', required=False, default = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
     date_to = fields.Date('Date to', required=False, default = fields.Date.today().strftime('%Y-%m-25'))
     report_type = fields.Selection([
-        ('score',	'Scorecard'),],
+        ('score',	'Scorecard'),
+        ('kpi',	'KPI Objective'),
+        ('plan',	'KPI objective with Action Plan (weekly)'),],
         string='Report Type', required=True,
-        help='Report Type')
+        help='Report Type', default='score')
     
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
@@ -176,11 +178,379 @@ class HeadwisePDFReport(models.TransientModel):
                         'employee_type': False,
                         'company_all': self.company_all}
                 
-        return self.env.ref('taps_hr.action_kpi_objective_pdf_report').report_action(self, data=data)
+#         return self.env.ref('taps_hr.action_kpi_objective_pdf_report').report_action(self, data=data)
+        if self.report_type == 'score':
+            return self.env.ref('taps_hr.action_kpi_objective_score_pdf_report').report_action(self, data=data)
+        if self.report_type == 'kpi':
+            return self.env.ref('taps_hr.action_kpi_objective_pdf_report').report_action(self, data=data)
+        else:
+            raise UserError(('This Report are not PDF Format'))
+
+    
+    
+    def action_generate_xlsx_report(self):
+        if self.report_type == 'plan':
+            start_time = fields.datetime.now()
+            if self.holiday_type == "employee":#employee  company department category
+                #raise UserError(('sfefefegegegeeg'))
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': self.employee_id.id, 
+                        'bank_id': False,
+                        'company_all': False}
+
+            if self.holiday_type == "company":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': self.mode_company_id.id, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': False,
+                        'bank_id': False,
+                        'company_all': False}
+
+            if self.holiday_type == "department":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': self.department_id.id, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'bank_id': False,
+                        'company_all': False}
+
+            if self.holiday_type == "category":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': self.category_id.id, 
+                        'employee_id': False, 
+                        'bank_id': False,
+                        'company_all': False}
+
+            if self.holiday_type == "emptype":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'bank_id': False,
+                        'employee_type': self.employee_type,
+                        'company_all': False}
+            if self.holiday_type == "companyall":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'bank_id': False,
+                        'company_all': self.company_all}
+        else:
+            raise UserError(('This Report are not XLSX Format'))
+        
+        domain = []
+#         if data.get('date_from'):
+#             domain.append(('date_from', '=', data.get('date_from')))
+#         if data.get('date_to'):
+#             domain.append(('date_to', '=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+#         if data.get('bank_id'):
+#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
+#         domain.append(('code', '=', 'NET'))
+        
+        #raise UserError((domain))
+        docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
+        if docs1.employee_id.company_id.id == 1:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
+        elif docs1.employee_id.company_id.id == 3:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
+        else:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
+        
+        docs = docs1
+        #raise UserError((docs.id))
+        datefrom = data.get('date_from')
+        dateto = data.get('date_to')
+#         bankname = self.bank_id.name
+#         categname=[]
+#         if self.employee_type =='staff':
+#             categname='Staffs'
+#         if self.employee_type =='expatriate':
+#             categname='Expatriates'
+#         if self.employee_type =='worker':
+#             categname='Workers'
+#         if self.employee_type =='cstaff':
+#             categname='C-Staffs'
+#         if self.employee_type =='cworker':
+#             categname='C-Workers'
+            
+        
+        #raise UserError((datefrom,dateto,bankname,categname))
+        report_data = []
+        emp_data = []
+        slnumber=0
+        for edata in docs:
+            slnumber = slnumber+1
+            emp_data = [
+                slnumber,
+                edata.name,
+                round(edata.baseline,2),
+                round(edata.target,2),
+                round(edata.weight,2),
+                "",
+            ]
+            report_data.append(emp_data)     
+        
+        
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+
+        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
+        worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+
+        report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
+#         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+        worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+        worksheet.merge_range('A3:F3', ('KPI objective with Action Plan (weekly)'), report_small_title_style)
+        worksheet.merge_range('A4:F4', ('%s - %s' % (docs.employee_id.pin,docs.employee_id.name)), report_small_title_style)
+#         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        
+        column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
+        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
+        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
+        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+
+        # set the width od the column
+        
+        worksheet.set_column(0,6,20)
+        
+        
+        worksheet.write(4, 0, 'SL.', column_product_style)
+        worksheet.write(4, 1, 'Objectives', column_product_style)        
+        worksheet.write(4, 2, 'Baseline', column_product_style)
+        worksheet.write(4, 3, 'Target', column_product_style)
+        worksheet.write(4, 4, 'Weight', column_product_style)
+        worksheet.write(4, 5, 'Action Plan (weekly)', column_product_style)
+        col = 0
+        row=5
+        
+        grandtotal = 0
+        grandtotal2 = 0
+        grandtotal3 = 0
+        
+        for line in report_data:
+            col=0
+            for l in line:
+                if col==2:
+                    grandtotal2 = grandtotal2+l
+                if col==3:
+                    grandtotal3 = grandtotal3+l
+                if col==4:
+                    grandtotal = grandtotal+l
+                worksheet.write(row, col, l)
+                col+=1
+            row+=1
+        
+        #worksheet.write(4, 0, 'SL.', column_product_style)
+        #raise UserError((row+1))
+        worksheet.write(row, 1, 'Grand Total', report_small_title_style)
+        worksheet.write(row, 2, round(grandtotal2,2), report_small_title_style)
+        worksheet.write(row, 3, round(grandtotal3,2), report_small_title_style)
+        worksheet.write(row, 4, round(grandtotal,2), report_small_title_style)
+        #raise UserError((datefrom,dateto,bankname,categname))
+        
+        workbook.close()
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s-%s - KPI objective with Action Plan (weekly)'% (docs.employee_id.pin,docs.employee_id.name))),
+            'target': 'self',
+        }    
+
 
     
 
-class HeadwiseReportPDF(models.AbstractModel):
+class KpiScoreReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.kpi_objective_score_pdf_template'
+    _description = 'KPI Objective Score Report Template'     
+
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        
+#         if data.get('bank_id')==False:
+#             domain.append(('code', '=', data.get('report_type')))
+#         if data.get('date_from'):
+#             domain.append(('date_from', '>=', data.get('date_from')))
+#         if data.get('date_to'):
+#             domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('employee_id.department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+#         if data.get('bank_id'):
+#             #str = re.sub("[^0-9]","",data.get('employee_id'))
+#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
+#         domain.append( ('id', 'in', (25,26,27,28)))        
+        
+        
+        
+        docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
+        if docs1.employee_id.company_id.id == 1:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
+        elif docs1.employee_id.company_id.id == 3:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
+        else:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
+        
+        docs = docs2 | docs1
+#         raise UserError((docs.id))
+        month = docs.mapped('month')[1:]
+        mm = 'Month'
+        for m in month:
+            if m == 'apr':
+                mm = 'April'
+            elif m == 'may':
+                mm = 'May'
+            elif m == 'jun':
+                mm = 'Jun'
+            elif m == 'jul':
+                mm = 'July'
+            elif m == 'aug':
+                mm = 'August'
+            elif m == 'sep':
+                mm = 'September'
+            elif m == 'oct':
+                mm = 'October'
+            elif m == 'nov':
+                mm = 'November'
+            elif m == 'dec':
+                mm = 'December'
+            elif m == 'jan':
+                mm = 'January'
+            elif m == 'feb':
+                mm = 'February'
+            elif m == 'mar':
+                mm = 'March'
+        weight = 0
+        apr = 0
+        may = 0
+        jun = 0
+        jul = 0
+        aug = 0
+        sep = 0
+        oct = 0
+        nov = 0
+        dec = 0
+        jan = 0
+        feb = 0
+        mar = 0
+        ytd = 0
+        for de in docs1:
+            weight = weight + de.weight
+            apr = apr + de.apr
+            may = may + de.may
+            jun = jun + de.jun
+            jul = jul + de.jul
+            aug = aug + de.aug
+            sep = sep + de.sep
+            oct = oct + de.oct
+            nov = nov + de.nov
+            dec = dec + de.dec
+            jan = jan + de.jan
+            feb = feb + de.feb
+            mar = mar + de.mar
+            ytd = ytd + de.y_ytd
+            
+        common_data = [
+            data.get('report_type'),
+            mm,
+            weight,
+            apr,
+            may,
+            jun,
+            jul,
+            aug,
+            sep,
+            oct,
+            nov,
+            dec,
+            jan,
+            feb,
+            mar,
+            ytd,
+#             round(otTotal),
+            data.get('date_from'),
+            data.get('date_to'),
+        ]
+        common_data.append(common_data)
+#         raise UserError((common_data[1]))
+#         raise UserError((mm))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.appraisal.goal',
+            'docs': docs,
+            'datas': common_data,
+#             'alldays': all_datelist
+        }
+
+class KpiReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.kpi_objective_pdf_template'
     _description = 'KPI Objective Report Template'     
 

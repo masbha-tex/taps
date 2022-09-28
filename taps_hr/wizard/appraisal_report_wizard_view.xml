@@ -9,8 +9,8 @@
                 <group>
                     <group>
                         <field name="report_type" string="Report Type" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                        <field name="date_from"/>
-                        <field name="date_to"/>
+                        <field name="date_from" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                        <field name="date_to" groups="hr_appraisal.group_hr_appraisal_manager"/>
 <!--                         <field name="is_company" string="" widget="boolean_toggle"/> -->
                     </group>
                     <group>
@@ -35,16 +35,16 @@
                         'required': [('holiday_type', '=', 'emptype')],
                         'invisible': [('holiday_type', '!=','emptype')]
                         }" options="{'no_create': True, 'no_open': True}"/> 
-<!--                         <field name="company_all" groups="hr_appraisal.group_hr_appraisal_manager" attrs="{
+                        <field name="company_all" groups="hr_appraisal.group_hr_appraisal_manager" attrs="{
                         'required': [('holiday_type', '=', 'companyall')],
                         'invisible': [('holiday_type', '!=','companyall')]
                         }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="bank_id"/> -->
+<!--                         <field name="bank_id"/> -->
                     </group>
                 </group>
                 <footer>
                     <button string="Print" name="action_print_report" type="object" class="btn-primary"/>
-<!--                     <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/> -->
+                    <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
@@ -66,7 +66,7 @@
               groups="hr_appraisal.group_hr_appraisal_manager"/>      
     
     <menuitem id="taps_hr.menu_kpi_objective_report"
-              name="KPI Objective Report"
+              name="KPI Report"
               sequence="2"
               action="kpi_objective_pdf_report"
               parent="hr_appraisal.menu_hr_appraisal_report"

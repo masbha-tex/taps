@@ -19,7 +19,7 @@ from werkzeug.urls import url_encode
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
-    delivery_date = fields.Datetime(string='Delivery Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)
+    #delivery_date = fields.Datetime(string='Delivery Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)
         
     def action_confirm(self):
         if self._get_forbidden_state_confirm() & set(self.mapped('state')):
