@@ -76,11 +76,11 @@ class SaleOrder(models.Model):
                     'consumption':'warning',#expatt.store_fname,
                 }
                 bomrec = self.env['mrp.bom'].create(bom_info)
-                
+                process = []
                 bom_option = {
-                    'name':'Metal Assembly',
-                    'workcenter_id':6,
-                    'sequence':100,
+                    'name':'Dyeing Process',
+                    'workcenter_id':1,
+                    'sequence':1,
                     'bom_id':bomrec.id,
                     'company_id':self.company_id.id,
                     'worksheet_type':'text',
@@ -88,7 +88,75 @@ class SaleOrder(models.Model):
                     'time_mode_batch':10,
                     'time_cycle_manual':60
                 }
-                self.env['mrp.routing.workcenter'].create(bom_option)
+                process.append(bom_option)
+                bom_option = {}
+                bom_option = {
+                    'name':'Plating Slider',
+                    'workcenter_id':15,
+                    'sequence':2,
+                    'bom_id':bomrec.id,
+                    'company_id':self.company_id.id,
+                    'worksheet_type':'text',
+                    'time_mode':'auto',
+                    'time_mode_batch':10,
+                    'time_cycle_manual':60
+                }
+                process.append(bom_option)
+                bom_option = {}
+                bom_option = {
+                    'name':'Plating Top',
+                    'workcenter_id':15,
+                    'sequence':3,
+                    'bom_id':bomrec.id,
+                    'company_id':self.company_id.id,
+                    'worksheet_type':'text',
+                    'time_mode':'auto',
+                    'time_mode_batch':10,
+                    'time_cycle_manual':60
+                }
+                process.append(bom_option)
+                bom_option = {}
+                bom_option = {
+                    'name':'Plating Bottom',
+                    'workcenter_id':15,
+                    'sequence':4,
+                    'bom_id':bomrec.id,
+                    'company_id':self.company_id.id,
+                    'worksheet_type':'text',
+                    'time_mode':'auto',
+                    'time_mode_batch':10,
+                    'time_cycle_manual':60
+                }
+                process.append(bom_option)
+                bom_option = {}
+                bom_option = {
+                    'name':'Dipping Chain',
+                    'workcenter_id':16,
+                    'sequence':5,
+                    'bom_id':bomrec.id,
+                    'company_id':self.company_id.id,
+                    'worksheet_type':'text',
+                    'time_mode':'auto',
+                    'time_mode_batch':10,
+                    'time_cycle_manual':60
+                }
+                process.append(bom_option)
+                bom_option = {}
+                bom_option = {
+                    'name':'Metal Assembly',
+                    'workcenter_id':6,
+                    'sequence':6,
+                    'bom_id':bomrec.id,
+                    'company_id':self.company_id.id,
+                    'worksheet_type':'text',
+                    'time_mode':'auto',
+                    'time_mode_batch':10,
+                    'time_cycle_manual':60
+                }
+                process.append(bom_option)
+                bom_option = {}
+                
+                self.env['mrp.routing.workcenter'].create(process)
                 
                 #orderline.write({'bom_id':bomrec.id})
                 #bom_line = self.env['mrp.bom']
