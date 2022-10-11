@@ -64,9 +64,9 @@ class PickingVendorNameINT(models.Model):
 # x_studio_sample_qty                        
                     
                     
-        
-
-
+class IncludeCateTypeInPT(models.Model):
+    _inherit = 'stock.production.lot'
+    rejected = fields.Boolean(store=True, string='Rejected', readonly=False, tracking=True)
 
 
 class IncludeCateTypeInPT(models.Model):

@@ -210,19 +210,22 @@ class ZkMachine(models.Model):
                                                 if att_var:
                                                     att_out = att_obj.search([('employee_id', '=', get_user_id.id),
                                                                               ('attDate','=', slot_beign_date)])
-                                                    if att_out:
-                                                        if slot_beign_date == zk_in_date:
-                                                            if zk_ck_in != zk_ck_out:
-                                                                att_out.write({'check_in': zk_ck_in,
-                                                                       'check_out': zk_ck_out})
+                                                    if att_var.is_lock == True:
+                                                        continue
+                                                    else:
+                                                        if att_out:
+                                                            if slot_beign_date == zk_in_date:
+                                                                if zk_ck_in != zk_ck_out:
+                                                                    att_out.write({'check_in': zk_ck_in,
+                                                                           'check_out': zk_ck_out})
+                                                                else:
+                                                                    att_out.write({'check_in': zk_ck_in})
                                                             else:
-                                                                att_out.write({'check_in': zk_ck_in})
-                                                        else:
-                                                            if slot_beign_date == slot_end_date:
-                                                                att_out.write({'check_in': zk_ck_in,
-                                                                               'check_out': zk_ck_out})
-                                                            else:
-                                                                att_out.write({'check_out': zk_ck_in})
+                                                                if slot_beign_date == slot_end_date:
+                                                                    att_out.write({'check_in': zk_ck_in,
+                                                                                   'check_out': zk_ck_out})
+                                                                else:
+                                                                    att_out.write({'check_out': zk_ck_in})
 
                                     else:
                                         pass

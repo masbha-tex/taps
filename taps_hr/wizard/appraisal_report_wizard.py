@@ -334,24 +334,37 @@ class HeadwisePDFReport(models.TransientModel):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet()
 
-        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
-        worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB', 'border': True})
+        report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12, 'border': True})
+        report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'border': True})
+        report_column_style_2.set_text_wrap()
+        worksheet.merge_range('A1:I1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
 
-        report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
+        report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14, 'border': True})
 #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-        worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
-        worksheet.merge_range('A3:F3', ('KPI objective with Action Plan (weekly)'), report_small_title_style)
-        worksheet.merge_range('A4:F4', ('%s - %s' % (docs.employee_id.pin,docs.employee_id.name)), report_small_title_style)
+        worksheet.merge_range('A2:I2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+        worksheet.merge_range('A3:I3', ('KPI objective with Action Plan (weekly)'), report_small_title_style)
+        worksheet.merge_range('A4:E4', ('%s - %s' % (docs.employee_id.pin,docs.employee_id.name)), report_title_style)
+        worksheet.merge_range('F4:I4', ('Action Plan'), report_title_style)
 #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
         
-        column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
-        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
-        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+        column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#EEED8A', 'font_size': 12, 'border': True})
+        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
+        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
+        row_categ_style = workbook.add_format({'border': True})
 
         # set the width od the column
         
-        worksheet.set_column(0,6,20)
+        
+        worksheet.set_column(0,0,3, report_column_style)
+        worksheet.set_column(1,1,40, report_column_style_2)
+        worksheet.set_column(2,2,7, report_column_style)
+        worksheet.set_column(3,3,7, report_column_style)
+        worksheet.set_column(4,4,7, report_column_style)
+        worksheet.set_column(5,5,20, report_column_style)
+        worksheet.set_column(6,6,20, report_column_style)
+        worksheet.set_column(7,7,20, report_column_style)
+        worksheet.set_column(8,8,20, report_column_style)
         
         
         worksheet.write(4, 0, 'SL.', column_product_style)
@@ -359,21 +372,24 @@ class HeadwisePDFReport(models.TransientModel):
         worksheet.write(4, 2, 'Baseline', column_product_style)
         worksheet.write(4, 3, 'Target', column_product_style)
         worksheet.write(4, 4, 'Weight', column_product_style)
-        worksheet.write(4, 5, 'Action Plan (weekly)', column_product_style)
+        worksheet.write(4, 5, 'Week 1', column_product_style)
+        worksheet.write(4, 6, 'Week 2', column_product_style)
+        worksheet.write(4, 7, 'Week 3', column_product_style)
+        worksheet.write(4, 8, 'Week 4', column_product_style)
         col = 0
         row=5
         
         grandtotal = 0
-        grandtotal2 = 0
-        grandtotal3 = 0
+#         grandtotal2 = 0
+#         grandtotal3 = 0
         
         for line in report_data:
             col=0
             for l in line:
-                if col==2:
-                    grandtotal2 = grandtotal2+l
-                if col==3:
-                    grandtotal3 = grandtotal3+l
+#                 if col==2:
+#                     grandtotal2 = grandtotal2+l
+#                 if col==3:
+#                     grandtotal3 = grandtotal3+l
                 if col==4:
                     grandtotal = grandtotal+l
                 worksheet.write(row, col, l)
@@ -383,8 +399,8 @@ class HeadwisePDFReport(models.TransientModel):
         #worksheet.write(4, 0, 'SL.', column_product_style)
         #raise UserError((row+1))
         worksheet.write(row, 1, 'Grand Total', report_small_title_style)
-        worksheet.write(row, 2, round(grandtotal2,2), report_small_title_style)
-        worksheet.write(row, 3, round(grandtotal3,2), report_small_title_style)
+#         worksheet.write(row, 2, round(grandtotal2,2), report_small_title_style)
+#         worksheet.write(row, 3, round(grandtotal3,2), report_small_title_style)
         worksheet.write(row, 4, round(grandtotal,2), report_small_title_style)
         #raise UserError((datefrom,dateto,bankname,categname))
         
@@ -690,7 +706,7 @@ class KpiReportPDF(models.AbstractModel):
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.appraisal.goal',
-            'docs': docs,
+            'docs': docs1,
             'datas': common_data,
 #             'alldays': all_datelist
         }
