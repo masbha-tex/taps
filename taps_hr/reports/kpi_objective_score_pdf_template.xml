@@ -509,7 +509,7 @@
 							</thead>
 							<tbody>
 								<t t-foreach="docs" t-as="o">
-									<t t-if="o.description != 'Strategic Project' and o.description != ''">
+									<t t-if="o.description != 'Strategic Project' and o.description">
 										<tr align="center" style="border: 1pt solid black;">
 											<td colspan="2" style="text-align: center;vertical-align:middle">
 												<t t-esc="o_index+1"/>

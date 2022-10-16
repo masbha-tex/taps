@@ -44,7 +44,8 @@
 								</div>
 								<div class="header-left">
 									<!--<h6 class="bg-dark text-white py-2">Calculate YTD:</h6>-->
-									<span>Calculate YTD: <t t-esc="datas[1]"/>
+									<span>
+									  <!--Calculate YTD: <t t-esc="datas[1]"/>-->
 									</span>
 								</div>
 							</div>
@@ -102,23 +103,24 @@
 						<!--		</tbody>-->
 						<!--	</table>-->
 						<!--</div>-->
-						<div class="row py-4">
+						<div class="row py-2">
 							<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt">
-								<caption align="center" style="background-color:#714B45;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">
+								<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">
 									<strong>Objective / Score</strong>
 								</caption>
 								<thead>
-									<tr align="center" style="background-color:#714B50; color: white;">
+									<tr align="center" style="background-color:#714B67; color: white;">
 										<th class="text-white" colspan="2" style="border: 1pt solid black;">SL</th>
 										<th class="text-white" colspan="15" style="border: 1pt solid black;">Objectives</th>
 										<th class="text-white" colspan="3" style="border: 1pt solid black;">Baseline</th>
 										<th class="text-white" colspan="3" style="border: 1pt solid black;">Target</th>
-										<th class="text-white" colspan="3" style="border: 1pt solid black;">Weight</th>
+										<th class="text-white" colspan="3" style="border: 1pt solid black;">Weightage</th>
 									</tr>
 								</thead>
 								<tbody>
+								  <t t-set="total_wt" t-value="0"/>
 									<t t-foreach="docs" t-as="o">
-										<t t-if="o.description != 'Strategic Project' and o.description != ''">
+										<t t-if="o.description != 'Strategic Project' and o.description">
 											<tr align="center" style="border: 1pt solid black;">
 												<td colspan="2" style="text-align: center;vertical-align:middle">
 													<t t-esc="o_index+1"/>
@@ -133,15 +135,21 @@
 													<t t-esc="o.target" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
 												</td>
 												<td colspan="3" style="text-align: center; vertical-align:middle">
-													<t t-esc="o.weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+													<t t-esc="o.weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/><span>%</span>
+													<t t-set="total_wt" t-value="total_wt+o.weight"/>
 												</td>
 											</tr>
 										</t>
 									</t>
+									<tr>
+									  <td colspan="20" style="border-bottom-style: hidden;border-left-style: hidden"></td>
+									  <td colspan="3" class="text-center font-weight-bold">Total:</td>
+									  <td colspan="3" class="text-center font-weight-bold"><t t-esc="total_wt" /><span>%</span></td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
-						<div class="row py-4">
+						<div class="row py-2">
 							<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt;">
 								<caption align="center" style="background-color:#714B35;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">
 									<strong>Strategic Project</strong>
@@ -152,10 +160,11 @@
 										<th class="text-white" colspan="15" style="border: 1pt solid black;">Objectives</th>
 										<th class="text-white" colspan="3" style="border: 1pt solid black;">Baseline</th>
 										<th class="text-white" colspan="3" style="border: 1pt solid black;">Target</th>
-										<th class="text-white" colspan="3" style="border: 1pt solid black;">Weight</th>
+										<th class="text-white" colspan="3" style="border: 1pt solid black;">Weightage</th>
 									</tr>
 								</thead>
 								<tbody>
+								  <t t-set="total_wt" t-value="0"/>
 									<t t-foreach="docs" t-as="o">
 										<t t-if="o.description == 'Strategic Project'">
 											<tr align="center" style="border: 1pt solid black;">
@@ -172,11 +181,17 @@
 													<t t-esc="o.target" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
 												</td>
 												<td colspan="3" style="text-align: center; vertical-align:middle">
-													<t t-esc="o.weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+													<t t-esc="o.weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/><span>%</span>
+													<t t-set="total_wt" t-value="total_wt+o.weight"/>
 												</td>
 											</tr>
 										</t>
 									</t>
+									<tr>
+									  <td colspan="20" style="border-bottom-style: hidden;border-left-style: hidden"></td>
+									  <td colspan="3" class="text-center font-weight-bold">Total:</td>
+									  <td colspan="3" class="text-center font-weight-bold"><t t-esc="total_wt" /><span>%</span></td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
