@@ -104,7 +104,7 @@ FROM (SELECT
         q.quantity as product_qty,
         q.company_id,
         wh.id as warehouse_id,
-        0 as sale_line_id
+        1 as sale_line_id
     FROM
         GENERATE_SERIES((now() at time zone 'utc')::date - interval '3month',
         (now() at time zone 'utc')::date + interval '3 month', '1 day'::interval) date,

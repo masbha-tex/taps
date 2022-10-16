@@ -67,6 +67,7 @@ class PickingVendorNameINT(models.Model):
 class IncludeCateTypeInPT(models.Model):
     _inherit = 'stock.production.lot'
     rejected = fields.Boolean(store=True, string='Rejected', readonly=False, tracking=True)
+    unit_price = fields.Float(readonly=True, store=True, string='Price')
 
 
 class IncludeCateTypeInPT(models.Model):
