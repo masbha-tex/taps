@@ -38,7 +38,7 @@ class Orderpoint(models.Model):
             orderpoint.qty_to_order = qty_to_order    
     
     
-    def _get_orderpoint_action(self):
+    def _get_orderpoint_action_test(self):
         """Create manual orderpoints for missing product in each warehouses. It also removes
         orderpoints that have been replenish. In order to do it:
         - It uses the report.stock.quantity to find missing quantity per product/warehouse

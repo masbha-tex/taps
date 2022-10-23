@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_reg_search" model="ir.ui.view">
+        <field name="name">stock.reg.search</field>
+        <field name="model">stock.opening.closing</field>
+        <field name="arch" type="xml" >
+            <search string="RM &amp; Spare">
+                <filter string="RM" name="rm_stock" domain="[('product_id.default_code', 'like', 'R_')]" />
+                <filter string="Spare" name="spare_stock" domain="[('product_id.default_code', 'like', 'S_')]" />
+<!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
+                <separator/>
+                <field name="product_id" string="Product"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_stock_reg_tree" model="ir.ui.view">
+        <field name="name">stock.reg.tree</field>
+        <field name="model">stock.opening.closing</field>
+        <field name="arch" type="xml" >
+            <tree string="RM Stock" create="false" delete="false" >
+                <field name="parent_category"/>
+                <field name="product_category"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="rejected"/>
+                <field name="lot_price"/>
+                <field name="opening_qty"/>
+                <field name="opening_value"/>
+                <field name="receive_qty"/>
+                <field name="receive_value"/>
+                <field name="issue_qty"/>
+                <field name="issue_value"/>
+                <field name="cloing_qty"/>
+                <field name="cloing_value"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_stock_opening_closing" model="ir.actions.act_window">
+        <field name="name">Attendance Analysis</field>
+        <field name="res_model">stock.opening.closing</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'search_default_rm_stock':1}</field>
+        <field name="search_view_id" ref="view_stock_reg_search" />
+    </record>
+
+    <menuitem id="menu_stock_reg_view" 
+              name="RM Stock" 
+              action="action_stock_opening_closing" 
+              parent="stock.menu_warehouse_report"
+              sequence="160"/>
+</odoo>    

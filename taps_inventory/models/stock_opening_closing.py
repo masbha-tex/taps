@@ -1,5 +1,7 @@
 from odoo import fields, models, tools, api
-
+from datetime import date, datetime, time, timedelta
+from odoo.tools import format_date
+from odoo.exceptions import UserError, ValidationError
 
 class Inventory(models.Model):
     _name = "stock.opening.closing"
@@ -10,11 +12,11 @@ class Inventory(models.Model):
     
     product_id = fields.Many2one('product.product', string='Item', readonly=True)
     #product_tmpl_id = fields.Many2one('product.template', related='product_id.product_tmpl_id')
-    product_category = fields.Many2one('category.type', string='Category', related='product_id.categ_type')
-    product_parent_category = fields.Many2one('category.type', string='Product', related='product_category.parent_id')
+    product_category = fields.Many2one('category.type', string='Category')
+    parent_category = fields.Many2one('category.type', string='Product')
     
     lot_id = fields.Many2one('stock.production.lot', string='Invoice', readonly=True)
-    rejected_lot = fields.Boolean(string='Rejected', related='lot_id.rejected', readonly=True)
+    rejected = fields.Boolean(string='Rejected', readonly=True)
     lot_price = fields.Float(string='Price', readonly=True)
     
     opening_qty = fields.Float(string='Opening Quantity', readonly=True)
@@ -30,137 +32,89 @@ class Inventory(models.Model):
     
     
     def init(self):
-        """ """
+        #start_time = fields.datetime.now()
+        #f_date = self.from_date
+        #t_date = self.to_date
+        #hour_from = 0.0
+        #hour_to = 23.98
+        #combine = datetime.combine
+        #from_date = combine(f_date, self.float_to_time(hour_from))
+        #to_date = combine(t_date, self.float_to_time(hour_to))
+        #from_date1,from_date2,from_date3,from_date4,from_dat5,to_date1,from_date6,to_date2,from_date7,to_date3,from_date8,to_date4,
         tools.drop_view_if_exists(self._cr, 'stock_opening_closing')
         query = """
-CREATE or REPLACE VIEW stock_opening_closing AS (
-WITH
-    existing_sm (id, product_id, product_qty, date, state, company_id, whs_id, whd_id, ls_usage, ld_usage) AS (
-        SELECT m.id, m.product_id, m.product_qty, m.date, m.state, m.company_id, whs.id, whd.id, ls.usage, ld.usage
-        FROM stock_move m
-        LEFT JOIN stock_location ls on (ls.id=m.location_id)
-        LEFT JOIN stock_location ld on (ld.id=m.location_dest_id)
-        LEFT JOIN stock_warehouse whs ON ls.parent_path like concat('%/', whs.view_location_id, '/%')
-        LEFT JOIN stock_warehouse whd ON ld.parent_path like concat('%/', whd.view_location_id, '/%')
-        LEFT JOIN product_product pp on pp.id=m.product_id
-        LEFT JOIN product_template pt on pt.id=pp.product_tmpl_id
-        WHERE pt.type = 'product' AND
-            (whs.id IS NOT NULL OR whd.id IS NOT NULL) AND
-            (whs.id IS NULL OR whd.id IS NULL OR whs.id != whd.id) AND
-            m.product_qty != 0 AND
-            m.state NOT IN ('draft', 'cancel') AND
-            (m.state != 'done' or m.date >= ((now() at time zone 'utc')::date - interval '3month'))
-    ),
-    all_sm (id, product_id, product_qty, date, state, company_id, whs_id, whd_id, ls_usage, ld_usage) AS (
-        SELECT sm.id, sm.product_id, 
-            CASE 
-                WHEN is_duplicated = 0 THEN sm.product_qty
-                WHEN sm.whs_id IS NOT NULL AND sm.whd_id IS NOT NULL AND sm.whs_id != sm.whd_id THEN sm.product_qty
-                ELSE 0
-            END, 
-            sm.date, sm.state, sm.company_id,
-            CASE WHEN is_duplicated = 0 THEN sm.whs_id END,
-            CASE 
-                WHEN is_duplicated = 0 AND NOT (sm.whs_id IS NOT NULL AND sm.whd_id IS NOT NULL AND sm.whs_id != sm.whd_id) THEN sm.whd_id 
-                WHEN is_duplicated = 1 AND (sm.whs_id IS NOT NULL AND sm.whd_id IS NOT NULL AND sm.whs_id != sm.whd_id) THEN sm.whd_id 
-            END,
-            CASE WHEN is_duplicated = 0 THEN sm.ls_usage END,
-            CASE 
-                WHEN is_duplicated = 0 AND NOT (sm.whs_id IS NOT NULL AND sm.whd_id IS NOT NULL AND sm.whs_id != sm.whd_id) THEN sm.ld_usage 
-                WHEN is_duplicated = 1 AND (sm.whs_id IS NOT NULL AND sm.whd_id IS NOT NULL AND sm.whs_id != sm.whd_id) THEN sm.ld_usage
-            END
-        FROM
-            GENERATE_SERIES(0, 1, 1) is_duplicated,
-            existing_sm sm
-    )
-SELECT
-    MIN(id) as id,
-    product_id,
-    state,
-    date,
-    sum(product_qty) as product_qty,
-    company_id,
-    warehouse_id
-FROM (SELECT
-        m.id,
-        m.product_id,
-        CASE
-            WHEN m.whs_id IS NOT NULL AND m.whd_id IS NULL THEN 'out'
-            WHEN m.whd_id IS NOT NULL AND m.whs_id IS NULL THEN 'in'
-        END AS state,
-        m.date::date AS date,
-        CASE
-            WHEN m.whs_id IS NOT NULL AND m.whd_id IS NULL THEN -m.product_qty
-            WHEN m.whd_id IS NOT NULL AND m.whs_id IS NULL THEN m.product_qty
-        END AS product_qty,
-        m.company_id,
-        CASE
-            WHEN m.whs_id IS NOT NULL AND m.whd_id IS NULL THEN m.whs_id
-            WHEN m.whd_id IS NOT NULL AND m.whs_id IS NULL THEN m.whd_id
-        END AS warehouse_id
-    FROM
-        all_sm m
-    WHERE
-        m.product_qty != 0 AND
-        m.state != 'done'
-    UNION ALL
-    SELECT
-        -q.id as id,
-        q.product_id,
-        'forecast' as state,
-        date.*::date,
-        q.quantity as product_qty,
-        q.company_id,
-        wh.id as warehouse_id
-    FROM
-        GENERATE_SERIES((now() at time zone 'utc')::date - interval '3month',
-        (now() at time zone 'utc')::date + interval '3 month', '1 day'::interval) date,
-        stock_quant q
-    LEFT JOIN stock_location l on (l.id=q.location_id)
-    LEFT JOIN stock_warehouse wh ON l.parent_path like concat('%/', wh.view_location_id, '/%')
-    WHERE
-        (l.usage = 'internal' AND wh.id IS NOT NULL) OR
-        l.usage = 'transit'
-    UNION ALL
-    SELECT
-        m.id,
-        m.product_id,
-        'forecast' as state,
-        GENERATE_SERIES(
-        CASE
-            WHEN m.state = 'done' THEN (now() at time zone 'utc')::date - interval '3month'
-            ELSE m.date::date
-        END,
-        CASE
-            WHEN m.state != 'done' THEN (now() at time zone 'utc')::date + interval '3 month'
-            ELSE m.date::date - interval '1 day'
-        END, '1 day'::interval)::date date,
-        CASE
-            WHEN m.whs_id IS NOT NULL AND m.whd_id IS NULL AND m.state = 'done' THEN m.product_qty
-            WHEN m.whd_id IS NOT NULL AND m.whs_id IS NULL AND m.state = 'done' THEN -m.product_qty
-            WHEN m.whs_id IS NOT NULL AND m.whd_id IS NULL THEN -m.product_qty
-            WHEN m.whd_id IS NOT NULL AND m.whs_id IS NULL THEN m.product_qty
-        END AS product_qty,
-        m.company_id,
-        CASE
-            WHEN m.whs_id IS NOT NULL AND m.whd_id IS NULL THEN m.whs_id
-            WHEN m.whd_id IS NOT NULL AND m.whs_id IS NULL THEN m.whd_id
-        END AS warehouse_id
-    FROM
-        all_sm m
-    WHERE
-        m.product_qty != 0) AS forecast_qty
-GROUP BY product_id, state, date, company_id, warehouse_id
-);
-"""
+        CREATE or REPLACE VIEW stock_opening_closing AS (
+        select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id, categ_type as product_category,parent_id as parent_category,invoice as lot_id, rejected, avg(lot_price) as lot_price, sum(opening_qty) as opening_qty,sum(opening_value) as opening_value,sum(receive_qty) as receive_qty,sum(receive_value) as receive_value,sum(issue_qty) as issue_qty,sum(issue_value) as issue_value,sum(cloing_qty) as cloing_qty,sum(cloing_value) as cloing_value from(
+        select
+        product.id as product_id,pt.categ_type,catype.parent_id,lot.id as invoice,lot.rejected,
+        0 as lot_price,
+        (
+        case when lot.id is not null then
+        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done when a.quantity=0 then 0 else b.qty_done end),0) as op_qty from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<'2022-10-01 00:00:00')
+        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<'2022-10-01 00:00:00') end
+        ) as opening_qty,
+
+        (
+        case when lot.id is not null then
+        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) when a.description like '%LC/%' then a.value else (b.qty_done*a.unit_cost) end),0) as op_val from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<'2022-10-01 00:00:00')
+        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<'2022-10-01 00:00:00') end
+        ) as opening_value,
+
+        (
+        case when lot.id is not null then
+        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done else b.qty_done end),0) as re_quantity from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like '%/IN/%' or a.description like '%/OUT/%') and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59')
+        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59' and (a.description like '%/IN/%' or a.description like '%/OUT/%')) end
+        ) as receive_qty,
+
+        (
+        case when lot.id is not null then
+        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as re_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like '%/IN/%' or a.description like '%/OUT/%') and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59')
+        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59' and (a.description like '%/IN/%' or a.description like '%/OUT/%')) end
+        ) as receive_value,
+
+        (
+        case when lot.id is not null then
+        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done else b.qty_done end),0) as isue_quantity from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where a.description like '%/MR/%' and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-01 23:23:59')
+        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-01 23:23:59' and a.description like '%/MR/%') end
+        ) as issue_qty,
+
+        (
+        case when lot.id is not null then
+        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as re_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where a.description like '%/MR/%' and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59')
+        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59' and a.description like '%/MR/%') end
+        ) as issue_value,
+
+
+        (
+        case when lot.id is not null then
+        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done when a.quantity=0 then 0 else b.qty_done end),0) as op_qty from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<='2022-10-13 23:23:59')
+        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<='2022-10-13 23:23:59') end
+        ) as cloing_qty,
+
+        (
+        case when lot.id is not null then
+        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) when a.description like '%LC/%' then a.value else (b.qty_done*a.unit_cost) end),0) as op_val from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<='2022-10-13 23:23:59')
+        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<='2022-10-13 23:23:59') end
+        ) as cloing_value
+
+        from product_product as product
+        inner join product_template as pt on product.product_tmpl_id=pt.id
+        inner join category_type as catype on pt.categ_type=catype.id
+        left join category_type as pcatype on catype.parent_id=pcatype.id
+        left join stock_production_lot as lot on product.id=lot.product_id
+        where product.default_code like'R_%' or product.default_code like'S_%'
+        ) as stock where (stock.opening_qty+stock.receive_qty+stock.issue_qty)>0
+        group by stock.product_id,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected
+        )
+        """
         self.env.cr.execute(query)
 
-    @api.model
-    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
-        for i in range(len(domain)):
-            if domain[i][0] == 'product_tmpl_id' and domain[i][1] in ('=', 'in'):
-                tmpl = self.env['product.template'].browse(domain[i][2])
-                # Avoid the subquery done for the related, the postgresql will plan better with the SQL view
-                # and then improve a lot the performance for the forecasted report of the product template.
-                domain[i] = ('product_id', 'in', tmpl.with_context(active_test=False).product_variant_ids.ids)
-        return super().read_group(domain, fields, groupby, offset, limit, orderby, lazy)    
+#     @api.model
+#     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+#         for i in range(len(domain)):
+#             if domain[i][0] == 'product_tmpl_id' and domain[i][1] in ('=', 'in'):
+#                 tmpl = self.env['product.template'].browse(domain[i][2])
+#                 # Avoid the subquery done for the related, the postgresql will plan better with the SQL view
+#                 # and then improve a lot the performance for the forecasted report of the product template.
+#                 domain[i] = ('product_id', 'in', tmpl.with_context(active_test=False).product_variant_ids.ids)
+#         return super().read_group(domain, fields, groupby, offset, limit, orderby, lazy)
