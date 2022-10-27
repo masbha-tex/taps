@@ -19,7 +19,7 @@ class Orderpoint(models.Model):
     _inherit = "stock.warehouse.orderpoint"
     
     qty_to_order = fields.Float('To Order', digits='Product Unit of Measure', compute='_compute_qty_to_order', store=True, readonly=False)
-    sale_line_id = fields.Many2one('sale.order.line', string='Sale Order Line', readonly=True)
+    #sale_line_id = fields.Many2one('sale.order.line', string='Sale Order Line', store=True)
     
     @api.depends('qty_multiple', 'qty_forecast', 'product_min_qty', 'product_max_qty')
     def _compute_qty_to_order(self):
@@ -62,6 +62,7 @@ class Orderpoint(models.Model):
         to_refill = defaultdict(float)
         all_product_ids = []
         all_warehouse_ids = []
+        all_sale_line_ids = []
         # Take 3 months since it's the max for the forecast report
         to_date = add(fields.date.today(), months=3)
         qty_by_product_warehouse = self.env['report.stock.quantity'].read_group(
@@ -70,11 +71,13 @@ class Orderpoint(models.Model):
             ['product_id', 'warehouse_id', 'sale_line_id'], lazy=False)
         for group in qty_by_product_warehouse:
             warehouse_id = group.get('warehouse_id') and group['warehouse_id'][0]
-            if group['product_qty'] >= 0.0 or not warehouse_id:
+            sale_line_id = group.get('sale_line_id') and group['sale_line_id'][0]
+            if group['product_qty'] >= 0.0 or not warehouse_id  or not sale_line_id:
                 continue
             all_product_ids.append(group['product_id'][0])
             all_warehouse_ids.append(warehouse_id)
-            to_refill[(group['product_id'][0], warehouse_id, group['sale_line_id'][0])] = group['product_qty']
+            all_sale_line_ids.append(sale_line_id)
+            to_refill[(group['product_id'][0], warehouse_id, sale_line_id)] = group['product_qty']
         if not to_refill:
             return action
 
@@ -88,6 +91,7 @@ class Orderpoint(models.Model):
         for (product, warehouse), quantity in to_refill.items():
             product = self.env['product.product'].browse(product).with_prefetch(all_product_ids)
             warehouse = self.env['stock.warehouse'].browse(warehouse).with_prefetch(all_warehouse_ids)
+            saleorder = self.env['sale.order.line'].browse(saleorder).with_prefetch(all_sale_line_ids)
             rules = product._get_rules_from_location(warehouse.lot_stock_id)
             lead_days = rules.with_context(bypass_delay_description=True)._get_lead_days(product)[0]
             pwh_per_day[(lead_days, warehouse)].append(product.id)
@@ -109,7 +113,7 @@ class Orderpoint(models.Model):
             return action
 
         # Remove incoming quantity from other origin than moves (e.g RFQ)
-        product_ids, warehouse_ids = zip(*to_refill)
+        product_ids, warehouse_ids, sale_line_ids = zip(*to_refill)
         dummy, qty_by_product_wh = self.env['product.product'].browse(product_ids)._get_quantity_in_progress(warehouse_ids=warehouse_ids)
         rounding = self.env['decimal.precision'].precision_get('Product Unit of Measure')
         # Group orderpoint by product-warehouse
@@ -121,13 +125,13 @@ class Orderpoint(models.Model):
             (record.get('product_id')[0], record.get('warehouse_id')[0], record.get('sale_line_id')[0]): record.get('qty_to_order')
             for record in orderpoint_by_product_warehouse
         }
-        for (product, warehouse), product_qty in to_refill.items():
-            qty_in_progress = qty_by_product_wh.get((product, warehouse)) or 0.0
-            qty_in_progress += orderpoint_by_product_warehouse.get((product, warehouse), 0.0)
+        for (product, warehouse, saleorder), product_qty in to_refill.items():
+            qty_in_progress = qty_by_product_wh.get((product, warehouse, saleorder)) or 0.0
+            qty_in_progress += orderpoint_by_product_warehouse.get((product, warehouse, saleorder), 0.0)
             # Add qty to order for other orderpoint under this warehouse.
             if not qty_in_progress:
                 continue
-            to_refill[(product, warehouse)] = product_qty + qty_in_progress
+            to_refill[(product, warehouse, saleorder)] = product_qty + qty_in_progress
         to_refill = {k: v for k, v in to_refill.items() if float_compare(
             v, 0.0, precision_digits=rounding) < 0.0}
 
@@ -142,21 +146,22 @@ class Orderpoint(models.Model):
             ['product_id', 'location_id', 'sale_line_id', 'ids:array_agg(id)'],
             ['product_id', 'location_id', 'sale_line_id'], lazy=False)
         orderpoint_by_product_location = {
-            (record.get('product_id')[0], record.get('location_id')[0]): record.get('ids')[0]
+            (record.get('product_id')[0], record.get('location_id')[0], record.get('sale_line_id')[0]): record.get('ids')[0]
             for record in orderpoint_by_product_location
         }
 
         orderpoint_values_list = []
-        for (product, warehouse), product_qty in to_refill.items():
+        for (product, warehouse, saleorder), product_qty in to_refill.items():
             lot_stock_id = lot_stock_id_by_warehouse[warehouse]
-            orderpoint_id = orderpoint_by_product_location.get((product, lot_stock_id))
+            orderpoint_id = orderpoint_by_product_location.get((product, lot_stock_id, saleorder))
             if orderpoint_id:
                 self.env['stock.warehouse.orderpoint'].browse(orderpoint_id).qty_forecast += product_qty
             else:
-                orderpoint_values = self.env['stock.warehouse.orderpoint']._get_orderpoint_values(product, lot_stock_id)
+                orderpoint_values = self.env['stock.warehouse.orderpoint']._get_orderpoint_values(product, lot_stock_id, saleorder)
                 orderpoint_values.update({
                     'name': _('Replenishment Report'),
                     'warehouse_id': warehouse,
+                    'sale_line_id': saleorder,
                     'company_id': self.env['stock.warehouse'].browse(warehouse).company_id.id,
                 })
                 orderpoint_values_list.append(orderpoint_values)
@@ -169,6 +174,17 @@ class Orderpoint(models.Model):
                 orderpoint._set_default_route_id()
         return action
 
+#     @api.model
+#     def _get_orderpoint_values(self, product, location, saleorder):
+#         return {
+#             'product_id': product,
+#             'location_id': location,
+#             'sale_line_id': saleorder,
+#             'product_max_qty': 0.0,
+#             'product_min_qty': 0.0,
+#             'trigger': 'manual',
+#         }
+    
     
     #qty_to_order = fields.Float('To Order', store=True, readonly=False)
     #sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', readonly=True)

@@ -1,4 +1,5 @@
 from odoo import fields, models, tools, api
+from odoo.exceptions import UserError, ValidationError
 
 
 class ReportStockQuantity(models.Model):

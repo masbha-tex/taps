@@ -442,6 +442,7 @@ class StockForecastReport(models.TransientModel):
                                     '',
                                     '',
                                     product.name,
+                                    product.default_code,
                                     l.name,
                                     opening_qty,
                                     opening_value,
@@ -458,20 +459,21 @@ class StockForecastReport(models.TransientModel):
 
                     opening_pro_qty = opening_pro_value = received_pro_qty = received_pro_value = issued_pro_qty = issued_pro_value = closing_pro_qty = closing_pro_value = 0
                     if report_lot_data:
-                        opening_pro_qty=sum(row[4] for row in report_lot_data)
-                        opening_pro_value=sum(row[5] for row in report_lot_data)
-                        received_pro_qty=sum(row[6] for row in report_lot_data)
-                        received_pro_value=sum(row[7] for row in report_lot_data)
-                        issued_pro_qty=sum(row[8] for row in report_lot_data)
-                        issued_pro_value=sum(row[9] for row in report_lot_data)
-                        closing_pro_qty=sum(row[10] for row in report_lot_data)
-                        closing_pro_value=sum(row[11] for row in report_lot_data)
+                        opening_pro_qty=sum(row[5] for row in report_lot_data)
+                        opening_pro_value=sum(row[6] for row in report_lot_data)
+                        received_pro_qty=sum(row[7] for row in report_lot_data)
+                        received_pro_value=sum(row[8] for row in report_lot_data)
+                        issued_pro_qty=sum(row[9] for row in report_lot_data)
+                        issued_pro_value=sum(row[10] for row in report_lot_data)
+                        closing_pro_qty=sum(row[11] for row in report_lot_data)
+                        closing_pro_value=sum(row[12] for row in report_lot_data)
                     
                     if abs(abs(opening_pro_qty)+abs(received_pro_qty)+abs(issued_pro_qty))>0:
                         product_data = [
                             '',
                             '',
                             product.name,
+                            product.default_code,
                             '',
                             opening_pro_qty,
                             opening_pro_value,
@@ -526,6 +528,7 @@ class StockForecastReport(models.TransientModel):
                             '',
                             '',
                             product.name,
+                            product.default_code,
                             '',
                             opening_qty,
                             opening_value,
@@ -539,14 +542,14 @@ class StockForecastReport(models.TransientModel):
                         ]
                         report_product_data.append(product_data)
             
-            opening_categ_qty=sum(row[4] for row in report_product_data)
-            opening_categ_value=sum(row[5] for row in report_product_data)
-            received_categ_qty=sum(row[6] for row in report_product_data)
-            received_categ_value=sum(row[7] for row in report_product_data)
-            issued_categ_qty=sum(row[8] for row in report_product_data)
-            issued_categ_value=sum(row[9] for row in report_product_data)
-            closing_categ_qty=sum(row[10] for row in report_product_data)
-            closing_categ_value=sum(row[11] for row in report_product_data)
+            opening_categ_qty=sum(row[5] for row in report_product_data)
+            opening_categ_value=sum(row[6] for row in report_product_data)
+            received_categ_qty=sum(row[7] for row in report_product_data)
+            received_categ_value=sum(row[8] for row in report_product_data)
+            issued_categ_qty=sum(row[9] for row in report_product_data)
+            issued_categ_value=sum(row[10] for row in report_product_data)
+            closing_categ_qty=sum(row[11] for row in report_product_data)
+            closing_categ_value=sum(row[12] for row in report_product_data)
             
             parent_type = ''
             if categ.parent_id.name:
@@ -554,6 +557,7 @@ class StockForecastReport(models.TransientModel):
             product_cat_data = [
                 parent_type,
                 categ.name,
+                '',
                 '',
                 '',
                 opening_categ_qty,
@@ -591,20 +595,21 @@ class StockForecastReport(models.TransientModel):
 
         # set the width od the column
         
-        worksheet.set_column(0, 11, 20)
+        worksheet.set_column(0, 12, 20)
         
         worksheet.write(6, 0, 'Product', column_product_style)        
         worksheet.write(6, 1, 'Category', column_product_style)
         worksheet.write(6, 2, 'Item', column_product_style)
-        worksheet.write(6, 3, 'Invoice', column_product_style)
-        worksheet.write(6, 4, 'Opening Quantity', column_product_style)
-        worksheet.write(6, 5, 'Opening Value', column_product_style)
-        worksheet.write(6, 6, 'Received Quantity', column_received_style)
-        worksheet.write(6, 7, 'Received Value', column_received_style)
-        worksheet.write(6, 8, 'Issued Quantity', column_issued_style)
-        worksheet.write(6, 9, 'Issued Value', column_issued_style)
-        worksheet.write(6, 10, 'Closing Quantity', column_product_style)
-        worksheet.write(6, 11, 'Closing Value', column_product_style)
+        worksheet.write(6, 3, 'Item Code', column_product_style)
+        worksheet.write(6, 4, 'Invoice', column_product_style)
+        worksheet.write(6, 5, 'Opening Quantity', column_product_style)
+        worksheet.write(6, 6, 'Opening Value', column_product_style)
+        worksheet.write(6, 7, 'Received Quantity', column_received_style)
+        worksheet.write(6, 8, 'Received Value', column_received_style)
+        worksheet.write(6, 9, 'Issued Quantity', column_issued_style)
+        worksheet.write(6, 10, 'Issued Value', column_issued_style)
+        worksheet.write(6, 11, 'Closing Quantity', column_product_style)
+        worksheet.write(6, 12, 'Closing Value', column_product_style)
         col = 0
         row=7
         for line in report_data:
@@ -615,10 +620,10 @@ class StockForecastReport(models.TransientModel):
                 if l != '' and col==1:
                     categ=True
                 if categ==True:
-                    if col<12:
+                    if col<13:
                         worksheet.write(row, col, l, row_categ_style)
                 else:
-                    if col<12:
+                    if col<13:
                         if self.is_spare == 0:
                             worksheet.write(row, col, l, row_product_style)
                         else:
@@ -627,7 +632,7 @@ class StockForecastReport(models.TransientModel):
                 
             row+=1
             if self.is_spare == 0:
-                if line[2] !='' and line[3] =='':
+                if line[2] !='' and line[4] =='':
                     #pro_lot = filter(lambda l_t: l_t[2] == line[2], all_lot_data)
                     for lot in all_lot_data:
                         #raise UserError((lot))
@@ -637,11 +642,11 @@ class StockForecastReport(models.TransientModel):
                                 value = lt
                                 if col_l==2:
                                     value =''
-                                if lot[12] == True:
-                                    if col_l<12:
+                                if lot[13] == True:
+                                    if col_l<13:
                                         worksheet.write(row, col_l, value, reject_style)
                                 else:
-                                    if col_l<12:
+                                    if col_l<13:
                                         worksheet.write(row, col_l, value)
                                 col_l+=1
                             row+=1

@@ -111,3 +111,5 @@ class PurchaseOrder(models.Model):
         result['all_total_last_7_days'] = format_amount(self.env, povalue, currency)
 
         return result
+    
+    
