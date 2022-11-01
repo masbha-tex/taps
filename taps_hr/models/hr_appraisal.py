@@ -18,9 +18,14 @@ class HrAppraisal(models.Model):
 
 
     ytd_weightage_acvd = fields.Float(string='YTD Weightage ACVD', compute='_compute_ytd_weightage_acvd')
+    total_weightage = fields.Float(string='Weightage', store=True, copy=True, default="0", compute='_compute_ytd_weightage_acvd')
 
     def _compute_ytd_weightage_acvd(self):
         for appraisal in self:
             app_goal = self.env['hr.appraisal.goal'].search([('employee_id', '=', appraisal.employee_id.id)])
+            ytd = 0
+            weight = 0
             ytd = sum(app_goal.mapped('y_ytd'))
+            weight = sum(app_goal.mapped('weight'))
             appraisal.ytd_weightage_acvd = ytd
+            appraisal.total_weightage = weight

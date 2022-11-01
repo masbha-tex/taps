@@ -266,17 +266,19 @@
             </tree>
         </field>
     </record>
-<!--     <record id="hr_appraisal_goal_view_kanban_inherit" model="ir.ui.view">
-        <field name="name">hr.appraisal.goal.view.kanban.inherit</field>
-        <field name="model">hr.appraisal.goal</field>
+    <record id="hr_appraisal_kanban_inherit" model="ir.ui.view">
+        <field name="name">hr.appraisal.kanban.inherit</field>
+        <field name="model">hr.appraisal</field>
+        <field name="inherit_id" ref="hr_appraisal.hr_appraisal_kanban"/>
         <field name="arch" type="xml">
-            <xpath expr="//template[@name='kanban-box']" position="attributes">
-                <attribute name="invisible">1</attribute>
+            <xpath expr="//field[@name='department_id']" position="after">
+<!--                 <div class="oe_kanban_bottom_right mt-auto d-flex justify-content-between align-items-end"> -->
+                    <field name="total_weightage" display="full" widget="progressbar"/>
+                    <field name="ytd_weightage_acvd" display="full" widget="progressbar"/>
+<!--                 </div> -->
             </xpath>
-            
         </field>
-    </record> -->
-
+    </record>
 
 
 <!--     <record id="hr_appraisal_goal_view_search" model="ir.ui.view">

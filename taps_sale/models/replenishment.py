@@ -80,7 +80,7 @@ class Orderpoint(models.Model):
             to_refill[(group['product_id'][0], warehouse_id, sale_line_id)] = group['product_qty']
         if not to_refill:
             return action
-
+        
         # Recompute the forecasted quantity for missing product today but at this time
         # with their real lead days.
         key_to_remove = []
@@ -88,7 +88,7 @@ class Orderpoint(models.Model):
         # group product by lead_days and warehouse in order to read virtual_available
         # in batch
         pwh_per_day = defaultdict(list)
-        for (product, warehouse), quantity in to_refill.items():
+        for (product, warehouse, saleorder), quantity in to_refill.items():
             product = self.env['product.product'].browse(product).with_prefetch(all_product_ids)
             warehouse = self.env['stock.warehouse'].browse(warehouse).with_prefetch(all_warehouse_ids)
             saleorder = self.env['sale.order.line'].browse(saleorder).with_prefetch(all_sale_line_ids)
@@ -103,9 +103,9 @@ class Orderpoint(models.Model):
             ).read(['virtual_available'])
             for qty in qties:
                 if float_compare(qty['virtual_available'], 0, precision_rounding=product.uom_id.rounding) >= 0:
-                    key_to_remove.append((qty['id'], warehouse.id))
+                    key_to_remove.append((qty['id'], warehouse.id, saleorder.id))
                 else:
-                    to_refill[(qty['id'], warehouse.id)] = qty['virtual_available']
+                    to_refill[(qty['id'], warehouse.id, saleorder.id)] = qty['virtual_available']
 
         for key in key_to_remove:
             del to_refill[key]
@@ -140,6 +140,12 @@ class Orderpoint(models.Model):
         ], ['lot_stock_id'])
         lot_stock_id_by_warehouse = {w['id']: w['lot_stock_id'][0] for w in lot_stock_id_by_warehouse}
 
+        saleorder_line = self.env['sale.order.line'].search_read([
+            ('id', 'in', [g[2] for g in to_refill.keys()])
+        ], ['id'])
+        saleorder_line = {w['id']: w['id'][0] for w in saleorder_line}
+        
+        
         # With archived ones to avoid `product_location_check` SQL constraints
         orderpoint_by_product_location = self.env['stock.warehouse.orderpoint'].with_context(active_test=False).read_group(
             [('id', 'in', orderpoints.ids)],
@@ -153,11 +159,12 @@ class Orderpoint(models.Model):
         orderpoint_values_list = []
         for (product, warehouse, saleorder), product_qty in to_refill.items():
             lot_stock_id = lot_stock_id_by_warehouse[warehouse]
-            orderpoint_id = orderpoint_by_product_location.get((product, lot_stock_id, saleorder))
+            sale_lineid = saleorder_line[saleorder]
+            orderpoint_id = orderpoint_by_product_location.get((product, lot_stock_id, sale_lineid))
             if orderpoint_id:
                 self.env['stock.warehouse.orderpoint'].browse(orderpoint_id).qty_forecast += product_qty
             else:
-                orderpoint_values = self.env['stock.warehouse.orderpoint']._get_orderpoint_values(product, lot_stock_id, saleorder)
+                orderpoint_values = self.env['stock.warehouse.orderpoint']._get_orderpoint_values(product, lot_stock_id, sale_lineid)
                 orderpoint_values.update({
                     'name': _('Replenishment Report'),
                     'warehouse_id': warehouse,
