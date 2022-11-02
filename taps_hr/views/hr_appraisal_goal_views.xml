@@ -272,10 +272,8 @@
         <field name="inherit_id" ref="hr_appraisal.hr_appraisal_kanban"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='department_id']" position="after">
-<!--                 <div class="oe_kanban_bottom_right mt-auto d-flex justify-content-between align-items-end"> -->
-                    <field name="total_weightage" display="full" widget="progressbar"/>
-                    <field name="ytd_weightage_acvd" display="full" widget="progressbar"/>
-<!--                 </div> -->
+                <field name="total_weightage" display="full" widget="progressbar"/>
+                <field name="ytd_weightage_acvd" display="full" widget="progressbar"/>
             </xpath>
         </field>
     </record>
