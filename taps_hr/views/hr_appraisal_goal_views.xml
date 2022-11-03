@@ -9,20 +9,20 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='progression']" position="after">
-                    <field name="baseline" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                    <field name="target" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                    <field name="baseline" digits="[3,1]"/>
+                    <field name="target" digits="[3,1]"/>
                     
                 </xpath>
                 <xpath expr="//field[@name='deadline']" position="after">
-                    <field name="condition" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                    <field name="month" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                    <field name="calculate" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                    <field name="condition"/>
+                    <field name="month"/>
+                    <field name="calculate"/>
                     
                 </xpath>
                 <xpath expr="//field[@name='manager_id']" position="after">
                     <label for="weight"/>
                     <div class="o_row" name="weight">
-                        <field name="weight" nolabel="1" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                        <field name="weight" nolabel="1" digits="[3,1]"/>
                         <span>&#37;</span>
                     </div>
 <!--                     <field name="ytd" widget="badge"/> -->
@@ -53,43 +53,43 @@
                                     <span>Target</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_apr" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_apr" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_may" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_may" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_jun" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_jun" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_jul" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_jul" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_aug" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_aug" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_sep" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_sep" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_oct" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_oct" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_nov" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_nov" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_dec" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_dec" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_jan" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_jan" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_feb" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_feb" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="t_mar" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="t_mar" digits="[3,1]"/>
                                 </td>
                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
-                                    <field name="y_t_ytd" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                                    <field name="y_t_ytd" digits="[3,1]"/>
                                 </td>
 <!--                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="t_ytd"/>
@@ -147,43 +147,43 @@
                                     <span>Weightage</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="apr" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="apr" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="may" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="may" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="jun" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="jun" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="jul" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="jul" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="aug" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="aug" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="sep" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="sep" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="oct" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="oct" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="nov" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="nov" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="dec" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="dec" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="jan" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="jan" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="feb" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="feb" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:black; border-style: ridge;">
-                                    <field name="mar" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="mar" digits="[3,1]"/><span>&#37;</span>
                                 </td>
                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
-                                    <field name="y_ytd" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/><span>&#37;</span>
+                                    <field name="y_ytd" digits="[3,1]"/><span>&#37;</span>
                                 </td>
 <!--                                 <td colspan="2" style="color:white; border-style: ridge;background-color:#714B67;">
                                     <field name="ytd"/><span>&#37;</span>
@@ -213,56 +213,56 @@
                 <attribute name="string">Objective</attribute>
             </xpath>
             <xpath expr="//field[@name='progression']" position="after">
-                <field name="baseline" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="target" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="weight" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="condition" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="month" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="calculate" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="baseline" digits="[3,1]"/>
+                <field name="target" digits="[3,1]"/>
+                <field name="weight" digits="[3,1]"/>
+                <field name="condition"/>
+                <field name="month"/>
+                <field name="calculate"/>
             </xpath>
             <tree sample="1">
-                <field name="y_t_ytd" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="y_a_ytd" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="y_ytd" digits="[3,1]" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="y_t_ytd" digits="[3,1]"/>
+                <field name="y_a_ytd" digits="[3,1]"/>
+                <field name="y_ytd" digits="[3,1]"/>
 <!--                 <field name="t_ytd"/>
                 <field name="a_ytd"/>
                 <field name="ytd" widget="progressbar"/> -->
-                <field name="t_apr" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="t_apr" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
                 <field name="a_apr" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
-                <field name="apr" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_may" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="apr" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_may" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_may" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
-                <field name="may" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_jun" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="may" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_jun" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
                 <field name="a_jun" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
-                <field name="jun" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_jul" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="jun" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_jul" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_jul" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
-                <field name="jul" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_aug" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="jul" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_aug" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
                 <field name="a_aug" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
-                <field name="aug" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_sep" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="aug" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_sep" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_sep" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
-                <field name="sep" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_oct" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="sep" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_oct" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
                 <field name="a_oct" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
-                <field name="oct" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_nov" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="oct" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_nov" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_nov" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
-                <field name="nov" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_dec" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="nov" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_dec" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
                 <field name="a_dec" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
-                <field name="dec" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_jan" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="dec" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_jan" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_jan" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
-                <field name="jan" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_feb" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="jan" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
+                <field name="t_feb" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
                 <field name="a_feb" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
-                <field name="feb" digits="[3,1]" decoration-bf="1" decoration-danger="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                <field name="t_mar" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="feb" digits="[3,1]" decoration-bf="1" decoration-danger="1"/>
+                <field name="t_mar" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_mar" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
-                <field name="mar" digits="[3,1]" decoration-bf="1" decoration-success="1" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                <field name="mar" digits="[3,1]" decoration-bf="1" decoration-success="1"/>
             </tree>
         </field>
     </record>
