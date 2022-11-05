@@ -44,10 +44,22 @@ class Inventory(models.Model):
         tools.drop_view_if_exists(self._cr, 'stock_opening_closing')
         query = """
         CREATE or REPLACE VIEW stock_opening_closing AS (
-        select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id, categ_type as product_category,parent_id as parent_category,invoice as lot_id, rejected, avg(lot_price) as lot_price, sum(opening_qty) as opening_qty,sum(opening_value) as opening_value,sum(receive_qty) as receive_qty,sum(receive_value) as receive_value,sum(issue_qty) as issue_qty,sum(issue_value) as issue_value,sum(cloing_qty) as cloing_qty,sum(cloing_value) as cloing_value from(
+        select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id, categ_type as product_category,parent_id as parent_category,invoice as lot_id, rejected, avg(lot_price) as lot_price, sum(opening_qty) as opening_qty,
+        case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
+        sum(receive_qty) as receive_qty,
+        case when avg(lot_price)>0 then sum(receive_qty)*avg(lot_price) else sum(receive_value) end as receive_value,
+        sum(issue_qty) as issue_qty,
+        case when avg(lot_price)>0 then sum(issue_qty)*avg(lot_price) else sum(issue_value) end as issue_value,
+        sum(cloing_qty) as cloing_qty,
+        case when avg(lot_price)>0 then sum(cloing_qty)*avg(lot_price) else sum(cloing_value) end as cloing_value 
+        from(
         select
         product.id as product_id,pt.categ_type,catype.parent_id,lot.id as invoice,lot.rejected,
-        0 as lot_price,
+        
+        (case when lot.id is not null then
+        lot.unit_price else 0 end
+        ) as lot_price,
+        
         (
         case when lot.id is not null then
         (select COALESCE(sum(case when a.quantity<0 then -b.qty_done when a.quantity=0 then 0 else b.qty_done end),0) as op_qty from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<'2022-10-01 00:00:00')
@@ -62,14 +74,14 @@ class Inventory(models.Model):
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done else b.qty_done end),0) as re_quantity from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like '%/IN/%' or a.description like '%/OUT/%') and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59')
-        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59' and (a.description like '%/IN/%' or a.description like '%/OUT/%')) end
+        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done else b.qty_done end),0) as re_quantity from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like '%/IN/%' or a.description like '%/OUT/%') and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-31 23:23:59')
+        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-31 23:23:59' and (a.description like '%/IN/%' or a.description like '%/OUT/%')) end
         ) as receive_qty,
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as re_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like '%/IN/%' or a.description like '%/OUT/%') and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59')
-        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59' and (a.description like '%/IN/%' or a.description like '%/OUT/%')) end
+        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as re_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like '%/IN/%' or a.description like '%/OUT/%') and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-31 23:23:59')
+        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-31 23:23:59' and (a.description like '%/IN/%' or a.description like '%/OUT/%')) end
         ) as receive_value,
 
         (
@@ -80,21 +92,21 @@ class Inventory(models.Model):
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as re_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where a.description like '%/MR/%' and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59')
-        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-13 23:23:59' and a.description like '%/MR/%') end
+        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as re_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where a.description like '%/MR/%' and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-31 23:23:59')
+        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>='2022-10-01 00:00:00' and a.schedule_date<='2022-10-31 23:23:59' and a.description like '%/MR/%') end
         ) as issue_value,
 
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done when a.quantity=0 then 0 else b.qty_done end),0) as op_qty from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<='2022-10-13 23:23:59')
-        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<='2022-10-13 23:23:59') end
+        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done when a.quantity=0 then 0 else b.qty_done end),0) as op_qty from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<='2022-10-31 23:23:59')
+        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<='2022-10-31 23:23:59') end
         ) as cloing_qty,
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) when a.description like '%LC/%' then a.value else (b.qty_done*a.unit_cost) end),0) as op_val from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<='2022-10-13 23:23:59')
-        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<='2022-10-13 23:23:59') end
+        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) when a.description like '%LC/%' then a.value else (b.qty_done*a.unit_cost) end),0) as op_val from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<='2022-10-31 23:23:59')
+        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<='2022-10-31 23:23:59') end
         ) as cloing_value
 
         from product_product as product
