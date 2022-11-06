@@ -67,13 +67,13 @@ class PickingVendorNameINT(models.Model):
 class IncludeCateTypeInPT(models.Model):
     _inherit = 'stock.production.lot'
     rejected = fields.Boolean(store=True, string='Rejected', readonly=False, tracking=True)
-    unit_price = fields.Float(readonly=False, store=True, string='Price')
+    unit_price = fields.Float(readonly=False, store=True, string='Price', digits='Product Unit of Measure')
 
 
 class IncludeCateTypeInPT(models.Model):
     _inherit = 'stock.move.line'
     parent_categ_type = fields.Char(related='product_id.categ_type.parent_id.name', related_sudo=False, readonly=True, store=True, string='Parent Category')
-    category_type = fields.Char(related='product_id.categ_type.name', related_sudo=False, readonly=True, store=True, string='Category Type')    
+    category_type = fields.Char(related='product_id.categ_type.name', related_sudo=False, readonly=True, store=True, string='Category Type')
     qty_onhand = fields.Float(related='lot_id.product_qty', readonly=True, store=True, string='Quantity')
     unit_price = fields.Float(related='product_id.standard_price', readonly=True, store=True, string='Price')
     value = fields.Float(compute='_compute_product_value', readonly=True, store=True, string='Value')

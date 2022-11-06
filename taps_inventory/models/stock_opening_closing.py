@@ -17,7 +17,7 @@ class Inventory(models.Model):
     
     lot_id = fields.Many2one('stock.production.lot', string='Invoice', readonly=True)
     rejected = fields.Boolean(string='Rejected', readonly=True)
-    lot_price = fields.Float(string='Price', readonly=True)
+    lot_price = fields.Float(string='Price', readonly=True, digits='Product Unit of Measure')
     
     opening_qty = fields.Float(string='Opening Quantity', readonly=True)
     opening_value = fields.Float(string='Opening Value', readonly=True)

@@ -10,6 +10,11 @@
 <!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
                 <separator/>
                 <field name="product_id" string="Product"/>
+                <group expand="0" string="Group By">
+                    <filter name="product_group" string="Product" domain="[]" context="{'group_by': 'parent_category'}"/>
+                    <filter name="category_group" string="Category" domain="[]" context="{'group_by': 'product_category'}"/>
+                    <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'product_id'}"/>
+                </group>
             </search>
         </field>
     </record>
@@ -25,23 +30,23 @@
                 <field name="lot_id"/>
                 <field name="rejected"/>
                 <field name="lot_price"/>
-                <field name="opening_qty"/>
-                <field name="opening_value"/>
-                <field name="receive_qty"/>
-                <field name="receive_value"/>
-                <field name="issue_qty"/>
-                <field name="issue_value"/>
-                <field name="cloing_qty"/>
-                <field name="cloing_value"/>
+                <field name="opening_qty" optional="show" sum="Opening Quantity" decoration-bf="True"/>
+                <field name="opening_value" optional="show" sum="Opening Value" decoration-bf="True"/>
+                <field name="receive_qty" optional="show" sum="Receive Quantity" decoration-bf="True"/>
+                <field name="receive_value" optional="show" sum="Receive Value" decoration-bf="True"/>
+                <field name="issue_qty" optional="show" sum="Issue Quantity" decoration-bf="True"/>
+                <field name="issue_value" optional="show" sum="Issue Value" decoration-bf="True"/>
+                <field name="cloing_qty" optional="show" sum="Closing Quantity" decoration-bf="True"/>
+                <field name="cloing_value" optional="show" sum="Closing Value" decoration-bf="True"/>
             </tree>
         </field>
     </record>
 
     <record id="action_stock_opening_closing" model="ir.actions.act_window">
-        <field name="name">Attendance Analysis</field>
+        <field name="name">Stock Register</field>
         <field name="res_model">stock.opening.closing</field>
         <field name="view_mode">tree</field>
-        <field name="context">{'search_default_rm_stock':1}</field>
+        <field name="context">{'search_default_rm_stock':1, 'search_default_product_group':1, 'search_default_category_group':1, 'search_default_item_group':1}</field>
         <field name="search_view_id" ref="view_stock_reg_search" />
     </record>
 
