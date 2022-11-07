@@ -19,7 +19,7 @@
                     <field name="qty_onhand" string="Quantity"/>
                </xpath>
                <xpath expr="//field[@name='qty_done']" position="after">
-                    <field name="pur_price" string="Purchase Price"/>
+                    <field name="pur_price" string="Unit Price"/>
                </xpath>
                 <xpath expr="//field[@name='value']" position="attributes">
                     <attribute name="sum">Total Value</attribute>

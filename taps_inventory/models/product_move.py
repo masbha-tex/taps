@@ -75,16 +75,16 @@ class IncludeCateTypeInPT(models.Model):
     parent_categ_type = fields.Char(related='product_id.categ_type.parent_id.name', related_sudo=False, readonly=True, store=True, string='Parent Category')
     category_type = fields.Char(related='product_id.categ_type.name', related_sudo=False, readonly=True, store=True, string='Category Type')
     qty_onhand = fields.Float(related='lot_id.product_qty', readonly=True, store=True, string='Quantity')
-    unit_price = fields.Float(related='product_id.standard_price', readonly=True, store=True, string='Price')
+    unit_price = fields.Float(related='product_id.standard_price', readonly=True, store=True, string='Price', digits='Unit Price')
     value = fields.Float(compute='_compute_product_value', readonly=True, store=True, string='Value')
     duration = fields.Integer(string='Duration', compute='_compute_duration', store=True, readonly=True)
-    pur_price = fields.Float(compute='_compute_purchase_price', readonly=True, string='Purchase Price')
+    pur_price = fields.Float(compute='_compute_purchase_price', readonly=True, string='Unit Price', digits='Unit Price')
     #pur_value = fields.Float(compute='_compute_purchase_value', readonly=True, string='Purchase Value')
     #product_id.categ_type.parent_id.name 
     @api.depends('product_id', 'product_uom_id', 'product_uom_qty')
     def _compute_product_value(self):
         for record in self:
-            record['value'] = round(record.qty_onhand * record.unit_price,2)
+            record['value'] = round(record.qty_onhand * record.pur_price,2)
             
     def _get_aggregated_product_quantities(self, **kwargs):
         """ Returns a dictionary of products (key = id+name+description+uom) and corresponding values of interest.
@@ -143,11 +143,14 @@ class IncludeCateTypeInPT(models.Model):
             
     def _compute_purchase_price(self):
         for record in self:
-            stock_v_layer = self.env['stock.valuation.layer'].search([('stock_move_id', '=', int(record.move_id)),('product_id', '=', int(record.product_id)),('description', 'like', '/IN/')])
-            if stock_v_layer:
-                record.pur_price = round(stock_v_layer.unit_cost,4)
+            if record.lot_id.unit_price:
+                record.pur_price = record.lot_id.unit_price
             else:
-                record.pur_price = 0.00
+                stock_v_layer = self.env['stock.valuation.layer'].search([('stock_move_id', '=', int(record.move_id)),('product_id', '=', int(record.product_id)),('description', 'like', '/IN/')])
+                if stock_v_layer:
+                    record.pur_price = round(stock_v_layer.unit_cost,4)
+                else:
+                    record.pur_price = record.unit_price
                 
     #def _compute_purchase_value(self):
     #    for record in self:
