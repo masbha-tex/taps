@@ -1,7 +1,7 @@
 <odoo>
-    <template id="taps_expense_assets_view_name" name="taps_expense_assets_view_name" inherit_id="web.assets_backend"> 
-           <xpath expr="." position="inside"> 
-               <script type="text/javascript" src="/taps_expense/static/src/js/expanse_dashboard.js">   </script> 
+    <template id="assets_backend_js"  inherit_id="web.assets_backend"> 
+           <xpath expr="//script[last()]" position="after">
+               <script type="text/javascript" src="/taps_expense/static/src/js/">   </script> 
            </xpath>
     </template>
 </odoo>

@@ -19,6 +19,9 @@ class HrAppraisal(models.Model):
 
     ytd_weightage_acvd = fields.Float(string='YTD Weightage ACVD', compute='_compute_ytd_weightage_acvd')
     total_weightage = fields.Float(string='Weightage', store=True, copy=True, default="0", compute='_compute_ytd_weightage_acvd')
+    manager_ids = fields.Many2many(
+        'hr.employee', 'appraisal_manager_rel', 'hr_appraisal_id',
+        domain=[])
 
     def _compute_ytd_weightage_acvd(self):
         for appraisal in self:
