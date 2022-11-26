@@ -107,9 +107,29 @@ class OrderAcceptance(models.Model):
                                       'bom_id':lines.bom_id,
                                      })
     def action_confirm(self):
-        
-        
-                
+        for products in self.saleorder_lines:
+            self.env['mrp.production'].create({
+                'priority': self.product_id.id,
+                'product_id': products.product_id.id,
+                'product_qty': products.product_qty,
+                'product_uom_id': products.product_uom.id,
+                'qty_producing': 0,
+                'product_uom_qty': products.product_qty,
+                'picking_type_id': 8,
+                'location_src_id': 8,
+                'location_dest_id': 8,
+                'date_planned_start': datetime.datetime.now(),
+                'date_planned_finished': datetime.datetime.now() + datetime.timedelta(hours=1),
+                'bom_id': products.bom_id,
+                'state': 'draft',
+                #'user_id': self.company_id.id,
+                'company_id': self.company_id.id,
+                'procurement_group_id': self.company_id.id,
+                'propagate_cancel': False,
+                'is_locked': False,
+                'production_location_id': 15,
+                'consumption': 'warning'
+            })
         
         
 class OrderAcceptanceLine(models.Model):

@@ -18,12 +18,16 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','stock'],
+    'depends': ['base','sale','stock', 'web_studio'],
 
     # always loaded
     'data': [
-        #'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/sale.xml',
+        'views/buyer_name.xml',
+        'reports/report_action.xml',
+        'reports/report_proforma_invoice.xml',
+        #'data/ir_oa_sequance.xml',
         #'views/fg_product.xml',
     ],
     # only loaded in demonstration mode

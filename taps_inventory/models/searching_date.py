@@ -5,5 +5,8 @@ from odoo.exceptions import UserError, ValidationError
 
 class Inventory(models.Model):
     _name = "searching.date"
-    _auto = False
     _description = "Search By Date"
+    
+    
+    from_date = fields.Datetime('From',readonly=True)
+    to_date = fields.Datetime('To',readonly=True)
