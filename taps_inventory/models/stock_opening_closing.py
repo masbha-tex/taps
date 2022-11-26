@@ -111,11 +111,11 @@ class Inventory(models.Model):
         ) as cloing_value
 
         from product_product as product
-        inner join searching_date as sd on 1=1
         inner join product_template as pt on product.product_tmpl_id=pt.id
         inner join category_type as catype on pt.categ_type=catype.id
         left join category_type as pcatype on catype.parent_id=pcatype.id
         left join stock_production_lot as lot on product.id=lot.product_id
+        left join searching_date as sd on 1=1
         where product.default_code like'R_%' or product.default_code like'S_%'
         ) as stock where (stock.opening_qty+stock.receive_qty+stock.issue_qty)>0
         group by stock.product_id,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected
