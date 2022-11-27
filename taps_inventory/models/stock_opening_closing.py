@@ -117,7 +117,7 @@ class Inventory(models.Model):
         left join stock_production_lot as lot on product.id=lot.product_id
         left join searching_date as sd on 1=1
         where product.default_code like'R_%' or product.default_code like'S_%'
-        ) as stock where (stock.opening_qty+stock.receive_qty+stock.issue_qty)>0
+        ) as stock where (abs(stock.opening_qty)+abs(stock.receive_qty)+abs(stock.issue_qty))>0
         group by stock.product_id,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected
         )
         """

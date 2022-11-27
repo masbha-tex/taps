@@ -5,124 +5,205 @@
 			<t t-foreach="docs" t-as="o">
 				<t t-call="web.external_layout">
 					<div class="page">
-						<h4 class="text-center" style="color: red">
-							<strong>
+					<h4 class="text-center" style="color: red">
+						<strong>
 							PROFORMA INVOICE
 							</strong>
-						</h4>
-						<div class="row mt32 mb32">
-						  <div class="col-auto col-3 mw-100 mb-2">
-						    <p><strong>Customer</strong></p>
-						    <p><strong><t t-esc="o.partner_id.name"/></strong><br/>
-						    <t t-esc="o.partner_id.street"/><br/><t t-esc="o.partner_id.city"/><br/><t t-esc="o.partner_id.country_id.name"/></p>
-						  </div>
-						  <div class="col-auto col-3 mw-100 mb-2">
-						    <p><strong>Invoice Address</strong></p>
-						    <p><t t-esc="o.partner_invoice_id"/></p>
-						  </div>
-						  <div class="col-auto col-3 mw-100 mb-2">
-						    <p><strong>Invoice Address</strong></p>
-						    <p><t t-esc="o.invoice_details"/></p>
-						  </div>
-						  <div class="col-auto col-3 mw-100 mb-2">
-						    <p><strong>Delivery Address</strong></p>
-						    <p><t t-esc="o.partner_shipping_id.name"/><br/><t t-esc="o.delivery_details"/></p>
-						  </div>
-						  
+					</h4>
+					<div class="row mt32 mb32">
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>Customer</strong>
+							</p>
+							<p>
+								<strong>
+									<t t-esc="o.partner_id.name"/>
+								</strong>
+								<br/>
+								<t t-esc="o.partner_id.street"/>
+								<br/>
+								<t t-esc="o.partner_id.city"/>
+								<br/>
+								<t t-esc="o.partner_id.country_id.name"/>
+							</p>
 						</div>
-						
-						  
-						
-						<div class="row mt32 mb32">
-						  <div class="col-auto col-3 mw-100 mb-2">
-						    <p><strong>PO Number:</strong><br/><t t-esc="o.po_no"/></p>
-						    
-						  </div>
-						  <div class="col-auto col-3 mw-100 mb-2">
-						    <p><strong>PO Date:</strong><br/><t t-esc="o.po_date"/></p>
-						  </div>
-						  <div class="col-auto col-3 mw-100 mb-2">
-						    <p><strong>Expiration:</strong><br/><t t-esc="o.validity_date"/></p>
-						  </div>
-						  <div class="col-auto col-3 mw-100 mb-2">
-						    <p><strong>Order Date:</strong><br/><t t-esc="o.date_order"/></p>
-						  </div>
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>Invoice Address</strong>
+							</p>
+							<p>
+								<t t-esc="o.partner_invoice_id"/>
+							</p>
 						</div>
-						<div class="row pt-2 mt-2 pb-2 mb-2">
-						<table class="table table-sm o_main_table" style="margin:auto;border:none">
-						    <thead style="border: none;">
-						      <tr align="center" style="border: none;">
-						      <th style="border: none;">Customer Ref</th>
-						      <!--<th>Sample Ref</th>-->
-						      <th style="border: none;">Style Ref</th>
-						      <th style="border: none;">Season</th>
-						      <th style="border: none;">Department</th>
-						      <th style="border: none;">Buyer Name</th>
-						      <th style="border: none;">HS Code</th>
-						      <th style="border: none;">Production Type</th>
-						      <th style="border: none;">Order Type</th>
-						      </tr>
-						    </thead>
-						    <tbody style="border: none;">
-						      <tr align="center" style="border: none;">
-						      <td style="border: none;"><t t-esc="o.customer_ref"/></td>
-						      <!--<td><t t-esc="o.sample_ref"/></td>-->
-						      <td style="border: none;"><t t-esc="o.style_ref"/></td>
-						      <td style="border: none;"><t t-esc="o.season"/></td>
-						      <td style="border: none;"><t t-esc="o.department"/></td>
-						      <td style="border: none;"><t t-esc="o.buyer_name"/></td>
-						      <td style="border: none;"><t t-esc="o.hs_code"/></td>
-						      <td style="border: none;"><t t-esc="o.production_type"/></td>
-						      <td style="border: none;"><t t-esc="o.order_type"/></td>
-						      </tr>
-						    </tbody>
-						  </table>
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>Invoice Address</strong>
+							</p>
+							<p>
+								<t t-esc="o.invoice_details"/>
+							</p>
 						</div>
-						
-						
-						<table class="table table-sm o_main_table">
-						  <thead>
-						    <th class="text-left">Item Details</th>
-						    <th class="text-right">Quantity</th>
-						    <th class="text-right">Unit Price</th>
-						    <th class="text-right">Discount</th>
-						    <th>Amount</th>
-						  </thead>
-						  <tbody>
-						    <t t-foreach="o.order_line" t-as="line">
-						      <tr>
-						        <t t-if="not line.display_type">
-						          <td><span><t t-esc="line.name"/></span></td>
-						          <td class="text-right"><span><t t-esc="line.product_uom_qty"/></span><span><t t-esc="line.product_uom.name"/></span></td>
-						          <td class="text-right"><span><t t-esc="line.price_unit"/></span></td>
-						          <td class="text-right"><span><t t-esc="line.discount"/></span></td>
-						          <td class="text-right o_price_total"><span><t t-esc="line.price_subtotal"/></span></td>
-						        </t>
-						      </tr>
-						      
-						    </t>
-						  </tbody>
-						  
-						</table>
-						  <div class="clearfix">
-						  <div class="row float-right pr-3">
-						    <div>
-						      <table class="table table-sm o_main_table">
-						        <tr class="border-black o_subtotal">
-						          <td><strong>Subtotal</strong></td>
-						          <td><span><t t-esc="o.amount_untaxed"/></span></td>
-						        </tr>
-						        <tr class="border-black o_subtotal">
-						          <td><strong>Total</strong></td>
-						          <td><span><t t-esc="o.amount_total"/></span></td>
-						        </tr>
-						        
-						      </table>
-						    </div>
-						  </div>
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>Delivery Address</strong>
+							</p>
+							<p>
+								<t t-esc="o.partner_shipping_id.name"/>
+								<br/>
+								<t t-esc="o.delivery_details"/>
+							</p>
 						</div>
-               
 					</div>
+					<div class="row mt32 mb32">
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>PO Number:</strong>
+								<br/>
+								<t t-esc="o.po_no"/>
+							</p>
+						</div>
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>PO Date:</strong>
+								<br/>
+								<t t-esc="o.po_date"/>
+							</p>
+						</div>
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>Expiration:</strong>
+								<br/>
+								<t t-esc="o.validity_date"/>
+							</p>
+						</div>
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>Order Date:</strong>
+								<br/>
+								<t t-esc="o.date_order"/>
+							</p>
+						</div>
+					</div>
+					<div class="row pt-2 mt-2 pb-2 mb-2">
+						<table class="table table-sm o_main_table" style="margin:auto;border:none">
+							<thead style="border: none;">
+								<tr align="center" style="border: none;">
+									<th style="border: none;">Customer Ref</th>
+									<!--<th>Sample Ref</th>-->
+									<th style="border: none;">Style Ref</th>
+									<th style="border: none;">Season</th>
+									<th style="border: none;">Department</th>
+									<th style="border: none;">Buyer Name</th>
+									<th style="border: none;">HS Code</th>
+									<th style="border: none;">Production Type</th>
+									<th style="border: none;">Order Type</th>
+								</tr>
+							</thead>
+							<tbody style="border: none;">
+								<tr align="center" style="border: none;">
+									<td style="border: none;">
+										<t t-esc="o.customer_ref"/>
+									</td>
+									<!--<td><t t-esc="o.sample_ref"/></td>-->
+									<td style="border: none;">
+										<t t-esc="o.style_ref"/>
+									</td>
+									<td style="border: none;">
+										<t t-esc="o.season"/>
+									</td>
+									<td style="border: none;">
+										<t t-esc="o.department"/>
+									</td>
+									<td style="border: none;">
+										<t t-esc="o.buyer_name"/>
+									</td>
+									<td style="border: none;">
+										<t t-esc="o.hs_code"/>
+									</td>
+									<td style="border: none;">
+										<t t-esc="o.production_type"/>
+									</td>
+									<td style="border: none;">
+										<t t-esc="o.order_type"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<table class="table table-sm o_main_table">
+						<thead>
+							<th class="text-left">Item Details</th>
+							<th class="text-right">Quantity</th>
+							<th class="text-right">Unit Price</th>
+							<th class="text-right">Discount</th>
+							<th>Amount</th>
+						</thead>
+						<tbody>
+							<t t-foreach="o.order_line" t-as="line">
+								<tr>
+									<t t-if="not line.display_type">
+										<td>
+											<span>
+												<t t-esc="line.name"/>
+											</span>
+										</td>
+										<td class="text-right">
+											<span>
+												<t t-esc="line.product_uom_qty"/>
+											</span>
+											<span>
+												<t t-esc="line.product_uom.name"/>
+											</span>
+										</td>
+										<td class="text-right">
+											<span>
+												<t t-esc="line.price_unit"/>
+											</span>
+										</td>
+										<td class="text-right">
+											<span>
+												<t t-esc="line.discount"/>
+											</span>
+										</td>
+										<td class="text-right o_price_total">
+											<span>
+												<t t-esc="line.price_subtotal"/>
+											</span>
+										</td>
+									</t>
+								</tr>
+							</t>
+						</tbody>
+					</table>
+					<div class="clearfix">
+						<div class="row float-right pr-3">
+							<div>
+								<table class="table table-sm o_main_table">
+									<tr class="border-black o_subtotal">
+										<td>
+											<strong>Subtotal</strong>
+										</td>
+										<td>
+											<span>
+												<t t-esc="o.amount_untaxed"/>
+											</span>
+										</td>
+									</tr>
+									<tr class="border-black o_subtotal">
+										<td>
+											<strong>Total</strong>
+										</td>
+										<td>
+											<span>
+												<t t-esc="o.amount_total"/>
+											</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
 				</t>
 			</t>
 		</t>
