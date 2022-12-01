@@ -27,6 +27,8 @@
         'views/buyer_name.xml',
         'reports/report_action.xml',
         'reports/report_proforma_invoice.xml',
+        'reports/report_oa_invoice.xml',
+        'reports/paperformat.xml',
         #'data/ir_oa_sequance.xml',
         #'views/fg_product.xml',
     ],

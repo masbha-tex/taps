@@ -2,13 +2,32 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang, format_amount
 
+
+class ApprovalEntry(models.Model):
+    _inherit = 'studio.approval.entry'
+    
+    @api.model
+    def create(self, vals):
+        model_name = self.env['studio.approval.rule'].search([('id','=',vals['rule_id'])]).model_name
+        if model_name == 'purchase.order':
+            user_ = self.env['res.users'].search([('id','=',vals['user_id'])])
+            po = self.env['purchase.order'].search([('id', '=', vals['res_id'])]).write({'last_approver':vals['user_id'],'x_studio_last_confirmation':user_.display_name})
+        
+        entry = super().create(vals)
+        entry._notify_approval()
+        return entry
+
+
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
+    #record.write({'x_studio_last_confirmation': record.last_approver.display_name})
+    
     last_approver = fields.Many2one(
         string="Last Approver",
         comodel_name="res.users",
-        compute="_compute_last_approver",
+        store=True
+        #compute="_compute_last_approver",
     )
 
     def _compute_last_approver(self):

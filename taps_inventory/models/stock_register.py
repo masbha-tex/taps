@@ -10,21 +10,47 @@ class taps_inventory(models.Model):
     
     schedule_date = fields.Datetime('Schedule Date',readonly=True)
 
-
-    def set_schedule_date(self, productid, moveid, createdate):
-        productid=int(productid)
-        moveid=int(moveid)
-        getvaluation = self.env['stock.valuation.layer'].search([('stock_move_id', '=', moveid),('product_id', '=', productid)])
-        move_line = self.env['stock.move.line'].search([('move_id', '=', moveid),('product_id', '=', productid)])
-        
+    
+    @api.model
+    def create(self, vals):
+        move_line = self.env['stock.move.line'].search([('move_id', '=', vals.get('stock_move_id')),('product_id', '=', vals.get('product_id'))])
         if len(move_line) >= 1:
             getmove_line = move_line.sorted(key = 'id')[:1]
             sc_date = getmove_line.x_studio_schedule_date
-            if len(getvaluation) == 1:
-                if sc_date:
-                    getvaluation[-1].write({'schedule_date':sc_date})
-                else:
-                    getvaluation[-1].write({'schedule_date':createdate}) 
+            if sc_date:
+                vals['schedule_date'] = sc_date
+            else:
+                vals['schedule_date'] = vals.get('create_date')
+        result = super().create(vals)
+        return result
+    
+    def write(self, vals):
+        move_line = self.env['stock.move.line'].search([('move_id', '=', vals.get('stock_move_id')),('product_id', '=', vals.get('product_id'))])
+        if len(move_line) >= 1:
+            getmove_line = move_line.sorted(key = 'id')[:1]
+            sc_date = getmove_line.x_studio_schedule_date
+            if sc_date:
+                vals['schedule_date'] = sc_date
+            else:
+                vals['schedule_date'] = vals.get('create_date')
+                    
+        result = super(taps_inventory, self).write(vals)
+        return result
+
+#     def set_schedule_date(self, productid, moveid, createdate):
+#         productid=int(productid)
+#         moveid=int(moveid)
+#         getvaluation = self.env['stock.valuation.layer'].search([('stock_move_id', '=', moveid),('product_id', '=', productid)])
+#         move_line = self.env['stock.move.line'].search([('move_id', '=', moveid),('product_id', '=', productid)])
+        
+#         if len(move_line) >= 1:
+#             getmove_line = move_line.sorted(key = 'id')[:1]
+#             sc_date = getmove_line.x_studio_schedule_date
+#             if len(getvaluation) == 1:
+#                 if sc_date:
+#                     getvaluation[-1].write({'schedule_date':sc_date})
+#                 else:
+#                     getvaluation[-1].write({'schedule_date':createdate}) 
 
 class StockQuantityHistory(models.TransientModel):
     _inherit = 'stock.quantity.history'

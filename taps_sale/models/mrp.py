@@ -58,4 +58,4 @@ class MrpWorkorder(models.Model):
     """ Manufacturing Orders """
     _inherit = 'mrp.workorder'
     
-    oa_id = fields.Many2one('production_id.oa_id', string='OA', store=True, readonly=True)    
+    oa_id = fields.Many2one('sale.order', related='production_id.oa_id', string='OA', store=True, readonly=True)    

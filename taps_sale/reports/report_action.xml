@@ -9,8 +9,19 @@
             <field name="report_file">taps_sale.report_proforma_invoice</field>
             <field name="binding_model_id" ref="model_sale_order"/>
             <field name="binding_type">report</field>
-<!--             <field name="paperformat_id" ref="taps_hr.paperformat_payslip_report"/> -->
-<!--             <field name="default_print_option">print</field> -->
+            <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/>
+            <field name="default_print_option">print</field>
+        </record>
+        <record id="action_report_oa_invoice" model="ir.actions.report">
+            <field name="name">OA</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_sale.report_oa_invoice</field>
+            <field name="report_file">taps_sale.report_oa_invoice</field>
+            <field name="binding_model_id" ref="model_sale_order"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/>
+            <field name="default_print_option">print</field>
         </record>
     </data>
 </odoo>

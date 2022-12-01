@@ -5,7 +5,7 @@
         <field name="model">sale.buyer</field>
         <field name="arch" type="xml">
             <tree string="Buyer List">
-                <field name="buyer_name"/>
+                <field name="name"/>
             </tree>
         </field>
     </record>
@@ -17,7 +17,7 @@
             <form string="Buyer Form">
                 <sheet>
                     <group>
-                        <field name="buyer_name"/>
+                        <field name="name"/>
                     </group>
                 </sheet>
             </form>
@@ -31,7 +31,7 @@
     </record>
     <menuitem
         id="menu_sale_buyer"
-        name="Buyer Name"
+        name="Buyer List"
         action="buyer_name_action_config"
         parent="sale.menu_sales_config"
         sequence="17"/>

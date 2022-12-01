@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-	<template id="report_proforma_invoice">
+	<template id="report_oa_invoice">
 		<t t-call="web.html_container">
 			<t t-foreach="docs" t-as="o">
 				<t t-call="web.external_layout">
 					<div class="page">
 					<h4 class="text-center">
 						<strong>
-							PROFORMA INVOICE
+							ORDER ACCEPTANCE
 							</strong>
 					</h4>
 					<h2 class="mt15" style="font-size: 20px">
-						<span>PI NUMBER # <t t-esc="o.name"/>
+						<span>OA NUMBER # <t t-esc="o.name"/>
 						</span>
 					</h2>
 					<div class="row mt32 mb32">
@@ -128,15 +128,14 @@
 							</tbody>
 						</table>
 					</div>
+                    <t t-set="quantity_total" t-value="0"/>
 					<table class="table table-sm o_main_table">
 						<thead>
 							<th class="text-left">Item Details</th>
 							<th class="text-center">Image</th>
 							<th class="text-left">Size</th>
 							<th class="text-right">Quantity</th>
-							<th class="text-right">Price</th>
-							<th class="text-right">Discount</th>
-							<th>Amount</th>
+							
 						</thead>
 						<tbody>
 							<t t-foreach="o.order_line" t-as="line">
@@ -163,52 +162,31 @@
 										<td class="text-right" style="vertical-align:middle">
 											<span>
 												<t t-esc="line.product_uom_qty"/>
+                                                <t t-set="quantity_total" t-value="quantity_total+line.product_uom_qty"/>
 											</span>
 											<span>
 												<t t-esc="line.product_uom.name"/>
 											</span>
 										</td>
-										<td class="text-right" style="vertical-align:middle">
-											<span>
-												<t t-esc="line.price_unit"/>
-											</span>
-										</td>
-										<td class="text-right" style="vertical-align:middle">
-											<span>
-												<t t-esc="line.discount"/>
-											</span>
-										</td>
-										<td class="text-right o_price_total" style="vertical-align:middle">
-											<span>
-												<t t-esc="line.price_subtotal"/>
-											</span>
-										</td>
+										
 									</t>
 								</tr>
 							</t>
 						</tbody>
 					</table>
-					<div class="clearfix">
+					
+                    <div class="clearfix">
 						<div class="row float-right pr-3">
 							<div>
 								<table class="table table-sm o_main_table">
-									<tr class="border-black o_subtotal">
-										<td>
-											<strong>Subtotal</strong>
-										</td>
-										<td>
-											<span>
-												<t t-esc="o.amount_untaxed"/>
-											</span>
-										</td>
-									</tr>
+									
 									<tr class="border-black o_subtotal">
 										<td>
 											<strong>Total</strong>
 										</td>
 										<td>
 											<span>
-												<t t-esc="o.amount_total"/>
+												<t t-esc="quantity_total"/>
 											</span>
 										</td>
 									</tr>
@@ -216,9 +194,6 @@
 							</div>
 						</div>
 					</div>
-                    <p>
-						Bank: <span t-esc="o.bank.name"/>
-					</p>
 					<p>
 						<span t-esc="o.payment_term_id.note"/>
 					</p>

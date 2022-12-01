@@ -34,6 +34,9 @@ class HrEmployee(models.Model):
     bank_id = fields.Many2one('res.bank', string='Bank', tracking=True)
     account_number = fields.Char('Account Number', readonly=False, tracking=True)
     #bank_name = fields.Char(related='bank_id.name', readonly=False)
+    blood_group = fields.Char(string="Blood Group", store=True, tracking=True)
+    passing_year = fields.Integer(string="Passing Year", store=True, tracking=True)
+    result = fields.Char(string="Result", store=True, tracking=True)
     
     
     def create_emp_contact(self, e_id, emp_id, emp_name, emp_company, cat_name, street,street2,zip,city,state_id,country_id,email,phone,mobile,bank,acc_num,active):

@@ -71,6 +71,10 @@
                   <field name="finish"/>
                   <field name="shade"/>
               </xpath>
+<!--               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='price_subtotal']" position="after">
+                  <button name="dup_line" type="objct" string="Copy"/>
+                
+              </xpath> -->
               
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="attributes">
                 <attribute name="attrs">{}</attribute>
