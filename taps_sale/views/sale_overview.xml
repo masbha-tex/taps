@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_reg_search" model="ir.ui.view">
+        <field name="name">stock.reg.search</field>
+        <field name="model">stock.opening.closing</field>
+        <field name="arch" type="xml" >
+            <search string="RM &amp; Spare">
+                <filter string="RM" name="rm_stock" domain="[('product_id.default_code', 'like', 'R_')]" />
+                <filter string="Spare" name="spare_stock" domain="[('product_id.default_code', 'like', 'S_')]" />
+<!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
+                <separator/>
+                <field name="product_id" string="Product"/>
+                <group expand="0" string="Group By">
+                    <filter name="product_group" string="Product" domain="[]" context="{'group_by': 'parent_category'}"/>
+                    <filter name="category_group" string="Category" domain="[]" context="{'group_by': 'product_category'}"/>
+                    <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_stock_reg_tree" model="ir.ui.view">
+        <field name="name">stock.reg.tree</field>
+        <field name="model">stock.opening.closing</field>
+        <field name="arch" type="xml" >
+            <tree string="RM Stock" create="false" delete="false" >
+                <field name="parent_category"/>
+                <field name="product_category"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="rejected"/>
+                <field name="lot_price"/>
+                <field name="opening_qty" optional="show" sum="Opening Quantity" decoration-bf="True"/>
+                <field name="opening_value" optional="show" sum="Opening Value" decoration-bf="True"/>
+                <field name="receive_qty" optional="show" sum="Receive Quantity" decoration-bf="True"/>
+                <field name="receive_value" optional="show" sum="Receive Value" decoration-bf="True"/>
+                <field name="issue_qty" optional="show" sum="Issue Quantity" decoration-bf="True"/>
+                <field name="issue_value" optional="show" sum="Issue Value" decoration-bf="True"/>
+                <field name="cloing_qty" optional="show" sum="Closing Quantity" decoration-bf="True"/>
+                <field name="cloing_value" optional="show" sum="Closing Value" decoration-bf="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_stock_opening_closing" model="ir.actions.act_window">
+        <field name="name">Stock Register</field>
+        <field name="res_model">stock.opening.closing</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'search_default_rm_stock':1, 'search_default_product_group':1, 'search_default_category_group':1, 'search_default_item_group':1}</field>
+        <field name="search_view_id" ref="view_stock_reg_search" />
+    </record>
+
+    <menuitem id="menu_stock_reg_view" 
+              name="RM Stock" 
+              action="action_stock_opening_closing" 
+              parent="stock.menu_warehouse_report"
+              sequence="160"/>
+</odoo>    

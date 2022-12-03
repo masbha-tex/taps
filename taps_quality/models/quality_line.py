@@ -23,6 +23,7 @@ class QualityCheck(models.Model):
     receive_qty = fields.Float(compute='_compute_partner_id', string='Receive Qty', readonly=True)
     uom = fields.Many2one(related='product_id.uom_id', string='UOM', readonly=True)
     is_deviation = fields.Boolean("Is Deviation", readonly=True, store=True)
+    
     #product_id picking_id
     
     
