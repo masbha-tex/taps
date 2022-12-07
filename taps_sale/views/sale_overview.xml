@@ -1,58 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_stock_reg_search" model="ir.ui.view">
-        <field name="name">stock.reg.search</field>
-        <field name="model">stock.opening.closing</field>
+    <record id="view_sale_overview_search" model="ir.ui.view">
+        <field name="name">sale.overview.search</field>
+        <field name="model">sale.overview</field>
         <field name="arch" type="xml" >
-            <search string="RM &amp; Spare">
-                <filter string="RM" name="rm_stock" domain="[('product_id.default_code', 'like', 'R_')]" />
-                <filter string="Spare" name="spare_stock" domain="[('product_id.default_code', 'like', 'S_')]" />
+            <search string="Sale Overview">
+<!--                 <filter string="RM" name="rm_stock" domain="[('product_id.default_code', 'like', 'R_')]" />
+                <filter string="Spare" name="spare_stock" domain="[('product_id.default_code', 'like', 'S_')]" /> -->
 <!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
                 <separator/>
                 <field name="product_id" string="Product"/>
                 <group expand="0" string="Group By">
-                    <filter name="product_group" string="Product" domain="[]" context="{'group_by': 'parent_category'}"/>
-                    <filter name="category_group" string="Category" domain="[]" context="{'group_by': 'product_category'}"/>
-                    <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'product_id'}"/>
+                    <filter name="saleorder_group" string="Sale Order" domain="[]" context="{'group_by': 'order_ref'}"/>
+                    <filter name="oa_group" string="OA Number" domain="[]" context="{'group_by': 'order_id'}"/>
                 </group>
             </search>
         </field>
     </record>
 
-    <record id="view_stock_reg_tree" model="ir.ui.view">
-        <field name="name">stock.reg.tree</field>
-        <field name="model">stock.opening.closing</field>
+    <record id="view_sale_overview_tree" model="ir.ui.view">
+        <field name="name">sale.overview.tree</field>
+        <field name="model">sale.overview</field>
         <field name="arch" type="xml" >
-            <tree string="RM Stock" create="false" delete="false" >
-                <field name="parent_category"/>
-                <field name="product_category"/>
-                <field name="product_id"/>
-                <field name="lot_id"/>
-                <field name="rejected"/>
-                <field name="lot_price"/>
-                <field name="opening_qty" optional="show" sum="Opening Quantity" decoration-bf="True"/>
-                <field name="opening_value" optional="show" sum="Opening Value" decoration-bf="True"/>
-                <field name="receive_qty" optional="show" sum="Receive Quantity" decoration-bf="True"/>
-                <field name="receive_value" optional="show" sum="Receive Value" decoration-bf="True"/>
-                <field name="issue_qty" optional="show" sum="Issue Quantity" decoration-bf="True"/>
-                <field name="issue_value" optional="show" sum="Issue Value" decoration-bf="True"/>
-                <field name="cloing_qty" optional="show" sum="Closing Quantity" decoration-bf="True"/>
-                <field name="cloing_value" optional="show" sum="Closing Value" decoration-bf="True"/>
+            <tree string="Sale Overview" create="false" delete="false" >
+                <field name="order_ref"/>
+                <field name="order_id"/>
+                <field name="pi_number"/>
+                <field name="buyer_name"/>
+                <field name="order_partner_id"/>
+                <field name="product_name"/>
+                <field name="slidercodesfg"/>
+                <field name="finish"/>
+                <field name="shade"/>
+                <field name="sizein"/>
+                <field name="sizecm"/>
+                <field name="product_uom"/>
+                <field name="product_uom_qty"/>
+                <field name="price_unit" optional="show" decoration-bf="True"/>
+                <field name="price_subtotal" optional="show" sum="Subtotal" decoration-bf="True"/>
+                <field name="rm_consumption" optional="show" sum="RM Consumption" decoration-bf="True"/>
             </tree>
         </field>
     </record>
 
-    <record id="action_stock_opening_closing" model="ir.actions.act_window">
-        <field name="name">Stock Register</field>
-        <field name="res_model">stock.opening.closing</field>
+    <record id="action_sale_overview" model="ir.actions.act_window">
+        <field name="name">Sale Overview</field>
+        <field name="res_model">sale.overview</field>
         <field name="view_mode">tree</field>
-        <field name="context">{'search_default_rm_stock':1, 'search_default_product_group':1, 'search_default_category_group':1, 'search_default_item_group':1}</field>
-        <field name="search_view_id" ref="view_stock_reg_search" />
+        <field name="context">{'search_default_saleorder_group':1, 'search_default_oa_group':1}</field>
+        <field name="search_view_id" ref="view_sale_overview_search" />
     </record>
 
-    <menuitem id="menu_stock_reg_view" 
-              name="RM Stock" 
-              action="action_stock_opening_closing" 
-              parent="stock.menu_warehouse_report"
-              sequence="160"/>
+    <menuitem id="menu_sale_overview_view" 
+              name="Sale Overview" 
+              action="action_sale_overview" 
+              parent="sale.menu_sale_report"
+              sequence="17"/>
 </odoo>    

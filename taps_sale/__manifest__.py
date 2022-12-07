@@ -25,6 +25,8 @@
         'security/ir.model.access.csv',
         'views/sale.xml',
         'views/buyer_name.xml',
+        'views/sale_overview.xml',
+        'views/mrp_productivity.xml',
         'reports/report_action.xml',
         'reports/report_proforma_invoice.xml',
         'reports/report_oa_invoice.xml',

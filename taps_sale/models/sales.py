@@ -69,7 +69,8 @@ class SaleOrder(models.Model):
                 'invoice_status': saleorder.order_ref.invoice_status,
                 'invoice_details': saleorder.order_ref.invoice_details,
                 'others_note': saleorder.others_note,
-                'bank': saleorder.bank
+                'bank': saleorder.bank,
+                'buyer_name': saleorder.buyer_name,
             })
             orderline = self.env['sale.order.line'].search([('order_id', '=', saleorder.order_ref.id)]).sorted(key = 'sequence')
             orderline_values = []
@@ -212,27 +213,6 @@ class SaleOrder(models.Model):
             if len(or_line)>1:
                 orderline.write({'bom_id':or_line[1].bom_id})
                 continue
-#                 order_point = {
-#                     'name':'Replenishment Report',
-#                     'trigger':'manual',
-#                     'active':True,
-#                     'warehouse_id':1,
-#                     'location_id':8,
-#                     'product_id':orderline.product_id.id,
-#                     'product_category_id':orderline.product_id.categ_id.id,
-#                     'product_min_qty':0,
-#                     'product_max_qty':0,
-#                     'qty_multiple':1,
-#                     #'group_id':0.0,
-#                     'company_id':self.company_id.id,
-#                     'route_id':1,
-#                     'qty_to_order':orderline.product_uom_qty,
-#                     'bom_id':or_line[1].bom_id,
-#                     #'supplier_id':0.0,
-#                     'sale_order_line':orderline.id,
-#                     'sale_order_id':orderline.order_id.id
-#                 }
-#                 self.env['stock.warehouse.orderpoint'].create(order_point)
             else:
                 bom_info = {
                     'code':'',
@@ -533,18 +513,19 @@ class SaleOrder(models.Model):
 
         # Context key 'default_name' is sometimes propagated up to here.
         # We don't need it and it creates issues in the creation of linked records.
+        
         context = self._context.copy()
         context.pop('default_name', None)
         
-        self.with_context(context)._action_confirm()
+        if self.sales_type == 'oa':
+            self.with_context(context)._action_confirm()
         if self.env.user.has_group('sale.group_auto_done_setting'):
             self.action_done()
         if self.sales_type == 'oa':
             self.generate_mrp()
-        
-        #sale_order_id sale_order_line bom_id
+            
         return True
-    def mrp_values(self, product,qty,uom,bom):
+    def mrp_values(self,id,product,qty,uom,bom):
         values = {
             'priority': 0,
             'product_id': product,
@@ -567,13 +548,14 @@ class SaleOrder(models.Model):
             'is_locked': False,
             'production_location_id': 15,
             'consumption': 'warning',
-            'oa_id':self.id
+            'oa_id':self.id,
+            'sale_order_line':id
         }
         return values
         
     def generate_mrp(self):
         for products in self.order_line:
-            mrp_production = self.env['mrp.production'].create(self.mrp_values(products.product_id.id,products.product_qty,products.product_uom.id,products.bom_id))
+            mrp_production = self.env['mrp.production'].create(self.mrp_values(products.id,products.product_id.id,products.product_qty,products.product_uom.id,products.bom_id))
             mrp_production.move_raw_ids.create(mrp_production._get_moves_raw_values())
             mrp_production._onchange_workorder_ids()
             mrp_production._create_update_move_finished()
@@ -581,7 +563,7 @@ class SaleOrder(models.Model):
             for lines in bom_lines:
                 bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', lines.product_id.product_tmpl_id.id)])
                 qty = lines.product_qty * products.product_qty
-                mrp_sf_production = self.env['mrp.production'].create(self.mrp_values(lines.product_id.id,qty,lines.product_uom_id.id,bom.id))
+                mrp_sf_production = self.env['mrp.production'].create(self.mrp_values(products.id,lines.product_id.id,qty,lines.product_uom_id.id,bom.id))
                 mrp_sf_production.move_raw_ids.create(mrp_sf_production._get_moves_raw_values())
                 mrp_sf_production._onchange_workorder_ids()
                 mrp_sf_production._create_update_move_finished()
@@ -598,7 +580,7 @@ class SaleOrder(models.Model):
                     sub_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', sub_lines.product_id.product_tmpl_id.id)])
                     if sub_bom:
                         sub_qty = sub_lines.product_qty * lines.product_qty * products.product_qty
-                        sub_production = self.env['mrp.production'].create(self.mrp_values(sub_lines.product_id.id,sub_qty,sub_lines.product_uom_id.id,sub_bom.id))
+                        sub_production = self.env['mrp.production'].create(self.mrp_values(products.id,sub_lines.product_id.id,sub_qty,sub_lines.product_uom_id.id,sub_bom.id))
                         sub_production.move_raw_ids.create(sub_production._get_moves_raw_values())
                         sub_production._onchange_workorder_ids()
                         sub_production._create_update_move_finished()
@@ -606,6 +588,7 @@ class SaleOrder(models.Model):
                         
                 mrp_sf_production.action_confirm()
             mrp_production.action_confirm()
+            products.product_id.product_tmpl_id.button_bom_cost()
 
             
     @api.model
@@ -642,7 +625,9 @@ class SaleOrder(models.Model):
         result = super(SaleOrder, self).create(vals)
         return result
             
-
+    # def _action_confirm(self):
+    #     self.order_line._action_launch_stock_rule()
+    #     return super(SaleOrder, self)._action_confirm()
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'

@@ -15,7 +15,7 @@ class taps_inventory(models.Model):
     def create(self, vals):
         move_line = self.env['stock.move.line'].search([('move_id', '=', vals.get('stock_move_id')),('product_id', '=', vals.get('product_id'))])
         if len(move_line) >= 1:
-            getmove_line = move_line.sorted(key = 'id')[:1]
+            getmove_line = move_line.sorted(key = 'id', reverse=True)[:1]
             sc_date = getmove_line.x_studio_schedule_date
             if sc_date:
                 vals['schedule_date'] = sc_date
@@ -27,7 +27,7 @@ class taps_inventory(models.Model):
     def write(self, vals):
         move_line = self.env['stock.move.line'].search([('move_id', '=', vals.get('stock_move_id')),('product_id', '=', vals.get('product_id'))])
         if len(move_line) >= 1:
-            getmove_line = move_line.sorted(key = 'id')[:1]
+            getmove_line = move_line.sorted(key = 'id', reverse=True)[:1]
             sc_date = getmove_line.x_studio_schedule_date
             if sc_date:
                 vals['schedule_date'] = sc_date

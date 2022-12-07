@@ -23,6 +23,7 @@ class MrpProduction(models.Model):
     _inherit = 'mrp.production'
     
     oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=True)
+    sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', store=True, readonly=True)
     
     def _create_workorder(self):
         for production in self:
@@ -47,6 +48,7 @@ class MrpProduction(models.Model):
                         'state': 'pending',
                         'consumption': production.consumption,
                         'oa_id': production.oa_id.id,
+                        'sale_order_line': production.sale_order_line.id,
                     }]
             production.workorder_ids = [(5, 0)] + [(0, 0, value) for value in workorders_values]
             for workorder in production.workorder_ids:
@@ -58,4 +60,15 @@ class MrpWorkorder(models.Model):
     """ Manufacturing Orders """
     _inherit = 'mrp.workorder'
     
-    oa_id = fields.Many2one('sale.order', related='production_id.oa_id', string='OA', store=True, readonly=True)    
+    oa_id = fields.Many2one('sale.order', related='production_id.oa_id', string='OA', store=True, readonly=True)
+    sale_order_line = fields.Many2one('sale.order.line', related='production_id.sale_order_line', string='Sale Order Line', store=True, readonly=True)
+    
+    
+class MrpWoProductivity(models.Model):
+    _inherit = "mrp.workcenter.productivity"
+    
+    
+    qty_produced = fields.Float(
+        'Quantity Produced', default=0.0,
+        digits='Product Unit of Measure',
+        copy=False)    
