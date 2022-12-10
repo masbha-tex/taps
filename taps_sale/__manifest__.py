@@ -23,6 +23,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'reports/paperformat.xml',
         'views/sale.xml',
         'views/buyer_name.xml',
         'views/sale_overview.xml',
@@ -30,7 +31,6 @@
         'reports/report_action.xml',
         'reports/report_proforma_invoice.xml',
         'reports/report_oa_invoice.xml',
-        'reports/paperformat.xml',
         #'data/ir_oa_sequance.xml',
         #'views/fg_product.xml',
     ],
