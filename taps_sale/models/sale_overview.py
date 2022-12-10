@@ -74,6 +74,7 @@ class SaleOverview(models.Model):
             stock_move_line = self.env['stock.move.line'].search([('production_id','in',(production_id)),('lot_id','!=','')])
             #stock_move_line = stock_move_l.filtered(lambda inv: inv.production_id in (production_id) and inv.order_id.bom_lin_id != None and inv.lot_id != None)
             #raise UserError((production_id,stock_move_line.id))
+            sel = 0
             consumption = 0.0
             if stock_move_line:
                 for rm in stock_move_line:
