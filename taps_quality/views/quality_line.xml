@@ -11,7 +11,7 @@
                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field name="product_category"/>
-<!--                     <field name="receipt_date"/> -->
+                    <field name="receipt_date"/>
                 </xpath>
                 <xpath expr="//button[@name='do_pass']" position="attributes">
                     <attribute name="attrs">{'invisible': [('quality_state', 'in', ('pass', 'deviation', 'check', 'informed', 'fail'))]}</attribute>

@@ -63,6 +63,16 @@ class MrpWorkorder(models.Model):
     oa_id = fields.Many2one('sale.order', related='production_id.oa_id', string='OA', store=True, readonly=True)
     sale_order_line = fields.Many2one('sale.order.line', related='production_id.sale_order_line', string='Sale Order Line', store=True, readonly=True)
     
+    daily_qty_produced = fields.Float(
+        'Quantity Produced', default=0.0,
+        digits='Product Unit of Measure', compute="_compute_daily_produced",
+        copy=False)
+    
+    @api.depends('time_ids.qty_produced', 'daily_qty_produced')
+    def _compute_daily_produced(self):
+        for order in self:
+            order.daily_qty_produced = sum(order.time_ids.mapped('qty_produced'))
+        
     
 class MrpWoProductivity(models.Model):
     _inherit = "mrp.workcenter.productivity"
@@ -71,4 +81,4 @@ class MrpWoProductivity(models.Model):
     qty_produced = fields.Float(
         'Quantity Produced', default=0.0,
         digits='Product Unit of Measure',
-        copy=False)    
+        copy=False)
