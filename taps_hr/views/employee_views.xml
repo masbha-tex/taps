@@ -49,15 +49,38 @@
             <xpath expr="//field[@name='category_ids']" position="attributes">
                 <attribute name="string">Category</attribute>
             </xpath>
+            <field name="country_of_birth" position="after">
+                <field name="blood_group"/>
+            </field>
+            <field name="study_school" position="after">
+                <field name="passing_year"/>
+                <field name="result"/>
+            </field>
             
             <xpath expr="//page[@name='hr_settings']" position="after">
                 <page name="hr_contact" string="Contact Setup" groups="hr.group_hr_user">
                     <group>
-                        <field name="street" placeholder="Street..."/>
-                        <field name="street2" placeholder="Street 2..."/>
-                        <field name="city" placeholder="City"/>
-                        <field name="state_id" placeholder="State" options="{'no_open': True, 'no_quick_create': True}" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
-                        <field name="zip" placeholder="ZIP"/>
+                        <group name="present_address" string="Present Address">
+                            <field name="street" placeholder="Road/street..."/>
+                            <field name="street2" placeholder="Village..."/>
+                            <field name="zip" placeholder="Post Office/Zip"/>
+                            <field name="city" placeholder="Police Station"/>
+                            <field name="country_id" placeholder="Country" options="{'no_open': True, 'no_create': True, 'no_quick_create': True}"/>
+                            <field name="state_id" placeholder="District" options="{'no_quick_create': True}" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
+                            
+                            
+                        </group>
+                        <group name="permanent_address" string="Permanent Address">
+                            <field name="is_same_address" string="Same as"/>
+                            <field name="p_street" placeholder="Road/street..."/>
+                            <field name="p_street2" placeholder="Village..."/>
+                            <field name="p_zip" placeholder="Post Office/Zip."/>
+                            <field name="p_city" placeholder="Police Station."/>
+                            <field name="p_country_id" placeholder="Country." options="{'no_open': True, 'no_create': True, 'no_quick_create': True}"/>
+                            <field name="p_state_id" placeholder="District." options="{'no_quick_create': True}" context="{'country_id': p_country_id, 'default_country_id': p_country_id, 'zip': p_zip}"/>
+                            
+                            
+                        </group>
                     </group>
                     <group>
                         <field name="phone" widget="phone"/>

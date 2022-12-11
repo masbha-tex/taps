@@ -20,12 +20,19 @@ class HrEmployee(models.Model):
     mothers_name = fields.Char(string="Mother's Name", store=True, tracking=True)
     marriageDate = fields.Date(string='Date of Marriages', store=True, tracking=True)
     
-    street = fields.Char(tracking=True)
-    street2 = fields.Char(tracking=True)
-    zip = fields.Char(change_default=True, tracking=True)
-    city = fields.Char(tracking=True)
-    state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]", tracking=True)
-    #country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
+    street = fields.Char(string="Road/street", tracking=True)
+    street2 = fields.Char(string="Village", tracking=True)
+    zip = fields.Char(string="Post Office/Zip", change_default=True, tracking=True)
+    city = fields.Char(string="Police Station", tracking=True)
+    state_id = fields.Many2one("res.country.state", string="District", ondelete='restrict', domain="[('country_id', '=?', country_id)]", tracking=True)
+    is_same_address = fields.Boolean(readonly=False, store=True, tracking=True)
+    p_street = fields.Char(string="Road/street.",tracking=True)
+    p_street2 = fields.Char(string="Village.",tracking=True)
+    p_zip = fields.Char(string="Post Office/Zip.",change_default=True, tracking=True)
+    p_city = fields.Char(string="Police Station.",tracking=True)
+    p_state_id = fields.Many2one("res.country.state", string="District.", ondelete='restrict', domain="[('country_id', '=?', p_country_id)]", tracking=True)    
+    p_country_id = fields.Many2one('res.country', string='Country.', ondelete='restrict')
+    
     email = fields.Char(tracking=True)
     email_formatted = fields.Char('Formatted Email', compute='_compute_email_formatted', help='Format email address "Name <email@domain>"')
     phone = fields.Char(tracking=True)
@@ -35,9 +42,25 @@ class HrEmployee(models.Model):
     account_number = fields.Char('Account Number', readonly=False, tracking=True)
     #bank_name = fields.Char(related='bank_id.name', readonly=False)
     blood_group = fields.Char(string="Blood Group", store=True, tracking=True)
-    passing_year = fields.Integer(string="Passing Year", store=True, tracking=True)
+    passing_year = fields.Char(string="Passing Year", store=True, tracking=True)
     result = fields.Char(string="Result", store=True, tracking=True)
     
+    @api.onchange('is_same_address')
+    def _compute_same_address(self):
+        if self.is_same_address:
+            self.p_street = self.street
+            self.p_street2 = self.street2
+            self.p_zip = self.zip
+            self.p_city = self.city
+            self.p_state_id = self.state_id
+            self.p_country_id = self.country_id
+        else:
+            self.p_street = False
+            self.p_street2 = False
+            self.p_zip = False
+            self.p_city = False
+            self.p_state_id = False
+            self.p_country_id = False
     
     def create_emp_contact(self, e_id, emp_id, emp_name, emp_company, cat_name, street,street2,zip,city,state_id,country_id,email,phone,mobile,bank,acc_num,active):
         if active == True:
