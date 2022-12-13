@@ -1,6 +1,6 @@
 <odoo>
   <data>
-      <record id="sale_order_varient_columns" model="ir.ui.view">
+      <record id="sale_order_varient_colum" model="ir.ui.view">
           <field name="name">sale.order.lineview</field>
           <field name="model">sale.order</field>
           <field name="inherit_id" ref="sale.view_order_form"/>

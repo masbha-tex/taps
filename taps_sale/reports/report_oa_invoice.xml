@@ -7,15 +7,16 @@
 					<div class="page">
 					<h4 class="text-center">
 						<strong>
-							ORDER ACCEPTANCE
+							PROFORMA INVOICE
 							</strong>
 					</h4>
 					<h2 class="mt15" style="font-size: 20px">
-						<span>OA NUMBER # <t t-esc="o.name"/>
+						<span>PI NUMBER # <t t-esc="o.name"/>
 						</span>
 					</h2>
-					<div class="row mt32 mb32">
-						<div class="col-auto col-4 mw-100 mb-2">
+					<p class="text-right" style="font-size: 12px"><strong>BIN NO: 000230362-0305</strong></p>
+					<div class="row mt32 mb32" style="font-size:12px">
+						<div class="col-auto col-3 mw-50 mb-2">
 							<p>
 								<strong>Customer Details</strong>
 							</p>
@@ -31,17 +32,17 @@
 								<t t-esc="o.partner_id.country_id.name"/>
 							</p>
 						</div>
-						<div class="col-auto col-4 mw-100 mb-2">
+						<div class="col-auto col-3 mw-50 mb-2">
 							<p>
 								<strong>Invoice Details</strong>
 							</p>
-							<p>
+							<p style="font-size:10px">
 								<t t-esc="o.partner_invoice_id.name"/>
 								<br/>
 								<t t-esc="o.invoice_details"/>
 							</p>
 						</div>
-						<div class="col-auto col-4 mw-100 mb-2">
+						<div class="col-auto col-3 mw-50 mb-2">
 							<p>
 								<strong>Delivery Details</strong>
 							</p>
@@ -51,43 +52,82 @@
 								<t t-esc="o.delivery_details"/>
 							</p>
 						</div>
+						<div class="col-auto col-3 mw-50 mb-2">
+							<p>
+								<strong>Kind Attention:</strong>
+							</p>
+							<p >
+								<t t-esc="o.kind_attention"/>
+								
+							</p>
+						</div>
 					</div>
-					<div class="row mt32 mb32">
+					<div class="row mt32 mb32" style="font-size:12px">
 						<div class="col-auto col-3 mw-100 mb-2">
 							<p>
-								<strong>PO Number:</strong>
+								<strong>PO NUMBER:</strong>
 								<br/>
 								<t t-esc="o.po_no"/>
 							</p>
 						</div>
 						<div class="col-auto col-3 mw-100 mb-2">
 							<p>
-								<strong>PO Date:</strong>
+								<strong>PO DATE:</strong>
 								<br/>
 								<t t-esc="o.po_date"/>
 							</p>
 						</div>
 						<div class="col-auto col-3 mw-100 mb-2">
 							<p>
-								<strong>Expiration:</strong>
+								<strong>EXPIRATION:</strong>
 								<br/>
 								<t t-esc="o.validity_date"/>
 							</p>
 						</div>
 						<div class="col-auto col-3 mw-100 mb-2">
 							<p>
-								<strong>Order Date:</strong>
+								<strong>ORDER DATE:</strong>
 								<br/>
 								<t t-esc="o.date_order"/>
 							</p>
 						</div>
 					</div>
-					<div class="row pt-2 mt-2 pb-2 mb-2">
+					<div class="row mt32 mb32" style="font-size:12px">
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>ADVISED BANK:</strong>
+								<br/>
+								<t t-esc="o.bank.name"/>
+							</p>
+						</div>
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>BRANCH ADDRESS:</strong>
+								<br/>
+								<t t-esc="o.bank.street"/>
+							</p>
+						</div>
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>SWIFT CODE:</strong>
+								<br/>
+								<t t-esc="o.bank.bic"/>
+							</p>
+						</div>
+						<div class="col-auto col-3 mw-100 mb-2">
+							<p>
+								<strong>ACCOUNT NUMBER:</strong>
+								<br/>
+								<t t-esc="o.bank.account_number"/>
+							</p>
+						</div>
+					</div>
+					<div class="row pt-2 mt-2 pb-2 mb-2" style="font-size:12px">
 						<table class="table table-sm o_main_table" style="margin:auto;border:none">
 							<thead style="border: none;">
 								<tr align="center" style="border: none;">
 									<th style="border: none;">Customer Ref</th>
-									<!--<th>Sample Ref</th>-->
+									<th style="border: none;">Sample Ref</th>
 									<th style="border: none;">Style Ref</th>
 									<th style="border: none;">Season</th>
 									<th style="border: none;">Department</th>
@@ -95,6 +135,7 @@
 									<th style="border: none;">HS Code</th>
 									<th style="border: none;">Production Type</th>
 									<th style="border: none;">Order Type</th>
+									<th style="border: none;">Pricelist</th>
 								</tr>
 							</thead>
 							<tbody style="border: none;">
@@ -102,7 +143,9 @@
 									<td style="border: none;">
 										<t t-esc="o.customer_ref"/>
 									</td>
-									<!--<td><t t-esc="o.sample_ref"/></td>-->
+									<td style="border: none;">
+									  <t t-esc="o.sample_ref.name"/>
+									</td>
 									<td style="border: none;">
 										<t t-esc="o.style_ref"/>
 									</td>
@@ -113,7 +156,7 @@
 										<t t-esc="o.department"/>
 									</td>
 									<td style="border: none;">
-										<t t-esc="o.buyer_name"/>
+										<t t-esc="o.buyer_name.name"/>
 									</td>
 									<td style="border: none;">
 										<t t-esc="o.hs_code"/>
@@ -124,69 +167,151 @@
 									<td style="border: none;">
 										<t t-esc="o.order_type"/>
 									</td>
+									<td style="border: none;">
+										<t t-esc="o.pricelist_id.name"/>
+									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
-                    <t t-set="quantity_total" t-value="0"/>
+					<div style="font-size:12px">
 					<table class="table table-sm o_main_table">
 						<thead>
-							<th class="text-left">Item Details</th>
+							<th class="text-left">Item</th>
 							<th class="text-center">Image</th>
-							<th class="text-left">Size</th>
+							<th class="text-left">Code</th>
+							<th class="text-left">Finish</th>
+							<th class="text-left">Shade</th>
+							<th class="text-left">Size(inch)</th>
+							<th class="text-left">Size(cm)</th>
+							<th class="text-left">Gap</th>
 							<th class="text-right">Quantity</th>
-							
+							<th class="text-right">Price/Unit</th>
+							<th class="text-right">Discount</th>
+							<th>Amount</th>
 						</thead>
 						<tbody>
+						  <t t-set="item" t-value=""/>
+						  <t t-set="code" t-value=""/>
+						  <t t-set="finish" t-value=""/>
+						  <t t-set="shade" t-value=""/>
 							<t t-foreach="o.order_line" t-as="line">
+							  
+							  
 								<tr>
 									<t t-if="not line.display_type">
-										<td>
+									
+										<td class="text-left" style="vertical-align:middle">
+										  
+										  <t t-if="item != line.product_template_id.name">
 											<span>
-												<t t-esc="line.name"/>
+												<t t-esc="line.product_template_id.name"/>
 											</span>
+										
+											</t>
+										
 										</td>
-										<td>
-											<img t-if="line.product_template_id.image_1920" t-att-src="image_data_uri(line.product_template_id.image_1920)"/>
-										</td>
+										
+										
 										<td style="vertical-align:middle">
+										  <t t-if="item != line.product_template_id.name">
+											<img  t-if="line.product_template_id.image_1920" t-att-src="image_data_uri(line.product_template_id.image_1920)" style="height: 50px; width: 50px;"/>
+											<t t-set="item" t-value="line.product_template_id.name"/>
+											</t>
+										</td>
+											
+											
+										<td class="text-left" style="vertical-align:middle">
+										  <t t-if="code != line.slidercodesfg">
+											<span>
+												<t t-esc="line.slidercodesfg"/>
+												<t t-set="code" t-value="line.slidercodesfg"/>
+											</span>
+											</t>
+										</td>
+										<td class="text-left" style="vertical-align:middle">
+										  <t t-if="finish != line.finish">
+											<span>
+												<t t-esc="line.finish"/>
+												<t t-set="finish" t-value="line.finish"/>
+											</span>
+											</t>
+										</td>
+										<td class="text-left" style="vertical-align:middle">
+										  <t t-if="shade != line.shade">
+											<span>
+												<t t-esc="line.shade"/>
+												<t t-set="shade" t-value="line.shade"/>
+											</span>
+										  </t>
+										</td>
+										<td class="text-left" style="vertical-align:middle">
 											<t t-if="line.sizein != 'N/A'">
 												<span>
-													<t t-esc="line.sizein"/> Inch</span>
+													<t t-esc="line.sizein"/></span>
 											</t>
+											</td>
+											<td class="text-left" style="vertical-align:middle">
 											<t t-if="line.sizecm != 'N/A'">
 												<span>
-													<t t-esc="line.sizecm"/> CM</span>
+													<t t-esc="line.sizecm"/></span>
 											</t>
+										</td>
+										<td class="text-left" style="vertical-align:middle">
+											<span>
+												<t t-esc="line.gap"/>
+											</span>
 										</td>
 										<td class="text-right" style="vertical-align:middle">
 											<span>
 												<t t-esc="line.product_uom_qty"/>
-                                                <t t-set="quantity_total" t-value="quantity_total+line.product_uom_qty"/>
 											</span>
 											<span>
 												<t t-esc="line.product_uom.name"/>
 											</span>
 										</td>
-										
+										<td class="text-right" style="vertical-align:middle">
+											<span>
+												<t t-esc="line.price_unit"/>
+											</span>
+										</td>
+										<td class="text-right" style="vertical-align:middle">
+											<span>
+												<t t-esc="line.discount"/>
+											</span>
+										</td>
+										<td class="text-right o_price_total" style="vertical-align:middle">
+											<span>
+												<t t-esc="line.price_subtotal"/>
+											</span>
+										</td>
 									</t>
 								</tr>
 							</t>
 						</tbody>
 					</table>
-					
-                    <div class="clearfix">
+					</div>
+					<div class="clearfix" style="font-size:12px">
 						<div class="row float-right pr-3">
 							<div>
 								<table class="table table-sm o_main_table">
-									
+									<tr class="border-black o_subtotal">
+										<td>
+											<strong>Subtotal</strong>
+										</td>
+										<td>
+											<span>
+												<t t-esc="o.amount_untaxed"/>
+											</span>
+										</td>
+									</tr>
 									<tr class="border-black o_subtotal">
 										<td>
 											<strong>Total</strong>
 										</td>
 										<td>
 											<span>
-												<t t-esc="quantity_total"/>
+												<t t-esc="o.amount_total"/>
 											</span>
 										</td>
 									</tr>
@@ -194,18 +319,19 @@
 							</div>
 						</div>
 					</div>
-					<p>
+                 
+					<p style="font-size:12px">
 						<span t-esc="o.payment_term_id.note"/>
 					</p>
-					<div class="row mb32 mt32">
+					<div class="row mb32 mt32" style="font-size:12px">
 						<diV class="col-6">
 							<p>Terms and Condition:<br/>
-								<span t-esc="o.note"/>
+								<span t-esc="o.note" style="font-size:10px" />
 							</p>
 						</diV>
 						<diV class="col-6">
 							<p>Others Terms and Condition:<br/>
-								<span t-esc="o.others_note"/>
+								<span t-esc="o.others_note" style="font-size:10px;"/>
 							</p>
 						</diV>
 					</div>

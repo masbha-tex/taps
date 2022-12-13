@@ -323,8 +323,8 @@ class SaleOrder(models.Model):
                     product_temp = self.env['product.template'].search([('name', '=', orderline.slidercodesfg)]).sorted(key = 'id', reverse=True)[:1]
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
-                    product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
+                    #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     
                     #inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
@@ -360,8 +360,8 @@ class SaleOrder(models.Model):
                     product_temp = self.env['product.template'].search([('name', '=', orderline.dyedtape)]).sorted(key = 'id', reverse=True)[:1]
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
-                    product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
+                    #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.tape_python_compute
@@ -388,8 +388,8 @@ class SaleOrder(models.Model):
                     product_temp = self.env['product.template'].search([('name', 'like', orderline.ptopfinish)]).sorted(key = 'id', reverse=True)[:1]
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
-                    product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
+                    #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.twair_python_compute
@@ -416,8 +416,8 @@ class SaleOrder(models.Model):
                     product_temp = self.env['product.template'].search([('name', 'like', orderline.pbotomfinish)]).sorted(key = 'id', reverse=True)[:1]
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
-                    product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
+                    #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.bwire_python_compute
@@ -465,8 +465,8 @@ class SaleOrder(models.Model):
                     product_temp = self.env['product.template'].search([('name', 'like', orderline.dippingfinish)]).sorted(key = 'id', reverse=True)[:1]
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
-                    product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_id', '=', product_main.id),('unit_type', '=', size_type)])
+                    #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.wair_python_compute
@@ -681,10 +681,6 @@ class SaleOrderLine(models.Model):
                 self.product_no_variant_attribute_value_ids -= ptav
         
         vals = {}
-        #raise UserError((self.product_no_variant_attribute_value_ids))
-        
-        #raise UserError((att_val))
-
         if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
             vals['product_uom'] = self.product_id.uom_id
             vals['product_uom_qty'] = self.product_uom_qty or 1.0
@@ -719,10 +715,18 @@ class SaleOrderLine(models.Model):
                 self.slidercodesfg = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Finish':
-                self.finish = rec.product_attribute_value_id.name
+                name = rec.product_attribute_value_id.name
+                custom_values = self.product_custom_attribute_value_ids.filtered(lambda p: p.custom_product_template_attribute_value_id.id == rec.id)
+                if custom_values.custom_value:
+                    name += "\n" + custom_values.custom_value
+                self.finish = name
                 continue
             if rec.attribute_id.name == 'Shade':
-                self.shade = rec.product_attribute_value_id.name
+                name = rec.product_attribute_value_id.name
+                custom_values = self.product_custom_attribute_value_ids.filtered(lambda p: p.custom_product_template_attribute_value_id.id == rec.id)
+                if custom_values.custom_value:
+                    name += "\n" + custom_values.custom_value
+                self.shade = name
                 continue
             if rec.attribute_id.name == 'Size (Inch)':
                 self.sizein = rec.product_attribute_value_id.name
@@ -897,7 +901,7 @@ class SaleOrderLine(models.Model):
         - in event_sale we need to know specifically the sales order line as well as the product to generate the name:
           the product is not sufficient because we also need to know the event_id and the event_ticket_id (both which belong to the sale order line).
         """
-        return product.get_product_multiline_description_sale()
+        return product.get_product_multiline_description_sale()# + self._get_sale_order_line_multiline_description_variants()
     
     
     @api.onchange('product_uom', 'product_uom_qty')

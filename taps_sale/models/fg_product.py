@@ -14,8 +14,8 @@ class ProductBomFormula(models.Model):
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
     
     #id, product_id, name, unit
-    product_id = fields.Many2one('product.product', 'Product Id')
-    product_name = fields.Char(related='product_id.product_tmpl_id.name', string='Name', readonly=True)
+    product_tmpl_id = fields.Many2one('product.template', 'Product Id')
+    product_name = fields.Char(related='product_tmpl_id.name', string='Name', store=True, readonly=True)
     product_type = fields.Text(string='Type', required=True)
     unit_type = fields.Text(string='Unit Type', required=True)
     tape_python_compute = fields.Text(string='Tap')
