@@ -33,18 +33,24 @@
               <xpath expr="//field[@name='sale_order_template_id']" position="after">
                 <field name="customer_ref"/>
                 <field name="sample_ref" attrs="{'invisible': [['sales_type','=','sample']], 'readonly': [['sales_type','=','sale']]}"/>
+                <field name="style_ref"/>
+<!--                 <field name="sales_person"/>  -->
+                <field name="remarks"/>
               </xpath>              
               
               <xpath expr="//field[@name='validity_date']" position="before">
-                <field name="style_ref"/>
+                
                 <field name="season"/>
                 <field name="department"/>
+                <field name="division"/>
                 <field name="buyer_name"/>
                 <field name="hs_code" attrs="{'invisible': [['sales_type','=','sample']]}"/>
                 <field name="production_type" attrs="{'invisible': [['sales_type','=','sample']]}"/>
+                <field name="production_group" attrs="{'invisible': [['sales_type','=','sample']]}"/>
                 <field name="order_type" attrs="{'invisible': [['sales_type','=','sample']]}"/>
                 <field name="po_no"/>
                 <field name="po_date"/>
+                <field name="revised_date"/>
               </xpath>              
 
               <xpath expr="//field[@name='validity_date']" position="attributes">
@@ -52,16 +58,21 @@
               </xpath>
               <xpath expr="//field[@name='payment_term_id']" position="attributes">
                 <attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']]}</attribute>
+                  
               </xpath>
               <xpath expr="//field[@name='payment_term_id']" position="after">
-                  <field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
                   <field name="bank" string="Bank"/>
+              </xpath>
+              <xpath expr="//field[@name='sales_type']" position="after">
+                  <field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
+                  
               </xpath>
               
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="after">
                   <field name="dippingfinish"/>
                   <field name="slidercodesfg"/>
                   <field name="ptopfinish"/>
+                  <field name="numberoftop"/>
                   <field name="pbotomfinish"/>
                   <field name="topbottom"/>
                   <field name="gap"/>
@@ -80,8 +91,18 @@
                 <attribute name="attrs">{}</attribute>
                 <attribute name="invisible">1</attribute>
               </xpath>
-              <xpath expr="//field[@name='note']" position="after">
-                  <field name="others_note" nolabel="1" placeholder="Others Terms and conditions..."/>
+              <xpath expr="//field[@name='note']" position="before">
+                  <field name="amount_in_word" style="color: #00A09D"/>
+<!--                   <field name="others_note" nolabel="1" placeholder="Others Terms and conditions..."/> -->
+                  
+              </xpath>
+              <xpath expr="//field[@name='picking_policy']" position="after">
+                  <field name="shipment_terms" style="color: #00A09D"/>
+                  <field name="shipment_mode" style="color: #00A09D"/>
+                  <field name="loading_place" style="color: #00A09D"/>
+                  <field name="destination_port" style="color: #00A09D"/>
+                  <field name="origin_country" style="color: #00A09D"/>
+                  <field name="validity_period" style="color: #00A09D"/>
               </xpath>
               
           </field>

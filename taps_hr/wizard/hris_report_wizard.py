@@ -303,7 +303,7 @@ class HRISReportPDF2(models.AbstractModel):
             data.get('report_type'),
             data.get('bank_id'),
 #             otTotal,
-            data.get('date_from'),
+            datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%d-%m-%Y'),
             data.get('date_to'),
         ]
         common_data.append(common_data)

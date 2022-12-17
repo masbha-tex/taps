@@ -30,6 +30,8 @@
                 <field name="lot_id"/>
                 <field name="rejected"/>
                 <field name="lot_price"/>
+                <field name="pur_price"/>
+                <field name="landed_cost"/>
                 <field name="opening_qty" optional="show" sum="Opening Quantity" decoration-bf="True"/>
                 <field name="opening_value" optional="show" sum="Opening Value" decoration-bf="True"/>
                 <field name="receive_qty" optional="show" sum="Receive Quantity" decoration-bf="True"/>

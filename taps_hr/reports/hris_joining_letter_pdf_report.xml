@@ -24,7 +24,7 @@
                         <br/>
                         <br/>
                         <p>Date:
-                            <span t-esc="datetime.datetime.now().strftime('%d-%m-%Y')"/>
+                            <span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
                             <br/>
 
                         </p>
@@ -47,7 +47,7 @@
                         <br/>
                         <p><div>
                           জনাব,<br/>
-            মানব সম্পদ বিভাগ কর্তৃক প্রেরিত নিয়োগ পত্র অনুযায়ী আই ডি <strong t-esc="employee.emp_id"></strong> এবং নিয়োগ পত্রের যাবতীয় শর্তাবলী আমি যথাযথভাবে বুঝে-শুনে স্বজ্ঞানে ও সুস্থ মস্তিস্কে বা কাহারো দ্বারা প্ররোচিত না হয়ে পদবী ................................ হিসেবে অদ্য তারিখ <strong t-esc="datetime.datetime.now().strftime('%d-%m-%Y')"></strong>
+            মানব সম্পদ বিভাগ কর্তৃক প্রেরিত নিয়োগ পত্র অনুযায়ী আই ডি <strong t-esc="employee.emp_id"/> এবং নিয়োগ পত্রের যাবতীয় শর্তাবলী আমি যথাযথভাবে বুঝে-শুনে স্বজ্ঞানে ও সুস্থ মস্তিস্কে বা কাহারো দ্বারা প্ররোচিত না হয়ে পদবী ................................ হিসেবে অদ্য তারিখ <strong t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
             ইং অত্র কারখানায় যোগদান করিয়াছি।
                         </div></p>
                         <br/>
@@ -62,10 +62,10 @@
                         <p><div>
                           বিনীত নিবেদক-
                           <br/>
-                          নাম :<strong t-esc="employee.name"></strong> <br/>
-                          বিভাগ :  <strong t-esc="employee.department_id.name"></strong> <br/>
-                          শাখা :  <strong t-esc="employee.job_id.name"></strong> <br/>
-                          তারিখ :  <strong t-esc="datetime.datetime.now().strftime('%d-%m-%Y')"></strong> <br/>
+                          নাম : <span><strong t-esc="employee.name"/></span><br/>
+                          বিভাগ : <span><strong t-esc="employee.department_id.name"/></span> <br/>
+                          শাখা  : <span><strong t-esc="employee.job_id.name"/></span> <br/>
+                          তারিখ : <span><strong t-esc="employee.joining_date.strftime('%d-%m-%Y')"/></span> <br/>
                         </div></p>
                       </div>
 

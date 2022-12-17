@@ -1,12 +1,13 @@
-from odoo import fields, models, tools, api
+import logging
+from odoo import fields, models, tools, api, _
 from datetime import date, datetime, time, timedelta
 from odoo.tools import format_date
 from odoo.exceptions import UserError, ValidationError
 
 class Inventory(models.Model):
     _name = "stock.opening.closing"
-    _auto = False
     _description = "Stock Opening & Closing Report"
+    #_auto = False
     #_order = "date desc, id desc"
     
     
@@ -18,7 +19,8 @@ class Inventory(models.Model):
     lot_id = fields.Many2one('stock.production.lot', string='Invoice', readonly=True)
     rejected = fields.Boolean(string='Rejected', readonly=True)
     lot_price = fields.Float(string='Price', readonly=True, digits='Unit Price')
-    
+    pur_price = fields.Float(string='Price', readonly=True, digits='Unit Price')
+    landed_cost = fields.Float(string='Price', readonly=True, digits='Unit Price')
     opening_qty = fields.Float(string='Opening Quantity', readonly=True)
     opening_value = fields.Float(string='Opening Value', readonly=True)
     receive_qty = fields.Float(string='Receive Quantity', readonly=True)
@@ -28,7 +30,7 @@ class Inventory(models.Model):
     cloing_qty = fields.Float(string='Closing Quantity', readonly=True)
     cloing_value = fields.Float(string='Closing Value', readonly=True)
     
-    #company_id = fields.Many2one('res.company', readonly=True)
+    #company_id = fields.Many2one('res.company', readonly=True) 
     
     
     def init(self):
@@ -42,10 +44,11 @@ class Inventory(models.Model):
         #from_date = date_search.from_date # (select to_date from searching_date)
         #to_date = date_search.to_date
         #from_date1,from_date2,from_date3,from_date4,from_dat5,to_date1,from_date6,to_date2,from_date7,to_date3,from_date8,to_date4,
-        tools.drop_view_if_exists(self._cr, 'stock_opening_closing')
+        #tools.drop_view_if_exists(self._cr, 'stock_opening_closing')#CREATE or REPLACE VIEW
         query = """
-        CREATE or REPLACE VIEW stock_opening_closing AS (
-        select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id, categ_type as product_category,parent_id as parent_category,invoice as lot_id, rejected, avg(lot_price) as lot_price, sum(opening_qty) as opening_qty,
+        truncate table stock_opening_closing;
+        insert into stock_opening_closing(id,product_id,product_category,parent_category,lot_id,rejected,lot_price,pur_price,landed_cost,opening_qty,opening_value,receive_qty,receive_value,issue_qty,issue_value,cloing_qty,cloing_value) select * from (
+        select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id, categ_type as product_category,parent_id as parent_category,invoice as lot_id, rejected, avg(lot_price) as lot_price, avg(pur_price) as pur_price, avg(landed_cost) as landed_cost ,sum(opening_qty) as opening_qty,
         case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
         sum(receive_qty) as receive_qty,
         case when avg(lot_price)>0 then sum(receive_qty)*avg(lot_price) else sum(receive_value) end as receive_value,
@@ -60,6 +63,14 @@ class Inventory(models.Model):
         (case when lot.id is not null then
         lot.unit_price else 0 end
         ) as lot_price,
+        
+        (case when lot.id is not null then
+        lot.unit_price else 0 end
+        ) as pur_price,
+        
+        (case when lot.id is not null then
+        lot.unit_price else 0 end
+        ) as landed_cost,
         
         (
         case when lot.id is not null then
@@ -119,7 +130,7 @@ class Inventory(models.Model):
         where product.default_code like'R_%' or product.default_code like'S_%'
         ) as stock where (abs(stock.opening_qty)+abs(stock.receive_qty)+abs(stock.issue_qty))>0
         group by stock.product_id,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected
-        )
+        ) as atb
         """
         self.env.cr.execute(query)
 

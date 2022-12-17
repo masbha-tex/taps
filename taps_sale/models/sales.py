@@ -29,21 +29,32 @@ class SaleOrder(models.Model):
             ('oa', 'OA')],
             string='Sales Type')
     invoice_details = fields.Char(string='Invoice Details', related='partner_invoice_id.contact_address_complete')
-    delivery_details = fields.Char(string='Delivery Details', related='partner_shipping_id.contact_address_complete')
+    delivery_details = fields.Char(string='Delivery Details')
     po_no = fields.Char(string='PO No.')
     po_date = fields.Date(string='PO Date')
+    revised_date = fields.Date(string=' PO Revised Date')
     order_type = fields.Char(string='Order Type')
     kind_attention = fields.Char(string='Kind Attention')
     hs_code = fields.Char(string='H.S Code')
     department = fields.Char(string='Department')
+    division = fields.Char(string='Division')
     customer_ref = fields.Char(string='Customer Ref')
     production_type = fields.Char(string='Production Type')
+    production_group = fields.Char(string='Production Group')
     style_ref = fields.Char(string='Style Ref.')
     order_ref = fields.Many2one('sale.order', string='Sales Order Ref.', readonly=True, sales_type={'oa' : [('readonly', False)]})
-    
-    others_note = fields.Text('Others Terms and conditions') 
+    remarks = fields.Text(string='Remarks') 
+    # others_note = fields.Text('Others Terms and conditions') 
     bank = fields.Many2one('res.bank', string='Bank')
+    # sales_person = fields.Many2one('hr.employee', string='Salesperson')
     pi_number = fields.Char(string='PI No.')
+    shipment_terms = fields.Char(string='Shipment Terms')
+    shipment_mode = fields.Char(string='Shipment Mode')
+    loading_place = fields.Char(string='Place of loading')
+    destination_port = fields.Char(string='Destination Port')
+    origin_country = fields.Char(string='Country of origin')
+    validity_period = fields.Char(string='Period of validity')
+    amount_in_word = fields.Char(string='Amount In Words')
     
     @api.onchange('order_ref')
     def _onchange_orderline_ids(self):
@@ -68,9 +79,34 @@ class SaleOrder(models.Model):
                 'currency_id': saleorder.order_ref.currency_id,
                 'invoice_status': saleorder.order_ref.invoice_status,
                 'invoice_details': saleorder.order_ref.invoice_details,
-                'others_note': saleorder.others_note,
-                'bank': saleorder.bank,
-                'buyer_name': saleorder.buyer_name,
+                'delivery_details': saleorder.order_ref.delivery_details,
+                'note' : saleorder.order_ref.note,
+                'others_note': saleorder.order_ref.others_note,
+                'remarks' : saleorder.order_ref.remarks,
+                'kind_attention' : saleorder.order_ref.kind_attention,
+                'customer_ref' : saleorder.order_ref.customer_ref,
+                'style_ref' : saleorder.order_ref.style_ref,
+                'season' : saleorder.order_ref.season,
+                'department' : saleorder.order_ref.department,
+                'division' : saleorder.order_ref.division,
+                'buyer_name': saleorder.order_ref.buyer_name,
+                'hs_code': saleorder.order_ref.hs_code,
+                'production_type' : saleorder.order_ref.production_type,
+                'production_group' : saleorder.order_ref.production_group,
+                'order_type' : saleorder.order_ref.order_type,
+                'po_no' : saleorder.order_ref.po_no,
+                'po_date' : saleorder.order_ref.po_date,
+                'revised_date' : saleorder.order_ref.revised_date,
+                'payment_term_id' : saleorder.order_ref.payment_term_id,
+                'bank': saleorder.order_ref.bank,
+                'shipment_terms' : saleorder.order_ref.shipment_terms,
+                'shipment_mode' : saleorder.order_ref.shipment_mode,
+                'loading_place' : saleorder.order_ref.loading_place,
+                'destination_port' : saleorder.order_ref.destination_port,
+                'origin_country' : saleorder.order_ref.origin_country,
+                'validity_period' : saleorder.order_ref.validity_period,
+                
+                
             })
             orderline = self.env['sale.order.line'].search([('order_id', '=', saleorder.order_ref.id)]).sorted(key = 'sequence')
             orderline_values = []
@@ -162,6 +198,7 @@ class SaleOrder(models.Model):
                     'slidercodesfg':lines.slidercodesfg,
                     'dyedtape':lines.dyedtape,
                     'ptopfinish':lines.ptopfinish,
+                    'numberoftop':lines.numberoftop,
                     'pbotomfinish':lines.pbotomfinish,
                     'ppinboxfinish':lines.ppinboxfinish,
                     'dippingfinish':lines.dippingfinish,
@@ -207,7 +244,7 @@ class SaleOrder(models.Model):
         bom = self.env['mrp.bom']
         for orderline in self.order_line:
             #bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id)])
-            or_line = self.env['sale.order.line'].search([('product_id', '=', orderline.product_id.id),('slidercodesfg', '=', orderline.slidercodesfg),('dyedtape', '=', orderline.dyedtape),('ptopfinish', '=', orderline.ptopfinish),('pbotomfinish', '=', orderline.pbotomfinish),('ppinboxfinish', '=', orderline.ppinboxfinish),('dippingfinish', '=', orderline.dippingfinish),('sizein', '=', orderline.sizein),('sizecm', '=', orderline.sizecm),('gap', '=', orderline.gap)])
+            or_line = self.env['sale.order.line'].search([('product_id', '=', orderline.product_id.id),('slidercodesfg', '=', orderline.slidercodesfg),('dyedtape', '=', orderline.dyedtape),('ptopfinish', '=', orderline.ptopfinish),('numberoftop', '=', orderline.numberoftop),('pbotomfinish', '=', orderline.pbotomfinish),('ppinboxfinish', '=', orderline.ppinboxfinish),('dippingfinish', '=', orderline.dippingfinish),('sizein', '=', orderline.sizein),('sizecm', '=', orderline.sizecm),('gap', '=', orderline.gap)])
             #raise UserError((len(or_line)))
             #raise UserError((orderline))
             if len(or_line)>1:
@@ -324,7 +361,7 @@ class SaleOrder(models.Model):
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
                     #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     
                     #inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
@@ -361,7 +398,7 @@ class SaleOrder(models.Model):
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
                     #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.tape_python_compute
@@ -389,13 +426,16 @@ class SaleOrder(models.Model):
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
                     #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.twair_python_compute
                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
                     consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
                     consumption = round(consumption,4)
+                    if orderline.numberoftop:
+                        if orderline.numberoftop == "Double":
+                            consumption = consumption*2
                     
                     bom_line_info = {
                         'product_id':product_.id,
@@ -417,7 +457,7 @@ class SaleOrder(models.Model):
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
                     #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.bwire_python_compute
@@ -466,7 +506,7 @@ class SaleOrder(models.Model):
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
                     #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id),('unit_type', '=', size_type)])
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
                     #result = contract.basic
                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                     formula_ = formula.wair_python_compute
@@ -607,7 +647,11 @@ class SaleOrder(models.Model):
             if vals.get('sales_type') == "sale":
                 ref = self.env['ir.sequence'].next_by_code('sale.order', sequence_date=seq_date) or _('New')
                 vals['name'] = ref
-                vals['pi_number'] = ref.replace("S", 'PI')
+                if vals.get('company_id') == 1:
+                    vals['pi_number'] = ref.replace("S", "Z")
+                if vals.get('company_id') == 2:
+                    vals['pi_number'] = ref.replace("S", "B")
+                    
             if vals.get('sales_type') == "oa":
                 ref = self.env['ir.sequence'].next_by_code('sale.order.oa', sequence_date=seq_date) or _('New')
                 vals['name'] = ref
@@ -643,6 +687,9 @@ class SaleOrderLine(models.Model):
     
     dyedtape = fields.Text(string='Dyed Tape', store=True)
     ptopfinish = fields.Text(string='Plated Top Finish', store=True)
+    
+    numberoftop = fields.Text(string='Number of Top', store=True)
+    
     pbotomfinish = fields.Text(string='Plated Bottom Finish', store=True)
     ppinboxfinish = fields.Text(string='Plated Pin-Box Finish', store=True)
     dippingfinish = fields.Text(string='Dipping Finish', store=True)
@@ -742,6 +789,9 @@ class SaleOrderLine(models.Model):
                 continue
             if rec.attribute_id.name == 'Plated Top Finish':
                 self.ptopfinish = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Number of Top':
+                self.numberoftop = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Plated Bottom Finish':
                 self.pbotomfinish = rec.product_attribute_value_id.name

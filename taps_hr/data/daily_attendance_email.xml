@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_data_daily_attendance_email_template" model="ir.cron">
+            <field name="name">Attendance: Daily Attendance Send by email</field>
+            <field name="model_id" ref="model_hr_attendance"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model._action_daily_attendance_email()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall">2022-12-16 10:00:00</field>
+        </record>
+        <record id="daily_attendance_email_template" model="mail.template">
+            <field name="name">Attendance: Daily Attendance Send by email</field>
+            <field name="model_id" ref="taps_hr.model_hr_attendance"/>
+            <field name="email_from">${user.email_formatted | safe}</field>
+            <field name="email_to">	${(object.employee_id.parent_id.work_email)}</field>
+            <field name="subject">Attendance Report up to ${datetime.date.today().strftime('%d.%m.%Y')}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear Sir ${object.employee_id.parent_id.name},</p><br/><br/><br/>
+                    <h3 align="center">Attendance Report up to ${datetime.date.today().strftime('%d.%m.%Y')}</h3>
+                    <h4 align="center">HR, Admin &amp; Compliance (Civil, IT, RM Store &amp; ETP)</h4>
+                </div>
+                
+				<style>
+                    .tem_table{
+                        display:table;
+                        border-top:1px solid;
+                        border-left:1px solid;
+                    table-layout:fixed;
+                    }
+                    .tem_trh,
+                    .tem_tr{
+                        display:table-header-group;
+                    }
+                    .tem_tdh{
+                        display:table-row;
+                        font-weight:bold;
+                    }
+                    .tem_td{
+                        display:table-row;
+                    }
+                    .tem_tch,
+                    .tem_tc
+                    {
+                        display:table-cell;
+                        padding: 2px 4px;
+                        border-bottom:1px solid;
+                        border-right:1px solid;
+                    }
+				</style>
+
+				<div class="tem_table">
+					<div class="tem_trh">
+						<div class="tem_tdh">
+							<div class="tem_tch">Date</div>
+							<div class="tem_tch">Emp ID</div>
+							<div class="tem_tch">Employee Name</div>
+							<div class="tem_tch">InTime</div>
+							<div class="tem_tch">IN</div>
+							<div class="tem_tch">Flag</div>
+							<div class="tem_tch">OutTime</div>
+							<div class="tem_tch">OUT</div>
+							<div class="tem_tch">Total</div>
+							<div class="tem_tch">Present</div>
+							<div class="tem_tch">Absent</div>
+							<div class="tem_tch">LV</div>
+							<div class="tem_tch">OD</div>
+							<div class="tem_tch">Fri</div>
+							<div class="tem_tch">Holi</div>
+							<div class="tem_tch">CO</div>
+							<div class="tem_tch">AJ</div>
+							<div class="tem_tch">Late</div>
+							<div class="tem_tch">EarlyOut</div>
+						</div>
+					</div>
+					
+					<div class="tem_tr">
+						% for line in object:
+							% if line.attDate:
+								<div class="tem_td">
+									<div class="tem_tc">${line.attDate.strftime('%d.%m.%Y')}</div>
+									<div class="tem_tc">${line.employee_id.emp_id}</div>
+									<div class="tem_tc">${line.employee_id.name}</div>
+									<div class="tem_tc">${line.inTime}</div>
+									<div class="tem_tc">${line.inHour}</div>
+									<div class="tem_tc">${line.inFlag}</div>
+									<div class="tem_tc">${line.outTime}</div>
+									<div class="tem_tc">${line.outHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+									<div class="tem_tc">${line.otHour}</div>
+								</div>
+							% endif
+						% endfor
+					</div>
+				</div>
+            </field>
+        </record>
+    </data>
+</odoo>

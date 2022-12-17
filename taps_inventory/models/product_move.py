@@ -64,11 +64,50 @@ class PickingVendorNameINT(models.Model):
 # x_studio_sample_qty                        
                     
                     
-class IncludeCateTypeInPT(models.Model):
+class ProductionLot(models.Model):
     _inherit = 'stock.production.lot'
     rejected = fields.Boolean(store=True, string='Rejected', readonly=False, tracking=True)
     unit_price = fields.Float(readonly=False, store=True, string='Price', digits='Product Unit of Measure')
+    pur_price = fields.Float(readonly=False, store=True, string='Price', digits='Product Unit of Measure')
+    landed_cost = fields.Float(readonly=False, store=True, string='Price', digits='Product Unit of Measure')
+    
+    # @api.depends('pur_price')
+    # def _compute_pur_price(self):
+    #     for rec in self:
+    #         if rec.purchase_order_ids:
+    #             rec.pur_price = self.env['purchase.order.line'].search([('order_id', 'in', (rec.purchase_order_ids)),('product_id', '==', rec.product_id.id)]).avg(price_unit)
 
+    # @api.model
+    # def create(self, vals):
+    #     stock_moves = self.env['stock.move.line'].search([('lot_id', '=', vals.get('id')),('state', '=', 'done') ]).mapped('move_id')
+    #     stock_moves = self.env['stock.move.line'].search([('state', '=', 'done')]).mapped('move_id')
+    #     stock_moves = stock_moves.search([('id', 'in', stock_moves.ids)]).filtered(lambda move: move.picking_id.location_id.usage == 'supplier' and move.state == 'done')
+    #     purchase_order_ids = stock_moves.mapped('purchase_line_id.order_id')
+    #     price = self.env['purchase.order.line'].search([('id','in',(purchase_order_ids))])
+    #     pr = avg(price.mapped('price_unit'))
+    #     if purchase_order_ids:
+    #         vals['pur_price'] = pr
+    #     return super(ProductionLot, self).create(vals)
+    
+    
+#     @api.model_create_multi
+#     def create(self, vals_list):
+#         self._check_create()
+#         for values in vals_list:
+#             raise UserError((values.get('id')))
+#             values.update(pur_price=123, landed_cost=0)
+# #             raise UserError((vals_list[0][0]))
+# #             stock_moves = self.env['stock.move.line'].search([
+# #                 ('lot_id', '=', values.get('id')),
+# #                 ('state', '=', 'done')
+# #             ]).mapped('move_id')
+# #             stock_moves = stock_moves.search([('id', 'in', stock_moves.ids)]).filtered(
+# #                 lambda move: move.picking_id.location_id.usage == 'supplier' and move.state == 'done')
+# #             purchase_order_ids = stock_moves.mapped('purchase_line_id.order_id')
+                
+# #             if purchase_order_ids:
+# #                 raise UserError((purchase_order_ids))
+#         return super(ProductionLot, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
 
 class IncludeCateTypeInPT(models.Model):
     _inherit = 'stock.move.line'
@@ -79,12 +118,18 @@ class IncludeCateTypeInPT(models.Model):
     value = fields.Float(compute='_compute_product_value', readonly=True, store=True, string='Value')
     duration = fields.Integer(string='Duration', compute='_compute_duration', store=True, readonly=True)
     pur_price = fields.Float(compute='_compute_purchase_price', readonly=True, string='Unit Price', digits='Unit Price')
+    unit_price = fields.Float(related='lot_id.unit_price', readonly=False, store=True, string='Lot Price', digits='Unit Price')
+    
     #pur_value = fields.Float(compute='_compute_purchase_value', readonly=True, string='Purchase Value')
     #product_id.categ_type.parent_id.name 
     @api.depends('product_id', 'product_uom_id', 'product_uom_qty')
     def _compute_product_value(self):
         for record in self:
-            record['value'] = round(record.qty_onhand * record.pur_price,2)
+            price = record.pur_price
+            if record.unit_price:
+                if record.unit_price>0:
+                    price = record.unit_price
+            record['value'] = round(record.qty_onhand * price,2)
             
     def _get_aggregated_product_quantities(self, **kwargs):
         """ Returns a dictionary of products (key = id+name+description+uom) and corresponding values of interest.
