@@ -19,8 +19,8 @@ class Inventory(models.Model):
     lot_id = fields.Many2one('stock.production.lot', string='Invoice', readonly=True)
     rejected = fields.Boolean(string='Rejected', readonly=True)
     lot_price = fields.Float(string='Price', readonly=True, digits='Unit Price')
-    pur_price = fields.Float(string='Price', readonly=True, digits='Unit Price')
-    landed_cost = fields.Float(string='Price', readonly=True, digits='Unit Price')
+    pur_price = fields.Float(string='Pur Price', readonly=True, digits='Unit Price')
+    landed_cost = fields.Float(string='Landed Cost', readonly=True, digits='Unit Price')
     opening_qty = fields.Float(string='Opening Quantity', readonly=True)
     opening_value = fields.Float(string='Opening Value', readonly=True)
     receive_qty = fields.Float(string='Receive Quantity', readonly=True)
@@ -34,17 +34,6 @@ class Inventory(models.Model):
     
     
     def init(self):
-        #start_time = fields.datetime.now()
-        #f_date = self.from_date
-        #t_date = self.to_date
-        #hour_from = 0.0
-        #hour_to = 23.98
-        #combine = datetime.combine
-        #date_search = self.env['searching_date'] #(select from_date from searching_date)
-        #from_date = date_search.from_date # (select to_date from searching_date)
-        #to_date = date_search.to_date
-        #from_date1,from_date2,from_date3,from_date4,from_dat5,to_date1,from_date6,to_date2,from_date7,to_date3,from_date8,to_date4,
-        #tools.drop_view_if_exists(self._cr, 'stock_opening_closing')#CREATE or REPLACE VIEW
         query = """
         truncate table stock_opening_closing;
         insert into stock_opening_closing(id,product_id,product_category,parent_category,lot_id,rejected,lot_price,pur_price,landed_cost,opening_qty,opening_value,receive_qty,receive_value,issue_qty,issue_value,cloing_qty,cloing_value) select * from (

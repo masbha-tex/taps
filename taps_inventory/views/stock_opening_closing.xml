@@ -5,8 +5,8 @@
         <field name="model">stock.opening.closing</field>
         <field name="arch" type="xml" >
             <search string="RM &amp; Spare">
-                <filter string="RM" name="rm_stock" domain="[('product_id.default_code', 'like', 'R_')]" />
-                <filter string="Spare" name="spare_stock" domain="[('product_id.default_code', 'like', 'S_')]" />
+                <filter string="RM" name="rm_stock" domain="[('product_id.categ_id.complete_name', 'like', 'All / RM')]" />
+                <filter string="Spare" name="spare_stock" domain="[('product_id.categ_id.complete_name', 'like', 'All / Spare Parts')]" />
 <!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
                 <separator/>
                 <field name="product_id" string="Product"/>
@@ -52,9 +52,9 @@
         <field name="search_view_id" ref="view_stock_reg_search" />
     </record>
 
-    <menuitem id="menu_stock_reg_view" 
-              name="RM Stock" 
-              action="action_stock_opening_closing" 
+    <menuitem id="menu_stock_reg_view"
+              name="RM Stock"
+              action="action_stock_opening_closing"
               parent="stock.menu_warehouse_report"
               sequence="160"/>
 </odoo>    
