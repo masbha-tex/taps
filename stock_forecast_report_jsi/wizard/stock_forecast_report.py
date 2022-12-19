@@ -192,7 +192,7 @@ class StockForecastReport(models.TransientModel):
                 return {
                     'name':'Stock Register',#Name You want to display on wizard
                     'view_mode': 'list',
-                    'view_id': 2931,
+                    'view_id': 2862,
                     'view_type': 'list',
                     'res_model': 'stock.opening.closing',# With . Example sale.order
                     'type': 'ir.actions.act_window',
@@ -203,7 +203,7 @@ class StockForecastReport(models.TransientModel):
                 return {
                     'name':'Stock Register',#Name You want to display on wizard
                     'view_mode': 'list',
-                    'view_id': 2931,
+                    'view_id': 2862,
                     'view_type': 'list',
                     'res_model': 'stock.opening.closing',# With . Example sale.order
                     'type': 'ir.actions.act_window',
