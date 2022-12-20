@@ -28,8 +28,8 @@ class HrAttendance(models.Model):
     def _action_daily_attendance_email(self):
         template_id = self.env.ref('taps_hr.daily_attendance_email_template').id
         template = self.env['mail.template'].browse(template_id)
-        att = self.env['hr.employee'].search([('parent_id', '=', 796)])
-        for at in att.attendance_ids:
+        att = self.env['hr.employee'].search([('id', 'in', (757,758,3204,796,1754,810,813,2107)), ('active', '=', True)])
+        for at in att:
             if at.id:
                 template.send_mail(at.id, force_send=False)
         

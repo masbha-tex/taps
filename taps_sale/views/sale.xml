@@ -50,7 +50,9 @@
                 <field name="order_type" attrs="{'invisible': [['sales_type','=','sample']]}"/>
                 <field name="po_no"/>
                 <field name="po_date"/>
+                <field name="pi_date"/>
                 <field name="revised_date"/>
+                
               </xpath>              
 
               <xpath expr="//field[@name='validity_date']" position="attributes">
@@ -93,11 +95,12 @@
               </xpath>
               <xpath expr="//field[@name='note']" position="before">
                   <field name="amount_in_word" style="color: #00A09D"/>
+                  <field name="appr_weight"/>
 <!--                   <field name="others_note" nolabel="1" placeholder="Others Terms and conditions..."/> -->
                   
               </xpath>
               <xpath expr="//field[@name='picking_policy']" position="after">
-                  <field name="shipment_terms" style="color: #00A09D"/>
+<!--                   <field name="shipment_terms" style="color: #00A09D"/> -->
                   <field name="shipment_mode" style="color: #00A09D"/>
                   <field name="loading_place" style="color: #00A09D"/>
                   <field name="destination_port" style="color: #00A09D"/>

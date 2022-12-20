@@ -29,10 +29,11 @@ class SaleOrder(models.Model):
             ('oa', 'OA')],
             string='Sales Type')
     invoice_details = fields.Char(string='Invoice Details', related='partner_invoice_id.contact_address_complete')
-    delivery_details = fields.Char(string='Delivery Details')
+    delivery_details = fields.Char(string='Delivery Details', readonly=True, related='partner_invoice_id.contact_address_complete')
     po_no = fields.Char(string='PO No.')
     po_date = fields.Date(string='PO Date')
-    revised_date = fields.Date(string=' PO Revised Date')
+    revised_date = fields.Date(string=' PI Revised Date')
+    pi_date = fields.Date(string='PI Date')
     order_type = fields.Char(string='Order Type')
     kind_attention = fields.Char(string='Kind Attention')
     hs_code = fields.Char(string='H.S Code')
@@ -48,13 +49,21 @@ class SaleOrder(models.Model):
     bank = fields.Many2one('res.bank', string='Bank')
     # sales_person = fields.Many2one('hr.employee', string='Salesperson')
     pi_number = fields.Char(string='PI No.')
-    shipment_terms = fields.Char(string='Shipment Terms')
+    # shipment_terms = fields.Char(string='Shipment Terms')
     shipment_mode = fields.Char(string='Shipment Mode')
     loading_place = fields.Char(string='Place of loading')
     destination_port = fields.Char(string='Destination Port')
     origin_country = fields.Char(string='Country of origin')
     validity_period = fields.Char(string='Period of validity')
     amount_in_word = fields.Char(string='Amount In Words')
+    appr_weight = fields.Char(string='Approximate Weight')
+   
+    
+    
+    
+   
+        
+    
     
     @api.onchange('order_ref')
     def _onchange_orderline_ids(self):
@@ -69,6 +78,7 @@ class SaleOrder(models.Model):
                 continue
             saleorder.update({
                 'date_order': saleorder.order_ref.date_order,
+                'pi_date': saleorder.order_ref.pi_date,
                 'validity_date': saleorder.order_ref.validity_date,
                 'require_signature': saleorder.order_ref.require_signature,
                 'require_payment': saleorder.order_ref.require_payment,

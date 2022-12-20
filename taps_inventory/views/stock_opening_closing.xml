@@ -5,8 +5,10 @@
         <field name="model">stock.opening.closing</field>
         <field name="arch" type="xml" >
             <search string="RM &amp; Spare">
-                <filter string="RM" name="rm_stock" domain="[('product_id.categ_id.complete_name', 'like', 'All / RM')]" />
-                <filter string="Spare" name="spare_stock" domain="[('product_id.categ_id.complete_name', 'like', 'All / Spare Parts')]" />
+                <filter string="RM" name="rm_stock" domain="[('product_id.categ_id.complete_name', 'ilike',
+                                                            'All / RM')]" />
+                <filter string="Spare" name="spare_stock" domain="[('product_id.categ_id.complete_name', 'ilike',
+                                                                  'All / Spare Parts')]" />
 <!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
                 <separator/>
                 <field name="product_id" string="Product"/>
@@ -40,6 +42,7 @@
                 <field name="issue_value" optional="show" sum="Issue Value" decoration-bf="True"/>
                 <field name="cloing_qty" optional="show" sum="Closing Quantity" decoration-bf="True"/>
                 <field name="cloing_value" optional="show" sum="Closing Value" decoration-bf="True"/>
+                <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
     </record>

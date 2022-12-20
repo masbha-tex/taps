@@ -408,7 +408,9 @@ class HRISReportPDF4(models.AbstractModel):
         
            
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
-#         raise UserError((docs.ids))
+       
+        c_date = docs.joining_date + timedelta(days=365)
+        # raise UserError((c_date))
 
 #         for details in docs:
 #             otTotal = 0
@@ -429,6 +431,7 @@ class HRISReportPDF4(models.AbstractModel):
             'doc_model': 'hr.employee',
             'docs': docs,
             'datas': common_data,
+            'c_date' : c_date,
 #             'alldays': all_datelist
         }
 

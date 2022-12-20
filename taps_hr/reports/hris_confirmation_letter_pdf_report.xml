@@ -25,7 +25,7 @@
 
                         </p>
                         <p>Date:
-                            <span t-esc="datetime.datetime.now().strftime('%d-%m-%Y')"/>
+                            <span t-esc="c_date.strftime('%m-%d-%Y')"/>
                             <br/>
 
                         </p>
@@ -39,7 +39,7 @@
                             <br/>
                             <br/>
                             Joining Date:<![CDATA[&nbsp;]]>
-                            <span t-esc="employee.joining_date"></span>
+                            <span t-esc="employee.joining_date.strftime('%m-%d-%Y')"></span>
                         </p>
                         <p>
                             <div>
@@ -58,7 +58,7 @@
                                     found satisfactory. On successfully completion of your said probation period,
                                     Management has decided to
                                     confirm your service as <strong t-esc="employee.job_id.name"></strong> with effect
-                                    from <strong t-esc="employee.joining_date"></strong>.
+                                    from <strong t-esc="c_date.strftime('%m-%d-%Y')"></strong>.
                                 </p>
                             </div>
                         </p>
@@ -67,7 +67,7 @@
                                 (নিয়োগপত্রের শর্তানুযায়ী কতৃপক্ষ আপনার দক্ষতা বিবেচনা করে সন্তোষজনক হওয়ায়, নিয়োগপত্রে
                                 বর্ণিত শিক্ষানবীশ পর্যায় সফলভাবে
                                 সম্পন্ন করার কারণে কর্তৃপক্ষ আপনার চাকুরী <strong t-esc="employee.job_id.name"></strong> স্থায়ী
-                                করণ করেছেন, যাহা <strong t-esc="employee.joining_date"></strong> ইং তারিখ
+                                করণ করেছেন, যাহা <strong t-esc="c_date.strftime('%m-%d-%Y')"></strong> ইং তারিখ
                                 হতে কার্যকরি।)
                             </div>
                         </p>
