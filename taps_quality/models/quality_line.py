@@ -23,7 +23,7 @@ class QualityCheck(models.Model):
     receive_qty = fields.Float(compute='_compute_partner_id', string='Receive Qty', readonly=True)
     uom = fields.Many2one(related='product_id.uom_id', string='UOM', readonly=True)
     is_deviation = fields.Boolean("Is Deviation", readonly=True, store=True)
-    receipt_date = fields.Datetime('Receipt Date', readonly=True, compute='_compute_receipt_date')
+    receipt_date = fields.Datetime('Receipt Date', store=True, readonly=True, compute='_compute_receipt_date')
     #product_id picking_id
     
     def _compute_receipt_date(self):
