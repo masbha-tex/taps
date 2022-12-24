@@ -10,6 +10,7 @@ from odoo.tools.misc import xlsxwriter
 from odoo.tools import format_date, format_datetime
 import re
 import math
+
 _logger = logging.getLogger(__name__)
 
 class HRISPDFReport(models.TransientModel):
@@ -409,7 +410,7 @@ class HRISReportPDF4(models.AbstractModel):
            
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
        
-        c_date = docs.joining_date + timedelta(days=365)
+        # c_date = docs.joining_date +  relativedelta(months=+6)
         # raise UserError((c_date))
 
 #         for details in docs:
@@ -431,7 +432,7 @@ class HRISReportPDF4(models.AbstractModel):
             'doc_model': 'hr.employee',
             'docs': docs,
             'datas': common_data,
-            'c_date' : c_date,
+            # 'c_date' : c_date,
 #             'alldays': all_datelist
         }
 

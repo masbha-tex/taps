@@ -25,7 +25,7 @@
 
                         </p>
                         <p>Date:
-                            <span t-esc="c_date.strftime('%m-%d-%Y')"/>
+                            <span t-esc="employee.probation_date.strftime('%d-%m-%Y')"/>
                             <br/>
 
                         </p>
@@ -34,16 +34,16 @@
                                 <span t-esc="employee.name"/>
                             </b>
                             <br/>
-                            ID:<![CDATA[&nbsp;]]>
+                            ID:&amp;nbsp;
                             <span t-esc="employee.emp_id"/>
                             <br/>
                             <br/>
-                            Joining Date:<![CDATA[&nbsp;]]>
-                            <span t-esc="employee.joining_date.strftime('%m-%d-%Y')"></span>
+                            Joining Date:&amp;nbsp;
+                            <span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
                         </p>
                         <p>
                             <div>
-                                <b>SUBJECT(বিষয়): <![CDATA[&nbsp;]]>
+                                <b>SUBJECT(বিষয়): &amp;nbsp;
                                     <u>CONFIRMATION OF SERVICE(চাকুরী স্থায়ীকরণ)</u>
                                 </b>
                             </div>
@@ -57,8 +57,8 @@
                                     performance and it is
                                     found satisfactory. On successfully completion of your said probation period,
                                     Management has decided to
-                                    confirm your service as <strong t-esc="employee.job_id.name"></strong> with effect
-                                    from <strong t-esc="c_date.strftime('%m-%d-%Y')"></strong>.
+                                    confirm your service as <strong t-esc="employee.job_id.name"/> with effect
+                                    from <strong t-esc="employee.probation_date.strftime('%d-%m-%Y')"/>.
                                 </p>
                             </div>
                         </p>
@@ -66,8 +66,8 @@
                             <div>
                                 (নিয়োগপত্রের শর্তানুযায়ী কতৃপক্ষ আপনার দক্ষতা বিবেচনা করে সন্তোষজনক হওয়ায়, নিয়োগপত্রে
                                 বর্ণিত শিক্ষানবীশ পর্যায় সফলভাবে
-                                সম্পন্ন করার কারণে কর্তৃপক্ষ আপনার চাকুরী <strong t-esc="employee.job_id.name"></strong> স্থায়ী
-                                করণ করেছেন, যাহা <strong t-esc="c_date.strftime('%m-%d-%Y')"></strong> ইং তারিখ
+                                সম্পন্ন করার কারণে কর্তৃপক্ষ আপনার চাকুরী <strong t-esc="employee.job_id.name"/> স্থায়ী
+                                করণ করেছেন, যাহা <strong t-esc="employee.probation_date.strftime('%d-%m-%Y')"/> ইং তারিখ
                                 হতে কার্যকরি।)
                             </div>
                         </p>

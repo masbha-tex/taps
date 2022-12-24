@@ -14,7 +14,6 @@ class ApprovalEntry(models.Model):
             po = self.env['purchase.order'].search([('id', '=', vals['res_id'])]).write({'last_approver':vals['user_id'],'x_studio_last_confirmation':user_.display_name})
         
         entry = super().create(vals)
-        entry._notify_approval()
         return entry
 
 
