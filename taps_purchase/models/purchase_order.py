@@ -26,7 +26,6 @@ class PurchaseOrder(models.Model):
         string="Last Approver",
         comodel_name="res.users",
         store=True
-        #compute="_compute_last_approver",
     )
     
     
@@ -49,17 +48,6 @@ class PurchaseOrder(models.Model):
             res.sudo().write(partner_vals)  # Because the purchase user doesn't have write on `res.partner`
         return res
     
-    def _compute_last_approver(self):
-        domain = ['&', '&', ('model', '=', 'purchase.order'), ('res_id', 'in', self.ids), ('approved', '=', 'True')]
-
-        # NOTE: previously use approach with using user_id. However due to different version of PostgreSQL lead to different order of ids retrieved using read_group()
-
-        # dictionary of document (purchase.order) -> latest approved entry
-        Entry = self.env['studio.approval.entry'].sudo()
-        groups = Entry.read_group(domain, ['max_id:max(id)'], ['res_id'])
-        purchase_last_approver = {i['res_id']: i['max_id'] for i in groups}
-        for rec in self:
-            rec.last_approver = Entry.browse(purchase_last_approver.get(rec.id, 0)).user_id
     
     def action_send_card(self,id):
         template = self.env['mail.template'].browse(19)

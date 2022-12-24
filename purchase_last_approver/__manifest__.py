@@ -16,7 +16,7 @@
     ],
     # Check data order
     "data": [
-        "views/purchase_order.xml",
+        #"views/purchase_order.xml",
     ],
     # Only used to link to the analysis / Ps-tech store
     "task_id": [2581117],
