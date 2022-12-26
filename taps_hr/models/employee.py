@@ -61,6 +61,74 @@ class HrEmployee(models.Model):
             self.p_city = False
             self.p_state_id = False
             self.p_country_id = False
+            
+    def total_attendance(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                  ('attDate', '<=', datetime.today().strftime('%Y-%m-25'))])
+        total = dat
+        tt = len(total)
+        return tt
+    def total_present(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', 'in', ('P','L','HP','FP','CO'))])
+        total = dat
+        pp = len(total)
+        return pp
+    def total_absent(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'A')])
+        total = dat
+        aa = len(total)
+        return aa
+    def total_leave(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', 'in', ('CL','SL','EL','ML','LW'))])
+        total = dat
+        lv = len(total)
+        return lv
+    def total_od(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'OD')])
+        total = dat
+        od = len(total)
+        return od
+    def total_friday(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'F')])
+        total = dat
+        fr = len(total)
+        return fr
+    def total_holiday(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'H')])
+        total = dat
+        h = len(total)
+        return h
+    def total_co(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'CO')])
+        total = dat
+        co = len(total)
+        return co
+    def total_aj(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'AJ')])
+        total = dat
+        aj = len(total)
+        return aj
+    def total_late(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'L')])
+        total = dat
+        la = len(total)
+        return la
+    def total_earlyout(self, emp_id):
+        dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
+                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('outFlag', '=', 'EO')])
+        total = dat
+        eo = len(total)
+        return eo
+        
     
     def create_emp_contact(self, e_id, emp_id, emp_name, emp_company, cat_name, street,street2,zip,city,state_id,country_id,email,phone,mobile,bank,acc_num,active):
         if active == True:

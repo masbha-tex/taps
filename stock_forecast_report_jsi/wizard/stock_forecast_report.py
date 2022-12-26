@@ -188,9 +188,9 @@ class StockForecastReport(models.TransientModel):
         to_date = combine(t_date, self.float_to_time(hour_to))
         to_date = to_date.replace(second=59)
         if self.report_type == True:
-            search_date = self.env['searching.date'].search([('id','=',1)])
-            search_date.write({'from_date':from_date,'to_date':to_date})
-            self.get_opening_closing()
+            #search_date = self.env['searching.date'].search([('id','=',1)])
+            #search_date.write({'from_date':from_date,'to_date':to_date})
+            self.get_opening_closing(from_date,to_date)
             vewid = self.env['ir.ui.view'].search([('model', '=', 'stock.opening.closing'), ('type', '=', 'list')])
             if (self.is_spare != 1):
                 return {
@@ -412,10 +412,11 @@ class StockForecastReport(models.TransientModel):
         
         
         
-    def get_opening_closing(self):
+    def get_opening_closing(self,from_date,to_date):
         
-        query_ = """truncate table stock_opening_closing"""
-        self.env.cr.execute(query_)
+        query_ = """truncate table stock_opening_closing; update searching_date set from_date=%s,
+        to_date=%s;"""
+        self.env.cr.execute(query_,(from_date,to_date))
         
         
         query = """

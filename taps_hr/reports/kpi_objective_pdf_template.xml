@@ -120,7 +120,7 @@
 								<tbody>
 								  <t t-set="total_wt" t-value="0"/>
 									<t t-foreach="docs" t-as="o">
-										<t t-if="o.description != 'Strategic Project' and o.description">
+										<t t-if="o.description != 'Strategic Projects' and o.description">
 											<tr align="center" style="border: 1pt solid black;">
 												<td colspan="2" style="text-align: center;vertical-align:middle">
 													<t t-esc="o_index+1"/>
@@ -152,7 +152,7 @@
 						<div class="row py-2">
 							<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt;">
 								<caption align="center" style="background-color:#714B35;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">
-									<strong>Strategic Project</strong>
+									<strong>Strategic Projects</strong>
 								</caption>
 								<thead>
 									<tr align="center" style="background-color:#714B40; color: white">
@@ -166,7 +166,7 @@
 								<tbody>
 								  <t t-set="total_wt" t-value="0"/>
 									<t t-foreach="docs" t-as="o">
-										<t t-if="o.description == 'Strategic Project'">
+										<t t-if="o.description == 'Strategic Projects'">
 											<tr align="center" style="border: 1pt solid black;">
 												<td colspan="2" style="text-align: center;vertical-align:middle">
 													<t t-esc="o_index+1"/>
