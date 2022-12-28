@@ -25,6 +25,7 @@
         'data/create_att_atjoin.xml',
         'data/create_leave_allocation.xml',
         'data/daily_attendance_email.xml',
+        'data/birthday_wish_email.xml',
         'views/web_asset_backend_template.xml',        
         'views/attendance_views.xml',
         'views/employee_views.xml',

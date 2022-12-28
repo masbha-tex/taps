@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_data_birthday_wish_email_template" model="ir.cron">
+            <field name="name">Employee: Birthday Wish Send by email</field>
+            <field name="model_id" ref="model_hr_employee"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model._action_birthday_wish_email()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall">2023-01-10 10:00:00</field>
+        </record>
+        <record id="birthday_wish_email_template" model="mail.template">
+            <field name="name">Employee: Birthday Wish Send by email</field>
+            <field name="model_id" ref="taps_hr.model_hr_employee"/>
+            <field name="email_from">${user.email_formatted | safe}</field>
+            <field name="email_to">	${(object.work_email)}</field>
+            <field name="subject">Happy Birthday to ${(object.name)}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear ${object.name},</p><br/><br/><br/>
+<!--                     <h3 align="center">Attendance Report up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))}</h3>
+                    <h4 align="center">HR, Admin &amp; Compliance (Civil, IT, RM Store &amp; ETP)</h4> -->
+
+                </div>
+
+                <style>
+                    .tem_table{
+                        display:table;
+                        border-top:1px solid;
+                        border-left:1px solid;
+                    table-layout:fixed;
+                    }
+                    .tem_trh,
+                    .tem_tr{
+                        display:table-header-group;
+                    }
+                    .tem_tdh{
+                        display:table-row;
+                        font-weight:bold;
+                    }
+                    .tem_td{
+                        display:table-row;
+                    }
+                    .tem_tch{
+                        display:table-cell;
+                        padding: 2px 4px;
+                        border-bottom:1px solid;
+                        border-right:1px solid;
+                    }
+                    .tem_tc
+                    {
+                        display:table-cell;
+                        padding: 2px 4px;
+                        border-bottom:1px solid;
+                        text-align: center;
+                        border-right:1px solid;
+                    }
+                </style>
+                <div class="row">
+                    <div  class="col-4 text-center py-4">
+                        <div class="header-left">
+                            <img class="img-fluid rounded-circle mb-2" style="height:120pt;width:120pt;" t-if="object.image_1920" t-att-src="image_data_uri(object.image_1920)"/>
+                        </div>
+                    </div>
+                    <div  class="col-8 text-center py-4">
+                        <div class="header-right">
+                            <img src="~/static/img/birthday.png" alt="Birthday wish" width="500" height="600"/>
+                        </div>
+                    </div>
+                    
+                        
+                </div>
+                <div style="text-align:center;">
+                    <p>** This is an auto generated mail from Odoo. Please do not reply **</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

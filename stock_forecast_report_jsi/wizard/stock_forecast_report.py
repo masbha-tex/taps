@@ -448,53 +448,54 @@ class StockForecastReport(models.TransientModel):
         
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done when a.quantity=0 then 0 else b.qty_done end),0) as op_qty from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<sd.from_date)
+        (select COALESCE(sum(op_qty),0) from(select distinct b.move_id,COALESCE((case when a.quantity<0 then -b.qty_done when a.quantity=0 then 0 else b.qty_done end),0) as op_qty from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<sd.from_date) as mline)
         else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<sd.from_date) end
         ) as opening_qty,
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) when a.description like %s then a.value else (b.qty_done*a.unit_cost) end),0) as op_val from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<sd.from_date)
+        (select COALESCE(sum(op_val),0) from(select distinct b.move_id,COALESCE((case when a.quantity<0 then -(b.qty_done*a.unit_cost) when a.description like %s then a.value else (b.qty_done*a.unit_cost) end),0) as op_val from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<sd.from_date) as mline)
         else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<sd.from_date) end
         ) as opening_value,
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done else b.qty_done end),0) as re_quantity from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like %s or a.description like %s) and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date)
+        (select COALESCE(sum(re_quantity),0) from(select distinct b.move_id,COALESCE((case when a.quantity<0 then -b.qty_done else b.qty_done end),0) as re_quantity from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like %s or a.description like %s) and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) as mline)
         else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date and (a.description like %s or a.description like %s)) end
         ) as receive_qty,
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as re_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like %s or a.description like %s) and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date)
+        (select COALESCE(sum(re_value),0) from(select distinct b.move_id,COALESCE((case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as re_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where (a.description like %s or a.description like %s) and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) as mline)
         else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date and (a.description like %s or a.description 
         like %s)) end
         ) as receive_value,
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done else b.qty_done end),0) as isue_quantity from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where a.description like %s and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date)
+        (select COALESCE(sum(isue_quantity),0) from(select distinct b.move_id,COALESCE((case when a.quantity<0 then -b.qty_done else b.qty_done end),0) as isue_quantity from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where a.description like %s and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) as mline)
         else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date and a.description like %s) end
         ) as issue_qty,
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as re_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where a.description like %s and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date)
+        (select COALESCE(sum(iss_value),0) from(select distinct b.move_id,COALESCE((case when a.quantity<0 then -(b.qty_done*a.unit_cost) else (b.qty_done*a.unit_cost) end),0) as iss_value from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where a.description like %s and b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) as mline)
         else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date and a.description like %s) end
         ) as issue_value,
 
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -b.qty_done when a.quantity=0 then 0 else b.qty_done end),0) as op_qty from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<=sd.to_date)
+        (select COALESCE(sum(cl_qty),0) from(select distinct b.move_id,COALESCE((case when a.quantity<0 then -b.qty_done when a.quantity=0 then 0 else b.qty_done end),0) as cl_qty from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<=sd.to_date) as mline)
         else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date) end
         ) as cloing_qty,
 
         (
         case when lot.id is not null then
-        (select COALESCE(sum(case when a.quantity<0 then -(b.qty_done*a.unit_cost) when a.description like %s then a.value else (b.qty_done*a.unit_cost) end),0) as op_val from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<=sd.to_date)
+        (select COALESCE(sum(cl_val),0) from(select distinct b.move_id,COALESCE((case when a.quantity<0 then -(b.qty_done*a.unit_cost) when a.description like %s then a.value else (b.qty_done*a.unit_cost) end),0) as cl_val from stock_valuation_layer as a inner join stock_move_line as b on a.stock_move_id=b.move_id and a.product_id=b.product_id where b.lot_id=lot.id and  a.product_id=product.id and a.schedule_date<=sd.to_date) as mline)
         else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date) end
         ) as cloing_value,
+        
         pt.company_id
 
         from product_product as product

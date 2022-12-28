@@ -45,6 +45,14 @@ class HrEmployee(models.Model):
     passing_year = fields.Char(string="Passing Year", store=True, tracking=True)
     result = fields.Char(string="Result", store=True, tracking=True)
     
+    def _action_birthday_wish_email(self):
+        template_id = self.env.ref('taps_hr.birthday_wish_email_template').id
+        template = self.env['mail.template'].browse(template_id)
+        att = self.env['hr.employee'].search([('id', 'in', (757,758,3204,796,1754,810,813,2107)), ('active', '=', True)])
+        for at in att:
+            if at.id:
+                template.send_mail(at.id, force_send=False)
+                
     @api.onchange('is_same_address')
     def _compute_same_address(self):
         if self.is_same_address:
