@@ -2,27 +2,25 @@
 <odoo>
     <data noupdate="1">
         <record id="ir_cron_data_daily_attendance_email_template" model="ir.cron">
-            <field name="name">Attendance: Daily Attendance Send by email</field>
-            <field name="model_id" ref="model_hr_attendance"/>
+            <field name="name">Employee: Marriage Anniversery Wish Send by email</field>
+            <field name="model_id" ref="model_hr_employee"/>
             <field name="type">ir.actions.server</field>
             <field name="state">code</field>
-            <field name="code">model._action_daily_attendance_email()</field>
+            <field name="code">model._action_marriage_wish_email()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="nextcall">2022-12-16 10:00:00</field>
         </record>
         <record id="daily_attendance_email_template" model="mail.template">
-            <field name="name">Attendance: Daily Attendance Send by email</field>
+            <field name="name">Employee: Marriage Anniversery Wish Send by email</field>
             <field name="model_id" ref="taps_hr.model_hr_employee"/>
             <field name="email_from">${user.email_formatted | safe}</field>
-            <field name="email_to">	${(object.work_email)}</field>
-            <field name="subject">Attendance Report up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))}</field>
+            <field name="email_to">	${(object.private_email | object.email)}</field>
+            <field name="subject">Happy Marriage Anniversery to ${(object.name | object.spouse_complete_name)}</field>
             <field name="body_html" type="html">
                 <div>
-                    <p>Dear Sir ${object.parent_id.name},</p><br/><br/><br/>
-                    <h3 align="center">Attendance Report up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))}</h3>
-                    <h4 align="center">HR, Admin &amp; Compliance (Civil, IT, RM Store &amp; ETP)</h4>
+                    <p>Dear ${object.name},</p><br/><br/><br/>
 
                 </div>
 
