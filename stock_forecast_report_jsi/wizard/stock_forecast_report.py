@@ -448,26 +448,26 @@ class StockForecastReport(models.TransientModel):
         
         (
         case when lot.id is not null then
-		(select COALESCE(sum(case when b.location_dest_id in(8,36,10,38) then b.qty_done else -b.qty_done end),0) as op_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<sd.from_date) and b.lot_id=lot.id and b.product_id=product.id)
+		(select COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as op_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<sd.from_date) and b.lot_id=lot.id and b.product_id=product.id)
         else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<sd.from_date) end
         ) as opening_qty,
 
         (
         case when lot.id is not null then
-		(select (sum(op_qty)*avg(cost))+sum(lc_cost) from ((select b.move_id,COALESCE(sum(case when b.location_dest_id in(8,36,10,38) then b.qty_done else -b.qty_done end),0) as op_qty, COALESCE((select avg(l.unit_cost) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id),1) as cost, COALESCE((select sum(l.value) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id and l.description like %s),0) as lc_cost
+		(select (sum(op_qty)*avg(cost))+sum(lc_cost) from ((select b.move_id,COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as op_qty, COALESCE((select avg(l.unit_cost) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id),1) as cost, COALESCE((select sum(l.value) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id and l.description like %s),0) as lc_cost
 		from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<sd.from_date) and b.lot_id=lot.id and b.product_id=product.id group by b.move_id)) as val)
         else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<sd.from_date) end
         ) as opening_value,
 
         (
         case when lot.id is not null then
-		(select COALESCE(sum(case when b.location_dest_id in(8,36,10,38) then b.qty_done else -b.qty_done end),0) as re_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where (a.description like %s or a.description like %s) and a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id)
+		(select COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as re_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where (a.description like %s or a.description like %s) and a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id)
         else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date and (a.description like %s or a.description like %s)) end
         ) as receive_qty,
 
         (
         case when lot.id is not null then
-		(select sum(re_qty)*avg(cost) from ((select b.move_id,COALESCE(sum(case when b.location_dest_id in(8,36,10,38) then b.qty_done else -b.qty_done end),0) as re_qty, COALESCE((select avg(l.unit_cost) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id),1) as cost
+		(select sum(re_qty)*avg(cost) from ((select b.move_id,COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as re_qty, COALESCE((select avg(l.unit_cost) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id),1) as cost
 		from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where (a.description like %s or a.description like %s) and a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id group by b.move_id)) as val)
         else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date and (a.description like %s or a.description 
         like %s)) end
@@ -475,13 +475,13 @@ class StockForecastReport(models.TransientModel):
 
         (
         case when lot.id is not null then
-		(select COALESCE(sum(case when b.location_dest_id in(8,36,10,38) then b.qty_done else -b.qty_done end),0) as iss_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.description like %s and a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id)
+		(select COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as iss_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.description like %s and a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id)
         else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date and a.description like %s) end
         ) as issue_qty,
 
         (
         case when lot.id is not null then
-		(select sum(iss_qty)*avg(cost) from ((select b.move_id,COALESCE(sum(case when b.location_dest_id in(8,36,10,38) then b.qty_done else -b.qty_done end),0) as iss_qty, COALESCE((select avg(l.unit_cost) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id),1) as cost
+		(select sum(iss_qty)*avg(cost) from ((select b.move_id,COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as iss_qty, COALESCE((select avg(l.unit_cost) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id),1) as cost
 		from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.description like %s and a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id group by b.move_id)) as val)
         else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date>=sd.from_date and a.schedule_date<=sd.to_date and a.description like %s) end
         ) as issue_value,
@@ -489,13 +489,13 @@ class StockForecastReport(models.TransientModel):
 
         (
         case when lot.id is not null then
-		(select COALESCE(sum(case when b.location_dest_id in(8,36,10,38) then b.qty_done else -b.qty_done end),0) as cl_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id)
+		(select COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as cl_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id)
         else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date) end
         ) as cloing_qty,
 
         (
         case when lot.id is not null then
-		(select (sum(cl_qty)*avg(cost))+sum(lc_cost) from ((select b.move_id,COALESCE(sum(case when b.location_dest_id in(8,36,10,38) then b.qty_done else -b.qty_done end),0) as cl_qty, COALESCE((select avg(l.unit_cost) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id),1) as cost, COALESCE((select sum(l.value) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id and l.description like %s),0) as lc_cost
+		(select (sum(cl_qty)*avg(cost))+sum(lc_cost) from ((select b.move_id,COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as cl_qty, COALESCE((select avg(l.unit_cost) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id),1) as cost, COALESCE((select sum(l.value) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id and l.description like %s),0) as lc_cost
 		from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id group by b.move_id)) as val)
         else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date) end
         ) as cloing_value,
