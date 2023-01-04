@@ -25,13 +25,17 @@ class HrAttendance(models.Model):
     ad_in = fields.Float(string = "IN")
     ad_out = fields.Float(string = "OUT")
 
-    def _action_daily_attendance_email(self):
-        template_id = self.env.ref('taps_hr.daily_attendance_email_template').id
-        template = self.env['mail.template'].browse(template_id)
-        att = self.env['hr.employee'].search([('id', 'in', (757,758,3204,796,1754,810,813,2107)), ('active', '=', True)])
+    def _action_daily_attendance_email(self, empl_id):
+        # template_id = self.env.ref('taps_hr.daily_attendance_email_template').id
+        # template = self.env['mail.template'].browse(template_id)
+        template = self.env.ref('taps_hr.daily_attendance_email_template', raise_if_not_found=False)
+        att = self.env['hr.employee'].search([('id', 'in', (empl_id)), ('active', '=', True)])
         for at in att:
-            if at.id:
-                template.send_mail(at.id, force_send=False)
+            if template:
+                if at.id:
+                    template.send_mail(
+                        at.id,
+                        notif_layout='mail.mail_notification_light')
         
     # def action_send_reply_by_email(self):
     #     template_obj = self.env['mail.mail']

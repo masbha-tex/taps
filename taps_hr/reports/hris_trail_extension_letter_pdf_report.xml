@@ -25,7 +25,7 @@
 
                         </p>
                         <p>Date:
-                            <span t-esc="datetime.datetime.now().strftime('%d-%m-%Y')"/>
+                            <span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
                             <br/>
 
                         </p>
@@ -39,7 +39,7 @@
                             <br/>
                             <br/>
                             Joining Date:&amp;nbsp;
-                            <span t-esc="employee.joining_date"/>
+                            <span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
                         </p>
                         <p>
                             <div>
@@ -58,16 +58,16 @@
                                     found unsatisfactory. Due to that having judgment of your overall performance, the
                                     management has
                                     decided to extend your probation period for next 3 (three) month’s w.e.f
-                                    <strong t-esc="datetime.datetime.now().strftime('%d-%m-%Y')"/>
+                                    <strong t-esc="(employee.joining_date+relativedelta(months=3)).strftime('%d-%m-%Y')"/>
                                 </p>
                             </div>
                         </p>
                         <p>
                             <div>
-                                (নিয়োগপএের শর্তানুযায়ী কতৃপক্ষ আপনার দক্ষতা বিবেচনা করে সন্তোষজনক না হওয়ায়, উল্লেখিত
+                                (নিয়োগপত্রের শর্তানুযায়ী কতৃপক্ষ আপনার দক্ষতা বিবেচনা করে সন্তোষজনক না হওয়ায়, উল্লেখিত
                                 শিক্ষানবীশ পর্যায় সফলভাবে
                                 সম্পন্ন না করার কারনে কতৃপক্ষ আপনার চাকুরীর শিক্ষানবীশ কাল আরও ০৩ (তিন) মাস বর্ধিতকরন
-                                করেছে, যাহা ২/৮/২০১২
+                                করেছে, যাহা 
                                 <strong t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
                                 ইং তারিখ
                                 হতে কার্যকরি।)
@@ -102,7 +102,7 @@
                         </p>
                         <p>
                             <div>
-                                (এটি প্রতীয়মান যে, আপনী আপনার দক্ষতা বৃদ্বিতে আরও সচেতন হবেন এবং নিয়োগ পএে বর্নীত
+                                (এটি প্রতীয়মান যে, আপনী আপনার দক্ষতা বৃদ্বিতে আরও সচেতন হবেন এবং নিয়োগপত্রে বর্নীত
                                 অন্যান্য শর্ত অপরীবর্তনীয়
                                 থাকবে।)
                             </div>

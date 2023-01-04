@@ -1,91 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="ir_cron_data_daily_attendance_email_template" model="ir.cron">
             <field name="name">Attendance: Daily Attendance Send by email</field>
             <field name="model_id" ref="model_hr_attendance"/>
             <field name="type">ir.actions.server</field>
             <field name="state">code</field>
-            <field name="code">model._action_daily_attendance_email()</field>
+            <field name="code">model._action_daily_attendance_email((757,758,3204,796,1754,810,777,2107))</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="nextcall">2022-12-16 10:00:00</field>
+            <field name="nextcall">2023-01-05 11:00:00</field>
         </record>
         <record id="daily_attendance_email_template" model="mail.template">
             <field name="name">Attendance: Daily Attendance Send by email</field>
             <field name="model_id" ref="taps_hr.model_hr_employee"/>
             <field name="email_from">${user.email_formatted | safe}</field>
-            <field name="email_to">	${(object.work_email)}</field>
-            <field name="subject">Attendance Report up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))}</field>
+            <field name="email_to">	${(object.email)}</field>
+            <field name="subject">Attendance Report dated up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))} for ${object.name}</field>
             <field name="body_html" type="html">
+                <div class="container" style="margin:0px;padding: 0px;">
                 <div>
-                    <p>Dear Sir ${object.parent_id.name},</p><br/><br/><br/>
-                    <h3 align="center">Attendance Report up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))}</h3>
-                    <h4 align="center">HR, Admin &amp; Compliance (Civil, IT, RM Store &amp; ETP)</h4>
-
+                    <p>Dear ${object.name},</p>
+                    <p>Please find below Attendance report for your direct reportings dated up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))}</p>
+                    <br/><br/>
                 </div>
 
-                <style>
+                <style type="text/css">  
                     .tem_table{
                         display:table;
-                        border-top:1px solid;
-                        border-left:1px solid;
-                    table-layout:fixed;
+                        table-layout:fixed;
+                        font-size:10px;
+                        width:100%;     
                     }
-                    .tem_trh,
-                    .tem_tr{
-                        display:table-header-group;
-                    }
-                    .tem_tdh{
-                        display:table-row;
-                        font-weight:bold;
-                    }
-                    .tem_td{
-                        display:table-row;
-                    }
-                    .tem_tch{
-                        display:table-cell;
-                        padding: 2px 4px;
-                        border-bottom:1px solid;
-                        border-right:1px solid;
-                    }
-                    .tem_tc
-                    {
-                        display:table-cell;
-                        padding: 2px 4px;
-                        border-bottom:1px solid;
-                        text-align: center;
-                        border-right:1px solid;
+                    .tem_table_1{
+                        display:table;
+                        table-layout:fixed;
+                        width: 60%;
+                        font-size:11px; 
                     }
                 </style>
-                <div class="tem_table">
-                    <div class="tem_trh">
-                        <div class="tem_tdh">
-                            <div class="tem_tch">Date</div>
-                            <div class="tem_tch">Emp ID</div>
-                            <div class="tem_tch">Employee Name</div>
-                            <div class="tem_tch">InTime</div>
-                            <div class="tem_tch">IN</div>
-                            <div class="tem_tch">Flag</div>
-                            <div class="tem_tch">OutTime</div>
-                            <div class="tem_tch">OUT</div>
-                            <div class="tem_tch">Total</div>
-                            <div class="tem_tch">Present</div>
-                            <div class="tem_tch">Absent</div>
-                            <div class="tem_tch">LV</div>
-                            <div class="tem_tch">OD</div>
-                            <div class="tem_tch">Fri</div>
-                            <div class="tem_tch">Holi</div>
-                            <div class="tem_tch">CO</div>
-                            <div class="tem_tch">AJ</div>
-                            <div class="tem_tch">Late</div>
-                            <div class="tem_tch">EarlyOut</div>
-                        </div>
-                    </div>
 
-                    <div class="tem_tr">
-                        % set attendance = object.env['hr.attendance'].search([('employee_id.parent_id', '=', object.id), ('attDate', '=', (datetime.datetime.today() - relativedelta(days=1)))])
+
+                <table class="tem_table table-responsive" align="center" cellspacing="0" cellpadding="0" border="1">
+                    <thead>
+                            <tr style="color:white;background-color:rgb(113, 75, 98);">
+                            <th colspan="2" style="text-align:center;width:8%">Date</th>
+                            <th colspan="2" style="text-align:center;width:5%">Emp ID</th>
+                            <th colspan="3" style="text-align:left;width:15%">Employee Name</th>
+                            <th colspan="2" style="text-align:center;width:5%">InTime</th>
+                            <th colspan="1" style="text-align:center;width:3%">IN</th>
+                            <th colspan="1" style="text-align:center;width:5%">Flag</th>
+                            <th colspan="2" style="text-align:center;width:5%">OutTime</th>
+                            <th colspan="1" style="text-align:center;width:3%">OUT</th>
+                            <th colspan="1" style="text-align:center;width:5%">Total</th>
+                            <th colspan="2" style="text-align:center;width:5%">Present</th>
+                            <th colspan="2" style="text-align:center;width:5%">Absent</th>
+                            <th colspan="1" style="text-align:center;width:3%">LV</th>
+                            <th colspan="1" style="text-align:center;width:3%">OD</th>
+                            <th colspan="1" style="text-align:center;width:3%">Fri</th>
+                            <th colspan="1" style="text-align:center;width:3%">Holi</th>
+                            <th colspan="1" style="text-align:center;width:3%">CO</th>
+                            <th colspan="1" style="text-align:center;width:3%">AJ</th>
+                            <th colspan="1" style="text-align:center;width:5%">Late</th>
+                            <th colspan="2" style="text-align:center;width:5%">EarlyOut</th>
+
+                        </tr>
+                    </thead>
+                </table>
+
+
+
+
+                % set attendance = object.env['hr.attendance'].search([('employee_id.parent_id', '=', object.id), ('attDate', '=', (datetime.datetime.today() - relativedelta(days=1)))])
                         % for line in attendance:
                         % set tt = object.total_attendance(line.employee_id)
                         % set pp = object.total_present(line.employee_id)
@@ -98,35 +85,105 @@
                         % set aj = object.total_aj(line.employee_id)
                         % set la = object.total_late(line.employee_id)
                         % set eo = object.total_earlyout(line.employee_id)
-                            % if line.attDate:
-                                <div class="tem_td">
-                                    <div class="tem_tc">${line.attDate.strftime('%d/%m/%Y')}</div>
-                                    <div class="tem_tc">${line.employee_id.emp_id}</div>
-                                    <div class="tem_tc">${line.employee_id.name}</div>
-                                    <div class="tem_tc">${('%d:%02d' % (line.inTime,(line.inTime*60)%60))}</div>
-                                    <div class="tem_tc">${('%d:%02d' % (line.inHour,(line.inHour*60)%60))}</div>
-                                    <div class="tem_tc">${line.inFlag}</div>
-                                    <div class="tem_tc">${('%d:%02d' % (line.outTime,(line.outTime*60)%60))}</div>
-                                    <div class="tem_tc">${('%d:%02d' % (line.outHour,(line.outHour*60)%60))}</div>
-                                    <div class="tem_tc">${tt}</div>
-                                    <div class="tem_tc">${pp}</div>
-                                    <div class="tem_tc">${aa}</div>
-                                    <div class="tem_tc">${ll}</div>
-                                    <div class="tem_tc">${od}</div>
-                                    <div class="tem_tc">${fr}</div>
-                                    <div class="tem_tc">${hh}</div>
-                                    <div class="tem_tc">${co}</div>
-                                    <div class="tem_tc">${aj}</div>
-                                    <div class="tem_tc">${la}</div>
-                                    <div class="tem_tc">${eo}</div>
-                                </div>
+                            % if line.employee_id.emp_id != '01607':
+                                <table class="tem_table table-responsive" align="center" cellspacing="0" cellpadding="0" border="1">	
+
+
+                                <tbody><tr>
+
+                                    <td colspan="2" style="width:8%;text-align:center">${line.attDate.strftime('%d/%m/%Y')}</td>
+                                    <td colspan="2" style="width:5%;text-align:center">${line.employee_id.emp_id}</td>
+                                    <td colspan="3" style="width:15%;text-align:left">${line.employee_id.name}</td>
+                                    <td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">${('%d:%02d' % (line.inTime,(line.inTime*60)%60))}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">
+                                    % if line.inHour != 0:
+                                        ${('%d:%02d' % (line.inHour,(line.inHour*60)%60))}
+                                    % endif
+                                    % if line.inHour == 0:
+                                        <span></span>
+                                    % endif
+                                    </td>
+                                    <td colspan="1" style="width:5%;text-align:center">${line.inFlag}</td>
+                                    <td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">${('%d:%02d' % (line.outTime,(line.outTime*60)%60))}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">
+                                    % if line.outHour != 0:
+                                        ${('%d:%02d' % (line.outHour,(line.outHour*60)%60))}
+                                    % endif
+                                    % if line.outHour == 0:
+                                        <span></span>
+                                    % endif
+                                    </td>
+                                    <td colspan="1" style="width:5%;text-align:center">${tt}</td>
+                                    <td colspan="2" style="width:5%;text-align:center">${pp}</td>
+                                    <td colspan="2" style="width:5%;text-align:center">${aa}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${ll}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${od}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${fr}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${hh}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${co}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${aj}</td>
+                                    <td colspan="1" style="width:5%;text-align:center">${la}</td>
+                                    <td colspan="2" style="width:5%;text-align:center">${eo}</td>
+
+
+
+
+                                </tr>
+                             </tbody></table>
                             % endif
                         % endfor
-                    </div>
-                </div>
+
+                <br/>
+
                 <div style="text-align:center;">
-                    <p>** This is an auto generated mail from Odoo. Please do not reply **</p>
+                <h3 align="center">Today's Attendance status ${datetime.datetime.now().strftime('%d/%m/%Y')} till 11:00AM</h3>
                 </div>
+
+
+                <div align="center" style="margin:auto;width:100%">
+                % set attendance = object.env['hr.attendance'].search([('employee_id.parent_id', '=', object.id), ('attDate', '=', (datetime.datetime.today()))])
+
+                            <table class="tem_table_1 table-responsive" cellspacing="0" cellpadding="0" border="1">
+                                <thead>
+                                    <tr style="color:white;background-color:rgb(113, 75, 98);">
+                                        <th style="text-align:center;width:5%">Date</th>
+                                        <th style="text-align:center;width:5%">Emp ID</th>
+                                        <th style="text-align:left;width:20%">Employee Name</th>
+                                        <th style="text-align:center;width:5%">InTime</th>
+                                        <th style="text-align:center;width:5%">IN</th>
+                                        <th style="width:5%;text-align:center">Flag</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            % for line in attendance:
+                                % if line.employee_id.emp_id != '01607':
+                                <table class="tem_table_1 table-responsive" cellspacing="0" cellpadding="0" border="1">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:5%;text-align:center">${line.attDate.strftime('%d/%m/%Y')}</td>
+                                        <td style="width:5%;text-align:center">${line.employee_id.emp_id}</td>
+                                        <td style="width:20%">${line.employee_id.name}</td>
+                                        <td style="width:5%;color:white;background-color:rgb(113, 75, 98);text-align:center">${('%d:%02d' % (line.inTime,(line.inTime*60)%60))}</td>
+                                        <td style="width:5%;text-align:center">
+                                        % if line.inHour != 0:
+                                            ${('%d:%02d' % (line.inHour,(line.inHour*60)%60))}
+                                        % endif
+                                        % if line.inHour == 0:
+                                            <span></span>
+                                        % endif
+                                        </td>
+                                        <td style="width:5%;text-align:center">${line.inFlag}</td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                                % endif
+                            % endfor
+
+                </div>
+
+                <div style="text-align:center;">
+                <p>** This is an auto generated mail from Odoo. Please do not reply **</p>
+                </div></div>
             </field>
         </record>
     </data>

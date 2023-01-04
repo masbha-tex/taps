@@ -8,34 +8,34 @@
             <form string="KPI Objective Report">
                 <group>
                     <group>
-                        <field name="report_type" string="Report Type" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                        <field name="date_from" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                        <field name="date_to" groups="hr_appraisal.group_hr_appraisal_manager"/>
+                        <field name="report_type" string="Report Type" groups="hr_appraisal.group_hr_appraisal_user"/>
+                        <field name="date_from" groups="hr_appraisal.group_hr_appraisal_user"/>
+                        <field name="date_to" groups="hr_appraisal.group_hr_appraisal_user"/>
 <!--                         <field name="is_company" string="" widget="boolean_toggle"/> -->
                     </group>
                     <group>
-                        <field name="holiday_type" string="Mode" groups="hr_appraisal.group_hr_appraisal_manager"/>
-                        <field name="employee_id" groups="hr_appraisal.group_hr_appraisal_manager" attrs="{
+                        <field name="holiday_type" string="Mode" groups="hr_appraisal.group_hr_appraisal_user"/>
+                        <field name="employee_id" groups="hr_appraisal.group_hr_appraisal_user" attrs="{
                         'required': [('holiday_type', '=', 'employee')],
                         'invisible': [('holiday_type', '!=', 'employee')]
                         }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="mode_company_id" string="Company" groups="hr_appraisal.group_hr_appraisal_manager" attrs="{
+                        <field name="mode_company_id" string="Company" groups="hr_appraisal.group_hr_appraisal_user" attrs="{
                         'required': [('holiday_type', '=', 'company')],
                         'invisible': [('holiday_type', '!=', 'company')]
                         }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="category_id" groups="hr_appraisal.group_hr_appraisal_manager" attrs="{
+                        <field name="category_id" groups="hr_appraisal.group_hr_appraisal_user" attrs="{
                         'required': [('holiday_type', '=', 'category')],
                         'invisible': [('holiday_type', '!=','category')]
                         }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="department_id" groups="hr_appraisal.group_hr_appraisal_manager" attrs="{
+                        <field name="department_id" groups="hr_appraisal.group_hr_appraisal_user" attrs="{
                         'required': [('holiday_type', '=', 'department')],
                         'invisible': [('holiday_type', '!=','department')]
                         }" options="{'no_create': True, 'no_open': True}"/> 
-                        <field name="employee_type" groups="hr_appraisal.group_hr_appraisal_manager" attrs="{
+                        <field name="employee_type" groups="hr_appraisal.group_hr_appraisal_user" attrs="{
                         'required': [('holiday_type', '=', 'emptype')],
                         'invisible': [('holiday_type', '!=','emptype')]
                         }" options="{'no_create': True, 'no_open': True}"/> 
-                        <field name="company_all" groups="hr_appraisal.group_hr_appraisal_manager" attrs="{
+                        <field name="company_all" groups="hr_appraisal.group_hr_appraisal_user" attrs="{
                         'required': [('holiday_type', '=', 'companyall')],
                         'invisible': [('holiday_type', '!=','companyall')]
                         }" options="{'no_create': True, 'no_open': True}"/>
@@ -57,20 +57,28 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
+    <menuitem id="menu_kpi_objective_reporting"
+              name="KPI Reporting"
+              sequence="2"
+              action="kpi_objective_pdf_report"
+              parent="hr_appraisal.menu_hr_appraisal_root"/>
     
-    <menuitem id="taps_hr.menu_hr_appraisal_report"
+<!--     <menuitem id="hr_appraisal.menu_hr_appraisal_report"
+              parent="hr_appraisal.menu_hr_appraisal_root"
+              sequence="20"
+              name="Report"
+              groups="hr_appraisal.group_hr_appraisal_user"/>
+    
+    <menuitem id="menu_hr_appraisal_analysis_report"
               name="Appraisal Analysis"
               sequence="1"
               action="hr_appraisal.action_appraisal_report_all"
               parent="hr_appraisal.menu_hr_appraisal_report" 
-              groups="hr_appraisal.group_hr_appraisal_manager"/>      
+              groups="hr_appraisal.group_hr_appraisal_user"/>       -->
     
-    <menuitem id="taps_hr.menu_kpi_objective_report"
-              name="KPI Report"
-              sequence="2"
-              action="kpi_objective_pdf_report"
-              parent="hr_appraisal.menu_hr_appraisal_report"
-              groups="hr_appraisal.group_hr_appraisal_manager"/>
+
+    
+
     
       
     

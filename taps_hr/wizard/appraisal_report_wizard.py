@@ -39,7 +39,7 @@ class HeadwisePDFReport(models.TransientModel):
         'res.bank',  string='Bank', readonly=False, ondelete="restrict", required=False)
     
     employee_id = fields.Many2one(
-        'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict")    
+        'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict", default=lambda self: self.env.context.get('default_employee_id') or self.env.user.employee_id)    
     
     category_id = fields.Many2one(
         'hr.employee.category',  string='Employee Tag', help='Category of Employee', readonly=False)
