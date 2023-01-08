@@ -10,14 +10,14 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="nextcall">2022-12-16 10:00:00</field>
+            <field name="nextcall">2023-01-09 10:00:00</field>
         </record>
         <record id="marriage_wish_email_template" model="mail.template">
             <field name="name">Employee: Marriage Anniversery Wish Send by email</field>
             <field name="model_id" ref="taps_hr.model_hr_employee"/>
             <field name="email_from">${user.email_formatted | safe}</field>
-            <field name="email_to">	${(object.private_email | object.email)}</field>
-            <field name="subject">Happy Marriage Anniversery to ${(object.name | object.spouse_complete_name)}</field>
+            <field name="email_to">	${(object.email)}</field>
+            <field name="subject">Happy Marriage Anniversery to ${(object.name)}</field>
             <field name="body_html" type="html">
                 <div>
                     <p>Dear ${object.name},</p><br/><br/><br/>

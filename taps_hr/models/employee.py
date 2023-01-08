@@ -45,29 +45,47 @@ class HrEmployee(models.Model):
     passing_year = fields.Char(string="Passing Year", store=True, tracking=True)
     result = fields.Char(string="Result", store=True, tracking=True)
     
-    def _action_work_anniversery_wish(self):
-        template_id = self.env.ref('taps_hr.work_anniversey_wish_email_template').id
+    def _action_work_anniversery_wish_email(self):
+        template_id = self.env.ref('taps_hr.work_anniversey_wish_email_template', raise_if_not_found=False).id
         template = self.env['mail.template'].browse(template_id)
-        att = self.env['hr.employee'].search([('id', 'in', (757,758,3204,796,1754,810,813,2107)), ('active', '=', True)])
-        for at in att:
-            if at.id:
-                template.send_mail(at.id, force_send=False)
+        query = """ select * from hr_employee where active=True and date_part('month', joining_date)=date_part('month', current_date) and date_part('day', joining_date)=date_part('day', current_date) order by id ASC """
+        
+        cr = self._cr
+        cursor = self.env.cr
+        cr.execute(query)
+        work_anniversey = cursor.fetchall()
+        
+        if work_anniversey:
+            for work_anni in work_anniversey:
+                template.send_mail(work_anni[0], force_send=False)
     
     def _action_marriage_wish_email(self):
-        template_id = self.env.ref('taps_hr.marriage_wish_email_template').id
+        template_id = self.env.ref('taps_hr.marriage_wish_email_template', raise_if_not_found=False).id
         template = self.env['mail.template'].browse(template_id)
-        att = self.env['hr.employee'].search([('id', 'in', (757,758,3204,796,1754,810,813,2107)), ('active', '=', True)])
-        for at in att:
-            if at.id:
-                template.send_mail(at.id, force_send=False)
+        query = """ select * from hr_employee where active=True and date_part('month', "marriageDate")=date_part('month', current_date) and date_part('day', "marriageDate")=date_part('day', current_date) order by id ASC """
+        
+        cr = self._cr
+        cursor = self.env.cr
+        cr.execute(query)
+        marriage = cursor.fetchall()
+        
+        if marriage:
+            for marri in marriage:
+                template.send_mail(marri[0], force_send=False)
     
     def _action_birthday_wish_email(self):
-        template_id = self.env.ref('taps_hr.birthday_wish_email_template').id
+        template_id = self.env.ref('taps_hr.birthday_wish_email_template', raise_if_not_found=False).id
         template = self.env['mail.template'].browse(template_id)
-        att = self.env['hr.employee'].search([('id', 'in', (757,758,3204,796,1754,810,813,2107)), ('active', '=', True)])
-        for at in att:
-            if at.id:
-                template.send_mail(at.id, force_send=False)
+        query = """ select * from hr_employee where active=True and date_part('month', birthday)=date_part('month', current_date) and date_part('day', birthday)=date_part('day', current_date) order by id ASC """
+        
+        cr = self._cr
+        cursor = self.env.cr
+        cr.execute(query)
+        birthday = cursor.fetchall()
+        
+        if birthday:
+            for birth in birthday:
+                template.send_mail(birth[0], force_send=False)
                 
     @api.onchange('is_same_address')
     def _compute_same_address(self):
@@ -88,67 +106,67 @@ class HrEmployee(models.Model):
             
     def total_attendance(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                  ('attDate', '<=', datetime.today().strftime('%Y-%m-25'))])
+                                                  ('attDate', '<=', datetime.today())])
         total = dat
         tt = len(total)
         return tt
     def total_present(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', 'in', ('P','L','HP','FP','CO'))])
+                                                ('attDate', '<=', datetime.today()),('inFlag', 'in', ('P','L','HP','FP','CO'))])
         total = dat
         pp = len(total)
         return pp
     def total_absent(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'A')])
+                                                ('attDate', '<=', datetime.today()),('inFlag', '=', 'A')])
         total = dat
         aa = len(total)
         return aa
     def total_leave(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', 'in', ('CL','SL','EL','ML','LW'))])
+                                                ('attDate', '<=', datetime.today()),('inFlag', 'in', ('CL','SL','EL','ML','LW'))])
         total = dat
         lv = len(total)
         return lv
     def total_od(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'OD')])
+                                                ('attDate', '<=', datetime.today()),('inFlag', '=', 'OD')])
         total = dat
         od = len(total)
         return od
     def total_friday(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'F')])
+                                                ('attDate', '<=', datetime.today()),('inFlag', '=', 'F')])
         total = dat
         fr = len(total)
         return fr
     def total_holiday(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'H')])
+                                                ('attDate', '<=', datetime.today()),('inFlag', '=', 'H')])
         total = dat
         h = len(total)
         return h
     def total_co(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'CO')])
+                                                ('attDate', '<=', datetime.today()),('inFlag', '=', 'CO')])
         total = dat
         co = len(total)
         return co
     def total_aj(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'AJ')])
+                                                ('attDate', '<=', datetime.today()),('inFlag', '=', 'AJ')])
         total = dat
         aj = len(total)
         return aj
     def total_late(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('inFlag', '=', 'L')])
+                                                ('attDate', '<=', datetime.today()),('inFlag', '=', 'L')])
         total = dat
         la = len(total)
         return la
     def total_earlyout(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                ('attDate', '<=', datetime.today().strftime('%Y-%m-25')),('outFlag', '=', 'EO')])
+                                                ('attDate', '<=', datetime.today()),('outFlag', '=', 'EO')])
         total = dat
         eo = len(total)
         return eo

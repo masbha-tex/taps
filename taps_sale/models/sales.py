@@ -29,7 +29,7 @@ class SaleOrder(models.Model):
             ('oa', 'OA')],
             string='Sales Type')
     invoice_details = fields.Char(string='Invoice Details', related='partner_invoice_id.contact_address_complete')
-    delivery_details = fields.Char(string='Delivery Details', readonly=True, related='partner_invoice_id.contact_address_complete')
+    delivery_details = fields.Char(string='Delivery Details', readonly=True, related='partner_shipping_id.contact_address_complete')
     po_no = fields.Char(string='PO No.')
     po_date = fields.Date(string='PO Date')
     revised_date = fields.Date(string=' PI Revised Date')
