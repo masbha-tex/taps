@@ -19,6 +19,7 @@ class HeadwisePDFReport(models.TransientModel):
     date_to = fields.Date('Date to', required=False, default = fields.Date.today().strftime('%Y-%m-25'))
     report_type = fields.Selection([
         ('score',	'Scorecard'),
+        ('scorequarter',	'Scorecard Quarterly'),
         ('kpi',	'KPI Objective'),
         ('plan',	'KPI objective with Action Plan (weekly)'),],
         string='Report Type', required=True,
@@ -181,6 +182,8 @@ class HeadwisePDFReport(models.TransientModel):
 #         return self.env.ref('taps_hr.action_kpi_objective_pdf_report').report_action(self, data=data)
         if self.report_type == 'score':
             return self.env.ref('taps_hr.action_kpi_objective_score_pdf_report').report_action(self, data=data)
+        if self.report_type == 'scorequarter':
+            return self.env.ref('taps_hr.action_kpi_objective_score_quarter_pdf_report').report_action(self, data=data)
         if self.report_type == 'kpi':
             return self.env.ref('taps_hr.action_kpi_objective_pdf_report').report_action(self, data=data)
         else:
@@ -561,6 +564,163 @@ class KpiScoreReportPDF(models.AbstractModel):
 #             round(otTotal),
             data.get('date_from'),
             data.get('date_to'),
+        ]
+        common_data.append(common_data)
+#         raise UserError((common_data[1]))
+#         raise UserError((mm))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.appraisal.goal',
+            'docs': docs,
+            'datas': common_data,
+#             'alldays': all_datelist
+        }
+
+class KpiScoreQuaterReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.kpi_objective_score_quarter_pdf_template'
+    _description = 'KPI Objective Score Quarterly Report Template'     
+
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        
+#         if data.get('bank_id')==False:
+#             domain.append(('code', '=', data.get('report_type')))
+#         if data.get('date_from'):
+#             domain.append(('date_from', '>=', data.get('date_from')))
+#         if data.get('date_to'):
+#             domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('employee_id.department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+#         if data.get('bank_id'):
+#             #str = re.sub("[^0-9]","",data.get('employee_id'))
+#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
+#         domain.append( ('id', 'in', (25,26,27,28)))        
+        
+        
+        
+        docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
+        if docs1.employee_id.company_id.id == 1:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
+        elif docs1.employee_id.company_id.id == 3:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
+        else:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
+        
+        docs = docs2 | docs1
+#         raise UserError((docs.id))
+        month = docs.mapped('month')[1:]
+        mm = 'Month'
+        for m in month:
+            if m == 'apr':
+                mm = 'April'
+            elif m == 'may':
+                mm = 'May'
+            elif m == 'jun':
+                mm = 'Jun'
+            elif m == 'jul':
+                mm = 'July'
+            elif m == 'aug':
+                mm = 'August'
+            elif m == 'sep':
+                mm = 'September'
+            elif m == 'oct':
+                mm = 'October'
+            elif m == 'nov':
+                mm = 'November'
+            elif m == 'dec':
+                mm = 'December'
+            elif m == 'jan':
+                mm = 'January'
+            elif m == 'feb':
+                mm = 'February'
+            elif m == 'mar':
+                mm = 'March'
+        weight = 0
+        apr = 0
+        may = 0
+        jun = 0
+        q_1_ytd = 0
+        jul = 0
+        aug = 0
+        sep = 0
+        q_2_ytd = 0
+        oct = 0
+        nov = 0
+        dec = 0
+        q_3_ytd = 0
+        jan = 0
+        feb = 0
+        mar = 0
+        q_4_ytd = 0  
+        ytd = 0
+        for de in docs1:
+            weight = weight + de.weight
+            apr = apr + de.apr
+            may = may + de.may
+            jun = jun + de.jun
+            q_1_ytd = q_1_ytd + de.q_1_ytd
+            jul = jul + de.jul
+            aug = aug + de.aug
+            sep = sep + de.sep
+            q_2_ytd = q_2_ytd + de.q_2_ytd
+            oct = oct + de.oct
+            nov = nov + de.nov
+            dec = dec + de.dec
+            q_3_ytd = q_3_ytd + de.q_3_ytd
+            jan = jan + de.jan
+            feb = feb + de.feb
+            mar = mar + de.mar
+            q_4_ytd = q_4_ytd + de.q_4_ytd
+            ytd = ytd + de.y_ytd
+            
+        common_data = [
+            data.get('report_type'),
+            mm,
+            weight,
+            apr,
+            may,
+            jun,
+            jul,
+            aug,
+            sep,
+            oct,
+            nov,
+            dec,
+            jan,
+            feb,
+            mar,
+            ytd,
+#             round(otTotal),
+            data.get('date_from'),
+            data.get('date_to'),
+            q_1_ytd,
+            q_2_ytd,
+            q_3_ytd,
+            q_4_ytd,
         ]
         common_data.append(common_data)
 #         raise UserError((common_data[1]))

@@ -236,6 +236,7 @@
                 <field name="t_jun" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
                 <field name="a_jun" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
                 <field name="jun" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
+                <field name="q_1_ytd" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
                 <field name="t_jul" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_jul" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
                 <field name="jul" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
@@ -245,6 +246,7 @@
                 <field name="t_sep" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_sep" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
                 <field name="sep" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
+                <field name="q_2_ytd" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
                 <field name="t_oct" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
                 <field name="a_oct" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
                 <field name="oct" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
@@ -254,6 +256,7 @@
                 <field name="t_dec" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
                 <field name="a_dec" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
                 <field name="dec" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
+                <field name="q_3_ytd" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
                 <field name="t_jan" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_jan" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
                 <field name="jan" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
@@ -263,6 +266,7 @@
                 <field name="t_mar" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
                 <field name="a_mar" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
                 <field name="mar" digits="[3,2]" decoration-bf="1" decoration-success="1"/>
+                <field name="q_4_ytd" digits="[3,2]" decoration-bf="1" decoration-danger="1"/>
             </tree>
         </field>
     </record>

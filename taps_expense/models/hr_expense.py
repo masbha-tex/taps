@@ -451,63 +451,63 @@ class taps_expense_sheet(models.Model):
     
     
     
-    @api.model
-    def retrieve_dashboard(self):
-        """ This function returns the values to populate the custom dashboard in
-            the purchase order views.
-        """
-        raise UserError(('efrrgrg'))
-        self.check_access_rights('read')
-        povalue = 0
+#     @api.model
+#     def retrieve_dashboard(self):
+#         """ This function returns the values to populate the custom dashboard in
+#             the purchase order views.
+#         """
+#         raise UserError(('efrrgrg'))
+#         self.check_access_rights('read')
+#         povalue = 0
 
-        result = {
-            'hr_approvals': 0,#all_to_send
-            'accounts_approvals': 0,#all_waiting
-            'ceo_approvals': 0,#all_late
+#         result = {
+#             'hr_approvals': 0,#all_to_send
+#             'accounts_approvals': 0,#all_waiting
+#             'ceo_approvals': 0,#all_late
             
-            'my_to_send': 0,
-            'my_waiting': 0,
-            'my_late': 0,
+#             'my_to_send': 0,
+#             'my_waiting': 0,
+#             'my_late': 0,
             
-            'budget_value': 0,#all_avg_order_value
-            'expense_value': 0,#all_avg_days_to_purchase
-            'expense_percent': 0,#all_total_last_7_days
-            'due_amount': 0,#all_sent_rfqs
-            'company_currency_symbol': self.env.company.currency_id.symbol
-        }
+#             'budget_value': 0,#all_avg_order_value
+#             'expense_value': 0,#all_avg_days_to_purchase
+#             'expense_percent': 0,#all_total_last_7_days
+#             'due_amount': 0,#all_sent_rfqs
+#             'company_currency_symbol': self.env.company.currency_id.symbol
+#         }
 
-        one_week_ago = fields.Datetime.to_string(fields.Datetime.now().replace(day=1))# - relativedelta(days=7)
-        # This query is brittle since it depends on the label values of a selection field
-        # not changing, but we don't have a direct time tracker of when a state changes
-        query = """SELECT SUM(ExBudget),SUM(ExValue) FROM (SELECT (select sum(cl.planned_amount) from crossovered_budget_lines as cl JOIN crossovered_budget as cb on cl.crossovered_budget_id=cb.id where cb.name like'%Expense%' and date_part('month',cl.date_from)=date_part('month',CURRENT_DATE) and cl.company_id=ex.company_id) ExBudget, SUM(CASE WHEN  date(ex.date_approve) >= date(%s) THEN COALESCE(ex.total_amount / NULLIF( (select rate from(select cr.id,cr.rate from  res_currency_rate as cr where cr.currency_id=ex.ex_currency_id order by cr.id desc limit 1) as cur), 0), ex.total_amount) ELSE 0 END) ExValue FROM hr_expense_sheet ex INNER JOIN res_company comp ON ex.company_id = comp.id WHERE ex.state in ('approve', 'post', 'done') AND ex.company_id = %s group by ex.company_id
-        Union
-        select 0 as ExBudget,0 as ExValue) as a"""
+#         one_week_ago = fields.Datetime.to_string(fields.Datetime.now().replace(day=1))# - relativedelta(days=7)
+#         # This query is brittle since it depends on the label values of a selection field
+#         # not changing, but we don't have a direct time tracker of when a state changes
+#         query = """SELECT SUM(ExBudget),SUM(ExValue) FROM (SELECT (select sum(cl.planned_amount) from crossovered_budget_lines as cl JOIN crossovered_budget as cb on cl.crossovered_budget_id=cb.id where cb.name like'%Expense%' and date_part('month',cl.date_from)=date_part('month',CURRENT_DATE) and cl.company_id=ex.company_id) ExBudget, SUM(CASE WHEN  date(ex.date_approve) >= date(%s) THEN COALESCE(ex.total_amount / NULLIF( (select rate from(select cr.id,cr.rate from  res_currency_rate as cr where cr.currency_id=ex.ex_currency_id order by cr.id desc limit 1) as cur), 0), ex.total_amount) ELSE 0 END) ExValue FROM hr_expense_sheet ex INNER JOIN res_company comp ON ex.company_id = comp.id WHERE ex.state in ('approve', 'post', 'done') AND ex.company_id = %s group by ex.company_id
+#         Union
+#         select 0 as ExBudget,0 as ExValue) as a"""
 
-        #self.env.cr.execute(query, (one_week_ago, self.env.company.id))
-        self._cr.execute(query, (one_week_ago, self.env.company.id))
-        res = self.env.cr.fetchone()
-        currency = self.env.company.currency_id
+#         #self.env.cr.execute(query, (one_week_ago, self.env.company.id))
+#         self._cr.execute(query, (one_week_ago, self.env.company.id))
+#         res = self.env.cr.fetchone()
+#         currency = self.env.company.currency_id
         
-        po = self.env['hr.expense.sheet']
-        result['hr_approvals'] = po.search_count([('state', '=', 'draft')])
-        result['my_to_send'] = 0
-        result['accounts_approvals'] = po.search_count([('state', '=', 'submit')])
-        result['my_waiting'] = 0
-        result['ceo_approvals'] = po.search_count([('state', 'checked')])
-        result['my_late'] = 0
+#         po = self.env['hr.expense.sheet']
+#         result['hr_approvals'] = po.search_count([('state', '=', 'draft')])
+#         result['my_to_send'] = 0
+#         result['accounts_approvals'] = po.search_count([('state', '=', 'submit')])
+#         result['my_waiting'] = 0
+#         result['ceo_approvals'] = po.search_count([('state', 'checked')])
+#         result['my_late'] = 0
         
-        exvalue = round(res[1] or 0, 2)
-        budgetalue = round(res[0] or 0, 2)
-        due = 0
-        if exvalue*budgetalue==0:
-            percent=0
-        else:
-            percent = round((exvalue/budgetalue)*100,2)
-            due = budgetalue-exvalue
-        result['budget_value'] = format_amount(self.env, budgetalue, currency)
-        result['expense_value'] = format_amount(self.env, exvalue, currency)
-        #format_amount(self.env, res[1] or 0, currency)
-        result['expense_percent'] = percent
-        result['due_amount'] = format_amount(self.env, due, currency)
+#         exvalue = round(res[1] or 0, 2)
+#         budgetalue = round(res[0] or 0, 2)
+#         due = 0
+#         if exvalue*budgetalue==0:
+#             percent=0
+#         else:
+#             percent = round((exvalue/budgetalue)*100,2)
+#             due = budgetalue-exvalue
+#         result['budget_value'] = format_amount(self.env, budgetalue, currency)
+#         result['expense_value'] = format_amount(self.env, exvalue, currency)
+#         #format_amount(self.env, res[1] or 0, currency)
+#         result['expense_percent'] = percent
+#         result['due_amount'] = format_amount(self.env, due, currency)
 
-        return result
+#         return result

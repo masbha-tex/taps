@@ -72,7 +72,7 @@
 
 
 
-                % set attendance = object.env['hr.attendance'].search([('employee_id.parent_id', '=', object.id), ('attDate', '=', (datetime.datetime.today() - relativedelta(days=1)))])
+                % set attendance = object.env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)),('attDate', '=', (datetime.datetime.today() - relativedelta(days=1))), '|','|','|', ('employee_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', object.id)])
                         % for line in attendance:
                         % set tt = object.total_attendance(line.employee_id)
                         % set pp = object.total_present(line.employee_id)
@@ -141,7 +141,7 @@
 
 
                 <div align="center" style="margin:auto;width:100%">
-                % set attendance = object.env['hr.attendance'].search([('employee_id.parent_id', '=', object.id), ('attDate', '=', (datetime.datetime.today()))])
+                % set attendance = object.env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)), ('attDate', '=', (datetime.datetime.today())), '|','|','|', ('employee_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', object.id)])
 
                             <table class="tem_table_1 table-responsive" cellspacing="0" cellpadding="0" border="1">
                                 <thead>
