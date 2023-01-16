@@ -57,6 +57,7 @@ class SaleOrder(models.Model):
     validity_period = fields.Char(string='Period of validity')
     amount_in_word = fields.Char(string='Amount In Words')
     appr_weight = fields.Char(string='Approximate Weight')
+    applicant_bank = fields.Text(string='Applicant Bank') 
    
     
     

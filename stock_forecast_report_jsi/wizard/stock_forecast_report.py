@@ -439,11 +439,11 @@ class StockForecastReport(models.TransientModel):
         ) as lot_price,
         
         (case when lot.id is not null then
-        lot.unit_price else 0 end
+        lot.pur_price else 0 end
         ) as pur_price,
         
         (case when lot.id is not null then
-        lot.unit_price else 0 end
+        lot.landed_cost else 0 end
         ) as landed_cost,
         
         (

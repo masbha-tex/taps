@@ -36,6 +36,7 @@
                 <field name="style_ref"/>
 <!--                 <field name="sales_person"/>  -->
                 <field name="remarks"/>
+                <field name="applicant_bank"/>
               </xpath>              
               
               <xpath expr="//field[@name='validity_date']" position="before">

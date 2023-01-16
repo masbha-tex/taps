@@ -23,6 +23,7 @@ class PickingVendorNameINT(models.Model):
             
     def createupdate_qc(self,id,name,company,state):
         if "/INT/" in name and state=="assigned":
+            #raise UserError((id))
             transferdata = self.env['stock.move.line'].search([('picking_id', '=', id)]).sorted(key = 'id')
             if transferdata:
                 qcdata = self.env['quality.check'].search([('picking_id', '=', id)]).sorted(key = 'id')
@@ -44,24 +45,7 @@ class PickingVendorNameINT(models.Model):
                                        'company_id': company.id,
                                        'test_type_id': 3})
                         
-# name
-# point_id
-# quality_state
-# product_id
-# picking_id
-# lot_id
-# team_id
-# company_id
-# test_type_id
-# create_uid
-# create_date
-# write_uid
-# write_date
-# measure
-# measure_success
-# x_studio_source_po
-# x_studio_schedule_po_date
-# x_studio_sample_qty                        
+                     
                     
                     
 class ProductionLot(models.Model):
