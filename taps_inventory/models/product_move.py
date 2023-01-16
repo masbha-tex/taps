@@ -23,13 +23,12 @@ class PickingVendorNameINT(models.Model):
             
     def createupdate_qc(self,id,name,company,state):
         if "/INT/" in name and state=="assigned":
-            #raise UserError((id))
             transferdata = self.env['stock.move.line'].search([('picking_id', '=', id)]).sorted(key = 'id')
             if transferdata:
                 qcdata = self.env['quality.check'].search([('picking_id', '=', id)]).sorted(key = 'id')
                 for tr in transferdata:
                     qcproduct = qcdata.search([('product_id', '=', tr.product_id.id),('lot_id', '=', False)])
-                    qclotexist = qcdata.search([('product_id', '=', tr.product_id.id),('lot_id', '=', tr.lot_id.id)])
+                    qclotexist = qcdata.search([('lot_id', '=', tr.lot_id.id)])
                     if qcproduct:
                         qcproduct.write({'lot_id': tr.lot_id.id})
                     elif qclotexist:
