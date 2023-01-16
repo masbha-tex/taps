@@ -103,17 +103,28 @@ class ZkMachine(models.Model):
     @api.model
     def cron_download(self):
         machines = self.env['zk.machine'].search([])
+        # dwn_ids = int(datetime.now().strftime('%Y%m%d%H%M%S'))
         for machine in machines :
             machine.download_attendance()
+        # for machine in machines :
+        #     dwn_id = dwn_ids+1
+        #     raise UserError((dwn_ids,dwn_id))
+        #     machine.download_attendance(dwn_id)
+        #     att_down = self.env['zk.machine.attendance'].search([('download_id', '=', dwn_id)])
+        #     if att_down:
+        #         machine.clear_attendance()        
+            
 
     def download_attendance(self):
         _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
         zk_attendance = self.env['zk.machine.attendance']
         att_obj = self.env['hr.attendance']
+        dwn_ids = int(datetime.now().strftime('%Y%m%d%H%M%S'))
         for info in self:
             machine_ip = info.name
             zk_port = info.port_no
             timeout = 15
+            dwn_id = dwn_ids+1
             try:
                 zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
             except NameError:
@@ -170,7 +181,8 @@ class ZkMachine(models.Model):
                                                                   'attendance_type': str(each.status),
                                                                   'punch_type': str(each.punch),
                                                                   'punching_time': atten_time,
-                                                                  'address_id': info.address_id.id})
+                                                                  'address_id': info.address_id.id,
+                                                                  'download_id': dwn_id})
                                             
                                             att_var = att_obj.search([('employee_id', '=', get_user_id.id),
                                                                       ('attDate','=', att_Date)])
@@ -232,7 +244,11 @@ class ZkMachine(models.Model):
                                 else:
                                     pass
                     # zk.enableDevice()
-                    #conn.clear_attendance()
+                    att_download_log = self.env['zk.machine.attendance'].search([('download_id', '=', dwn_id)])
+                    clear_data = zk.get_attendance()
+                    if att_download_log:
+                        if clear_data:
+                            conn.clear_attendance()
                     conn.disconnect
                     return True
                 else:
