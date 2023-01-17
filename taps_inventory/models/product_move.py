@@ -28,7 +28,7 @@ class PickingVendorNameINT(models.Model):
                 qcdata = self.env['quality.check'].search([('picking_id', '=', id)]).sorted(key = 'id')
                 for tr in transferdata:
                     qcproduct = qcdata.search([('product_id', '=', tr.product_id.id),('lot_id', '=', False)])
-                    qclotexist = qcdata.search([('lot_id', '=', tr.lot_id.id)])
+                    qclotexist = self.env['quality.check'].search([('lot_id', '=', tr.lot_id.id)])
                     if qcproduct:
                         qcproduct.write({'lot_id': tr.lot_id.id})
                     elif qclotexist:
