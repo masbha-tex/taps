@@ -1,5 +1,5 @@
 from odoo import models, fields, api, tools, _
-from odoo.tools.misc import format_datetime
+from odoo.tools.misc import format_datetime, formatLang, get_lang, format_amount
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import format_date
 from datetime import date, datetime, time, timedelta
@@ -50,9 +50,9 @@ class PickingVendorNameINT(models.Model):
 class ProductionLot(models.Model):
     _inherit = 'stock.production.lot'
     rejected = fields.Boolean(store=True, string='Rejected', readonly=False, tracking=True)
-    unit_price = fields.Float(readonly=False, store=True, string='Price', digits='Product Unit of Measure')
-    pur_price = fields.Float(readonly=False, store=True, string='Price', digits='Product Unit of Measure')
-    landed_cost = fields.Float(readonly=False, store=True, string='Price', digits='Product Unit of Measure')
+    unit_price = fields.Float(readonly=False, store=True, string='Unit Price', digits='Product Unit of Measure')
+    pur_price = fields.Float(readonly=False, store=True, string='Purchase Price', digits='Product Unit of Measure')
+    landed_cost = fields.Float(readonly=False, store=True, string='Landed Cost', digits='Product Unit of Measure')
     
     # @api.depends('pur_price')
     # def _compute_pur_price(self):
@@ -62,35 +62,40 @@ class ProductionLot(models.Model):
 
     # @api.model
     # def create(self, vals):
-    #     stock_moves = self.env['stock.move.line'].search([('lot_id', '=', vals.get('id')),('state', '=', 'done') ]).mapped('move_id')
-    #     stock_moves = self.env['stock.move.line'].search([('state', '=', 'done')]).mapped('move_id')
-    #     stock_moves = stock_moves.search([('id', 'in', stock_moves.ids)]).filtered(lambda move: move.picking_id.location_id.usage == 'supplier' and move.state == 'done')
-    #     purchase_order_ids = stock_moves.mapped('purchase_line_id.order_id')
-    #     price = self.env['purchase.order.line'].search([('id','in',(purchase_order_ids))])
-    #     pr = avg(price.mapped('price_unit'))
-    #     if purchase_order_ids:
-    #         vals['pur_price'] = pr
-    #     return super(ProductionLot, self).create(vals)
+    #     raise UserError((vals.get('id'),vals.get('name'),vals.get('purchase_order_ids')))
+        # stock_moves = self.env['stock.move.line'].search([('lot_id', '=', vals.get('id')),('state', '=', 'done') ]).mapped('move_id')
+        # stock_moves = self.env['stock.move.line'].search([('state', '=', 'done')]).mapped('move_id')
+        # stock_moves = stock_moves.search([('id', 'in', stock_moves.ids)]).filtered(lambda move: move.picking_id.location_id.usage == 'supplier' and move.state == 'done')
+        # purchase_order_ids = stock_moves.mapped('purchase_line_id.order_id')
+        # price = self.env['purchase.order.line'].search([('id','in',(purchase_order_ids))])
+        # pr = avg(price.mapped('price_unit'))
+        # if purchase_order_ids:
+        #     vals['pur_price'] = pr
+        # return super(ProductionLot, self).create(vals)
     
     
-#     @api.model_create_multi
-#     def create(self, vals_list):
-#         self._check_create()
-#         for values in vals_list:
-#             raise UserError((values.get('id')))
-#             values.update(pur_price=123, landed_cost=0)
-# #             raise UserError((vals_list[0][0]))
-# #             stock_moves = self.env['stock.move.line'].search([
-# #                 ('lot_id', '=', values.get('id')),
-# #                 ('state', '=', 'done')
-# #             ]).mapped('move_id')
-# #             stock_moves = stock_moves.search([('id', 'in', stock_moves.ids)]).filtered(
-# #                 lambda move: move.picking_id.location_id.usage == 'supplier' and move.state == 'done')
-# #             purchase_order_ids = stock_moves.mapped('purchase_line_id.order_id')
-                
-# #             if purchase_order_ids:
-# #                 raise UserError((purchase_order_ids))
-#         return super(ProductionLot, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     self._check_create()
+    #     for values in vals_list:
+    #         stock_moves = self.env['stock.move.line'].search([
+    #             ('lot_name', '=', values.get('name')),
+    #             ('product_id', '=', values.get('product_id'))
+    #         ])
+    #         po_line = self.env['purchase.order.line'].search([
+    #             ('order_id.name', '=', stock_moves.picking_id.origin),
+    #             ('product_id', '=', values.get('product_id'))
+    #         ],limit=1)
+    #         price = 0.0
+    #         if po_line:
+    #             currency = po_line.currency_id.id
+    #             price = format_amount(self.env, round(po_line.price_unit, 4), currency)
+    #         else:
+    #             po_line = self.env['purchase.order.line'].search([('product_id', '=', values.get('product_id'))]).sorted(key = 'id', reverse=True)[:1]
+    #             currency = po_line.currency_id.id
+    #             price = format_amount(self.env, round(po_line.price_unit, 4), currency)
+    #         values.update(pur_price=price,unit_price=price)
+    #     return super(ProductionLot, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
 
 class IncludeCateTypeInPT(models.Model):
     _inherit = 'stock.move.line'

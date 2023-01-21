@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
             <field name="pin" position="before">
-                <field name="isOverTime"/>
+                <field name="isovertime"/>
             </field>
             <field name="coach_id" position="after">
                 <field name="service_length"/>
@@ -27,7 +27,7 @@
                 <field name="mothers_name"/>
             </field>
             <field name="spouse_complete_name" position="before">
-                <field name="marriageDate" attrs="{'invisible': [('marital', 'not in', ['married', 'cohabitant'])]}"
+                <field name="marriage_date" attrs="{'invisible': [('marital', 'not in', ['married', 'cohabitant'])]}"
                        groups="hr.group_hr_user"/>
             </field>
             <xpath expr="//field[@name='work_location']" position="before">
@@ -98,6 +98,15 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_tree"/>
         <field name="arch" type="xml">
+                <xpath expr="//field[@name='department_id']" position="attributes">
+                  <attribute name="options">{"no_create":true}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='parent_id']" position="attributes">
+                  <attribute name="options">{"no_create":true}</attribute>
+                </xpath>
+                <xpath expr="//tree[1]/field[@name='coach_id']" position="attributes">
+                  <attribute name="options">{"no_create":true}</attribute>
+                </xpath>
             <tree string="Employees" multi_edit="1" sample="1">
                 <field name="emp_id" readonly="1"/>
                 <xpath expr="//field[@name='name']" position="move"/>
@@ -111,6 +120,7 @@
                 <xpath expr="//field[@name='parent_id']" position="move"/>
                 <field name="coach_id"/>
                 <field name="service_length"/>
+                <field name="isovertime"/>
                 <field name="shift_group"/>
                 <field name="mobile_phone"/>
                 <xpath expr="//field[@name='work_phone']" position="move"/>
@@ -122,12 +132,16 @@
                 <field name="bank_account_id"/>
                 <field name="km_home_work"/>
                 <field name="marital"/>
-                <field name="marriageDate"/>
+                <field name="marriage_date"/>
                 <field name="spouse_complete_name"/>
                 <field name="spouse_birthdate"/>
                 <field name="emergency_contact"/>
                 <field name="emergency_phone"/>
                 <field name="certificate"/>
+                <field name="study_field"/>
+                <field name="study_school"/>
+                <field name="passing_year"/>
+                <field name="result"/>                
                 <field name="country_id"/>
                 <field name="identification_id"/>
                 <field name="passport_id"/>
@@ -135,6 +149,7 @@
                 <field name="birthday"/>
                 <field name="place_of_birth"/>
                 <field name="country_of_birth"/>
+                <field name="blood_group"/>
                 <field name="children"/>
                 <field name="visa_no"/>
                 <field name="permit_no"/>
@@ -143,6 +158,7 @@
                 <field name="registration_number"/>
                 <field name="pin"/>
                 <field name="barcode"/>
+            
             </tree>
         </field>
     </record>

@@ -919,7 +919,7 @@ class AnniversaryCalenderReportPDF(models.AbstractModel):
         
         
         #raise UserError((em_list))
-        query = """ select emp_id, name, to_char("marriageDate",'DD Month YYYY') AS marriage_date, cast((date_part('year', current_date))-(date_part('year', "marriageDate")) as varchar) as marriage_age_, mobile_phone, work_email from hr_employee where id in (""" + em_list + """) and EXTRACT(MONTH FROM "marriageDate")=%s and 1=%s order by marriage_date ASC """
+        query = """ select emp_id, name, to_char("marriage_date",'DD Month YYYY') AS marriage_date, cast((date_part('year', current_date))-(date_part('year', "marriage_date")) as varchar) as marriage_age_, mobile_phone, work_email from hr_employee where id in (""" + em_list + """) and EXTRACT(MONTH FROM "marriage_date")=%s and 1=%s order by marriage_date ASC """
         cr = self._cr
         cursor = self.env.cr
         cr.execute(query, (m_m, 1))

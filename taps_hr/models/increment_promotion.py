@@ -41,9 +41,9 @@ class IncrementPromotion(models.Model):
                 if app.increment_amount > 0:
                     conlist[-1].write({'wage': app.employee_id.contract_id.wage + app.increment_amount})
                 if app.ot_type == "true":
-                    elist[-1].write({'isOverTime': True})
+                    elist[-1].write({'isovertime': True})
                 if app.ot_type == "false":
-                    elist[-1].write({'isOverTime': False})
+                    elist[-1].write({'isovertime': False})
                 if not app.new_category == app.category:
                     conlist[-1].write({'category': app.new_category})
                 
@@ -131,7 +131,7 @@ class IncrementPromotionLine(models.Model):
         for line in self.filtered('employee_id'):
             line.job_id = line.employee_id.job_id.id
             line.grade = line.employee_id.contract_id.structure_type_id
-            line.old_ot_type = line.employee_id.isOverTime
+            line.old_ot_type = line.employee_id.isovertime
             line.gross = line.employee_id.contract_id.wage
             line.basic = line.employee_id.contract_id.basic
             line.hra = line.employee_id.contract_id.houseRent
@@ -143,7 +143,7 @@ class IncrementPromotionLine(models.Model):
     def onchange_ot_type(self):
         for ot in self:
             if ot.employee_id:
-                ottype = ot.employee_id.isOverTime
+                ottype = ot.employee_id.isovertime
                 if ottype:
                     #raise UserError(('sfefefe'))
                     ot.ot_type = 'true'
@@ -177,7 +177,7 @@ class IncrementPromotionLine(models.Model):
 #     def onchange_ot_type(self):
 # #         self.ot_type = ''
 #         for ot in self:
-#             if ot.employee_id.isOverTime == False:
+#             if ot.employee_id.isovertime == False:
 #                 ot.ot_type = 'False'
-#             if ot.employee_id.isOverTime == True:
+#             if ot.employee_id.isovertime == True:
 #                 ot.ot_type = 'True'

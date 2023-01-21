@@ -58,7 +58,8 @@
               name="HRIS Report"
               sequence="1"
               action="hris_pdf_report"
-              parent="hr.hr_menu_hr_reports"/>
+              parent="hr.hr_menu_hr_reports"
+              groups="hr.group_hr_user"/>
     
     
     

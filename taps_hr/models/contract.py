@@ -15,6 +15,8 @@ import pytz
 
 class HrContract(models.Model):
     _inherit = 'hr.contract'
+    _order = 'emp_id'
+
     
     emp_id = fields.Char(related = 'employee_id.emp_id', related_sudo=False, string="Emp ID", readonly=True, store=True)
     service_length = fields.Char(related = 'employee_id.service_length', related_sudo=False, string='Service Length', store=True)

@@ -5,11 +5,12 @@ from odoo.exceptions import UserError
 from odoo.tools import format_datetime
 from dateutil.relativedelta import relativedelta
 
-class HrEmployee(models.Model):
+class HrEmployeePrivate(models.Model):
     _inherit = 'hr.employee'
+    _order = 'emp_id'
     
     emp_id = fields.Char(string="Emp ID", readonly=True, store=True, tracking=True)
-    isOverTime = fields.Boolean("Over Time", readonly=False, store=True, tracking=True)
+    isovertime = fields.Boolean("Is OT", readonly=False, store=True, tracking=True)
     service_length = fields.Char( string="Service Length")#compute='_calculate_serviceLength',
     joining_date = fields.Date(related = 'contract_id.date_start', related_sudo=False, string='Joining Date', store=True, tracking=True)
     probation_date = fields.Date(related = 'contract_id.trial_date_end', related_sudo=False, store=True, tracking=True)
@@ -18,7 +19,7 @@ class HrEmployee(models.Model):
     shift_group = fields.Many2one('shift.setup', string="Attendance Group", store=True, tracking=True)
     fathers_name = fields.Char(string="Father's Name", store=True, tracking=True)
     mothers_name = fields.Char(string="Mother's Name", store=True, tracking=True)
-    marriageDate = fields.Date(string='Date of Marriages', store=True, tracking=True)
+    marriage_date = fields.Date(string='Date of Marriages', store=True, tracking=True)
     
     street = fields.Char(string="Road/street", tracking=True)
     street2 = fields.Char(string="Village", tracking=True)
@@ -62,7 +63,7 @@ class HrEmployee(models.Model):
     def _action_marriage_wish_email(self):
         template_id = self.env.ref('taps_hr.marriage_wish_email_template', raise_if_not_found=False).id
         template = self.env['mail.template'].browse(template_id)
-        query = """ select * from hr_employee where active=True and date_part('month', "marriageDate")=date_part('month', current_date) and date_part('day', "marriageDate")=date_part('day', current_date) order by id ASC """
+        query = """ select * from hr_employee where active=True and date_part('month', "marriage_date")=date_part('month', current_date) and date_part('day', "marriage_date")=date_part('day', current_date) order by id ASC """
         
         cr = self._cr
         cursor = self.env.cr
@@ -311,7 +312,7 @@ class HrEmployee(models.Model):
                 record.write({'service_length' : False})
      
     
-class TapsHrEmployeeBase(models.AbstractModel):
+class HrEmployeeBase(models.AbstractModel):
     _inherit = "hr.employee.base"
     
 
@@ -625,7 +626,7 @@ class TapsHrEmployeeBase(models.AbstractModel):
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
         if 'pin' in groupby or 'pin' in self.env.context.get('group_by', '') or self.env.context.get('no_group_by'):
             raise exceptions.UserError(_('Such grouping is not allowed.'))
-        return super(TapsHrEmployeeBase, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+        return super(HrEmployeeBase, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
 
     def _compute_presence_icon(self):
         res = super()._compute_presence_icon()
@@ -633,3 +634,48 @@ class TapsHrEmployeeBase(models.AbstractModel):
         employee_to_define = self.filtered(lambda e: e.hr_icon_display == 'presence_undetermined')
         employee_to_define.hr_icon_display = 'presence_to_define'
         return res
+    
+class HrEmployeePublic(models.Model):
+    # _name = "hr.employee.public"
+    _inherit = ["hr.employee.public"]
+    _description = 'Public Employee'
+    _order = 'emp_id'
+    _auto = False
+    _log_access = True # Include magic fields
+
+    # Fields coming from hr.employee.base
+    emp_id = fields.Char(readonly=True)
+    isovertime = fields.Boolean(readonly=True)
+    service_length = fields.Char(readonly=True)
+    joining_date = fields.Date(readonly=True)
+    probation_date = fields.Date(readonly=True)
+    resign_date = fields.Date(readonly=True)
+    grade = fields.Char(readonly=True)
+    shift_group = fields.Many2one(readonly=True)
+    fathers_name = fields.Char(readonly=True)
+    mothers_name = fields.Char(readonly=True)
+    marriage_date = fields.Date(readonly=True)
+    
+    street = fields.Char(readonly=True)
+    street2 = fields.Char(readonly=True)
+    zip = fields.Char(readonly=True)
+    city = fields.Char(readonly=True)
+    state_id = fields.Many2one(readonly=True)
+    is_same_address = fields.Boolean(readonly=True)
+    p_street = fields.Char(readonly=True)
+    p_street2 = fields.Char(readonly=True)
+    p_zip = fields.Char(readonly=True)
+    p_city = fields.Char(readonly=True)
+    p_state_id = fields.Many2one(readonly=True)    
+    p_country_id = fields.Many2one(readonly=True)
+    
+    email = fields.Char(readonly=True)
+    # email_formatted = fields.Char(readonly=True)
+    # phone = fields.Char(readonly=True)
+    mobile = fields.Char(readonly=True)
+    bank_id = fields.Many2one(readonly=True)
+    account_number = fields.Char(readonly=True)
+    blood_group = fields.Char(readonly=True)
+    passing_year = fields.Char(readonly=True)
+    result = fields.Char(readonly=True)
+    

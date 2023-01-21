@@ -16,6 +16,7 @@ import pytz
 class HrPayslipsss(models.Model):
     _inherit = 'hr.payslip'
     _description = 'Pay Slip'
+    _order = 'emp_id'
     
     emp_id = fields.Char(related = 'employee_id.emp_id', related_sudo=False, string="Emp ID", readonly=True, store=True)
     department_id = fields.Many2one('hr.department', compute='_compute_employee_contract', store=True, readonly=False,
@@ -181,7 +182,7 @@ class HrPayslipsss(models.Model):
         for payslip in self:
             emp_list = self.env['hr.employee'].search([('id', '=', payslip.employee_id.id),("active", '=', True)])
             att_record = self.env['hr.attendance'].search([('employee_id', '=', payslip.employee_id.id),('attDate', '>=',payslip.date_from),('attDate', '<=',payslip.date_to)])
-            if emp_list.isOverTime is True:
+            if emp_list.isovertime is True:
                 payslip.otRate = round(((payslip.contract_id.basic/208)*2),2)
                 payslip.otHours = sum(att_record.mapped('otHours'))
                 payslip.com_otHours = sum(att_record.mapped('com_otHours'))

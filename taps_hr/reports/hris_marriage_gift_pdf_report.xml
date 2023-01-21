@@ -353,7 +353,7 @@
                                             </h6>
                                         </div>
                                         <div class="col-6 text-secondary">
-                                            <t t-esc="employee.marriageDate"/>
+                                            <t t-esc="employee.marriage_date"/>
                                         </div>
                                     </div>
                                     <div class="row" t-if="employee.marital=='married'">

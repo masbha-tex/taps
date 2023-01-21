@@ -3,9 +3,9 @@ access_salary_headwise_report,access_salary_headwise_pdf_report,model_salary_hea
 access_salary_adjustment,salary.adjustment,model_salary_adjustment,base.group_user,1,1,1,1
 access_salary_adjustment_line,salary.adjustment.line,model_salary_adjustment_line,base.group_user,1,1,1,1
 access_salary_sheet_pdf_report,access_salary_sheet_pdf_report,model_salary_sheet_pdf_report,base.group_user,1,1,1,1 
-access_att_reprocess,access_att_reprocess,model_att_reprocess,base.group_user,1,1,1,1
-access_hris_report,access_hris_pdf_report,model_hris_pdf_report,base.group_user,1,1,1,1
-access_attenance_report,access_attendance_pdf_report,model_attendance_pdf_report,base.group_user,1,1,1,1
+access_att_reprocess,access_att_reprocess,model_att_reprocess,hr_attendance.group_hr_attendance_user,1,1,1,1
+access_hris_report,access_hris_pdf_report,model_hris_pdf_report,hr.group_hr_user,1,1,1,1
+access_attenance_report,access_attendance_pdf_report,model_attendance_pdf_report,hr_attendance.group_hr_attendance_user,1,1,1,1
 access_increment_promotion,increment.promotion,model_increment_promotion,base.group_user,1,1,1,1
 access_increment_promotion_line,increment.promotion.line,model_increment_promotion_line,base.group_user,1,1,1,1
-access_kpi_objective_pdf_report,kpi.objective.pdf.report,model_kpi_objective_pdf_report,base.group_user,1,1,1,1
+access_kpi_objective_pdf_report,kpi.objective.pdf.report,model_kpi_objective_pdf_report,hr_appraisal.group_hr_appraisal_user,1,1,1,1
