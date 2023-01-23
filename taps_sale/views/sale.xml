@@ -7,7 +7,7 @@
           <field name="arch" type="xml">  
               
               <xpath expr="//field[@name='partner_id']" position="before">
-                  <field name="sales_type"/>
+                  <field name="sales_type" widget="badges"/>
               </xpath>    
 
               <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
@@ -53,7 +53,7 @@
                 <field name="po_date"/>
                 <field name="pi_date"/>
                 <field name="revised_date"/>
-                
+                <field name="x" widget="selection"/>
               </xpath>              
 
               <xpath expr="//field[@name='validity_date']" position="attributes">
@@ -84,6 +84,7 @@
                   <field name="sizemm"/>
                   <field name="finish"/>
                   <field name="shade"/>
+                  
               </xpath>
               
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="attributes">

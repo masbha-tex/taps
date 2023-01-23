@@ -9,5 +9,16 @@
         <field name="trigger">on_write</field>
         <field name="active" eval="True"/>
     </record>
+    <record id="ir_cron_create_yearly_leave_allocation" model="ir.cron">
+        <field name="name">Create Yearly leave allocation</field>
+        <field name="model_id" ref="model_hr_leave"/>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="code">model.create_yearly_leave_allocation()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall">2023-01-30 10:00:00</field>
+    </record>
     </data>
 </odoo>

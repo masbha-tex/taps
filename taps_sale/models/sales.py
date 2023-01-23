@@ -58,7 +58,10 @@ class SaleOrder(models.Model):
     amount_in_word = fields.Char(string='Amount In Words')
     appr_weight = fields.Char(string='Approximate Weight')
     applicant_bank = fields.Text(string='Applicant Bank') 
-   
+    x = fields.Selection([
+        ('normal', 'In Progress'),
+        ('done', 'Ready for next stage'), 
+        ('blocked', 'Blocked'),('a', 'A'),('b', 'B'),('c', 'C'),('d', 'D'),('e', 'E')], string='State')
     
     
     

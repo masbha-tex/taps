@@ -74,28 +74,28 @@ class ProductionLot(models.Model):
         # return super(ProductionLot, self).create(vals)
     
     
-    # @api.model_create_multi
-    # def create(self, vals_list):
-    #     self._check_create()
-    #     for values in vals_list:
-    #         stock_moves = self.env['stock.move.line'].search([
-    #             ('lot_name', '=', values.get('name')),
-    #             ('product_id', '=', values.get('product_id'))
-    #         ])
-    #         po_line = self.env['purchase.order.line'].search([
-    #             ('order_id.name', '=', stock_moves.picking_id.origin),
-    #             ('product_id', '=', values.get('product_id'))
-    #         ],limit=1)
-    #         price = 0.0
-    #         if po_line:
-    #             currency = po_line.currency_id.id
-    #             price = format_amount(self.env, round(po_line.price_unit, 4), currency)
-    #         else:
-    #             po_line = self.env['purchase.order.line'].search([('product_id', '=', values.get('product_id'))]).sorted(key = 'id', reverse=True)[:1]
-    #             currency = po_line.currency_id.id
-    #             price = format_amount(self.env, round(po_line.price_unit, 4), currency)
-    #         values.update(pur_price=price,unit_price=price)
-    #     return super(ProductionLot, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
+    @api.model_create_multi
+    def create(self, vals_list):
+        self._check_create()
+        for values in vals_list:
+            stock_moves = self.env['stock.move.line'].search([
+                ('lot_name', '=', values.get('name')),
+                ('product_id', '=', values.get('product_id'))
+            ])
+            po_line = self.env['purchase.order.line'].search([
+                ('order_id.name', '=', stock_moves.picking_id.origin),
+                ('product_id', '=', values.get('product_id'))
+            ],limit=1)
+            price = 0.0
+            if po_line:
+                cur_rate = po_line.order_id.currency_rate
+                price = po_line.price_unit/cur_rate
+            else:
+                po_line = self.env['purchase.order.line'].search([('product_id', '=', values.get('product_id'))]).sorted(key = 'id', reverse=True)[:1]
+                cur_rate = po_line.order_id.currency_rate
+                price = po_line.price_unit/cur_rate
+            values.update(pur_price=price,unit_price=price)
+        return super(ProductionLot, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
 
 class IncludeCateTypeInPT(models.Model):
     _inherit = 'stock.move.line'
