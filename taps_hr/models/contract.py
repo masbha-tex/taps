@@ -95,51 +95,65 @@ class HrContract(models.Model):
     def create_leave_allocation(self, empid, joindate, state):
         if state == 'open':
             base_auto = self.env['base.automation'].search([('id', '=', 23)])
-            allocation = self.env['hr.leave.allocation'].search([('employee_id', '=', empid)])
-            current_employee = self.env.user.employee_id
-            if allocation:
-                a='a'
-            else:
-                if base_auto:
-                    base_auto.write({'active': False})
-                date_join = datetime.strptime(joindate.strftime('%Y-%m-%d'), '%Y-%m-%d')
-                cl = 10.0
-                sl = 14.0
-                cl_days = round((cl/12)*(13-date_join.month))
-                sl_days = round((sl/12)*(13-date_join.month))
-                cl_days_int = int(cl_days)
-                sl_days_int = int(sl_days)
-                #raise UserError((cl_days_int,sl_days_int))
-                
-                allocation.create({'private_name': 'CL',
-                                   'holiday_status_id': 107,										
-                                   'employee_id': empid,
-                                   'allocation_type': 'regular',
-                                   'holiday_type': 'employee',
-                                   'number_of_days': cl_days_int,
-                                   'date_from': date.today(),
-                                   'interval_unit': 'weeks',
-                                   'interval_number': 1,
-                                   'number_per_interval': 1,
-                                   'unit_per_interval': 'hours',
-                                   'state': 'validate',
-                                   'first_approver_id': current_employee.id})
-                
-                allocation.create({'private_name': 'SL',
-                                   'holiday_status_id': 115,										
-                                   'employee_id': empid,
-                                   'allocation_type': 'regular',
-                                   'holiday_type': 'employee',
-                                   'number_of_days': sl_days_int,
-                                   'date_from': date.today(),
-                                   'interval_unit': 'weeks',
-                                   'interval_number': 1,
-                                   'number_per_interval': 1,
-                                   'unit_per_interval': 'hours',
-                                   'state': 'validate',
-                                   'first_approver_id': current_employee.id})
-                if base_auto:
-                    base_auto.write({'active': True})
+            new_type = self.env['hr.leave.type'].search([('allocation_type', '=', 'fixed'),('active', '=', True),('code', 'in', ('CL','SL'))])
+            
+            if base_auto:
+                base_auto.write({'active': False})            
+            for type in new_type:
+                allocation = self.env['hr.leave.allocation'].search([('employee_id', '=', empid),('holiday_status_id', '=', type.id)])
+                current_employee = self.env.user.employee_id
+                if allocation:
+                    a='a'
+                else:
+                    date_join = datetime.strptime(joindate.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                    cl = 10.0
+                    sl = 14.0
+                    cl_days = 0
+                    sl_days = 0
+                    if (date_join.month==12 and date_join.day>=26) or (date_join.year<type.validity_start.year):
+                        cl_days = 10
+                        sl_days = 14
+                    else:
+                        cl_days = round((cl/12)*(13-date_join.month))
+                        sl_days = round((sl/12)*(13-date_join.month))
+                    cl_days_int = int(cl_days)
+                    sl_days_int = int(sl_days)
+                    #raise UserError((cl_days_int,sl_days_int))
+                    days = 0
+                    if type.code == 'CL':
+                        days = cl_days_int
+                    if type.code == 'SL':
+                        days = sl_days_int
+
+                    allocation.create({'private_name': type.code,
+                                       'holiday_status_id': type.id,										
+                                       'employee_id': empid,
+                                       'allocation_type': 'regular',
+                                       'holiday_type': 'employee',
+                                       'number_of_days': days,
+                                       'date_from': date.today(),
+                                       'interval_unit': 'weeks',
+                                       'interval_number': 1,
+                                       'number_per_interval': 1,
+                                       'unit_per_interval': 'hours',
+                                       'state': 'validate',
+                                       'first_approver_id': current_employee.id})
+
+                    # allocation.create({'private_name': 'SL',
+                    #                    'holiday_status_id': 115,										
+                    #                    'employee_id': empid,
+                    #                    'allocation_type': 'regular',
+                    #                    'holiday_type': 'employee',
+                    #                    'number_of_days': sl_days_int,
+                    #                    'date_from': date.today(),
+                    #                    'interval_unit': 'weeks',
+                    #                    'interval_number': 1,
+                    #                    'number_per_interval': 1,
+                    #                    'unit_per_interval': 'hours',
+                    #                    'state': 'validate',
+                    #                    'first_approver_id': current_employee.id})
+            if base_auto:
+                base_auto.write({'active': True})
     
     def float_to_time(self,hours):
         if hours == 24.0:

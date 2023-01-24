@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 # Copyright (c) 2005-2006 Axelor SARL. (http://www.axelor.com)
@@ -29,59 +29,73 @@ class HolidaysRequest(models.Model):
     _description = "Time Off"
     
     def create_yearly_leave_allocation(self):
-        #, empid, joindate, state
         stdate = (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')
         endate = (datetime.today() + relativedelta(month=12)).strftime('%Y-%m-25')
-        raise UserError((stdate,endate))
-        if state == 'open':
+        
+        leave_type = self.env['hr.leave.type'].search([('validity_stop', '<', stdate),('allocation_type', '=', 'fixed'),('active', '=', True)])
+        if leave_type:
+            for type in leave_type:
+                type.copy({'validity_start': stdate, 'validity_stop': endate})
+            leave_type.write({'active':False})
+        
+        new_type = self.env['hr.leave.type'].search([('validity_start', '=', stdate),('validity_stop', '=', endate),('allocation_type', '=', 'fixed'),('active', '=', True)])
+   
+        for type in new_type:
+            empp = self.env['hr.employee'].search([('active', '=', True)])
             
-            base_auto = self.env['base.automation'].search([('id', '=', 23)])
-            allocation = self.env['hr.leave.allocation'].search([('employee_id', '=', empid)])
-            current_employee = self.env.user.employee_id
-            if allocation:
-                a='a'
-            else:
-                if base_auto:
-                    base_auto.write({'active': False})
-                date_join = datetime.strptime(joindate.strftime('%Y-%m-%d'), '%Y-%m-%d')
+            for emp in empp:
+                current_employee = self.env.user.employee_id
+                date_join = datetime.strptime(emp.joining_date.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                datetoday = datetime.strptime((datetime.today() - relativedelta(months=12) + timedelta(hours=6)).strftime('%Y-%m-%d'), '%Y-%m-%d')
                 cl = 10.0
                 sl = 14.0
-                cl_days = round((cl/12)*(13-date_join.month))
-                sl_days = round((sl/12)*(13-date_join.month))
+                el = 0
+                
+                cl_days = 0
+                sl_days = 0
+                if (date_join.month==12 and date_join.day>=26) or (date_join.year<type.validity_start.year):
+                    cl_days = 10
+                    sl_days = 14
+                else:
+                    cl_days = round((cl/12)*(13-date_join.month))
+                    sl_days = round((sl/12)*(13-date_join.month))
+                
+                if date_join <= datetoday:
+                    el = 16.5
                 cl_days_int = int(cl_days)
                 sl_days_int = int(sl_days)
-                #raise UserError((cl_days_int,sl_days_int))
+                el_days_int = el
                 
-                allocation.create({'private_name': 'CL',
-                                   'holiday_status_id': 107,										
-                                   'employee_id': empid,
-                                   'allocation_type': 'regular',
-                                   'holiday_type': 'employee',
-                                   'number_of_days': cl_days_int,
-                                   'date_from': date.today(),
-                                   'interval_unit': 'weeks',
-                                   'interval_number': 1,
-                                   'number_per_interval': 1,
-                                   'unit_per_interval': 'hours',
-                                   'state': 'validate',
-                                   'first_approver_id': current_employee.id})
+                days = 0
+                if type.code == 'CL':
+                    days = cl_days_int
+                if type.code == 'SL':
+                    days = sl_days_int
+                if type.code == 'EL':
+                    days = el_days_int
                 
-                allocation.create({'private_name': 'SL',
-                                   'holiday_status_id': 115,										
-                                   'employee_id': empid,
-                                   'allocation_type': 'regular',
-                                   'holiday_type': 'employee',
-                                   'number_of_days': sl_days_int,
-                                   'date_from': date.today(),
-                                   'interval_unit': 'weeks',
-                                   'interval_number': 1,
-                                   'number_per_interval': 1,
-                                   'unit_per_interval': 'hours',
-                                   'state': 'validate',
-                                   'first_approver_id': current_employee.id})
-                if base_auto:
-                    base_auto.write({'active': True})    
-    
+                allocation = self.env['hr.leave.allocation'].search([('employee_id', '=', emp.id),('holiday_status_id', '=', type.id)])
+                if allocation:
+                    a='adnan'
+                    # allocation.write({'state':'draft'})
+                    # allocation.unlink()
+                else:
+                    all = self.env['hr.leave.allocation']
+                    all.create({'private_name': type.code + ' Year-' + endate[:4],
+                                'holiday_status_id': type.id,
+                                'employee_id': emp.id,
+                                'allocation_type': 'regular',
+                                'holiday_type': 'employee',
+                                'number_of_days': days,
+                                'date_from': stdate,
+                                'date_to': endate,
+                                'interval_unit': 'weeks',
+                                'interval_number': 1,
+                                'number_per_interval': 1,
+                                'unit_per_interval': 'hours',
+                                'state': 'validate',
+                                'first_approver_id': current_employee.id})
+
 
     def update_attendance(self,state,date_to,date_from,holiday_type,employee_id
                           ,mode_company_id,department_id,category_id):
