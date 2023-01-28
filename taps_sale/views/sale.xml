@@ -72,18 +72,26 @@
               </xpath>
               
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="after">
-                  <field name="dippingfinish"/>
-                  <field name="slidercodesfg"/>
-                  <field name="ptopfinish"/>
-                  <field name="numberoftop"/>
-                  <field name="pbotomfinish"/>
-                  <field name="topbottom"/>
-                  <field name="gap"/>
-                  <field name="sizein"/>
-                  <field name="sizecm"/>
-                  <field name="sizemm"/>
-                  <field name="finish"/>
-                  <field name="shade"/>
+                  <field name="dippingfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="slidercodesfg" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="ptopfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="numberoftop" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="pbotomfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="topbottom" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="gap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="sizein" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="sizecm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="finish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="shade" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                  <field name="shapefin" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                  <field name="logoref" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                  <field name="bcdpart" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                  <field name="nailmat" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                  <field name="nailcap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                  <field name="sizemm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                  <field name="fnamebcd" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                  <field name="nu1washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                  <field name="nu2washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                   
               </xpath>
               
