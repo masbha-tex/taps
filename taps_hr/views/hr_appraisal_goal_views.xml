@@ -5,6 +5,13 @@
         <field name="model">hr.appraisal.goal</field>
         <field name="inherit_id" ref="hr_appraisal.hr_appraisal_goal_view_form"/>
         <field name="arch" type="xml">
+                <header>
+                    <button name="button_confirm" type="object" states="draft" string="Submit" class="oe_highlight"/>
+                    <button name="button_approve" type="object" states='submit' string="Approve" class="oe_highlight"/>
+                    <button name="button_draft" states="refused" string="Set to Draft" type="object" class="oe_highlight" />
+                    <button name="button_cancel" states="draft,approved" string="Refused" type="object" class="oe_highlight" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,refused" readonly="1"/>
+                </header>
                 <xpath expr="//field[@name='progression']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>

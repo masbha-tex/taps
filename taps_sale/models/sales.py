@@ -660,7 +660,7 @@ class SaleOrder(models.Model):
                 vals['name'] = ref
                 if vals.get('company_id') == 1:
                     vals['pi_number'] = ref.replace("S", "Z")
-                if vals.get('company_id') == 2:
+                if vals.get('company_id') == 3:
                     vals['pi_number'] = ref.replace("S", "B")
                     
             if vals.get('sales_type') == "oa":

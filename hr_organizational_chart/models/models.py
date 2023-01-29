@@ -85,3 +85,14 @@ class OrganizationalChart(models.Model):
         if emp.sudo().job_id:
             return emp.sudo().job_id.name
         return ""
+
+    
+    def _get_department(self, department_id):
+        if department.sudo().depertment_id:
+            return department.sudo().department_id.department_name
+        return ""
+    
+    @api.depends('department_id')
+    def _compute_parent_id(self):
+        for employee in self.filtered('department_id.manager_id'):
+            employee.parent_id = employee.department_id.manager_id

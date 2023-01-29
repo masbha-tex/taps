@@ -98,3 +98,6 @@ var EmployeeOrganizationalChart =  AbstractAction.extend({
     core.action_registry.add('organization_dashboard', EmployeeOrganizationalChart);
 
 });
+
+
+
