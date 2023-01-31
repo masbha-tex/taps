@@ -297,7 +297,11 @@ class HrPayslipsss(models.Model):
         el_days = sum(el_record.mapped('number_of_days'))
         el_hours = False
         
-        ml_record = leave_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('date_from', '>=',self.date_from),('date_to', '<=',self.date_to),('holiday_status_id.code', '=', 'ML')])
+        # ml_record = leave_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('date_from', '>=',self.date_from),('date_to', '<=',self.date_to),('holiday_status_id.code', '=', 'ML')])
+        # ml_days = sum(ml_record.mapped('number_of_days'))
+        # ml_hours = False
+        
+        ml_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'ML')])
         ml_days = sum(ml_record.mapped('number_of_days'))
         ml_hours = False
         
