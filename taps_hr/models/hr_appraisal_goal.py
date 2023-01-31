@@ -108,7 +108,7 @@ class HrAppraisalGoal(models.Model):
     ('submit', 'Submitted'),
     ('approved', 'Approved'),
     ('refused', 'Refused')], string='Status', copy=False, 
-        index=True, readonly=True, store=True, default='draft', tracking=True, help="Status of the Goal")
+        index=True, readonly=True, store=True, default='draft', tracking=False, help="Status of the Goal")
     
 
     

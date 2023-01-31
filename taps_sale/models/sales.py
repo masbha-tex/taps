@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+from num2words import num2words
 
 from datetime import datetime, timedelta
 from functools import partial
@@ -55,7 +56,8 @@ class SaleOrder(models.Model):
     destination_port = fields.Char(string='Destination Port')
     origin_country = fields.Char(string='Country of origin')
     validity_period = fields.Char(string='Period of validity')
-    amount_in_word = fields.Char(string='Amount In Words')
+    amount_in_word = fields.Char(string='Amount In Words',compute = '_amount_in_words')
+    # amount_in_word = num2words(amount_total, lang='en_IN')
     appr_weight = fields.Char(string='Approximate Weight')
     applicant_bank = fields.Text(string='Applicant Bank') 
     
@@ -63,6 +65,10 @@ class SaleOrder(models.Model):
     
     
    
+
+    def _amount_in_words (self): 
+        for rec in self: 
+            rec.amount_in_word = str (rec.currency_id.amount_to_text (rec.amount_total)) 
         
     
     
