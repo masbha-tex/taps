@@ -8,6 +8,7 @@
               
               <xpath expr="//field[@name='bic']" position="after">
                   <field name="account_number"/>
+                  <field name="routing_number"/>
               </xpath>
           </field>
       </record>

@@ -16,3 +16,4 @@ class Bank(models.Model):
     
     
     account_number = fields.Char(string='Account Number')
+    routing_number = fields.Char(string='Routing Number')

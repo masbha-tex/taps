@@ -21,6 +21,9 @@ from werkzeug.urls import url_encode
 class SaleOrder(models.Model):
     _inherit = "sale.order"
     
+    
+    priority_sales = fields.Selection(
+        [('0', 'Normal'), ('1', 'Urgent')], 'Priority', default='0', index=True)
     buyer_name = fields.Many2one('sale.buyer', string='Buyer Name')
     season = fields.Char(string='Season')
     sample_ref = fields.Many2one('sale.order', string='Sample Ref.', readonly=True, sales_type={'oa' : [('readonly', False)]})
@@ -52,11 +55,11 @@ class SaleOrder(models.Model):
     pi_number = fields.Char(string='PI No.')
     # shipment_terms = fields.Char(string='Shipment Terms')
     shipment_mode = fields.Char(string='Shipment Mode')
-    loading_place = fields.Char(string='Place of loading')
+    loading_place = fields.Char(string='Place of loading', default='AEPZ, NARAYANGANJ, BANGLADESH')
     destination_port = fields.Char(string='Destination Port')
-    origin_country = fields.Char(string='Country of origin')
+    origin_country = fields.Char(string='Country of origin', default='BANGLADESH')
     validity_period = fields.Char(string='Period of validity')
-    amount_in_word = fields.Char(string='Amount In Words',compute = '_amount_in_words')
+    amount_in_word = fields.Char(string='Amount In Words')
     # amount_in_word = num2words(amount_total, lang='en_IN')
     appr_weight = fields.Char(string='Approximate Weight')
     applicant_bank = fields.Text(string='Applicant Bank') 
@@ -66,9 +69,9 @@ class SaleOrder(models.Model):
     
    
 
-    def _amount_in_words (self): 
-        for rec in self: 
-            rec.amount_in_word = str (rec.currency_id.amount_to_text (rec.amount_total)) 
+    # def _amount_in_words (self): 
+    #     for rec in self: 
+    #         rec.amount_in_word = str (rec.currency_id.amount_to_text (rec.amount_total)) 
         
     
     

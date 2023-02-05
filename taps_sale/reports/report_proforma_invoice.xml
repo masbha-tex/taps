@@ -478,11 +478,11 @@
 							</p>
 						</div>
 						<div class="col-auto col-3 mw-100 mb-2">
-							<p>
+<!-- 							<p>
 								<strong>PERIOD OF VALIDITY:</strong>
 								<br/>
 								<t t-esc="o.validity_period"/>
-							</p>
+							</p> -->
 						</div>
 					</div>
 					<div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
