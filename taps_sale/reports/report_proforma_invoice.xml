@@ -261,20 +261,21 @@
 								  <th class="text-left">Code</th>
 								  <t t-set="line_count" t-value="line_count+3"/>
 								</t>
-								<t t-if="line.finish">
-								  <th class="text-left">Finish</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="line.shade">
-								  <th class="text-left">Shade</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
+								
 								<t t-if="line.ppinboxfinish">
 								  <th>Pin.Box</th>
 								  <t t-set="line_count" t-value="line_count+1"/>
 								</t>
 								<t t-if="line.topbottom">
 								  <th>Top/Bottom</th>
+								  <t t-set="line_count" t-value="line_count+1"/>
+								</t>
+								<t t-if="line.finish">
+								  <th class="text-left">Finish</th>
+								  <t t-set="line_count" t-value="line_count+1"/>
+								</t>
+								<t t-if="line.shade">
+								  <th class="text-left">Shade</th>
 								  <t t-set="line_count" t-value="line_count+1"/>
 								</t>
 								<t t-if="line.numberoftop">
@@ -344,32 +345,7 @@
 													</td>
 												</t>
 											</t>
-											<t t-if="line.finish">
-												<t t-if="finish == line.finish">
-													<td/>
-												</t>
-												<t t-if="finish != line.finish">
-													<td class="text-left" style="border-top: 1px solid black;">
-														<span>
-															<t t-esc="line.finish"/>
-															<t t-set="finish" t-value="line.finish"/>
-														</span>
-													</td>
-												</t>
-											</t>
-											<t t-if="line.shade">
-												<t t-if="shade == line.shade">
-													<td/>
-												</t>
-												<t t-if="shade != line.shade">
-													<td class="text-left" style="vertical-align:middle;border-top: 1px solid black;">
-														<span>
-															<t t-esc="line.shade"/>
-															<t t-set="shade" t-value="line.shade"/>
-														</span>
-													</td>
-												</t>
-											</t>
+											
 											<t t-if="line.ppinboxfinish">
 												<t t-if="pinbox == line.ppinboxfinish">
 													<td/>
@@ -392,6 +368,32 @@
 														<span>
 															<t t-esc="line.topbottom"/>
 															<t t-set="topbottom" t-value="line.topbottom"/>
+														</span>
+													</td>
+												</t>
+											</t>
+											<t t-if="line.finish">
+												<t t-if="finish == line.finish">
+													<td/>
+												</t>
+												<t t-if="finish != line.finish">
+													<td class="text-left" style="vertical-align:middle; border-top: 1px solid black;">
+														<span>
+															<t t-esc="line.finish"/>
+															<t t-set="finish" t-value="line.finish"/>
+														</span>
+													</td>
+												</t>
+											</t>
+											<t t-if="line.shade">
+												<t t-if="shade == line.shade">
+													<td/>
+												</t>
+												<t t-if="shade != line.shade">
+													<td class="text-left" style="vertical-align:middle;border-top: 1px solid black;">
+														<span>
+															<t t-esc="line.shade"/>
+															<t t-set="shade" t-value="line.shade"/>
 														</span>
 													</td>
 												</t>
@@ -421,7 +423,7 @@
 											</t>
 											<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 												<span>
-													<t t-esc="line.product_uom_qty"/>
+													<t t-esc="line.product_uom_qty" t-options='{"widget": "float", "precision": 0}'/>
 													<t t-set="total_quantity" t-value="total_quantity+line.product_uom_qty"/>
 												</span>
 											</td>
@@ -437,7 +439,7 @@
 											</td>
 											<td class="text-right o_price_total" style="vertical-align:middle;border-top: 1px solid black;">
 												<span>
-													<t t-esc="line.price_subtotal"/>
+													<t t-esc="line.price_subtotal" t-options='{"widget": "float", "precision": 2}'/>
 												</span>
 											</td>
 										</t>
@@ -450,7 +452,7 @@
 									<!--</td>-->
 									<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 										<strong>
-											<t t-esc="total_quantity"/>
+											<t t-esc="total_quantity" t-options='{"widget": "float", "precision": 0}'/>
 										</strong>
 									</td>
 									<td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/>
@@ -468,7 +470,7 @@
 										</td>
 										<td>
 											<span>
-												<t t-esc="o.amount_untaxed"/>
+												<t t-esc="o.amount_untaxed" t-options='{"widget": "float", "precision": 2}'/>
 											</span>
 										</td>
 									</tr>
@@ -478,7 +480,7 @@
 										</td>
 										<td>
 											<span>
-												<t t-esc="o.amount_total"/>
+												<t t-esc="o.amount_total" t-options='{"widget": "float", "precision": 2}'/>
 											</span>
 										</td>
 									</tr>

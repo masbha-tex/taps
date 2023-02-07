@@ -933,17 +933,17 @@ class SaleOrderLine(models.Model):
                 #raise UserError((h)) product_attribute_value attribute_id Size (Inch/cm)      
 
         self._compute_tax_id()
-        if self.order_id.pricelist_id and self.order_id.partner_id:
-            vals['price_unit'] = product._get_tax_included_unit_price(
-                self.company_id,
-                self.order_id.currency_id,
-                self.order_id.date_order,
-                'sale',
-                fiscal_position=self.order_id.fiscal_position_id,
-                product_price_unit=self._get_display_price(product),
-                product_currency=self.order_id.currency_id
-            )
-        self.update(vals)
+        # if self.order_id.pricelist_id and self.order_id.partner_id:
+        #     vals['price_unit'] = product._get_tax_included_unit_price(
+        #         self.company_id,
+        #         self.order_id.currency_id,
+        #         self.order_id.date_order,
+        #         'sale',
+        #         fiscal_position=self.order_id.fiscal_position_id,
+        #         product_price_unit=self._get_display_price(product),
+        #         product_currency=self.order_id.currency_id
+        #     )
+        # self.update(vals)
 
         title = False
         message = False
@@ -977,9 +977,10 @@ class SaleOrderLine(models.Model):
     
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
-        if not self.product_uom or not self.product_id:
-            self.price_unit = 0.0
-            return
+        a = 'a'
+        # if not self.product_uom or not self.product_id:
+        #     self.price_unit = 0.0
+        #     return
 #         if self.order_id.pricelist_id and self.order_id.partner_id:
 #             product = self.product_id.with_context(
 #                 lang=self.order_id.partner_id.lang,
