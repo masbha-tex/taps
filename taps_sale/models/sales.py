@@ -943,7 +943,7 @@ class SaleOrderLine(models.Model):
         #         product_price_unit=self._get_display_price(product),
         #         product_currency=self.order_id.currency_id
         #     )
-        # self.update(vals)
+        self.update(vals)
 
         title = False
         message = False
