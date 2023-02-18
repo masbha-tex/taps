@@ -220,6 +220,12 @@ class SaleOrder(models.Model):
                     'dippingfinish':lines.dippingfinish,
                     'gap':lines.gap,
                     'bom_id':lines.bom_id,
+                    'tape_con':lines.tape_con,
+                    'slider_con':lines.slider_con,
+                    'topwire_con':lines.topwire_con,
+                    'botomwire_con':lines.botomwire_con,
+                    'wire_con':lines.wire_con,
+                    'pinbox_con':lines.pinbox_con,
                 }]            
             
             #saleorder.order_ref.order_line#
