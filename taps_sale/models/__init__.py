@@ -8,3 +8,4 @@ from . import buyer_name
 from . import sale_overview
 from . import bank
 from . import sale_representative
+from . import wastage_percent

@@ -4,3 +4,4 @@ access_taps_sale.taps_sale,taps_sale.taps_sale,model_fg_product_formula,sales_te
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_buyer,base.group_user,1,1,1,1
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_overview,base.group_user,1,1,1,1
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_representative,base.group_user,1,1,1,1
+access_taps_sale.taps_sale,taps_sale.taps_sale,model_wastage_percent,sales_team.group_sale_manager,1,1,1,1
