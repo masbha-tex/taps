@@ -45,6 +45,48 @@ class HrEmployeePrivate(models.Model):
     blood_group = fields.Char(string="Blood Group", store=True, tracking=True)
     passing_year = fields.Char(string="Passing Year", store=True, tracking=True)
     result = fields.Char(string="Result", store=True, tracking=True)
+    rfid = fields.Char(string="RFID", copy=False, tracking=True,
+        help="RFID used to Check In/Out in Daily Attendence (if enabled in Configuration).")
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('user_id'):
+            user = self.env['res.users'].browse(vals['user_id'])
+            vals.update(self._sync_user(user, vals.get('image_1920') == self._default_image()))
+            vals['name'] = vals.get('name', user.name)
+        employee = super(HrEmployeePrivate, self).create(vals)
+        url = '/web#%s' % url_encode({
+            'action': 'hr.plan_wizard_action',
+            'active_id': employee.id,
+            'active_model': 'hr.employee',
+            'menu_id': self.env.ref('hr.menu_hr_root').id,
+        })
+        employee._message_log(body=_('<b>Congratulations!</b> May I recommend you to setup an <a href="%s">onboarding plan?</a>') % (url))
+        if employee.department_id:
+            self.env['mail.channel'].sudo().search([
+                ('subscription_department_ids', 'in', employee.department_id.id)
+            ])._subscribe_users()
+        return employee
+
+    def write(self, vals):
+        if 'address_home_id' in vals:
+            account_id = vals.get('bank_account_id') or self.bank_account_id.id
+            if account_id:
+                self.env['res.partner.bank'].browse(account_id).partner_id = vals['address_home_id']
+        if vals.get('user_id'):
+            # Update the profile pictures with user, except if provided 
+            vals.update(self._sync_user(self.env['res.users'].browse(vals['user_id']), bool(vals.get('image_1920'))))
+        res = super(HrEmployeePrivate, self).write(vals)
+        if vals.get('department_id') or vals.get('user_id'):
+            department_id = vals['department_id'] if vals.get('department_id') else self[:1].department_id.id
+            # When added to a department or changing user, subscribe to the channels auto-subscribed by department
+            self.env['mail.channel'].sudo().search([
+                ('subscription_department_ids', 'in', department_id)
+            ])._subscribe_users()
+        return res
+    
+    def _machine_user_registration(self):
+        machines = self.env['zk.machine'].search([])
     
     def _action_work_anniversery_wish_email(self):
         template_id = self.env.ref('taps_hr.work_anniversey_wish_email_template', raise_if_not_found=False).id
@@ -678,4 +720,5 @@ class HrEmployeePublic(models.Model):
     blood_group = fields.Char(readonly=True)
     passing_year = fields.Char(readonly=True)
     result = fields.Char(readonly=True)
+    rfid = fields.Char(readonly=True)
     

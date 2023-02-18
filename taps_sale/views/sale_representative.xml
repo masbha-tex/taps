@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="sale_representative_list" model="ir.ui.view">
+        <field name="name">sale.representative.list</field>
+        <field name="model">sale.representative</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Representative List">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Form View -->
+    <record id="sale_representative_form" model="ir.ui.view">
+        <field name="name">sale.representative.form</field>
+        <field name="model">sale.representative</field>
+        <field name="arch" type="xml">
+            <form string="Sales Representative Form">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="sale_representative_action_config" model="ir.actions.act_window">
+        <field name="name">Sales Representative</field>
+        <field name="res_model">sale.representative</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem
+        id="menu_sale_representative"
+        name="Sales Representative"
+        action="sale_representative_action_config"
+        parent="sale.menu_sales_config"
+        sequence="18"/>
+</odoo>    

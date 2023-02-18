@@ -26,7 +26,7 @@
                 <attribute name="groups"/>
               </xpath>
               <xpath expr="//field[@name='partner_shipping_id']" position="after">
-                <field name="delivery_details"/>
+                <field name="delivery_details" options="{'no_create': True, 'no_create_edit':True}"/>
                 <field name="kind_attention"/>
               </xpath>
               <xpath expr="//field[@name='sale_order_template_id']" position="attributes">
@@ -36,9 +36,9 @@
               
               <xpath expr="//field[@name='sale_order_template_id']" position="after">
                 <field name="customer_ref"/>
-                <field name="sample_ref" attrs="{'invisible': [['sales_type','=','sample']], 'readonly': [['sales_type','=','sale']]}"/>
+                <field name="sample_ref" attrs="{'invisible': [['sales_type','=','sample']], 'readonly': [['sales_type','=','sale']]}" />
                 <field name="style_ref"/>
-<!--                 <field name="sales_person"/>  -->
+                <field name="sale_representative" options="{'no_create': True, 'no_create_edit':True}"/> 
                 <field name="remarks"/>
                 <field name="applicant_bank"/>
               </xpath>              
@@ -48,7 +48,7 @@
                 <field name="season"/>
                 <field name="department"/>
                 <field name="division"/>
-                <field name="buyer_name"/>
+                <field name="buyer_name" options="{'no_create': True, 'no_create_edit':True}"/>
                 <field name="hs_code" attrs="{'invisible': [['sales_type','=','sample']]}"/>
                 <field name="production_type" attrs="{'invisible': [['sales_type','=','sample']]}"/>
                 <field name="production_group" attrs="{'invisible': [['sales_type','=','sample']]}"/>
@@ -68,14 +68,15 @@
                   
               </xpath>
               <xpath expr="//field[@name='payment_term_id']" position="after">
-                  <field name="bank" string="Bank"/>
+                  <field name="bank" string="Bank" options="{'no_create': True, 'no_create_edit':True}"/>
               </xpath>
               <xpath expr="//field[@name='sales_type']" position="after">
                   <field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
                   
               </xpath>
               
-              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="after">
+              
+              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="before">
                   <field name="dippingfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
                   <field name="slidercodesfg" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
                   <field name="ptopfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
@@ -99,11 +100,17 @@
                   <field name="nu2washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                   
               </xpath>
+<!--               <xpath expr="//form/sheet/div/div/label[@string='Is a Company?']" position="attributes">
+                  <attribute name="string">My Company</attribute>
+              </xpath> -->
               
+<!--               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/form[1]/label[3]" position="replace">
+                  <label for="shade" string="Note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}"/>
+              </xpath> -->
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="attributes">
                 <attribute name="attrs">{}</attribute>
                 <attribute name="invisible">1</attribute>
-              </xpath>
+              </xpath>              
               <xpath expr="//field[@name='note']" position="before">
                   <field name="amount_in_word" style="color: #00A09D"/>
                   <field name="appr_weight"/>

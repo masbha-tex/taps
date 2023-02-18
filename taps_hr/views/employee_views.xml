@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <field name="pin" position="before">
                 <field name="isovertime"/>
+                <field name="rfid"/>
             </field>
             <field name="coach_id" position="after">
                 <field name="service_length"/>

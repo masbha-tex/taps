@@ -62,13 +62,9 @@ class SaleOrder(models.Model):
     amount_in_word = fields.Char(string='Amount In Words')
     # amount_in_word = num2words(amount_total, lang='en_IN')
     appr_weight = fields.Char(string='Approximate Weight')
-    applicant_bank = fields.Text(string='Applicant Bank') 
+    applicant_bank = fields.Text(string='Applicant Bank')
+    sale_representative = fields.Many2one('sale.representative', string='Sales Representative')
     
-    
-    
-    
-   
-
     # def _amount_in_words (self): 
     #     for rec in self: 
     #         rec.amount_in_word = str (rec.currency_id.amount_to_text (rec.amount_total)) 
@@ -101,7 +97,7 @@ class SaleOrder(models.Model):
                 'invoice_details': saleorder.order_ref.invoice_details,
                 'delivery_details': saleorder.order_ref.delivery_details,
                 'note' : saleorder.order_ref.note,
-                'others_note': saleorder.order_ref.others_note,
+                # 'others_note': saleorder.order_ref.others_note,
                 'remarks' : saleorder.order_ref.remarks,
                 'kind_attention' : saleorder.order_ref.kind_attention,
                 'customer_ref' : saleorder.order_ref.customer_ref,
@@ -119,7 +115,7 @@ class SaleOrder(models.Model):
                 'revised_date' : saleorder.order_ref.revised_date,
                 'payment_term_id' : saleorder.order_ref.payment_term_id,
                 'bank': saleorder.order_ref.bank,
-                'shipment_terms' : saleorder.order_ref.shipment_terms,
+                'incoterm' : saleorder.order_ref.incoterm,
                 'shipment_mode' : saleorder.order_ref.shipment_mode,
                 'loading_place' : saleorder.order_ref.loading_place,
                 'destination_port' : saleorder.order_ref.destination_port,
@@ -697,6 +693,7 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
     
+    
     topbottom = fields.Text(string='Top/Bottom', store=True)
     slidercode = fields.Text(string='Slider Code', store=True)
     slidercodesfg = fields.Text(string='Slider Code (SFG)', store=True)
@@ -725,7 +722,6 @@ class SaleOrderLine(models.Model):
     nu1washer = fields.Text(string='1 NO. Washer Material & Size', store=True)
     nu2washer = fields.Text(string='2 NO. Washer Material & Size', store=True)
     bom_id = fields.Integer('Bom Id', copy=True, store=True)
-    
     
     def duplicate_line(self):
         max_seq = max(line.sequence for line in self.order_id.order_line)

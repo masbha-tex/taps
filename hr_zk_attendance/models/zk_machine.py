@@ -37,6 +37,7 @@ class ZkMachine(models.Model):
     port_no = fields.Integer(string='Port No', required=True)
     address_id = fields.Many2one('res.partner', string='Working Address')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.user.company_id.id)
+    user_status = fields.Char(string='User Status', compute="get_machine_user")
 
     def device_connect(self, zk):
         try:
@@ -45,11 +46,44 @@ class ZkMachine(models.Model):
         except:
             return False
         
+
+        
     @api.model
     def cron_clear(self):
         machines = self.env['zk.machine'].search([])
         for machine in machines :
             machine.clear_attendance()
+            
+    def get_machine_user(self):
+        # _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
+        for info in self:
+            machine_ip = info.name
+            zk_port = info.port_no
+            timeout = 15
+            try:
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+            except NameError:
+                raise UserError(_("Please install it with 'pip3 install pyzk'."))
+            conn = self.device_connect(zk)
+            # dd = self.device_name(zk)
+            
+            if conn:
+                conn.enable_device()
+                # user_size = len(zk.get_users())
+                user_size = zk
+                
+                if user_size:
+                    info.write({'user_status':user_size})
+
+                    conn.disconnect()
+                    # raise UserError('User Records Deleted.')
+                else:
+                    raise UserError(_('Unable to get user log. Are you sure user log is not empty.'))
+            else:
+                raise UserError(_('Unable to connect to Attendance Device. Please use Test Connection button to verify.'))
+            #except:
+                #raise ValidationError(
+                    #'Unable to clear Attendance log. Are you sure attendance device is connected & record is not empty.')
     
     def clear_attendance(self):
         _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
