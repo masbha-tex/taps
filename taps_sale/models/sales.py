@@ -1086,7 +1086,7 @@ class SaleOrderLine(models.Model):
                 if wastage_tape.wastage>0:
                     con_tape += (con_tape*wastage_tape.wastage)/100
                     con_tape = round(con_tape,4)
-            self.tape_con = con_tape
+            self.tape_con = con_tape*self.product_uom_qty
         if formula.wair_python_compute:
             con_wire = safe_eval(formula.wair_python_compute, {'s': size})
             con_wire = round(con_wire,4)
@@ -1094,7 +1094,7 @@ class SaleOrderLine(models.Model):
                 if wastage_wire.wastage>0:
                     con_wire += (con_wire*wastage_wire.wastage)/100
                     con_wire = round(con_wire,4)
-            self.wire_con = con_wire
+            self.wire_con = con_wire*self.product_uom_qty
         if formula.slider_python_compute:
             con_slider = safe_eval(formula.slider_python_compute)
             con_slider = round(con_slider,4)
@@ -1102,7 +1102,7 @@ class SaleOrderLine(models.Model):
                 if wastage_slider.wastage>0:
                     con_slider += (con_slider*wastage_slider.wastage)/100
                     con_slider = round(con_slider,4)
-            self.slider_con = con_slider
+            self.slider_con = con_slider*self.product_uom_qty
         if formula.twair_python_compute:
             con_top = safe_eval(formula.twair_python_compute)
             con_top = round(con_top,4)
@@ -1110,7 +1110,7 @@ class SaleOrderLine(models.Model):
                 if wastage_top.wastage>0:
                     con_top += (con_top*wastage_top.wastage)/100
                     con_top = round(con_top,4)
-            self.topwire_con = con_top
+            self.topwire_con = con_top*self.product_uom_qty
         if formula.bwire_python_compute:
             con_bottom = safe_eval(formula.bwire_python_compute)
             con_bottom = round(con_bottom,4)
@@ -1118,7 +1118,7 @@ class SaleOrderLine(models.Model):
                 if wastage_bottom.wastage>0:
                     con_bottom += (con_bottom*wastage_bottom.wastage)/100
                     con_bottom = round(con_bottom,4)
-            self.botomwire_con = con_bottom
+            self.botomwire_con = con_bottom*self.product_uom_qty
         if formula.pinbox_python_compute:
             con_pinbox = safe_eval(formula.pinbox_python_compute)
             con_pinbox = round(con_pinbox,4)
@@ -1126,7 +1126,7 @@ class SaleOrderLine(models.Model):
                 if wastage_pinbox.wastage>0:
                     con_pinbox += (con_pinbox*wastage_pinbox.wastage)/100
                     con_pinbox = round(con_pinbox,4)
-            self.pinbox_con = con_pinbox
+            self.pinbox_con = con_pinbox*self.product_uom_qty
         
         #raise UserError((self.product_uom_qty))
         #tape_con,slider_con,topwire_con,botomwire_con,wire_con,pinbox_con
