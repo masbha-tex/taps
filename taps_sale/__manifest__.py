@@ -35,7 +35,7 @@
         'reports/report_oa_invoice.xml',
         'reports/report_proforma_invoice_mt.xml',
         'reports/report_oa_invoice_mt.xml',
-        #'data/ir_oa_sequance.xml',
+        'data/ir_oa_sequence.xml',
         #'views/fg_product.xml',
     ],
     # only loaded in demonstration mode
