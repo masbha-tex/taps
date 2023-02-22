@@ -17,10 +17,21 @@ import re
 
 from werkzeug.urls import url_encode
 
+# class SaleProductConfigurator(models.TransientModel):
+#     _inherit = 'sale.product.configurator'
+    
+#     product_template_attribute_value_ids = fields.Many2many(
+#         'product.template.attribute.value', 'product_configurator_template_attribute_value_rel', string='Attribute Values', readonly=False)
+#     product_custom_attribute_value_ids = fields.Many2many(
+#         'product.attribute.custom.value', 'product_configurator_custom_attribute_value_rel', string="Custom Values", readonly=False)
+#     product_no_variant_attribute_value_ids = fields.Many2many(
+#         'product.template.attribute.value', 'product_configurator_no_variant_attribute_value_rel', string="Extra Values", readonly=False)
 
+    
+    
+    
 class SaleOrder(models.Model):
     _inherit = "sale.order"
-    
     
     priority_sales = fields.Selection(
         [('0', 'Normal'), ('1', 'Urgent')], 'Priority', default='0', index=True)
@@ -69,7 +80,7 @@ class SaleOrder(models.Model):
     #     for rec in self: 
     #         rec.amount_in_word = str (rec.currency_id.amount_to_text (rec.amount_total)) 
         
-    
+    #payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms')
     
     @api.onchange('order_ref')
     def _onchange_orderline_ids(self):
@@ -83,6 +94,7 @@ class SaleOrder(models.Model):
             if not saleorder.order_ref:
                 continue
             saleorder.update({
+                'company_id': saleorder.order_ref.company_id.id,
                 'date_order': saleorder.order_ref.date_order,
                 'pi_date': saleorder.order_ref.pi_date,
                 'validity_date': saleorder.order_ref.validity_date,
@@ -113,7 +125,7 @@ class SaleOrder(models.Model):
                 'po_no' : saleorder.order_ref.po_no,
                 'po_date' : saleorder.order_ref.po_date,
                 'revised_date' : saleorder.order_ref.revised_date,
-                'payment_term_id' : saleorder.order_ref.payment_term_id,
+                
                 'bank': saleorder.order_ref.bank,
                 'incoterm' : saleorder.order_ref.incoterm,
                 'shipment_mode' : saleorder.order_ref.shipment_mode,
@@ -121,9 +133,9 @@ class SaleOrder(models.Model):
                 'destination_port' : saleorder.order_ref.destination_port,
                 'origin_country' : saleorder.order_ref.origin_country,
                 'validity_period' : saleorder.order_ref.validity_period,
-                
-                
+                'sale_representative' : saleorder.order_ref.sale_representative.id
             })
+            
             orderline = self.env['sale.order.line'].search([('order_id', '=', saleorder.order_ref.id)]).sorted(key = 'sequence')
             orderline_values = []
             for lines in orderline:
@@ -252,7 +264,53 @@ class SaleOrder(models.Model):
 #                         'state': 'pending',
 #                         'consumption': production.consumption,
 #                     }]
-    
+
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        """
+        Update the following fields when the partner is changed:
+        - Pricelist
+        - Payment terms
+        - Invoice address
+        - Delivery address
+        - Sales Team
+        """
+        if not self.partner_id:
+            self.update({
+                'partner_invoice_id': False,
+                'partner_shipping_id': False,
+                'fiscal_position_id': False,
+            })
+            return
+
+        self = self.with_company(self.company_id)
+
+        #self.payment_term_id = self.order_ref.payment_term_id.id
+        ptid = self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False
+        if self.order_ref:
+            ptid = self.order_ref.payment_term_id.id
+        addr = self.partner_id.address_get(['delivery', 'invoice'])
+        partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
+        values = {
+            'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+            'payment_term_id': ptid,
+            'partner_invoice_id': addr['invoice'],
+            'partner_shipping_id': addr['delivery'],
+        }
+        user_id = partner_user.id
+        if not self.env.context.get('not_self_saleperson'):
+            user_id = user_id or self.env.context.get('default_user_id', self.env.uid)
+        if user_id and self.user_id.id != user_id:
+            values['user_id'] = user_id
+
+        if self.env['ir.config_parameter'].sudo().get_param('account.use_invoice_terms') and self.env.company.invoice_terms:
+            values['note'] = self.with_context(lang=self.partner_id.lang).env.company.invoice_terms
+        if not self.env.context.get('not_self_saleperson') or not self.team_id:
+            values['team_id'] = self.env['crm.team'].with_context(
+                default_team_id=self.partner_id.team_id.id
+            )._get_default_team_id(domain=['|', ('company_id', '=', self.company_id.id), ('company_id', '=', False)], user_id=user_id)
+        self.update(values)
+
 
     def action_confirm(self):
         if self._get_forbidden_state_confirm() & set(self.mapped('state')):

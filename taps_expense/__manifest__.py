@@ -21,10 +21,10 @@
     # any module necessary for this one to work correctly
     'depends': ['base','hr_expense','web_studio'],
     'data': [
+        'views/assets.xml',
         'security/ir.model.access.csv',
         'views/hr_emp_imprest.xml',
         'views/hr_expense.xml',
-        'views/assets.xml',
         'data/generate_expense_code.xml',
         'data/generate_imprest_code.xml',
         

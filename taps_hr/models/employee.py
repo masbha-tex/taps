@@ -4,6 +4,7 @@ from datetime import date, datetime, time, timedelta
 from odoo.exceptions import UserError
 from odoo.tools import format_datetime
 from dateutil.relativedelta import relativedelta
+from werkzeug.urls import url_encode
 
 class HrEmployeePrivate(models.Model):
     _inherit = 'hr.employee'

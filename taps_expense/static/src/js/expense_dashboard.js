@@ -1,4 +1,4 @@
-odoo.define('hr_expense.dashboard', function (require) {
+odoo.define('taps_expense.dashboard', function (require) {
 "use strict";
 
 /**
