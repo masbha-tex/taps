@@ -29,7 +29,7 @@
         'data/generate_imprest_code.xml',
         
     ],
-    # 'qweb': [
-    #     "static/src/xml/expense_dashboard.xml",
-    # ],
+    'qweb': [
+        "static/src/xml/expense_dashboard.xml",
+    ],
 }

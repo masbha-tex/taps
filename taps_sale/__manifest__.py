@@ -18,7 +18,7 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','stock', 'web_studio','sales_team'],
+    'depends': ['base','sale','stock', 'web_studio','sales_team','web'],
 
     # always loaded
     'data': [
@@ -37,6 +37,11 @@
         'reports/report_oa_invoice_mt.xml',
         'data/ir_oa_sequence.xml',
         #'views/fg_product.xml',
+        # 'views/assets.xml',
+        'views/variant_templates.xml',
     ],
     # only loaded in demonstration mode
+    'installable': True,
+    'auto_install': False,
+    'application': True,
 }

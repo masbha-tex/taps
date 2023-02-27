@@ -37,7 +37,8 @@ class SaleOrder(models.Model):
         [('0', 'Normal'), ('1', 'Urgent')], 'Priority', default='0', index=True)
     buyer_name = fields.Many2one('sale.buyer', string='Buyer Name')
     season = fields.Char(string='Season')
-    sample_ref = fields.Many2one('sale.order', string='Sample Ref.', readonly=True, sales_type={'oa' : [('readonly', False)]})
+    sample_ref = fields.Many2one('sale.order', string='Sample Ref.', readonly=False, domain=[('sales_type', '=', 'sample')])
+    #,sales_type={'sale' : [('readonly', False)],'oa' : [('readonly', False)]}
     sales_type = fields.Selection([
             ('sample', 'Sample Order'),
             ('sale', 'Sales Order'),
@@ -60,7 +61,7 @@ class SaleOrder(models.Model):
     style_ref = fields.Char(string='Style Ref.')
     order_ref = fields.Many2one('sale.order', string='Sales Order Ref.', readonly=True, sales_type={'oa' : [('readonly', False)]})
     remarks = fields.Text(string='Remarks') 
-    # others_note = fields.Text('Others Terms and conditions') 
+    # others_note = fields.Text('Others Terms and conditions')
     bank = fields.Many2one('res.bank', string='Bank')
     # sales_person = fields.Many2one('hr.employee', string='Salesperson')
     pi_number = fields.Char(string='PI No.')
@@ -75,6 +76,20 @@ class SaleOrder(models.Model):
     appr_weight = fields.Char(string='Approximate Weight')
     applicant_bank = fields.Text(string='Applicant Bank')
     sale_representative = fields.Many2one('sale.representative', string='Sales Representative')
+    is_revised = fields.Boolean('Revision', tracking=True)
+    revised_no = fields.Selection([
+            ('r1', 'R1'),
+            ('r2', 'R2'),
+            ('r3', 'R3'),
+            ('r4', 'R4'),
+            ('r5', 'R5'),
+            ('r6', 'R6'),
+            ('r7', 'R7'),
+            ('r8', 'R8'),
+            ('r9', 'R9'),
+            ('r10', 'R10')],
+            string='Number of revision', tracking=True)
+    cause_of_revision = fields.Text(string='Cuase of Revision')
     
     # def _amount_in_words (self): 
     #     for rec in self: 
@@ -1212,4 +1227,6 @@ class SaleOrderLine(models.Model):
 #                 product_currency=self.order_id.currency_id
 #             )
 #             raise UserError((self.price_unit))
+
+
             

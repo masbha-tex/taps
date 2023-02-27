@@ -21,6 +21,7 @@
                     <field name="pur_description" colspan="2" nolabel="1" placeholder="Purchase Description."/>
                </xpath>
             </field>
-        </record>        
+        </record>
+        
     </data>
 </odoo>

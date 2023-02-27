@@ -233,12 +233,14 @@
 								<t t-set="dipping" t-value=""/>
 								<t t-set="top" t-value=""/>
 								<t t-set="bottom" t-value=""/>
+								<t t-set="topbottom" t-value=""/>
 								<t t-set="tape_con" t-value="0"/>
 								<t t-set="slider_con" t-value="0"/>
 								<t t-set="wire_con" t-value="0"/>
 								<t t-set="top_con" t-value="0"/>
 								<t t-set="bottom_con" t-value="0"/>
 								<t t-set="pinbox_con" t-value="0"/>
+								
 								
 								<t t-foreach="o.order_line" t-as="line">
 									<tr>
@@ -268,6 +270,7 @@
 													</td>
 												</t>
 											</t>
+											<t t-if="line.dippingfinish">
 											<t t-if="dipping == line.dippingfinish">
 												<td/>
 											</t>
@@ -277,6 +280,8 @@
 													<t t-set="dipping" t-value="line.dippingfinish"/>
 												</td>
 											</t>
+											</t>
+											<t t-if="line.ptopfinish">
 											<t t-if="top == line.ptopfinish">
 												<td/>
 											</t>
@@ -286,6 +291,8 @@
 													<t t-set="top" t-value="line.ptopfinish"/>
 												</td>
 											</t>
+											</t>
+										  <t t-if="line.pbotomfinish">
 											<t t-if="bottom == line.pbotomfinish">
 												<td/>
 											</t>
@@ -294,6 +301,7 @@
 													<span style="font-size:16px" t-esc="line.pbotomfinish"/>
 													<t t-set="bottom" t-value="line.pbotomfinish"/>
 												</td>
+											</t>
 											</t>
 											<t t-if="line.ppinboxfinish">
 												<t t-if="pinbox == line.ppinboxfinish">
@@ -416,7 +424,7 @@
 										</t>
 									</tr>
 								</t>
-								<tr >
+								<tr>
 								  <tr>
 									<td t-att-colspan="line_count" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;"/>
 									<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->

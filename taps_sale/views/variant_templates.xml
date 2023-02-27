@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="taps_sale_variants" inherit_id="sale.variants" name="taps sale variants">
+        <xpath expr="." position="inside">
+            <script type="text/javascript">
+              $(document).ready(function () {
+                $('select.form-control').select2({
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  placeholder: '',
+                  allowClear: true,
+                });
+              });
+            </script>
+        </xpath>
+    </template>
+</odoo>
