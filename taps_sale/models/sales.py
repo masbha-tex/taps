@@ -1155,9 +1155,10 @@ class SaleOrderLine(models.Model):
             size = values.get('sizecm')
         else:
             size = values.get('sizein')
-        product = self.env['product.product'].search([('id', '=', values.get('product_id'))])
-
-        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', product.product_tmpl_id.id),('unit_type', '=', size_type)])
+            
+        product_ = self.env['sale.order.line'].search([('product_id', '=', int(values.get('product_id')))])[1]
+        #product_ = self.env['product.product'].search([('id', '=', pid)])
+        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', product_.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
         wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
         wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
         wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
@@ -1217,7 +1218,7 @@ class SaleOrderLine(models.Model):
             
             
             #------------------------
-        #values['product_uom_qty'] = size
+        
         result = super(SaleOrderLine, self).write(values)
         return result
 
