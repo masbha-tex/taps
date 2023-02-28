@@ -1142,89 +1142,10 @@ class SaleOrderLine(models.Model):
                 _('It is forbidden to modify the following fields in a locked order:\n%s')
                 % '\n'.join(fields.mapped('field_description'))
             )
-
-            #------------------------
             
-            
-        wastage_percent = self.env['wastage.percent']
-        size_type = "inch"
-        size = 0
-        consumption = 0.0
-        if values.get('sizein') == "N/A":
-            size_type = "cm"
-            size = values.get('sizecm')
-        else:
-            size = values.get('sizein')
-            
-        product_ = self.env['sale.order.line'].search([('product_id', '=', int(values.get('product_id')))],limit=1)
-        #product_ = self.env['product.product'].search([('id', '=', pid)])
-        
-        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', product_.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
-        wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
-        wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
-        wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
-        wastage_bottom = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Bottom')])
-        wastage_wire = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Wire')])
-        wastage_pinbox = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Pinbox')])
-        
-        con_tape = con_wire = con_slider = con_top = con_bottom = con_pinboc = 0       
-        if formula.tape_python_compute:
-            con_tape = safe_eval(formula.tape_python_compute, {'s': size, 'g': values.get('gap')})
-            con_tape = round(con_tape,4)
-            if wastage_tape:
-                if wastage_tape.wastage>0:
-                    con_tape += (con_tape*wastage_tape.wastage)/100
-                    con_tape = round(con_tape,4)
-            values['tape_con'] = con_tape*values.get('product_uom_qty')
-        if formula.wair_python_compute:
-            con_wire = safe_eval(formula.wair_python_compute, {'s': size})
-            con_wire = round(con_wire,4)
-            if wastage_wire:
-                if wastage_wire.wastage>0:
-                    con_wire += (con_wire*wastage_wire.wastage)/100
-                    con_wire = round(con_wire,4)
-            values['wire_con'] = con_wire*values.get('product_uom_qty')
-        if formula.slider_python_compute:
-            con_slider = safe_eval(formula.slider_python_compute)
-            con_slider = round(con_slider,4)
-            if wastage_slider:
-                if wastage_slider.wastage>0:
-                    con_slider += (con_slider*wastage_slider.wastage)/100
-                    con_slider = round(con_slider,4)
-            values['slider_con'] = con_slider*values.get('product_uom_qty')
-        if formula.twair_python_compute:
-            con_top = safe_eval(formula.twair_python_compute)
-            con_top = round(con_top,4)
-            if wastage_top:
-                if wastage_top.wastage>0:
-                    con_top += (con_top*wastage_top.wastage)/100
-                    con_top = round(con_top,4)
-            values['topwire_con'] = con_top*values.get('product_uom_qty')
-        if formula.bwire_python_compute:
-            con_bottom = safe_eval(formula.bwire_python_compute)
-            con_bottom = round(con_bottom,4)
-            if wastage_bottom:
-                if wastage_bottom.wastage>0:
-                    con_bottom += (con_bottom*wastage_bottom.wastage)/100
-                    con_bottom = round(con_bottom,4)
-            values['botomwire_con'] = con_bottom*values.get('product_uom_qty')
-        if formula.pinbox_python_compute:
-            con_pinbox = safe_eval(formula.pinbox_python_compute)
-            con_pinbox = round(con_pinbox,4)
-            if wastage_pinbox:
-                if wastage_pinbox.wastage>0:
-                    con_pinbox += (con_pinbox*wastage_pinbox.wastage)/100
-                    con_pinbox = round(con_pinbox,4)
-            values['pinbox_con'] = con_pinbox*values.get('product_uom_qty')
-            
-            
-            #------------------------
-        
         result = super(SaleOrderLine, self).write(values)
         return result
 
-
-    
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
         #raise UserError(('jsfeijfi'))
