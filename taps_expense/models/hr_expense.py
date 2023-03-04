@@ -485,8 +485,8 @@ class taps_expense_sheet(models.Model):
         select 0 as ExBudget,0 as ExValue) as a"""
 
         #self.env.cr.execute(query, (one_week_ago, self.env.company.id))
-        # self._cr.execute(query, (one_week_ago, self.env.company.id))
-        res = self.env.cr.fetchone()
+        #self._cr.execute(query, (one_week_ago, self.env.company.id))
+        # res = self.env.cr.fetchone()
         currency = self.env.company.currency_id
         
         po = self.env['hr.expense.sheet']

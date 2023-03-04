@@ -89,8 +89,8 @@ class SaleOrder(models.Model):
             ('r9', 'R9'),
             ('r10', 'R10')],
             string='Number of revision', tracking=True)
-    cause_of_revision = fields.Text(string='Cuase of Revision')
-    
+    cause_of_revision = fields.Text(string='Cuase')
+    is_hold = fields.Boolean('Hold', tracking=True)
     # def _amount_in_words (self): 
     #     for rec in self: 
     #         rec.amount_in_word = str (rec.currency_id.amount_to_text (rec.amount_total)) 

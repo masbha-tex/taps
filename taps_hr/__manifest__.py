@@ -39,6 +39,7 @@
         'views/increment_promotion_views.xml',
 #         'views/bulk_attendance_views.xml',
         'views/hr_appraisal_goal_views.xml',
+        'views/hr_appraisal_goal_acvd_views.xml',
         'reports/paperformat.xml',        
         'reports/report_action_menu.xml',
         'reports/custom_header_footer.xml',

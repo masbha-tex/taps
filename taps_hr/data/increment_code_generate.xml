@@ -12,5 +12,16 @@
             <field name="number_increment">1</field>
             <field name="number_next_actual">1</field>
         </record>
+        <record id="ir_sequence_hr_appraisal_goal_acvd_code_generate" model="ir.sequence">
+            <field name="name">Employee Appraisal Goals Achievement: Code Generate</field>
+            <field name="implementation">standard</field>
+            <field name="code">hr.appraisal.goal.acvd.code</field>
+            <field name ="active" eval="True"/>
+            <field name ="company_id" eval="False"/>
+            <field name="padding">6</field>
+            <field name="prefix">GA-</field>           
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>        
     </data>
 </odoo>

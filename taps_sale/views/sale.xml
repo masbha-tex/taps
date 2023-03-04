@@ -1,158 +1,147 @@
 <odoo>
-  <data>
-      <record id="sale_order_varient_colum" model="ir.ui.view">
-          <field name="name">sale.order.lineview</field>
-          <field name="model">sale.order</field>
-          <field name="inherit_id" ref="sale.view_order_form"/>
-          <field name="arch" type="xml">  
-              
-              <xpath expr="//field[@name='name']" position="before">
-                  <field name="priority_sales" widget="priority" class="mr-3"/>
-              </xpath>    
-              
-              <xpath expr="//field[@name='partner_id']" position="before">
-                  <field name="sales_type" widget="badges"/>
-              </xpath>    
-
-              <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
-                <attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]]}</attribute>
-                <attribute name="groups"/>
-                <attribute name="options">{'always_reload':true,'no_create':true}</attribute>
-              </xpath>
-              <xpath expr="//field[@name='partner_invoice_id']" position="after">
-                <field name="invoice_details"/>
-              </xpath>
-              <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
-                <attribute name="groups"/>
-              </xpath>
-              <xpath expr="//field[@name='partner_shipping_id']" position="after">
-                <field name="delivery_details" options="{'no_create': True, 'no_create_edit':True}"/>
-                <field name="kind_attention"/>
-              </xpath>
-              <xpath expr="//field[@name='sale_order_template_id']" position="attributes">
-                <attribute name="attrs">{'readonly': [['state','not in',['draft','sent']]]}</attribute>
-                <attribute name="invisible">1</attribute>
-              </xpath>              
-              
-              <xpath expr="//field[@name='sale_order_template_id']" position="after">
-                <field name="customer_ref"/>
-                <field name="style_ref"/>
-                <field name="sale_representative" options="{'no_create': True, 'no_create_edit':True}"/> 
-                <field name="remarks"/>
-                <field name="applicant_bank"/>
-              </xpath>              
-              
-              <xpath expr="//field[@name='validity_date']" position="before">
-                  <label for="is_revised" invisible='1'/>
-                  <div name="reminder" class="o_row" title="Need to revise this Sale Order?" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}">
-                      <field name="is_revised"/>
-                      <span>Revision</span>
-                      <div class="o_row oe_inline" attrs="{'invisible': [('is_revised', '=', False)]}">
-                          <field name="revised_no" class="oe_inline"/>
-                          
-                      </div>
-                      
-                  </div>
-                <field name="cause_of_revision" attrs="{'invisible': ['|',('is_revised', '=', False), ('sales_type', '=', 'sale')]}"/>
-                <field name="season"/>
-                <field name="department"/>
-                <field name="division"/>
-                <field name="buyer_name" options="{'no_create': True, 'no_create_edit':True}"/>
-                <field name="hs_code" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-                <field name="production_type" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-                <field name="production_group" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-                <field name="order_type" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-                <field name="po_no"/>
-                <field name="po_date"/>
-                <field name="pi_date"/>
-                <field name="revised_date"/>
-                
-              </xpath>              
-
-              <xpath expr="//field[@name='validity_date']" position="attributes">
-                <attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']], 'readonly': [['state','not in',['draft','sent']]]}</attribute>
-              </xpath>
-              <xpath expr="//field[@name='payment_term_id']" position="attributes">
-                <attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']]}</attribute>
-                  
-              </xpath>
-              <xpath expr="//field[@name='payment_term_id']" position="after">
-                  <field name="bank" string="Bank" options="{'no_create': True, 'no_create_edit':True}"/>
-              </xpath>
-              <xpath expr="//field[@name='sales_type']" position="after">
-                  <field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
-                  <field name="sample_ref" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}" />
-                  
-              </xpath>
-              
-              
-              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="before">
-                  <field name="dippingfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="slidercodesfg" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="ptopfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="numberoftop" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="pbotomfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="ppinboxfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="topbottom" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="gap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="sizein" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="sizecm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="finish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="shade" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                  <field name="shapefin" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                  <field name="logoref" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                  <field name="bcdpart" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                  <field name="nailmat" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                  <field name="nailcap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                  <field name="sizemm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                  <field name="fnamebcd" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                  <field name="nu1washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                  <field name="nu2washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                  <field name="tape_con" invisible="1"/>
-                  <field name="slider_con" invisible="1"/>
-                  <field name="topwire_con" invisible="1"/>
-                  <field name="botomwire_con" invisible="1"/>
-                  <field name="wire_con" invisible="1"/>
-                  <field name="pinbox_con" invisible="1"/>
-                  
-              </xpath>
-<!--               <xpath expr="//form/sheet/div/div/label[@string='Is a Company?']" position="attributes">
+	<data>
+		<record id="sale_order_varient_colum" model="ir.ui.view">
+			<field name="name">sale.order.lineview</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='name']" position="before">
+					<field name="priority_sales" widget="priority" class="mr-3"/>
+				</xpath>
+				<xpath expr="//field[@name='partner_id']" position="before">
+					<field name="sales_type" widget="badges"/>
+				</xpath>
+				<xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]]}</attribute>
+					<attribute name="groups"/>
+					<attribute name="options">{'always_reload':true,'no_create':true}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='partner_invoice_id']" position="after">
+					<field name="invoice_details"/>
+				</xpath>
+				<xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+					<attribute name="groups"/>
+				</xpath>
+				<xpath expr="//field[@name='partner_shipping_id']" position="after">
+					<field name="delivery_details" options="{'no_create': True, 'no_create_edit':True}"/>
+					<field name="kind_attention"/>
+				</xpath>
+				<xpath expr="//field[@name='sale_order_template_id']" position="attributes">
+					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent']]]}</attribute>
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='sale_order_template_id']" position="after">
+					<field name="customer_ref"/>
+					<field name="style_ref"/>
+					<field name="sale_representative" options="{'no_create': True, 'no_create_edit':True}"/>
+					<field name="remarks"/>
+					<field name="applicant_bank"/>
+				</xpath>
+				<xpath expr="//field[@name='validity_date']" position="before">
+					<label for="is_revised" invisible='1'/>
+					<div name="reminder" class="o_row" title="Need to revise this Sale Order?" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}">
+						<field name="is_revised"/>
+						<span>Revision</span>
+						<div class="o_row oe_inline" attrs="{'invisible': [('is_revised', '=', False)]}">
+							<field name="revised_no" class="oe_inline"/>
+						</div>
+					</div>
+					<label for="is_hold" invisible='1'/>
+                    <div name="reminder" class="o_row" title="Need to revise this Sale Order?" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','sale']]}">
+						<field name="is_hold"/>
+						<span>Hold</span>
+						
+					</div>
+					<field name="cause_of_revision" attrs="{'invisible': [('is_revised', '=', False), ('is_hold', '=', False)]}"/>
+					<field name="season"/>
+					<field name="department"/>
+					<field name="division"/>
+					<field name="buyer_name" options="{'no_create': True, 'no_create_edit':True}"/>
+					<field name="hs_code" attrs="{'invisible': [['sales_type','=','sample']]}"/>
+					<field name="production_type" attrs="{'invisible': [['sales_type','=','sample']]}"/>
+					<field name="production_group" attrs="{'invisible': [['sales_type','=','sample']]}"/>
+					<field name="order_type" attrs="{'invisible': [['sales_type','=','sample']]}"/>
+					<field name="po_no"/>
+					<field name="po_date"/>
+					<field name="pi_date"/>
+					<field name="revised_date"/>
+				</xpath>
+				<xpath expr="//field[@name='validity_date']" position="attributes">
+					<attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']], 'readonly': [['state','not in',['draft','sent']]]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='payment_term_id']" position="attributes">
+					<attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='payment_term_id']" position="after">
+					<field name="bank" string="Bank" options="{'no_create': True, 'no_create_edit':True}"/>
+				</xpath>
+				<xpath expr="//field[@name='sales_type']" position="after">
+					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
+					<field name="sample_ref" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}"/>
+				</xpath>
+				<xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="before">
+					<field name="dippingfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="slidercodesfg" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="ptopfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="numberoftop" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="pbotomfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="ppinboxfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="topbottom" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="gap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="sizein" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="sizecm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="finish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="shade" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+					<field name="shapefin" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="logoref" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="bcdpart" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="nailmat" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="nailcap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="sizemm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="fnamebcd" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="nu1washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="nu2washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="tape_con" invisible="1"/>
+					<field name="slider_con" invisible="1"/>
+					<field name="topwire_con" invisible="1"/>
+					<field name="botomwire_con" invisible="1"/>
+					<field name="wire_con" invisible="1"/>
+					<field name="pinbox_con" invisible="1"/>
+				</xpath>
+				<!--               <xpath expr="//form/sheet/div/div/label[@string='Is a Company?']" position="attributes">
                   <attribute name="string">My Company</attribute>
               </xpath> -->
-              
-<!--               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/form[1]/label[3]" position="replace">
+				<!--               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/form[1]/label[3]" position="replace">
                   <label for="shade" string="Note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}"/>
               </xpath> -->
-              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="attributes">
-                <attribute name="attrs">{}</attribute>
-                <attribute name="invisible">1</attribute>
-              </xpath>              
-              <xpath expr="//field[@name='note']" position="before">
-                  <field name="amount_in_word" style="color: #00A09D"/>
-                  <field name="appr_weight"/>
-<!--                   <field name="others_note" nolabel="1" placeholder="Others Terms and conditions..."/> -->
-                  
-              </xpath>
-              <xpath expr="//field[@name='picking_policy']" position="after">
-<!--                   <field name="shipment_terms" style="color: #00A09D"/> -->
-                  <field name="shipment_mode" style="color: #00A09D"/>
-                  <field name="loading_place" style="color: #00A09D"/>
-                  <field name="destination_port" style="color: #00A09D"/>
-                  <field name="origin_country" style="color: #00A09D"/>
-                  <field name="validity_period" style="color: #00A09D"/>
-              </xpath>
-              
-          </field>
-      </record>
-      <record id="sale_order_tree_view" model="ir.ui.view">
-          <field name="name">sale.order.treeview</field>
-          <field name="model">sale.order</field>
-          <field name="inherit_id" ref="sale.view_order_tree"/>
-          <field name="arch" type="xml"> 
-              <xpath expr="//field[@name='message_needaction']" position="before">
-                  <field name="priority_sales" optional="show" widget="priority" nolabel="1"/>
-              </xpath>  
-          </field>
-      </record>
-  </data>
+				<xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="attributes">
+					<attribute name="attrs">{}</attribute>
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='note']" position="before">
+					<field name="amount_in_word" style="color: #00A09D"/>
+					<field name="appr_weight"/>
+					<!--                   <field name="others_note" nolabel="1" placeholder="Others Terms and conditions..."/> -->
+				</xpath>
+				<xpath expr="//field[@name='picking_policy']" position="after">
+					<!--                   <field name="shipment_terms" style="color: #00A09D"/> -->
+					<field name="shipment_mode" style="color: #00A09D"/>
+					<field name="loading_place" style="color: #00A09D"/>
+					<field name="destination_port" style="color: #00A09D"/>
+					<field name="origin_country" style="color: #00A09D"/>
+					<field name="validity_period" style="color: #00A09D"/>
+				</xpath>
+			</field>
+		</record>
+		<record id="sale_order_tree_view" model="ir.ui.view">
+			<field name="name">sale.order.treeview</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_tree"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='message_needaction']" position="before">
+					<field name="priority_sales" optional="show" widget="priority" nolabel="1"/>
+				</xpath>
+			</field>
+		</record>
+	</data>
 </odoo>

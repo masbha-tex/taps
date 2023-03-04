@@ -52,7 +52,7 @@ class MrpProduction(models.Model):
                     }]
             production.workorder_ids = [(5, 0)] + [(0, 0, value) for value in workorders_values]
             for workorder in production.workorder_ids:
-                workorder.duration_expected = workorder._get_duration_expected()    
+                workorder.duration_expected = workorder._get_duration_expected()
     
     
     
