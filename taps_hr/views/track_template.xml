@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="track_acvd_line_objective_template">
+        <div>
+<!--             <strong>The Target record has been updated.</strong> -->
+            <ul>
+                <li><t t-esc="line.objective_line_id.display_name"/>:</li>
+                Objective: <t t-esc="line.objective_line_id.display_name" /> -&gt;&gt; <t t-esc="objective_line_id"/><br/>
+            </ul>
+        </div>
+    </template>
+
+    <template id="track_acvd_line_target_template">
+        <div>
+<!--             <strong>The Target record has been updated.</strong> -->
+            <ul>
+                <li><t t-esc="line.objective_line_id.display_name"/>:</li>
+                Target: <t t-esc="line.target" /> -&gt;&gt; <t t-esc="float(target)"/><br/>
+            </ul>
+        </div>
+    </template>
+    
+    <template id="track_acvd_line_acvd_template">
+        <div>
+<!--             <strong>The ACVD record has been updated.</strong> -->
+            <ul>
+                <li><t t-esc="line.objective_line_id.display_name"/>:</li>
+                ACVD: <t t-esc="line.acvd" /> -&gt;&gt; <t t-esc="float(acvd)"/><br/>
+            </ul>
+        </div>
+    </template>
+    
+    <template id="track_acvd_line_entry_template">
+        <div>
+<!--             <strong>The ACVD Entry record has been updated.</strong> -->
+            <ul>
+                <li><t t-esc="line.objective_line_id.display_name"/>:</li>
+                ACVD Entry: <t t-esc="line.acvd_entry" /> -&gt;&gt; <t t-esc="float(acvd_entry)"/><br/>
+            </ul>
+        </div>
+    </template>    
+
+</odoo>

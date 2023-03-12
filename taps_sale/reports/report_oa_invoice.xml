@@ -18,6 +18,10 @@
 							<h2 class="mt15" style="font-size: 15px">
 								<span>OA NO - TZBD - <t t-esc="o.name"/>
 								</span>
+								<t t-if="o.is_revised == True">
+									<span>-<span t-field="o.revised_no"/>
+									</span>
+								</t>
 							</h2>
 						</div>
 						<div class="float-right">
@@ -46,12 +50,10 @@
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<div>
-								<strong style="font-size:12px">DELIVERY DETAILS</strong>
+								<strong style="font-size:12px">ADVISED BANK</strong>
 							</div>
 							<p>
-								<span style="font-size:12px; color: blue;" t-esc="o.partner_invoice_id.name"/>
-								<br/>
-								<span style="font-size:10px" t-esc="o.invoice_details"/>
+								<span style="font-size:12px;color: blue;" t-esc="o.bank.name"/>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
@@ -80,10 +82,10 @@
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<div>
-								<strong style="font-size:12px">ADVISED BANK</strong>
+								<strong style="font-size:12px">ORDER DATE</strong>
 							</div>
 							<p>
-								<span style="font-size:12px;color: blue;" t-esc="o.bank.name"/>
+								<span style="font-size:12px;color: blue;" t-esc="o.create_date.strftime('%d-%m-%Y')"/>
 							</p>
 						</div>
 					</div>
@@ -143,7 +145,7 @@
 						</div>
 					</div>
 					<div style="font-size:12px">
-						<table class="table table-sm o_main_table">
+						<table  class="table table-sm o_main_table">
 							<thead>
 								<t t-set="line_count" t-value="0"/>
 								<t t-set="head" t-value="0"/>
@@ -481,6 +483,7 @@
 								  </tr>
 							</tbody>
 						</table>
+						
 					</div>
 					<br/>
 					<div style="page-break-inside:avoid">
@@ -493,7 +496,7 @@
 								<t t-if="isinstance(o.remarks, str)">
 									<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
 									<t t-foreach="string_to_output" t-as="string_line">
-										<span style="font-size:12px;color: red" t-esc="string_line"/>
+										<span style="font-size:14px;color: red" t-esc="string_line"/>
 										<br/>
 									</t>
 								</t>
@@ -506,14 +509,33 @@
 							<!--	<t t-esc="o.payment_term_id.name"/>-->
 							<!--</p>-->
 						</div>
+						<t t-if="o.cause_of_revision">
 						<div class="col-6">
-							<!--<p>-->
-							<!--	<strong>APPROXIMATE WEIGHT(kg):</strong>-->
-							<!--	<br/>-->
-							<!--	<span t-esc="o.appr_weight" style="color: #00A09D"/>-->
-							<!--</p>-->
+							<p>
+							  <t t-if="(o.is_hold == False) and (o.is_revised == True)">
+								<strong>REVISION CAUSE:</strong>
+								</t>
+								<t t-if="(o.is_hold == True) and (o.is_revised == False)">
+								<strong>HOLDING CAUSE:</strong>
+								</t>
+								<t t-if="(o.is_hold == True) and (o.is_revised == True)">
+								<strong>REVISION &amp; HOLDING CAUSE:</strong>
+								</t>
+								<br/>
+								<t t-if="isinstance(o.cause_of_revision, str)">
+									<t t-set="string_to_output" t-value="o.cause_of_revision.split('\n')"/>
+									<t t-foreach="string_to_output" t-as="string_line">
+										<span style="font-size:14px;color:red" t-esc="string_line"/>
+										<br/>
+									</t>
+								</t>
+							</p>
 						</div>
+						</t>
 					</div>
+					
+					
+					
 					<br/>
 					<br/>
 					<div class="row mt32 mb32 center" style="font-size:12px">
@@ -569,8 +591,7 @@
 						</div>
 					</div>
 					</div>
-					<!--<div class="row mb32 mt32" style="font-size:12px; page-break-inside:avoid;">-->
-					<!--</div>-->
+					
 				</div>
 				</t>
 			</t>

@@ -31,6 +31,7 @@ class PickingVendorNameINT(models.Model):
                     qclotexist = self.env['quality.check'].search([('lot_id', '=', tr.lot_id.id)])
                     if qcproduct:
                         qcproduct.write({'lot_id': tr.lot_id.id})
+                        
                     elif qclotexist:
                         qty=1
                     else:
@@ -43,6 +44,9 @@ class PickingVendorNameINT(models.Model):
                                        'team_id': 1,
                                        'company_id': company.id,
                                        'test_type_id': 3})
+                        
+
+    
                         
                      
                     

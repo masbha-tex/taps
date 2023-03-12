@@ -181,8 +181,8 @@
             <field name="name">Marriage Gift</field>
             <field name="model">hris.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_hr.hris_pdf_template</field>
-            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="report_name">taps_hr.hris_mariage_pdf_template</field>
+            <field name="report_file">taps_hr.hris_mariage_pdf_template</field>
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
@@ -203,8 +203,8 @@
             <field name="name">Shift Schedule Letter</field>
             <field name="model">hris.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_hr.hris_pdf_template</field>
-            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="report_name">taps_hr.hris_shift_pdf_template</field>
+            <field name="report_file">taps_hr.hris_shift_pdf_template</field>
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
@@ -214,8 +214,8 @@
             <field name="name">Attendance Calendar</field>
             <field name="model">hris.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_hr.hris_pdf_template</field>
-            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="report_name">taps_hr.hris_attendance_calendar_pdf_template</field>
+            <field name="report_file">taps_hr.hris_attendance_calendar_pdf_template</field>
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
@@ -247,8 +247,8 @@
             <field name="name">Retention Incentive Letter</field>
             <field name="model">hris.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_hr.hris_pdf_template</field>
-            <field name="report_file">taps_hr.hris_pdf_template</field>
+            <field name="report_name">taps_hr.hris_retentionincentive_pdf_template</field>
+            <field name="report_file">taps_hr.hris_retentionincentive_pdf_template</field>
             <field name="binding_model_id" ref="model_hris_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>

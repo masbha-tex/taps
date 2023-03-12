@@ -23,14 +23,32 @@ class QualityCheck(models.Model):
     receive_qty = fields.Float(compute='_compute_partner_id', string='Receive Qty', readonly=True)
     uom = fields.Many2one(related='product_id.uom_id', string='UOM', readonly=True)
     is_deviation = fields.Boolean("Is Deviation", readonly=True, store=True)
-    receipt_date = fields.Datetime('Receipt Date', store=True, readonly=True, compute='_compute_receipt_date')
+    receipt_date = fields.Datetime('Receipt Date', store=True, readonly=True)
     #product_id picking_id
     
-    def _compute_receipt_date(self):
-        for rec in self:
-            data = self.env['stock.picking'].search([('id','=', rec.picking_id.id)])
-            rec.receipt_date = data.scheduled_date
-            # raise UserError((data.schedule_date))
+    
+    @api.model
+    def create(self, vals):
+        if 'name' not in vals or vals['name'] == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('quality.check') or _('New')
+        if 'point_id' in vals and not vals.get('test_type_id'):
+            vals['test_type_id'] = self.env['quality.point'].browse(vals['point_id']).test_type_id.id
+        
+        data = self.env['stock.picking'].search([('id','=', vals.get('picking_id'))])
+        vals['receipt_date'] = data.scheduled_date
+        return super(QualityCheck, self).create(vals)
+                        
+    def write(self, vals):
+        efefef = self.env['stock.picking'].search([('id','=', vals.get('picking_id'))])
+        vals['receipt_date'] = efefef.scheduled_date
+        return super(QualityCheck, self).write(vals)
+    
+    
+    # def _compute_receipt_date(self):
+    #     for rec in self:
+    #         data = self.env['stock.picking'].search([('id','=', rec.picking_id.id)])
+    #         rec.receipt_date = data.scheduled_date
+    #         raise UserError((data.schedule_date))
             
     #def compute_po_qty(self):
         #for rec in self: 
@@ -159,4 +177,3 @@ class QualityCheckLine(models.Model):
     
     
     
-

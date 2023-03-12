@@ -9,7 +9,7 @@
 					<field name="priority_sales" widget="priority" class="mr-3"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_id']" position="before">
-					<field name="sales_type" widget="badges"/>
+					<field name="sales_type"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_invoice_id']" position="attributes">
 					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]]}</attribute>
@@ -47,7 +47,7 @@
 						</div>
 					</div>
 					<label for="is_hold" invisible='1'/>
-                    <div name="reminder" class="o_row" title="Need to revise this Sale Order?" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','sale']]}">
+                    <div name="reminder" class="o_row" title="Need to hold the OA?" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','sale']]}">
 						<field name="is_hold"/>
 						<span>Hold</span>
 						

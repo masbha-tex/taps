@@ -336,14 +336,14 @@ class SaleOrder(models.Model):
         for order in self.filtered(lambda order: order.partner_id not in order.message_partner_ids):
             order.message_subscribe([order.partner_id.id])
         self.write(self._prepare_confirmation_values())
-        bom = self.env['mrp.bom']
+        #bom = self.env['mrp.bom']
         for orderline in self.order_line:
-            #bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id)])
-            or_line = self.env['sale.order.line'].search([('product_id', '=', orderline.product_id.id),('slidercodesfg', '=', orderline.slidercodesfg),('dyedtape', '=', orderline.dyedtape),('ptopfinish', '=', orderline.ptopfinish),('numberoftop', '=', orderline.numberoftop),('pbotomfinish', '=', orderline.pbotomfinish),('ppinboxfinish', '=', orderline.ppinboxfinish),('dippingfinish', '=', orderline.dippingfinish),('sizein', '=', orderline.sizein),('sizecm', '=', orderline.sizecm),('gap', '=', orderline.gap)])
+            bom = self.env['mrp.bom'].search([('product_id', '=', orderline.product_id.id)])
+            # or_line = self.env['sale.order.line'].search([('product_id', '=', orderline.product_id.id),('slidercodesfg', '=', orderline.slidercodesfg),('dyedtape', '=', orderline.dyedtape),('ptopfinish', '=', orderline.ptopfinish),('numberoftop', '=', orderline.numberoftop),('pbotomfinish', '=', orderline.pbotomfinish),('ppinboxfinish', '=', orderline.ppinboxfinish),('dippingfinish', '=', orderline.dippingfinish),('sizein', '=', orderline.sizein),('sizecm', '=', orderline.sizecm),('gap', '=', orderline.gap)])
             #raise UserError((len(or_line)))
             #raise UserError((orderline))
-            if len(or_line)>1:
-                orderline.write({'bom_id':or_line[1].bom_id})
+            if bom:
+                orderline.write({'bom_id':bom.id})
                 continue
             else:
                 bom_info = {
@@ -377,75 +377,7 @@ class SaleOrder(models.Model):
                 process.append(bom_option)
                 bom_option = {}
                 
-                self.env['mrp.routing.workcenter'].create(process) 
-#                 bom_option = {
-#                     'name':'Dyeing Process',
-#                     'workcenter_id':1,
-#                     'sequence':1,
-#                     'bom_id':bomrec.id,
-#                     'company_id':self.company_id.id,
-#                     'worksheet_type':'text',
-#                     'time_mode':'auto',
-#                     'time_mode_batch':10,
-#                     'time_cycle_manual':60
-#                 }
-#                 process.append(bom_option)
-#                 bom_option = {}
-#                 bom_option = {
-#                     'name':'Plating Slider',
-#                     'workcenter_id':15,
-#                     'sequence':2,
-#                     'bom_id':bomrec.id,
-#                     'company_id':self.company_id.id,
-#                     'worksheet_type':'text',
-#                     'time_mode':'auto',
-#                     'time_mode_batch':10,
-#                     'time_cycle_manual':60
-#                 }
-#                 process.append(bom_option)
-#                 bom_option = {}
-#                 bom_option = {
-#                     'name':'Plating Top',
-#                     'workcenter_id':15,
-#                     'sequence':3,
-#                     'bom_id':bomrec.id,
-#                     'company_id':self.company_id.id,
-#                     'worksheet_type':'text',
-#                     'time_mode':'auto',
-#                     'time_mode_batch':10,
-#                     'time_cycle_manual':60
-#                 }
-#                 process.append(bom_option)
-#                 bom_option = {}
-#                 bom_option = {
-#                     'name':'Plating Bottom',
-#                     'workcenter_id':15,
-#                     'sequence':4,
-#                     'bom_id':bomrec.id,
-#                     'company_id':self.company_id.id,
-#                     'worksheet_type':'text',
-#                     'time_mode':'auto',
-#                     'time_mode_batch':10,
-#                     'time_cycle_manual':60
-#                 }
-#                 process.append(bom_option)
-#                 bom_option = {}
-#                 bom_option = {
-#                     'name':'Dipping Chain',
-#                     'workcenter_id':16,
-#                     'sequence':5,
-#                     'bom_id':bomrec.id,
-#                     'company_id':self.company_id.id,
-#                     'worksheet_type':'text',
-#                     'time_mode':'auto',
-#                     'time_mode_batch':10,
-#                     'time_cycle_manual':60
-#                 }
-#                 process.append(bom_option)
-
-                
-                #orderline.write({'bom_id':bomrec.id})
-                #bom_line = self.env['mrp.bom']
+                self.env['mrp.routing.workcenter'].create(process)
                 wastage_percent = self.env['wastage.percent']
                 seq = 0
                 if orderline.slidercodesfg:
@@ -453,6 +385,40 @@ class SaleOrder(models.Model):
                     size_type = "inch"
                     consumption = 0.0
                     product_temp = self.env['product.template'].search([('name', '=', orderline.slidercodesfg)]).sorted(key = 'id', reverse=True)[:1]
+#                     product_temp_id = False
+#                     if product_temp:
+#                         product_temp_id = product_temp.id
+                    
+#                     else:
+#                         product_info = {
+#                             'name':slidercodesfg,
+#                             'company_id':self.company_id.id,
+#                             'uom_id':1,
+#                             'uom_po_id':1,
+#                             'type':'product',
+#                             'default_code':'SFG_',
+#                         }
+#                         sfg = self.env['product.template'].create(product_info)
+#                         product_temp_id = sfg.id
+#                         sfg_product_id = self.env['product.product'].search([('product_tmpl_id', '=', product_temp_id)]).sorted(key = 'id', reverse=True)[:1]
+#                         new_sfg_bom_info = {
+#                             'code':'',
+#                             'active':True,
+#                             'type':'normal',
+#                             'product_tmpl_id':product_temp_id.id,
+#                             'product_id':sfg_product_id.id,
+#                             'product_qty':100,
+#                             'product_uom_id':1,
+#                             'sequence':'',
+#                             'ready_to_produce':'asap',
+#                             'picking_type_id':'',
+#                             'company_id':self.company_id.id,
+#                             'consumption':'warning',#expatt.store_fname,
+#                         }
+#                         self.env['mrp.bom'].create(new_sfg_bom_info)
+#                         #raise UserError((product_temp_id))                    
+                    
+                    
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                     
                     #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
@@ -997,99 +963,8 @@ class SaleOrderLine(models.Model):
             if rec.attribute_id.name == '2 NO. Washer Material & Size':
                 self.nu2washer = rec.product_attribute_value_id.name
                 continue
-        
-#         if productname and productname.find("(")>0:
-#             b = productname
-#             c = len(b)
-#             d = b.index("(")
-#             e = b.index(")")
-#             f = c-d-1
-#             g = c-e
-#             h = b[-f:-g]
-#             for kv in h.split(","):
-#                 atv = self.env['product.attribute.value'].search([('name', '=', kv.strip())])
-#                 satv = atv.sorted(key = 'attribute_id')[:1]
-#                 at = self.env['product.attribute'].search([('id', '=', int(satv.attribute_id))])
-#                 if at.name == 'Top / Bottom':
-#                     self.topbottom = kv
-#                     continue
-#                 if at.name == 'Slider Code':
-#                     self.slidercode = kv
-#                     continue
-#                 if at.name == 'Slider Code (SFG)':
-#                     self.slidercodesfg = kv
-#                     continue
-#                 if at.name == 'Finish':
-#                     self.finish = kv
-#                     continue
-#                 if at.name == 'Shade':
-#                     self.shade = kv
-#                     continue
-#                 if at.name == 'Size (Inch)':
-#                     self.sizein = kv
-#                     continue
-#                 if at.name == 'Size (CM)':
-#                     self.sizecm = kv
-#                     continue
-#                 if at.name == 'Size (MM)':
-#                     self.sizemm = kv
-#                     continue
-#                 if at.name == 'Dyed Tape':
-#                     self.dyedtape = kv
-#                     continue
-#                 if at.name == 'Plated Top Finish':
-#                     self.ptopfinish = kv
-#                     continue
-#                 if at.name == 'Plated Bottom Finish':
-#                     self.pbotomfinish = kv
-#                     continue
-#                 if at.name == 'Plated Pin-Box Finish':
-#                     self.ppinboxfinish = kv
-#                     continue
-#                 if at.name == 'Dipping Finish':
-#                     self.dippingfinish = kv
-#                     continue
-#                 if at.name == 'Gap':
-#                     self.gap = kv
-#                     continue
-#                 if at.name == 'Logo & Ref':
-#                     self.logoref = kv
-#                     continue
-#                 if at.name == 'Shape Finish':
-#                     self.shapefin = kv
-#                     continue
-#                 if at.name == 'BCD Part Material Type / Size':
-#                     self.bcdpart = kv
-#                     continue
-#                 if at.name == 'Nail Material / Type / Shape / Size':
-#                     self.nailmat = kv
-#                     continue
-#                 if at.name == 'Nail Cap Logo':
-#                     self.nailcap = kv
-#                     continue
-#                 if at.name == 'Finish Name ( BCD/NAIL/ NAIL CAP)':
-#                     self.fnamebcd = kv
-#                     continue
-#                 if at.name == '1 NO. Washer Material & Size':
-#                     self.nu1washer = kv
-#                     continue
-#                 if at.name == '2 NO. Washer Material & Size':
-#                     self.nu2washer = kv
-#                     continue   
-                        
-                #raise UserError((h)) product_attribute_value attribute_id Size (Inch/cm)      
-
+                
         self._compute_tax_id()
-        # if self.order_id.pricelist_id and self.order_id.partner_id:
-        #     vals['price_unit'] = product._get_tax_included_unit_price(
-        #         self.company_id,
-        #         self.order_id.currency_id,
-        #         self.order_id.date_order,
-        #         'sale',
-        #         fiscal_position=self.order_id.fiscal_position_id,
-        #         product_price_unit=self._get_display_price(product),
-        #         product_currency=self.order_id.currency_id
-        #     )
         self.update(vals)
 
         title = False
@@ -1105,7 +980,17 @@ class SaleOrderLine(models.Model):
             if product.sale_line_warn == 'block':
                 self.product_id = False
 
-        return result   
+        return result
+        # if self.order_id.pricelist_id and self.order_id.partner_id:
+        #     vals['price_unit'] = product._get_tax_included_unit_price(
+        #         self.company_id,
+        #         self.order_id.currency_id,
+        #         self.order_id.date_order,
+        #         'sale',
+        #         fiscal_position=self.order_id.fiscal_position_id,
+        #         product_price_unit=self._get_display_price(product),
+        #         product_currency=self.order_id.currency_id
+        #     )
     
 
 
@@ -1159,8 +1044,7 @@ class SaleOrderLine(models.Model):
             size = self.sizecm
         else:
             size = self.sizein
-        
-
+            
         formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
         wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
         wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
@@ -1169,12 +1053,7 @@ class SaleOrderLine(models.Model):
         wastage_wire = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Wire')])
         wastage_pinbox = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Pinbox')])
         
-        # formula_tape = formula.tape_python_compute
-        # formula_slider = formula.tape_python_compute
-        # formula_top = formula.tape_python_compute
-        # formula_bottom = formula.tape_python_compute
-        # formula_wire = formula.tape_python_compute
-        # formula_pinbox = formula.tape_python_compute
+        
         con_tape = con_wire = con_slider = con_top = con_bottom = con_pinboc = 0       
         if formula.tape_python_compute:
             con_tape = safe_eval(formula.tape_python_compute, {'s': size, 'g': self.gap})
@@ -1225,32 +1104,3 @@ class SaleOrderLine(models.Model):
                     con_pinbox = round(con_pinbox,4)
             self.pinbox_con = con_pinbox*self.product_uom_qty
         
-        #raise UserError((self.product_uom_qty))
-        #tape_con,slider_con,topwire_con,botomwire_con,wire_con,pinbox_con
-        # if not self.product_uom or not self.product_id:
-        #     self.price_unit = 0.0
-        #     return
-#         if self.order_id.pricelist_id and self.order_id.partner_id:
-#             product = self.product_id.with_context(
-#                 lang=self.order_id.partner_id.lang,
-#                 partner=self.order_id.partner_id,
-#                 quantity=self.product_uom_qty,
-#                 date=self.order_id.date_order,
-#                 pricelist=self.order_id.pricelist_id.id,
-#                 uom=self.product_uom.id,
-#                 fiscal_position=self.env.context.get('fiscal_position')
-#             )
-            
-#             self.price_unit = product._get_tax_included_unit_price(
-#                 self.company_id,
-#                 self.order_id.currency_id,
-#                 self.order_id.date_order,
-#                 'sale',
-#                 fiscal_position=self.order_id.fiscal_position_id,
-#                 product_price_unit=self._get_display_price(product),
-#                 product_currency=self.order_id.currency_id
-#             )
-#             raise UserError((self.price_unit))
-
-
-            

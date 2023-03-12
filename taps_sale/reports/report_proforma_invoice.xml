@@ -18,6 +18,10 @@
 							<h2 class="mt15" style="font-size: 15px">
 								<span>PI # TZBD- <t t-esc="o.pi_number"/>
 								</span>
+								<t t-if="o.is_revised == True">
+									<span>-<span t-field="o.revised_no"/>
+									</span>
+								</t>
 							</h2>
 						</div>
 						<div class="float-right">
@@ -119,7 +123,9 @@
 							<p>
 								<strong>PO NUMBER</strong>
 								<br/>
-								<t t-esc="o.po_no"/>
+								<t t-if="o.po_no">
+									<t t-esc="o.po_no"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-100 mb-2">
@@ -159,50 +165,55 @@
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-100 mb-2">
-							<!--<p>-->
-							<!--	<strong>OA CONFIRMATION:</strong>-->
-							<!--	<br/>-->
-							<!--	<t t-if="o.state == 'Sales Order'">-->
-							<!--	<t t-esc="date_order.strftime('%d-%m-%Y')"/>-->
-							<!--	</t>-->
-							<!--</p>-->
-						</div>
+								</div>
 					</div>
 					<div class="row mt32 mb32" style="font-size:12px">
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>STYLE REF</strong>
 							<p>
-								<t t-esc="o.style_ref"/>
+								<t t-if="o.style_ref">
+									<t t-esc="o.style_ref"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>PRODUCTION TYPE</strong>
 							<p>
-								<t t-esc="o.production_type"/>
+								<t t-if="o.production_type">
+									<t t-esc="o.production_type"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>ORDER TYPE</strong>
 							<p>
-								<t t-esc="o.order_type"/>
+								<t t-if="o.order_type">
+									<t t-esc="o.order_type"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>KIND ATTENTION</strong>
 							<p>
-								<t t-esc="o.kind_attention"/>
+								<t t-if="o.kind_attention">
+									<t t-esc="o.kind_attention"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>SALESPERSON</strong>
 							<p>
-								<t t-esc="o.sale_representative.name"/>
+								<t t-if="o.sale_representative">
+									<t t-esc="o.sale_representative.name"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>SAMPLE REF</strong>
 							<p>
-								<t t-esc="o.sample_ref.name"/>
+								<t t-if="o.sample_ref.name">
+									<t t-esc="o.sample_ref.name"/>
+								</t>
 							</p>
 						</div>
 					</div>
@@ -210,31 +221,41 @@
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>SEASON</strong>
 							<p>
-								<t t-esc="o.season"/>
+								<t t-if="o.season">
+									<t t-esc="o.season"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>DEPARTMENT</strong>
 							<p>
-								<t t-esc="o.department"/>
+								<t t-if="o.department">
+									<t t-esc="o.department"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>DIVISION</strong>
 							<p>
-								<t t-esc="o.division"/>
+								<t t-if="o.division">
+									<t t-esc="o.division"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>BUYER NAME</strong>
 							<p>
-								<t t-esc="o.buyer_name.name"/>
+								<t t-if="o.buyer_name">
+									<t t-esc="o.buyer_name.name"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>H.S CODE</strong>
 							<p>
-								<t t-esc="o.hs_code"/>
+								<t t-if="o.hs_code">
+									<t t-esc="o.hs_code"/>
+								</t>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
@@ -244,61 +265,101 @@
 							</p>
 						</div>
 					</div>
-					
 					<div style="font-size:12px">
+						<t t-set="c" t-value="0"/>
+						<t t-set="pin" t-value="0"/>
+						<t t-set="t_b" t-value="0"/>
+						<t t-set="fin" t-value="0"/>
+						<t t-set="sh" t-value="0"/>
+						<t t-set="n_t" t-value="0"/>
+						<t t-set="inh" t-value="0"/>
+						<t t-set="cm" t-value="0"/>
+						<t t-foreach="o.order_line" t-as="line">
+							<t t-if="c == 0">
+								<t t-if="line.slidercodesfg">
+									<t t-set="c" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="pin == 0">
+								<t t-if="line.ppinboxfinish">
+									<t t-set="pin" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="t_b == 0">
+								<t t-if="line.topbottom">
+									<t t-set="t_b" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="fin == 0">
+								<t t-if="line.finish">
+									<t t-set="fin" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="sh == 0">
+								<t t-if="line.shade">
+									<t t-set="sh" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="n_t == 0">
+								<t t-if="line.numberoftop">
+									<t t-set="n_t" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="inh == 0">
+								<t t-if="line.sizein != 'N/A' ">
+									<t t-set="inh" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="cm == 0">
+								<t t-if="line.sizecm != 'N/A'">
+									<t t-set="cm" t-value="1"/>
+								</t>
+							</t>
+						</t>
 						<table class="table table-sm o_main_table">
 							<thead>
-							  <t t-set="line_count" t-value="0"/>
-							  <t t-set="head" t-value="0"/>
-							  <t t-foreach="o.order_line" t-as="line">
-							   <t t-if="head == 0"> 
-							  <tr>
-							 
-								<th class="text-left">Item</th>
-								<th class="text-center">Image</th>
-								
-								<t t-if="line.slidercodesfg">
-								  <th class="text-left">Code</th>
-								  <t t-set="line_count" t-value="line_count+3"/>
-								</t>
-								
-								<t t-if="line.ppinboxfinish">
-								  <th>Pin.Box</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="line.topbottom">
-								  <th>Top/Bottom</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="line.finish">
-								  <th class="text-left">Finish</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="line.shade">
-								  <th class="text-left">Shade</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="line.numberoftop">
-								  <th class="text-left">No.of.Top</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="line.sizein != 'N/A' ">
-								  <th class="text-right">Inch</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="line.sizecm != 'N/A'">
-								  <th class="text-right">Cm</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								
-								<th class="text-right">Qty/Pcs</th>
-								<th class="text-right">Price/Unit</th>
-								<th class="text-right">Discount</th>
-								<th>Amount</th>
-								<t t-set="head" t-value="1"/>
+								<t t-set="line_count" t-value="0"/>
+								<tr>
+									<th class="text-left">Item</th>
+									<th class="text-center">Image</th>
+									<t t-if="c == 1">
+										<th class="text-left">Code</th>
+										<t t-set="line_count" t-value="line_count+3"/>
+									</t>
+									<t t-if="pin == 1">
+										<th>Pin.Box</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="t_b == 1">
+										<th>Top/Bottom</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="fin == 1">
+										<th class="text-left">Finish</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="n_t == 1">
+										<th class="text-left">No.of.Top</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+										<t t-set="n_t" t-value="1"/>
+									</t>
+									<t t-if="sh == 1">
+										<th class="text-left">Shade</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="inh == 1">
+										<th class="text-right">Inch</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="cm == 1">
+										<th class="text-right">Cm</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<th class="text-right">Qty/Pcs</th>
+									<th class="text-right">Price/Unit</th>
+									<th class="text-right">Discount</th>
+									<th>Amount</th>
 								</tr>
-								</t>
-								</t>
 							</thead>
 							<tbody>
 								<t t-set="total_quantity" t-value="0"/>
@@ -309,6 +370,7 @@
 								<t t-set="shade" t-value=""/>
 								<t t-set="pinbox" t-value=""/>
 								<t t-set="topbottom" t-value=""/>
+								<t t-set="notop" t-value=""/>
 								<t t-foreach="o.order_line" t-as="line">
 									<tr>
 										<t t-if="not line.display_type">
@@ -316,7 +378,7 @@
 												<td/>
 											</t>
 											<t t-if="item != line.product_template_id.name">
-												<td class="text-left" style="vertical-align:middle;border-top:1px solid black;">
+												<td class="text-left" style="border-top:1px solid black;">
 													<span>
 														<t t-esc="line.product_template_id.name"/>
 														<t t-set="item" t-value="line.product_template_id.name"/>
@@ -327,99 +389,141 @@
 												<td/>
 											</t>
 											<t t-if="id != line.product_template_id">
-												<td style="vertical-align:middle;border-top:1px solid black;">
+												<td style="border-top:1px solid black;">
 													<img t-if="line.product_template_id.image_1920" t-att-src="image_data_uri(line.product_template_id.image_1920)" style="height: 50px; width: 50px;"/>
 													<t t-set="id" t-value="line.product_template_id"/>
 												</td>
 											</t>
-											<t t-if="line.slidercodesfg">
-												<t t-if="code == line.slidercodesfg">
+											<t t-if="c == 1">
+												<t t-if="line.slidercodesfg">
+													<t t-if="code == line.slidercodesfg">
+														<td/>
+													</t>
+													<t t-if="code != line.slidercodesfg">
+														<td class="text-left" style="border-top:1px solid black;">
+															<span>
+																<t t-esc="line.slidercodesfg"/>
+																<t t-set="code" t-value="line.slidercodesfg"/>
+															</span>
+														</td>
+													</t>
+												</t>
+												<t t-if=" not line.slidercodesfg">
 													<td/>
 												</t>
-												<t t-if="code != line.slidercodesfg">
-													<td class="text-left" style="vertical-align:middle;border-top:1px solid black;">
+											</t>
+											<t t-if="pin == 1">
+												<t t-if="line.ppinboxfinish">
+													<t t-if="pinbox == line.ppinboxfinish">
+														<td/>
+													</t>
+													<t t-if="pinbox != line.ppinboxfinish">
+														<td class="text-left" style="border-top: 1px solid black;">
+															<span>
+																<t t-esc="line.ppinboxfinish"/>
+																<t t-set="pinbox" t-value="line.ppinboxfinish"/>
+															</span>
+														</td>
+													</t>
+												</t>
+												<t t-if=" not line.ppinboxfinish">
+													<td/>
+												</t>
+											</t>
+											<t t-if="t_b == 1">
+												<t t-if="line.topbottom">
+													<t t-if="topbottom == line.topbottom">
+														<td/>
+													</t>
+													<t t-if="topbottom != line.topbottom">
+														<td class="text-left" style="border-top: 1px solid black;">
+															<span>
+																<t t-esc="line.topbottom"/>
+																<t t-set="topbottom" t-value="line.topbottom"/>
+															</span>
+														</td>
+													</t>
+												</t>
+												<t t-if=" not line.topbottom">
+													<td/>
+												</t>
+											</t>
+											<t t-if="fin == 1">
+												<t t-if="line.finish">
+													<t t-if="finish == line.finish">
+														<td/>
+													</t>
+													<t t-if="finish != line.finish">
+														<td class="text-left" style="border-top: 1px solid black;">
+															<span>
+																<t t-esc="line.finish"/>
+																<t t-set="finish" t-value="line.finish"/>
+															</span>
+														</td>
+													</t>
+												</t>
+												<t t-if=" not line.finish">
+													<td/>
+												</t>
+											</t>
+											<t t-if="n_t == 1">
+												<t t-if="line.numberoftop">
+													<t t-if="notop == line.numberoftop">
+														<td/>
+													</t>
+													<t t-if="notop != line.numberoftop">
+														<td class="text-left" style="border-top: 1px solid black;">
+															<span>
+																<t t-esc="line.numberoftop"/>
+															</span>
+														</td>
+													</t>
+												</t>
+												<t t-if=" not line.numberoftop">
+													<td/>
+												</t>
+											</t>
+											<t t-if="sh == 1">
+												<t t-if="line.shade">
+													<t t-if="shade == line.shade">
+														<td/>
+													</t>
+													<t t-if="shade != line.shade">
+														<td class="text-left" style="border-top: 1px solid black;">
+															<span>
+																<t t-esc="line.shade"/>
+																<t t-set="shade" t-value="line.shade"/>
+															</span>
+														</td>
+													</t>
+												</t>
+												<t t-if=" not line.shade">
+													<td/>
+												</t>
+											</t>
+											<t t-if="inh == 1">
+												<t t-if="line.sizein != 'N/A'">
+													<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 														<span>
-															<t t-esc="line.slidercodesfg"/>
-															<t t-set="code" t-value="line.slidercodesfg"/>
+															<t t-esc="line.sizein"/>
 														</span>
 													</td>
 												</t>
-											</t>
-											
-											<t t-if="line.ppinboxfinish">
-												<t t-if="pinbox == line.ppinboxfinish">
+												<t t-if="line.sizein == 'N/A'">
 													<td/>
 												</t>
-												<t t-if="pinbox != line.ppinboxfinish">
-													<td class="text-left" style="vertical-align:middle;border-top: 1px solid black;">
+											</t>
+											<t t-if="cm == 1">
+												<t t-if="line.sizecm != 'N/A'">
+													<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 														<span>
-															<t t-esc="line.ppinboxfinish"/>
-															<t t-set="pinbox" t-value="line.ppinboxfinish"/>
+															<t t-esc="line.sizecm"/>
 														</span>
 													</td>
 												</t>
-											</t>
-											<t t-if="line.topbottom">
-												<t t-if="topbottom == line.topbottom">
+												<t t-if="line.sizecm == 'N/A'">
 													<td/>
 												</t>
-												<t t-if="topbottom != line.topbottom">
-													<td class="text-left" style="vertical-align:middle;border-top: 1px solid black;">
-														<span>
-															<t t-esc="line.topbottom"/>
-															<t t-set="topbottom" t-value="line.topbottom"/>
-														</span>
-													</td>
-												</t>
-											</t>
-											<t t-if="line.finish">
-												<t t-if="finish == line.finish">
-													<td/>
-												</t>
-												<t t-if="finish != line.finish">
-													<td class="text-left" style="vertical-align:middle; border-top: 1px solid black;">
-														<span>
-															<t t-esc="line.finish"/>
-															<t t-set="finish" t-value="line.finish"/>
-														</span>
-													</td>
-												</t>
-											</t>
-											<t t-if="line.shade">
-												<t t-if="shade == line.shade">
-													<td/>
-												</t>
-												<t t-if="shade != line.shade">
-													<td class="text-left" style="vertical-align:middle;border-top: 1px solid black;">
-														<span>
-															<t t-esc="line.shade"/>
-															<t t-set="shade" t-value="line.shade"/>
-														</span>
-													</td>
-												</t>
-											</t>
-											<t t-if="line.numberoftop">
-											<td class="text-left" style="vertical-align:middle;border-top: 1px solid black;">
-												
-													<span>
-														<t t-esc="line.numberoftop"/>
-													</span>
-												
-											</td>
-											</t>
-											<t t-if="line.sizein != 'N/A'">
-												<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
-													<span>
-														<t t-esc="line.sizein"/>
-													</span>
-												</td>
-											</t>
-											<t t-if="line.sizecm != 'N/A'">
-												<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
-													<span>
-														<t t-esc="line.sizecm"/>
-													</span>
-												</td>
 											</t>
 											<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 												<span>
@@ -496,102 +600,126 @@
 						</div>
 					</div>
 					<br/>
-					<!--<p class="text-center" style="font-size:12px">-->
-					<!--	<strong>AMOUNT IN WORDS: <span t-esc="o.amount_in_word" style="color: #00A09D"/>-->
-					<!--	</strong>-->
-					<!--</p>-->
-					<div class="row mt32 mb32" style="font-size:12px">
-						<div class="col-auto col-3 mw-100 mb-2">
-							<p>
-								<strong>PAYMENT TERM:</strong>
-								<br/>
-								<t t-esc="o.payment_term_id.name"/>
-							</p>
+					<div style="font-size:12px;page-break-inside:avoid;">
+						<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
+							<t t-set="payment_count" t-value="0"/>
+							<t t-if="o.payment_term_id">
+								<div class="col-auto col-3 mw-100 mb-2">
+									<p>
+										<strong>PAYMENT TERM:</strong>
+										<br/>
+										<t t-esc="o.payment_term_id.name"/>
+										<t t-set="payment_count" t-value="payment_count+3"/>
+									</p>
+								</div>
+							</t>
+							<t t-if="o.incoterm">
+								<div class="col-auto col-3 mw-100 mb-2">
+									<p>
+										<strong>SHIPMENT TERM:</strong>
+										<br/>
+										<t t-esc="o.incoterm.name"/>
+										<t t-set="payment_count" t-value="payment_count+3"/>
+									</p>
+								</div>
+							</t>
+							<t t-if="o.shipment_mode">
+								<div class="col-auto col-3 mw-100 mb-2">
+									<p>
+										<strong>SHIPMENT MODE:</strong>
+										<br/>
+										<t t-esc="o.shipment_mode"/>
+										<t t-set="payment_count" t-value="payment_count+3"/>
+									</p>
+								</div>
+							</t>
+							<t t-if="o.loading_place">
+								<div class="col-auto col-3 mw-100 mb-2">
+									<p>
+										<strong>PLACE OF LOADING:</strong>
+										<br/>
+										<t t-esc="o.loading_place"/>
+										<t t-set="payment_count" t-value="payment_count+3"/>
+									</p>
+								</div>
+							</t>
+							<t t-foreach="int((12-payment_count)/3)" t-as="p_count">
+								<div class="col-auto col-3 mw-100 mb-2">
 						</div>
-						<div class="col-auto col-3 mw-100 mb-2">
-							<p>
-								<strong>SHIPMENT TERM:</strong>
-								<br/>
-								<t t-esc="o.incoterm.name"/>
-							</p>
+							</t>
 						</div>
-						<div class="col-auto col-3 mw-100 mb-2">
-							<p>
-								<strong>SHIPMENT MODE:</strong>
-								<br/>
-								<t t-esc="o.shipment_mode"/>
-							</p>
-						</div>
-						<div class="col-auto col-3 mw-100 mb-2">
-							<p>
-								<strong>PLACE OF LOADING:</strong>
-								<br/>
-								<t t-esc="o.loading_place"/>
-							</p>
-						</div>
-					</div>
-					<div class="row mt32 mb32" style="font-size:12px">
-						<div class="col-auto col-3 mw-100 mb-2">
-							<p>
-								<strong>DESTINATION PORT:</strong>
-								<br/>
-								<t t-esc="o.destination_port"/>
-							</p>
-						</div>
-						<div class="col-auto col-3 mw-100 mb-2">
-							<p>
-								<strong>COUNTRY OF ORIGIN:</strong>
-								<br/>
-								<t t-esc="o.origin_country"/>
-							</p>
-						</div>
-						<div class="col-auto col-3 mw-100 mb-2">
-							<p>
-								<strong>PERIOD OF VALIDITY:</strong>
-								<br/>
-								<t t-esc="o.validity_period"/>
-							</p>
-						</div>
-						<div class="col-auto col-3 mw-100 mb-2">
-							<!-- 							<p>
-								<strong>PERIOD OF VALIDITY:</strong>
-								<br/>
-								<t t-esc="o.validity_period"/>
-							</p> -->
+						<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
+							<t t-set="desc_count" t-value="0"/>
+							<t t-if="o.destination_port">
+								<div class="col-auto col-3 mw-100 mb-2">
+									<p>
+										<strong>DESTINATION PORT:</strong>
+										<br/>
+										<t t-esc="o.destination_port"/>
+										<t t-set="desc_count" t-value="desc_count+3"/>
+									</p>
+								</div>
+							</t>
+							<t t-if="o.origin_country">
+								<div class="col-auto col-3 mw-100 mb-2">
+									<p>
+										<strong>COUNTRY OF ORIGIN:</strong>
+										<br/>
+										<t t-esc="o.origin_country"/>
+										<t t-set="desc_count" t-value="desc_count+3"/>
+									</p>
+								</div>
+							</t>
+							<t t-if="o.validity_period">
+								<div class="col-auto col-3 mw-100 mb-2">
+									<p>
+										<strong>PERIOD OF VALIDITY:</strong>
+										<br/>
+										<t t-esc="o.validity_period"/>
+										<t t-set="desc_count" t-value="desc_count+3"/>
+									</p>
+								</div>
+							</t>
+							<t t-foreach="int((12-desc_count)/3)" t-as="d_count">
+								<div class="col-auto col-3 mw-100 mb-2">
+						  </div>
+							</t>
 						</div>
 					</div>
 					<div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
-						<diV class="col-8">
-							<p>
-								<strong>TERMS AND CONDITIONS:</strong>
-								<br/>
-								<!--<span t-esc="o.note" style="font-size:12px"/>-->
-								<t t-if="isinstance(o.note, str)">
-									<t t-set="string_to_output" t-value="o.note.split('\n')"/>
-									<t t-foreach="string_to_output" t-as="string_line">
-										<span style="font-size:12px" t-esc="string_line"/>
-										<br/>
+						<t t-if="o.note">
+							<diV class="col-8">
+								<p>
+									<strong>TERMS AND CONDITIONS:</strong>
+									<br/>
+									<!--<span t-esc="o.note" style="font-size:12px"/>-->
+									<t t-if="isinstance(o.note, str)">
+										<t t-set="string_to_output" t-value="o.note.split('\n')"/>
+										<t t-foreach="string_to_output" t-as="string_line">
+											<span style="font-size:12px" t-esc="string_line"/>
+											<br/>
+										</t>
 									</t>
-								</t>
-							</p>
-						</diV>
-						<diV class="col-4">
-							<p>
-								<strong>REMARKS:</strong>
-								<br/>
-								<!--<span t-esc="o.note" style="font-size:12px"/>-->
-								<t t-if="isinstance(o.remarks, str)">
-									<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
-									<t t-foreach="string_to_output" t-as="string_line">
-										<span style="font-size:12px;color: red" t-esc="string_line"/>
-										<br/>
+								</p>
+							</diV>
+						</t>
+						<t t-if="o.remarks">
+							<diV class="col-4">
+								<p>
+									<strong>REMARKS:</strong>
+									<br/>
+									<!--<span t-esc="o.note" style="font-size:12px"/>-->
+									<t t-if="isinstance(o.remarks, str)">
+										<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
+										<t t-foreach="string_to_output" t-as="string_line">
+											<span style="font-size:12px;color: red" t-esc="string_line"/>
+											<br/>
+										</t>
 									</t>
-								</t>
-							</p>
-						</diV>
+								</p>
+							</diV>
+						</t>
 					</div>
-					<!--<div class="row mb32 mt32" style="font-size:12px; page-break-inside:avoid;">-->
-					<!--</div>-->
 				</div>
 				</t>
 			</t>
