@@ -89,8 +89,13 @@ class SaleOrder(models.Model):
             ('r9', 'R9'),
             ('r10', 'R10')],
             string='Number of revision', tracking=True)
+    pi_type = fields.Selection([
+            ('regular', 'Regular'),
+            ('block', 'Block')],
+            string='Types of PI', default='regular')
     cause_of_revision = fields.Text(string='Cuase')
     is_hold = fields.Boolean('Hold', tracking=True)
+    price_tracking = fields.Text('Price Tracker')
     # def _amount_in_words (self): 
     #     for rec in self: 
     #         rec.amount_in_word = str (rec.currency_id.amount_to_text (rec.amount_total)) 
