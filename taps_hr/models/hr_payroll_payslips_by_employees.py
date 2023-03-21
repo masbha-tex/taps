@@ -20,6 +20,8 @@ class HrPayslipEmployee(models.TransientModel):
 #         raise UserError((from_date))
         if payslip_run.is_bonus:
             return [('contract_ids.state', 'in', ('open', 'close')), ('contract_ids.date_start', '<=', from_date), ('company_id', '=', self.env.company.id)]
+        elif payslip_run.is_final:
+            return [('contract_ids.state', '=', 'close'), ('company_id', '=', self.env.company.id)]
         else:
             return [('contract_ids.state', 'in', ('open', 'close')), ('company_id', '=', self.env.company.id)]
 

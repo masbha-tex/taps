@@ -28,7 +28,7 @@ class HrPayslipsss(models.Model):
     com_otHours = fields.Float(compute="_compute_ot_rate", string = "C-OT Hours", store=True, copy=True)
     otHours = fields.Float(compute="_compute_ot_rate", string = "OT Hours", store=True, copy=True)
     otRate = fields.Float(compute="_compute_ot_rate", string = "OT Rate", store=True, copy=True)
-    gross_wage = fields.Monetary(related = 'contract_id.wage', related_sudo=False, readonly=True, store=True)
+    gross_wage = fields.Monetary(compute='_compute_basic_net', store=True, copy=True, readonly=True)
     basic_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     hra_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
     medical_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
@@ -88,6 +88,7 @@ class HrPayslipsss(models.Model):
         for payslip in self:
             
             if payslip.struct_id.name == 'FESTIVAL BONUS':
+                payslip.gross_wage = payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL')
                 payslip.basic_wage = payslip._get_salary_line_total('BASIC')
                 payslip.hra_wage = payslip._get_salary_line_total('HRA')
                 payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')
@@ -129,6 +130,7 @@ class HrPayslipsss(models.Model):
                 payslip.lw_days = 0#payslip._get_work_days_line_total('LW')
                 payslip.total_payable_days = 0
             else:
+                payslip.gross_wage = payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL')
                 payslip.basic_wage = payslip._get_salary_line_total('BASIC')
                 payslip.hra_wage = payslip._get_salary_line_total('HRA')
                 payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')
@@ -180,7 +182,7 @@ class HrPayslipsss(models.Model):
     @api.depends('contract_id','date_from','date_to')
     def _compute_ot_rate(self):
         for payslip in self:
-            emp_list = self.env['hr.employee'].search([('id', '=', payslip.employee_id.id),("active", '=', True)])
+            emp_list = self.env['hr.employee'].search([('id', '=', payslip.employee_id.id)])#,("active", '=', True)
             att_record = self.env['hr.attendance'].search([('employee_id', '=', payslip.employee_id.id),('attDate', '>=',payslip.date_from),('attDate', '<=',payslip.date_to)])
             if emp_list.isovertime is True:
                 payslip.otRate = round(((payslip.contract_id.basic/208)*2),2)
@@ -217,6 +219,8 @@ class HrPayslipsss(models.Model):
         payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
         if payslip_run.is_bonus:
             payslip_name = self.struct_id.payslip_name or _('Festival Bonus Slip')
+        elif payslip_run.is_final:
+            payslip_name = self.struct_id.payslip_name or _('Full & Final Slip')
         else:
             payslip_name = self.struct_id.payslip_name or _('Salary Slip')
         del context
@@ -575,6 +579,10 @@ class HrPayslipRun(models.Model):
     is_bonus = fields.Boolean(string='Festival Bonus', readonly=True,
         states={'draft': [('readonly', False)]},
         help="If its checked, indicates that all payslips generated from here are Festival Bonus payslips.")
+    
+    is_final = fields.Boolean(string='Full & Final', readonly=True,
+        states={'draft': [('readonly', False)]},
+        help="If its checked, indicates that all payslips generated from here are Full & Final payslips.")
 
     def _compute_payslip_count(self):
         for payslip_run in self:

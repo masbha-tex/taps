@@ -385,42 +385,7 @@ class SaleOrder(models.Model):
                     size_type = "inch"
                     consumption = 0.0
                     product_temp = self.env['product.template'].search([('name', '=', orderline.slidercodesfg)]).sorted(key = 'id', reverse=True)[:1]
-#                     product_temp_id = False
-#                     if product_temp:
-#                         product_temp_id = product_temp.id
-                    
-#                     else:
-#                         product_info = {
-#                             'name':slidercodesfg,
-#                             'company_id':self.company_id.id,
-#                             'uom_id':1,
-#                             'uom_po_id':1,
-#                             'type':'product',
-#                             'default_code':'SFG_',
-#                         }
-#                         sfg = self.env['product.template'].create(product_info)
-#                         product_temp_id = sfg.id
-#                         sfg_product_id = self.env['product.product'].search([('product_tmpl_id', '=', product_temp_id)]).sorted(key = 'id', reverse=True)[:1]
-#                         new_sfg_bom_info = {
-#                             'code':'',
-#                             'active':True,
-#                             'type':'normal',
-#                             'product_tmpl_id':product_temp_id.id,
-#                             'product_id':sfg_product_id.id,
-#                             'product_qty':100,
-#                             'product_uom_id':1,
-#                             'sequence':'',
-#                             'ready_to_produce':'asap',
-#                             'picking_type_id':'',
-#                             'company_id':self.company_id.id,
-#                             'consumption':'warning',#expatt.store_fname,
-#                         }
-#                         self.env['mrp.bom'].create(new_sfg_bom_info)
-#                         #raise UserError((product_temp_id))                    
-                    
-                    
                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
-                    
                     #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                     formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
                     #result = contract.basic
@@ -782,9 +747,7 @@ class SaleOrder(models.Model):
                 ref = self.env['ir.sequence'].next_by_code('sale.order.oa', sequence_date=seq_date) or _('New')
                 vals['name'] = ref
                 vals['pi_number'] = ref.replace("OA", 'PI')
-            
-            
-            
+                
         # Makes sure partner_invoice_id', 'partner_shipping_id' and 'pricelist_id' are defined
         if any(f not in vals for f in ['partner_invoice_id', 'partner_shipping_id', 'pricelist_id']):
             partner = self.env['res.partner'].browse(vals.get('partner_id'))
@@ -802,8 +765,6 @@ class SaleOrder(models.Model):
     
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
-    
-    
     topbottom = fields.Text(string='Top/Bottom', store=True)
     slidercode = fields.Text(string='Slider Code', store=True)
     slidercodesfg = fields.Text(string='Slider Code (SFG)', store=True)
@@ -1057,50 +1018,38 @@ class SaleOrderLine(models.Model):
         con_tape = con_wire = con_slider = con_top = con_bottom = con_pinboc = 0       
         if formula.tape_python_compute:
             con_tape = safe_eval(formula.tape_python_compute, {'s': size, 'g': self.gap})
-            con_tape = round(con_tape,4)
             if wastage_tape:
                 if wastage_tape.wastage>0:
                     con_tape += (con_tape*wastage_tape.wastage)/100
-                    con_tape = round(con_tape,4)
-            self.tape_con = con_tape*self.product_uom_qty
+            self.tape_con = round(con_tape*self.product_uom_qty,4)
         if formula.wair_python_compute:
             con_wire = safe_eval(formula.wair_python_compute, {'s': size})
-            con_wire = round(con_wire,4)
             if wastage_wire:
                 if wastage_wire.wastage>0:
                     con_wire += (con_wire*wastage_wire.wastage)/100
-                    con_wire = round(con_wire,4)
-            self.wire_con = con_wire*self.product_uom_qty
+            self.wire_con = round(con_wire*self.product_uom_qty,4)
         if formula.slider_python_compute:
             con_slider = safe_eval(formula.slider_python_compute)
-            con_slider = round(con_slider,4)
             if wastage_slider:
                 if wastage_slider.wastage>0:
                     con_slider += (con_slider*wastage_slider.wastage)/100
-                    con_slider = round(con_slider,4)
-            self.slider_con = con_slider*self.product_uom_qty
+            self.slider_con = round(con_slider*self.product_uom_qty,4)
         if formula.twair_python_compute:
             con_top = safe_eval(formula.twair_python_compute)
-            con_top = round(con_top,4)
             if wastage_top:
                 if wastage_top.wastage>0:
                     con_top += (con_top*wastage_top.wastage)/100
-                    con_top = round(con_top,4)
-            self.topwire_con = con_top*self.product_uom_qty
+            self.topwire_con = round(con_top*self.product_uom_qty,4)
         if formula.bwire_python_compute:
             con_bottom = safe_eval(formula.bwire_python_compute)
-            con_bottom = round(con_bottom,4)
             if wastage_bottom:
                 if wastage_bottom.wastage>0:
                     con_bottom += (con_bottom*wastage_bottom.wastage)/100
-                    con_bottom = round(con_bottom,4)
-            self.botomwire_con = con_bottom*self.product_uom_qty
+            self.botomwire_con = round(con_bottom*self.product_uom_qty,4)
         if formula.pinbox_python_compute:
             con_pinbox = safe_eval(formula.pinbox_python_compute)
-            con_pinbox = round(con_pinbox,4)
             if wastage_pinbox:
                 if wastage_pinbox.wastage>0:
                     con_pinbox += (con_pinbox*wastage_pinbox.wastage)/100
-                    con_pinbox = round(con_pinbox,4)
-            self.pinbox_con = con_pinbox*self.product_uom_qty
+            self.pinbox_con = round(con_pinbox*self.product_uom_qty,4)
         

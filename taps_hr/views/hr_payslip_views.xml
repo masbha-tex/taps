@@ -118,6 +118,7 @@
         <field name="arch" type="xml">
             <field name="company_id" position="before">
                 <field name="is_bonus"/>
+                <field name="is_final"/>
             </field>            
         </field>
     </record>    
