@@ -199,7 +199,8 @@
                                   <span t-esc="o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
                                 </td>
                                 <td style="color:#875A7B; border: 1pt solid white;" class="w-25" align="center">
-                                  <span t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
+<!--                                   <span t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/> -->
+                                    <span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total+o.line_ids.filtered(lambda line: line.code == 'HRA').total+o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;decimal&quot;}"/>
                                 </td>                               
                               </tr>
                               <tr>

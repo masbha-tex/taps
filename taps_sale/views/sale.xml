@@ -81,6 +81,7 @@
 					<field name="sample_ref" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}"/>
 				</xpath>
 				<xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="before">
+                    <field name="dyedtape" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
 					<field name="dippingfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
 					<field name="slidercodesfg" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
 					<field name="ptopfinish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
