@@ -18,6 +18,7 @@ class SalarySheet(models.TransientModel):
     date_from = fields.Date('Date from', required=True, default = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
     date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))
     report_type = fields.Selection([
+        ('fnf',	'Full & Final Settlement'),
         ('PAYSLIP',	'Pay Slip'),
         ('SALARYTOP',	'Salary Top Sheet Summary'),
         ('SALARY',	'Salary Sheet'),
@@ -185,6 +186,8 @@ class SalarySheet(models.TransientModel):
                         'employee_type': False,
                         'company_all': self.company_all,
                         'is_company': self.is_company}                
+        if self.report_type == 'fnf':
+            return self.env.ref('taps_hr.action_fnf_pdf_report').report_action(self, data=data)
         if self.report_type == 'PAYSLIP':
             return self.env.ref('taps_hr.action_pay_slip_pdf_report').report_action(self, data=data)
         if self.report_type == 'SALARYTOP':
@@ -239,21 +242,33 @@ class PaySlipReportPDF(models.AbstractModel):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
         
-        
+        att_obj = self.env['hr.attendance']
         
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
-#         raise UserError((docs.id))
+        #raise UserError((data.get('employee_id')))
 
 #         for details in docs:
 #             otTotal = 0
 #             for de in docs:
 #                 otTotal = otTotal + de.total
+
+        friday_precord = att_obj.search([('employee_id', 'in', (data.get('employee_id'))),('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to')),('inFlag', '=', 'FP')])
+        fp_days = len(friday_precord)
+        fp_hours = sum(friday_precord.mapped('worked_hours')) 
+        
+        holiday_precord = att_obj.search([('employee_id', '=', (data.get('employee_id'))),('attDate', '>=',data.get('date_from')),('attDate', '<=',data.get('date_to')),('inFlag', '=', 'HP')])
+        hp_days = len(holiday_precord)
+        hp_hours = sum(holiday_precord.mapped('worked_hours'))        
             
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
             data.get('date_from'),
             data.get('date_to'),
+            fp_days,
+            fp_hours,
+            hp_days,
+            hp_hours,
         ]
         common_data.append(common_data)
         #raise UserError((common_data[2]))
@@ -972,3 +987,75 @@ class BonusSheetReportPDF(models.AbstractModel):
 #            'lsdate': lsdate_data,
             'is_com' : data.get('is_company')
         }
+    
+
+    
+class FullAndFinalSettlementReportPDF(models.AbstractModel):
+    _name = 'report.taps_hr.fnf_pdf_template'
+    _description = 'Full & Final Settlement Template'       
+    
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        #raise UserError(("pay_slip_pdf_template"))
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
+        if data.get('date_from'):
+            domain.append(('date_from', '=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('date_to', '=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', 'in', data.get('employee_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
+        
+        
+        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        #raise UserError((data.get('employee_id')))
+
+#         for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                 otTotal = otTotal + de.total
+
+            
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            data.get('date_from'),
+            data.get('date_to'),
+        ]
+        common_data.append(common_data)
+        # raise UserError((common_data[0],common_data[1],common_data[2],common_data[3]))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'hr.payslip',
+            'docs': docs,
+            'datas': common_data,
+#             'alldays': all_datelist,
+            'is_com' : data.get('is_company')
+        } 

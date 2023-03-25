@@ -129,6 +129,61 @@ class HrPayslipsss(models.Model):
                 payslip.ml_days = 0#payslip._get_work_days_line_total('ML')
                 payslip.lw_days = 0#payslip._get_work_days_line_total('LW')
                 payslip.total_payable_days = 0
+            elif payslip.struct_id.name == 'F&F':
+                payslip.gross_wage = payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL')
+                payslip.basic_wage = payslip._get_salary_line_total('BASIC')
+                payslip.hra_wage = payslip._get_salary_line_total('HRA')
+                payslip.medical_wage = payslip._get_salary_line_total('MEDICAL')
+                payslip.ot_wage = payslip._get_salary_line_total('OT')
+                payslip.arrear_wage = payslip._get_salary_line_total('ARREAR')
+                payslip.att_bonus_wage = payslip._get_salary_line_total('ATTBONUS')
+                payslip.convence_wage = payslip._get_salary_line_total('CONVENCE')
+                payslip.food_wage = payslip._get_salary_line_total('FOOD')
+                payslip.tiffin_wage = payslip._get_salary_line_total('TIFFIN')
+                payslip.snacks_wage = payslip._get_salary_line_total('SNACKS')
+                payslip.car_wage = payslip._get_salary_line_total('CAR')
+                payslip.others_alw_wage = (payslip._get_salary_line_total('OTHERS_ALW')+
+                                          payslip._get_salary_line_total('EL')+
+                                          payslip._get_salary_line_total('CB')+
+                                          payslip._get_salary_line_total('EID')+
+                                          payslip._get_salary_line_total('OB')+
+                                          payslip._get_salary_line_total('PF'))
+                payslip.incentive_wage = payslip._get_salary_line_total('INCENTIVE')
+                payslip.rpf_wage = 0#payslip._get_salary_line_total('RPF')
+                payslip.earnings_total = (payslip._get_salary_line_earnings_deduction_total('EARNINGS') +
+                                          payslip._get_salary_line_earnings_deduction_total('BASIC') + 
+                                          payslip._get_salary_line_earnings_deduction_total('HRA') + 
+                                          payslip._get_salary_line_earnings_deduction_total('MEDICAL'))
+                payslip.pf_empr_wage = 0#payslip._get_salary_line_total('PFR')
+                payslip.pf_empe_wage = 0#payslip._get_salary_line_total('PFE')
+                payslip.ait_wage = payslip._get_salary_line_total('AIT')
+                payslip.basic_absent_wage = payslip._get_salary_line_total('BASIC_ABSENT')
+                payslip.gross_absent_wage = payslip._get_salary_line_total('GROSS_ABSENT')
+                payslip.loan_wage = payslip._get_salary_line_total('LOAN')
+                payslip.adv_salary_wage = payslip._get_salary_line_total('ADV_SALARY')
+                payslip.others_ded_wage = (payslip._get_salary_line_total('OTHERS_DED')+
+                                          payslip._get_salary_line_total('NP')+
+                                          payslip._get_salary_line_total('UO'))
+                payslip.deduction_total = payslip._get_salary_line_earnings_deduction_total('DED')
+                payslip.net_wage = payslip._get_salary_line_total('NET')
+                payslip.working_days = payslip._get_work_days_line_total('P')
+                payslip.basic_absent_days = payslip._get_work_days_line_total('A')
+                payslip.gross_absent_days = payslip._get_work_days_line_total('X')
+                payslip.friday_days = payslip._get_work_days_line_total('F')
+                payslip.holiday_days = payslip._get_work_days_line_total('H')
+                payslip.od_days = payslip._get_work_days_line_total('OD')
+                payslip.coff_days = payslip._get_work_days_line_total('CO')
+                payslip.adjust_days = payslip._get_work_days_line_total('AJ')
+                payslip.late_days = payslip._get_work_days_line_total('L')
+                payslip.cl_days = payslip._get_work_days_line_total('CL')
+                payslip.sl_days = payslip._get_work_days_line_total('SL')
+                payslip.el_days = payslip._get_work_days_line_total('EL')
+                payslip.ml_days = payslip._get_work_days_line_total('ML')
+                payslip.lw_days = payslip._get_work_days_line_total('LW')
+                payslip.total_payable_days = (payslip._get_work_days_line_total('P') + payslip._get_work_days_line_total('F') +
+                                              payslip._get_work_days_line_total('H') + payslip._get_work_days_line_total('AJ') + 
+                                              payslip._get_work_days_line_total('CL') + payslip._get_work_days_line_total('OD') +
+                                              payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL'))
             else:
                 payslip.gross_wage = payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL')
                 payslip.basic_wage = payslip._get_salary_line_total('BASIC')
@@ -176,7 +231,7 @@ class HrPayslipsss(models.Model):
                 payslip.total_payable_days = (payslip._get_work_days_line_total('P') + payslip._get_work_days_line_total('F') +
                                               payslip._get_work_days_line_total('H') + payslip._get_work_days_line_total('AJ') + 
                                               payslip._get_work_days_line_total('CL') + payslip._get_work_days_line_total('OD') +
-                                              payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL'))
+                                              payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL'))                
                 
             
     @api.depends('contract_id','date_from','date_to')
@@ -263,6 +318,14 @@ class HrPayslipsss(models.Model):
         holiday_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'H')])
         h_days = len(holiday_record)
         h_hours = sum(holiday_record.mapped('worked_hours'))        
+        
+#         friday_precord = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'FP')])
+#         fp_days = len(friday_precord)
+#         fp_hours = sum(friday_precord.mapped('worked_hours')) 
+        
+#         holiday_precord = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', '=', 'HP')])
+#         hp_days = len(holiday_precord)
+#         hp_hours = sum(holiday_precord.mapped('worked_hours'))                
         
         present_record = att_obj.search([('employee_id', '=', int(self.contract_id.employee_id)),('attDate', '>=',self.date_from),('attDate', '<=',self.date_to),('inFlag', 'in', ('P','L','HP','FP','CO'))])
         p_days = len(present_record)

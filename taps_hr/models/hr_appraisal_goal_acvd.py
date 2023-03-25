@@ -104,31 +104,30 @@ class HrAppraisalGoalsAcvd(models.Model):
         goal = self.env['hr.appraisal.goal'].search([('employee_id','=',self.employee_id.id)])
         for line in self.acvd_line:
             objec = goal.filtered(lambda g: g.id == line.objective_line_id.id)
-            
             if self.month == 'apr':
-                objec.write({'a_apr':line.acvd})
+                objec.write({'a_apr':line.acvd_entry})
             elif self.month == 'may':
-                objec.write({'a_may':line.acvd})
+                objec.write({'a_may':line.acvd_entry})
             elif self.month == 'jun':
-                objec.write({'a_jun':line.acvd})
+                objec.write({'a_jun':line.acvd_entry})
             elif self.month == 'jul':
-                objec.write({'a_jul':line.acvd})
+                objec.write({'a_jul':line.acvd_entry})
             elif self.month == 'aug':
-                objec.write({'a_aug':line.acvd})
+                objec.write({'a_aug':line.acvd_entry})
             elif self.month == 'sep':
-                objec.write({'a_sep':line.acvd})
+                objec.write({'a_sep':line.acvd_entry})
             elif self.month == 'oct':
-                objec.write({'a_oct':line.acvd})
+                objec.write({'a_oct':line.acvd_entry})
             elif self.month == 'nov':
-                objec.write({'a_nov':line.acvd})
+                objec.write({'a_nov':line.acvd_entry})
             elif self.month == 'dec':
-                objec.write({'a_dec':line.acvd})
+                objec.write({'a_dec':line.acvd_entry})
             elif self.month == 'jan':
-                objec.write({'a_jan':line.acvd})
+                objec.write({'a_jan':line.acvd_entry})
             elif self.month == 'feb':
-                objec.write({'a_feb':line.acvd})
+                objec.write({'a_feb':line.acvd_entry})
             elif self.month == 'mar':
-                objec.write({'a_mar':line.acvd})
+                objec.write({'a_mar':line.acvd_entry})
         
         return {}
         # if self.increment_line:

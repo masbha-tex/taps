@@ -16,24 +16,48 @@ class HrPayslipEmployee(models.TransientModel):
     def _get_available_contracts_domain(self):
         payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
         from_date = payslip_run.date_start
+        # raise UserError((from_date))
         from_date = from_date + relativedelta(months=-6)
-#         raise UserError((from_date))
+        start_date = payslip_run.date_start
+        end_date = payslip_run.date_end
+        # raise UserError((from_date))
         if payslip_run.is_bonus:
             return [('contract_ids.state', 'in', ('open', 'close')), ('contract_ids.date_start', '<=', from_date), ('company_id', '=', self.env.company.id)]
         elif payslip_run.is_final:
-            return [('contract_ids.state', '=', 'close'), ('company_id', '=', self.env.company.id)]
+            return [('resign_date', '<=', end_date),('resign_date', '>=', start_date),('company_id', '=', self.env.company.id)]
         else:
             return [('contract_ids.state', 'in', ('open', 'close')), ('company_id', '=', self.env.company.id)]
 
     def _get_employees(self):
         active_employee_ids = self.env.context.get('active_employee_ids', False)
         if active_employee_ids:
+            # raise UserError((from_date))
             return self.env['hr.employee'].browse(active_employee_ids)
-        # YTI check dates too
+               # YTI check dates too
         return self.env['hr.employee'].search(self._get_available_contracts_domain())
+    
+#     def _get_employees(self):
+#         active_employee_ids = self.env.context.get('active_employee_ids', False)
+#         domain = self._get_available_contracts_domain()
+#         domain += [('id', 'in', active_employee_ids)] if active_employee_ids else []
+#         domain += [('active', '=', False)]
+#         employees = self.env['hr.employee'].search(domain)
+#         return employees
+    
+#     def _get_employees(self):
+#         active_employee_ids = self.env.context.get('active_employee_ids', False)
+#         if active_employee_ids:
+#             employees = self.env['hr.employee']
+#         else:
+#             employees = self.env['hr.employee']
 
-    employee_ids = fields.Many2many('hr.employee', 'hr_employee_group_rel', 'payslip_id', 'employee_id', 'Employees',
-                                    default=lambda self: self._get_employees(), required=True)
+#         # Filter out archived employees
+#         archived_employees = employees.filtered(lambda e: e.active=True)
+#         raise UserError((archived_employees))
+#         return archived_employees    
+
+    employee_ids = fields.Many2many('hr.employee', 'hr_employee_group_rel', 'payslip_id', 'employee_id', 'Employees', default=lambda self: self._get_employees(), required=True)
+    # employee_ids = fields.Many2one('hr.employee', domain="[('active', '=', False)]",  string='Employees', index=True, readonly=False, ondelete="restrict", default=lambda self: self._get_employees())
     structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')    
 
     def _check_undefined_slots(self, work_entries, payslip_run):
@@ -138,16 +162,39 @@ class HrPayslipEmployee(models.TransientModel):
 
 
         default_values = Payslip.default_get(Payslip.fields_get())
-        payslip_values = [dict(default_values, **{
-            'name': 'Payslip - %s' % (contract.employee_id.name),
-            'employee_id': contract.employee_id.id,
-            'credit_note': payslip_run.credit_note,
-            'payslip_run_id': payslip_run.id,
-            'date_from': payslip_run.date_start,
-            'date_to': payslip_run.date_end,
-            'contract_id': contract.id,
-            'struct_id': self.structure_id.id or contract.structure_type_id.default_struct_id.id,
-        }) for contract in contracts]
+        if payslip_run.is_final:
+            payslip_values = [dict(default_values, **{
+                'name': 'Fnfslip - %s' % (contract.employee_id.name),
+                'employee_id': contract.employee_id.id,
+                'credit_note': payslip_run.credit_note,
+                'payslip_run_id': payslip_run.id,
+                'date_from': payslip_run.date_start,
+                'date_to': contract.date_end,
+                'contract_id': contract.id,
+                'struct_id': self.structure_id.id or contract.structure_type_id.default_struct_id.id,
+            }) for contract in contracts]
+        elif payslip_run.is_bonus:
+            payslip_values = [dict(default_values, **{
+                'name': 'Festivalslip - %s' % (contract.employee_id.name),
+                'employee_id': contract.employee_id.id,
+                'credit_note': payslip_run.credit_note,
+                'payslip_run_id': payslip_run.id,
+                'date_from': payslip_run.date_start,
+                'date_to': payslip_run.date_end,
+                'contract_id': contract.id,
+                'struct_id': self.structure_id.id or contract.structure_type_id.default_struct_id.id,
+            }) for contract in contracts]
+        else:
+            payslip_values = [dict(default_values, **{
+                'name': 'Payslip - %s' % (contract.employee_id.name),
+                'employee_id': contract.employee_id.id,
+                'credit_note': payslip_run.credit_note,
+                'payslip_run_id': payslip_run.id,
+                'date_from': payslip_run.date_start,
+                'date_to': payslip_run.date_end,
+                'contract_id': contract.id,
+                'struct_id': self.structure_id.id or contract.structure_type_id.default_struct_id.id,
+            }) for contract in contracts]
 
         payslips = Payslip.with_context(tracking_disable=True).create(payslip_values)
         for payslip in payslips:

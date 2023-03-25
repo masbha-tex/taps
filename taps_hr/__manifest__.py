@@ -48,6 +48,7 @@
         'reports/header_footer.xml',
         
         'reports/pay_slip.xml',
+        'reports/fnf_slip.xml',
         'reports/salary_sheet.xml',
         'reports/top_sheet_summary.xml',
         'reports/bonus_sheet.xml',
