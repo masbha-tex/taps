@@ -145,7 +145,7 @@
 						</div>
 					</div>
 					<div style="font-size:12px">
-						<table  class="table table-sm o_main_table">
+						<table class="table table-sm o_main_table">
 							<thead>
 								<t t-set="line_count" t-value="0"/>
 								<t t-set="head" t-value="0"/>
@@ -205,6 +205,9 @@
 											<t t-if="line.tape_con != 0">
 												<th class="text-right">Tape/KG</th>
 											</t>
+											<t t-if="line.tape_con != 0">
+												<th class="text-right">shade/KG</th>
+											</t>
 											<t t-if="line.wire_con != 0">
 												<th class="text-right">Wire/KG</th>
 											</t>
@@ -232,6 +235,7 @@
 								<t t-set="code" t-value=""/>
 								<t t-set="finish" t-value=""/>
 								<t t-set="shade" t-value=""/>
+								<t t-set="shade_total" t-value=""/>
 								<t t-set="dipping" t-value=""/>
 								<t t-set="top" t-value=""/>
 								<t t-set="bottom" t-value=""/>
@@ -242,6 +246,7 @@
 								<t t-set="top_con" t-value="0"/>
 								<t t-set="bottom_con" t-value="0"/>
 								<t t-set="pinbox_con" t-value="0"/>
+								<t t-set="shade_total_con" t-value="0"/>
 								
 								
 								<t t-foreach="o.order_line" t-as="line">
@@ -393,6 +398,22 @@
 												<t t-set="tape_con" t-value="tape_con+line.tape_con"/>
 											</td>
 											</t>
+											<t t-if="line.tape_con != 0">
+											  <t t-if="line.shade">
+												<t t-if="shade_total == line.shade">
+													<td/>
+												</t>
+												<t t-if="shade_total != line.shade">
+													<td class="text-left" style="border-top: 1px solid black;">
+														<span style="font-size:16px;">
+															<t t-esc="line.shadewise_tape" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+															<t t-set="shade_total" t-value="line.shade"/>
+															<t t-set="shade_total_con" t-value="shade_total_con+line.shadewise_tape"/>
+														</span>
+													</td>
+												</t>
+											</t>
+											</t>
 											<t t-if="line.wire_con != 0">
 											<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 												<span style="font-size:13px" t-esc="line.wire_con" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -441,6 +462,13 @@
 									<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 										<strong>
 											<span style="font-size:13px" t-esc="tape_con" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										</strong>
+									</td>
+									</t>
+									<t t-if="tape_con != 0">
+									<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+										<strong>
+											<span style="font-size:13px" t-esc="shade_total_con" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										</strong>
 									</td>
 									</t>

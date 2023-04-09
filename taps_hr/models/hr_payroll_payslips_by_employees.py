@@ -22,7 +22,7 @@ class HrPayslipEmployee(models.TransientModel):
         end_date = payslip_run.date_end
         # raise UserError((from_date))
         if payslip_run.is_bonus:
-            return [('contract_ids.state', 'in', ('open', 'close')), ('contract_ids.date_start', '<=', from_date), ('company_id', '=', self.env.company.id)]
+            return [('category_ids', 'not like', ('Expatriate')),('contract_ids.state', 'in', ('open', 'close')), ('contract_ids.date_start', '<=', from_date), ('company_id', '=', self.env.company.id)]
         elif payslip_run.is_final:
             return [('resign_date', '<=', end_date),('resign_date', '>=', start_date),('company_id', '=', self.env.company.id)]
         else:

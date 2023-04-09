@@ -3,10 +3,11 @@ from datetime import date, datetime, time, timedelta
 from odoo.tools import format_date
 from odoo.exceptions import UserError, ValidationError
 
-class SaleOverview(models.Model):
-    _name = "sale.overview"
+class OrderFlow(models.Model):
+    _name = "order.flow"
     _auto = False
-    _description = "Sale Overview"
+    _description = "Sale Order Flow"
+    
     
     order_ref = fields.Many2one('sale.order', string='Sale Order')
     order_id = fields.Many2one('sale.order', string='OA Number')
@@ -84,10 +85,10 @@ class SaleOverview(models.Model):
             order.rm_consumption = consumption
     
     def init(self):
-        tools.drop_view_if_exists(self._cr, 'order_flow')
+        tools.drop_view_if_exists(self._cr, 'sale_overview')
         
         query = """
-        CREATE or REPLACE VIEW order_flow AS (
+        CREATE or REPLACE VIEW sale_overview AS (
         select sl.id,so.order_ref,sl.order_id,so.pi_number,sl.name,sl.sequence,sl.price_unit,sl.price_subtotal,sl.price_total,sl.product_id,sl.product_uom_qty,sl.product_uom,
 sl.qty_delivered_method,sl.qty_delivered,sl.qty_delivered_manual,sl.salesman_id,sl.currency_id,sl.company_id,sl.order_partner_id,0 as rm_consumption,sl.topbottom,sl.slidercode,
 sl.finish,sl.shade,sl.sizein,sl.sizecm,sl.sizemm,sl.logoref,sl.shapefin,sl.bcdpart,sl.nailmat,sl.nailcap,sl.fnamebcd,sl.nu1washer,sl.nu2washer,sl.slidercodesfg,
