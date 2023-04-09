@@ -40,7 +40,7 @@
         #'views/fg_product.xml',
         # 'views/assets.xml',
         'views/variant_templates.xml',
-        #'reports/report.xml',
+        'reports/report.xml',
         
     ],
     # only loaded in demonstration mode
