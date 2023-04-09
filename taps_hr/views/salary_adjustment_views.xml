@@ -17,6 +17,9 @@
                         <group>
                             <field name="salary_month"/>
                         </group>
+                        <group>
+                            <field name="adjust_type"/>
+                        </group>
                     </group>
 <!--                     <div class="oe_title"> -->
                         <field name="adjustment_line"

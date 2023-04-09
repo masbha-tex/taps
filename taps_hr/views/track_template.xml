@@ -1,42 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+<!-- Payroll Adjust Email Templates -->
+    <template id="track_salary_adjustment_line_template_employee">
+        <ul class="o_timeline_tracking_value_list">
+            <t t-if="employee_id">
+                <li><t t-esc="line.employee_id.display_name"/>:</li>
+                Employee: <t t-esc="line.employee_id.display_name" /><strong> -&gt;&gt; </strong><t t-esc="employee_id"/>    
+            </t> 
+            <t t-if="mode_type">
+                <li><t t-esc="line.employee_id.display_name"/>:</li>
+                Mode Type: <t t-esc="line.mode_type" /><strong> -&gt;&gt; </strong><t t-esc="mode_type"/>   
+            </t> 
+            <t t-if="adjustment_type">
+                <li><t t-esc="line.employee_id.display_name"/>:</li>
+                Type: <t t-esc="line.adjustment_type.display_name" /><strong> -&gt;&gt; </strong><t t-esc="adjustment_type"/>   
+            </t> 
+            <t t-if="amount">
+                <li><t t-esc="line.employee_id.display_name"/>:</li>
+                Amount: <t t-esc="line.amount" /><strong> -&gt;&gt; </strong><t t-esc="amount"/> 
+            </t> 
+        </ul>
+    </template>    
+   
+    
+    
+<!-- Appraisal Goal Achivement Email Templates -->
     <template id="track_acvd_line_objective_template">
         <div>
-<!--             <strong>The Target record has been updated.</strong> -->
             <ul>
                 <li><t t-esc="line.objective_line_id.display_name"/>:</li>
-                Objective: <t t-esc="line.objective_line_id.display_name" /> -&gt;&gt; <t t-esc="objective_line_id"/><br/>
+                Objective: <t t-esc="line.objective_line_id.display_name" /><strong> -&gt;&gt; </strong><t t-esc="objective_line_id"/><br/>
             </ul>
         </div>
     </template>
 
     <template id="track_acvd_line_target_template">
         <div>
-<!--             <strong>The Target record has been updated.</strong> -->
             <ul>
                 <li><t t-esc="line.objective_line_id.display_name"/>:</li>
-                Target: <t t-esc="line.target" /> -&gt;&gt; <t t-esc="float(target)"/><br/>
+                Target: <t t-esc="line.target" /><strong> -&gt;&gt; </strong><t t-esc="float(target)"/><br/>
             </ul>
         </div>
     </template>
     
     <template id="track_acvd_line_acvd_template">
         <div>
-<!--             <strong>The ACVD record has been updated.</strong> -->
             <ul>
                 <li><t t-esc="line.objective_line_id.display_name"/>:</li>
-                ACVD: <t t-esc="line.acvd" /> -&gt;&gt; <t t-esc="float(acvd)"/><br/>
+                ACVD: <t t-esc="line.acvd" /><strong> -&gt;&gt; </strong><t t-esc="float(acvd)"/><br/>
             </ul>
         </div>
     </template>
     
     <template id="track_acvd_line_entry_template">
         <div>
-<!--             <strong>The ACVD Entry record has been updated.</strong> -->
             <ul>
                 <li><t t-esc="line.objective_line_id.display_name"/>:</li>
-                ACVD Entry: <t t-esc="line.acvd_entry" /> -&gt;&gt; <t t-esc="float(acvd_entry)"/><br/>
+                ACVD Entry: <t t-esc="line.acvd_entry" /><strong> -&gt;&gt; </strong><t t-esc="float(acvd_entry)"/><br/>
             </ul>
         </div>
     </template>    

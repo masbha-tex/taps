@@ -100,7 +100,7 @@ class HrPayslipsss(models.Model):
                 payslip.tiffin_wage = 0#payslip._get_salary_line_total('TIFFIN')
                 payslip.snacks_wage = 0#payslip._get_salary_line_total('SNACKS')
                 payslip.car_wage = 0#payslip._get_salary_line_total('CAR')
-                payslip.others_alw_wage = 0#payslip._get_salary_line_total('OTHERS_ALW')
+                payslip.others_alw_wage = payslip._get_salary_line_total('OTHERS_ALW')
                 payslip.incentive_wage = 0#payslip._get_salary_line_total('INCENTIVE')
                 payslip.rpf_wage = 0 #payslip._get_salary_line_total('RPF')
                 payslip.earnings_total = payslip._get_salary_line_total('BASIC')
@@ -585,7 +585,14 @@ class HrPayslipsss(models.Model):
     
     def _input_compute_sheet(self, payslip_id, contract_id, employee_id, date_start, date_stop):
         others_adjust = self.env['hr.payslip.input']
-        input = self.env['salary.adjustment'].search([('salary_month', '<=', date_stop), ('salary_month', '>=', date_start)])
+        payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
+        
+        if payslip_run.is_bonus:
+            input = self.env['salary.adjustment'].search([('salary_month', '=', date_stop), ('salary_month', '=', date_start), ('adjust_type', '=', 'bonus')])
+        elif payslip_run.is_final:
+            input = self.env['salary.adjustment'].search([('salary_month', '<=', date_stop), ('salary_month', '>=', date_start), ('adjust_type', '=', 'fnf')])
+        else:
+            input = self.env['salary.adjustment'].search([('salary_month', '<=', date_stop), ('salary_month', '>=', date_start), ('adjust_type', '=', 'sal')])
         for line in input:
             input_entries = self.env['salary.adjustment.line'].search([('adjustment_id', '=', line.id),
                                                                        ('employee_id', '=', int(employee_id))])
