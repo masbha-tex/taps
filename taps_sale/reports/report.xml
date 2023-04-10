@@ -1,5 +1,5 @@
 <odoo>
-    <data noupdate='0'>
+    <data noupdate='1'>
         <record id="action_report_oa_xls" model="ir.actions.report">
             <field name="name">OA Excel</field>
             <field name="model">sale.order</field>
