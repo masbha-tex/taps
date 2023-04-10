@@ -27,6 +27,8 @@
         'views/hr_expense.xml',
         'data/generate_expense_code.xml',
         'data/generate_imprest_code.xml',
+        'reports/report_action.xml',
+        'reports/hr_imprest_report.xml',
         
     ],
     'qweb': [

@@ -91,8 +91,9 @@ class SaleOrder(models.Model):
             string='Number of revision', tracking=True)
     pi_type = fields.Selection([
             ('regular', 'Regular'),
-            ('block', 'Block')],
-            string='Types of PI', default='regular')
+            ('block', 'Block'),
+            ('replacement', 'Replacement'),],
+            string='Type', default='regular')
     cause_of_revision = fields.Text(string='Cuase')
     is_hold = fields.Boolean('Hold', tracking=True)
     price_tracking = fields.Text('Price Tracker')
@@ -393,7 +394,7 @@ class SaleOrder(models.Model):
                         product_temp = self.env['product.template'].search([('name', '=', orderline.slidercodesfg)]).sorted(key = 'id', reverse=True)[:1]
                         product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
                         #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
+                        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)]).sorted(key = 'id', reverse=False)[:1]
                         #result = contract.basic
                         wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
                         #inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])

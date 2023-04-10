@@ -25,3 +25,4 @@ class ProductBomFormula(models.Model):
     bwire_python_compute = fields.Text(string='Botom Wire')
     pinbox_python_compute = fields.Text(string='Pin BOx')
     taffeta_python_compute = fields.Text(string='Taffeta')
+    topbottom_type = fields.Text(string='Type')

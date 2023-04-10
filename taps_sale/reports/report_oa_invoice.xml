@@ -28,6 +28,10 @@
 							<h2 class="mt15" style="font-size: 15px">
 								<span>PI NO - TZBD - <t t-esc="o.order_ref.pi_number"/>
 								</span>
+								<t t-if="o.order_ref.is_revised == True">
+									<span>-<span t-field="o.order_ref.revised_no"/>
+									</span>
+								</t>
 							</h2>
 						</div>
 						<!--<div class="float-right">-->
@@ -82,7 +86,7 @@
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
 							<div>
-								<strong style="font-size:12px">ORDER DATE</strong>
+								<strong style="font-size:12px">OA RELEASE DATE</strong>
 							</div>
 							<p>
 								<span style="font-size:12px;color: blue;" t-esc="o.create_date.strftime('%d-%m-%Y')"/>
@@ -247,6 +251,7 @@
 								<t t-set="bottom_con" t-value="0"/>
 								<t t-set="pinbox_con" t-value="0"/>
 								<t t-set="shade_total_con" t-value="0"/>
+								<t t-set="number_of_top" t-value=""/>
 								
 								
 								<t t-foreach="o.order_line" t-as="line">
@@ -343,6 +348,7 @@
 												<t t-if="finish != line.finish">
 													<td class="text-left" style="border-top: 1px solid black;">
 														<span style="font-size:16px;">
+														  
 															<t t-esc="line.finish"/>
 															<t t-set="finish" t-value="line.finish"/>
 														</span>
@@ -363,11 +369,15 @@
 												</t>
 											</t>
 											<t t-if="line.numberoftop">
+											  
+												
 												<td class="text-left" style="vertical-align:middle;border-top: 1px solid black;">
 													<span>
 														<t t-esc="line.numberoftop"/>
+														<t t-set="number_of_top" t-value="line.numberoftop"/>
 													</span>
 												</td>
+												
 											</t>
 											<t t-if="line.sizein != 'N/A'">
 												<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
@@ -404,7 +414,7 @@
 													<td/>
 												</t>
 												<t t-if="shade_total != line.shade">
-													<td class="text-left" style="border-top: 1px solid black;">
+													<td class="text-left" style="vertical-align:middle;border-top: 1px solid black;">
 														<span style="font-size:16px;">
 															<t t-esc="line.shadewise_tape" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<t t-set="shade_total" t-value="line.shade"/>
@@ -567,6 +577,11 @@
 					<br/>
 					<br/>
 					<div class="row mt32 mb32 center" style="font-size:12px">
+					  <div class="col-auto col-1 mw-50 mb-2">
+							<strong>__________</strong>
+							<br/>
+							<strong>CSD</strong>
+						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>__________</strong>
 							<br/>
