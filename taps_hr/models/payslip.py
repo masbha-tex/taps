@@ -103,7 +103,7 @@ class HrPayslipsss(models.Model):
                 payslip.others_alw_wage = payslip._get_salary_line_total('OTHERS_ALW')
                 payslip.incentive_wage = 0#payslip._get_salary_line_total('INCENTIVE')
                 payslip.rpf_wage = 0 #payslip._get_salary_line_total('RPF')
-                payslip.earnings_total = payslip._get_salary_line_total('BASIC')
+                payslip.earnings_total = payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('OTHERS_ALW')
                 payslip.pf_empr_wage = 0 #payslip._get_salary_line_total('PFR')
                 payslip.pf_empe_wage = 0 #payslip._get_salary_line_total('PFE')
                 payslip.ait_wage = 0#payslip._get_salary_line_total('AIT')
