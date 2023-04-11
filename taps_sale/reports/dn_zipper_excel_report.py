@@ -29,10 +29,16 @@ class SalesXlsx(models.AbstractModel):
         sheet.write(1, 5, "OA DATE", bold)
         sheet.write(1, 6, "DELIVERY DATE", bold)
         sheet.write(1, 7, "SHADE", bold)
-        sheet.write(1, 8, "GAP", bold)
-        sheet.write(1, 9, "SIZE(INCH)", bold)
-        sheet.write(1, 10, "SIZE(CM)", bold)
-        sheet.write(1, 11, "QUANTITY", bold)
+        sheet.write(1, 8, "SIZE(INCH)", bold)
+        sheet.write(1, 9, "SIZE(CM)", bold)
+        sheet.write(1, 10, "QUANTITY", bold)
+        sheet.write(1, 11, "TAPE/KG", bold)
+        sheet.write(1, 12, "WIRE/KG", bold)
+        sheet.write(1, 13, "SLIDER/PCS", bold)
+        sheet.write(1, 14, "H-BOTTOM/KG", bold)
+        sheet.write(1, 15, "U-TOP/KG", bold)
+        sheet.write(1, 16, "PINBOX/KG", bold)
+        sheet.write(1, 17, "SALESPERSON", bold)
         col = 1
         row=2
         
@@ -50,13 +56,19 @@ class SalesXlsx(models.AbstractModel):
                 o_data.slidercodesfg,
                 o_data.finish,
                 orders.order_ref.pi_number,
-                orders.create_date,
-                slnumber,
+                orders.create_date.strftime("%d-%m-%Y"),
+                orders.expected_date.strftime("%d-%m-%Y"),
                 o_data.shade,
-                o_data.gap,
                 o_data.sizein,
                 o_data.sizecm,
                 o_data.product_uom_qty,
+                o_data.tape_con,
+                o_data.wire_con,
+                o_data.slider_con,
+                o_data.botomwire_con,
+                o_data.topwire_con,
+                o_data.pinbox_con,
+                orders.sale_representative.name,
                 "",
             ]
             report_data.append(order_data) 

@@ -864,6 +864,7 @@ class SaleOrderLine(models.Model):
     slider_con = fields.Float('Slider Consumption', required=True, digits='Unit Price', default=0.0)
     topwire_con = fields.Float('Topwire Consumption', required=True, digits='Unit Price', default=0.0)
     botomwire_con = fields.Float('Botomwire Consumption', required=True, digits='Unit Price', default=0.0)
+    tbwire_con = fields.Float('TBwire Consumption', required=True, digits='Unit Price', default=0.0)
     wire_con = fields.Float('Wire Consumption', required=True, digits='Unit Price', default=0.0)
     pinbox_con = fields.Float('Pinbox Consumption', required=True, digits='Unit Price', default=0.0)
     shadewise_tape = fields.Float('Shadwise Tape', required=True, digits='Unit Price', default=0.0, compute='compute_shadewise_tape', compute_sudo=True, store=True)
@@ -1134,6 +1135,12 @@ class SaleOrderLine(models.Model):
                 if wastage_bottom.wastage>0:
                     con_bottom += (con_bottom*wastage_bottom.wastage)/100
             self.botomwire_con = round(con_bottom*self.product_uom_qty,4)
+        if formula.tbwire_python_compute:
+            con_bottom = safe_eval(formula.tbwire_python_compute)
+            if wastage_bottom:
+                if wastage_bottom.wastage>0:
+                    con_bottom += (con_bottom*wastage_bottom.wastage)/100
+            self.tbwire_con = round(con_bottom*self.product_uom_qty,4)
         if formula.pinbox_python_compute:
             con_pinbox = safe_eval(formula.pinbox_python_compute)
             if wastage_pinbox:

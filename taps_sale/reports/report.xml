@@ -1,7 +1,7 @@
 <odoo>
     <data noupdate='1'>
         <record id="action_report_oa_xls" model="ir.actions.report">
-            <field name="name">OA Excel </field>
+            <field name="name">DN+ PI Excel </field>
             <field name="model">sale.order</field>
             <field name="report_type">xlsx</field>
             <field name="report_name">taps_sale.report_oa_zipper_xls</field>
