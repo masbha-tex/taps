@@ -9,6 +9,7 @@
             <field name="binding_model_id" ref="model_sale_order"/>
             <field name="binding_type">report</field>
             <field name="default_print_option">print</field>
+<!--             <field name="default_print_option">print</field> -->
             
         </record>
     </data>
