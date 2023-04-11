@@ -17,19 +17,6 @@ import re
 
 from werkzeug.urls import url_encode
 
-# class SaleProductConfigurator(models.TransientModel):
-#     _inherit = 'sale.product.configurator'
-    
-#     product_template_attribute_value_ids = fields.Many2many(
-#         'product.template.attribute.value', 'product_configurator_template_attribute_value_rel', string='Attribute Values', readonly=False)
-#     product_custom_attribute_value_ids = fields.Many2many(
-#         'product.attribute.custom.value', 'product_configurator_custom_attribute_value_rel', string="Custom Values", readonly=False)
-#     product_no_variant_attribute_value_ids = fields.Many2many(
-#         'product.template.attribute.value', 'product_configurator_no_variant_attribute_value_rel', string="Extra Values", readonly=False)
-
-    
-    
-    
 class SaleOrder(models.Model):
     _inherit = "sale.order"
     
@@ -358,7 +345,7 @@ class SaleOrder(models.Model):
                     'type':'normal',
                     'product_tmpl_id':orderline.product_id.product_tmpl_id.id,
                     'product_id':orderline.product_id.id,
-                    'product_qty':1,
+                    'product_qty':100,
                     'product_uom_id':orderline.product_id.product_tmpl_id.uom_id.id,
                     'sequence':'',
                     'ready_to_produce':'asap',
@@ -403,12 +390,12 @@ class SaleOrder(models.Model):
 
                         consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
 
-                        consumption = round(consumption,4)
+                        #consumption = round(consumption,4)
 
                         if wastage_:
                             if wastage_.wastage>0:
                                 consumption += (consumption*wastage_.wastage)/100
-                                consumption = round(consumption,4)
+                                consumption = round(consumption*100,4)
 
                         bom_line_info = {
                             'product_id':product_.id,
@@ -422,43 +409,45 @@ class SaleOrder(models.Model):
                         self.env['mrp.bom.line'].create(bom_line_info)
                     
                 
-#                 if orderline.dyedtape:
-#                     seq = seq + 1
-#                     size_type = "inch"
-#                     size = 0
-#                     consumption = 0.0
-#                     if orderline.sizein == "N/A":
-#                         size_type = "cm"
-#                         size = orderline.sizecm
-#                     else:
-#                         size = orderline.sizein
-#                     product_temp = self.env['product.template'].search([('name', '=', orderline.dyedtape)]).sorted(key = 'id', reverse=True)[:1]
-#                     product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
-                    
-#                     #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-#                     formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
-#                     wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
-#                     #result = contract.basic
-#                     inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
-#                     formula_ = formula.tape_python_compute
-#                     #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
-#                     consumption = safe_eval(formula_, {'s': size, 'g': orderline.gap})# or 0.0, None, mode='exec', nocopy=True
-#                     consumption = round(consumption,4)
-#                     if wastage_:
-#                         if wastage_.wastage>0:
-#                             consumption += (consumption*wastage_.wastage)/100
-#                             consumption = round(consumption,4)
-                            
-                    # bom_line_info = {
-                    #     'product_id':product_.id,
-                    #     'company_id':self.company_id.id,
-                    #     'product_qty':consumption,
-                    #     'product_uom_id':product_temp.uom_id.id,
-                    #     'sequence':seq,
-                    #     'bom_id':bomrec.id,
-                    #     'operation_id':'',
-                    # }
-                    # self.env['mrp.bom.line'].create(bom_line_info)
+                if orderline.dyedtape:
+                    tape = 'Dyeing C#'
+                    if tape in orderline.dyedtape:
+                        seq = seq + 1
+                        size_type = "inch"
+                        size = 0
+                        consumption = 0.0
+                        if orderline.sizein == "N/A":
+                            size_type = "cm"
+                            size = orderline.sizecm
+                        else:
+                            size = orderline.sizein
+                        product_temp = self.env['product.template'].search([('name', '=', orderline.dyedtape)]).sorted(key = 'id', reverse=True)[:1]
+                        product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
+
+                        #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
+                        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type),('topbottom_type', '=', orderline.topbottom)])
+                        wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+                        #result = contract.basic
+                        inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
+                        formula_ = formula.tape_python_compute
+                        #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
+                        consumption = safe_eval(formula_, {'s': size, 'g': orderline.gap})# or 0.0, None, mode='exec', nocopy=True
+                        #consumption = round(consumption,4)
+                        if wastage_:
+                            if wastage_.wastage>0:
+                                consumption += (consumption*wastage_.wastage)/100
+                                consumption = round(consumption*100,4)
+
+                        bom_line_info = {
+                            'product_id':product_.id,
+                            'company_id':self.company_id.id,
+                            'product_qty':consumption,
+                            'product_uom_id':product_temp.uom_id.id,
+                            'sequence':seq,
+                            'bom_id':bomrec.id,
+                            'operation_id':'',
+                        }
+                        self.env['mrp.bom.line'].create(bom_line_info)
                     
                     
                 if orderline.ptopfinish:
@@ -474,10 +463,10 @@ class SaleOrder(models.Model):
                         wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
                         #result = contract.basic
                         inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
-                        formula_ = formula.twair_python_compute
+                        #formula_ = formula.twair_python_compute
                         #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
-                        consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
-                        consumption = round(consumption,4)
+                        consumption = 100#safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
+                        #consumption = round(consumption,4)
                         if orderline.numberoftop:
                             if orderline.numberoftop == "Double":
                                 consumption = consumption*2
@@ -511,10 +500,10 @@ class SaleOrder(models.Model):
                         wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Bottom')])
                         #result = contract.basic
                         inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
-                        formula_ = formula.bwire_python_compute
+                        #formula_ = formula.bwire_python_compute
                         #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
-                        consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
-                        consumption = round(consumption,4)
+                        consumption = 100#safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
+                        #consumption = round(consumption,4)
                         if wastage_:
                             if wastage_.wastage>0:
                                 consumption += (consumption*wastage_.wastage)/100
@@ -531,22 +520,22 @@ class SaleOrder(models.Model):
                         }
                         self.env['mrp.bom.line'].create(bom_line_info)
                     
-                if orderline.ppinboxfinish:
-                    if orderline.ppinboxfinish not in('TBA','N/A'):
-                        seq = seq + 1
-                        product_temp = self.env['product.template'].search([('name', 'like', orderline.ppinboxfinish)]).sorted(key = 'id', reverse=True)[:1]
-                        product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
+#                 if orderline.ppinboxfinish:
+#                     if orderline.ppinboxfinish not in('TBA','N/A'):
+#                         seq = seq + 1
+#                         product_temp = self.env['product.template'].search([('name', 'like', orderline.ppinboxfinish)]).sorted(key = 'id', reverse=True)[:1]
+#                         product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
 
-                        bom_line_info = {
-                            'product_id':product_.id,
-                            'company_id':self.company_id.id,
-                            'product_qty':1,
-                            'product_uom_id':product_temp.uom_id.id,
-                            'sequence':seq,
-                            'bom_id':bomrec.id,
-                            'operation_id':'',
-                        }
-                        self.env['mrp.bom.line'].create(bom_line_info)
+#                         bom_line_info = {
+#                             'product_id':product_.id,
+#                             'company_id':self.company_id.id,
+#                             'product_qty':1,
+#                             'product_uom_id':product_temp.uom_id.id,
+#                             'sequence':seq,
+#                             'bom_id':bomrec.id,
+#                             'operation_id':'',
+#                         }
+#                         self.env['mrp.bom.line'].create(bom_line_info)
                 
 
                 if orderline.topbottom:
@@ -554,18 +543,28 @@ class SaleOrder(models.Model):
                         seq = seq + 1
                         size_type = "inch"
                         consumption = 0.0
-                        product_temp = self.env['product.template'].search([('name', 'like', orderline.topbottom)]).sorted(key = 'id', reverse=True)[:1]
+                        p_type = ''
+                        if 'COIL 3' in orderline.product_id.product_tmpl_id.name:
+                            p_type = 'C#3'
+                        elif 'COIL 5' in orderline.product_id.product_tmpl_id.name:
+                            p_type = 'C#5'
+                        elif 'PLASTIC 3' in orderline.product_id.product_tmpl_id.name:
+                            p_type = 'P#3'
+                        elif 'PLASTIC 5' in orderline.product_id.product_tmpl_id.name:
+                            p_type = 'P#5'
+                            
+                        product_temp = self.env['product.template'].search([('name', 'like', orderline.topbottom),('name', 'like', p_type)]).sorted(key = 'id', reverse=True)[:1]
                         product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
 
                         #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
-                        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
+                        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type),('topbottom_type', '=', orderline.topbottom)])
                         wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Bottom')])
                         #result = contract.basic
                         inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
-                        formula_ = formula.bwire_python_compute
+                        #formula_ = formula.tbwire_python_compute
                         #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
-                        consumption = safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
-                        consumption = round(consumption,4)
+                        consumption = 100#safe_eval(formula_)# or 0.0, None, mode='exec', nocopy=True
+                        #consumption = round(consumption,4)
                         if wastage_:
                             if wastage_.wastage>0:
                                 consumption += (consumption*wastage_.wastage)/100
@@ -600,18 +599,22 @@ class SaleOrder(models.Model):
                         #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                         formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
                         wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Wire')])
+                        wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
                         #result = contract.basic
                         inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                         formula_ = formula.wair_python_compute
+                        formula_tape = formula.tape_python_compute
                         #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
 
                         consumption = safe_eval(formula_, {'s': size})# or 0.0, None, mode='exec', nocopy=True
+                        consumption_tape = safe_eval(formula_tape, {'s': size, 'g': orderline.gap})
+                        consumption += consumption_tape
 
-                        consumption = round(consumption,4)
+                        #consumption = round(consumption,4)
                         if wastage_:
                             if wastage_.wastage>0:
                                 consumption += (consumption*wastage_.wastage)/100
-                                consumption = round(consumption,4)                    
+                                consumption = round(consumption*100,4)                    
 
                         bom_line_info = {
                             'product_id':product_.id,
@@ -643,12 +646,12 @@ class SaleOrder(models.Model):
                         wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Pinbox')])
                         #result = contract.basic
                         inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
-                        formula_ = formula.pinbox_python_compute
+                        #formula_ = formula.pinbox_python_compute
                         #raise UserError((orderline.product_id.product_tmpl_id.id,product_main.id))
 
-                        consumption = safe_eval(formula_)# or 0.0, None,pinbox_python_compute mode='exec', nocopy=True
+                        consumption = 100#safe_eval(formula_)# or 0.0, None,pinbox_python_compute mode='exec', nocopy=True
 
-                        consumption = round(consumption,4)
+                        #consumption = round(consumption,4)
                         if wastage_:
                             if wastage_.wastage>0:
                                 consumption += (consumption*wastage_.wastage)/100
@@ -763,14 +766,16 @@ class SaleOrder(models.Model):
                         
                         # filtered_shade = [x for x in unique_shade if x[0] == products.product_id.product_tmpl_id.id and x[1] == products.shade]
                         # if filtered_shade:
+                        #     #raise UserError((filtered_shade,'sdfdf'))
                         #     a = 'a'
                         # else:
+                        #     #raise UserError((filtered_shade))
                         #     same_shade = self.order_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == products.product_id.product_tmpl_id.id and sol.shade == products.shade)
                         #     product_qty = sum(same_shade.mapped('product_qty'))
                         sub_qty = sub_lines.product_qty * lines.product_qty * product_qty
-                        #     _shade = []
-                        #     _shade = [products.product_id.product_tmpl_id.id,products.shade]
-                        #     unique_shade.append(_shade)
+                            # _shade = []
+                            # _shade = [products.product_id.product_tmpl_id.id,products.shade]
+                            # unique_shade.append(_shade)
 
                         sub_production = self.env['mrp.production'].create(self.mrp_values(products.id,sub_lines.product_id.id,sub_qty,sub_lines.product_uom_id.id,sub_bom.id))
                         sub_production.move_raw_ids.create(sub_production._get_moves_raw_values())
@@ -1072,10 +1077,7 @@ class SaleOrderLine(models.Model):
         # #all_tape.update({'shadewise_tape':sum(all_tape.mapped('tape_con'))})
         # #val['shadewise_tape'] = sum(all_tape.mapped('tape_con'))
         # values.update(shadewise_tape=sum(all_tape.mapped('tape_con')))
-            
-            
-            
-    
+        
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
         #raise UserError(('jsfeijfi'))
@@ -1089,8 +1091,10 @@ class SaleOrderLine(models.Model):
             size = self.sizecm
         else:
             size = self.sizein
-            
-        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
+        if self.topbottom:
+            formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type),('topbottom_type', '=', self.topbottom)])
+        else:
+            formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
         wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
         wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
         wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
