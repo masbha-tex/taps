@@ -27,7 +27,6 @@
         'views/sale.xml',
         'views/buyer_name.xml',
         'views/sale_overview.xml',
-        #'views/order_flow.xml',
         'views/mrp_productivity.xml',
         'views/sale_representative.xml',
         # 'views/bank.xml',
@@ -41,6 +40,7 @@
         # 'views/assets.xml',
         'views/variant_templates.xml',
         'reports/report.xml',
+        'views/order_flow.xml',
         
     ],
     # only loaded in demonstration mode

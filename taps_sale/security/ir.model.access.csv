@@ -5,3 +5,4 @@ access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_buyer,base.group_user,
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_overview,base.group_user,1,1,1,1
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_representative,sales_team.group_sale_manager,1,1,1,1
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_wastage_percent,sales_team.group_sale_manager,1,1,1,1
+access_taps_sale.taps_sale,taps_sale.taps_sale,model_order_flow,base.group_user,1,1,1,1

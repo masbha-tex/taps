@@ -9,3 +9,17 @@ class SalesRepresentative(models.Model):
     _description = 'SalesPerson List'
     
     name = fields.Char(string='Sales Representative')
+    sales_representative_team = fields.Selection([
+            ('jamuna', 'JAMUNA'),
+            ('padma', 'PADMA'),
+            ('sangu', 'SANGU'),
+            ('shitolokkha', 'SHITOLOKKHA'),
+            ('meghna', 'MEGHNA'),
+            ('karnaphuli', 'KARNAPHULI'),
+            ('brahmaputra', 'BRAHMAPUTRA'),],
+            string='Team')
+    
+    sales_representative_position = fields.Selection([
+            ('leader', 'Team Leader'),
+            ('member', 'Team Member'),],
+            string='Position')

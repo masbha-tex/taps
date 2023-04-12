@@ -764,24 +764,25 @@ class SaleOrder(models.Model):
                     if sub_bom:
                         product_qty = products.product_qty
                         
-                        # filtered_shade = [x for x in unique_shade if x[0] == products.product_id.product_tmpl_id.id and x[1] == products.shade]
-                        # if filtered_shade:
-                        #     #raise UserError((filtered_shade,'sdfdf'))
-                        #     a = 'a'
-                        # else:
-                        #     #raise UserError((filtered_shade))
-                        #     same_shade = self.order_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == products.product_id.product_tmpl_id.id and sol.shade == products.shade)
-                        #     product_qty = sum(same_shade.mapped('product_qty'))
-                        sub_qty = sub_lines.product_qty * lines.product_qty * product_qty
-                            # _shade = []
-                            # _shade = [products.product_id.product_tmpl_id.id,products.shade]
-                            # unique_shade.append(_shade)
+                        filtered_shade = [x for x in unique_shade if x[0] == products.product_id.product_tmpl_id.id and x[1] == products.shade]
+                        if filtered_shade:
+                            #raise UserError((filtered_shade,'sdfdf'))
+                            a = 'a'
+                        else:
+                            #raise UserError((filtered_shade))
+                            same_shade = self.order_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == products.product_id.product_tmpl_id.id and sol.shade == products.shade)
+                            product_qty = sum(same_shade.mapped('product_qty'))
+                            sub_qty = sub_lines.product_qty * lines.product_qty * product_qty
 
-                        sub_production = self.env['mrp.production'].create(self.mrp_values(products.id,sub_lines.product_id.id,sub_qty,sub_lines.product_uom_id.id,sub_bom.id))
-                        sub_production.move_raw_ids.create(sub_production._get_moves_raw_values())
-                        sub_production._onchange_workorder_ids()
-                        sub_production._create_update_move_finished()
-                        sub_production.action_confirm()
+                            sub_production = self.env['mrp.production'].create(self.mrp_values(products.id,sub_lines.product_id.id,sub_qty,sub_lines.product_uom_id.id,sub_bom.id))
+                            sub_production.move_raw_ids.create(sub_production._get_moves_raw_values())
+                            sub_production._onchange_workorder_ids()
+                            sub_production._create_update_move_finished()
+                            sub_production.action_confirm()
+                            
+                        _shade = []
+                        _shade = [products.product_id.product_tmpl_id.id,products.shade]
+                        unique_shade.append(_shade)
                         
                 mrp_sf_production.action_confirm()
             mrp_production.action_confirm()

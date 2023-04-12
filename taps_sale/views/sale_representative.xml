@@ -6,6 +6,8 @@
         <field name="arch" type="xml">
             <tree string="Sales Representative List">
                 <field name="name"/>
+                <field name="sales_representative_team"/>
+                <field name="sales_representative_position"/>
             </tree>
         </field>
     </record>
@@ -17,7 +19,17 @@
             <form string="Sales Representative Form">
                 <sheet>
                     <group>
+                        <h2>
                         <field name="name"/>
+                        </h2>
+                    </group>
+                    <group>
+                        <group>
+                        <field name="sales_representative_team"/>
+                        </group>
+                        <group>
+                        <field name="sales_representative_position"/>
+                        </group>
                     </group>
                 </sheet>
             </form>

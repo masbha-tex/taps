@@ -33,12 +33,13 @@ class SalesXlsx(models.AbstractModel):
         sheet.write(1, 9, "SIZE(CM)", bold)
         sheet.write(1, 10, "QUANTITY", bold)
         sheet.write(1, 11, "TAPE/KG", bold)
-        sheet.write(1, 12, "WIRE/KG", bold)
-        sheet.write(1, 13, "SLIDER/PCS", bold)
-        sheet.write(1, 14, "H-BOTTOM/KG", bold)
-        sheet.write(1, 15, "U-TOP/KG", bold)
-        sheet.write(1, 16, "PINBOX/KG", bold)
-        sheet.write(1, 17, "SALESPERSON", bold)
+        sheet.write(1, 12, "SHADE TOTAL", bold)
+        sheet.write(1, 13, "WIRE/KG", bold)
+        sheet.write(1, 14, "SLIDER/PCS", bold)
+        sheet.write(1, 15, "H-BOTTOM/KG", bold)
+        sheet.write(1, 16, "U-TOP/KG", bold)
+        sheet.write(1, 17, "PINBOX/KG", bold)
+        sheet.write(1, 18, "SALESPERSON", bold)
         col = 1
         row=2
         
@@ -51,18 +52,62 @@ class SalesXlsx(models.AbstractModel):
         slnumber=0
         for o_data in docs:
             slnumber = slnumber+1
+            
+            pr_name = o_data.product_template_id.name
+            slider = o_data.slidercodesfg
+            finish = o_data.finish
+            pi_num = orders.order_ref.pi_number
+            create_date = orders.create_date.strftime("%d-%m-%Y")
+            expected_date = orders.expected_date.strftime("%d-%m-%Y")
+            shade = o_data.shade
+            shadewise_tape = o_data.shadewise_tape
+            
+            filtered_name = [x for x in report_data if x[0] == o_data.product_template_id.name]
+            if filtered_name:
+                pr_name = ''
+            
+            filtered_slider = [x for x in report_data if (x[0] == o_data.product_template_id.name or x[0] == '') and x[1] == o_data.slidercodesfg]
+            if filtered_slider:
+                slider = ''
+
+            filtered_finish = [x for x in report_data if (x[0] == o_data.product_template_id.name or x[0] == '') and x[2] == o_data.finish]
+            if filtered_finish:
+                finish = ''
+                
+            filtered_pi_num = [x for x in report_data if x[3] == orders.order_ref.pi_number]
+            if filtered_pi_num:
+                pi_num = ''
+            
+            filtered_create_date = [x for x in report_data if x[4] == orders.create_date.strftime("%d-%m-%Y")]
+            if filtered_create_date:
+                create_date = ''
+            
+            filtered_expected_date = [x for x in report_data if x[5] == orders.expected_date.strftime("%d-%m-%Y")]
+            if filtered_expected_date:
+                expected_date = ''
+            
+            filtered_shade = [x for x in report_data if (x[0] == o_data.product_template_id.name or x[0] == '') and x[6] == o_data.shade]
+            if filtered_shade:
+                shade = ''
+                
+            filtered_shadewise_tape = [x for x in report_data if (x[0] == o_data.product_template_id.name or x[0] == '') and 
+                                       x[6] == o_data.shade and x[11] == o_data.shadewise_tape]
+            if filtered_shadewise_tape:
+                shadewise_tape = ''
+                
             order_data = [
-                o_data.product_template_id.name,
-                o_data.slidercodesfg,
-                o_data.finish,
-                orders.order_ref.pi_number,
-                orders.create_date.strftime("%d-%m-%Y"),
-                orders.expected_date.strftime("%d-%m-%Y"),
-                o_data.shade,
+                pr_name,
+                slider,
+                finish,
+                pi_num,
+                create_date,
+                expected_date,
+                shade,
                 o_data.sizein,
                 o_data.sizecm,
                 o_data.product_uom_qty,
                 o_data.tape_con,
+                shadewise_tape,
                 o_data.wire_con,
                 o_data.slider_con,
                 o_data.botomwire_con,
@@ -71,7 +116,7 @@ class SalesXlsx(models.AbstractModel):
                 orders.sale_representative.name,
                 "",
             ]
-            report_data.append(order_data) 
+            report_data.append(order_data)
         
         # output = io.BytesIO()
         # workbook = xlsxwriter.Workbook(output, {'in_memory': True})
