@@ -25,7 +25,7 @@ class EmployeeCardPDFReport(models.TransientModel):
         help='By Employee: Request for individual Employee, By Employee Tag: Request for group of employees in category')
     
     employee_id = fields.Many2one(
-        'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict")
+        'hr.employee',  domain="['|', ('active', '=', False), ('active', '=', True)]", string='Employee', index=True, readonly=False, ondelete="restrict")
     
     category_id = fields.Many2one(
         'hr.employee.category',  string='Employee Tag', help='Category of Employee', readonly=False)

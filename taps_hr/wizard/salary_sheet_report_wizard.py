@@ -1,9 +1,9 @@
 import base64
 import io
 import logging
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import datetime, date, timedelta, time
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError, Warning
 from odoo.tools.misc import xlsxwriter
 from odoo.tools import format_date
 import re
@@ -44,7 +44,7 @@ class SalarySheet(models.TransientModel):
         'res.bank',  string='Bank', readonly=False, ondelete="restrict", required=False)
     
     employee_id = fields.Many2many(
-        'hr.employee',  string='Employee', index=True, readonly=False, ondelete="restrict")    
+        'hr.employee',  domain="['|', ('active', '=', False), ('active', '=', True)]", string='Employee', index=True, readonly=False, ondelete="restrict")    
     
     category_id = fields.Many2one(
         'hr.employee.category',  string='Employee Tag', help='Category of Employee', readonly=False)
@@ -1000,9 +1000,9 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
         #if data.get('bank_id')==False:
             #domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
-            domain.append(('date_from', '=', data.get('date_from')))
+            domain.append(('date_from', '>=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('date_to', '=', data.get('date_to')))
+            domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
@@ -1031,10 +1031,15 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
                 domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
         if data.get('company_all'):
             if data.get('company_all')=='allcompany':
-                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))   
+                struct_id.name
+        domain.append(('struct_id.name', '=','F&F'))  
         
         att_obj = self.env['hr.attendance']
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        if len(docs) <=0:
+            raise Warning(_("Full & Final Settlement not Found"))
+            
         #raise UserError((data.get('employee_id')))
 
 #         for details in docs:
