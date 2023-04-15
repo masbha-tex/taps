@@ -616,7 +616,7 @@ class SaleOrder(models.Model):
                             if wastage_.wastage>0:
                                 consumption += (consumption*wastage_.wastage)/100
                                 consumption_tape += (consumption_tape*wastage_tape.wastage)/100
-                                consumption_ = round(((consumption*100) + (consumption_tape*100)),4)                    
+                                consumption_ = round(((consumption*100) + (consumption_tape*100)),4)
 
                         bom_line_info = {
                             'product_id':product_.id,
@@ -774,7 +774,7 @@ class SaleOrder(models.Model):
                             #raise UserError((filtered_shade))
                             same_shade = self.order_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == products.product_id.product_tmpl_id.id and sol.shade == products.shade)
                             product_qty = sum(same_shade.mapped('product_qty'))
-                            sub_qty = sub_lines.product_qty * lines.product_qty * product_qty
+                            sub_qty = (sub_lines.product_qty/100) * product_qty
 
                             sub_production = self.env['mrp.production'].create(self.mrp_values(products.id,sub_lines.product_id.id,sub_qty,sub_lines.product_uom_id.id,sub_bom.id))
                             sub_production.move_raw_ids.create(sub_production._get_moves_raw_values())
@@ -1068,11 +1068,37 @@ class SaleOrderLine(models.Model):
         #all_tape = self.env['sale.order.line'].search([('order_id', '=', order_id)])
         for line in self:
             #pro = self.env['product.product'].search([('id','=',values.get('product_id'))])
-            all_line = self.env['sale.order.line'].search([('order_id', '=', line.order_id.id),('shade', '=', line.shade)])
-            all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id)
-            #line.shadewise_tape = sum(all_line.mapped('tape_con'))
-            #raise UserError((sum(all_line.mapped('tape_con'))))
-            all_tpe.write({'shadewise_tape':sum(all_tpe.mapped('tape_con'))})
+            all_line = self.env['sale.order.line'].search([('order_id', '=', line.order_id.id)])#,('shade', '=', line.shade)
+            lines_ = []
+            unique_shade = []
+            con = 0.0
+            for shade in all_line:
+                filtered_shade = [x for x in unique_shade if x[1] == shade.shade]
+                if filtered_shade:
+                    con += shade.tape_con
+                    lines_ = [shade.id,shade.shade,shade.tape_con]
+                    unique_shade.append(lines_)
+                else:
+                    if unique_shade:
+                        for x in unique_shade:
+                            sal_line = self.env['sale.order.line'].search([('id', '=', x[0])])
+                            sal_line.write({'shadewise_tape':con})
+                    lines_.clear()   
+                    unique_shade.clear()
+                    con = 0.0
+                    con += shade.tape_con
+                    lines_ = [shade.id,shade.shade,shade.tape_con]
+                    unique_shade.append(lines_)
+                    
+            for y in unique_shade:
+                salline = self.env['sale.order.line'].search([('id', '=', y[0])])
+                salline.write({'shadewise_tape':con})
+             
+            # filtered_shade = [x for x in unique_shade if x[0] == products.product_id.product_tmpl_id.id and x[1] == products.shade]
+            # all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id)
+            # #line.shadewise_tape = sum(all_line.mapped('tape_con'))
+            # #raise UserError((sum(all_line.mapped('tape_con'))))
+            # all_tpe.write({'shadewise_tape':sum(all_tpe.mapped('tape_con'))})
         
         # pro = self.env['product.product'].search([('id','=',values.get('product_id'))])
         # all_tape = self.filtered(lambda sol: sol.order_id == values.get('order_id') and sol.product_id.product_tmpl_id.id == pro.product_tmpl_id.id and sol.shade == values.get('shade'))

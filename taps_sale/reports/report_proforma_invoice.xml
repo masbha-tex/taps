@@ -274,6 +274,7 @@
 						<t t-set="n_t" t-value="0"/>
 						<t t-set="inh" t-value="0"/>
 						<t t-set="cm" t-value="0"/>
+						<t t-set="dis" t-value="0"/>
 						<t t-foreach="o.order_line" t-as="line">
 							<t t-if="c == 0">
 								<t t-if="line.slidercodesfg">
@@ -313,6 +314,11 @@
 							<t t-if="cm == 0">
 								<t t-if="line.sizecm != 'N/A'">
 									<t t-set="cm" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="dis == 0">
+								<t t-if="line.discount != 0 ">
+									<t t-set="dis" t-value="1"/>
 								</t>
 							</t>
 						</t>
@@ -357,7 +363,11 @@
 									</t>
 									<th class="text-right">Qty/Pcs</th>
 									<th class="text-right">Price/Unit</th>
-									<th class="text-right">Discount</th>
+									<t t-if="dis == 1">
+										<th class="text-right">Discount</th>
+										
+									</t>
+									
 									<th>Amount</th>
 								</tr>
 							</thead>
@@ -536,11 +546,13 @@
 													<t t-esc="line.price_unit"/>
 												</span>
 											</td>
+											<t t-if="line.discount != 0">
 											<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 												<span>
 													<t t-esc="line.discount"/>
 												</span>
 											</td>
+											</t>
 											<td class="text-right o_price_total" style="vertical-align:middle;border-top: 1px solid black;">
 												<span>
 													<t t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>

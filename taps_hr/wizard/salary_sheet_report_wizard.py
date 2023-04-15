@@ -18,8 +18,8 @@ class SalarySheet(models.TransientModel):
     date_from = fields.Date('Date from', required=True, default = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
     date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))
     report_type = fields.Selection([
-        ('fnf',	'Full & Final Settlement'),
         ('PAYSLIP',	'Pay Slip'),
+        ('fnf',	'Full & Final Settlement'),
         ('SALARYTOP',	'Salary Top Sheet Summary'),
         ('SALARY',	'Salary Sheet'),
         ('BONUSTOP',	'Bonus Top Sheet Summary'),
@@ -1033,7 +1033,7 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
         
-        
+        att_obj = self.env['hr.attendance']
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
         #raise UserError((data.get('employee_id')))
 
@@ -1041,13 +1041,23 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
 #             otTotal = 0
 #             for de in docs:
 #                 otTotal = otTotal + de.total
-
+        friday_precord = att_obj.search([('employee_id', 'in', (data.get('employee_id'))),('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to')),('inFlag', '=', 'FP')])
+        fp_days = len(friday_precord)
+        fp_hours = sum(friday_precord.mapped('worked_hours')) 
+        
+        holiday_precord = att_obj.search([('employee_id', '=', (data.get('employee_id'))),('attDate', '>=',data.get('date_from')),('attDate', '<=',data.get('date_to')),('inFlag', '=', 'HP')])
+        hp_days = len(holiday_precord)
+        hp_hours = sum(holiday_precord.mapped('worked_hours'))        
             
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
             data.get('date_from'),
             data.get('date_to'),
+            fp_days,
+            fp_hours,
+            hp_days,
+            hp_hours,
         ]
         common_data.append(common_data)
         # raise UserError((common_data[0],common_data[1],common_data[2],common_data[3]))

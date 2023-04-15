@@ -176,7 +176,7 @@
 									<strong>OT Hours</strong>
 								</td>
 								<td class="w-25" style="border: 1pt solid white;">:
-                          <t t-if="is_com==False">
+                                    <t t-if="is_com==False">
 										<span t-field="o.otHours"/>
 									</t>
 									<t t-if="is_com==True">
