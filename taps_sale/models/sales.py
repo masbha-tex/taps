@@ -1194,72 +1194,71 @@ class SaleOrderLine(models.Model):
         # #val['shadewise_tape'] = sum(all_tape.mapped('tape_con'))
         # values.update(shadewise_tape=sum(all_tape.mapped('tape_con')))
         
-#     @api.onchange('product_uom', 'product_uom_qty')
-#     def product_uom_change(self):
-#         #raise UserError(('jsfeijfi'))
-#         a = 'a'
-#         wastage_percent = self.env['wastage.percent']
-#         size_type = "inch"
-#         size = 0
-#         consumption = 0.0
-#         if self.sizein == "N/A":
-#             size_type = "cm"
-#             size = self.sizecm
-#         else:
-#             size = self.sizein
-#         if self.topbottom:
-#             formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type),('topbottom_type', '=', self.topbottom)])
-#         else:
-#             formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
-#         wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
-#         wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
-#         wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
-#         wastage_bottom = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Bottom')])
-#         wastage_wire = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Wire')])
-#         wastage_pinbox = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Pinbox')])
+    @api.onchange('product_uom', 'product_uom_qty')
+    def product_uom_change(self):
+        a = 'a'
+        wastage_percent = self.env['wastage.percent']
+        size_type = "inch"
+        size = 0
+        consumption = 0.0
+        if self.sizein == "N/A":
+            size_type = "cm"
+            size = self.sizecm
+        else:
+            size = self.sizein
+        if self.topbottom:
+            formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type),('topbottom_type', '=', self.topbottom)])
+        else:
+            formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
+        wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+        wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
+        wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
+        wastage_bottom = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Bottom')])
+        wastage_wire = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Wire')])
+        wastage_pinbox = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Pinbox')])
         
-#         con_tape = con_wire = con_slider = con_top = con_bottom = con_pinboc = 0       
-#         if formula.tape_python_compute:
-#             con_tape = safe_eval(formula.tape_python_compute, {'s': size, 'g': self.gap})
-#             if wastage_tape:
-#                 if wastage_tape.wastage>0:
-#                     con_tape += (con_tape*wastage_tape.wastage)/100
-#             self.tape_con = round(con_tape*self.product_uom_qty,4)
+        con_tape = con_wire = con_slider = con_top = con_bottom = con_pinboc = 0       
+        if formula.tape_python_compute:
+            con_tape = safe_eval(formula.tape_python_compute, {'s': size, 'g': self.gap})
+            if wastage_tape:
+                if wastage_tape.wastage>0:
+                    con_tape += (con_tape*wastage_tape.wastage)/100
+            self.tape_con = round(con_tape*self.product_uom_qty,4)
             
-#         if formula.wair_python_compute:
-#             con_wire = safe_eval(formula.wair_python_compute, {'s': size})
-#             if wastage_wire:
-#                 if wastage_wire.wastage>0:
-#                     con_wire += (con_wire*wastage_wire.wastage)/100
-#             self.wire_con = round(con_wire*self.product_uom_qty,4)
-#         if formula.slider_python_compute:
-#             con_slider = safe_eval(formula.slider_python_compute)
-#             if wastage_slider:
-#                 if wastage_slider.wastage>0:
-#                     con_slider += (con_slider*wastage_slider.wastage)/100
-#             self.slider_con = round(con_slider*self.product_uom_qty,4)
-#         if formula.twair_python_compute:
-#             con_top = safe_eval(formula.twair_python_compute)
-#             if wastage_top:
-#                 if wastage_top.wastage>0:
-#                     con_top += (con_top*wastage_top.wastage)/100
-#             self.topwire_con = round(con_top*self.product_uom_qty,4)
-#         if formula.bwire_python_compute:
-#             con_bottom = safe_eval(formula.bwire_python_compute)
-#             if wastage_bottom:
-#                 if wastage_bottom.wastage>0:
-#                     con_bottom += (con_bottom*wastage_bottom.wastage)/100
-#             self.botomwire_con = round(con_bottom*self.product_uom_qty,4)
-#         if formula.tbwire_python_compute:
-#             con_bottom = safe_eval(formula.tbwire_python_compute)
-#             if wastage_bottom:
-#                 if wastage_bottom.wastage>0:
-#                     con_bottom += (con_bottom*wastage_bottom.wastage)/100
-#             self.tbwire_con = round(con_bottom*self.product_uom_qty,4)
-#         if formula.pinbox_python_compute:
-#             con_pinbox = safe_eval(formula.pinbox_python_compute)
-#             if wastage_pinbox:
-#                 if wastage_pinbox.wastage>0:
-#                     con_pinbox += (con_pinbox*wastage_pinbox.wastage)/100
-#             self.pinbox_con = round(con_pinbox*self.product_uom_qty,4)
+        if formula.wair_python_compute:
+            con_wire = safe_eval(formula.wair_python_compute, {'s': size})
+            if wastage_wire:
+                if wastage_wire.wastage>0:
+                    con_wire += (con_wire*wastage_wire.wastage)/100
+            self.wire_con = round(con_wire*self.product_uom_qty,4)
+        if formula.slider_python_compute:
+            con_slider = safe_eval(formula.slider_python_compute)
+            if wastage_slider:
+                if wastage_slider.wastage>0:
+                    con_slider += (con_slider*wastage_slider.wastage)/100
+            self.slider_con = round(con_slider*self.product_uom_qty,4)
+        if formula.twair_python_compute:
+            con_top = safe_eval(formula.twair_python_compute)
+            if wastage_top:
+                if wastage_top.wastage>0:
+                    con_top += (con_top*wastage_top.wastage)/100
+            self.topwire_con = round(con_top*self.product_uom_qty,4)
+        if formula.bwire_python_compute:
+            con_bottom = safe_eval(formula.bwire_python_compute)
+            if wastage_bottom:
+                if wastage_bottom.wastage>0:
+                    con_bottom += (con_bottom*wastage_bottom.wastage)/100
+            self.botomwire_con = round(con_bottom*self.product_uom_qty,4)
+        if formula.tbwire_python_compute:
+            con_bottom = safe_eval(formula.tbwire_python_compute)
+            if wastage_bottom:
+                if wastage_bottom.wastage>0:
+                    con_bottom += (con_bottom*wastage_bottom.wastage)/100
+            self.tbwire_con = round(con_bottom*self.product_uom_qty,4)
+        if formula.pinbox_python_compute:
+            con_pinbox = safe_eval(formula.pinbox_python_compute)
+            if wastage_pinbox:
+                if wastage_pinbox.wastage>0:
+                    con_pinbox += (con_pinbox*wastage_pinbox.wastage)/100
+            self.pinbox_con = round(con_pinbox*self.product_uom_qty,4)
         
