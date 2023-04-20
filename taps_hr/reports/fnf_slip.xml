@@ -25,7 +25,9 @@
                     </div>
                     <div class="col-6">
                       <h4 class="text-right">
-                        <strong><span t-esc="datetime.datetime.now().strftime('%Y-%m-%d')"/></strong>
+                        <strong>
+                            <span t-esc="datetime.datetime.now().strftime('%Y-%m-%d')"/>
+                        </strong>
                       </h4>
                     </div>
                     </div>

@@ -14,92 +14,81 @@ class OrderFlow(models.Model):
     pi_type = fields.Selection(related='check_id.pi_type',string='Type')
     sale_representative = fields.Many2one(related='check_id.sale_representative',string='Sales')
     date_order = fields.Datetime(related='check_id.date_order',string='Date')
-    # sale_representative = fields.Char(related='representative_id.name', string='Sales Person')
-    # order_ref = fields.Many2one('sale.order', string='Sale Order')
-#     order_id = fields.Many2one('sale.order', string='OA Number')
-#     pi_number = fields.Char(string='PI No.')
-#     name = fields.Text(string='Description')
-#     buyer_name = fields.Many2one('sale.buyer', related="order_id.buyer_name", string='Buyer Name')
-#     sequence = fields.Integer(string='Sequence')
-#     price_unit = fields.Float('Unit Price', required=True, digits='Product Price', default=0.0)
-#     price_subtotal = fields.Monetary(string='Subtotal')
-#     price_total = fields.Monetary(string='Total')
-#     product_id = fields.Many2one('product.product', string='Product', domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', company_id)]", change_default=True, ondelete='restrict', check_company=True)
-#     product_template_id = fields.Many2one('product.template', string='Product Template', related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)])
-#     product_name = fields.Char(related='product_template_id.name', string='Product Name')
-#     product_uom_qty = fields.Float(string='Quantity', digits='Product Unit of Measure')
-#     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
-#     product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
-#     qty_delivered_method = fields.Selection([
-#         ('manual', 'Manual'),
-#         ('analytic', 'Analytic From Expenses')
-#     ], string="Method to update delivered qty", compute='_compute_qty_delivered_method', compute_sudo=True, readonly=True)
-#     qty_delivered = fields.Float('Delivered Quantity', copy=False, compute='_compute_qty_delivered', inverse='_inverse_qty_delivered', compute_sudo=True, digits='Product Unit of Measure', default=0.0)
-#     qty_delivered_manual = fields.Float('Delivered Manually', copy=False, digits='Product Unit of Measure', default=0.0)
-
-#     salesman_id = fields.Many2one('res.users',string='Salesperson',readonly=True)
-#     currency_id = fields.Many2one('res.currency', string='Currency', readonly=True)
-#     company_id = fields.Many2one('res.company', string='Company',readonly=True, index=True)
-#     order_partner_id = fields.Many2one('res.partner',string='Customer', readonly=True)
-    
-    
-    # rm_consumption = fields.Float('RM Consumption', compute='_compute_rm_consumption_value', digits='Product Price', default=0.0)
-    
-    
-#     topbottom = fields.Text(string='Top/Bottom')
-#     slidercode = fields.Text(string='Slider Code')
-#     slidercodesfg = fields.Text(string='Slider Code (SFG)')
-#     finish = fields.Text(string='Finish')
-#     shade = fields.Text(string='Shade')
-#     sizein = fields.Text(string='Size (Inch)')
-#     sizecm = fields.Text(string='Size (CM)')
-#     sizemm = fields.Text(string='Size (MM)')
-    
-#     dyedtape = fields.Text(string='Dyed Tape')
-#     ptopfinish = fields.Text(string='Plated Top Finish')
-#     pbotomfinish = fields.Text(string='Plated Bottom Finish')
-#     ppinboxfinish = fields.Text(string='Plated Pin-Box Finish')
-#     dippingfinish = fields.Text(string='Dipping Finish')
-#     gap = fields.Text(string='Gap')
-    
-#     logoref = fields.Text(string='Logo & Ref')
-#     shapefin = fields.Text(string='Shape Finish')
-#     bcdpart = fields.Text(string='BCD Part Material Type / Size')
-#     nailmat = fields.Text(string='Nail Material / Type / Shape / Size')
-#     nailcap = fields.Text(string='Nail Cap Logo')
-#     fnamebcd = fields.Text(string='Finish Name ( BCD/NAIL/ NAIL CAP)')
-#     nu1washer = fields.Text(string='1 NO. Washer Material & Size')
-#     nu2washer = fields.Text(string='2 NO. Washer Material & Size')
-#     bom_id = fields.Integer('Bom Id', copy=True)
-    
-    #company_id = fields.Many2one('res.company', readonly=True) SFG_
-#     def _compute_rm_consumption_value(self):
-#         for order in self:
-#             mo = self.env['mrp.production'].search([('sale_order_line','=',order.id)])
-#             production_id = mo.mapped('id')
-#             #stock_move = self.env['stock.move'].search([('origin','in',(mo)),('bom_lin_id','is not','')])
-#             stock_move_line = self.env['stock.move.line'].search([('production_id','in',(production_id)),('lot_id','!=','')])
-#             #stock_move_line = stock_move_l.filtered(lambda inv: inv.production_id in (production_id) and inv.order_id.bom_lin_id != None and inv.lot_id != None)
-#             #raise UserError((production_id,stock_move_line.id))
-#             sel = 0
-#             consumption = 0.0
-#             if stock_move_line:
-#                 for rm in stock_move_line:
-#                     consumption += (rm.qty_done * rm.lot_id.unit_price)
-#                     #raise UserError((rm.qty_done,rm.lot_id.unit_price))
-            
-#             order.rm_consumption = consumption
+    user_id = fields.Many2one(related='check_id.user_id',string='CSD')
+    pi_number = fields.Char(related='check_id.pi_number',string='PI Number')
+    pi_date = fields.Date(related='check_id.pi_date', string='PI Date')
+    # amount_total = fields.Monetary(related='check_id.amount_total', string='Order Value')
+    currency_id = fields.Many2one("res.currency", string="Currency")
+    partner_id = fields.Many2one(related='check_id.partner_id', string='Customer Name')
+    buyer_name = fields.Many2one(related='check_id.buyer_name', string='Buyer')
+    style_ref = fields.Char(related='check_id.style_ref',string='Style')
+    season = fields.Char(related='check_id.season',string='Season')
+    po_no = fields.Char(related='check_id.po_no',string='PO No.')
+    payment_term_id = fields.Many2one(related='check_id.payment_term_id', string='Payment Term')
+    incoterm = fields.Many2one(related='check_id.incoterm', string='Shipment Term')
+    bank = fields.Many2one(related='check_id.bank', string='Advised Bank')
+    department = fields.Char(related='check_id.department',string='Department')
+    product = fields.Char(string='Product')
+    finish = fields.Char(string='Finish')
+    slider = fields.Char(string='Slider')
+    oa_no = fields.Char(string='OA')
+    so_qty = fields.Float(string='Order Quantity')
+    so_value = fields.Monetary(string='Order Value')
+    oa_qty = fields.Float(string='OA Quantity')
+    oa_value = fields.Monetary(string='OA Value')
+    quantity_balance = fields.Monetary(string='Balance Qty')
+    value_balance = fields.Monetary(string='Balance Value')
     
     def init(self):
         tools.drop_view_if_exists(self._cr, 'order_flow')
         
         query = """
         CREATE or REPLACE VIEW order_flow AS (
-        select row_number() OVER() AS id,id as check_id,name,pi_type,sale_representative,date_order
+        select row_number() OVER() AS id,check_id,name,pi_type,sale_representative,date_order,user_id,
+        pi_number,pi_date,currency_id,partner_id,buyer_name,style_ref,season,po_no,payment_term_id,
+        incoterm,bank,department,product,finish,slider,oa_no,
+        
+        sum(product_uom_qty) as so_qty,
+        sum(price_subtotal) as so_value,
+        sum(oa_qty) as oa_qty,
+        sum(oa_value) as oa_value,
+        
+        (sum(product_uom_qty)-sum(oa_qty)) as quantity_balance,
+        (sum(price_subtotal)-sum(oa_value)) as value_balance
+        
+        
+        from
+        (
+        select s.id as check_id,s.name,s.pi_type,s.sale_representative,s.date_order,s.user_id,s.pi_number,s.pi_date,
+        s.currency_id,s.partner_id,s.buyer_name,s.style_ref,
+        s.season,s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
+        
+        pt.name as product,
+        sol.finish,
+        sol.slidercodesfg as slider,
+        oa.name as oa_no,
+        sol.product_uom_qty,
+        sol.price_subtotal,
+        
+        COALESCE((select sum(oa_l.product_uom_qty)  from sale_order_line as oa_l where oa_l.order_id=oa.id 
+        and oa_l.product_id=sol.product_id and oa_l.finish=sol.finish and oa_l.slidercodesfg=sol.slidercodesfg),0)
+        as oa_qty,
+        
+        COALESCE((select sum(oa_l.price_subtotal) from sale_order_line as oa_l where oa_l.order_id=oa.id 
+        and oa_l.product_id=sol.product_id and oa_l.finish=sol.finish and oa_l.slidercodesfg=sol.slidercodesfg),0)
+        as oa_value
 
-
-
-        from sale_order where state='sale' and sales_type='sale'
-        )
+        from sale_order as s
+        inner join sale_order_line as sol on s.id=sol.order_id
+        
+        inner join product_product as p on p.id=sol.product_id
+        inner join product_template as pt on pt.id=p.product_tmpl_id
+        
+        left join sale_order as oa on oa.order_ref=s.id
+        
+        where s.state='sale' and s.sales_type='sale'
+        ) as all_so group by check_id,name,pi_type,sale_representative,date_order,user_id,
+        pi_number,pi_date,currency_id,partner_id,buyer_name,style_ref,season,po_no,payment_term_id,
+        incoterm,bank,department,product,finish,slider,oa_no order by name,product,finish,slider,oa_no)
         """
         self.env.cr.execute(query)

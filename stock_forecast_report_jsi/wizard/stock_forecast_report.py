@@ -371,7 +371,7 @@ class StockForecastReport(models.TransientModel):
 
             worksheet.set_column(0, 10, 20)
 
-            worksheet.write(6, 0, 'Product', column_product_style)        
+            worksheet.write(6, 0, 'Product', column_product_style)
             worksheet.write(6, 1, 'Category', column_product_style)
             worksheet.write(6, 2, 'Item', column_product_style)
             worksheet.write(6, 3, 'Opening Quantity', column_product_style)

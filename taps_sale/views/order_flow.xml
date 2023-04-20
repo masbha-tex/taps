@@ -24,25 +24,32 @@
         <field name="arch" type="xml" >
             <tree string="Sale Order Flow" create="false" delete="false" >
                 <field name="name"/>
-<!--                 <field name="pi_number"/> -->
                 <field name="pi_type"/>
                 <field name="sale_representative"/>
                 <field name="date_order"/>
-<!--                 <field name="order_id"/>
+                <field name="user_id"/>
                 <field name="pi_number"/>
+                <field name="pi_date"/>
+                <field name="partner_id"/>
                 <field name="buyer_name"/>
-                <field name="order_partner_id"/> -->
-<!--             <field name="product_name"/>
-                <field name="slidercodesfg"/>
+                <field name="style_ref"/>
+                <field name="season"/>
+                <field name="po_no"/>
+                <field name="payment_term_id"/>
+                <field name="incoterm"/>
+                <field name="bank"/>
+                <field name="department"/>
+                <field name="product"/>
                 <field name="finish"/>
-                <field name="shade"/>
-                <field name="sizein"/>
-                <field name="sizecm"/>
-                <field name="product_uom"/>
-                <field name="product_uom_qty"/>
-                <field name="price_unit" optional="show" decoration-bf="True"/> -->
-<!--                 <field name="price_subtotal" optional="show" sum="Subtotal" decoration-bf="True"/> -->
-<!--                 <field name="rm_consumption" optional="show" sum="RM Consumption" decoration-bf="True"/> -->
+                <field name="slider"/>
+                <field name="oa_no"/>
+                <field name="so_qty"/>
+                <field name="so_value"/>
+                <field name="oa_qty"/>
+                <field name="oa_value"/>
+                <field name="quantity_balance"/>
+                <field name="value_balance"/>
+
             </tree>
         </field>
     </record>

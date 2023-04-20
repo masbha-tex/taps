@@ -1037,8 +1037,8 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
         
         att_obj = self.env['hr.attendance']
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
-        if len(docs) <=0:
-            raise Warning(_("Full & Final Settlement not Found"))
+        # if len(docs) <=0:
+        #     raise Warning(_("Full & Final Settlement not Found"))
             
         #raise UserError((data.get('employee_id')))
 

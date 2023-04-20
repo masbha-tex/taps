@@ -254,7 +254,7 @@
 												<th>TOPWIRE/KG</th>
 											</t>
 											<t t-if="line.pinbox_con != 0">
-												<th>PINBOX/KG</th>
+												<th>PINBOX/PCS</th>
 											</t>
 											<t t-set="head" t-value="1"/>
 										</tr>

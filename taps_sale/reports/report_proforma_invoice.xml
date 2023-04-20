@@ -307,13 +307,17 @@
 								</t>
 							</t>
 							<t t-if="inh == 0">
-								<t t-if="line.sizein != 'N/A' ">
+								<t t-if="line.sizein">
+								  <t t-if="line.sizein != 'N/A'">
 									<t t-set="inh" t-value="1"/>
+									</t>
 								</t>
 							</t>
 							<t t-if="cm == 0">
-								<t t-if="line.sizecm != 'N/A'">
+								<t t-if="line.sizecm">
+								  <t t-if="line.sizecm != 'N/A'">
 									<t t-set="cm" t-value="1"/>
+									</t>
 								</t>
 							</t>
 							<t t-if="dis == 0">
@@ -328,9 +332,10 @@
 								<tr>
 									<th class="text-left">Item</th>
 									<th class="text-center">Image</th>
+									<t t-set="line_count" t-value="2"/>
 									<t t-if="c == 1">
 										<th class="text-left">Code</th>
-										<t t-set="line_count" t-value="line_count+3"/>
+										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
 									<t t-if="pin == 1">
 										<th>Pin.Box</th>
@@ -361,14 +366,15 @@
 										<th class="text-right">Cm</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
-									<th class="text-right">Qty/Pcs</th>
+									<th class="text-right">Qty</th>
+									<th class="text-right">Unit</th>
 									<th class="text-right">Price/Unit</th>
 									<t t-if="dis == 1">
 										<th class="text-right">Discount</th>
 										
 									</t>
 									
-									<th>Amount</th>
+									<th class="text-right">Amount</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -539,6 +545,12 @@
 												<span>
 													<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 													<t t-set="total_quantity" t-value="total_quantity+line.product_uom_qty"/>
+												</span>
+											</td>
+											<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+												<span>
+													<span><t t-esc="line.product_uom.name"/></span>
+													
 												</span>
 											</td>
 											<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
