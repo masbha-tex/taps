@@ -872,6 +872,7 @@ class SaleOrderLine(models.Model):
     pinbox_con = fields.Float('Pinbox Consumption', required=True, digits='Unit Price', default=0.0)
     shadewise_tape = fields.Float('Shadwise Tape', required=True, digits='Unit Price', default=0.0, compute='compute_shadewise_tape', compute_sudo=True, store=True)
     
+    #def write
   
     @api.model_create_multi
     def create(self, vals_list):
