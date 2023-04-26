@@ -18,28 +18,32 @@ class SalesXlsx(models.AbstractModel):
     def generate_xlsx_report(self, workbook, data, orders):
         report_name = orders.name
         sheet = workbook.add_worksheet(report_name[:41])
-        bold = workbook.add_format({'bold': True})
-        sheet.write(0, 0, "CUSTOMER NAME", bold)
-        sheet.write(0, 1, "PRODUCT", bold)
-        sheet.write(0, 2, "SLIDER CODE", bold)
-        sheet.write(0, 3, "FINISH", bold)
-        sheet.write(0, 4, "PI NO", bold)
-        sheet.write(0, 5, "OA NO", bold)
-        sheet.write(0, 6, "OA DATE", bold)
-        sheet.write(0, 7, "DETAILS", bold)
-        #sheet.write(1, 9, "DELIVERY DATE", bold)
-        sheet.write(0, 8, "SHADE", bold)
-        sheet.write(0, 9, "SIZE(INCH)", bold)
-        sheet.write(0, 10, "SIZE(CM)", bold)
-        sheet.write(0, 11, "ORDER QUANTITY", bold)
-        sheet.write(0, 12, "TOTAL WT/KG", bold)
-        sheet.write(0, 13, "SHADE TOTAL", bold)
-        sheet.write(0, 14, "WIRE/KG", bold)
-        sheet.write(0, 15, "SLIDER/PCS", bold)
-        sheet.write(0, 16, "H-BOTTOM/KG", bold)
-        sheet.write(0, 17, "U-TOP/KG", bold)
-        sheet.write(0, 18, "PINBOX/KG", bold)
-        sheet.write(0, 19, "SALESPERSON", bold)
+        #bold = workbook.add_format({'bold': True})
+        column_style = workbook.add_format({'bold': True, 'font_size': 11})
+        sheet.write(0, 0, "CUSTOMER NAME", column_style)
+        sheet.write(0, 1, "PRODUCT", column_style)
+        sheet.write(0, 2, "SLIDER CODE", column_style)
+        sheet.write(0, 3, "FINISH", column_style)
+        sheet.write(0, 4, "PI NO", column_style)
+        sheet.write(0, 5, "OA NO", column_style)
+        sheet.write(0, 6, "OA DATE", column_style)
+        sheet.write(0, 7, "Production DATE", column_style)
+        sheet.write(0, 8, "DETAILS", column_style)
+        #sheet.write(1, 9, "DELIVERY DATE", column_style)
+        sheet.write(0, 9, "SHADE", column_style)
+        sheet.write(0, 10, "SIZE(INCH)", column_style)
+        sheet.write(0, 11, "SIZE(CM)", column_style)
+        sheet.write(0, 12, "ORDER QTY", column_style)
+        sheet.write(0, 13, "READY QTY", column_style)
+        sheet.write(0, 14, "PENDING QTY", column_style)
+        sheet.write(0, 15, "TOTAL WT/KG", column_style)
+        sheet.write(0, 16, "SHADE TOTAL", column_style)
+        sheet.write(0, 17, "WIRE/KG", column_style)
+        sheet.write(0, 18, "SLIDER/PCS", column_style)
+        sheet.write(0, 19, "H-BOTTOM/KG", column_style)
+        sheet.write(0, 20, "U-TOP/KG", column_style)
+        #sheet.write(0, 18, "PINBOX/KG", column_style)
+        sheet.write(0, 21, "SALESPERSON", column_style)
         col = 0
         row = 1
         
@@ -55,14 +59,14 @@ class SalesXlsx(models.AbstractModel):
         oa_num = ''
         for o_data in docs:
             slnumber = slnumber+1
-            if customer:
-                customer = ''
-                pi_num = ''
-                oa_num = ''
-            else:
-                customer = orders.partner_id.name
-                pi_num = orders.order_ref.pi_number
-                oa_num = orders.name
+            # if customer:
+            #     customer = ''
+            #     pi_num = ''
+            #     oa_num = ''
+            # else:
+            customer = orders.partner_id.name
+            pi_num = orders.order_ref.pi_number
+            oa_num = orders.name
             
             pr_name = o_data.product_template_id.name
             slider = o_data.slidercodesfg
@@ -97,11 +101,11 @@ class SalesXlsx(models.AbstractModel):
             # if filtered_expected_date:
             #     expected_date = ''
             
-            filtered_shade = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[8] == o_data.shade]
+            filtered_shade = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[9] == o_data.shade]
             if filtered_shade:
                 shade = ''
                 
-            filtered_shadewise_tape = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and  x[8] == o_data.shade and x[13] == o_data.shadewise_tape]
+            filtered_shadewise_tape = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and  x[9] == o_data.shade and x[16] == o_data.shadewise_tape]
             if filtered_shadewise_tape:
                 shadewise_tape = ''
                 
@@ -114,10 +118,13 @@ class SalesXlsx(models.AbstractModel):
                 oa_num,
                 create_date,
                 '',
+                '',
                 #expected_date,
                 shade,
                 o_data.sizein,
                 o_data.sizecm,
+                o_data.product_uom_qty,
+                '',
                 o_data.product_uom_qty,
                 o_data.tape_con,
                 shadewise_tape,
@@ -125,7 +132,7 @@ class SalesXlsx(models.AbstractModel):
                 o_data.slider_con,
                 o_data.botomwire_con,
                 o_data.topwire_con,
-                o_data.pinbox_con,
+                #o_data.pinbox_con,
                 orders.sale_representative.name,
             ]
             report_data.append(order_data)
@@ -134,9 +141,67 @@ class SalesXlsx(models.AbstractModel):
         # workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         # worksheet = workbook.add_worksheet()
         
+        
+        qty_total = 0
+        shade_total = 0
+        wire_total = 0
+        slider_total = 0
+        bottom_total = 0
+        top_total = 0
+        
+        row_style = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial'})
+        format_label = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'top', 'bold': True, 'left': True, 'right': True, 'text_wrap':True})
+        merge_format = workbook.add_format({'align': 'center'})
+        _range = len(report_data)
+        sheet.merge_range(1, 0, _range, 0, '', merge_format)
+        sheet.merge_range(1, 4, _range, 5, '', merge_format)
+        sheet.merge_range(1, 5, _range, 5, '', merge_format)
+        sheet.merge_range(1, 6, _range, 6, '', merge_format)
+        sheet.merge_range(1, 7, _range, 7, '', merge_format)
+        sheet.merge_range(1, 8, _range, 8, '', merge_format)
+
         for line in report_data:
             col=0
             for l in line:
-                sheet.write(row, col, l)
+                if col in(0,4,5,6,7,8):
+                    sheet.write(row, col, l, format_label)
+                else:
+                    sheet.write(row, col, l, row_style)
+                if col == 12:
+                    qty_total += l
+                if col == 15:
+                    shade_total += l
+                if col == 17:
+                    wire_total += l
+                if col == 18:
+                    slider_total += l
+                if col == 19:
+                    bottom_total += l
+                if col == 20:
+                    top_total += l
                 col+=1
             row+=1
+        sheet.write(row, 0, '')
+        sheet.write(row, 1, '')
+        sheet.write(row, 2, '')
+        sheet.write(row, 3, '')
+        sheet.write(row, 4, '')
+        sheet.write(row, 5, '')
+        sheet.write(row, 6, '')
+        sheet.write(row, 7, '')
+        sheet.write(row, 8, '')
+        sheet.write(row, 9, '')
+        sheet.write(row, 10, '')
+        sheet.write(row, 11, '')
+        sheet.write(row, 12, qty_total, row_style)
+        sheet.write(row, 13, '')
+        sheet.write(row, 14, qty_total, row_style)
+        sheet.write(row, 15, '')
+        sheet.write(row, 16, shade_total, row_style)
+        sheet.write(row, 17, wire_total, row_style)
+        sheet.write(row, 18, slider_total, row_style)
+        sheet.write(row, 19, bottom_total, row_style)
+        sheet.write(row, 20, top_total, row_style)
+        sheet.write(row, 21, '')
+        
+        #sheet['M37'] = '= SUM(M2:M30)'
