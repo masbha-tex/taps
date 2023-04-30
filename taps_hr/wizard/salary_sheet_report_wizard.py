@@ -23,7 +23,8 @@ class SalarySheet(models.TransientModel):
         ('SALARYTOP',	'Salary Top Sheet Summary'),
         ('SALARY',	'Salary Sheet'),
         ('BONUSTOP',	'Bonus Top Sheet Summary'),
-        ('BONUS',	'Bonus Sheet'),],
+        ('BONUS',	'Bonus Sheet'),
+        ('increment',	'Worker Increment Letter'),],
         string='Report Type', required=True, default='PAYSLIP',
         help='By Payroll Report')
     
@@ -198,6 +199,8 @@ class SalarySheet(models.TransientModel):
             return self.env.ref('taps_hr.action_bonus_top_sheet_summary_pdf_report').report_action(self, data=data)
         if self.report_type == 'BONUS':
             return self.env.ref('taps_hr.action_bonus_sheet_pdf_report').report_action(self, data=data)
+        if self.report_type == 'increment':
+            return self.env.ref('taps_hr.action_increment_pdf_report').report_action(self, data=data)
 
 class PaySlipReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.pay_slip_pdf_template'
@@ -1074,3 +1077,93 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
 #             'alldays': all_datelist,
             'is_com' : data.get('is_company')
         } 
+    
+    
+class WorkerIncrementLetter(models.AbstractModel):
+    _name = 'report.taps_hr.increment_pdf_template'
+    _description = 'Worker Increment Letter Template'       
+    
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        #raise UserError(("pay_slip_pdf_template"))
+        #if data.get('bank_id')==False:
+            #domain.append(('code', '=', data.get('report_type')))
+        # if data.get('date_from'):
+        #     domain.append(('date_from', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('increment_id.increment_month', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.id', 'in', data.get('employee_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))   
+                # struct_id.name
+        # domain.append(('struct_id.name', '=','F&F'))  
+        
+        # att_obj = self.env['hr.attendance']
+        docs = self.env['increment.promotion.line'].search(domain).sorted(key = 'employee_id', reverse=False)
+        
+        emplist = docs.mapped('employee_id.id')
+        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+        # raise UserError((employee.emp_id))
+        
+        allemp_data = []
+        for details in employee:
+            emp_data = []
+            emp_data = [
+                details.id,
+                details.emp_id,
+                details.name,
+                details.department_id.parent_id.name,
+                details.department_id.name,
+                details.job_id.name,
+        
+            ]
+            allemp_data.append(emp_data)
+            # raise UserError((allemp_data[0]))
+               
+            
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            data.get('date_from'),
+            data.get('date_to'),
+            # fp_days,
+            # fp_hours,
+            # hp_days,
+            # hp_hours,
+        ]
+        common_data.append(common_data)
+        # raise UserError((common_data[0],common_data[1],common_data[2],common_data[3]))
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'increment.promotion.line',
+            'docs': docs,
+            'datas': common_data,
+            'em': allemp_data,
+            'is_com' : data.get('is_company')
+        }

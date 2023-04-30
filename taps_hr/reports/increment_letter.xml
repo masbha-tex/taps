@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="increment_pdf_template">
+    <t t-call="web.html_container">
+        <t t-foreach="inside_foreach_docs or docs" t-as="o">
+            <t t-call="web.external_layout">
+              <!--<t t-foreach="inside_foreach_docs or docs" t-as="o">-->
+                <t t-set="o" t-value="o.with_context(lang=o.employee_id.address_home_id.lang or o.env.lang)"/>
+                
+                <div class="page">
+                    <t t-set="working_total" t-value="0.0"/>
+					<t t-set="line_ot_total" t-value="0.0"/>
+					<t t-set="line_food_total" t-value="0.0"/>
+					<t t-set="line_conv_total" t-value="0.0"/>
+					<t t-set="line_net_total" t-value="0.0"/>
+                    <t t-set="line_style_ear" t-value="'color:#205A7B;'"/>
+                    <t t-set="line_style_ded" t-value="'color:#B71C1C;'"/>
+                    <div class="row">
+                    <div class="col-12 bg-light py-4 px-5">
+                    <div class="row">
+                    <div class="col-6">
+                       <h3 class="text-left">
+                        <strong>FULL AND FINAL SETTLEMENT</strong>
+                      </h3>
+                    </div>
+                    <div class="col-6">
+                      <h4 class="text-right">
+                        <strong>
+                            <span t-esc="datetime.datetime.now().strftime('%Y-%m-%d')"/>
+                        </strong>
+                      </h4>
+                    </div>
+                    </div>
+                      
+                    <hr style="height:2px; width:100%; border-width:0; color:red; background-color:black"/>
+                    <br/>
+
+                    <div class="row">
+                    <div class="col-6">
+                        <h4 class="mb-0">
+                            <strong>ID</strong>
+                        </h4>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                      <h4 class="mb-0" style="color:#B71C1C">
+                        : <t t-esc="o.employee_id.emp_id"/>
+                        </h4>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                        <h4 class="mb-0">
+                            <strong>Name</strong>
+                        </h4>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                      <h4 class="mb-0">
+                        : <span t-field="o.contract_id"/>
+                        </h4>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                        <h4 class="mb-0">
+                            <strong>Unit</strong>
+                        </h4>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                      <h4 class="mb-0">
+                        : <span t-field="o.employee_id.company_id"/>
+                        </h4>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                        <h4 class="mb-0">
+                            <strong>Designation</strong>
+                        </h4>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                      <h4 class="mb-0">
+                        : <span t-field="o.employee_id.job_title"/>
+                        </h4>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                        <h4 class="mb-0">
+                            <strong>Department</strong>
+                        </h4>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                      <h4 class="mb-0">
+                        : <span t-field="o.employee_id.department_id.parent_id"/>
+                        </h4>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                        <h4 class="mb-0">
+                            <strong>Date of Joining</strong>
+                        </h4>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                      <h4 class="mb-0">
+                        : <span t-field="o.contract_id.date_start"/>
+                        </h4>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                        <h4 class="mb-0">
+                            <strong>Date of Resign</strong>
+                        </h4>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                      <h4 class="mb-0">
+                        : <span t-field="o.employee_id.resign_date"/>
+                        </h4>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                        <h4 class="mb-0">
+                            <strong>Total Service Tenure</strong>
+                        </h4>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                      <h4 class="mb-0">
+                        : <span t-field="o.employee_id.service_length"/>
+                        </h4>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-12 bg-light py-4 px-5">
+
+                        <hr style="height:2px; width:100%; border-width:0; color:red; background-color:black"/>
+                        <br/>
+                        <h3><strong><span t-field="o.contract_id"/></strong></h3>
+                        <br/>
+                        <p style="font-size: 25px;">This is to inform you that, your resignation has been accepted by the Management. Please receive your Full And Final payment as per followings:</p>
+
+                        <p style="font-size: 27px;">(উপর্যুক্ত বিষয়ে আপনার অবগতির জন্য জানানো যাচ্ছে যে, আপনার প্রদত্ত চাকুরি হইতে অব্যহতি প্রদানের প্রেক্ষিতে কোম্পনী কর্তৃপক্ষ তাহা মঞ্জুর করেছে। আপনার অনুকূলে কোম্পনী কর্তৃক প্রদত্ত ইউনিফরম, কোম্পানী ও বেপজা আইডি কার্ড এবং যথাযথ বিভাগীয় প্রধানের স্বাক্ষর সম্বলীত কোম্পানী কর্তৃক গৃহীত অনাপত্তি পত্র জমাদানপূর্বক যাবতীয় পাওনাদি হিসাব শাখা হতে বুঝে নেয়ার জন্য অনুরোধ করা হলো। আপনার হিসাব সংক্রান্ত বিস্তারিত বিবরন নিরূপণ): </p>
+
+                    </div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <table class="table table-sm " style="font-size: 24px;table-layout:fixed">
+                     <thead class="bg-dark">
+                       <th style="color:white;width:65%">Particulars (বিবরণ)</th>
+                       <th class="text-right" style="color:white">Amount Tk. টাকা</th>
+                     </thead>
+                     <tbody>
+                       <tr>
+                         <td>মোট বেতন (Gross Salary)</td>
+                         <td class="text-right"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total+o.line_ids.filtered(lambda line: line.code == 'HRA').total+o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                       </tr>
+                       <tr>
+                         <td>মূল বেতন (Basic Salary)</td>
+                         <td class="text-right"> <span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </td>
+                       </tr>
+                     </tbody>
+                    </table>
+                    <table class="table table-sm" style="font-size: 24px;table-layout:fixed">
+                     <thead class="bg-dark">
+                       <th style="color:white;width:65%">Payable  Discription (পাওনাদির বিবরণ)</th>
+                       <th style="color:white;width:35%">                       </th>
+                     </thead>
+                     <tbody>
+                       <tr>
+                           <td>চলতি মাসের বেতন (Current Month Salary)</td>
+                           <td class="text-right">
+                               <t t-if="is_com==False">
+                                   <span t-esc="(o.line_ids.filtered(lambda line: line.code == 'NET').total)-
+                                                (o.line_ids.filtered(lambda line: line.code == 'EL').total+
+                                                o.line_ids.filtered(lambda line: line.code == 'CB').total+
+                                                o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+
+                                                o.line_ids.filtered(lambda line: line.code == 'EID').total+
+                                                o.line_ids.filtered(lambda line: line.code == 'OB').total)+
+                                                (o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+
+                                                o.line_ids.filtered(lambda line: line.code == 'LOAN').total+
+                                                o.line_ids.filtered(lambda line: line.code == 'NP').total+
+                                                o.line_ids.filtered(lambda line: line.code == 'AIT').total)" 
+                                         t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                               </t>
+                               <t t-if="is_com==True">
+                               <t t-set="working_total" t-value="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days-(datas[4]+datas[6])"/>
+                                    <t t-if="o.line_ids.filtered(lambda line: line.code == 'OT')">
+                                        <t t-set="line_ot_total" t-value="(o.com_otHours*o.otRate)"/>
+                                    </t>
+                                    <t t-if="o.line_ids.filtered(lambda line: line.code == 'FOOD')">
+                                        <t t-set="line_food_total" t-value="(39*working_total)"/>
+                                    </t>
+                                    <t t-if="o.line_ids.filtered(lambda line: line.code == 'CONVENCE')">
+                                        <t t-set="line_conv_total" t-value="(15*working_total)"/>
+                                    </t>
+                                    <t t-if="o.line_ids.filtered(lambda line: line.code == 'NET')">
+                                        <t t-set="line_net_total" t-value="((o.earnings_total-(o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'OT').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'FOOD').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total))+
+                                                                           line_ot_total+line_conv_total+line_food_total)-o.deduction_total"/>
+                                    </t>
+                                    <span t-esc="((line_net_total)-
+                                                 (o.line_ids.filtered(lambda line: line.code == 'EL').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'CB').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'OB').total)+
+                                                 (o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'LOAN').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'AIT').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'UO').total))" 
+                                    t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>                                 
+                            </t>
+                    <!--                                <t t-if="is_com==True">
+                                   <span t-esc="(o.line_ids.filtered(lambda line: line.code == 'NET').total)-(o.line_ids.filtered(lambda line: line.code == 'EL').total+o.line_ids.filtered(lambda line: line.code == 'CB').total+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+o.line_ids.filtered(lambda line: line.code == 'OB').total)+(o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total+o.line_ids.filtered(lambda line: line.code == 'UO').total)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                               </t> -->
+                           </td>
+                       </tr>
+                       <tr>
+                         <td>অর্জিত ছুটির টাকা (Earn Leave Payment)</td>
+                         <td class="text-right"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'EL').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                       </tr>
+                       <tr>
+                         <td>চাকুরীর ক্ষতিপূরন সুবিধা (Compensation Benefit)</td>
+                         <td class="text-right"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'CB').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                       </tr>
+                       <tr>
+                         <td>অর্জিত (Arrear etc)</td>
+                         <td class="text-right"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'ARREAR').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                       </tr>
+                       <t t-if="is_com==True"><tr>
+                         <td>অবসায়নের সুবিধা (Termination Benefit), ১২০ দিনের নোটিশ পে-বাবদ</td>
+                         <td class="text-right">
+                         <span t-esc="o.line_ids.filtered(lambda line: line.code == 'OB').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+
+                       </tr></t>
+                        <t t-if="is_com==False">
+                            <tr>
+                                <td>ঈদ বোনাস (Eid Bonus) </td>
+                                <td class="text-right">
+                                <span t-esc="o.line_ids.filtered(lambda line: line.code == 'EID').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                </td>
+
+                            </tr>
+                        </t>
+                        <t t-if="is_com==False"> 
+                            <tr>
+                                <td>অন্যান্য সুবিধা (Others Benefit / Mutual Termination Benefit )</td>
+                                <td class="text-right">
+                                <span t-esc="o.line_ids.filtered(lambda line: line.code == 'OB').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                </td>
+
+                            </tr>
+                        </t>
+                       <tr t-att-style="line_style_ear" class="bg-grey">
+<!--                         <t t-if="o.line_ids.filtered(lambda line: line.category_id.code == 'EARNINGS')"> 
+                            <t t-set="line_style" t-value="'color:#205A7B;'"/>
+                        </t> 
+                        <t t-if="o.line_ids.filtered(lambda line: line.category_id.code == 'DED')">
+                            <t t-set="line_style" t-value="'color:#875A7B;'"/>
+                        </t>
+                        <t t-set="line_style_ear" t-value="'color:#205A7B;'"/> -->
+                        
+                        <th >Total Earnings (মোট অর্জিত) </th>
+                       <th class="text-right">
+                           <t t-if="is_com==False">
+                               <span t-esc="((o.line_ids.filtered(lambda line: line.code == 'NET').total)-(o.line_ids.filtered(lambda line: line.code == 'EL').total+o.line_ids.filtered(lambda line: line.code == 'CB').total+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+o.line_ids.filtered(lambda line: line.code == 'EID').total+o.line_ids.filtered(lambda line: line.code == 'OB').total)+(o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'NP').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total+o.line_ids.filtered(lambda line: line.code == 'UO').total))+(o.line_ids.filtered(lambda line: line.code == 'EL').total+o.line_ids.filtered(lambda line: line.code == 'CB').total+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+o.line_ids.filtered(lambda line: line.code == 'EID').total+o.line_ids.filtered(lambda line: line.code == 'OB').total)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                           </t>
+                           <t t-if="is_com==True">
+                               <t t-set="working_total" t-value="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days-(datas[4]+datas[6])"/>
+                                    <t t-if="o.line_ids.filtered(lambda line: line.code == 'OT')">
+                                        <t t-set="line_ot_total" t-value="(o.com_otHours*o.otRate)"/>
+                                    </t>
+                                    <t t-if="o.line_ids.filtered(lambda line: line.code == 'FOOD')">
+                                        <t t-set="line_food_total" t-value="(39*working_total)"/>
+                                    </t>
+                                    <t t-if="o.line_ids.filtered(lambda line: line.code == 'CONVENCE')">
+                                        <t t-set="line_conv_total" t-value="(15*working_total)"/>
+                                    </t>
+                                    <t t-if="o.line_ids.filtered(lambda line: line.code == 'NET')">
+                                        <t t-set="line_net_total" t-value="((o.earnings_total-(o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'OTHERS_ALW').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'INCENTIVE').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'OT').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'FOOD').total+
+                                                                           o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total))+
+                                                                           line_ot_total+line_conv_total+line_food_total)-o.deduction_total"/>
+                                    </t>
+                                    <span t-esc="((line_net_total)-
+                                                 (o.line_ids.filtered(lambda line: line.code == 'EL').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'CB').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'OB').total)+
+                                                 (o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'LOAN').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'AIT').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'UO').total))+
+                                                 (o.line_ids.filtered(lambda line: line.code == 'EL').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'CB').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+
+                                                 o.line_ids.filtered(lambda line: line.code == 'OB').total)" 
+                                    t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>                                 
+                            </t>
+                        </th>
+                    </tr>
+                    </tbody>
+                    </table>
+                    <table class="table table-sm" style="font-size: 24px; table-layout:fixed">
+
+                     <tbody>
+                       <tr>
+                         <td style="width:65%">কর্তন (Deduction : Salary Adv)</td>
+                         <td class="text-right"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                       </tr>
+                       <tr>
+                         <td style="width:65%">কর্তন (Deduction : Salary Loan)</td>
+                         <td class="text-right"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'LOAN').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                       </tr>
+                    <!--                        <t t-if="is_com==False"> -->
+                           <tr>
+                             <td style="width:65%">কর্তন (Deduction : Notice Pay)</td>
+                                 <td class="text-right"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'NP').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                             </td>
+                           </tr>
+                    <!--                         </t> -->
+                       <tr>
+                         <td style="width:65%">কর্তন (Deduction : AIT)</td>
+                         <td class="text-right"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'AIT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                       </tr>
+                    <!--                        <t t-if="is_com==True"> -->
+                           <tr>
+                             <td style="width:65%">কর্তন (Deduction : Unifrom / Others)</td>
+                                 <td class="text-right"><span t-esc="o.line_ids.filtered(lambda line: line.code == 'UO').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                            </td>
+                           </tr>
+                    <!--                         </t> -->
+                       <tr t-att-style="line_style_ded" class="bg-grey">
+                           
+                         <th style="width:65%"> Total Deductions (মোট কর্তন)</th>
+                         <th class="text-right">
+                             <t t-if="is_com==False">
+                                 <span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'NP').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                            </t>
+
+                             <t t-if="is_com==True">
+                                 <span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total+o.line_ids.filtered(lambda line: line.code == 'UO').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                            </t>
+                        </th>
+
+                       </tr>
+                     </tbody>
+
+
+                    </table>
+                    <div class="row justify-content-end">
+                     <div class="col-4">
+                       <table class="table table-sm" style="font-size: 24px;">
+                         <tr>
+                           <td style="background-color:green"><strong>Net Payable</strong></td>
+                           <td class="text-right" style="background-color:green">
+                           <t t-if="is_com==False">
+                               <strong>
+                                   <span t-esc="o.line_ids.filtered(lambda line: line.code == 'NET').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                    <!--                                    <span t-esc="(((o.line_ids.filtered(lambda line: line.code == 'NET').total)-(o.line_ids.filtered(lambda line: line.code == 'EL').total+o.line_ids.filtered(lambda line: line.code == 'CB').total+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+o.line_ids.filtered(lambda line: line.code == 'EID').total+o.line_ids.filtered(lambda line: line.code == 'OB').total)+(o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'NP').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total))+(o.line_ids.filtered(lambda line: line.code == 'EL').total+o.line_ids.filtered(lambda line: line.code == 'CB').total+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+o.line_ids.filtered(lambda line: line.code == 'EID').total+o.line_ids.filtered(lambda line: line.code == 'OB').total))-(o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'NP').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+                               </strong>
+                            </t>
+
+                           <t t-if="is_com==True">
+                               <strong>
+                                   <span t-esc="line_net_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                    <!--                                    <span t-esc="(((o.line_ids.filtered(lambda line: line.code == 'NET').total)-(o.line_ids.filtered(lambda line: line.code == 'EL').total+o.line_ids.filtered(lambda line: line.code == 'CB').total+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+o.line_ids.filtered(lambda line: line.code == 'OB').total)+(o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total+o.line_ids.filtered(lambda line: line.code == 'UO').total))+(o.line_ids.filtered(lambda line: line.code == 'EL').total+o.line_ids.filtered(lambda line: line.code == 'CB').total+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+o.line_ids.filtered(lambda line: line.code == 'OB').total))-(o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total+o.line_ids.filtered(lambda line: line.code == 'UO').total)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+                               </strong>
+                            </t>
+                            </td>
+                         </tr>
+
+                       </table>
+                     </div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div class="row">
+                        <div class="col-3 py-4 px-5">
+                            <div class="header-left">
+                                <hr style="height:2px; width:100%; border-width:0; color:red; background-color:black"/>
+                                <p style="font-size: 23px;">Authorized Signatory</p>
+                                <p style="font-size: 22px;">(কর্তৃপক্ষ)</p>
+                            </div>
+                        </div>
+                        <div class="col-9 py-4 px-5">
+                            <div class="header-right">
+                                <br/>
+                                <br/>
+<!--                                 <hr style="height:2px; width:20%; border-width:0; color:red; background-color:black"/> -->
+                                <h4 class="text-right"><span t-field="o.contract_id"/></h4>
+                                <p class="text-right" style="font-size: 18px;">(STAMP)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </t>
+    </template>
+</odoo>

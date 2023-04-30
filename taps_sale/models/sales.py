@@ -84,11 +84,13 @@ class SaleOrder(models.Model):
     cause_of_revision = fields.Text(string='Cuase')
     is_hold = fields.Boolean('Hold', tracking=True)
     price_tracking = fields.Text('Price Tracker')
-    # def _amount_in_words (self): 
-    #     for rec in self: 
-    #         rec.amount_in_word = str (rec.currency_id.amount_to_text (rec.amount_total)) 
+    avg_price = fields.Float(string='Average Price', compute="_compute_avg_price")
+    
+    def _compute_avg_price (self): 
+        for rec in self: 
+            rec.avg_price = (rec.amount_total/sum(rec.order_line.mapped('product_uom_qty')))
         
-    #payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms')
+    
     
     @api.onchange('order_ref')
     def _onchange_orderline_ids(self):
@@ -428,7 +430,11 @@ class SaleOrder(models.Model):
                         #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                         formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type),('topbottom_type', '=', orderline.topbottom)])
                         if formula:
-                            wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+                            tape_type = 'Cotton'
+                            if tape_type in orderline.dyedtape:
+                                wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Cotton Tape')])
+                            else:
+                                wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
                             #result = contract.basic
                             inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
                             formula_ = formula.tape_python_compute
@@ -597,13 +603,17 @@ class SaleOrder(models.Model):
                             size = orderline.sizein
                         product_temp = self.env['product.template'].search([('name', 'like', orderline.dippingfinish)]).sorted(key = 'id', reverse=True)[:1]
                         product_ = self.env['product.product'].search([('product_tmpl_id', '=', product_temp.id)]).sorted(key = 'id', reverse=False)[:1]
+                        
 
+                        
                         #product_main = self.env['product.product'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('active','=',False)]).sorted(key = 'id', reverse=False)[:1]
                         formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', orderline.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
                         wastage_ = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Wire')])
                         wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
                         #result = contract.basic
                         inner_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_.product_tmpl_id.id)])
+                        
+                        
                         formula_ = formula.wair_python_compute
                         formula_tape = formula.tape_python_compute
                         #raise UserError((formula_,formula_tape))
@@ -874,7 +884,7 @@ class SaleOrderLine(models.Model):
     wire_con = fields.Float('Wire Consumption', required=True, digits='Unit Price', default=0.0)
     pinbox_con = fields.Float('Pinbox Consumption', required=True, digits='Unit Price', default=0.0)
     shadewise_tape = fields.Float('Shadwise Tape', required=True, digits='Unit Price', default=0.0, compute='compute_shadewise_tape', compute_sudo=True, store=True)
-    
+    color = fields.Integer(string='Color')
     #def write
   
     @api.model_create_multi
@@ -897,7 +907,12 @@ class SaleOrderLine(models.Model):
                 formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', product_t.product_tmpl_id.id),('unit_type', '=', size_type),('topbottom_type', '=', self.topbottom)])
             else:
                 formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', product_t.product_tmpl_id.id),('unit_type', '=', size_type)])
-            wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+                
+            tape_type = 'Cotton'
+            if tape_type in self.dyedtape:
+                wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Cotton Tape')])
+            else:
+                wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
             wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
             wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
             wastage_bottom = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Bottom')])
@@ -1213,7 +1228,13 @@ class SaleOrderLine(models.Model):
             formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type),('topbottom_type', '=', self.topbottom)])
         else:
             formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
-        wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+        
+        tape_type = 'Cotton'
+        if tape_type in self.dyedtape:
+            wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Cotton Tape')])
+        else:
+            wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+            
         wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
         wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
         wastage_bottom = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Bottom')])

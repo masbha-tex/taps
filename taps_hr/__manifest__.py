@@ -54,6 +54,7 @@
         'reports/bonus_sheet.xml',
         'reports/bonus_top_sheet_summary.xml',
         'reports/salary_headwise_pdf_report.xml',
+        'reports/increment_letter.xml',
 #         'reports/kiosk_job_pdf_template.xml',
 #         'reports/employee_card_pdf_report.xml',
         'reports/hris_employee_profile_pdf_report.xml',
