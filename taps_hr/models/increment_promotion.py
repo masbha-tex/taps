@@ -97,7 +97,7 @@ class IncrementPromotionLine(models.Model):
     new_medical = fields.Float(string='New Medical',readonly=False, compute='_compute_salary_breakdown', store=True)
     category = fields.Selection([('staff', 'Staff'),('worker', 'Worker'),('expatriate', 'Expatriate')], 'Category', store=True, readonly=True, compute='_compute_job_id')
     new_category = fields.Selection([('staff', 'Staff'),('worker', 'Worker'),('expatriate', 'Expatriate')], 'New Category', compute='onchange_type', readonly=False, store=True, required=True)
-    increment_percent = fields.Float(string='Increment Percent',readonly=False, compute='calculate_amount', store=True)
+    increment_percent = fields.Float(string='Increment Percent',readonly=False, compute='calculate_percents', store=True)
     increment_amount = fields.Float(string='Increment Amount',readonly=False, compute='calculate_percent', store=True)
     
     
@@ -156,22 +156,36 @@ class IncrementPromotionLine(models.Model):
     def onchange_type(self):
         for type in self:
             if type.employee_id:
-#                 raise UserError(('feefefe'))
                 type.new_category = type.category
+            type.calculate_percents()
+    
     
     @api.onchange('employee_id','increment_percent')
     def calculate_amount(self):
         for inc in self:
-            wage = inc.employee_id.contract_id.wage
+            wage = inc.employee_id.contract_id.wage            
+            if inc.category == 'worker':
+                wage = inc.employee_id.contract_id.basic
             if inc.increment_percent:
                 inc.increment_amount = (wage*inc.increment_percent)/100
             
     @api.onchange('employee_id','increment_amount')
     def calculate_percent(self):
         for inc in self:
-            wage = inc.employee_id.contract_id.wage
+            wage = inc.employee_id.contract_id.wage            
+            if inc.category == 'worker':
+                wage = inc.employee_id.contract_id.basic            
             if inc.increment_amount:
-                inc.increment_percent = (100*inc.increment_amount)/wage            
+                inc.increment_percent = (100*inc.increment_amount)/wage     
+                
+    @api.depends('employee_id')
+    def calculate_percents(self):
+        for inc in self:
+            wage = inc.employee_id.contract_id.wage            
+            if inc.category == 'worker':
+                wage = inc.employee_id.contract_id.basic
+            if inc.increment_amount:
+                inc.increment_percent = (100*inc.increment_amount)/wage  
             
 #     @api.onchange('employee_id')
 #     def onchange_ot_type(self):

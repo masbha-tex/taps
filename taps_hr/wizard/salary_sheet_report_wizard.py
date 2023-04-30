@@ -24,7 +24,7 @@ class SalarySheet(models.TransientModel):
         ('SALARY',	'Salary Sheet'),
         ('BONUSTOP',	'Bonus Top Sheet Summary'),
         ('BONUS',	'Bonus Sheet'),
-        ('increment',	'Worker Increment Letter'),],
+        ('increment',	'Increment & Promotion Letter'),],
         string='Report Type', required=True, default='PAYSLIP',
         help='By Payroll Report')
     
@@ -1152,10 +1152,7 @@ class WorkerIncrementLetter(models.AbstractModel):
             data.get('bank_id'),
             data.get('date_from'),
             data.get('date_to'),
-            # fp_days,
-            # fp_hours,
-            # hp_days,
-            # hp_hours,
+            
         ]
         common_data.append(common_data)
         # raise UserError((common_data[0],common_data[1],common_data[2],common_data[3]))
