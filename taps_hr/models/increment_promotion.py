@@ -86,7 +86,7 @@ class IncrementPromotionLine(models.Model):
     grade = fields.Many2one('hr.payroll.structure.type', 'Grade', store=True, readonly=True, compute='_compute_job_id')
     new_grade = fields.Many2one('hr.payroll.structure.type', 'New Grade', store=True)
     old_ot_type = fields.Boolean("old OT Type", readonly=False, store=True, compute='_compute_job_id')
-    ot_type = fields.Selection([('true', "Yes"),('false', "No")], compute='onchange_ot_type', string="OT Type", store=True, readonly=False, required=True)
+    ot_type = fields.Selection([('true', 'Yes'),('false', 'No')], compute='onchange_ot_type', string="OT Type", store=True, readonly=False)
     gross = fields.Char('Gross', store=True, readonly=True, compute='_compute_job_id')
     new_gross = fields.Float(string='New Gross',readonly=False, compute='_compute_salary_breakdown', store=True)
     basic = fields.Char('Basic', store=True, readonly=True, compute='_compute_job_id')
@@ -96,7 +96,7 @@ class IncrementPromotionLine(models.Model):
     medical = fields.Char('Medical', store=True, readonly=True, compute='_compute_job_id')
     new_medical = fields.Float(string='New Medical',readonly=False, compute='_compute_salary_breakdown', store=True)
     category = fields.Selection([('staff', 'Staff'),('worker', 'Worker'),('expatriate', 'Expatriate')], 'Category', store=True, readonly=True, compute='_compute_job_id')
-    new_category = fields.Selection([('staff', 'Staff'),('worker', 'Worker'),('expatriate', 'Expatriate')], 'New Category', compute='onchange_type', readonly=False, store=True, required=True)
+    new_category = fields.Selection([('staff', 'Staff'),('worker', 'Worker'),('expatriate', 'Expatriate')], 'New Category', compute='onchange_type', readonly=False, store=True)
     increment_percent = fields.Float(string='Increment Percent',readonly=False, compute='calculate_percents', store=True)
     increment_amount = fields.Float(string='Increment Amount',readonly=False, compute='calculate_percent', store=True)
     
@@ -157,7 +157,6 @@ class IncrementPromotionLine(models.Model):
         for type in self:
             if type.employee_id:
                 type.new_category = type.category
-            type.calculate_percents()
     
     
     @api.onchange('employee_id','increment_percent')
