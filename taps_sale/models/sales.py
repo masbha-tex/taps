@@ -909,7 +909,7 @@ class SaleOrderLine(models.Model):
                 formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', product_t.product_tmpl_id.id),('unit_type', '=', size_type)])
                 
             tape_type = 'Cotton'
-            if tape_type in self.dyedtape:
+            if tape_type in values.get('dyedtape'):
                 wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Cotton Tape')])
             else:
                 wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
