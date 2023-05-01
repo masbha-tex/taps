@@ -1128,7 +1128,7 @@ class WorkerIncrementLetter(models.AbstractModel):
         docs = self.env['increment.promotion.line'].search(domain).sorted(key = 'employee_id', reverse=False)
         
         
-        p_date= datetime.strptime(data.get('date_to'), '%Y-%m-%d')
+        p_date= datetime.strptime(str(docs.increment_id.increment_month), '%Y-%m-%d')
         p_date+=timedelta(days=1)
             
         common_data = [
