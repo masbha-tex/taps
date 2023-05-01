@@ -46,7 +46,7 @@ class SaleOrder(models.Model):
     production_type = fields.Char(string='Production Type')
     production_group = fields.Char(string='Production Group')
     style_ref = fields.Char(string='Style Ref.')
-    order_ref = fields.Many2one('sale.order', string='Sales Order Ref.', readonly=True, sales_type={'oa' : [('readonly', False)]})
+    order_ref = fields.Many2one('sale.order', string='Sales Order Ref.', readonly=True)
     remarks = fields.Text(string='Remarks') 
     # others_note = fields.Text('Others Terms and conditions')
     bank = fields.Many2one('res.bank', string='Bank')

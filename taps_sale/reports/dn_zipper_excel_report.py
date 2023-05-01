@@ -14,6 +14,7 @@ import math
 class SalesXlsx(models.AbstractModel):
     _name = 'report.taps_sale.report_oa_zipper_xls'
     _inherit = 'report.report_xlsx.abstract'
+    _description = 'report for packing'
     
     def generate_xlsx_report(self, workbook, data, orders):
         report_name = orders.name
@@ -71,7 +72,6 @@ class SalesXlsx(models.AbstractModel):
             pr_name = o_data.product_template_id.name
             slider = o_data.slidercodesfg
             finish = o_data.finish
-            pi_num = orders.order_ref.pi_number
             create_date = orders.create_date.strftime("%d-%m-%Y")
             expected_date = orders.expected_date.strftime("%d-%m-%Y")
             shade = o_data.shade

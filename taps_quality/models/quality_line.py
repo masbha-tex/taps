@@ -19,8 +19,8 @@ class QualityCheck(models.Model):
         #default='none', copy=False)
     quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('confirm', 'Unit Head Approval'),('refuse', 'Refuse'),('fail',)])
 
-    po_qty = fields.Float(compute='_compute_partner_id', string='PO Qty', readonly=True)
-    receive_qty = fields.Float(compute='_compute_partner_id', string='Receive Qty', readonly=True)
+    po_qty = fields.Float(compute='_compute_poqty', string='PO Qty', readonly=True)
+    receive_qty = fields.Float(compute='_compute_reqty', string='Receive Qty', readonly=True)
     uom = fields.Many2one(related='product_id.uom_id', string='UOM', readonly=True)
     is_deviation = fields.Boolean("Is Deviation", readonly=True, store=True)
     receipt_date = fields.Datetime('Receipt Date', store=True, readonly=True)
@@ -56,14 +56,20 @@ class QualityCheck(models.Model):
             #rec.partner_name = data.partner_id.name
     
     #raise UserError(('fefefe'))
-    #@api.depends('picking_id')
+    # @api.depends('partner_name','po_qty','receive_qty')
     def _compute_partner_id(self):
         for rec in self:
             data = self.env['purchase.order'].search([('name','=',rec.x_studio_source_po)])
             rec.partner_name = data.partner_id.name
+            
+    def _compute_poqty(self):
+        for rec in self:
+            data = self.env['purchase.order'].search([('name','=',rec.x_studio_source_po)])
             dataline = self.env['purchase.order.line'].search([('order_id','=',data.id),('product_id','=',rec.product_id.id)])
             rec.po_qty = sum(dataline.mapped('product_qty'))
-            #raise UserError((data.id,rec.picking_id.id,rec.product_id.id))
+            
+    def _compute_reqty(self):
+        for rec in self:
             receive_line = self.env['stock.move.line'].search([('picking_id','=',rec.picking_id.id),('product_id','=',rec.product_id.id),('lot_id','=',rec.lot_id.id)])
             rec.receive_qty = sum(receive_line.mapped('product_uom_qty'))
 

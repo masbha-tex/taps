@@ -7,13 +7,15 @@
             <form string="Report Options">
                 <group>
                     <group>
-                        <field name="report_by"/>
-                        <field name="categ_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_items')]}"/>
-                        <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')]}"/>
-                        <field name="from_date" required="True"/>
+<!--                         <field name="report_by"/> -->
+                        <field name="report_type" required="True"/>
+                        <field name="report_for" required="True"/>
+<!--                         <field name="categ_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_items')]}"/>
+                        <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')]}"/> -->
+                        <field name="from_date"/>
                         <field name="to_date" required="True"/>
-                        <field name="stock_type" options="{'horizontal': true}" class="oe_edit_only" widget="radio"/>
-                        <field name="report_type" string="" widget="boolean_toggle"/>         
+<!--                         <field name="stock_type" options="{'horizontal': true}" class="oe_edit_only" widget="radio"/>
+                        <field name="report_type" string="" widget="boolean_toggle"/>          -->
                     </group>
                 </group>
                 <footer>
@@ -25,13 +27,13 @@
     </record>
 
     <record id="action_window_stock_forecast_report_jsi" model="ir.actions.act_window">
-        <field name="name">RM Stock Report</field>
+        <field name="name">Stock Reports</field>
         <field name="res_model">stock.forecast.report</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_form_stock_forecast_report_jsi"/>
         <field name="target">new</field>
     </record>
-    <menuitem name="RM Stock Report" id="menu_action_window_stock_forecast_report_jsi" action="action_window_stock_forecast_report_jsi" parent="stock.menu_warehouse_report" />
+    <menuitem name="Stock Reports" id="menu_action_window_stock_forecast_report_jsi" action="action_window_stock_forecast_report_jsi" parent="stock.menu_warehouse_report" />
 </odoo>
 <!--       
     <record id="hr_attendance_jobcard_kiosk_mode" model="ir.actions.client">

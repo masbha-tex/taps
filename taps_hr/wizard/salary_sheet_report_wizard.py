@@ -1088,8 +1088,8 @@ class WorkerIncrementLetter(models.AbstractModel):
         #raise UserError(("pay_slip_pdf_template"))
         #if data.get('bank_id')==False:
             #domain.append(('code', '=', data.get('report_type')))
-        # if data.get('date_from'):
-        #     domain.append(('date_from', '>=', data.get('date_from')))
+        if data.get('date_from'):
+            domain.append(('increment_id.increment_month', '>=', data.get('date_from')))
         if data.get('date_to'):
             domain.append(('increment_id.increment_month', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
@@ -1097,7 +1097,7 @@ class WorkerIncrementLetter(models.AbstractModel):
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
-            domain.append(('department_id.id', '=', data.get('department_id')))
+            domain.append(('employee_id.department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
             domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
@@ -1127,31 +1127,15 @@ class WorkerIncrementLetter(models.AbstractModel):
         # att_obj = self.env['hr.attendance']
         docs = self.env['increment.promotion.line'].search(domain).sorted(key = 'employee_id', reverse=False)
         
-        emplist = docs.mapped('employee_id.id')
-        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
-        # raise UserError((employee.emp_id))
         
-        allemp_data = []
-        for details in employee:
-            emp_data = []
-            emp_data = [
-                details.id,
-                details.emp_id,
-                details.name,
-                details.department_id.parent_id.name,
-                details.department_id.name,
-                details.job_id.name,
-        
-            ]
-            allemp_data.append(emp_data)
-            # raise UserError((allemp_data[0]))
-               
+        p_date= datetime.strptime(data.get('date_to'), '%Y-%m-%d')
+        p_date+=timedelta(days=1)
             
         common_data = [
             data.get('report_type'),
             data.get('bank_id'),
             data.get('date_from'),
-            data.get('date_to'),
+            p_date.strftime('%d-%B-%Y'),
             
         ]
         common_data.append(common_data)
@@ -1161,6 +1145,6 @@ class WorkerIncrementLetter(models.AbstractModel):
             'doc_model': 'increment.promotion.line',
             'docs': docs,
             'datas': common_data,
-            'em': allemp_data,
+            
             'is_com' : data.get('is_company')
         }

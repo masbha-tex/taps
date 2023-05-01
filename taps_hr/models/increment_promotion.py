@@ -46,11 +46,42 @@ class IncrementPromotion(models.Model):
                     elist[-1].write({'isovertime': False})
                 if not app.new_category == app.category:
                     conlist[-1].write({'category': app.new_category})
-                
-                    
-                    
-                    
-                    
+#                     if elist.company_id.id == 2:#HeadOffice
+#                         if app.new_category == 'staff':
+#                             elist[-1].write({'category_ids': 15})
+#                         elif app.new_category == 'expatriate':
+#                             elist[-1].write({'category_ids': 16})
+#                     if elist.company_id.id == 1:#Zipper
+#                         if app.new_category == 'staff':
+#                             elist[-1].write({'category_ids': 31})
+#                         elif app.new_category == 'worker':
+#                             elist[-1].write({'category_ids': "Z-Worker"})
+#                         elif app.new_category == 'expatriate':
+#                             elist[-1].write({'category_ids': 32})
+#                     if elist.company_id.id == 3:#MetalTrims
+#                         if app.new_category == 'staff':
+#                             elist[-1].write({'category_ids': 21})
+#                         elif app.new_category == 'worker':
+#                             elist[-1].write({'category_ids': 20})
+#                         elif app.new_category == 'expatriate':
+#                             elist[-1].write({'category_ids': 22})
+#                     if elist.company_id.id == 4:#Contructual
+#                         if app.new_category == 'staff':
+#                             if elist.category_ids.name == 'C-Zipper Worker':
+#                                 elist[-1].write({'category_ids': 47})
+#                             elif elist.category_ids.name == 'C-Button Worker':
+#                                 elist[-1].write({'category_ids': 44})
+#                             elif elist.category_ids.name == 'C-Worker':
+#                                 elist[-1].write({'category_ids': 26})
+                            
+#                         elif app.new_category == 'worker':
+#                             if elist.category_ids.name == 'C-Zipper Staff':
+#                                 elist[-1].write({'category_ids': 42})
+#                             elif elist.category_ids.name == 'C-Button Staff':
+#                                 elist[-1].write({'category_ids': 43})
+#                             elif elist.category_ids.name == 'C-Staff':
+#                                 elist[-1].write({'category_ids': 25})
+                        
         self.write({'state': 'approved'})
         return {}
 
@@ -73,6 +104,19 @@ class IncrementPromotion(models.Model):
         if vals.get('name', 'IP') == 'IP':
             vals['name'] = self.env['ir.sequence'].next_by_code('increment.code')
         return super(IncrementPromotion, self).create(vals)
+    
+    def write(self, vals):
+        for line in self:
+            if line.state in ['approved']:
+                raise UserError(_('Cannot update a Increment Data which is in state \'%s\'.') % (line.state,))
+        return super(IncrementPromotion, self).write(vals)     
+    
+    def unlink(self):
+        for line in self:
+            if line.state in ['submit', 'refused', 'approved']:
+                raise UserError(_('Cannot delete a Increment Data which is in state \'%s\'.') % (line.state,))
+        return super(IncrementPromotion, self).unlink()      
+    
 
 
 class IncrementPromotionLine(models.Model):
@@ -186,11 +230,14 @@ class IncrementPromotionLine(models.Model):
             if inc.increment_amount:
                 inc.increment_percent = (100*inc.increment_amount)/wage  
             
-#     @api.onchange('employee_id')
-#     def onchange_ot_type(self):
-# #         self.ot_type = ''
-#         for ot in self:
-#             if ot.employee_id.isovertime == False:
-#                 ot.ot_type = 'False'
-#             if ot.employee_id.isovertime == True:
-#                 ot.ot_type = 'True'
+    def unlink(self):
+        for line in self:
+            if line.increment_id.state in ['submit', 'refused', 'approved']:
+                raise UserError(_('Cannot delete a Increment line which is in state \'%s\'.') % (line.increment_id.state,))
+        return super(IncrementPromotionLine, self).unlink()
+
+    def write(self, vals):
+        for line in self:
+            if line.increment_id.state in ['approved']:
+                raise UserError(_('Cannot update a Increment line which is in state \'%s\'.') % (line.increment_id.state,))
+        return super(IncrementPromotionLine, self).write(vals)    
