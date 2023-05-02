@@ -65,7 +65,7 @@ class SalesXlsx(models.AbstractModel):
             #     pi_num = ''
             #     oa_num = ''
             # else:
-            customer = orders.partner_id.name
+            customer = "\n".join([orders.partner_id.name,orders.buyer_name.name,orders.payment_term_id.name])
             pi_num = orders.order_ref.pi_number
             oa_num = orders.name
             
@@ -101,14 +101,23 @@ class SalesXlsx(models.AbstractModel):
             # if filtered_expected_date:
             #     expected_date = ''
             
-            filtered_shade = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[9] == o_data.shade]
-            if filtered_shade:
-                shade = ''
+#             filtered_shade = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[9] == o_data.shade]
+#             if filtered_shade:
+#                 shade = ''
                 
-            filtered_shadewise_tape = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and  x[9] == o_data.shade and x[16] == o_data.shadewise_tape]
-            if filtered_shadewise_tape:
-                shadewise_tape = ''
+            # filtered_shadewise_tape = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and  x[9] == o_data.shade and x[16] == o_data.shadewise_tape]
+            # if filtered_shadewise_tape:
+            #     shadewise_tape = ''
                 
+            
+            sizein = o_data.sizein
+            sizecm = o_data.sizecm
+            if sizein == 'N/A':
+                sizein = ''
+            if sizecm == 'N/A':
+                sizecm = ''
+            
+
             order_data = [
                 customer,
                 pr_name,
@@ -121,8 +130,8 @@ class SalesXlsx(models.AbstractModel):
                 '',
                 #expected_date,
                 shade,
-                o_data.sizein,
-                o_data.sizecm,
+                sizein,
+                sizecm,
                 o_data.product_uom_qty,
                 '',
                 o_data.product_uom_qty,
@@ -152,6 +161,7 @@ class SalesXlsx(models.AbstractModel):
         row_style = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial'})
         format_label = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'top', 'bold': True, 'left': True, 'right': True, 'text_wrap':True})
         merge_format = workbook.add_format({'align': 'center'})
+        merge_format_ = workbook.add_format({'align': 'bottom'})
         _range = len(report_data)
         sheet.merge_range(1, 0, _range, 0, '', merge_format)
         sheet.merge_range(1, 4, _range, 5, '', merge_format)
@@ -160,10 +170,16 @@ class SalesXlsx(models.AbstractModel):
         sheet.merge_range(1, 7, _range, 7, '', merge_format)
         sheet.merge_range(1, 8, _range, 8, '', merge_format)
 
+        test_shade = ''
         for line in report_data:
+            filtered_shade = [x for x in report_data if (x[1] == line[1] or x[1] == '') and x[9] == line[9]]
+            shade_range = len(filtered_shade)
+            sheet.merge_range(1, 9, shade_range, 9, '', merge_format)
+            sheet.merge_range(1, 16, shade_range, 16, '', merge_format_)
+            
             col=0
             for l in line:
-                if col in(0,4,5,6,7,8):
+                if col in(0,4,5,6,7,8,9):
                     sheet.write(row, col, l, format_label)
                 else:
                     sheet.write(row, col, l, row_style)
@@ -181,6 +197,7 @@ class SalesXlsx(models.AbstractModel):
                     top_total += l
                 col+=1
             row+=1
+        
         sheet.write(row, 0, '')
         sheet.write(row, 1, '')
         sheet.write(row, 2, '')

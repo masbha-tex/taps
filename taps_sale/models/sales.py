@@ -87,10 +87,11 @@ class SaleOrder(models.Model):
     avg_price = fields.Float(string='Average Price', compute="_compute_avg_price")
     
     def _compute_avg_price (self): 
-        for rec in self: 
-            rec.avg_price = (rec.amount_total/sum(rec.order_line.mapped('product_uom_qty')))
-        
-    
+        for rec in self:
+            if rec.amount_total>0:
+                rec.avg_price = (rec.amount_total/sum(rec.order_line.mapped('product_uom_qty')))
+            else:
+                rec.avg_price = 0
     
     @api.onchange('order_ref')
     def _onchange_orderline_ids(self):
@@ -909,10 +910,13 @@ class SaleOrderLine(models.Model):
                 formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', product_t.product_tmpl_id.id),('unit_type', '=', size_type)])
                 
             tape_type = 'Cotton'
-            if tape_type in values.get('dyedtape'):
-                wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Cotton Tape')])
+            if values.get('dyedtape'):
+                if tape_type in values.get('dyedtape'):
+                    wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Cotton Tape')])
+                else:
+                    wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
             else:
-                wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+                wastage_tape = False
             wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
             wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
             wastage_bottom = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Bottom')])
@@ -1231,10 +1235,14 @@ class SaleOrderLine(models.Model):
         
         if formula:
             tape_type = 'Cotton'
-            if tape_type in self.dyedtape:
-                wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Cotton Tape')])
+            if self.dyedtape:
+                if tape_type in self.dyedtape:
+                    wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Cotton Tape')])
+                else:
+                    wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+            
             else:
-                wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+                wastage_tape = False
 
             wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
             wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
