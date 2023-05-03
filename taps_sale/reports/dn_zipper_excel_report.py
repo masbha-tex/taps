@@ -18,35 +18,7 @@ class SalesXlsx(models.AbstractModel):
     
     def generate_xlsx_report(self, workbook, data, orders):
         report_name = orders.name
-        sheet = workbook.add_worksheet(report_name[:41])
-        #bold = workbook.add_format({'bold': True})
-        column_style = workbook.add_format({'bold': True, 'font_size': 11})
-        sheet.write(0, 0, "CUSTOMER NAME", column_style)
-        sheet.write(0, 1, "PRODUCT", column_style)
-        sheet.write(0, 2, "SLIDER CODE", column_style)
-        sheet.write(0, 3, "FINISH", column_style)
-        sheet.write(0, 4, "PI NO", column_style)
-        sheet.write(0, 5, "OA NO", column_style)
-        sheet.write(0, 6, "OA DATE", column_style)
-        sheet.write(0, 7, "Production DATE", column_style)
-        sheet.write(0, 8, "DETAILS", column_style)
-        #sheet.write(1, 9, "DELIVERY DATE", column_style)
-        sheet.write(0, 9, "SHADE", column_style)
-        sheet.write(0, 10, "SIZE(INCH)", column_style)
-        sheet.write(0, 11, "SIZE(CM)", column_style)
-        sheet.write(0, 12, "ORDER QTY", column_style)
-        sheet.write(0, 13, "READY QTY", column_style)
-        sheet.write(0, 14, "PENDING QTY", column_style)
-        sheet.write(0, 15, "TOTAL WT/KG", column_style)
-        sheet.write(0, 16, "SHADE TOTAL", column_style)
-        sheet.write(0, 17, "WIRE/KG", column_style)
-        sheet.write(0, 18, "SLIDER/PCS", column_style)
-        sheet.write(0, 19, "H-BOTTOM/KG", column_style)
-        sheet.write(0, 20, "U-TOP/KG", column_style)
-        #sheet.write(0, 18, "PINBOX/KG", column_style)
-        sheet.write(0, 21, "SALESPERSON", column_style)
-        col = 0
-        row = 1
+        
         
         docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
         
@@ -105,9 +77,9 @@ class SalesXlsx(models.AbstractModel):
 #             if filtered_shade:
 #                 shade = ''
                 
-            # filtered_shadewise_tape = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and  x[9] == o_data.shade and x[16] == o_data.shadewise_tape]
-            # if filtered_shadewise_tape:
-            #     shadewise_tape = ''
+#             filtered_shadewise_tape = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and  x[9] == o_data.shade and x[16] == o_data.shadewise_tape]
+#             if filtered_shadewise_tape:
+#                 shadewise_tape = ''
                 
             
             sizein = o_data.sizein
@@ -158,24 +130,95 @@ class SalesXlsx(models.AbstractModel):
         bottom_total = 0
         top_total = 0
         
+        sheet = workbook.add_worksheet(report_name[:41])
+        #bold = workbook.add_format({'bold': True})
+        column_style = workbook.add_format({'bold': True, 'font_size': 11})
+        
         row_style = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial'})
         format_label = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'top', 'bold': True, 'left': True, 'right': True, 'text_wrap':True})
+        format_label_qty = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'bottom', 'bold': True, 'left': True, 'right': True, 'text_wrap':True})
         merge_format = workbook.add_format({'align': 'center'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
         _range = len(report_data)
+        
         sheet.merge_range(1, 0, _range, 0, '', merge_format)
-        sheet.merge_range(1, 4, _range, 5, '', merge_format)
+        sheet.merge_range(1, 4, _range, 4, '', merge_format)
         sheet.merge_range(1, 5, _range, 5, '', merge_format)
         sheet.merge_range(1, 6, _range, 6, '', merge_format)
         sheet.merge_range(1, 7, _range, 7, '', merge_format)
         sheet.merge_range(1, 8, _range, 8, '', merge_format)
+        
+        sheet.write(0, 0, "CUSTOMER NAME", column_style)
+        sheet.write(0, 1, "PRODUCT", column_style)
+        sheet.write(0, 2, "SLIDER CODE", column_style)
+        sheet.write(0, 3, "FINISH", column_style)
+        sheet.write(0, 4, "PI NO", column_style)
+        sheet.write(0, 5, "OA NO", column_style)
+        sheet.write(0, 6, "OA DATE", column_style)
+        sheet.write(0, 7, "Production DATE", column_style)
+        sheet.write(0, 8, "DETAILS", column_style)
+        #sheet.write(1, 9, "DELIVERY DATE", column_style)
+        sheet.write(0, 9, "SHADE", column_style)
+        sheet.write(0, 10, "SIZE(INCH)", column_style)
+        sheet.write(0, 11, "SIZE(CM)", column_style)
+        sheet.write(0, 12, "ORDER QTY", column_style)
+        sheet.write(0, 13, "READY QTY", column_style)
+        sheet.write(0, 14, "PENDING QTY", column_style)
+        sheet.write(0, 15, "TOTAL WT/KG", column_style)
+        sheet.write(0, 16, "SHADE TOTAL", column_style)
+        sheet.write(0, 17, "WIRE/KG", column_style)
+        sheet.write(0, 18, "SLIDER/PCS", column_style)
+        sheet.write(0, 19, "H-BOTTOM/KG", column_style)
+        sheet.write(0, 20, "U-TOP/KG", column_style)
+        #sheet.write(0, 18, "PINBOX/KG", column_style)
+        sheet.write(0, 21, "SALESPERSON", column_style)
+        col = 0
+        row = 1
+        
 
         test_shade = ''
+        
+        shade_range = 0
+        shade_range_tot = 0
+        # row_ = 1
+        # for li in report_data:
+        #     for ind, x in enumerate(report_data, start = row):
+        #         if x[9] == li[9]:
+        #             shade_range += 1
+        #         else:
+        #             shade_range_tot = shade_range
+        #             shade_range = 0
+        #             break
+        #     sheet.merge_range(1, 9, shade_range_tot, 9, '', merge_format)
+        #     row_ +=1
+        
         for line in report_data:
-            filtered_shade = [x for x in report_data if (x[1] == line[1] or x[1] == '') and x[9] == line[9]]
-            shade_range = len(filtered_shade)
-            sheet.merge_range(1, 9, shade_range, 9, '', merge_format)
-            sheet.merge_range(1, 16, shade_range, 16, '', merge_format_)
+            s_t = False
+            for x in report_data[row:]:#enumerate(report_data, start = row):
+                # if row == 32:
+                #     raise UserError((row,_range,shade_range,x[9]))
+                last_one = row
+                if x[9] == line[9]:
+                    shade_range += 1
+                else:
+                    # shade_range_tot = shade_range
+                    # shade_range = 0
+                    sheet.merge_range(row, 9, shade_range + 1, 9, '', merge_format)
+                    sheet.merge_range(row, 16, shade_range + 1, 16, '', merge_format_)
+                    s_t = True
+                    shade_range = row
+                    
+                    break
+                if _range == shade_range +1:
+                    sheet.merge_range(last_one, 9, shade_range + 1, 9, '', merge_format)
+                    sheet.merge_range(last_one, 16, shade_range + 1, 16, '', merge_format_)
+                    s_t = True
+
+            #filtered_shade = [x for x in report_data if (x[1] == line[1] or x[1] == '') and x[9] == line[9]]
+            #shade_range = len(filtered_shade)
+
+            
+            #sheet.merge_range(1, 16, shade_range_tot-1, 16, '', merge_format_)
             
             col=0
             for l in line:
@@ -210,9 +253,9 @@ class SalesXlsx(models.AbstractModel):
         sheet.write(row, 9, '')
         sheet.write(row, 10, '')
         sheet.write(row, 11, '')
-        sheet.write(row, 12, qty_total, row_style)
-        sheet.write(row, 13, '')
-        sheet.write(row, 14, qty_total, row_style)
+        sheet.write(row, 12, '=SUM(M{0}:M{1})'.format(2, row), row_style)
+        sheet.write(row, 13, '=SUM(N{0}:N{1})'.format(2, row), row_style)
+        sheet.write(row, 14, '=M{1}-N{1}'.format(row+1, row+1), row_style)
         sheet.write(row, 15, '')
         sheet.write(row, 16, shade_total, row_style)
         sheet.write(row, 17, wire_total, row_style)
@@ -220,5 +263,7 @@ class SalesXlsx(models.AbstractModel):
         sheet.write(row, 19, bottom_total, row_style)
         sheet.write(row, 20, top_total, row_style)
         sheet.write(row, 21, '')
+        
+        #'=SUM({0}:{1})'.format(cell_sum_start, cell_sum_end)
         
         #sheet['M37'] = '= SUM(M2:M30)'
