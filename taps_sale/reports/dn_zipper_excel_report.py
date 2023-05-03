@@ -179,51 +179,29 @@ class SalesXlsx(models.AbstractModel):
         test_shade = ''
         
         shade_range = 0
-        shade_range_tot = 0
-        # row_ = 1
-        # for li in report_data:
-        #     for ind, x in enumerate(report_data, start = row):
-        #         if x[9] == li[9]:
-        #             shade_range += 1
-        #         else:
-        #             shade_range_tot = shade_range
-        #             shade_range = 0
-        #             break
-        #     sheet.merge_range(1, 9, shade_range_tot, 9, '', merge_format)
-        #     row_ +=1
         
         for line in report_data:
             s_t = False
-            for x in report_data[row:]:#enumerate(report_data, start = row):
-                # if row == 32:
-                #     raise UserError((row,_range,shade_range,x[9]))
+            for x in report_data[row:]:
                 last_one = row
                 if x[9] == line[9]:
                     shade_range += 1
                 else:
-                    # shade_range_tot = shade_range
-                    # shade_range = 0
                     sheet.merge_range(row, 9, shade_range + 1, 9, '', merge_format)
                     sheet.merge_range(row, 16, shade_range + 1, 16, '', merge_format_)
-                    s_t = True
                     shade_range = row
-                    
                     break
                 if _range == shade_range +1:
                     sheet.merge_range(last_one, 9, shade_range + 1, 9, '', merge_format)
                     sheet.merge_range(last_one, 16, shade_range + 1, 16, '', merge_format_)
-                    s_t = True
-
-            #filtered_shade = [x for x in report_data if (x[1] == line[1] or x[1] == '') and x[9] == line[9]]
-            #shade_range = len(filtered_shade)
-
-            
-            #sheet.merge_range(1, 16, shade_range_tot-1, 16, '', merge_format_)
+                    shade_range = row
             
             col=0
             for l in line:
                 if col in(0,4,5,6,7,8,9):
                     sheet.write(row, col, l, format_label)
+                elif col == 14:
+                    sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), row_style)
                 else:
                     sheet.write(row, col, l, row_style)
                 if col == 12:
