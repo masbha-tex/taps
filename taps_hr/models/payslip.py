@@ -304,19 +304,23 @@ class HrPayslipsss(models.Model):
             raise ValidationError(_("You can't validate a cancelled payslip."))
         self.write({'state' : 'done'})
         self.mapped('payslip_run_id').action_close()
-        # Validate work entries for regular payslips (exclude end of year bonus, ...)
-        # regular_payslips = self.filtered(lambda p: p.struct_id.type_id.default_struct_id == p.struct_id)
-        # for regular_payslip in regular_payslips:
-        #     work_entries = self.env['hr.work.entry'].search([
-        #         ('date_start', '<=', regular_payslip.date_to),
-        #         ('date_stop', '>=', regular_payslip.date_from),
-        #         ('employee_id', '=', regular_payslip.employee_id.id),
-        #     ])
-        #     work_entries.action_validate()
+        # Validate attendance_entries for regular payslips (exclude end of year bonus, ...)
+        if self.mapped('payslip_run_id').is_bonus == False:
+            regular_payslips = self.filtered(lambda p: p.struct_id.type_id.default_struct_id == p.struct_id)
+            for regular_payslip in regular_payslips:
+                attendance_entries = self.env['hr.attendance'].search([
+                    ('attDate', '<=', regular_payslip.date_to),
+                    ('attDate', '>=', regular_payslip.date_from),
+                    ('employee_id', '=', regular_payslip.employee_id.id),
+                ])
+                attendance_entries.write({'is_lock' : True})
+
         query_ = """truncate table hr_work_entry;"""
         self.env.cr.execute(query_)
-
-        if self.env.context.get('payslip_generate_pdf'):
+        
+        generate = self.env.context.get('payslip_generate_pdf', True)
+        if self.env.context.get('payslip_generate_pdf') or generate is True:
+            # raise UserError(('dd'))
             for payslip in self:
                 if not payslip.struct_id or not payslip.struct_id.report_id:
                     report = self.env.ref('hr_payroll.action_report_payslip', False)
@@ -717,9 +721,6 @@ class HrPayslipRun(models.Model):
             self.write({'state' : 'close'})
 
     def action_validate(self):
-        if self.is_bonus == False:
-            att = self.env['hr.attendance'].search([('attDate', '>=', self.date_start),('attDate', '<=', self.date_end)])
-            att.write({'is_lock' : True})
         self.mapped('slip_ids').filtered(lambda slip: slip.state != 'cancel').action_payslip_done()    
         self.action_close()
 
