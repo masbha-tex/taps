@@ -16,6 +16,7 @@
                     <group>
                         <group>
                             <field name="salary_month"/>
+                            <field name="note"/>
                         </group>
                         <group>
                             <field name="adjust_type"/>
@@ -62,9 +63,10 @@
       <field name="name">salary.adjustment.view.tree</field>
       <field name="model">salary.adjustment</field>
       <field name="arch" type="xml">
-        <tree>
+        <tree string="Salary Adjustment">
             <field name="name"/>
             <field name="salary_month"/>
+            <field name="note"/>
             <field name="adjustment_line"/>
         </tree>
       </field>

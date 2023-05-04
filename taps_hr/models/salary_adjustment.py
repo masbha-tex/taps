@@ -20,6 +20,7 @@ class SalaryAdjustment(models.Model):
     salary_month = fields.Date('Salary Month', store=True, default=date.today().strftime('%Y-%m-01'), tracking=True)
     adjustment_line = fields.One2many('salary.adjustment.line', 'adjustment_id', string='Adjustment Lines', store=True, tracking=True)
     adjust_type = fields.Selection([('sal', "Salary"),('bonus', "Bonus"),('fnf', "Full & Final")], string="Adjustment Type", default='sal', required=True, tracking=True)
+    note = fields.Char('Notes', store=True, index=True, tracking=True)
     
     @api.model
     def create(self, vals):

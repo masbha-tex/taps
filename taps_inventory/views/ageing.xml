@@ -1,15 +1,77 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="stock_move_line_view_search_ageing" model="ir.ui.view">
-            <field name="name">stock.move.line.search</field>
-            <field name="model">stock.move.line</field>
-            <field name="inherit_id" ref="stock.stock_move_line_view_search"/>
-            <field name="arch" type="xml">
-               <xpath expr="//field[@name='product_id']" position="after">
-                    <field name="duration" nolabel="1" placeholder="Duration"/>
-               </xpath>
-            </field>
-        </record>        
-    </data>
-</odoo>
+    <record id="view_stock_ageing_search" model="ir.ui.view">
+        <field name="name">stock.ageing.search</field>
+        <field name="model">stock.ageing</field>
+        <field name="arch" type="xml" >
+            <search string="RM &amp; Spare">
+                <filter string="RM" name="rm_stock" domain="[('product_id.categ_id.complete_name', 'ilike',
+                                                            'All / RM')]" />
+                <filter string="Spare" name="spare_stock" domain="[('product_id.categ_id.complete_name', 'ilike',
+                                                                  'All / Spare Parts')]" />
+<!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
+                <separator/>
+                <field name="product_id" string="Product"/>
+                <group expand="0" string="Group By">
+                    <filter name="product_group" string="Product" domain="[]" context="{'group_by': 'parent_category'}"/>
+                    <filter name="category_group" string="Category" domain="[]" context="{'group_by': 'product_category'}"/>
+                    <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_stock_ageing_tree" model="ir.ui.view">
+        <field name="name">stock.ageing.tree</field>
+        <field name="model">stock.ageing</field>
+        <field name="arch" type="xml" >
+            <tree string="RM Stock" create="false" delete="false" >
+                <field name="parent_category"/>
+                <field name="product_category"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="rejected"/>
+                <field name="lot_price"/>
+                <field name="pur_price"/>
+                <field name="landed_cost"/>
+                
+                <field name="receive_date"/>
+                <field name="duration"/>
+                
+                <field name="cloing_qty" optional="show" sum="Quantity" decoration-bf="True"/>
+                <field name="cloing_value" optional="show" sum="Value" decoration-bf="True"/>
+                
+                
+                <field name="slot_1" optional="show" sum="0-30" decoration-bf="True"/>
+                <field name="slot_2" optional="show" sum="31-60" decoration-bf="True"/>
+                <field name="slot_3" optional="show" sum="61-90" decoration-bf="True"/>
+                <field name="slot_4" optional="show" sum="91-180" decoration-bf="True"/>
+                <field name="slot_5" optional="show" sum="181-365" decoration-bf="True"/>
+                <field name="slot_6" optional="show" sum="365+" decoration-bf="True"/>
+                
+<!--                 <field name="opening_qty" optional="show" sum="Opening Quantity" decoration-bf="True"/>
+                <field name="opening_value" optional="show" sum="Opening Value" decoration-bf="True"/>
+                <field name="receive_qty" optional="show" sum="Receive Quantity" decoration-bf="True"/>
+                <field name="receive_value" optional="show" sum="Receive Value" decoration-bf="True"/>
+                <field name="issue_qty" optional="show" sum="Issue Quantity" decoration-bf="True"/>
+                <field name="issue_value" optional="show" sum="Issue Value" decoration-bf="True"/> -->
+                
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_stock_ageing" model="ir.actions.act_window">
+        <field name="name">Stock Ageing</field>
+        <field name="res_model">stock.ageing</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'search_default_rm_stock':1, 'search_default_product_group':1, 'search_default_category_group':1, 'search_default_item_group':1}</field>
+        <field name="search_view_id" ref="view_stock_ageing_search" />
+    </record>
+
+    <menuitem id="menu_stock_ageing_view"
+              name="Ageing"
+              action="action_stock_ageing"
+              parent="stock.menu_warehouse_report"
+              sequence="161"/>
+</odoo>    

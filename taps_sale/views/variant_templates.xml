@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="taps_sale_variants" inherit_id="sale.variants" name="taps sale variants">
+        
         <xpath expr="." position="inside">
             <script type="text/javascript">
               $(document).ready(function () {
@@ -13,5 +14,9 @@
               });
             </script>
         </xpath>
+<!--         <xpath expr="//select[contains(@t-attf-class, 'form-control')]" position="attributes">
+            <attribute name="multiple">true</attribute>
+        </xpath>         -->
+
     </template>
 </odoo>

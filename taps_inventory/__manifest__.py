@@ -26,7 +26,7 @@
     
     'data': [
         #'data/insert_schedule_date.xml',
-        'data/update_duration_for_ageing.xml',
+        #'data/update_duration_for_ageing.xml',
         'data/create_update_qc.xml',
         'reports/sample_print_out_pdf.xml',
         'reports/report_action.xml',

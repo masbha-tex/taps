@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import base64
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError,ValidationError
 from collections import defaultdict
@@ -10,6 +11,7 @@ from odoo.addons.resource.models.resource import datetime_to_string, string_to_d
 from odoo.tools.float_utils import float_round
 from odoo.tools import date_utils, float_utils
 from odoo.tools.misc import format_date
+from odoo.tools.safe_eval import safe_eval
 import math
 import pytz
 
@@ -296,6 +298,55 @@ class HrPayslipsss(models.Model):
 #             self.warning_message = False
 
         self.worked_days_line_ids = self._get_new_worked_days_lines()                
+    
+    def action_payslip_done(self):
+        if any(slip.state == 'cancel' for slip in self):
+            raise ValidationError(_("You can't validate a cancelled payslip."))
+        self.write({'state' : 'done'})
+        self.mapped('payslip_run_id').action_close()
+        # Validate work entries for regular payslips (exclude end of year bonus, ...)
+        # regular_payslips = self.filtered(lambda p: p.struct_id.type_id.default_struct_id == p.struct_id)
+        # for regular_payslip in regular_payslips:
+        #     work_entries = self.env['hr.work.entry'].search([
+        #         ('date_start', '<=', regular_payslip.date_to),
+        #         ('date_stop', '>=', regular_payslip.date_from),
+        #         ('employee_id', '=', regular_payslip.employee_id.id),
+        #     ])
+        #     work_entries.action_validate()
+        query_ = """truncate table hr_work_entry;"""
+        self.env.cr.execute(query_)
+
+        if self.env.context.get('payslip_generate_pdf'):
+            for payslip in self:
+                if not payslip.struct_id or not payslip.struct_id.report_id:
+                    report = self.env.ref('hr_payroll.action_report_payslip', False)
+                else:
+                    report = payslip.struct_id.report_id
+                pdf_content, content_type = report.sudo()._render_qweb_pdf(payslip.id)
+                if payslip.struct_id.report_id.print_report_name:
+                    pdf_name = safe_eval(payslip.struct_id.report_id.print_report_name, {'object': payslip})
+                else:
+                    pdf_name = _("Payslip")
+                # Sudo to allow payroll managers to create document.document without access to the
+                # application
+                attachment = self.env['ir.attachment'].sudo().create({
+                    'name': pdf_name,
+                    'type': 'binary',
+                    'datas': base64.encodebytes(pdf_content),
+                    'res_model': payslip._name,
+                    'res_id': payslip.id
+                })
+                # Send email to employees
+                subject = '%s, a new payslip is available for you' % (payslip.employee_id.name)
+                template = self.env.ref('hr_payroll.mail_template_new_payslip', raise_if_not_found=False)
+                if template:
+                    email_values = {
+                        'attachment_ids': attachment,
+                    }
+                    template.send_mail(
+                        payslip.id,
+                        email_values=email_values,
+                        notif_layout='mail.mail_notification_light')    
     
     def _get_worked_day_lines_values(self, domain=None):
         self.ensure_one()
