@@ -48,6 +48,11 @@ class HrEmployeePrivate(models.Model):
     result = fields.Char(string="Result", store=True, tracking=True)
     rfid = fields.Char(string="RFID", copy=False, tracking=True,
         help="RFID used to Check In/Out in Daily Attendence (if enabled in Configuration).")
+    category_ids = fields.Many2many(
+    'hr.employee.category', 'employee_category_rel',
+    'emp_id', 'category_id', groups="hr.group_hr_user",
+    string='Tags')
+    
     
     @api.model
     def create(self, vals):

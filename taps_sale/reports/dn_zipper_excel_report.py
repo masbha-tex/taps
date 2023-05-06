@@ -37,11 +37,21 @@ class SalesXlsx(models.AbstractModel):
             #     pi_num = ''
             #     oa_num = ''
             # else:
-            customer = "\n".join([orders.partner_id.name,orders.buyer_name.name,orders.payment_term_id.name])
+            customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name,orders.payment_term_id.name])
             pi_num = orders.order_ref.pi_number
             oa_num = orders.name
             
             pr_name = o_data.product_template_id.name
+            if o_data.numberoftop:
+                pr_name = "\n".join([pr_name,o_data.numberoftop])
+            if o_data.ptopfinish:
+                pr_name = "\n".join([pr_name,o_data.ptopfinish])
+            if o_data.pbotomfinish:
+                pr_name = "\n".join([pr_name,o_data.pbotomfinish])
+            if o_data.ppinboxfinish:
+                pr_name = "\n".join([pr_name,o_data.ppinboxfinish])
+            if o_data.topbottom:
+                pr_name = "\n".join([pr_name,o_data.topbottom])
             slider = o_data.slidercodesfg
             finish = o_data.finish
             create_date = orders.create_date.strftime("%d-%m-%Y")
@@ -142,6 +152,9 @@ class SalesXlsx(models.AbstractModel):
         _range = len(report_data)
         
         sheet.merge_range(1, 0, _range, 0, '', merge_format)
+        sheet.merge_range(1, 1, _range, 1, '', merge_format)
+        sheet.merge_range(1, 2, _range, 2, '', merge_format)
+        sheet.merge_range(1, 3, _range, 3, '', merge_format)
         sheet.merge_range(1, 4, _range, 4, '', merge_format)
         sheet.merge_range(1, 5, _range, 5, '', merge_format)
         sheet.merge_range(1, 6, _range, 6, '', merge_format)
@@ -198,7 +211,7 @@ class SalesXlsx(models.AbstractModel):
             
             col=0
             for l in line:
-                if col in(0,4,5,6,7,8,9):
+                if col in(0,1,2,3,4,5,6,7,8,9):
                     sheet.write(row, col, l, format_label)
                 elif col == 14:
                     sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), row_style)

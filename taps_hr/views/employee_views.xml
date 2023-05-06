@@ -49,6 +49,7 @@
             </xpath>
             <xpath expr="//field[@name='category_ids']" position="attributes">
                 <attribute name="string">Category</attribute>
+                <attribute name="groups">hr.group_hr_user</attribute>
             </xpath>
             <field name="country_of_birth" position="after">
                 <field name="blood_group"/>
@@ -113,7 +114,7 @@
                 <xpath expr="//field[@name='name']" position="move"/>
                 <xpath expr="//field[@name='company_id']" position="move"/>
                 <field name="category_ids" widget="many2many_tags" 
-                       options="{&quot;color_field&quot;: &quot;color&quot;}" string="Category"/>
+                       options="{&quot;color_field&quot;: &quot;color&quot;}" string="Category" groups="hr.group_hr_user"/>
                 <xpath expr="//field[@name='department_id']" position="move"/>
                 <xpath expr="//field[@name='job_id']" position="move"/>
                 <field name="joining_date"/>
