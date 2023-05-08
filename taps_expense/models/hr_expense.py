@@ -313,7 +313,7 @@ class ExpenseLine(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     partner_id = fields.Many2one(
         'res.partner', 'Name', help='Enter here any kind of contact indivisual/company.',
-        groups="hr.group_hr_user", store=True)
+        groups="hr_expense.group_hr_expense_team_approver", store=True)
     
     name = fields.Char('Note', store=True)
     
