@@ -19,7 +19,6 @@ class SalesXlsx(models.AbstractModel):
     def generate_xlsx_report(self, workbook, data, orders):
         report_name = orders.name
         
-        
         docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
         
         # raise UserError((docs.id))
@@ -30,16 +29,22 @@ class SalesXlsx(models.AbstractModel):
         customer = ''
         pi_num = ''
         oa_num = ''
-        for o_data in docs:
+        create_date = ''
+        expected_date = ''
+        for x,o_data in enumerate(docs):
             slnumber = slnumber+1
-            # if customer:
-            #     customer = ''
-            #     pi_num = ''
-            #     oa_num = ''
-            # else:
-            customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name,orders.payment_term_id.name])
-            pi_num = orders.order_ref.pi_number
-            oa_num = orders.name
+            if x == 0:
+                customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name,orders.payment_term_id.name])
+                pi_num = orders.order_ref.pi_number
+                oa_num = orders.name
+                create_date = orders.create_date.strftime("%d-%m-%Y")
+                expected_date = orders.expected_date.strftime("%d-%m-%Y")
+            else:
+                customer = ''
+                pi_num = ''
+                oa_num = ''
+                create_date = ''
+                expected_date = ''
             
             pr_name = o_data.product_template_id.name
             if o_data.numberoftop:
@@ -54,8 +59,6 @@ class SalesXlsx(models.AbstractModel):
                 pr_name = "\n".join([pr_name,o_data.topbottom])
             slider = o_data.slidercodesfg
             finish = o_data.finish
-            create_date = orders.create_date.strftime("%d-%m-%Y")
-            expected_date = orders.expected_date.strftime("%d-%m-%Y")
             shade = o_data.shade
             shadewise_tape = o_data.shadewise_tape
             
@@ -75,9 +78,9 @@ class SalesXlsx(models.AbstractModel):
             # if filtered_pi_num:
             #     pi_num = ''
             
-            filtered_create_date = [x for x in report_data if x[6] == orders.create_date.strftime("%d-%m-%Y")]
-            if filtered_create_date:
-                create_date = ''
+            # filtered_create_date = [x for x in report_data if x[6] == orders.create_date.strftime("%d-%m-%Y")]
+            # if filtered_create_date:
+            #     create_date = ''
             
             # filtered_expected_date = [x for x in report_data if x[5] == orders.expected_date.strftime("%d-%m-%Y")]
             # if filtered_expected_date:
@@ -144,13 +147,26 @@ class SalesXlsx(models.AbstractModel):
         #bold = workbook.add_format({'bold': True})
         column_style = workbook.add_format({'bold': True, 'font_size': 11})
         
-        row_style = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial'})
-        format_label = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'top', 'bold': True, 'left': True, 'right': True, 'text_wrap':True})
-        format_label_qty = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'bottom', 'bold': True, 'left': True, 'right': True, 'text_wrap':True})
+        # _row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        
+        row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
         merge_format = workbook.add_format({'align': 'center'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
         _range = len(report_data)
-        
+        sheet.set_column(0, 0, 20)
+        sheet.set_column(1, 1, 20)
+        sheet.set_column(2, 2, 20)
+        sheet.set_column(3, 3, 20)
+        sheet.set_column(4, 4, 20)
+        sheet.set_column(5, 5, 20)
         sheet.merge_range(1, 0, _range, 0, '', merge_format)
         sheet.merge_range(1, 1, _range, 1, '', merge_format)
         sheet.merge_range(1, 2, _range, 2, '', merge_format)
@@ -211,8 +227,14 @@ class SalesXlsx(models.AbstractModel):
             
             col=0
             for l in line:
-                if col in(0,1,2,3,4,5,6,7,8,9):
-                    sheet.write(row, col, l, format_label)
+                if col in(0,6,7):
+                    sheet.write(row, col, l, format_label_1)
+                elif col in(1,2,3):
+                    sheet.write(row, col, l, format_label_2)
+                elif col in(4,5):
+                    sheet.write(row, col, l, format_label_3)
+                elif col in(8,9):
+                    sheet.write(row, col, l, format_label_4)
                 elif col == 14:
                     sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), row_style)
                 else:

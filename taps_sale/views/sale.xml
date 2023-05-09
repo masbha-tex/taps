@@ -54,6 +54,7 @@
 						
 					</div>
 					<field name="cause_of_revision" attrs="{'invisible': [('is_revised', '=', False), ('is_hold', '=', False)]}"/>
+                    <field name="assortment"/>
 					<field name="season"/>
 					<field name="department"/>
 					<field name="division"/>
@@ -128,6 +129,7 @@
 					<field name="amount_in_word" style="color: #00A09D"/>
 					<field name="appr_weight"/>
                     <field name="avg_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="avg_size" />
 					<!--                   <field name="others_note" nolabel="1" placeholder="Others Terms and conditions..."/> -->
 				</xpath>
 				<xpath expr="//field[@name='picking_policy']" position="after">

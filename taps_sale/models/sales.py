@@ -47,7 +47,7 @@ class SaleOrder(models.Model):
     production_group = fields.Char(string='Production Group')
     style_ref = fields.Char(string='Style Ref.')
     order_ref = fields.Many2one('sale.order', string='Sales Order Ref.', readonly=True)
-    remarks = fields.Text(string='Remarks') 
+    remarks = fields.Text(string='Remarks')
     # others_note = fields.Text('Others Terms and conditions')
     bank = fields.Many2one('res.bank', string='Bank')
     # sales_person = fields.Many2one('hr.employee', string='Salesperson')
@@ -85,6 +85,10 @@ class SaleOrder(models.Model):
     is_hold = fields.Boolean('Hold', tracking=True)
     price_tracking = fields.Text('Price Tracker')
     avg_price = fields.Float(string='Average Price', compute="_compute_avg_price")
+    avg_size = fields.Float(string='Average Size', compute="_compute_avg_size")
+    assortment = fields.Char(string='Assortment')
+    
+    
     
     def _compute_avg_price (self): 
         for rec in self:
@@ -92,6 +96,17 @@ class SaleOrder(models.Model):
                 rec.avg_price = (rec.amount_total/sum(rec.order_line.mapped('product_uom_qty')))
             else:
                 rec.avg_price = 0
+                
+    def _compute_avg_size (self): 
+        for rec in self:
+            line_count = len(rec.order_line)
+            total_size = 0.0
+            for line in rec.order_line:
+                if line.sizein != 'N/A':
+                    total_size += float(line.sizein)
+                if line.sizecm != 'N/A':
+                    total_size += float(line.sizecm)
+            rec.avg_size =(total_size/line_count)
     
     @api.onchange('order_ref')
     def _onchange_orderline_ids(self):
