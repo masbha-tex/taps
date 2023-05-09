@@ -21,8 +21,6 @@ class SalesXlsx(models.AbstractModel):
         
         docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
         
-        # raise UserError((docs.id))
-        
         report_data = []
         order_data = []
         slnumber=0

@@ -311,7 +311,6 @@ class SaleOrder(models.Model):
 
         self = self.with_company(self.company_id)
 
-        #self.payment_term_id = self.order_ref.payment_term_id.id
         ptid = self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False
         if self.order_ref:
             ptid = self.order_ref.payment_term_id.id
