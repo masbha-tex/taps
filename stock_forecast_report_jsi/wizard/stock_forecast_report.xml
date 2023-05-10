@@ -12,7 +12,7 @@
                         <field name="report_for" required="True"/>
 <!--                         <field name="categ_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_items')]}"/>
                         <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('report_by', '=', 'by_categories')]}"/> -->
-                        <field name="from_date"/>
+                        <field name="from_date" attrs="{'invisible': [['report_type','=','ageing']]}"/>
                         <field name="to_date" required="True"/>
 <!--                         <field name="stock_type" options="{'horizontal': true}" class="oe_edit_only" widget="radio"/>
                         <field name="report_type" string="" widget="boolean_toggle"/>          -->

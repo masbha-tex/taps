@@ -191,7 +191,9 @@ class StockForecastReport(models.TransientModel):
     
     def print_date_wise_stock_register(self):
         start_time = fields.datetime.now()
-        f_date = self.from_date
+        f_date = self.to_date
+        if self.from_date:
+            f_date = self.from_date
         t_date = self.to_date
         hour_from = 0.0
         hour_to = 23.98
@@ -463,9 +465,12 @@ class StockForecastReport(models.TransientModel):
         
         
         query = """
-        insert into stock_opening_closing(id,product_id,product_category,parent_category,lot_id,rejected,lot_price,pur_price,landed_cost,opening_qty,opening_value,receive_qty,receive_value,issue_qty,issue_value,cloing_qty,cloing_value) select * from (
+        insert into stock_opening_closing(id,product_id,product_category,parent_category,lot_id,rejected,lot_price,pur_price,landed_cost,opening_qty,opening_value,receive_date,receive_qty,receive_value,issue_qty,issue_value,cloing_qty,cloing_value) select * from (
         select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id, categ_type as product_category,parent_id as parent_category,invoice as lot_id, rejected, avg(lot_price) as lot_price, avg(pur_price) as pur_price, avg(landed_cost) as landed_cost ,sum(opening_qty) as opening_qty,
         case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
+        
+        min(COALESCE(receive_date,'2021-01-01 06:00:00')) as receive_date,        
+        
         sum(receive_qty) as receive_qty,
         case when avg(lot_price)>0 then sum(receive_qty)*avg(lot_price) else sum(receive_value) end as receive_value,
         sum(issue_qty) as issue_qty,
@@ -501,6 +506,9 @@ class StockForecastReport(models.TransientModel):
 		from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<sd.from_date) and b.lot_id=lot.id and b.product_id=product.id group by b.move_id)) as val)
         else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<sd.from_date) end
         ) as opening_value,
+        
+        
+        (select min(scheduled_date) from stock_picking where id in(select distinct sl.picking_id from stock_move_line as sl where sl.product_id=product.id and sl.lot_id=lot.id and sl.state='done' and sl.reference like %s order by sl.picking_id asc)) as receive_date,
 
         (
         case when lot.id is not null then
@@ -556,8 +564,7 @@ class StockForecastReport(models.TransientModel):
         group by stock.product_id,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected,stock.company_id
         ) as atb
         """
-        self.env.cr.execute(query, ('%LC/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/MR/%','%/MR/%',
-'%/MR/%','%/MR/%','%LC/%',self.env.company.id,'R_%','S_%'))
+        self.env.cr.execute(query, ('%LC/%','%/IN/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/MR/%','%/MR/%','%/MR/%','%/MR/%','%LC/%',self.env.company.id,'R_%','S_%'))
         
         
         
@@ -586,8 +593,8 @@ class StockForecastReport(models.TransientModel):
         --case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
         
         
-        min(receive_date) as receive_date, 
-        DATE_PART('day',%s-min(receive_date)) as duration,
+        min(COALESCE(receive_date,'2021-01-01 06:00:00')) as receive_date, 
+        DATE_PART('day',%s-min(COALESCE(receive_date,'2021-01-01 06:00:00'))) as duration,
         
         --sum(receive_qty) as receive_qty,
         --case when avg(lot_price)>0 then sum(receive_qty)*avg(lot_price) else sum(receive_value) end as receive_value,

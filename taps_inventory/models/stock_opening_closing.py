@@ -24,6 +24,8 @@ class Inventory(models.Model):
     landed_cost = fields.Float(string='Landed Cost', readonly=True, digits='Unit Price')
     opening_qty = fields.Float(string='Opening Quantity', readonly=True)
     opening_value = fields.Float(string='Opening Value', readonly=True)
+    receive_date = fields.Datetime('Receive Date', readonly=True)
+    #duration = fields.Integer(string='Duration', readonly=True)
     receive_qty = fields.Float(string='Receive Quantity', readonly=True)
     receive_value = fields.Float(string='Receive Value', readonly=True)
     issue_qty = fields.Float(string='Issue Quantity', readonly=True)

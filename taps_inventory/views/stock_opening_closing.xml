@@ -36,6 +36,7 @@
                 <field name="landed_cost"/>
                 <field name="opening_qty" optional="show" sum="Opening Quantity" decoration-bf="True"/>
                 <field name="opening_value" optional="show" sum="Opening Value" decoration-bf="True"/>
+                <field name="receive_date"/>
                 <field name="receive_qty" optional="show" sum="Receive Quantity" decoration-bf="True"/>
                 <field name="receive_value" optional="show" sum="Receive Value" decoration-bf="True"/>
                 <field name="issue_qty" optional="show" sum="Issue Quantity" decoration-bf="True"/>
