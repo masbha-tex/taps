@@ -304,7 +304,7 @@ class SalarySheet(models.TransientModel):
         domain.append(('code', '=', 'NET'))
         
         #raise UserError((domain))
-        docs = self.env['hr.payslip.line'].search(domain).sorted(key = 'employee_id', reverse=False)
+        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
         #raise UserError((docs.id))
         datefrom = data.get('date_from')
         dateto = data.get('date_to')
@@ -360,6 +360,8 @@ class SalarySheet(models.TransientModel):
         # set the width od the column
         
         worksheet.set_column(0, 5, 20)
+        # merge_format = workbook.add_format({'align': 'center'})
+        # worksheet.merge_range(4, 0, 9, 0, '', merge_format)
         
         worksheet.write(4, 0, 'SL.', column_product_style)
         worksheet.write(4, 1, 'Emp ID', column_product_style)        

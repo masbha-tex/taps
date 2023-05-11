@@ -56,21 +56,21 @@ class SalesXlsx(models.AbstractModel):
             if o_data.topbottom:
                 pr_name = "\n".join([pr_name,o_data.topbottom])
             slider = o_data.slidercodesfg
-            finish = o_data.finish
+            finish = o_data.finish#.replace('\n',' ')
             shade = o_data.shade
             shadewise_tape = o_data.shadewise_tape
             
-            filtered_name = [x for x in report_data if x[1] == o_data.product_template_id.name]
-            if filtered_name:
-                pr_name = ''
+            # filtered_name = [x for x in report_data if x[1] == o_data.product_template_id.name]
+            # if filtered_name:
+            #     pr_name = ''
             
-            filtered_slider = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[2] == o_data.slidercodesfg]
-            if filtered_slider:
-                slider = ''
+#             filtered_slider = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[2] == o_data.slidercodesfg]
+#             if filtered_slider:
+#                 slider = ''
 
-            filtered_finish = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[3] == o_data.finish]
-            if filtered_finish:
-                finish = ''
+#             filtered_finish = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[3] == o_data.finish]
+#             if filtered_finish:
+#                 finish = ''
                 
             # filtered_pi_num = [x for x in report_data if x[4] == orders.order_ref.pi_number]
             # if filtered_pi_num:
@@ -160,15 +160,15 @@ class SalesXlsx(models.AbstractModel):
         merge_format_ = workbook.add_format({'align': 'bottom'})
         _range = len(report_data)
         sheet.set_column(0, 0, 20)
-        sheet.set_column(1, 1, 20)
+        sheet.set_column(1, 1, 30)
         sheet.set_column(2, 2, 20)
         sheet.set_column(3, 3, 20)
         sheet.set_column(4, 4, 20)
         sheet.set_column(5, 5, 20)
         sheet.merge_range(1, 0, _range, 0, '', merge_format)
-        sheet.merge_range(1, 1, _range, 1, '', merge_format)
-        sheet.merge_range(1, 2, _range, 2, '', merge_format)
-        sheet.merge_range(1, 3, _range, 3, '', merge_format)
+        #sheet.merge_range(1, 1, _range, 1, '', merge_format)
+        #sheet.merge_range(1, 2, _range, 2, '', merge_format)
+        #sheet.merge_range(1, 3, _range, 3, '', merge_format)
         sheet.merge_range(1, 4, _range, 4, '', merge_format)
         sheet.merge_range(1, 5, _range, 5, '', merge_format)
         sheet.merge_range(1, 6, _range, 6, '', merge_format)
@@ -202,26 +202,45 @@ class SalesXlsx(models.AbstractModel):
         col = 0
         row = 1
         
-
-        test_shade = ''
-        
+        product_range = 0
+        slider_range = 0
+        finish_range = 0
         shade_range = 0
         
         for line in report_data:
             s_t = False
             for x in report_data[row:]:
                 last_one = row
-                if x[9] == line[9]:
-                    shade_range += 1
+                if (x[1] == line[1] or x[2] == line[2] or x[3] == line[3] or x[9] == line[9]):
+                    if x[1] == line[1]:
+                        product_range += 1
+                    if x[2] == line[2]:
+                        slider_range += 1
+                    if x[3] == line[3]:
+                        finish_range += 1
+                    if x[9] == line[9]:
+                        shade_range += 1
                 else:
+                    sheet.merge_range(row, 1, product_range + 1, 1, '', merge_format)
+                    sheet.merge_range(row, 2, slider_range + 1, 2, '', merge_format)
+                    sheet.merge_range(row, 3, finish_range + 1, 3, '', merge_format)
                     sheet.merge_range(row, 9, shade_range + 1, 9, '', merge_format)
                     sheet.merge_range(row, 16, shade_range + 1, 16, '', merge_format_)
-                    shade_range = row
+                    product_range = slider_range = finish_range = shade_range = row
                     break
                 if _range == shade_range +1:
                     sheet.merge_range(last_one, 9, shade_range + 1, 9, '', merge_format)
                     sheet.merge_range(last_one, 16, shade_range + 1, 16, '', merge_format_)
                     shade_range = row
+                if _range == product_range +1:
+                    sheet.merge_range(last_one, 1, product_range + 1, 1, '', merge_format)
+                    product_range = row
+                if _range == slider_range +1:
+                    sheet.merge_range(last_one, 2, slider_range + 1, 2, '', merge_format)
+                    slider_range = row
+                if _range == finish_range +1:
+                    sheet.merge_range(last_one, 3, finish_range + 1, 3, '', merge_format)
+                    finish_range = row
             
             col=0
             for l in line:
