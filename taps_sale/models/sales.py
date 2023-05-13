@@ -89,7 +89,7 @@ class SaleOrder(models.Model):
     assortment = fields.Char(string='Assortment')
     
     
-    
+    #dlfkdjfk
     def _compute_avg_price (self): 
         for rec in self:
             if rec.amount_total>0:
