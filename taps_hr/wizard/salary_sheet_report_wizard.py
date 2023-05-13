@@ -204,18 +204,23 @@ class SalarySheet(models.TransientModel):
         
     def action_generate_xlsx_report(self):
         start_time = fields.datetime.now()
-        if self.bank_id:
-            if self.holiday_type == "employee":#employee  company department category
-                #raise UserError(('sfefefegegegeeg'))
+        if self.report_type:
+            if self.holiday_type == "employee":#employee company department category
+                #raise UserError((self.report_type))
+                empl = self.employee_id
+                emp = empl.mapped('id')
+                    
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
                         'mode_company_id': False, 
                         'department_id': False, 
                         'category_id': False, 
-                        'employee_id': self.employee_id.id, 
-                        'report_type': False,
-                        'bank_id': self.bank_id.id,
-                        'company_all': False}
+                        'employee_id': emp,
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}
 
             if self.holiday_type == "company":
                 data = {'date_from': self.date_from, 
@@ -224,9 +229,11 @@ class SalarySheet(models.TransientModel):
                         'department_id': False, 
                         'category_id': False, 
                         'employee_id': False, 
-                        'report_type': False,
-                        'bank_id': self.bank_id.id,
-                        'company_all': False}
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}
 
             if self.holiday_type == "department":
                 data = {'date_from': self.date_from, 
@@ -235,9 +242,11 @@ class SalarySheet(models.TransientModel):
                         'department_id': self.department_id.id, 
                         'category_id': False, 
                         'employee_id': False, 
-                        'report_type': False,
-                        'bank_id': self.bank_id.id,
-                        'company_all': False}
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}
 
             if self.holiday_type == "category":
                 data = {'date_from': self.date_from, 
@@ -246,10 +255,11 @@ class SalarySheet(models.TransientModel):
                         'department_id': False, 
                         'category_id': self.category_id.id, 
                         'employee_id': False, 
-                        'report_type': False,
-                        'bank_id': self.bank_id.id,
-                        'company_all': False}
-
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}
             if self.holiday_type == "emptype":
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -257,10 +267,11 @@ class SalarySheet(models.TransientModel):
                         'department_id': False, 
                         'category_id': False, 
                         'employee_id': False, 
-                        'report_type': False,
-                        'bank_id': self.bank_id.id,
+                        'report_type': self.report_type,
+                        'bank_id': False,
                         'employee_type': self.employee_type,
-                        'company_all': False}
+                        'company_all': False,
+                        'is_company': self.is_company}              
             if self.holiday_type == "companyall":
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -268,9 +279,11 @@ class SalarySheet(models.TransientModel):
                         'department_id': False, 
                         'category_id': False, 
                         'employee_id': False, 
-                        'report_type': False,
-                        'bank_id': self.bank_id.id,
-                        'company_all': self.company_all}                
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}                
         
         domain = []
         if data.get('date_from'):
@@ -304,22 +317,22 @@ class SalarySheet(models.TransientModel):
         domain.append(('code', '=', 'NET'))
         
         #raise UserError((domain))
-        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        docs = self.env['hr.payslip.line'].search(domain).sorted(key = 'employee_id', reverse=False)
         #raise UserError((docs.id))
         datefrom = data.get('date_from')
         dateto = data.get('date_to')
         bankname = self.bank_id.name
-        categname=[]
-        if self.employee_type =='staff':
-            categname='Staffs'
-        if self.employee_type =='expatriate':
-            categname='Expatriates'
-        if self.employee_type =='worker':
-            categname='Workers'
-        if self.employee_type =='cstaff':
-            categname='C-Staffs'
-        if self.employee_type =='cworker':
-            categname='C-Workers'
+        # categname=[]
+        # if self.employee_type =='staff':
+        #     categname='Staffs'
+        # if self.employee_type =='expatriate':
+        #     categname='Expatriates'
+        # if self.employee_type =='worker':
+        #     categname='Workers'
+        # if self.employee_type =='cstaff':
+        #     categname='C-Staffs'
+        # if self.employee_type =='cworker':
+        #     categname='C-Workers'
             
         
         #raise UserError((datefrom,dateto,bankname,categname))
@@ -349,7 +362,7 @@ class SalarySheet(models.TransientModel):
         report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
 #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
         worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
-        worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % ('','')), report_small_title_style)
 #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
         
         column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
@@ -360,10 +373,10 @@ class SalarySheet(models.TransientModel):
         # set the width od the column
         
         worksheet.set_column(0, 5, 20)
-        # merge_format = workbook.add_format({'align': 'center'})
-        # worksheet.merge_range(4, 0, 9, 0, '', merge_format)
+        merge_format = workbook.add_format({'align': 'center','valign': 'top'})
+        worksheet.merge_range(4, 0, 9, 0, '', merge_format)
         
-        worksheet.write(4, 0, 'SL.', column_product_style)
+        worksheet.write(4, 0, 'SL.', merge_format)
         worksheet.write(4, 1, 'Emp ID', column_product_style)        
         worksheet.write(4, 2, 'Name', column_product_style)
         worksheet.write(4, 3, 'Joining Date', column_product_style)
@@ -398,7 +411,7 @@ class SalarySheet(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s-%s TRANSFER LIST' % (categname,bankname))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s TRANSFER LIST' % (bankname))),
             'target': 'self',
         }
 

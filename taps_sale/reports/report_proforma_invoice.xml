@@ -16,10 +16,10 @@
 					<div>
 						<div class="float-left">
 							<h2 class="mt15" style="font-size: 15px">
-								<span>PI # TZBD- <t t-esc="o.pi_number"/>
+								<span style="color: Black ! important">PI # TZBD- <t t-esc="o.pi_number"/>
 								</span>
 								<t t-if="o.is_revised == True">
-									<span>-<span t-field="o.revised_no"/>
+									<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
 									</span>
 								</t>
 							</h2>
@@ -37,7 +37,7 @@
 								<strong style="font-size:12px">CUSTOMER DETAILS</strong>
 							</div>
 							<p>
-								<span style="font-size:12px;color: blue;" t-esc="o.partner_id.name"/>
+								<span style="font-size:12px;" t-esc="o.partner_id.name"/>
 								<br/>
 								<span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/>
 							</p>
@@ -47,7 +47,7 @@
 								<strong style="font-size:12px">INVOICE DETAILS</strong>
 							</div>
 							<p>
-								<span style="font-size:12px; color: blue;" t-esc="o.partner_invoice_id.name"/>
+								<span style="font-size:12px;" t-esc="o.partner_invoice_id.name"/>
 								<br/>
 								<span style="font-size:10px" t-esc="o.invoice_details"/>
 							</p>
@@ -57,7 +57,7 @@
 								<strong style="font-size:12px">DELIVERY ADDRESS</strong>
 							</div>
 							<p>
-								<span style="font-size:12px;color: blue;" t-esc="o.partner_shipping_id.name"/>
+								<span style="font-size:12px;" t-esc="o.partner_shipping_id.name"/>
 								<br/>
 								<span style="font-size:10px" t-esc="o.delivery_details"/>
 							</p>
@@ -68,7 +68,7 @@
 									<strong style="font-size:12px">APPLICANT BANK</strong>
 								</div>
 								<p>
-									<span style="font-size:12px;color: blue;" t-esc="o.applicant_bank"/>
+									<span style="font-size:12px;" t-esc="o.applicant_bank"/>
 								</p>
 							</t>
 						</div>
@@ -165,7 +165,14 @@
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-100 mb-2">
-								</div>
+						  <p>
+								<strong>ASSORTMENT</strong>
+								<br/>
+								<t t-if="o.assortment">
+									<t t-esc="o.assortment"/>
+								</t>
+							</p>
+						</div>
 					</div>
 					<div class="row mt32 mb32" style="font-size:12px">
 						<div class="col-auto col-2 mw-50 mb-2">
@@ -565,7 +572,7 @@
 												</span>
 											</td>
 											</t>
-											<td class="text-right o_price_total" style="vertical-align:middle;border-top: 1px solid black;">
+											<td class="text-right o_price_total" style="vertical-align:middle;border-top: 1px solid black;border-bottom: 1px solid black; background-color: white ! important">
 												<span>
 													<t t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
@@ -588,7 +595,7 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="clearfix" style="font-size:12px">
+					<div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
 						<div class="row float-right pr-3">
 							<div>
 								<table class="table table-sm o_main_table">
@@ -596,17 +603,17 @@
 										<td>
 											<strong>Subtotal</strong>
 										</td>
-										<td>
+										<td style="background-color: white ! important">
 											<span>
 												<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 											</span>
 										</td>
 									</tr>
 									<tr class="border-black o_subtotal">
-										<td>
+										<td style="background-color: white ! important; color: Black ! important">
 											<strong>Total</strong>
 										</td>
-										<td>
+										<td style="background-color: white ! important; color: Black ! important">
 											<span>
 												<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 											</span>
@@ -616,10 +623,10 @@
 							</div>
 						</div>
 						<div class="clearfix" style="font-size:12px">
-							<strong>AMOUNT IN WORDS(USD): <span t-esc="o.amount_in_word" style="color: #00A09D"/>
+							<strong>AMOUNT IN WORDS(USD): <span t-esc="o.amount_in_word" />
 							</strong>
 							<br/>
-							<strong>APPROXIMATE WEIGHT(KG): <span t-esc="o.appr_weight" style="color: #00A09D"/>
+							<strong>APPROXIMATE WEIGHT(KG): <span t-esc="o.appr_weight" />
 							</strong>
 						</div>
 					</div>
@@ -736,7 +743,7 @@
 									<t t-if="isinstance(o.remarks, str)">
 										<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
 										<t t-foreach="string_to_output" t-as="string_line">
-											<span style="font-size:12px;color: red" t-esc="string_line"/>
+											<span style="font-size:12px;" t-esc="string_line"/>
 											<br/>
 										</t>
 									</t>

@@ -9,8 +9,8 @@
 					<field name="priority_sales" widget="priority" class="mr-3"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_id']" position="before">
-					<field name="sales_type"/>
-                    <field name="pi_type" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}"/>
+					<field name="sales_type" attrs="{'readonly':[('state','=','sale')]}"/>
+                    <field name="pi_type" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]],'readonly':[('state','=','sale')] }"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_invoice_id']" position="attributes">
 					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]]}</attribute>
