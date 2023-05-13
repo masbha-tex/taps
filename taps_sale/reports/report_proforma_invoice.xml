@@ -13,7 +13,7 @@
 							PROFORMA INVOICE
 							</strong>
 					</h4>
-					<div>
+                     <div>
 						<div class="float-left">
 							<h2 class="mt15" style="font-size: 15px">
 								<span style="color: Black ! important">PI # TZBD- <t t-esc="o.pi_number"/>
@@ -751,6 +751,7 @@
 							</diV>
 						</t>
 					</div>
+                    
 				</div>
 				</t>
 			</t>

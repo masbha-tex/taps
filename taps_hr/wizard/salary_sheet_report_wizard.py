@@ -381,6 +381,7 @@ class SalarySheet(models.TransientModel):
         worksheet.write(4, 2, 'Name', column_product_style)
         worksheet.write(4, 3, 'Joining Date', column_product_style)
         worksheet.write(4, 4, 'Account Number', column_product_style)
+        worksheet.write(4, 4, 'Grade', column_product_style)
         worksheet.write(4, 5, 'Net Payable', column_product_style)
         col = 0
         row=5

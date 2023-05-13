@@ -101,11 +101,15 @@ class SaleOrder(models.Model):
         for rec in self:
             line_count = len(rec.order_line)
             total_size = 0.0
+            if line_count==0:
+                line_count=1
             for line in rec.order_line:
-                if line.sizein != 'N/A':
-                    total_size += float(line.sizein)
-                if line.sizecm != 'N/A':
-                    total_size += float(line.sizecm)
+                if line.sizein:
+                    if line.sizein != 'N/A':
+                        total_size += float(line.sizein)
+                if line.sizecm:
+                    if line.sizecm != 'N/A':
+                        total_size += float(line.sizecm)
             rec.avg_size =(total_size/line_count)
     
     @api.onchange('order_ref')
