@@ -634,8 +634,7 @@ class SaleOrder(models.Model):
                         
                         
                         formula_ = formula.wair_python_compute
-                        formula_tape = formula.tape_python_compute
-                        raise UserError((formula_,formula_tape))
+                        formula_tape = formula.tape_python_compute                       
 
                         consumption = safe_eval(formula_, {'s': size})# or 0.0, None, mode='exec', nocopy=True
                         consumption_tape = safe_eval(formula_tape, {'s': size, 'g': orderline.gap})
