@@ -25,7 +25,7 @@ class SaleOrder(models.Model):
     buyer_name = fields.Many2one('sale.buyer', string='Buyer Name')
     season = fields.Char(string='Season')
     sample_ref = fields.Many2one('sale.order', string='Sample Ref.', readonly=False, domain=[('sales_type', '=', 'sample')])
-    #,sales_type={'sale' : [('readonly', False)],'oa' : [('readonly', False)]}
+    
     sales_type = fields.Selection([
             ('sample', 'Sample Order'),
             ('sale', 'Sales Order'),
