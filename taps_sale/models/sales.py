@@ -999,8 +999,9 @@ class SaleOrderLine(models.Model):
     
     def duplicate_line(self):
         max_seq = max(line.sequence for line in self.order_id.order_line)
-        self.copy({'order_id': self.order_id.id, 'sequence': max_seq + 1})    
-
+        self.copy({'order_id': self.order_id.id, 'sequence': max_seq + 1})
+        
+        
     @api.onchange('product_id')
     def product_id_change(self):
         if not self.product_id:
@@ -1193,47 +1194,24 @@ class SaleOrderLine(models.Model):
         #all_tape = self.env['sale.order.line'].search([('order_id', '=', order_id)])
         for line in self:
             #pro = self.env['product.product'].search([('id','=',values.get('product_id'))])
-            all_line = self.env['sale.order.line'].search([('order_id', '=', line.order_id.id)])#,('shade', '=', line.shade)
-            lines_ = []
-            unique_shade = []
-            con = 0.0
-            for shade in all_line:
-                filtered_shade = [x for x in unique_shade if x[1] == shade.shade]
-                if filtered_shade:
-                    con += shade.tape_con
-                    lines_ = [shade.id,shade.shade,shade.tape_con]
-                    unique_shade.append(lines_)
-                else:
-                    if unique_shade:
-                        for x in unique_shade:
-                            sal_line = self.env['sale.order.line'].search([('id', '=', x[0])])
-                            sal_line.write({'shadewise_tape':con})
-                    lines_.clear()   
-                    unique_shade.clear()
-                    con = 0.0
-                    con += shade.tape_con
-                    lines_ = [shade.id,shade.shade,shade.tape_con]
-                    unique_shade.append(lines_)
-                    
-            for y in unique_shade:
-                salline = self.env['sale.order.line'].search([('id', '=', y[0])])
-                salline.write({'shadewise_tape':con})
+            all_line = self.env['sale.order.line'].search([('order_id', '=', line.order_id.id)])#
+            #,('product_id', '=', line.product_id),('finish', '=', line.finish),('shade', '=', line.shade)
              
             # filtered_shade = [x for x in unique_shade if x[0] == products.product_id.product_tmpl_id.id and x[1] == products.shade]
-            # all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id)
-            # #line.shadewise_tape = sum(all_line.mapped('tape_con'))
-            # #raise UserError((sum(all_line.mapped('tape_con'))))
-            # all_tpe.write({'shadewise_tape':sum(all_tpe.mapped('tape_con'))})
+            all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and sol.finish == line.finish and sol.shade == line.shade)
+            #line.shadewise_tape = sum(all_line.mapped('tape_con'))
+            #raise UserError((sum(all_line.mapped('tape_con'))))
+            all_tpe.write({'shadewise_tape':sum(all_tpe.mapped('tape_con'))})
         
-        # pro = self.env['product.product'].search([('id','=',values.get('product_id'))])
-        # all_tape = self.filtered(lambda sol: sol.order_id == values.get('order_id') and sol.product_id.product_tmpl_id.id == pro.product_tmpl_id.id and sol.shade == values.get('shade'))
-        # #con = sum(all_tape.mapped('tape_con'))
-        # #self.shadewise_tape = sum(all_tape.mapped('tape_con'))
-        # #all_tape.update({'shadewise_tape':sum(all_tape.mapped('tape_con'))})
-        # #val['shadewise_tape'] = sum(all_tape.mapped('tape_con'))
-        # values.update(shadewise_tape=sum(all_tape.mapped('tape_con')))
+#         pro = self.env['product.product'].search([('id','=',values.get('product_id'))])
+#         all_tape = self.filtered(lambda sol: sol.order_id == values.get('order_id') and sol.product_id.product_tmpl_id.id == pro.product_tmpl_id.id and sol.shade == values.get('shade'))
+#         #con = sum(all_tape.mapped('tape_con'))
+#         #self.shadewise_tape = sum(all_tape.mapped('tape_con'))
+#         #all_tape.update({'shadewise_tape':sum(all_tape.mapped('tape_con'))})
+#         #val['shadewise_tape'] = sum(all_tape.mapped('tape_con'))
+#         values.update(shadewise_tape=sum(all_tape.mapped('tape_con')))
         
-    @api.onchange('product_uom', 'product_uom_qty')
+#     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
         a = 'a'
         wastage_percent = self.env['wastage.percent']
