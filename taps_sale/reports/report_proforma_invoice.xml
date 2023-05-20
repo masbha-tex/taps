@@ -479,7 +479,14 @@
 													<t t-if="finish != line.finish">
 														<td class="text-left" style="border-top: 1px solid black;">
 															<span>
-																<t t-esc="line.finish"/>
+																
+																<t t-if="isinstance(line.finish, str)">
+										<t t-set="string_to_output" t-value="line.finish.split(',')"/>
+										<t t-foreach="string_to_output" t-as="string_line">
+											<span  t-esc="string_line"/>
+											<br/>
+										</t>
+									</t>
 																<t t-set="finish" t-value="line.finish"/>
 															</span>
 														</td>
@@ -514,7 +521,14 @@
 													<t t-if="shade != line.shade">
 														<td class="text-left" style="border-top: 1px solid black;">
 															<span>
-																<t t-esc="line.shade"/>
+																
+																<t t-if="isinstance(line.shade, str)">
+										<t t-set="string_to_output" t-value="line.shade.split('\n')"/>
+										<t t-foreach="string_to_output" t-as="string_line">
+											<span  t-esc="string_line"/>
+											<br/>
+										</t>
+									</t>
 																<t t-set="shade" t-value="line.shade"/>
 															</span>
 														</td>
@@ -562,13 +576,13 @@
 											</td>
 											<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 												<span>
-													<t t-esc="line.price_unit"/>
+													<t t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 4}"/>
 												</span>
 											</td>
 											<t t-if="line.discount != 0">
 											<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 												<span>
-													<t t-esc="line.discount"/>
+													<t t-esc="line.discount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 4}"/>
 												</span>
 											</td>
 											</t>
@@ -623,10 +637,10 @@
 							</div>
 						</div>
 						<div class="clearfix" style="font-size:12px">
-							<strong>AMOUNT IN WORDS(USD): <span t-esc="o.amount_in_word" />
+							<strong>AMOUNT IN WORDS(USD): <span t-esc="o.amount_in_word"/>
 							</strong>
 							<br/>
-							<strong>APPROXIMATE WEIGHT(KG): <span t-esc="o.appr_weight" />
+							<strong>APPROXIMATE WEIGHT(KG): <span t-esc="o.appr_weight"/>
 							</strong>
 						</div>
 					</div>
@@ -736,6 +750,7 @@
 						</t>
 						<t t-if="o.remarks">
 							<diV class="col-4">
+							  <div>
 								<p>
 									<strong>REMARKS:</strong>
 									<br/>
@@ -748,10 +763,23 @@
 										</t>
 									</t>
 								</p>
+								</div>
+								<br/>
+								<br/>
+								<div class="float-right mt32 mb32 ! important">
+              <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+              <div>
+                <span>______________________</span><br/>
+                <span>Authorised Signature</span>
+              </div>
+            </div>
 							</diV>
 						</t>
+						<br/>
+						<br/>
+						
 					</div>
-                    
+            
 				</div>
 				</t>
 			</t>

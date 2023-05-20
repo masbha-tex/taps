@@ -1211,7 +1211,7 @@ class SaleOrderLine(models.Model):
 #         #val['shadewise_tape'] = sum(all_tape.mapped('tape_con'))
 #         values.update(shadewise_tape=sum(all_tape.mapped('tape_con')))
         
-#     @api.onchange('product_uom', 'product_uom_qty')
+    @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
         a = 'a'
         wastage_percent = self.env['wastage.percent']
