@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_taps_manufacturing_taps_manufacturing,taps_manufacturing.taps_manufacturing,model_taps_manufacturing_taps_manufacturing,base.group_user,1,1,1,1
+access_mrp_production_custom,mrp_production_custom,model_mrp_production,base.group_user,1,1,1,1

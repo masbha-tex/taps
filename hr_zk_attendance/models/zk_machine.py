@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import pytz
 import sys
 import datetime
@@ -11,6 +12,7 @@ from struct import unpack
 from odoo import api, fields, models
 from odoo import _
 from odoo.exceptions import UserError, ValidationError
+from .exception import ZKErrorConnection, ZKErrorResponse, ZKNetworkError
 from odoo.tools import format_datetime
 from datetime import timedelta
 _logger = logging.getLogger(__name__)
@@ -20,6 +22,13 @@ except ImportError:
     _logger.error("Please Install pyzk library.")
 
 _logger = logging.getLogger(__name__)
+import os
+import sys
+from .base import *
+
+CWD = os.path.dirname(os.path.realpath(__file__))
+ROOT_DIR = os.path.dirname(CWD)
+sys.path.append(ROOT_DIR)
 
 
 class HrAttendance(models.Model):
@@ -33,11 +42,26 @@ class ZkMachine(models.Model):
     _name = 'zk.machine'
     _description='ZK Machine'
 
-    name = fields.Char(string='Machine IP', required=True)
-    port_no = fields.Integer(string='Port No', required=True)
-    address_id = fields.Many2one('res.partner', string='Working Address')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.user.company_id.id)
-    user_status = fields.Char(string='User Status', compute="get_machine_user")
+    name = fields.Char(string='IP / Domain Name',store=True,required=True)
+    port_no = fields.Integer(string='Port No', store=True, required=True)
+    address_id = fields.Many2one('res.partner', store=True,string='Working Address')
+    company_id = fields.Many2one('res.company', store=True, string='Company', default=lambda self: self.env.user.company_id.id)
+    user_status = fields.Char(string='User', store=True, readonly=True)
+    local_ip = fields.Char(string='Machine IP', store=True, readonly=True)
+    fingerprint = fields.Char(string='Finger Algorithm', store=True, readonly=True)
+    device_name = fields.Char(string='Machine Name ', store=True, readonly=True)
+    serialnumber = fields.Char(string='Serial Number ', store=True, readonly=True)
+    platform = fields.Char(string='Platform ', store=True, readonly=True)
+    mac = fields.Char(string='MAC Address ', store=True, readonly=True)
+    firmwareversion = fields.Char(string='Firmware Version ', store=True, readonly=True)
+    get_time = fields.Char(string='Current Times', store=True, readonly=True)
+    users_id = fields.Many2one('res.users', string='Technician', store=True, default=lambda self: self.env.user.id)
+    device_user_count = fields.Char(string='User Count', store=True, copy=True, readonly=True)
+    device_finger_count = fields.Char(string='Finger Count', store=True, copy=True,readonly=True)
+    att_log_count = fields.Integer(string='Attendance Logs', store=True, copy=True,readonly=True)
+      
+    
+    
 
     def device_connect(self, zk):
         try:
@@ -69,8 +93,8 @@ class ZkMachine(models.Model):
             
             if conn:
                 conn.enable_device()
-                # user_size = len(zk.get_users())
-                user_size = zk
+                user_size = len(zk.get_users())
+                # user_size = zk
                 
                 if user_size:
                     info.write({'user_status':user_size})
@@ -137,17 +161,9 @@ class ZkMachine(models.Model):
     @api.model
     def cron_download(self):
         machines = self.env['zk.machine'].search([])
-        # dwn_ids = int(datetime.now().strftime('%Y%m%d%H%M%S'))
         for machine in machines :
             machine.download_attendance()
-        # for machine in machines :
-        #     dwn_id = dwn_ids+1
-        #     raise UserError((dwn_ids,dwn_id))
-        #     machine.download_attendance(dwn_id)
-        #     att_down = self.env['zk.machine.attendance'].search([('download_id', '=', dwn_id)])
-        #     if att_down:
-        #         machine.clear_attendance()        
-            
+         
 
     def download_attendance(self):
         _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
@@ -184,22 +200,13 @@ class ZkMachine(models.Model):
                         utc_dt = utc_dt.strftime("%Y-%m-%d %H:%M:%S")
                         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
                         att_Date = datetime.strptime(atten_time.strftime('%Y-%m-%d'), '%Y-%m-%d')
-                        #atten_time = fields.Datetime.to_string(atten_time)
-                        #officeTime = format_datetime(self.env, atten_time, dt_format=False)
-                        #officeTime = str((officeTime[-8:])[:-3])
-                        
-                        fromdatetime = atten_time#datetime.now() + timedelta(hours=6)
-                        #fromdatetime = datetime.strptime(fromdatetime.strftime('%Y-%m-%d 00:00:00'), '%Y-%m-%d 00:00:00')
+                        fromdatetime = atten_time
                         myfromtime = datetime.strptime('000000','%H%M%S').time()
                         fromdatetime = datetime.combine(fromdatetime, myfromtime)
-                        
                         todatetime = datetime.now() + timedelta(hours=6)
-                        #todatetime = datetime.strptime(todatetime.strftime('%Y-%m-%d 23:59:59'), '%Y-%m-%d 23:59:59')
                         mytotime = datetime.strptime('235959','%H%M%S').time()
                         todatetime = datetime.combine(todatetime, mytotime)
                         
-                        #getDate = datetime.now() + timedelta(hours=6)
-                        #getDate = datetime.strptime(getDate.strftime('%Y-%m-%d'), '%Y-%m-%d')
                         if user:
                             for uid in user:
                                 if uid.user_id == each.user_id:
@@ -291,3 +298,146 @@ class ZkMachine(models.Model):
             else:
                 break
                 #raise UserError(_('Unable to connect, please check the parameters and network connections.'))
+    @api.model
+    def cron_refresh(self):
+        machines = self.env['zk.machine'].search([])
+        for machine in machines :
+            machine.action_get_device_info()
+            
+    def action_get_device_info(self):
+        _logger.info("++++++++++++Cron Executed Refresh++++++++++++++++++++++")
+        for info in self:
+            machine_ip = info.name
+            zk_port = info.port_no
+            timeout = 15
+            try:
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+            except NameError:
+                raise UserError(_("Please install it with 'pip3 install pyzk'."))
+            conn = zk.connect()          
+            if conn:
+                try:
+                    
+                    network_info = conn.get_network_params()
+                    conn.read_sizes()
+                    info.write({'local_ip':network_info.get('ip'),
+                                'device_name':conn.get_device_name(),
+                                'serialnumber':conn.get_serialnumber(),
+                                'platform':conn.get_platform(),
+                                'mac':conn.get_mac(),
+                                'firmwareversion':conn.get_firmware_version(),
+                                'get_time':conn.get_time(),
+                                'fingerprint':conn.get_fp_version(),
+                                'device_user_count':("%s/%s" % (conn.users, conn.users_cap)),
+                                'device_finger_count':("%s/%s" % (conn.fingers, conn.fingers_cap)),
+                                'att_log_count':conn.records,})
+                    
+                except Exception as e:
+                    print ("Process terminate : {}".format(e))
+                finally:
+                    if conn:
+                        conn.disconnect()
+            else:
+                break
+                        
+    def action_restart(self):
+        _logger.info("Machine Restart")
+        for info in self:
+            machine_ip = info.name
+            zk_port = info.port_no
+            timeout = 15
+            try:
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+            except NameError:
+                raise UserError(_("Please install it with 'pip3 install pyzk'."))
+            try:
+                conn = zk.connect()
+                print ("Restart Device...")
+                conn.restart()
+            except Exception as e:
+                print ("Process terminate : {}".format(e))
+                
+    def action_poweroff(self):
+        _logger.info("Machine Power Off")
+        for info in self:
+            machine_ip = info.name
+            zk_port = info.port_no
+            timeout = 15
+            try:
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+            except NameError:
+                raise UserError(_("Please install it with 'pip3 install pyzk'."))
+            try:
+                conn = zk.connect()
+                print ("Shutdown the device...")
+                conn.poweroff()
+            except Exception as e:
+                print ("Process terminate : {}".format(e))     
+                
+    def action_sync_time(self):
+        _logger.info("Machine Sync Time")
+        for info in self:
+            machine_ip = info.name
+            zk_port = info.port_no
+            timeout = 15
+            try:
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+            except NameError:
+                raise UserError(_("Please install it with 'pip3 install pyzk'."))
+            try:
+                conn = zk.connect()
+                todatetime = datetime.now() + timedelta(hours=6)
+                print ("Syncing time...")
+                conn.set_time(todatetime)
+            except Exception as e:
+                print ("Process terminate : {}".format(e))
+            finally:
+                if conn:
+                    conn.disconnect()
+                
+    def action_test_voice(self):
+        _logger.info("Machine Power Off")
+        for info in self:
+            machine_ip = info.name
+            zk_port = info.port_no
+            timeout = 15
+            try:
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+            except NameError:
+                raise UserError(_("Please install it with 'pip3 install pyzk'."))
+            try:
+                conn = zk.connect()
+                for i in range(0, 55):
+                    print ("Voice number #%d" % i)
+                    conn.test_voice(i)
+                    time.sleep(3)
+            except Exception as e:
+                print ("Process terminate : {}".format(e))
+            finally:
+                if conn:
+                    conn.disconnect()  
+        
+    def action_set_user(self, uids, names, user_ids, cards):
+        _logger.info("Create Machine Users")
+        machines = self.env['zk.machine'].search([])
+        # for machine in machines :
+        #     machine.action_get_device_info()
+        for info in machines:
+            machine_ip = info.name
+            zk_port = info.port_no
+            timeout = 15
+            try:
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+            except NameError:
+                raise UserError(_("Please install it with 'pip3 install pyzk'."))
+            conn = zk.connect()
+            if conn:
+                try:
+                    conn.set_user(uid=uids, name=names, privilege=const.USER_DEFAULT, user_id=user_ids, card=cards)
+                except Exception as e:
+                    print ("Process terminate : {}".format(e))
+                finally:
+                    if conn:
+                        conn.disconnect()
+            else:
+                break                    

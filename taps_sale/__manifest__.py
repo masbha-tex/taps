@@ -27,7 +27,7 @@
         'views/sale.xml',
         'views/buyer_name.xml',
         'views/sale_overview.xml',
-        'views/mrp_productivity.xml',
+        #'views/mrp_productivity.xml',
         'views/sale_representative.xml',
         # 'views/bank.xml',
         'reports/report_action.xml',

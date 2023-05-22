@@ -6,6 +6,8 @@ class IncludeCateTypeInPT(models.Model):
     _inherit = 'product.template'
     categ_type = fields.Many2one('category.type', 'Category Type', check_company=True, change_default=True)
     
+    
+    generic_name = fields.Char(String="Generic Name")
     pur_description = fields.Selection([
         ('Auto Taffeta', 'Auto Taffeta'),
         ('Brass Wire', 'Brass Wire'),

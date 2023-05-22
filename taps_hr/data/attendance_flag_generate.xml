@@ -11,5 +11,5 @@
                                               (4, ref('hr_attendance.field_hr_attendance__check_out'))]"/>
         <field name="active" eval="True"/>
     </record>
-    </data>
+    </data>  
 </odoo>

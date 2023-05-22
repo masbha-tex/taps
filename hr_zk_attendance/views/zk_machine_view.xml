@@ -6,26 +6,86 @@
         <field name="arch" type="xml">
             <form string="Biometric Device">
                 <header>
-                    <button name="clear_attendance" type="object" string="Clear Data" class="oe_highlight"
-                                icon="fa-remove " confirm="Are you sure you want to do this?"/>
-                    <button name="download_attendance" type="object" string="Download Data" class="oe_highlight"
-                            icon="fa-download " confirm="Are you sure you want to do this?" />
+<!--                     <button name="clear_attendance" type="object" string="Clear Data" class="oe_highlight"
+                                icon="fa-remove " confirm="Are you sure you want to do this?"/> -->
+                    <button name="download_attendance" type="object" string="Download Data" class="oe_button_box"
+                            icon="fa-download " confirm="Are you sure you want to do this?" groups="hr_attendance.group_hr_attendance_user"/>
                 </header>
                 <sheet>
-                    <div class="oe_title">
-                        <label for="name" />
-                        <h1>
-                            <field name="name" placeholder="Machine IP"/>
-                        </h1>
-                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button id="status" class="oe_stat_button" help="List of Status for this machine in Odoo" >
+                            <div role="img" class="fa fa-fw fa-circle text-success o_button_icon" attrs="{'invisible': [('device_name', '=', False)]}" aria-label="Available" title="Available"/>
+                            <div role="img" class="fa fa-fw fa-circle text-danger o_button_icon" attrs="{'invisible': [('device_name', '!=', False)]}" aria-label="Not available" title="Not available"/>
+                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
+                                <span class="o_stat_text">
+                                    Connected
+                                </span>
+                            </div>
+                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '!=', False)]}" >
+                                <span class="o_stat_text">
+                                    Not Connected
+                                </span>
+                            </div>
+                        </button>                           
+                        <button name="action_get_device_info" type="object" class="oe_stat_button" help="Refresh Machine" icon="fa-refresh" groups="hr_attendance.group_hr_attendance_user">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Refresh
+                                </span>
+                            </div>
+                        </button>                        
+                        <button id="device_user_count" class="oe_stat_button" help="List of machine users that have been downloaded for this machine in Odoo" icon="fa-users">
+                            <field name="device_user_count" widget="statinfo" string="Users"/>
+                        </button>
+
+                        <button id="device_finger_count" class="oe_stat_button" icon="fa-address-card" help="Show fingerprint templates of this employee">
+                            <field name="device_finger_count" widget="statinfo" string="Fingers"/>
+                        </button>
+                        <button id="att_log_count" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the machine">
+                            <field name="att_log_count" widget="statinfo" string="Logs"/>
+                        </button>
+                        <button name="action_test_voice" type="object" class="oe_stat_button" icon="fa-play-circle" help="List of Voice that has been play with this machine's">
+                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
+                                <span class="o_stat_text">
+                                    Play Voice
+                                </span>
+                            </div>
+                        </button>                        
+                        <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-gears" help="Sync time to the machine" confirm="Are you sure you want to Sync time this machine?" groups="hr_attendance.group_hr_attendance_user">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Sync Time
+                                </span>
+                            </div>
+                        </button>                         
+                        <button name="action_restart" type="object" class="oe_stat_button" icon="fa-power-off" help="Restart to the machine" confirm="Are you sure you want to restart this machine?" groups="hr_attendance.group_hr_attendance_user">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Restart
+                                </span>
+                            </div>
+                        </button>                        
+                    </div>                    
+
                     <group>
                         <group>
-                            <field name="user_status"/>
-                            <field name="port_no"/>
+                            <field name="name" groups="hr_attendance.group_hr_attendance_user"/>
+                            <field name="port_no" groups="hr_attendance.group_hr_attendance_user"/>
+                            <field name="users_id" groups="hr_attendance.group_hr_attendance_user"/>
                             <field name="address_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="get_time" string="Last Connected by"/>
                         </group>
                         <group>
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="device_name"/>
+                            <field name="local_ip" groups="hr_attendance.group_hr_attendance_user"/>                            
+                            <field name="serialnumber" groups="hr_attendance.group_hr_attendance_user"/>
+                            <field name="mac" groups="hr_attendance.group_hr_attendance_user"/>
+<!--                             <field name="platform"/> -->
+                            <field name="firmwareversion" groups="hr_attendance.group_hr_attendance_user"/>
+                            <field name="fingerprint" groups="hr_attendance.group_hr_attendance_user"/>
+
+                            
                         </group>
                     </group>
                 </sheet>
@@ -38,16 +98,25 @@
         <field name="model">zk.machine</field>
         <field name="arch" type="xml">
             <tree string="Biometric Machine">
-                <field name="name"/>
-                <field name="port_no"/>
-                <field name="address_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
+                <field name="device_name"/>
+                <field name="name" groups="hr_attendance.group_hr_attendance_user"/>
+                <field name="local_ip" groups="hr_attendance.group_hr_attendance_user"/>
+                <field name="port_no" groups="hr_attendance.group_hr_attendance_user"/>
+                <field name="serialnumber" groups="hr_attendance.group_hr_attendance_user"/>
+                <field name="mac" groups="hr_attendance.group_hr_attendance_user"/>
+                <field name="platform" groups="hr_attendance.group_hr_attendance_user"/>
+                <field name="firmwareversion" groups="hr_attendance.group_hr_attendance_user"/>
+                <field name="fingerprint" groups="hr_attendance.group_hr_attendance_user"/>
+                <field name="address_id"/>
+                <field name="get_time" string="Last Connected by"/>
+                
             </tree>
         </field>
     </record>
 
     <record id="zk_machine_action" model="ir.actions.act_window">
-        <field name="name">Attendances</field>
+        <field name="name">Attendances Device</field>
         <field name="res_model">zk.machine</field>
         <field name="view_mode">tree,form</field>
     </record>

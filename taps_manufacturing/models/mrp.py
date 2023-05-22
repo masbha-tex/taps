@@ -24,6 +24,7 @@ class MrpProduction(models.Model):
     
     oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=True)
     sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', store=True, readonly=True)
+    #workcenter_id = fields.Many2one('mrp.workcenter', string='Work Center', store=True, readonly=True)
     
     def _create_workorder(self):
         for production in self:

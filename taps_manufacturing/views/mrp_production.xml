@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <record id="mrp_custom_tree" model="ir.ui.view">
+          <field name="name">mrp.custom.tree</field>
+          <field name="model">mrp.production</field>
+          <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+          <field name="arch" type="xml"> 
+              <xpath expr="//tree[1]/field[@name='name']" position="after">
+                  <field name="oa_id"/>
+              </xpath>
+          </field>
+      </record>
+  </data>
+</odoo>

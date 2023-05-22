@@ -348,6 +348,9 @@ class SalarySheet(models.TransientModel):
                 format_date(self.env, edata.employee_id.joining_date),
                 edata.employee_id.bank_account_id.acc_number,
                 round(edata.total),
+                0,
+                
+                
             ]
             report_data.append(emp_data)     
         
@@ -377,12 +380,38 @@ class SalarySheet(models.TransientModel):
         worksheet.merge_range(4, 0, 9, 0, '', merge_format)
         
         worksheet.write(4, 0, 'SL.', merge_format)
-        worksheet.write(4, 1, 'Emp ID', column_product_style)        
+        worksheet.write(4, 1, 'Emp ID', column_product_style) 
         worksheet.write(4, 2, 'Name', column_product_style)
         worksheet.write(4, 3, 'Joining Date', column_product_style)
         worksheet.write(4, 4, 'Account Number', column_product_style)
         worksheet.write(4, 5, 'Net Payable', column_product_style)
         worksheet.write(4, 5, 'Net Payable', column_product_style)
+        worksheet.write(4, 6, 'Section', column_product_style) 
+        worksheet.write(4, 7, 'Grade', column_product_style) 
+        worksheet.write(4, 8, 'Worked Days', column_product_style) 
+        worksheet.write(4, 9, 'Gross A. Days', column_product_style) 
+        worksheet.write(4, 10, 'Basic A. Days', column_product_style) 
+        worksheet.write(4, 11, 'Fridays', column_product_style) 
+        worksheet.write(4, 12, 'Holidays', column_product_style) 
+        worksheet.write(4, 13, 'CO', column_product_style) 
+        worksheet.write(4, 14, 'Aj', column_product_style) 
+        worksheet.write(4, 15, 'Late Days', column_product_style) 
+        worksheet.write(4, 16, 'CL', column_product_style) 
+        worksheet.write(4, 17, 'SL', column_product_style) 
+        worksheet.write(4, 18, 'EL', column_product_style) 
+        worksheet.write(4, 19, 'ML', column_product_style) 
+        worksheet.write(4, 20, 'LW', column_product_style) 
+        worksheet.write(4, 21, 'Payable Days', column_product_style) 
+        worksheet.write(4, 22, 'Gross Salary', column_product_style) 
+        worksheet.write(4, 23, 'Earnings Details', column_product_style) 
+        worksheet.write(4, 24, 'Salary Breakup', column_product_style) 
+        worksheet.write(4, 25, 'Over Time', column_product_style) 
+        worksheet.write(4, 26, 'Basic', column_product_style) 
+        worksheet.write(4, 27, 'House Rent', column_product_style) 
+        worksheet.write(4, 28, 'Medical', column_product_style) 
+        worksheet.write(4, 29, 'HRS', column_product_style) 
+        worksheet.write(4, 30, 'Rate', column_product_style) 
+        worksheet.write(4, 31, 'Amount', column_product_style) 
         col = 0
         row=5
         

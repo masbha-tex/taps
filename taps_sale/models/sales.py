@@ -1189,27 +1189,25 @@ class SaleOrderLine(models.Model):
         result = super(SaleOrderLine, self).write(values)
         return result
 
-    @api.depends('product_uom_qty')
-    def compute_shadewise_tape(self):#self,order_id
-        #all_tape = self.env['sale.order.line'].search([('order_id', '=', order_id)])
-        for line in self:
-            #pro = self.env['product.product'].search([('id','=',values.get('product_id'))])
-            all_line = self.env['sale.order.line'].search([('order_id', '=', line.order_id.id)])#
-            #,('product_id', '=', line.product_id),('finish', '=', line.finish),('shade', '=', line.shade)
-             
-            # filtered_shade = [x for x in unique_shade if x[0] == products.product_id.product_tmpl_id.id and x[1] == products.shade]
-            all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and sol.finish == line.finish and sol.shade == line.shade)
-            #line.shadewise_tape = sum(all_line.mapped('tape_con'))
-            #raise UserError((sum(all_line.mapped('tape_con'))))
-            all_tpe.write({'shadewise_tape':sum(all_tpe.mapped('tape_con'))})
-        
-#         pro = self.env['product.product'].search([('id','=',values.get('product_id'))])
-#         all_tape = self.filtered(lambda sol: sol.order_id == values.get('order_id') and sol.product_id.product_tmpl_id.id == pro.product_tmpl_id.id and sol.shade == values.get('shade'))
-#         #con = sum(all_tape.mapped('tape_con'))
-#         #self.shadewise_tape = sum(all_tape.mapped('tape_con'))
-#         #all_tape.update({'shadewise_tape':sum(all_tape.mapped('tape_con'))})
-#         #val['shadewise_tape'] = sum(all_tape.mapped('tape_con'))
-#         values.update(shadewise_tape=sum(all_tape.mapped('tape_con')))
+    def unlink(self):
+        if self._check_line_unlink():
+            raise UserError(_('You can not remove an order line once the sales order is confirmed.\nYou should rather set the quantity to 0.'))
+        else:
+            all_line = self.env['sale.order.line'].search([('order_id', '=', self.mapped('order_id').id),('id', 'not in', self.mapped('id'))])
+            if all_line:
+                for line in all_line:
+                    all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and sol.finish == line.finish and sol.shade == line.shade)
+                    all_tpe.update({'shadewise_tape':sum(all_tpe.mapped('tape_con'))})
+        return super(SaleOrderLine, self).unlink()
+    
+    
+    @api.depends('product_uom_qty','finish','shade')
+    def compute_shadewise_tape(self):
+        all_line = self.env['sale.order.line'].search([('order_id', '=', self.mapped('order_id').id)])
+        if all_line:
+            for line in all_line:
+                all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and sol.finish == line.finish and sol.shade == line.shade)
+                all_tpe.update({'shadewise_tape':sum(all_tpe.mapped('tape_con'))})
         
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):

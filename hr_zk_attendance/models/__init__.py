@@ -22,4 +22,9 @@
 from . import zk_machine
 from . import machine_analysis
 from . import zklib
+from . base import ZK
+
+VERSION = (0, 9, 1)
+
+__all__ = ['ZK']
 

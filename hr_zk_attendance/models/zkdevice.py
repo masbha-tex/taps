@@ -80,3 +80,22 @@ def zkdisabledevice(self):
         return self.data_recv[8:]
     except:
         return False
+    
+# def get_network_params(self):
+#     """
+#     get network params
+#     """
+#     ip = self.__address[0]
+#     mask = b''
+#     gate = b''
+#     cmd_response = self.__send_command(const.CMD_OPTIONS_RRQ, b'IPAddress\x00', 1024)
+#     if cmd_response.get('status'):
+#         ip = (self.__data.split(b'=', 1)[-1].split(b'\x00')[0])
+#     cmd_response = self.__send_command(const.CMD_OPTIONS_RRQ, b'NetMask\x00', 1024)
+#     if cmd_response.get('status'):
+#         mask = (self.__data.split(b'=', 1)[-1].split(b'\x00')[0])
+#     cmd_response = self.__send_command(const.CMD_OPTIONS_RRQ, b'GATEIPAddress\x00', 1024)
+#     if cmd_response.get('status'):
+#         gate = (self.__data.split(b'=', 1)[-1].split(b'\x00')[0])
+#     return {'ip': ip.decode(), 'mask': mask.decode(), 'gateway': gate.decode()}
+

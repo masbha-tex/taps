@@ -9,6 +9,9 @@
                <xpath expr="//field[@name='categ_id']" position="before">
                     <field name="categ_type" string="Category Type"/>
                </xpath>
+                <xpath expr="//field[@name='barcode']" position="after">
+                    <field name="generic_name" string="Generic Name"/>
+               </xpath>
             </field>
         </record>
         

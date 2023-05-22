@@ -91,8 +91,14 @@ class HrEmployeePrivate(models.Model):
             ])._subscribe_users()
         return res
     
-    def _machine_user_registration(self):
-        machines = self.env['zk.machine'].search([])
+    @api.model
+    def _machine_user_registration(self, uids, names, user_ids, cards):
+        # machines = self.env['zk.machine'].search([])
+        # for record in machines:
+        #     record.action_set_user(uids,names,user_ids,cards)
+        machines = self.env['zk.machine']
+        # for record in machines:
+        machines.action_set_user(uids,names,user_ids,cards)
     
     def _action_work_anniversery_wish_email(self):
         template_id = self.env.ref('taps_hr.work_anniversey_wish_email_template', raise_if_not_found=False).id
