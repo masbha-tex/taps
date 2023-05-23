@@ -11,6 +11,7 @@
 				<xpath expr="//field[@name='partner_id']" position="before">
 					<field name="sales_type" attrs="{'readonly':[('state','=','sale')]}"/>
                     <field name="pi_type" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]],'readonly':[('state','=','sale')] }"/>
+                    <field name="cause_of_replacement" attrs="{'invisible': ['|',['pi_type','=','regular'],['pi_type','=','block']]}"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_invoice_id']" position="attributes">
 					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]]}</attribute>

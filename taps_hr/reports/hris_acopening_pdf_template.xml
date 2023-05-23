@@ -23,7 +23,7 @@
                         <br/>
                         <br/>
                         
-                        <p>Date: <span t-esc="datas[2]"/>
+                        <p>Date: <span t-esc="datetime.datetime.now().strftime('%d %b, %Y')"/>
                             <br/>
 
                         </p>
@@ -89,7 +89,17 @@ His/Her particular information are given below:
                               </tr> -->
                               <tr style="border: 1px solid black;">
                                 <th colspan="2" style="border: 1px solid black;">Residence Address</th>
-                                <td style="border: 1px solid black;"><span t-esc="employee.address_home_id.street"/></td>
+                                <td style="border: 1px solid black;"><span><t t-esc="employee.address_home_id.street"/>
+                                <t t-if="employee.address_home_id.street2">
+                                ,<t t-esc="employee.address_home_id.street2"/>
+                                </t>
+                                <t t-if="employee.address_home_id.state_id.name">
+                                ,<t t-esc="employee.address_home_id.state_id.name"/>
+                                </t>
+                                <t t-if="employee.address_home_id.country_id.name">
+                                ,<t t-esc="employee.address_home_id.country_id.name"/>
+                                </t>
+                                </span></td>
                                 <td colspan="2" style="border: 1px solid black;"/>
                               </tr>
                               <tr style="border: 1px solid black;">

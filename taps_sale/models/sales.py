@@ -82,6 +82,7 @@ class SaleOrder(models.Model):
             ('replacement', 'Replacement'),],
             string='Type', default='regular')
     cause_of_revision = fields.Text(string='Cuase')
+    cause_of_replacement = fields.Text(string='Replacement Cuase')
     is_hold = fields.Boolean('Hold', tracking=True)
     price_tracking = fields.Text('Price Tracker')
     avg_price = fields.Float(string='Average Price', compute="_compute_avg_price")

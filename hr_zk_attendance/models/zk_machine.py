@@ -12,7 +12,6 @@ from struct import unpack
 from odoo import api, fields, models
 from odoo import _
 from odoo.exceptions import UserError, ValidationError
-from .exception import ZKErrorConnection, ZKErrorResponse, ZKNetworkError
 from odoo.tools import format_datetime
 from datetime import timedelta
 _logger = logging.getLogger(__name__)
@@ -20,15 +19,6 @@ try:
     from zk import ZK, const
 except ImportError:
     _logger.error("Please Install pyzk library.")
-
-_logger = logging.getLogger(__name__)
-import os
-import sys
-from .base import *
-
-CWD = os.path.dirname(os.path.realpath(__file__))
-ROOT_DIR = os.path.dirname(CWD)
-sys.path.append(ROOT_DIR)
 
 
 class HrAttendance(models.Model):
@@ -305,7 +295,7 @@ class ZkMachine(models.Model):
             machine.action_get_device_info()
             
     def action_get_device_info(self):
-        _logger.info("++++++++++++Cron Executed Refresh++++++++++++++++++++++")
+        _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
         for info in self:
             machine_ip = info.name
             zk_port = info.port_no
@@ -331,6 +321,7 @@ class ZkMachine(models.Model):
                                 'device_user_count':("%s/%s" % (conn.users, conn.users_cap)),
                                 'device_finger_count':("%s/%s" % (conn.fingers, conn.fingers_cap)),
                                 'att_log_count':conn.records,})
+                    # conn.set_user(uid=1239, name='John Doe', privilege=const.USER_DEFAULT, password='12345678', user_id='01608')
                     
                 except Exception as e:
                     print ("Process terminate : {}".format(e))
@@ -418,26 +409,24 @@ class ZkMachine(models.Model):
                     conn.disconnect()  
         
     def action_set_user(self, uids, names, user_ids, cards):
-        _logger.info("Create Machine Users")
         machines = self.env['zk.machine'].search([])
-        # for machine in machines :
-        #     machine.action_get_device_info()
         for info in machines:
             machine_ip = info.name
             zk_port = info.port_no
             timeout = 15
             try:
-                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True)
             except NameError:
                 raise UserError(_("Please install it with 'pip3 install pyzk'."))
-            conn = zk.connect()
+            conn = self.device_connect(zk)
+            # raise UserError((conn))
             if conn:
                 try:
+                    conn = zk.connect()
+                    # raise UserError((conn))
                     conn.set_user(uid=uids, name=names, privilege=const.USER_DEFAULT, user_id=user_ids, card=cards)
                 except Exception as e:
                     print ("Process terminate : {}".format(e))
                 finally:
                     if conn:
-                        conn.disconnect()
-            else:
-                break                    
+                        conn.disconnect()                  
