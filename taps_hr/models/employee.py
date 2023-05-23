@@ -56,9 +56,11 @@ class HrEmployeePrivate(models.Model):
     
     @api.model
     def create(self, vals):
+        if not vals.get('emp_id'):
+            vals['emp_id'] = vals['registration_number'] = vals['barcode'] = vals['pin'] = self.env['ir.sequence'].next_by_code('employee.id')
         if vals.get('user_id'):
             user = self.env['res.users'].browse(vals['user_id'])
-            vals.update(self._sync_user(user, vals.get('image_1920') == self._default_image()))
+            # vals.update(self._sync_user(user, vals.get('image_1920') == self._default_image()))
             vals['name'] = vals.get('name', user.name)
         employee = super(HrEmployeePrivate, self).create(vals)
         url = '/web#%s' % url_encode({
@@ -72,6 +74,9 @@ class HrEmployeePrivate(models.Model):
             self.env['mail.channel'].sudo().search([
                 ('subscription_department_ids', 'in', employee.department_id.id)
             ])._subscribe_users()
+        
+        if vals.get('rfid'):
+            self._machine_user_registration(False, vals.get('name'), vals.get('barcode'), vals.get('rfid'))
         return employee
 
     def write(self, vals):
@@ -79,9 +84,9 @@ class HrEmployeePrivate(models.Model):
             account_id = vals.get('bank_account_id') or self.bank_account_id.id
             if account_id:
                 self.env['res.partner.bank'].browse(account_id).partner_id = vals['address_home_id']
-        if vals.get('user_id'):
-            # Update the profile pictures with user, except if provided 
-            vals.update(self._sync_user(self.env['res.users'].browse(vals['user_id']), bool(vals.get('image_1920'))))
+        # if vals.get('user_id'):
+        #     # Update the profile pictures with user, except if provided 
+        #     vals.update(self._sync_user(self.env['res.users'].browse(vals['user_id']), bool(vals.get('image_1920'))))
         res = super(HrEmployeePrivate, self).write(vals)
         if vals.get('department_id') or vals.get('user_id'):
             department_id = vals['department_id'] if vals.get('department_id') else self[:1].department_id.id
@@ -89,16 +94,20 @@ class HrEmployeePrivate(models.Model):
             self.env['mail.channel'].sudo().search([
                 ('subscription_department_ids', 'in', department_id)
             ])._subscribe_users()
+        
+        
+        if self.rfid and self.active:
+            self._machine_user_registration(False, self.name, self.barcode, self.rfid)
+        if self.active is False:
+            self._machine_user_registration(True, self.name, self.barcode, self.rfid)
         return res
     
     @api.model
-    def _machine_user_registration(self, uids, names, user_ids, cards):
-        # machines = self.env['zk.machine'].search([])
-        # for record in machines:
-        #     record.action_set_user(uids,names,user_ids,cards)
-        machines = self.env['zk.machine']
-        # for record in machines:
-        machines.action_set_user(uids,names,user_ids,cards)
+    def _machine_user_registration(self, is_delete, names, user_ids, cards):
+        machines = self.env['zk.machine'].search([])
+        for record in machines:
+            record.action_set_user(record.id,is_delete,names,user_ids,cards)
+
     
     def _action_work_anniversery_wish_email(self):
         template_id = self.env.ref('taps_hr.work_anniversey_wish_email_template', raise_if_not_found=False).id

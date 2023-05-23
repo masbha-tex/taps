@@ -12,6 +12,7 @@ from struct import unpack
 from odoo import api, fields, models
 from odoo import _
 from odoo.exceptions import UserError, ValidationError
+from .exception import ZKErrorConnection, ZKErrorResponse, ZKNetworkError
 from odoo.tools import format_datetime
 from datetime import timedelta
 _logger = logging.getLogger(__name__)
@@ -49,9 +50,6 @@ class ZkMachine(models.Model):
     device_user_count = fields.Char(string='User Count', store=True, copy=True, readonly=True)
     device_finger_count = fields.Char(string='Finger Count', store=True, copy=True,readonly=True)
     att_log_count = fields.Integer(string='Attendance Logs', store=True, copy=True,readonly=True)
-      
-    
-    
 
     def device_connect(self, zk):
         try:
@@ -59,8 +57,6 @@ class ZkMachine(models.Model):
             return conn
         except:
             return False
-        
-
         
     @api.model
     def cron_clear(self):
@@ -304,7 +300,7 @@ class ZkMachine(models.Model):
                 zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
             except NameError:
                 raise UserError(_("Please install it with 'pip3 install pyzk'."))
-            conn = zk.connect()          
+            conn = self.device_connect(zk)        
             if conn:
                 try:
                     
@@ -321,7 +317,6 @@ class ZkMachine(models.Model):
                                 'device_user_count':("%s/%s" % (conn.users, conn.users_cap)),
                                 'device_finger_count':("%s/%s" % (conn.fingers, conn.fingers_cap)),
                                 'att_log_count':conn.records,})
-                    # conn.set_user(uid=1239, name='John Doe', privilege=const.USER_DEFAULT, password='12345678', user_id='01608')
                     
                 except Exception as e:
                     print ("Process terminate : {}".format(e))
@@ -329,6 +324,17 @@ class ZkMachine(models.Model):
                     if conn:
                         conn.disconnect()
             else:
+                info.write({'local_ip':False,
+                            'device_name':False,
+                            'serialnumber':False,
+                            'platform':False,
+                            'mac':False,
+                            'firmwareversion':False,
+                            'get_time':False,
+                            'fingerprint':False,
+                            'device_user_count':False,
+                            'device_finger_count':False,
+                            'att_log_count':False,})
                 break
                         
     def action_restart(self):
@@ -408,25 +414,40 @@ class ZkMachine(models.Model):
                 if conn:
                     conn.disconnect()  
         
-    def action_set_user(self, uids, names, user_ids, cards):
-        machines = self.env['zk.machine'].search([])
-        for info in machines:
-            machine_ip = info.name
-            zk_port = info.port_no
-            timeout = 15
+    def action_set_user(self, m_id, is_delete, names, user_ids, cards): 
+        info = self.env['zk.machine'].search([('id','=',m_id)])
+        machine_ip = info.name
+        zk_port = info.port_no
+        timeout = 15
+        try:
+            zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True)
+        except NameError:
+            raise UserError(_("Please install it with 'pip3 install pyzk'."))
+        conn = self.device_connect(zk)
+        #raise UserError((conn))
+        if conn:
+            uids = False
+            users_ = conn.get_users()
+            for u in users_:
+                if u.user_id == user_ids:
+                    uids = u.uid
+                    break
+
             try:
-                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True)
-            except NameError:
-                raise UserError(_("Please install it with 'pip3 install pyzk'."))
-            conn = self.device_connect(zk)
-            # raise UserError((conn))
-            if conn:
-                try:
-                    conn = zk.connect()
-                    # raise UserError((conn))
-                    conn.set_user(uid=uids, name=names, privilege=const.USER_DEFAULT, user_id=user_ids, card=cards)
-                except Exception as e:
-                    print ("Process terminate : {}".format(e))
-                finally:
-                    if conn:
-                        conn.disconnect()                  
+                conn.get_users()
+                if uids:
+                    if is_delete:
+                        conn.delete_user(uid=uids,user_id=user_ids)
+                    else:
+                        conn.set_user(uid=uids, name = names, privilege=const.USER_DEFAULT, password='', user_id=user_ids, card=cards)
+                else:
+                    if is_delete is False:
+                        conn.set_user(uid=None, name = names, privilege=const.USER_DEFAULT, password='', user_id=user_ids, card=cards)
+            except Exception as e:
+                print ("Process terminate : {}".format(e))
+            finally:
+                if conn:
+                    conn.disconnect()
+        else:
+            raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))
+            

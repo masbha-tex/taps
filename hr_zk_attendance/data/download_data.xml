@@ -20,13 +20,4 @@
 		<field name="state">code</field>
 		<field name="code">model.cron_refresh()</field>
 	</record>
-    <record id="machine_create_user" model="base.automation">
-        <field name="name">Create User in Device</field>
-        <field name="model_id" ref="model_hr_employee"/>
-        <field name="state">code</field>
-        <field name="code">model._machine_user_registration(record.user_id,record.name,record.emp_id,record.rfid)</field>
-        <field name="trigger">on_create_or_write</field>
-        <field name="trigger_field_ids" eval="[(4, ref('taps_hr.field_hr_employee__rfid'))]"/>
-        <field name="active" eval="False"/>
-    </record>    
 </odoo>

@@ -13,7 +13,7 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button id="status" class="oe_stat_button" help="List of Status for this machine in Odoo" >
+                        <button id="status" class="oe_stat_button" help="List of Status for this machine in Odoo" string="Status">
                             <div role="img" class="fa fa-fw fa-circle text-success o_button_icon" attrs="{'invisible': [('device_name', '=', False)]}" aria-label="Available" title="Available"/>
                             <div role="img" class="fa fa-fw fa-circle text-danger o_button_icon" attrs="{'invisible': [('device_name', '!=', False)]}" aria-label="Not available" title="Not available"/>
                             <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
@@ -27,38 +27,38 @@
                                 </span>
                             </div>
                         </button>                           
-                        <button name="action_get_device_info" type="object" class="oe_stat_button" help="Refresh Machine" icon="fa-refresh" groups="hr_attendance.group_hr_attendance_user">
+                        <button name="action_get_device_info" type="object" class="oe_stat_button" help="Refresh Machine" icon="fa-refresh" groups="hr_attendance.group_hr_attendance_user" string="Refresh">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Refresh
                                 </span>
                             </div>
                         </button>                        
-                        <button id="device_user_count" class="oe_stat_button" help="List of machine users that have been downloaded for this machine in Odoo" icon="fa-users">
+                        <button id="device_user_count" class="oe_stat_button" help="List of machine users that have been downloaded for this machine in Odoo" icon="fa-users" string="User's Count">
                             <field name="device_user_count" widget="statinfo" string="Users"/>
                         </button>
 
-                        <button id="device_finger_count" class="oe_stat_button" icon="fa-address-card" help="Show fingerprint templates of this employee">
+                        <button id="device_finger_count" class="oe_stat_button" icon="fa-address-card" help="Show fingerprint templates of this employee" string="Finger's Count">
                             <field name="device_finger_count" widget="statinfo" string="Fingers"/>
                         </button>
-                        <button id="att_log_count" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the machine">
+                        <button id="att_log_count" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the machine" string="Logs">
                             <field name="att_log_count" widget="statinfo" string="Logs"/>
                         </button>
-                        <button name="action_test_voice" type="object" class="oe_stat_button" icon="fa-play-circle" help="List of Voice that has been play with this machine's">
+                        <button name="action_test_voice" type="object" class="oe_stat_button" icon="fa-play-circle" help="List of Voice that has been play with this machine's" string="Play Voice">
                             <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
                                 <span class="o_stat_text">
                                     Play Voice
                                 </span>
                             </div>
                         </button>                        
-                        <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-gears" help="Sync time to the machine" confirm="Are you sure you want to Sync time this machine?" groups="hr_attendance.group_hr_attendance_user">
+                        <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-gears" help="Sync time to the machine" confirm="Are you sure you want to Sync time this machine?" groups="hr_attendance.group_hr_attendance_user" string="Sync Time">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Sync Time
                                 </span>
                             </div>
                         </button>                         
-                        <button name="action_restart" type="object" class="oe_stat_button" icon="fa-power-off" help="Restart to the machine" confirm="Are you sure you want to restart this machine?" groups="hr_attendance.group_hr_attendance_user">
+                        <button name="action_restart" type="object" class="oe_stat_button" icon="fa-power-off" help="Restart to the machine" confirm="Are you sure you want to restart this machine?" groups="hr_attendance.group_hr_attendance_user" string="Restart">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Restart

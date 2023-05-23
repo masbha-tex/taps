@@ -11,20 +11,6 @@
             <field name="number_increment">1</field>
             <field name="number_next_actual">1</field>
         </record>
-        <record id="employee_emp_id_generate" model="base.automation">
-            <field name="name">Employee: ID Generate</field>
-            <field name="model_id" ref="model_hr_employee"/>
-            <field name="state">code</field>
-            <field name="code">if not record.emp_id:
-                seq = env['ir.sequence'].next_by_code('employee.id')
-                record.write({'emp_id': seq})
-                record.write({'registration_number': seq})
-                record.write({'pin': seq})
-                record.write({'barcode': seq})</field>
-            <field name="trigger">on_create</field>
-            <field name="filter_domain">[["emp_id","=",False]]</field>
-            <field name="active" eval="True"/>
-        </record>
         <record id="employee_shift_generate" model="base.automation">
             <field name="name">Employee: First Shift Generate</field>
             <field name="model_id" ref="model_hr_employee"/>

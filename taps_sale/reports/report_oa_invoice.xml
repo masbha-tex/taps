@@ -19,9 +19,9 @@
 							ORDER ACCEPTANCE
 							</strong>
 					</h4>
-					<div class="mt32 mb32" >
+					<div class="mt32 mb32">
 						<div class="float-left">
-							<h2   style="font-size: 15px">
+							<h2 style="font-size: 15px">
 								<span>OA NO - TZBD - <t t-esc="o.name"/>
 								</span>
 								<t t-if="o.is_revised == True">
@@ -30,8 +30,8 @@
 								</t>
 							</h2>
 						</div>
-						<div  class="float-right">
-							<h2   style="font-size: 15px">
+						<div class="float-right">
+							<h2 style="font-size: 15px">
 								<span>PI NO - TZBD - <t t-esc="o.order_ref.pi_number"/>
 								</span>
 								<t t-if="o.order_ref.is_revised == True">
@@ -48,7 +48,6 @@
 					</div>
 					<br/>
 					<div class="row mt32" style="font-size:13px">
-						
 						<div class="col-3">
 							<div class="row mt32 mb32">
 								<div class="col-auto col-6">
@@ -74,106 +73,96 @@
 							</div>
 						</div>
 						<div class="col-7">
-						<div class="row mb32 mt32">
-							<div class="col-auto col-2">
-										<div>
-											<strong>SALESPERSON</strong>
-										</div>
-										<p>
-											<span t-esc="o.sale_representative.name"/>
-										</p>
-							</div>
-							<div class="col-auto col-3">
-										<div>
-											<strong>KIND ATTENTION</strong>
-										</div>
-										<p>
-											<span t-esc="o.kind_attention"/>
-										</p>
-							</div>
-							<div class="col-auto col-2">
-										<div>
-											<strong>BUYER NAME</strong>
-										</div>
-										<p>
-											<span t-esc="o.buyer_name.name"/>
-										</p>
-							</div>
-							<div class="col-auto col-2">
-							
-										<div>
-											<strong>PI DATE</strong>
-										</div>
-										<p>
-											<t t-if="o.pi_date">
-												<t t-esc="o.pi_date.strftime('%d-%m-%Y')"/>
-											</t>
-										</p>
-									
-							</div>
-							<div class="col-auto col-3">
-										<div>
-											<strong>OA DATE</strong>
-										</div>
-										<p>
-											<span t-esc="o.create_date.strftime('%d-%m-%Y')"/>
-										</p>
+							<div class="row mb32 mt32">
+								<div class="col-auto col-2">
+									<div>
+										<strong>SALESPERSON</strong>
 									</div>
-						
+									<p>
+										<span t-esc="o.sale_representative.name"/>
+									</p>
+								</div>
+								<div class="col-auto col-3">
+									<div>
+										<strong>KIND ATTENTION</strong>
+									</div>
+									<p>
+										<span t-esc="o.kind_attention"/>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<div>
+										<strong>BUYER NAME</strong>
+									</div>
+									<p>
+										<span t-esc="o.buyer_name.name"/>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<div>
+										<strong>PI DATE</strong>
+									</div>
+									<p>
+										<t t-if="o.pi_date">
+											<t t-esc="o.pi_date.strftime('%d-%m-%Y')"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-3">
+									<div>
+										<strong>OA DATE</strong>
+									</div>
+									<p>
+										<span t-esc="o.create_date.strftime('%d-%m-%Y')"/>
+									</p>
+								</div>
+							</div>
+							<br/>
+							<div class="row mt32">
+								<div class="col-auto col-2">
+									<p>
+										<strong>STYLE REF</strong>
+										<br/>
+										<t t-if="o.style_ref">
+											<t t-esc="o.style_ref"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-3">
+									<p>
+										<strong>PO NUMBER</strong>
+										<br/>
+										<t t-esc="o.po_no"/>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<p>
+										<strong>PO DATE</strong>
+										<br/>
+										<t t-if="o.po_date">
+											<t t-esc="o.po_date.strftime('%d-%m-%Y')"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<p>
+										<strong>SEASON</strong>
+										<br/>
+										<t t-if="o.season">
+											<t t-esc="o.season"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-3">
+									<div>
+										<strong>PAYMENT TERM</strong>
+									</div>
+									<p>
+										<t t-esc="o.payment_term_id.name"/>
+									</p>
+								</div>
+							</div>
 						</div>
-						<br/>
-						<div class="row mt32">
-						  
-						
-						<div class="col-auto col-2">
-										<p>
-											<strong>STYLE REF</strong>
-											<br/>
-											<t t-if="o.style_ref">
-												<t t-esc="o.style_ref"/>
-											</t>
-										</p>
-						</div>
-						<div class="col-auto col-3">
-										<p>
-											<strong>PO NUMBER</strong>
-											<br/>
-											<t t-esc="o.po_no"/>
-										</p>
-						</div>
-						<div class="col-auto col-2">
-										<p>
-											<strong>PO DATE</strong>
-											<br/>
-											<t t-if="o.po_date">
-												<t t-esc="o.po_date.strftime('%d-%m-%Y')"/>
-											</t>
-										</p>
-						</div>
-						<div class="col-auto col-2">
-										<p>
-											<strong>SEASON</strong>
-											<br/>
-											<t t-if="o.season">
-												<t t-esc="o.season"/>
-											</t>
-										</p>
-						</div>
-						<div class="col-auto col-3">
-										<div>
-											<strong>PAYMENT TERM</strong>
-										</div>
-										<p>
-											<t t-esc="o.payment_term_id.name"/>
-										</p>
-						</div>
-						
-						
-						
-						</div>
-						
-						</div>
-					
 						<div class="col-2">
 							<p>
 								<strong>REMARKS</strong>
@@ -181,7 +170,7 @@
 								<t t-if="isinstance(o.remarks, str)">
 									<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
 									<t t-foreach="string_to_output" t-as="string_line">
-								    <span t-esc="string_line"/>
+										<span t-esc="string_line"/>
 										<br/>
 									</t>
 								</t>
@@ -544,12 +533,12 @@
 														<td colspan="5" class="text-left" style="border-top: 1px solid black;">
 															<span style="font-size:12px;">
 																<t t-if="isinstance(line.finish, str)">
-									<t t-set="string_to_output" t-value="line.finish.split(',')"/>
-									<t t-foreach="string_to_output" t-as="string_line">
-								    <span t-esc="string_line"/>
-										<br/>
-									</t>
-								</t>
+																	<t t-set="string_to_output" t-value="line.finish.split(',')"/>
+																	<t t-foreach="string_to_output" t-as="string_line">
+																		<span t-esc="string_line"/>
+																		<br/>
+																	</t>
+																</t>
 																<t t-set="finish" t-value="line.finish"/>
 															</span>
 														</td>
@@ -570,16 +559,13 @@
 														<t t-if="shade != line.shade">
 															<td colspan="5" class="text-left" style="border-top: 1px solid black;">
 																<span style="font-size:12px;">
-																	
 																	<t t-if="isinstance(line.shade, str)">
-									<t t-set="string_to_output" t-value="line.shade.split('\n')"/>
-									<t t-foreach="string_to_output" t-as="string_line">
-								    <span t-esc="string_line"/>
-										<br/>
-									</t>
-								</t>
-																	
-																	
+																		<t t-set="string_to_output" t-value="line.shade.split('\n')"/>
+																		<t t-foreach="string_to_output" t-as="string_line">
+																			<span t-esc="string_line"/>
+																			<br/>
+																		</t>
+																	</t>
 																	<t t-set="shade" t-value="line.shade"/>
 																	<t t-set="finish_shade" t-value="line.finish"/>
 																</span>
@@ -591,12 +577,12 @@
 															<td colspan="5" class="text-left" style="border-top: 1px solid black;">
 																<span style="font-size:12px;">
 																	<t t-if="isinstance(line.shade, str)">
-									<t t-set="string_to_output" t-value="line.shade.split('\n')"/>
-									<t t-foreach="string_to_output" t-as="string_line">
-								    <span t-esc="string_line"/>
-										<br/>
-									</t>
-								</t>
+																		<t t-set="string_to_output" t-value="line.shade.split('\n')"/>
+																		<t t-foreach="string_to_output" t-as="string_line">
+																			<span t-esc="string_line"/>
+																			<br/>
+																		</t>
+																	</t>
 																	<t t-set="shade" t-value="line.shade"/>
 																	<t t-set="finish_shade" t-value="line.finish"/>
 																</span>
@@ -608,12 +594,12 @@
 															<td colspan="5" class="text-left" style="border-top: 1px solid black;">
 																<span style="font-size:12px;">
 																	<t t-if="isinstance(line.shade, str)">
-									<t t-set="string_to_output" t-value="line.shade.split('\n')"/>
-									<t t-foreach="string_to_output" t-as="string_line">
-								    <span t-esc="string_line"/>
-										<br/>
-									</t>
-								</t>
+																		<t t-set="string_to_output" t-value="line.shade.split('\n')"/>
+																		<t t-foreach="string_to_output" t-as="string_line">
+																			<span t-esc="string_line"/>
+																			<br/>
+																		</t>
+																	</t>
 																	<t t-set="shade" t-value="line.shade"/>
 																	<t t-set="finish_shade" t-value="line.finish"/>
 																</span>
@@ -857,10 +843,8 @@
 							</tbody>
 						</table>
 					</div>
-				
 					<div style="page-break-inside:avoid">
 						<div class="row" style="font-size:12px;page-break-inside:avoid;">
-							
 							<t t-if="o.cause_of_revision">
 								<div class="col-12">
 									<p>
@@ -877,7 +861,9 @@
 										<t t-if="isinstance(o.cause_of_revision, str)">
 											<t t-set="string_to_output" t-value="o.cause_of_revision.split('\n')"/>
 											<t t-foreach="string_to_output" t-as="string_line">
-												<span style="font-size:14px;color:red" t-esc="string_line"/>
+												<strong>
+													<span style="font-size:14px;" t-esc="string_line"/>
+												</strong>
 												<br/>
 											</t>
 										</t>
@@ -886,7 +872,24 @@
 							</t>
 						</div>
 						<br/>
-						
+						<div class="row" style="font-size:12px;page-break-inside:avoid;">
+							<div class="col-12">
+								<t t-if="o.cause_of_replacement">
+									<strong>REPLACEMENT CAUSE:</strong>
+									<br/>
+									<t t-if="isinstance(o.cause_of_replacement, str)">
+										<t t-set="string_to_output" t-value="o.cause_of_replacement.split('\n')"/>
+										<t t-foreach="string_to_output" t-as="string_line">
+											<strong>
+												<span style="font-size:14px;" t-esc="string_line"/>
+											</strong>
+											<br/>
+										</t>
+									</t>
+								</t>
+							</div>
+						</div>
+						<br/>
 						<div class="row  center" style="font-size:12px">
 							<div class="col-auto col-1 mw-50 mb-2">
 								<strong>__________</strong>
