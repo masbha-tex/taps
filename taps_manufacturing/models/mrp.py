@@ -25,30 +25,10 @@ class MrpProduction(models.Model):
     oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=True)
     sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', store=True, readonly=True)
     workcenter_id = fields.Many2one('mrp.workcenter', string='Work Center', store=True, readonly=True)
-    
-    #state = fields.Selection(selection_add=[('split', 'To approve')])
-    
-    # state = fields.Selection([
-    #     ('draft', 'Draft'),
-    #     ('confirmed', 'Confirmed'),
-    #     ('progress', 'In Progress'),
-    #     ('to_close', 'To Close'),
-    #     ('done', 'Done'),
-    #     ('cancel', 'Cancelled')], string='State',
-    #     compute='_compute_state', copy=False, index=True, readonly=True,
-    #     store=True, tracking=True,
-    #     help=" * Draft: The MO is not confirmed yet.\n"
-    #          " * Confirmed: The MO is confirmed, the stock rules and the reordering of the components are trigerred.\n"
-    #          " * In Progress: The production has started (on the MO or on the WO).\n"
-    #          " * To Close: The production is done, the MO has to be closed.\n"
-    #          " * Done: The MO is closed, the stock moves are posted. \n"
-    #          " * Cancelled: The MO has been cancelled, can't be confirmed anymore.")    
-    
-    # <button name="action_split" attrs="{'invisible': [('state', '!=', 'draft')]}" string="Split" type="object" class="oe_highlight"/>
-    
+
     
     def action_split(self):
-        a = ''
+        raise UserError(('ggrf'))
     
     def _create_workorder(self):
         for production in self:

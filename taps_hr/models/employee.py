@@ -53,6 +53,17 @@ class HrEmployeePrivate(models.Model):
     'emp_id', 'category_id', groups="hr.group_hr_user",
     string='Tags')
     
+    def _sync_user(self, user, employee_has_image=False):
+        vals = dict(
+            work_email=user.email,
+            user_id=user.id,
+        )
+        # if not employee_has_image:
+        #     vals['image_1920'] = user.image_1920
+        if user.tz:
+            vals['tz'] = user.tz
+        return vals
+ 
     
     @api.model
     def create(self, vals):

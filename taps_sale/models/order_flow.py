@@ -8,30 +8,30 @@ class OrderFlow(models.Model):
     _auto = False
     _description = "Sale Order Flow"
     
-    check_id = fields.Many2one('sale.order', string='Check Reference')
-    name = fields.Char(related='check_id.name',string='Sale Orde')
+    order_id = fields.Many2one('sale.order', string='Sale Orde')
+    #name = fields.Char(related='check_id.name',string='Sale Orde')
     # Pi_number = fields.Char(related='check_id.pi_number',string='Pi')
-    pi_type = fields.Selection(related='check_id.pi_type',string='Type')
-    sale_representative = fields.Many2one(related='check_id.sale_representative',string='Sales')
-    date_order = fields.Datetime(related='check_id.date_order',string='Date')
-    user_id = fields.Many2one(related='check_id.user_id',string='CSD')
-    pi_number = fields.Char(related='check_id.pi_number',string='PI Number')
-    pi_date = fields.Date(related='check_id.pi_date', string='PI Date')
-    # amount_total = fields.Monetary(related='check_id.amount_total', string='Order Value')
+    pi_type = fields.Selection(related='order_id.pi_type',string='Type')
+    sale_representative = fields.Many2one(related='order_id.sale_representative',string='Sales')
+    date_order = fields.Datetime(related='order_id.date_order',string='Date')
+    user_id = fields.Many2one(related='order_id.user_id',string='CSD')
+    pi_number = fields.Char(related='order_id.pi_number',string='PI Number')
+    pi_date = fields.Date(related='order_id.pi_date', string='PI Date')
+    # amount_total = fields.Monetary(related='order_id.amount_total', string='Order Value')
     currency_id = fields.Many2one("res.currency", string="Currency")
-    partner_id = fields.Many2one(related='check_id.partner_id', string='Customer Name')
-    buyer_name = fields.Many2one(related='check_id.buyer_name', string='Buyer')
-    style_ref = fields.Char(related='check_id.style_ref',string='Style')
-    season = fields.Char(related='check_id.season',string='Season')
-    po_no = fields.Char(related='check_id.po_no',string='PO No.')
-    payment_term_id = fields.Many2one(related='check_id.payment_term_id', string='Payment Term')
-    incoterm = fields.Many2one(related='check_id.incoterm', string='Shipment Term')
-    bank = fields.Many2one(related='check_id.bank', string='Advised Bank')
-    department = fields.Char(related='check_id.department',string='Department')
+    partner_id = fields.Many2one(related='order_id.partner_id', string='Customer Name')
+    buyer_name = fields.Many2one(related='order_id.buyer_name', string='Buyer')
+    style_ref = fields.Char(related='order_id.style_ref',string='Style')
+    season = fields.Char(related='order_id.season',string='Season')
+    po_no = fields.Char(related='order_id.po_no',string='PO No.')
+    payment_term_id = fields.Many2one(related='order_id.payment_term_id', string='Payment Term')
+    incoterm = fields.Many2one(related='order_id.incoterm', string='Shipment Term')
+    bank = fields.Many2one(related='order_id.bank', string='Advised Bank')
+    department = fields.Char(related='order_id.department',string='Department')
     product = fields.Char(string='Product')
     finish = fields.Char(string='Finish')
     slider = fields.Char(string='Slider')
-    oa_no = fields.Char(string='OA')
+    oa_no = fields.Many2one('sale.order', string='OA')
     so_qty = fields.Float(string='Order Quantity')
     so_value = fields.Monetary(string='Order Value')
     oa_qty = fields.Float(string='OA Quantity')
@@ -44,7 +44,7 @@ class OrderFlow(models.Model):
         
         query = """
         CREATE or REPLACE VIEW order_flow AS (
-        select row_number() OVER() AS id,check_id,name,pi_type,sale_representative,date_order,user_id,
+        select row_number() OVER() AS id,order_id,pi_type,sale_representative,date_order,user_id,
         pi_number,pi_date,currency_id,partner_id,buyer_name,style_ref,season,po_no,payment_term_id,
         incoterm,bank,department,product,finish,slider,oa_no,
         
@@ -59,14 +59,14 @@ class OrderFlow(models.Model):
         
         from
         (
-        select s.id as check_id,s.name,s.pi_type,s.sale_representative,s.date_order,s.user_id,s.pi_number,s.pi_date,
+        select s.id as order_id,s.pi_type,s.sale_representative,s.date_order,s.user_id,s.pi_number,s.pi_date,
         s.currency_id,s.partner_id,s.buyer_name,s.style_ref,
         s.season,s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
         
         pt.name as product,
         sol.finish,
         sol.slidercodesfg as slider,
-        oa.name as oa_no,
+        oa.id as oa_no,
         sol.product_uom_qty,
         sol.price_subtotal,
         
@@ -87,8 +87,8 @@ class OrderFlow(models.Model):
         left join sale_order as oa on oa.order_ref=s.id
         
         where s.state='sale' and s.sales_type='sale'
-        ) as all_so group by check_id,name,pi_type,sale_representative,date_order,user_id,
+        ) as all_so group by order_id,pi_type,sale_representative,date_order,user_id,
         pi_number,pi_date,currency_id,partner_id,buyer_name,style_ref,season,po_no,payment_term_id,
-        incoterm,bank,department,product,finish,slider,oa_no order by name,product,finish,slider,oa_no)
+        incoterm,bank,department,product,finish,slider,oa_no order by order_id,product,finish,slider,oa_no)
         """
         self.env.cr.execute(query)

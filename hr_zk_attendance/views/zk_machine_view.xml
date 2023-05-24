@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+   <record id="view_machine_filter" model="ir.ui.view">
+        <field name="name">zk.machine.search</field>
+        <field name="model">zk.machine</field>
+        <field name="arch" type="xml">
+            <search string="Attendances Device">
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <field name="local_ip" modifiers="{&quot;required&quot;: true}"/>
+                <field name="name" modifiers="{&quot;required&quot;: true}"/>
+                <searchpanel>
+                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1"/>
+                    <field name="address_id" icon="fa-users" enable_counters="1"/>
+                </searchpanel>
+            </search>
+         </field>
+    </record>    
     <record id="view_zk_machine_form" model="ir.ui.view">
         <field name="name">zk.machine.form</field>
         <field name="model">zk.machine</field>
@@ -13,9 +28,10 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button id="status" class="oe_stat_button" help="List of Status for this machine in Odoo" string="Status">
-                            <div role="img" class="fa fa-fw fa-circle text-success o_button_icon" attrs="{'invisible': [('device_name', '=', False)]}" aria-label="Available" title="Available"/>
-                            <div role="img" class="fa fa-fw fa-circle text-danger o_button_icon" attrs="{'invisible': [('device_name', '!=', False)]}" aria-label="Not available" title="Not available"/>
+                        <button id="status" class="oe_stat_button">
+                            <div role="img" class="fa fa-fw fa-circle text-success o_button_icon" attrs="{'invisible': [('device_name', '=', False)]}" aria-label="Connected" title="Connected"/>
+                            <div role="img" class="fa fa-fw fa-circle text-danger o_button_icon" attrs="{'invisible': [('device_name', '!=', False)]}" aria-label="Disconnected" title="Disconnected"/>
+                            <field name="active" invisible="1"/>
                             <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
                                 <span class="o_stat_text">
                                     Connected
@@ -23,50 +39,68 @@
                             </div>
                             <div class="o_stat_info" attrs="{'invisible': [('device_name', '!=', False)]}" >
                                 <span class="o_stat_text">
-                                    Not Connected
+                                    Disconnected
                                 </span>
                             </div>
                         </button>                           
-                        <button name="action_get_device_info" type="object" class="oe_stat_button" help="Refresh Machine" icon="fa-refresh" groups="hr_attendance.group_hr_attendance_user" string="Refresh">
+                        <button name="action_get_device_info" type="object" class="oe_stat_button" icon="fa-refresh" groups="hr_attendance.group_hr_attendance_user">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Refresh
                                 </span>
                             </div>
                         </button>                        
-                        <button id="device_user_count" class="oe_stat_button" help="List of machine users that have been downloaded for this machine in Odoo" icon="fa-users" string="User's Count">
+                        <button id="device_user_count" class="oe_stat_button" help="List of machine users that have been downloaded for this machine in Odoo" icon="fa-users">
                             <field name="device_user_count" widget="statinfo" string="Users"/>
                         </button>
 
-                        <button id="device_finger_count" class="oe_stat_button" icon="fa-address-card" help="Show fingerprint templates of this employee" string="Finger's Count">
+                        <button id="device_finger_count" class="oe_stat_button" icon="fa-address-card" help="Show fingerprint templates of this employee">
                             <field name="device_finger_count" widget="statinfo" string="Fingers"/>
                         </button>
-                        <button id="att_log_count" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the machine" string="Logs">
+                        <button id="att_log_count" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the machine">
                             <field name="att_log_count" widget="statinfo" string="Logs"/>
                         </button>
-                        <button name="action_test_voice" type="object" class="oe_stat_button" icon="fa-play-circle" help="List of Voice that has been play with this machine's" string="Play Voice">
-                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
+                        <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-play-circle" help="Test Voice to the machine" >
+                            <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Play Voice
                                 </span>
                             </div>
-                        </button>                        
-                        <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-gears" help="Sync time to the machine" confirm="Are you sure you want to Sync time this machine?" groups="hr_attendance.group_hr_attendance_user" string="Sync Time">
+                        </button>                          
+                        <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-gears" help="Sync time to the machine" confirm="Are you sure you want to Sync time this machine?" groups="hr_attendance.group_hr_attendance_manager">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Sync Time
                                 </span>
                             </div>
                         </button>                         
-                        <button name="action_restart" type="object" class="oe_stat_button" icon="fa-power-off" help="Restart to the machine" confirm="Are you sure you want to restart this machine?" groups="hr_attendance.group_hr_attendance_user" string="Restart">
+                        <button name="action_restart" type="object" class="oe_stat_button" icon="fa-power-off" help="Restart to the machine" confirm="Are you sure you want to restart this machine?" groups="hr_attendance.group_hr_attendance_manager">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Restart
                                 </span>
                             </div>
-                        </button>                        
-                    </div>                    
-
+                        </button>                          
+                    </div>
+                    <div class="oe_button_box" name="button_box" groups="hr_attendance.group_hr_attendance_manager">
+                      <button name="upload_machine_user" type="object" class="oe_stat_button" icon="fa-upload" help="Upload All Users to this machine" confirm="Are you sure you want to do this?" groups="hr_attendance.group_hr_attendance_user">
+                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
+                                <span class="o_stat_text">
+                                    Upload Users
+                                </span>
+                            </div>
+                        </button> 
+                        <button name="delete_machine_user" type="object" class="oe_stat_button" icon="fa-trash-o" help="Delete All Users to this machine" confirm="Are you sure you want to do this?" groups="hr_attendance.group_hr_attendance_manager">
+                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
+                                <span class="o_stat_text">
+                                    Delete Users
+                                </span>
+                            </div>
+                        </button>
+                    </div> 
+					<widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible':[('active','=',True)]}"/>
+                    <field name="image_1920" widget='image' class="oe_avatar" options='{"zoom": true, "preview_image":"image_1920"}'/>
+					<field name="active" invisible="1"/>
                     <group>
                         <group>
                             <field name="name" groups="hr_attendance.group_hr_attendance_user"/>
@@ -88,7 +122,27 @@
                             
                         </group>
                     </group>
+<!-- 						<notebook>
+							<page name="upload_user_to_machine" string="Upload User To Attendance Device">
+								<group>
+									<field name="ignore_unknown_code" invisible="1"/>
+								</group>
+								<field name="attendance_device_state_line_ids">
+									<tree name="attendance_device_state_line_ids" editable="bottom">
+										<field name="attendance_state_id"/>
+										<field name="code"/>
+										<field name="activity_id"/>
+										<field name="type"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>                    -->
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>                
             </form>
         </field>
     </record>
@@ -114,12 +168,78 @@
             </tree>
         </field>
     </record>
+ 
 
     <record id="zk_machine_action" model="ir.actions.act_window">
         <field name="name">Attendances Device</field>
         <field name="res_model">zk.machine</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'chat_icon': True}</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="view_machine_filter"/>
+        <field name="help" type="html">
+         <p class="o_view_nocontent_smiling_face">
+           Add a new Attendances Device
+         </p><p>
+           With just a quick glance on the Odoo Attendances Device screen, you
+           can easily find all the information you need for each Device;
+           Create User, Download Att Logs, Upload user data, User Count, etc.
+         </p>
+        </field>        
     </record>
+        <record id="hr_kanban_view_machine" model="ir.ui.view">
+           <field name="name">zk.machine.kanban</field>
+           <field name="model">zk.machine</field>
+           <field name="priority">10</field>
+           <field name="arch" type="xml">
+               <kanban class="o_hr_employee_kanban" js_class="hr_employee_kanban" sample="1">
+                   <field name="users_id"/>
+                   <templates>
+                       <t t-name="kanban-box">
+                       <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_hr_kanban_record">
+                           <field name="image_1920" widget="image" class="o_kanban_image_fill_left" options="{'background': True, 'preventClicks': false}"/>
+
+                            <div class="oe_kanban_details">
+                               <div class="o_kanban_record_top">
+                                   <div class="o_kanban_record_headings">
+                                       <strong class="o_kanban_record_title">                            
+                                            <div class="float-right">
+                                                <div role="img" class="fa fa-fw fa-circle text-success o_button_icon" attrs="{'invisible': [('device_name', '=', False)]}" aria-label="Connected" title="Connected"/>
+                                            </div>
+                                            <div class="float-right">
+                                                <div role="img" class="fa fa-fw fa-circle text-danger o_button_icon" attrs="{'invisible': [('device_name', '!=', False)]}" aria-label="Disconnected" title="Disconnected"/>
+                                            </div>
+                                           <h2 class="d-flex"><span t-if="record.device_name.raw_value" class="o_kanban_record_subtitle"><field name="device_name"/></span></h2>
+                                           
+                                            
+                                       </strong>
+                                       <field name="name"/>
+                                       <span t-if="record.local_ip.raw_value" class="o_kanban_record_subtitle"><field name="local_ip"/></span>
+                                       <span t-if="record.port_no.raw_value" class="o_kanban_record_subtitle"><field name="port_no"/></span>
+
+                                       <span t-if="record.device_user_count.raw_value" class="o_kanban_record_subtitle"><field name="device_user_count"/></span>
+                                       <span t-if="record.device_finger_count.raw_value" class="o_kanban_record_subtitle"><field name="device_finger_count"/></span>
+<!--                                            <span t-if="record.att_log_count.raw_value" class="o_kanban_record_subtitle"><field name="att_log_count"/></span> -->
+                                       <strong><field name="address_id"/></strong>
+                                       <span t-if="record.get_time.raw_value" class="o_kanban_record_subtitle"><field name="get_time"/></span>
+                                   </div>
+                               </div>
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_left"/>
+                                        <div class="oe_kanban_bottom_right">
+                                            <a title="Chat" icon="fa-comments" href="#" class="ml8 o_employee_chat_btn" attrs="{'invisible': [('users_id','=', False)]}" role="button"><i class="fa fa-comments"/></a>
+                                        </div>
+                                    </div>
+                                </div>
+                           </div>
+                       </div>
+                       </t>
+                   </templates>
+               </kanban>
+            </field>
+        </record>    
 
     <menuitem id="zk_machine_menu" 
               parent="hr_attendance.menu_hr_attendance_root" 

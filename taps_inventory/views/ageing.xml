@@ -69,9 +69,9 @@
         <field name="search_view_id" ref="view_stock_ageing_search" />
     </record>
 
-    <menuitem id="menu_stock_ageing_view"
+<!--     <menuitem id="menu_stock_ageing_view"
               name="Ageing"
               action="action_stock_ageing"
               parent="stock.menu_warehouse_report"
-              sequence="161"/>
+              sequence="161"/> -->
 </odoo>    

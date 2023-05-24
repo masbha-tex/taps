@@ -5,6 +5,7 @@ import sys
 import datetime
 import logging
 import binascii
+import base64
 
 from . import zklib
 from .zkconst import *
@@ -15,6 +16,7 @@ from odoo.exceptions import UserError, ValidationError
 from .exception import ZKErrorConnection, ZKErrorResponse, ZKNetworkError
 from odoo.tools import format_datetime
 from datetime import timedelta
+from odoo.modules.module import get_module_resource
 _logger = logging.getLogger(__name__)
 try:
     from zk import ZK, const
@@ -31,25 +33,34 @@ class HrAttendance(models.Model):
 
 class ZkMachine(models.Model):
     _name = 'zk.machine'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin', 'image.mixin']    
     _description='ZK Machine'
-
-    name = fields.Char(string='IP / Domain Name',store=True,required=True)
-    port_no = fields.Integer(string='Port No', store=True, required=True)
-    address_id = fields.Many2one('res.partner', store=True,string='Working Address')
-    company_id = fields.Many2one('res.company', store=True, string='Company', default=lambda self: self.env.user.company_id.id)
+    
+    def _default_image(self):
+        image_path = get_module_resource('hr_zk_attendance', 'static/description', 'icon.png')
+        return base64.b64encode(open(image_path, 'rb').read())  
+    
+    image_1920 = fields.Image(default=_default_image)
+    active = fields.Boolean('Device Active', default=True, store=True, readonly=False, tracking=True)
+    name = fields.Char(string='Domain Name',store=True,required=True, tracking=True)
+    port_no = fields.Integer(string='Port No', store=True, required=True, tracking=True)
+    address_id = fields.Many2one('res.partner', store=True,string='Device Locations', tracking=True)
+    company_id = fields.Many2one('res.company', store=True, string='Company', default=lambda self: self.env.user.company_id.id, tracking=True)
     user_status = fields.Char(string='User', store=True, readonly=True)
-    local_ip = fields.Char(string='Machine IP', store=True, readonly=True)
-    fingerprint = fields.Char(string='Finger Algorithm', store=True, readonly=True)
-    device_name = fields.Char(string='Machine Name ', store=True, readonly=True)
-    serialnumber = fields.Char(string='Serial Number ', store=True, readonly=True)
-    platform = fields.Char(string='Platform ', store=True, readonly=True)
-    mac = fields.Char(string='MAC Address ', store=True, readonly=True)
-    firmwareversion = fields.Char(string='Firmware Version ', store=True, readonly=True)
-    get_time = fields.Char(string='Current Times', store=True, readonly=True)
-    users_id = fields.Many2one('res.users', string='Technician', store=True, default=lambda self: self.env.user.id)
-    device_user_count = fields.Char(string='User Count', store=True, copy=True, readonly=True)
-    device_finger_count = fields.Char(string='Finger Count', store=True, copy=True,readonly=True)
-    att_log_count = fields.Integer(string='Attendance Logs', store=True, copy=True,readonly=True)
+    local_ip = fields.Char(string='Machine IP', store=True, readonly=True, tracking=True)
+    fingerprint = fields.Char(string='Finger Algorithm', store=True, readonly=True, tracking=True)
+    device_name = fields.Char(string='Machine Name ', store=True, readonly=True, tracking=True)
+    serialnumber = fields.Char(string='Serial Number ', store=True, readonly=True, tracking=True)
+    platform = fields.Char(string='Platform ', store=True, readonly=True, tracking=True)
+    mac = fields.Char(string='MAC Address ', store=True, readonly=True, tracking=True)
+    firmwareversion = fields.Char(string='Firmware Version ', store=True, readonly=True, tracking=True)
+    get_time = fields.Char(string='Current Times', store=True, readonly=True, tracking=True)
+    users_id = fields.Many2one('res.users', string='Technician', store=True, default=lambda self: self.env.user.id, tracking=True)
+    device_user_count = fields.Char(string='User Count', store=True, copy=True, readonly=True, tracking=True)
+    device_finger_count = fields.Char(string='Finger Count', store=True, copy=True,readonly=True, tracking=True)
+    att_log_count = fields.Integer(string='Attendance Logs', store=True, copy=True,readonly=True, tracking=True)
+    
+    
 
     def device_connect(self, zk):
         try:
@@ -434,7 +445,6 @@ class ZkMachine(models.Model):
                     break
 
             try:
-                conn.get_users()
                 if uids:
                     if is_delete:
                         conn.delete_user(uid=uids,user_id=user_ids)
@@ -450,4 +460,32 @@ class ZkMachine(models.Model):
                     conn.disconnect()
         else:
             raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))
+    
+    
+    def upload_machine_user(self):
+        employee = self.env['hr.employee'].search([])
+        for emp in employee:
+            emp.action_set_user(self.id,False,emp.name,emp.barcode,emp.rfid)
             
+    def delete_machine_user(self):
+        machine_ip = self.name
+        zk_port = self.port_no
+        timeout = 15
+        try:
+            zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True)
+        except NameError:
+            raise UserError(_("Please install it with 'pip3 install pyzk'."))
+        conn = self.device_connect(zk)
+        if conn:
+            users_ = conn.get_users()
+            try:
+                for u in users_:
+                    conn.delete_user(uid=u.uid,user_id=u.user_id)
+                    
+            except Exception as e:
+                print ("Process terminate : {}".format(e))
+            finally:
+                if conn:
+                    conn.disconnect()
+        else:
+            raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))                    

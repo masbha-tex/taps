@@ -9,7 +9,7 @@
                 <filter string="Spare" name="spare_stock" domain="[('product_id.default_code', 'like', 'S_')]" /> -->
 <!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
                 <separator/>
-                <field name="name" string="Sale Order"/>
+                <field name="order_id" string="Sale Order"/>
 <!--                 <group expand="0" string="Group By">
                     <filter name="saleorder_group" string="Sale Order" domain="[]" context="{'group_by': 'order_ref'}"/>
                     <filter name="oa_group" string="OA Number" domain="[]" context="{'group_by': 'order_id'}"/>
@@ -23,7 +23,7 @@
         <field name="model">order.flow</field>
         <field name="arch" type="xml" >
             <tree string="Sale Order Flow" create="false" delete="false" >
-                <field name="name"/>
+                <field name="order_id"/>
                 <field name="pi_type"/>
                 <field name="sale_representative"/>
                 <field name="date_order"/>

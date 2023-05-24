@@ -12,18 +12,16 @@
           </field>
       </record>
       
-      
       <record id="mrp_production_custom_form_view" model="ir.ui.view">
           <field name="name">mrp.production.custom.form</field>
           <field name="model">mrp.production</field>
           <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
           <field name="arch" type="xml"> 
-              <xpath expr="//tree[1]/field[@name='name']" position="after">
-                  <field name="oa_id"/>
+              <xpath expr="//form/header/button[@name='button_unbuild']" position="after">
+                  <button name="action_split" attrs="{'invisible': [('state', '!=', 'draft')]}" string="Split" type="object" class="oe_highlight"/>
               </xpath>
           </field>
       </record>
-      
       
   </data>
 </odoo>

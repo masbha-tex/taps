@@ -56,9 +56,9 @@
         <field name="search_view_id" ref="view_stock_reg_search" />
     </record>
 
-    <menuitem id="menu_stock_reg_view"
+<!--     <menuitem id="menu_stock_reg_view"
               name="RM Stock"
               action="action_stock_opening_closing"
               parent="stock.menu_warehouse_report"
-              sequence="160"/>
+              sequence="160"/> -->
 </odoo>    
