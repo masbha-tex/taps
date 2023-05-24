@@ -465,7 +465,7 @@ class ZkMachine(models.Model):
     def upload_machine_user(self):
         employee = self.env['hr.employee'].search([])
         for emp in employee:
-            emp.action_set_user(self.id,False,emp.name,emp.barcode,emp.rfid)
+            self.action_set_user(self.id,False,emp.name,emp.barcode,emp.rfid)
             
     def delete_machine_user(self):
         machine_ip = self.name
