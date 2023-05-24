@@ -101,6 +101,14 @@
 					<widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible':[('active','=',True)]}"/>
                     <field name="image_1920" widget='image' class="oe_avatar" options='{"zoom": true, "preview_image":"image_1920"}'/>
 					<field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1 class="d-flex">
+                            <field name="device_name" placeholder="Device's Name" required="True"/>
+                        </h1>
+                        <h2>
+                            <field name="local_ip" placeholder="Machine IP"/>
+                        </h2>
+                    </div>
                     <group>
                         <group>
                             <field name="name" groups="hr_attendance.group_hr_attendance_user"/>
@@ -222,6 +230,7 @@
                                        <span t-if="record.device_finger_count.raw_value" class="o_kanban_record_subtitle"><field name="device_finger_count"/></span>
 <!--                                            <span t-if="record.att_log_count.raw_value" class="o_kanban_record_subtitle"><field name="att_log_count"/></span> -->
                                        <strong><field name="address_id"/></strong>
+                                       <span t-if="record.company_id.raw_value" class="o_kanban_record_subtitle"><strong><field name="company_id"/></strong></span>
                                        <span t-if="record.get_time.raw_value" class="o_kanban_record_subtitle"><field name="get_time"/></span>
                                    </div>
                                </div>

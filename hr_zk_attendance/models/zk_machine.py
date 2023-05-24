@@ -37,7 +37,7 @@ class ZkMachine(models.Model):
     _description='ZK Machine'
     
     def _default_image(self):
-        image_path = get_module_resource('hr_zk_attendance', 'static/description', 'icon.png')
+        image_path = get_module_resource('hr_zk_attendance', 'static/description', 'img.png')
         return base64.b64encode(open(image_path, 'rb').read())  
     
     image_1920 = fields.Image(default=_default_image)
