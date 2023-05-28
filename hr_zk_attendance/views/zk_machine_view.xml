@@ -60,7 +60,7 @@
                         <button id="att_log_count" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the machine">
                             <field name="att_log_count" widget="statinfo" string="Logs"/>
                         </button>
-                        <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-play-circle" help="Test Voice to the machine" >
+                        <button name="action_test_voice" type="object" class="oe_stat_button" icon="fa-play-circle" help="Test Voice to the machine" >
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Play Voice
@@ -83,17 +83,38 @@
                         </button>                          
                     </div>
                     <div class="oe_button_box" name="button_box" groups="hr_attendance.group_hr_attendance_manager">
-                      <button name="upload_machine_user" type="object" class="oe_stat_button" icon="fa-upload" help="Upload All Users to this machine" confirm="Are you sure you want to do this?" groups="hr_attendance.group_hr_attendance_user">
-                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
+                      <button name="action_enroll_user" type="object" class="oe_stat_button" icon="fa-barcode" help="Enroll Users Users to this machine" confirm="Are you sure you want to do this?" attrs="{'invisible': [('device_name', '=', False)]}" >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Enroll Users
+                                </span>
+                            </div>
+                        </button>                         
+                      <button name="upload_machine_user" type="object" class="oe_stat_button" icon="fa-upload" help="Upload All Users to this machine" confirm="Are you sure you want to do this?" attrs="{'invisible': [('device_name', '=', False)]}" >
+                            <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Upload Users
                                 </span>
                             </div>
                         </button> 
-                        <button name="delete_machine_user" type="object" class="oe_stat_button" icon="fa-trash-o" help="Delete All Users to this machine" confirm="Are you sure you want to do this?" groups="hr_attendance.group_hr_attendance_manager">
-                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
+                        <button name="clear_attendance" type="object" class="oe_stat_button" icon="fa-trash-o" help="Clear All Attendance Data to this machine" attrs="{'invisible': [('device_name', '=', False)]}" confirm="Are you sure you want to Clear All Attendance Data this machine?">
+                            <div class="o_stat_info">
                                 <span class="o_stat_text">
-                                    Delete Users
+                                    Clear Attendance
+                                </span>
+                            </div>
+                        </button>  
+                        <button name="delete_machine_user" type="object" class="oe_stat_button" icon="fa-trash-o" help="Clear All Attendance Data to this machine" attrs="{'invisible': [('device_name', '=', False)]}" confirm="Are you sure you want to Clear All Users Data in this machine?">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Clear Users
+                                </span>
+                            </div>
+                        </button>                          
+                        <button name="action_clear_data" type="object" class="oe_stat_button" icon="fa-remove" help="Reset to this machine" attrs="{'invisible': [('device_name', '=', False)]}" confirm="Are you sure you want to clear all data (included: user, attendance report, finger database) this machine?">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Clear All
                                 </span>
                             </div>
                         </button>
@@ -103,7 +124,7 @@
 					<field name="active" invisible="1"/>
                     <div class="oe_title">
                         <h1 class="d-flex">
-                            <field name="device_name" placeholder="Device's Name" required="True"/>
+                            <field name="device_name" placeholder="Device's Name"/>
                         </h1>
                         <h2>
                             <field name="local_ip" placeholder="Machine IP"/>

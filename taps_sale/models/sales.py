@@ -249,6 +249,10 @@ class SaleOrder(models.Model):
                     'logoref':lines.logoref,
                     'shapefin':lines.shapefin,
                     'bcdpart':lines.bcdpart,
+                    'b_part':lines.b_part,
+                    'c_part':lines.c_part,
+                    'd_part':lines.d_part,
+                    'shape':lines.shape,
                     'nailmat':lines.nailmat,
                     'nailcap':lines.nailcap,
                     'fnamebcd':lines.fnamebcd,
@@ -888,6 +892,10 @@ class SaleOrderLine(models.Model):
     logoref = fields.Text(string='Logo & Ref', store=True)
     shapefin = fields.Text(string='Shape Finish', store=True)
     bcdpart = fields.Text(string='BCD Part Material Type / Size', store=True)
+    b_part = fields.Text(string='B Part', store=True)
+    c_part = fields.Text(string='C Part', store=True)
+    d_part = fields.Text(string='D Part', store=True)
+    shape = fields.Text(string='Shape', store=True)
     nailmat = fields.Text(string='Nail Material / Type / Shape / Size', store=True)
     nailcap = fields.Text(string='Nail Cap Logo', store=True)
     fnamebcd = fields.Text(string='Finish Name ( BCD/NAIL/ NAIL CAP)', store=True)
@@ -1109,6 +1117,18 @@ class SaleOrderLine(models.Model):
                 continue
             if rec.attribute_id.name == 'BCD Part Material Type / Size':
                 self.bcdpart = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'B Part':
+                self.b_part = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'C Part':
+                self.c_part = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'D Part':
+                self.d_part = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Shape':
+                self.shape = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Nail Material / Type / Shape / Size':
                 self.nailmat = rec.product_attribute_value_id.name

@@ -19,15 +19,17 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','web_studio','product', 'stock', 'resource','sale'],
+    'depends': ['base','web_studio','product', 'stock', 'resource','sale','mrp'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'wizard/mrp_split.xml',
         'views/mrp_productivity.xml',
         'views/mrp_production.xml',
         'views/mrp_workorder.xml',
-        #'wizard/manufacturing_report_wizard.xml'
+        
+        # 'wizard/manufacturing_report_wizard.xml'
     ],
     # only loaded in demonstration mode
     # 'demo': [

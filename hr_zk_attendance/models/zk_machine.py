@@ -6,7 +6,6 @@ import datetime
 import logging
 import binascii
 import base64
-
 from . import zklib
 from .zkconst import *
 from struct import unpack
@@ -18,8 +17,11 @@ from odoo.tools import format_datetime
 from datetime import timedelta
 from odoo.modules.module import get_module_resource
 _logger = logging.getLogger(__name__)
+from .const import *
+from .finger import Finger
 try:
-    from zk import ZK, const
+    from . base import ZK, const
+    # from zk import ZK, const
 except ImportError:
     _logger.error("Please Install pyzk library.")
 
@@ -38,6 +40,7 @@ class ZkMachine(models.Model):
     
     def _default_image(self):
         image_path = get_module_resource('hr_zk_attendance', 'static/description', 'img.png')
+        # image_path = get_module_resource('hr_zk_attendance', 'models', 'finger_1.bin')
         return base64.b64encode(open(image_path, 'rb').read())  
     
     image_1920 = fields.Image(default=_default_image)
@@ -54,7 +57,7 @@ class ZkMachine(models.Model):
     platform = fields.Char(string='Platform ', store=True, readonly=True, tracking=True)
     mac = fields.Char(string='MAC Address ', store=True, readonly=True, tracking=True)
     firmwareversion = fields.Char(string='Firmware Version ', store=True, readonly=True, tracking=True)
-    get_time = fields.Char(string='Current Times', store=True, readonly=True, tracking=True)
+    get_time = fields.Char(string='Current Times', store=True, readonly=True)
     users_id = fields.Many2one('res.users', string='Technician', store=True, default=lambda self: self.env.user.id, tracking=True)
     device_user_count = fields.Char(string='User Count', store=True, copy=True, readonly=True, tracking=True)
     device_finger_count = fields.Char(string='Finger Count', store=True, copy=True,readonly=True, tracking=True)
@@ -67,7 +70,7 @@ class ZkMachine(models.Model):
             conn = zk.connect()
             return conn
         except:
-            return False
+            return False 
         
     @api.model
     def cron_clear(self):
@@ -82,11 +85,10 @@ class ZkMachine(models.Model):
             zk_port = info.port_no
             timeout = 15
             try:
-                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
             except NameError:
                 raise UserError(_("Please install it with 'pip3 install pyzk'."))
             conn = self.device_connect(zk)
-            # dd = self.device_name(zk)
             
             if conn:
                 conn.enable_device()
@@ -102,9 +104,6 @@ class ZkMachine(models.Model):
                     raise UserError(_('Unable to get user log. Are you sure user log is not empty.'))
             else:
                 raise UserError(_('Unable to connect to Attendance Device. Please use Test Connection button to verify.'))
-            #except:
-                #raise ValidationError(
-                    #'Unable to clear Attendance log. Are you sure attendance device is connected & record is not empty.')
     
     def clear_attendance(self):
         _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
@@ -124,14 +123,11 @@ class ZkMachine(models.Model):
                     conn.clear_attendance()
                     self._cr.execute("""delete from zk_machine_attendance""")
                     conn.disconnect()
-                    raise UserError('Attendance Records Deleted.')
+                    # raise UserError('Attendance Records Deleted.')
                 else:
                     raise UserError(_('Unable to clear Attendance log. Are you sure attendance log is not empty.'))
             else:
                 raise UserError(_('Unable to connect to Attendance Device. Please use Test Connection button to verify.'))
-            #except:
-                #raise ValidationError(
-                    #'Unable to clear Attendance log. Are you sure attendance device is connected & record is not empty.')
 
     def getSizeUser(self, zk):
         """Checks a returned packet to see if it returned CMD_PREPARE_DATA,
@@ -302,7 +298,7 @@ class ZkMachine(models.Model):
             machine.action_get_device_info()
             
     def action_get_device_info(self):
-        _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
+        # _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
         for info in self:
             machine_ip = info.name
             zk_port = info.port_no
@@ -330,7 +326,7 @@ class ZkMachine(models.Model):
                                 'att_log_count':conn.records,})
                     
                 except Exception as e:
-                    print ("Process terminate : {}".format(e))
+                    _logger.info("Process terminate : {}".format(e))
                 finally:
                     if conn:
                         conn.disconnect()
@@ -349,7 +345,7 @@ class ZkMachine(models.Model):
                 break
                         
     def action_restart(self):
-        _logger.info("Machine Restart")
+        # _logger.info("Machine Restart")
         for info in self:
             machine_ip = info.name
             zk_port = info.port_no
@@ -360,10 +356,10 @@ class ZkMachine(models.Model):
                 raise UserError(_("Please install it with 'pip3 install pyzk'."))
             try:
                 conn = zk.connect()
-                print ("Restart Device...")
+                _logger.info("Restart Device...")
                 conn.restart()
             except Exception as e:
-                print ("Process terminate : {}".format(e))
+                _logger.info("Process terminate : {}".format(e))
                 
     def action_poweroff(self):
         _logger.info("Machine Power Off")
@@ -377,10 +373,10 @@ class ZkMachine(models.Model):
                 raise UserError(_("Please install it with 'pip3 install pyzk'."))
             try:
                 conn = zk.connect()
-                print ("Shutdown the device...")
+                _logger.info("Shutdown the device...")
                 conn.poweroff()
             except Exception as e:
-                print ("Process terminate : {}".format(e))     
+                _logger.info("Process terminate : {}".format(e))     
                 
     def action_sync_time(self):
         _logger.info("Machine Sync Time")
@@ -395,35 +391,41 @@ class ZkMachine(models.Model):
             try:
                 conn = zk.connect()
                 todatetime = datetime.now() + timedelta(hours=6)
-                print ("Syncing time...")
+                _logger.info("Syncing time...")
                 conn.set_time(todatetime)
             except Exception as e:
-                print ("Process terminate : {}".format(e))
+                _logger.info("Process terminate : {}".format(e))
             finally:
                 if conn:
                     conn.disconnect()
                 
     def action_test_voice(self):
-        _logger.info("Machine Power Off")
+        _logger.info("Machine Test Voice")
         for info in self:
             machine_ip = info.name
             zk_port = info.port_no
             timeout = 15
             try:
-                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, encoding='UTF-8')
             except NameError:
                 raise UserError(_("Please install it with 'pip3 install pyzk'."))
+            conn = zk.connect()
             try:
-                conn = zk.connect()
+                
                 for i in range(0, 55):
-                    print ("Voice number #%d" % i)
+                    _logger.info("Voice number #%d" % i)
                     conn.test_voice(i)
                     time.sleep(3)
             except Exception as e:
-                print ("Process terminate : {}".format(e))
+                _logger.info("Process terminate : {}".format(e))
             finally:
                 if conn:
                     conn.disconnect()  
+                    
+    def upload_machine_user(self):
+        employee = self.env['hr.employee'].search([])#('barcode','=','01001')
+        for emp in employee:
+            self.action_set_user(self.id,False,emp.name,emp.barcode,emp.rfid)                    
         
     def action_set_user(self, m_id, is_delete, names, user_ids, cards): 
         info = self.env['zk.machine'].search([('id','=',m_id)])
@@ -431,11 +433,11 @@ class ZkMachine(models.Model):
         zk_port = info.port_no
         timeout = 15
         try:
-            zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True)
+            zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
         except NameError:
             raise UserError(_("Please install it with 'pip3 install pyzk'."))
-        conn = self.device_connect(zk)
-        #raise UserError((conn))
+        conn = zk.connect()
+        
         if conn:
             uids = False
             users_ = conn.get_users()
@@ -443,29 +445,24 @@ class ZkMachine(models.Model):
                 if u.user_id == user_ids:
                     uids = u.uid
                     break
-
             try:
+            
                 if uids:
                     if is_delete:
                         conn.delete_user(uid=uids,user_id=user_ids)
                     else:
-                        conn.set_user(uid=uids, name = names, privilege=const.USER_DEFAULT, password='', user_id=user_ids, card=cards)
+                        conn.set_user(uid=uids, name = names, privilege=const.USER_DEFAULT, password='', group_id='', user_id=user_ids, card=cards)
                 else:
                     if is_delete is False:
-                        conn.set_user(uid=None, name = names, privilege=const.USER_DEFAULT, password='', user_id=user_ids, card=cards)
+                        conn.set_user(uid=None, name = names, privilege=const.USER_DEFAULT, password='', group_id='', user_id=user_ids, card=cards)
             except Exception as e:
-                print ("Process terminate : {}".format(e))
+                _logger.info("Process terminate : {}".format(e))
             finally:
                 if conn:
                     conn.disconnect()
         else:
             raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))
     
-    
-    def upload_machine_user(self):
-        employee = self.env['hr.employee'].search([])
-        for emp in employee:
-            self.action_set_user(self.id,False,emp.name,emp.barcode,emp.rfid)
             
     def delete_machine_user(self):
         machine_ip = self.name
@@ -483,9 +480,63 @@ class ZkMachine(models.Model):
                     conn.delete_user(uid=u.uid,user_id=u.user_id)
                     
             except Exception as e:
-                print ("Process terminate : {}".format(e))
+                _logger.info("Process terminate : {}".format(e))
             finally:
                 if conn:
                     conn.disconnect()
         else:
-            raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))                    
+            raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))  
+            
+                   
+    def action_clear_data(self):
+        _logger.info("++++++++++++Machine Reset++++++++++++++++++++++")
+        machine_ip = self.name
+        zk_port = self.port_no
+        timeout = 15
+        try:
+            zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
+        except NameError:
+            raise UserError(_("Please install it with 'pip3 install pyzk'."))
+        conn = zk.connect()
+        if conn:
+            try:
+                _logger.info("Clear all data...")
+                conn.clear_data()
+            except Exception as e:
+                _logger.info("Process terminate : {}".format(e))
+            finally:
+                if conn:
+                    conn.disconnect()
+        else:
+            raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))    
+            
+    def action_enroll_user(self):
+        _logger.info("++++++++++++Machine Reset++++++++++++++++++++++")
+        machine_ip = self.name
+        zk_port = self.port_no
+        timeout = 15
+        try:
+            zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
+        except NameError:
+            raise UserError(_("Please install it with 'pip3 install pyzk'."))
+        finger_path = get_module_resource('hr_zk_attendance', 'models', 'finger_1.bin')
+        conn = zk.connect()
+        if conn:
+            conn.enroll_user(uid=1, temp_id=2, user_id='01607')
+            # raise UserError(('ss'))
+          
+            # try:
+            # print ("-- Restore Finger Information --")
+            # user = conn.get_users()
+            # for u in user:
+            #     with open(finger_path, 'rb') as my_finger:
+            #         bin = my_finger.read()
+            #         fing1 = Finger(u.uid, 1, True, bin)
+            #         conn.save_user_template(u, [fing1])  
+            # except Exception as e:
+            #     print ("Process terminate : {}".format(e))
+            # finally:
+            #     if conn:
+            #         conn.disconnect()
+        else:
+            raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))               

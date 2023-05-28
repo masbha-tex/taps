@@ -103,7 +103,7 @@ def zkgetuser(self):
 def zkclearuser(self):
     """Start a connection with the time clock"""
     command = CMD_CLEAR_DATA
-    command_string = ''
+    command_string = b''
     chksum = 0
     session_id = self.session_id
     reply_id = unpack('HHHH', self.data_recv[:8])[3]

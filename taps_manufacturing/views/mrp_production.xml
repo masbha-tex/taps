@@ -18,7 +18,7 @@
           <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
           <field name="arch" type="xml"> 
               <xpath expr="//form/header/button[@name='button_unbuild']" position="after">
-                  <button name="action_split" attrs="{'invisible': [('state', '!=', 'draft')]}" string="Split" type="object" class="oe_highlight"/>
+                  <button name="%(action_split_mrp)d" attrs="{'invisible': [('state', '!=', 'draft')]}" string="Split" type="action" class="oe_highlight"/>
               </xpath>
           </field>
       </record>

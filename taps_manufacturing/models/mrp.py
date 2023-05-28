@@ -28,7 +28,17 @@ class MrpProduction(models.Model):
 
     
     def action_split(self):
-        raise UserError(('ggrf'))
+        self.ensure_one()
+        return {
+            'name': _('Split'),
+            'view_mode': 'form',
+            'res_model': 'mrp.split',
+            'view_id': self.env.ref('mrp.action_split_mrp').id,
+            'type': 'ir.actions.act_window',
+            'context': {'mo_id': self.id,'company_id': self.company_id.id},
+            'target': 'new',
+        }
+
     
     def _create_workorder(self):
         for production in self:

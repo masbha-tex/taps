@@ -102,6 +102,10 @@
 					<field name="shapefin" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
 					<field name="logoref" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
 					<field name="bcdpart" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                    <field name="b_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                    <field name="c_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                    <field name="d_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                    <field name="shape" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
 					<field name="nailmat" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
 					<field name="nailcap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
 					<field name="sizemm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
