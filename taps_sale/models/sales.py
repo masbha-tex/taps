@@ -88,6 +88,7 @@ class SaleOrder(models.Model):
     avg_price = fields.Float(string='Average Price', compute="_compute_avg_price")
     avg_size = fields.Float(string='Average Size', compute="_compute_avg_size")
     assortment = fields.Char(string='Assortment')
+    dpi = fields.Char(string='DPI')
     
     
     #dlfkdjfk
@@ -247,11 +248,14 @@ class SaleOrder(models.Model):
                     'sizecm':lines.sizecm,
                     'sizemm':lines.sizemm,
                     'logoref':lines.logoref,
+                    'logo':lines.logo,
+                    'style_gmt':lines.style_gmt,
                     'shapefin':lines.shapefin,
                     'bcdpart':lines.bcdpart,
                     'b_part':lines.b_part,
                     'c_part':lines.c_part,
                     'd_part':lines.d_part,
+                    'product_code':lines.product_code,
                     'shape':lines.shape,
                     'nailmat':lines.nailmat,
                     'nailcap':lines.nailcap,
@@ -888,13 +892,15 @@ class SaleOrderLine(models.Model):
     ppinboxfinish = fields.Text(string='Plated Pin-Box Finish', store=True)
     dippingfinish = fields.Text(string='Dipping Finish', store=True)
     gap = fields.Text(string='Gap', store=True)
-    
-    logoref = fields.Text(string='Logo & Ref', store=True)
+    logo = fields.Text(string='Logo', store=True)
+    logoref = fields.Text(string='Logo Ref', store=True)
+    style_gmt = fields.Text(string='Style/Gnt', store=True)
     shapefin = fields.Text(string='Shape Finish', store=True)
     bcdpart = fields.Text(string='BCD Part Material Type / Size', store=True)
     b_part = fields.Text(string='B Part', store=True)
     c_part = fields.Text(string='C Part', store=True)
     d_part = fields.Text(string='D Part', store=True)
+    product_code = fields.Text(string='Product Code', store=True)
     shape = fields.Text(string='Shape', store=True)
     nailmat = fields.Text(string='Nail Material / Type / Shape / Size', store=True)
     nailcap = fields.Text(string='Nail Cap Logo', store=True)
@@ -1109,8 +1115,14 @@ class SaleOrderLine(models.Model):
             if rec.attribute_id.name == 'Gap':
                 self.gap = rec.product_attribute_value_id.name
                 continue
-            if rec.attribute_id.name == 'Logo & Ref':
+            if rec.attribute_id.name == 'Logo Ref':
                 self.logoref = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Style/Gmt':
+                self.style_gmt = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Logo ':
+                self.logo = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Shape Finish':
                 self.shapefin = rec.product_attribute_value_id.name
@@ -1126,6 +1138,9 @@ class SaleOrderLine(models.Model):
                 continue
             if rec.attribute_id.name == 'D Part':
                 self.d_part = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Product Code':
+                self.product_code = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Shape':
                 self.shape = rec.product_attribute_value_id.name
@@ -1228,10 +1243,35 @@ class SaleOrderLine(models.Model):
     @api.depends('product_uom_qty','finish','shade')
     def compute_shadewise_tape(self):
         all_line = self.env['sale.order.line'].search([('order_id', '=', self.mapped('order_id').id)])
+        all_line_2 = all_line
         if all_line:
-            for line in all_line:
-                all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and sol.finish == line.finish and sol.shade == line.shade)
-                all_tpe.update({'shadewise_tape':sum(all_tpe.mapped('tape_con'))})
+            row = 0
+            for line in all_line[row:]:
+                all_id = []
+                s_total = 0
+                for l in all_line_2[row:]:
+                    line_ids = []
+                    if (l.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and l.finish == line.finish and l.shade == line.shade):
+                        s_total += l.tape_con
+                        line_ids = [l.id]
+                        all_id.append(line_ids)
+                        row += 1
+                    if len(all_line) == row:
+                        all_tape = all_line.filtered(lambda sol: sol.id in (all_id[0]))
+                        all_tape.update({'shadewise_tape':s_total})
+                        continue
+                    else:
+                        if row == 8:
+                            #raise UserError((all_id))
+                            sdfdl = '23210,23211,23212,23213,23214,23215,23216'
+                            all_tape = all_line.filtered(lambda sol: sol.id in (sdfdl))
+                            if all_tape:
+                                raise UserError(('all_id'))
+                            all_tape.update({'shadewise_tape':s_total})
+                        continue
+                    
+                
+                # all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and sol.finish == line.finish and sol.shade == line.shade)
         
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):

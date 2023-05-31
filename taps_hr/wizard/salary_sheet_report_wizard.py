@@ -292,7 +292,7 @@ class SalarySheet(models.TransientModel):
         if data.get('date_to'):
             domain.append(('date_to', '=', data.get('date_to')))
         if data.get('mode_company_id'):
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('employee_id.company_id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
@@ -317,39 +317,61 @@ class SalarySheet(models.TransientModel):
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
         # domain.append(('code', '=', 'NET'))
         
-        #raise UserError((domain))
-        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
-        #raise UserError((docs.id))
-        datefrom = data.get('date_from')
-        dateto = data.get('date_to')
-        bankname = self.bank_id.name
-        categname=[]
-        if self.employee_type =='staff':
-            categname='Staffs'
-        if self.employee_type =='expatriate':
-            categname='Expatriates'
-        if self.employee_type =='worker':
-            categname='Workers'
-        if self.employee_type =='cstaff':
-            categname='C-Staffs'
-        if self.employee_type =='cworker':
-            categname='C-Workers'
+        ######## raise UserError((data.get('mode_company_id')))
+#         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+#         #raise UserError((docs.id))
+#         datefrom = data.get('date_from')
+#         dateto = data.get('date_to')
+#         bankname = self.bank_id.name
+#         categname=[]
+#         if self.employee_type =='staff':
+#             categname='Staffs'
+#         if self.employee_type =='expatriate':
+#             categname='Expatriates'
+#         if self.employee_type =='worker':
+#             categname='Workers'
+#         if self.employee_type =='cstaff':
+#             categname='C-Staffs'
+#         if self.employee_type =='cworker':
+#             categname='C-Workers'
             
         
-        #raise UserError((datefrom,dateto,bankname,categname))
+#         #raise UserError((datefrom,dateto,bankname,categname))
+        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        #raise UserError((docs.id)) 
+        emplist = docs.mapped('employee_id.id')
+        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+        #raise UserError((emplist)) ,department_id.parent_id.id,department_id.id
+        
+        
+        catlist = employee.mapped('category_ids.id')
+        category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
+        
         report_data = []
         emp_data = []
         slnumber=0
+        runs = docs.mapped('payslip_run_id')
+       
+        payslip_runs = self.env['hr.payslip.run'].search([('id', 'in', runs.mapped('id'))])
+        
         for payslip in docs:
             slnumber = slnumber+1
-            emp_data = [
-                slnumber,
+            if self.is_company == False :
+                emp_data = [
+                '',
+                payslip.employee_id.emp_id,
+                payslip.employee_id.name,
+                payslip.employee_id.company_id.id,
+                payslip.employee_id.department_id.parent_id.id,
+                payslip.employee_id.grade,
+                payslip.employee_id.category_ids.id,
+                payslip.employee_id.department_id.name,
                 payslip.employee_id.emp_id,
                 payslip.employee_id.name,
                 payslip.employee_id.company_id.name,
                 payslip.employee_id.department_id.name,
+                payslip.employee_id.job_id.name,
                 payslip.employee_id.grade,
-                payslip.employee_id.category_ids.name,
                 format_date(self.env, payslip.employee_id.joining_date),
                 payslip._get_work_days_line_total('P'),
                 payslip._get_work_days_line_total('X'),
@@ -372,7 +394,7 @@ class SalarySheet(models.TransientModel):
                 payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL'),
                 payslip._get_salary_line_total('BASIC'),
                 payslip._get_salary_line_total('HRA'),
-                payslip._get_salary_line_total('MEDICAL'),
+                payslip._get_salary_line_total('MEDICAL'), 
                 payslip._get_salary_line_total('OT Hours'),
                 payslip._get_salary_line_total('OT Rate'),
                 payslip._get_salary_line_total('OT'),
@@ -407,9 +429,100 @@ class SalarySheet(models.TransientModel):
                 
                 
             ]
+            else:
+                emp_data = [
+                '',
+                payslip.employee_id.emp_id,
+                payslip.employee_id.name,
+                payslip.employee_id.company_id.id,
+                payslip.employee_id.department_id.parent_id.id,
+                payslip.employee_id.grade,
+                payslip.employee_id.category_ids.id,
+                payslip.employee_id.department_id.name,
+                payslip.employee_id.emp_id,
+                payslip.employee_id.name,
+                payslip.employee_id.company_id.name,
+                # payslip.payslip_run_id.name,
+                payslip.employee_id.department_id.name,
+                payslip.employee_id.job_id.name,
+                payslip.employee_id.grade,
+                format_date(self.env, payslip.employee_id.joining_date),
+                payslip._get_work_days_line_total('P'),
+                payslip._get_work_days_line_total('X'),
+                payslip._get_work_days_line_total('A'),
+                payslip._get_work_days_line_total('F'),
+                payslip._get_work_days_line_total('H'),
+                payslip._get_work_days_line_total('CO'),
+                payslip._get_work_days_line_total('AJ'),
+                payslip._get_work_days_line_total('OD'),
+                payslip._get_work_days_line_total('L'),
+                payslip._get_work_days_line_total('CL'),
+                payslip._get_work_days_line_total('SL'),
+                payslip._get_work_days_line_total('EL'),
+                payslip._get_work_days_line_total('ML'),
+                payslip._get_work_days_line_total('LW'),
+                (payslip._get_work_days_line_total('P') + payslip._get_work_days_line_total('F') +
+                 payslip._get_work_days_line_total('H') + payslip._get_work_days_line_total('AJ') + 
+                 payslip._get_work_days_line_total('CL') + payslip._get_work_days_line_total('OD') +
+                 payslip._get_work_days_line_total('SL') + payslip._get_work_days_line_total('EL')),
+                payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL'),
+                payslip._get_salary_line_total('BASIC'),
+                payslip._get_salary_line_total('HRA'),
+                payslip._get_salary_line_total('MEDICAL'),
+                payslip._get_salary_line_total('OT Hours'),
+                payslip._get_salary_line_total('OT Rate'),
+                payslip._get_salary_line_total('OT'),
+                payslip._get_salary_line_total('ARREAR'),
+                payslip._get_salary_line_total('ATTBONUS'),
+                payslip._get_salary_line_total('CONVENCE'),
+                payslip._get_salary_line_total('FOOD'),
+                payslip._get_salary_line_total('TIFFIN'),
+                payslip._get_salary_line_total('SNACKS'),
+                payslip._get_salary_line_total('RPF'),
+                ((payslip._get_salary_line_earnings_deduction_total('BASIC') + 
+                 payslip._get_salary_line_earnings_deduction_total('HRA') + 
+                 payslip._get_salary_line_earnings_deduction_total('MEDICAL')+
+                 payslip._get_salary_line_total('com_otHours')+
+                 payslip._get_salary_line_total('OT Rate')+
+                 payslip._get_salary_line_total('OT')+
+                 payslip._get_salary_line_total('FOOD')+
+                 payslip._get_salary_line_total('TIFFIN')+
+                 payslip._get_salary_line_total('SNACKS')+
+                 payslip._get_salary_line_total('RPF'))-(payslip._get_salary_line_total('CAR')+
+                                                         payslip._get_salary_line_total('OTHERS_ALW')+
+                                                         payslip._get_salary_line_total('INCENTIVE'))),
+                payslip._get_salary_line_total('PFR'),
+                payslip._get_salary_line_total('PFE'),
+                payslip._get_salary_line_total('AIT'),
+                payslip._get_salary_line_total('BASIC_ABSENT'),
+                payslip._get_salary_line_total('GROSS_ABSENT'),
+                payslip._get_salary_line_total('LOAN'),
+                payslip._get_salary_line_total('ADV_SALARY'),
+                payslip._get_salary_line_total('OTHERS_DED'),
+                payslip._get_salary_line_earnings_deduction_total('DED'),
+                (((payslip._get_salary_line_earnings_deduction_total('BASIC') + 
+                 payslip._get_salary_line_earnings_deduction_total('HRA') + 
+                 payslip._get_salary_line_earnings_deduction_total('MEDICAL')+
+                 payslip._get_salary_line_total('com_otHours')+
+                 payslip._get_salary_line_total('OT Rate')+
+                 payslip._get_salary_line_total('OT')+
+                 payslip._get_salary_line_total('FOOD')+
+                 payslip._get_salary_line_total('TIFFIN')+
+                 payslip._get_salary_line_total('SNACKS')+
+                 payslip._get_salary_line_total('RPF'))-(payslip._get_salary_line_total('CAR')+
+                                                         payslip._get_salary_line_total('OTHERS_ALW')+
+                                                         payslip._get_salary_line_total('INCENTIVE')))-payslip._get_salary_line_earnings_deduction_total('DED')),
+                payslip.employee_id.bank_account_id.acc_number,
+                payslip.employee_id.bank_id.name,
+                
+                                #round(edata.total),
+                
+                
+            ]
+                    
             report_data.append(emp_data)     
                     
-#             return {
+#####################################             return {
 #             'doc_ids': docs.ids,
 #             'doc_model': 'hr.payslip',
 #             'docs': docs,
@@ -425,7 +538,143 @@ class SalarySheet(models.TransientModel):
 # #            'lsdate': lsdate_data,
 #             'is_com' : data.get('is_company')
 #         }
+
         
+        categ_data = []
+        cdata = []
+        for c in category:
+            categ_data = []
+            if c.name=='Z-Worker' or c.name=='Z-Staff' or c.name=='Z-Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    1  #company id
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='B-Worker' or c.name=='B-Staff' or c.name=='B-Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    3  #company id
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='C-Zipper Worker' or c.name=='C-Zipper Staff' or c.name=='C-Button Worker' or c.name=='C-Button Staff' or c.name=='C-Worker' or c.name=='C-Staff':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    4  #company id
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='Staff' or c.name=='Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    2  #company id
+                ]
+                cdata.append(categ_data)
+                continue  
+        
+        sectionlist = employee.mapped('department_id.id')
+        section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
+        
+        
+        parentdpt = section.mapped('parent_id.id')
+        department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
+        
+        
+        com = employee.mapped('company_id.id')
+        company = self.env['res.company'].search([('id', 'in', (com))])
+        
+        allemp_data = []
+        dept_data = []
+        emp_data = []
+        add = True
+        for details in employee:
+            emp_data = []
+            #raise UserError(('allemp_data'))
+            if allemp_data:
+                for r in allemp_data:
+                    if (r[0] == details.company_id.id) and (r[2] == details.department_id.parent_id.id) and (r[4] == details.department_id.id and r[6]== details.category_ids.id):
+                        add = False
+                        break
+            if add == True:
+                emp_data = [
+                    details.company_id.id,
+                    details.company_id.name,
+                    details.department_id.parent_id.id, # Department ID
+                    details.department_id.parent_id.name, # Department Name
+                    details.department_id.id, # Section ID
+                    details.department_id.name, # Section Name
+                    details.category_ids.id # Category Id
+                ]
+                allemp_data.append(emp_data)
+            add = True
+        #raise UserError((allemp_data))
+        d_data = []
+        add = True
+        for dep in allemp_data:
+            d_data = []
+            if dept_data:
+                i = 0
+                for r in dept_data:
+                    if (r[0] == dep[0]) and (r[1] == dep[2]) and (r[3]== dep[6]):
+                        i = i+1
+                        add = False
+                        break
+            if add == True:
+                d_data = [
+                    dep[0],#0 company id
+                    dep[2],#1 department id
+                    dep[3],#2 department name
+                    dep[6] #3 category id
+                ]
+                dept_data.append(d_data)
+            add = True
+            
+       
+        
+        emp = employee.sorted(key = 'id')[:1]
+
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name 
+        
+#         for details in docs:
+#             otTotal = 0
+#             for de in docs:
+#                if de.total >2:
+#                  de.total=2
+#                else:
+#                 otTotal = otTotal + de.total
+            
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            data.get('date_from'),
+            # datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B, %Y'),
+           data.get('date_to'),
+        ]
+        common_data.append(common_data)  
+        
+#             'datas': allemp_data,
+# #            'datas': common_data,
+# #             'alldays': all_datelist,
+#             'dpt': dept_data,
+#             'sec': section,
+#             'com': company,
+#             'cat': cdata,
+#             'cd' : common_data,
+# #             'stdate': stdate_data,
+# #            'lsdate': lsdate_data,
+#             'is_com' : data.get('is_company')        
         
         
         output = io.BytesIO()
@@ -433,102 +682,310 @@ class SalarySheet(models.TransientModel):
         worksheet = workbook.add_worksheet()
 
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
-        worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+        # worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
 
         report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
 #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-        worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
-        worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s SALARY SHEET' % ('','')), report_small_title_style)
+        # worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+        # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s SALARY SHEET' % ('','')), report_small_title_style)
 #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
         
-        column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
+        column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#FFC000', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
+        column_title_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#E9ECEF', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
+        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#FDE9D9', 'font_size': 11})
         row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+        row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True})        
+        format_label_1 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right', 'top': True,  'bottom': True})
+        
+        format_label_2 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
+        
+        format_label_3 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
+        
+        format_label_4 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right',  'top': True,  'bottom': True, 'bold': True})      
 
         # set the width od the column
+     
         
-        worksheet.set_column(1, 8, 20)
+        worksheet.set_column(0, 0, 30)
+        worksheet.set_column(2, 2, 30)
+        worksheet.set_column(3, 3, 17)
+        worksheet.set_column(4, 4, 21)
+        worksheet.set_column(5, 5, 30)
+        worksheet.set_column(6, 6, 6)
+        worksheet.set_column(7, 10, 12)
+        worksheet.set_column(11, 13, 9)
+        worksheet.set_column(14, 14, 12)
+        worksheet.set_column(15, 15, 8)
+        worksheet.set_column(16, 16, 10)
+        worksheet.set_column(17, 21, 4)
+        worksheet.set_column(22, 26, 13)
+        worksheet.set_column(27, 28, 10)
+        worksheet.set_column(29, 39, 11)
+        worksheet.set_column(40, 40, 14)
+        worksheet.set_column(41, 47, 14)
+        worksheet.set_column(48, 49, 16)
+        worksheet.set_column(50, 50, 14)
+        worksheet.set_column(51, 51, 16)
+        worksheet.set_column(52, 52, 23)
+        # worksheet.set_column(2, 52, 25)
+        
         merge_format = workbook.add_format({'align': 'center','valign': 'top'})
         #worksheet.merge_range(4, 0, 9, 0, '', merge_format)
-        worksheet.set_column(9, 18, 20)
+        # worksheet.set_column(9, 18, 20)
         merge_format = workbook.add_format({'align': 'center','valign': 'top'})
-        worksheet.set_column(19, 52, 20)
+        # worksheet.set_column(19, 52, 20)
         merge_format = workbook.add_format({'align': 'center','valign': 'top'})
         
+        if self.is_company == False :
+            worksheet.write(0, 0, 'Reference', column_product_style) 
+            worksheet.write(0, 1, 'Emp ID', column_product_style)
+            worksheet.write(0, 2, 'Name', column_product_style)
+            worksheet.write(0, 3, 'Company', column_product_style)
+            worksheet.write(0, 4, 'Section', column_product_style)
+            worksheet.write(0, 5, 'Job Position', column_product_style)
+            worksheet.write(0, 6, 'Grade', column_product_style)
+            worksheet.write(0, 7, 'Joining Date', column_product_style)
+            worksheet.write(0, 8, 'Worked Days', column_product_style) 
+            worksheet.write(0, 9, 'Gross A. Days', column_product_style) 
+            worksheet.write(0, 10, 'Basic A. Day', column_product_style) 
+            worksheet.write(0, 11, 'Fridays', column_product_style) 
+            worksheet.write(0, 12, 'Holidays', column_product_style) 
+            worksheet.write(0, 13, 'Coff Days', column_product_style) 
+            worksheet.write(0, 14, 'Adjust Days', column_product_style)
+            worksheet.write(0, 15, 'Od Days', column_product_style)
+            worksheet.write(0, 16, 'Late Days', column_product_style) 
+            worksheet.write(0, 17, 'CL', column_product_style) 
+            worksheet.write(0, 18, 'SL', column_product_style) 
+            worksheet.write(0, 19, 'EL', column_product_style) 
+            worksheet.write(0, 20, 'ML', column_product_style) 
+            worksheet.write(0, 21, 'LW', column_product_style) 
+            worksheet.write(0, 22, 'Payable Days', column_product_style) 
+            worksheet.write(0, 23, 'Gross Salary', column_product_style)  
+            worksheet.write(0, 24, 'Basic', column_product_style) 
+            worksheet.write(0, 25, 'House Rent', column_product_style) 
+            worksheet.write(0, 26, 'Medical', column_product_style) 
+            worksheet.write(0, 27, 'OT Hours', column_product_style) 
+            worksheet.write(0, 28, 'OT Rate', column_product_style) 
+            worksheet.write(0, 29, 'OT', column_product_style)
+            worksheet.write(0, 30, 'Arrear', column_product_style)
+            worksheet.write(0, 31, 'Att. Bonus', column_product_style)
+            worksheet.write(0, 32, 'Convence', column_product_style)
+            worksheet.write(0, 33, 'Food', column_product_style)
+            worksheet.write(0, 34, 'Tiffin', column_product_style)
+            worksheet.write(0, 35, 'Strength', column_product_style)
+            worksheet.write(0, 36, 'Car', column_product_style)
+            worksheet.write(0, 37, 'Others Alw', column_product_style)
+            worksheet.write(0, 38, 'Incentive', column_product_style)
+            worksheet.write(0, 39, 'Rpf', column_product_style)
+            worksheet.write(0, 40, 'Total Earnings', column_issued_style)
+            worksheet.write(0, 41, 'PF(Empr)', column_product_style)
+            worksheet.write(0, 42, 'PF(Empee)', column_product_style)
+            worksheet.write(0, 43, 'TDS (AIT)', column_product_style)
+            worksheet.write(0, 44, 'Basic A.Deduct', column_product_style)
+            worksheet.write(0, 45, 'Gross A.Deduct', column_product_style)
+            worksheet.write(0, 46, 'Loan', column_product_style)
+            worksheet.write(0, 47, 'Adv. Salary', column_product_style)
+            worksheet.write(0, 48, 'Other Deduction', column_product_style)
+            worksheet.write(0, 49, 'Total Deduction', column_issued_style)
+            worksheet.write(0, 50, 'Net Payable', column_product_style)
+            worksheet.write(0, 51, 'Account Number', column_product_style)
+            worksheet.write(0, 52, 'Bank Name', column_product_style)
         
-        worksheet.write(4, 0, 'SL.', column_product_style) 
-        worksheet.write(4, 1, 'Emp ID', column_product_style)
-        worksheet.write(4, 2, 'Name', column_product_style)
-        worksheet.write(4, 3, 'Company', column_product_style)
-        worksheet.write(4, 4, 'Section', column_product_style)
-        worksheet.write(4, 5, 'Job Position', column_product_style)
-        worksheet.write(4, 6, 'Grade', column_product_style)
-        worksheet.write(4, 7, 'Joining Date', column_product_style)
-        worksheet.write(4, 8, 'Worked Days', column_product_style) 
-        worksheet.write(4, 9, 'Gross A. Days', column_product_style) 
-        worksheet.write(4, 10, 'Basic A. Day', column_product_style) 
-        worksheet.write(4, 11, 'Fridays', column_product_style) 
-        worksheet.write(4, 12, 'Holidays', column_product_style) 
-        worksheet.write(4, 13, 'Coff Days', column_product_style) 
-        worksheet.write(4, 14, 'Adjust Days', column_product_style)
-        worksheet.write(4, 15, 'Od Days', column_product_style)
-        worksheet.write(4, 16, 'Late Days', column_product_style) 
-        worksheet.write(4, 17, 'CL', column_product_style) 
-        worksheet.write(4, 18, 'SL', column_product_style) 
-        worksheet.write(4, 19, 'EL', column_product_style) 
-        worksheet.write(4, 20, 'ML', column_product_style) 
-        worksheet.write(4, 21, 'LW', column_product_style) 
-        worksheet.write(4, 22, 'Payable Days', column_product_style) 
-        worksheet.write(4, 23, 'Gross Salary', column_product_style)  
-        worksheet.write(4, 24, 'Basic', column_product_style) 
-        worksheet.write(4, 25, 'House Rent', column_product_style) 
-        worksheet.write(4, 26, 'Medical', column_product_style) 
-        worksheet.write(4, 27, 'OT Hours', column_product_style) 
-        worksheet.write(4, 28, 'OT Rate', column_product_style) 
-        worksheet.write(4, 29, 'OT', column_product_style)
-        worksheet.write(4, 30, 'Arrear', column_product_style)
-        worksheet.write(4, 31, 'Att. Bonus', column_product_style)
-        worksheet.write(4, 32, 'Convence', column_product_style)
-        worksheet.write(4, 33, 'Food', column_product_style)
-        worksheet.write(4, 34, 'Tiffin', column_product_style)
-        worksheet.write(4, 35, 'Strength', column_product_style)
-        worksheet.write(4, 36, 'Car', column_product_style)
-        worksheet.write(4, 37, 'Others Alw', column_product_style)
-        worksheet.write(4, 38, 'Incentive', column_product_style)
-        worksheet.write(4, 39, 'Rpf', column_product_style)
-        worksheet.write(4, 40, 'Total Earnings', column_product_style)
-        worksheet.write(4, 41, 'PF(Empr)', column_product_style)
-        worksheet.write(4, 42, 'PF(Empee)', column_product_style)
-        worksheet.write(4, 43, 'TDS (AIT)', column_product_style)
-        worksheet.write(4, 44, 'Basic A.Deduct', column_product_style)
-        worksheet.write(4, 45, 'Gross A.Deduct', column_product_style)
-        worksheet.write(4, 46, 'Loan', column_product_style)
-        worksheet.write(4, 47, 'Adv. Salary', column_product_style)
-        worksheet.write(4, 48, 'Other Deduction', column_product_style)
-        worksheet.write(4, 49, 'Total Deduction', column_product_style)
-        worksheet.write(4, 50, 'Net Payable', column_product_style)
-        worksheet.write(4, 51, 'Account Number', column_product_style)
-        worksheet.write(4, 52, 'Bank Name', column_product_style)
-        
-        
+        else:
+            worksheet.write(0, 0, 'Reference', column_product_style) 
+            worksheet.write(0, 1, 'Emp ID', column_product_style)
+            worksheet.write(0, 2, 'Name', column_product_style)
+            worksheet.write(0, 3, 'Company', column_product_style)
+            worksheet.write(0, 4, 'Section', column_product_style)
+            worksheet.write(0, 5, 'Job Position', column_product_style)
+            worksheet.write(0, 6, 'Grade', column_product_style)
+            worksheet.write(0, 7, 'Joining Date', column_product_style)
+            worksheet.write(0, 8, 'Worked Days', column_product_style) 
+            worksheet.write(0, 9, 'Gross A. Days', column_product_style) 
+            worksheet.write(0, 10, 'Basic A. Day', column_product_style) 
+            worksheet.write(0, 11, 'Fridays', column_product_style) 
+            worksheet.write(0, 12, 'Holidays', column_product_style) 
+            worksheet.write(0, 13, 'Coff Days', column_product_style) 
+            worksheet.write(0, 14, 'Adjust Days', column_product_style)
+            worksheet.write(0, 15, 'Od Days', column_product_style)
+            worksheet.write(0, 16, 'Late Days', column_product_style) 
+            worksheet.write(0, 17, 'CL', column_product_style) 
+            worksheet.write(0, 18, 'SL', column_product_style) 
+            worksheet.write(0, 19, 'EL', column_product_style) 
+            worksheet.write(0, 20, 'ML', column_product_style) 
+            worksheet.write(0, 21, 'LW', column_product_style) 
+            worksheet.write(0, 22, 'Payable Days', column_product_style) 
+            worksheet.write(0, 23, 'Gross Salary', column_product_style)  
+            worksheet.write(0, 24, 'Basic', column_product_style) 
+            worksheet.write(0, 25, 'House Rent', column_product_style) 
+            worksheet.write(0, 26, 'Medical', column_product_style) 
+            worksheet.write(0, 27, 'OT Hours', column_product_style) 
+            worksheet.write(0, 28, 'OT Rate', column_product_style) 
+            worksheet.write(0, 29, 'OT', column_product_style)
+            worksheet.write(0, 30, 'Arrear', column_product_style)
+            worksheet.write(0, 31, 'Att. Bonus', column_product_style)
+            worksheet.write(0, 32, 'Convence', column_product_style)
+            worksheet.write(0, 33, 'Food', column_product_style)
+            worksheet.write(0, 34, 'Tiffin', column_product_style)
+            worksheet.write(0, 35, 'Strength', column_product_style)
+            worksheet.write(0, 36, 'Rpf', column_product_style)
+            worksheet.write(0, 37, 'Total Earnings', column_issued_style)
+            worksheet.write(0, 38, 'PF(Empr)', column_product_style)
+            worksheet.write(0, 39, 'PF(Empee)', column_product_style)
+            worksheet.write(0, 40, 'TDS (AIT)', column_product_style)
+            worksheet.write(0, 41, 'Basic A.Deduct', column_product_style)
+            worksheet.write(0, 42, 'Gross A.Deduct', column_product_style)
+            worksheet.write(0, 43, 'Loan', column_product_style)
+            worksheet.write(0, 44, 'Adv. Salary', column_product_style)
+            worksheet.write(0, 45, 'Other Deduction', column_product_style)
+            worksheet.write(0, 46, 'Total Deduction', column_issued_style)
+            worksheet.write(0, 47, 'Net Payable', column_product_style)
+            worksheet.write(0, 48, 'Account Number', column_product_style)
+            worksheet.write(0, 49, 'Bank Name', column_product_style)
         
         
         col = 0
-        row=5
+        row=1
         
         grandtotal = 0
-        
-        for line in report_data:
-            col=0
-            for l in line:
-                if (col > 4):
-                    grandtotal += 1
-                worksheet.write(row, col, l)
-                col+=1
-            row+=1
+        #company,cdata,dept_data,section,
+        # raise UserError((dept_data[0]))
+        sec_sr = 0
+        for x in [2,1,3,4]:
+            com = company.browse(x)
+            if com:
+                pr = payslip_runs.filtered(lambda pr: pr.company_id.id == com.id)
+                worksheet.write(row, 0, pr.name, format_label_3)
+                worksheet.set_row(row, None,   format_label_3)
+                row += 1
+                for cat in cdata:
+                    if ((cat[2] == com.id)):
+                        worksheet.write(row, 0, cat[1], format_label_2)
+                        worksheet.set_row(row, None,   format_label_2)
+                        row += 1
+                        for dep in dept_data:
+                            if ((cat[2] == dep[0]) and (cat[0] == dep[3])):
+                                worksheet.write(row, 0, dep[2],format_label_4)
+                                worksheet.set_row(row, None,   format_label_4)
+                                row += 1
+                                sec_sr = 0
+                                for line in report_data:
+                                    if ((dep[0] == line[3]) and (dep[1] == line[4]) and (dep[3] == line[6])):
+                                        if sec_sr == 0:
+                                            worksheet.write(row, 0, line[7],format_label_1)
+                                            worksheet.set_row(row, None,   format_label_1)
+                                            row += 1
+                                        sec_sr += 1
+                                        col = 0
+                                        col_s = 1
+                                        for l in line:
+                                            if (col > 7):
+                                                worksheet.write(row, col_s, l, row_style)
+                                                col_s += 1
+                                            col += 1
+                                        row += 1
+
+                                    # for line in report_data:
+                                    #     col=0
+                                    #     for l in line:
+                                    #         if (col > 4):
+                                    #             grandtotal += 1
+                                    #         worksheet.write(row, col, l)
+                                    #         col+=1
+                                    #     # worksheet.write(row, col, '=SUM(I{5}:I{1})'.format(row+1, row+1), report_small_title_style)    
+                               
             
-            # worksheet.write(row, 8, '=SUM(I{5}:I{1})'.format(2, row), report_small_title_style)
+            # row_+=1
+        # if self.is_company == False :
+        #     worksheet.write(row, 8, '=SUM(I{0}:I{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 9, '=SUM(J{0}:J{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 10, '=SUM(K{0}:K{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 11, '=SUM(L{0}:L{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 12, '=SUM(M{0}:M{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 14, '=SUM(O{0}:O{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 15, '=SUM(P{0}:P{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 16, '=SUM(Q{0}:Q{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 17, '=SUM(R{0}:R{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 18, '=SUM(S{0}:S{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 19, '=SUM(T{0}:T{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 20, '=SUM(U{0}:U{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 21, '=SUM(V{0}:V{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 22, '=SUM(W{0}:W{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 23, '=SUM(X{0}:X{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 24, '=SUM(Y{0}:Y{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 25, '=SUM(Z{0}:Z{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 26, '=SUM(AA{0}:AA{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 27, '=SUM(AB{0}:AB{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 28, '=SUM(AC{0}:AC{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 29, '=SUM(AD{0}:AD{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 30, '=SUM(AE{0}:AE{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 31, '=SUM(AF{0}:AF{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 32, '=SUM(AG{0}:AG{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 33, '=SUM(AH{0}:AH{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 34, '=SUM(AI{0}:AI{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 35, '=SUM(AJ{0}:AJ{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 36, '=SUM(AK{0}:AK{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 37, '=SUM(AL{0}:AL{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 38, '=SUM(AM{0}:AM{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 39, '=SUM(AN{0}:AN{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 40, '=SUM(AO{0}:AO{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 41, '=SUM(AP{0}:AP{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 42, '=SUM(AQ{0}:AQ{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 43, '=SUM(AR{0}:AR{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 44, '=SUM(AS{0}:AS{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 45, '=SUM(AT{0}:AT{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 46, '=SUM(AU{0}:AU{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 47, '=SUM(AV{0}:AV{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 48, '=SUM(AW{0}:AW{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 49, '=SUM(AX{0}:AX{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 50, '=SUM(AY{0}:AY{1})'.format(5, row), column_product_style)
+        # else:
+        #     worksheet.write(row, 8, '=SUM(I{0}:I{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 9, '=SUM(J{0}:J{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 10, '=SUM(K{0}:K{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 11, '=SUM(L{0}:L{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 12, '=SUM(M{0}:M{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 14, '=SUM(O{0}:O{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 15, '=SUM(P{0}:P{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 16, '=SUM(Q{0}:Q{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 17, '=SUM(R{0}:R{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 18, '=SUM(S{0}:S{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 19, '=SUM(T{0}:T{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 20, '=SUM(U{0}:U{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 21, '=SUM(V{0}:V{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 22, '=SUM(W{0}:W{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 23, '=SUM(X{0}:X{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 24, '=SUM(Y{0}:Y{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 25, '=SUM(Z{0}:Z{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 26, '=SUM(AA{0}:AA{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 27, '=SUM(AB{0}:AB{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 28, '=SUM(AC{0}:AC{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 29, '=SUM(AD{0}:AD{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 30, '=SUM(AE{0}:AE{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 31, '=SUM(AF{0}:AF{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 32, '=SUM(AG{0}:AG{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 33, '=SUM(AH{0}:AH{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 34, '=SUM(AI{0}:AI{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 35, '=SUM(AJ{0}:AJ{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 36, '=SUM(AK{0}:AK{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 37, '=SUM(AL{0}:AL{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 38, '=SUM(AM{0}:AM{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 39, '=SUM(AN{0}:AN{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 40, '=SUM(AO{0}:AO{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 41, '=SUM(AP{0}:AP{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 42, '=SUM(AQ{0}:AQ{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 43, '=SUM(AR{0}:AR{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 44, '=SUM(AS{0}:AS{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 45, '=SUM(AT{0}:AT{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 46, '=SUM(AU{0}:AU{1})'.format(5, row), column_product_style)
+        #     worksheet.write(row, 47, '=SUM(AV{0}:AV{1})'.format(5, row), column_product_style)
+             
+        
+        
+        # worksheet.write(row, 8, '=SUM(I{0}:I{1})'.format(5, row), column_product_style)
         # sheet.write(row, 12, '=SUM(M{0}:M{1})'.format(2, row), row_style)
         
         #worksheet.write(4, 0, 'SL.', column_product_style)
@@ -536,7 +993,10 @@ class SalarySheet(models.TransientModel):
         worksheet.write(row, 4, 'Grand Total', report_small_title_style)
         worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
         #raise UserError((datefrom,dateto,bankname,categname))
+        
         workbook.close()
+        output.seek(0)
+        # binary_data = output.getvalue()
         xlsx_data = output.getvalue()
         #raise UserError(('sfrgr'))
         
@@ -546,7 +1006,7 @@ class SalarySheet(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s TRANSFER LIST' % (bankname))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Salary Sheet')),
             'target': 'self',
         }
 

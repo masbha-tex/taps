@@ -94,12 +94,15 @@
 					<field name="gap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
 					<field name="sizein" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
 					<field name="sizecm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-					<field name="finish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                    
+                    <field name="product_code" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<field name="finish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,4))]}"/>
+                    <field name="style_gmt" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
 					<field name="shade" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}" options="{'color_field': 'color'}"/>
+                    
                     <field name="color" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}" widget="color_picker"/>
                     
 					<field name="shapefin" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                    <field name="logo" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
 					<field name="logoref" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
 					<field name="bcdpart" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                     <field name="b_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>

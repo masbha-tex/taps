@@ -151,21 +151,17 @@
                             
                         </group>
                     </group>
-<!-- 						<notebook>
-							<page name="upload_user_to_machine" string="Upload User To Attendance Device">
-								<group>
-									<field name="ignore_unknown_code" invisible="1"/>
-								</group>
-								<field name="attendance_device_state_line_ids">
-									<tree name="attendance_device_state_line_ids" editable="bottom">
-										<field name="attendance_state_id"/>
-										<field name="code"/>
-										<field name="activity_id"/>
-										<field name="type"/>
-									</tree>
-								</field>
+						<notebook>
+							<page name="upload_finger_to_machine" string="Upload Finger To Attendance Device">
+                                    <label for="employee_id"/>
+                                        <div class="o_row">
+                                            <field name="employee_id"/>
+                                            <button string="Enroll Finger" class="btn btn-link" type="object" name="action_enroll_user" context="{'fldemp': employee_id}"/>
+                                            
+<!--                                             <button name="579" string="Print Badge" class="btn btn-link" type="action" attrs="{'invisible': [('employee_id', '=', False)]}"/> -->
+                                        </div>
 							</page>
-						</notebook>                    -->
+						</notebook>                   
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" groups="base.group_user"/>

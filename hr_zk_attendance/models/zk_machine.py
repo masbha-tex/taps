@@ -31,6 +31,15 @@ class HrAttendance(models.Model):
 
     #barcode = fields.Char(string='Badge ID')
     check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
+    
+# class HrEmployeePrivate(models.Model):
+#     _inherit = 'hr.employee'
+    
+#     @api.model
+#     def _machine_user_registration(self, is_delete, names, user_ids, cards):
+#         machines = self.env['zk.machine'].search([])
+#         for record in machines:
+#             record.action_set_user(record.id,is_delete,names,user_ids,cards)
 
 
 class ZkMachine(models.Model):
@@ -62,6 +71,7 @@ class ZkMachine(models.Model):
     device_user_count = fields.Char(string='User Count', store=True, copy=True, readonly=True, tracking=True)
     device_finger_count = fields.Char(string='Finger Count', store=True, copy=True,readonly=True, tracking=True)
     att_log_count = fields.Integer(string='Attendance Logs', store=True, copy=True,readonly=True, tracking=True)
+    employee_id = fields.Many2one('hr.employee', string='Employee', required=False, store=True, copy=True)
     
     
 
@@ -519,12 +529,21 @@ class ZkMachine(models.Model):
             zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
         except NameError:
             raise UserError(_("Please install it with 'pip3 install pyzk'."))
-        finger_path = get_module_resource('hr_zk_attendance', 'models', 'finger_1.bin')
+        # finger_path = get_module_resource('hr_zk_attendance', 'models', 'finger_1.bin')
         conn = zk.connect()
+        
         if conn:
-            conn.enroll_user(uid=1, temp_id=2, user_id='01607')
-            # raise UserError(('ss'))
-          
+            uids = False
+            users_ = conn.get_users()
+            for u in users_:
+                # if u.user_id == user_ids:
+                uids = u.uid
+                break
+            template = conn.get_user_template(uid=1, user_id=self.employee_id.barcode, temp_id=4) 
+            # raise UserError((template))
+            conn.enroll_user(uid=1, temp_id=4, user_id=self.employee_id.barcode)
+           
+                  
             # try:
             # print ("-- Restore Finger Information --")
             # user = conn.get_users()

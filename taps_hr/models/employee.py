@@ -107,18 +107,12 @@ class HrEmployeePrivate(models.Model):
             ])._subscribe_users()
         
         
-        if self.rfid and self.active:
-            self._machine_user_registration(False, self.name, self.barcode, self.rfid)
-        if self.active is False:
-            self._machine_user_registration(True, self.name, self.barcode, self.rfid)
+        # if self.rfid and self.active:
+        #     self._machine_user_registration(False, self.name, self.barcode, self.rfid)
+        # if self.active is False:
+        #     self._machine_user_registration(True, self.name, self.barcode, self.rfid)
         return res
     
-    @api.model
-    def _machine_user_registration(self, is_delete, names, user_ids, cards):
-        machines = self.env['zk.machine'].search([])
-        for record in machines:
-            record.action_set_user(record.id,is_delete,names,user_ids,cards)
-
     
     def _action_work_anniversery_wish_email(self):
         template_id = self.env.ref('taps_hr.work_anniversey_wish_email_template', raise_if_not_found=False).id
