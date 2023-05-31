@@ -107,10 +107,10 @@ class HrEmployeePrivate(models.Model):
             ])._subscribe_users()
         
         
-        # if self.rfid and self.active:
-        #     self._machine_user_registration(False, self.name, self.barcode, self.rfid)
-        # if self.active is False:
-        #     self._machine_user_registration(True, self.name, self.barcode, self.rfid)
+        if self.rfid and self.active:
+            self._machine_user_registration(False, self.name, self.barcode, self.rfid)
+        if self.active is False:
+            self._machine_user_registration(True, self.name, self.barcode, self.rfid)
         return res
     
     
