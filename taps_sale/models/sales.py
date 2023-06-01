@@ -1245,30 +1245,38 @@ class SaleOrderLine(models.Model):
         all_line = self.env['sale.order.line'].search([('order_id', '=', self.mapped('order_id').id)])
         all_line_2 = all_line
         if all_line:
-            row = 0
-            for line in all_line[row:]:
-                all_id = []
-                s_total = 0
-                for l in all_line_2[row:]:
-                    line_ids = []
-                    if (l.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and l.finish == line.finish and l.shade == line.shade):
-                        s_total += l.tape_con
-                        line_ids = [l.id]
-                        all_id.append(line_ids)
-                        row += 1
-                    if len(all_line) == row:
-                        all_tape = all_line.filtered(lambda sol: sol.id in (all_id[0]))
-                        all_tape.update({'shadewise_tape':s_total})
-                        continue
-                    else:
-                        if row == 8:
-                            #raise UserError((all_id))
-                            sdfdl = '23210,23211,23212,23213,23214,23215,23216'
-                            all_tape = all_line.filtered(lambda sol: sol.id in (sdfdl))
-                            if all_tape:
-                                raise UserError(('all_id'))
-                            all_tape.update({'shadewise_tape':s_total})
-                        continue
+            for line in all_line:
+                all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and sol.finish == line.finish and sol.shade == line.shade)
+                all_tpe.update({'shadewise_tape':sum(all_tpe.mapped('tape_con'))})
+            
+#             row = 0
+#             for line in all_line[row:]:
+#                 all_id = []
+#                 s_total = 0
+#                 for l in all_line_2[row:]:
+#                     line_ids = []
+#                     if (l.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and l.finish == line.finish and l.shade == line.shade):
+#                         s_total += l.tape_con
+#                         line_ids = [l.id]
+#                         all_id.append(line_ids)
+#                         row += 1
+#                     if len(all_line) == row:
+#                         all_tape = all_line.filtered(lambda sol: sol.id in (all_id[0]))
+#                         all_tape.update({'shadewise_tape':s_total})
+#                         continue
+#                     else:
+#                         if row == 8:
+#                             ids = 0#[x.join(x) for x in all_id]
+#                             for x in all_id:
+                                
+#                             raise UserError((ids))
+#                             all_tape = all_line.filtered(lambda sol: sol.id in (23210,23211,23212,23213,23214,23215,23216))
+#                             if all_tape:
+#                                 raise UserError(('all_id'))
+#                             else:
+#                                 raise UserError(('ikuuku'))
+#                             all_tape.update({'shadewise_tape':s_total})
+#                         continue
                     
                 
                 # all_tpe = all_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == line.product_id.product_tmpl_id.id and sol.finish == line.finish and sol.shade == line.shade)
