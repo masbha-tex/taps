@@ -108,11 +108,14 @@ class HrEmployeePrivate(models.Model):
         
         
         if vals.get('rfid'):
-            self._machine_user_registration(False, self.name, self.barcode, self.rfid)
+            for mc in self:
+                mc._machine_user_registration(False, mc.name, mc.barcode, mc.rfid)
         if vals.get('active'):
-            self._machine_user_registration(False, self.name, self.barcode, self.rfid)
+            for mc in self:
+                mc._machine_user_registration(False, mc.name, mc.barcode, mc.rfid)
         if vals.get('active') is False:
-            self._machine_user_registration(True, self.name, self.barcode, self.rfid)
+            for mc in self:
+                mc._machine_user_registration(True, mc.name, mc.barcode, mc.rfid)
         return res
     
     

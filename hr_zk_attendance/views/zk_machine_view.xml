@@ -83,13 +83,13 @@
                         </button>                          
                     </div>
                     <div class="oe_button_box" name="button_box" groups="hr_attendance.group_hr_attendance_manager">
-                      <button name="action_enroll_user" type="object" class="oe_stat_button" icon="fa-barcode" help="Enroll Users Users to this machine" confirm="Are you sure you want to do this?" attrs="{'invisible': [('device_name', '=', False)]}" >
+<!--                       <button name="action_enroll_user" type="object" class="oe_stat_button" icon="fa-barcode" help="Enroll Users Users to this machine" confirm="Are you sure you want to do this?" attrs="{'invisible': [('device_name', '=', False)]}" >
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Enroll Users
                                 </span>
                             </div>
-                        </button>                         
+                        </button>                          -->
                       <button name="upload_machine_user" type="object" class="oe_stat_button" icon="fa-upload" help="Upload All Users to this machine" confirm="Are you sure you want to do this?" attrs="{'invisible': [('device_name', '=', False)]}" >
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
@@ -152,11 +152,12 @@
                         </group>
                     </group>
 						<notebook>
-							<page name="upload_finger_to_machine" string="Upload Finger To Attendance Device">
-                                    <label for="employee_id"/>
-                                        <div class="o_row">
-                                            <field name="employee_id"/>
-                                            <button string="Enroll Finger" class="btn btn-link" type="object" name="action_enroll_user" context="{'fldemp': employee_id}"/>
+							<page name="upload_finger_to_machine" string="Enroll Fingers" groups="hr_attendance.group_hr_attendance_manager">
+<!--                                     <label for="template_id"/> -->
+                                        <div class="o_row col-5">
+                                            <field name="employee_id" options='{"no_create":true, "no_open":true}'/>
+                                            <field name="template_id"/>
+                                            <button string="Enroll" class="btn btn-link oe_highlight" type="object" name="action_enroll_user" attrs="{'invisible': [('employee_id', '=', False)]}"/>
                                             
 <!--                                             <button name="579" string="Print Badge" class="btn btn-link" type="action" attrs="{'invisible': [('employee_id', '=', False)]}"/> -->
                                         </div>

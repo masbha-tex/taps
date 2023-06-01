@@ -71,7 +71,21 @@ class ZkMachine(models.Model):
     device_user_count = fields.Char(string='User Count', store=True, copy=True, readonly=True, tracking=True)
     device_finger_count = fields.Char(string='Finger Count', store=True, copy=True,readonly=True, tracking=True)
     att_log_count = fields.Integer(string='Attendance Logs', store=True, copy=True,readonly=True, tracking=True)
-    employee_id = fields.Many2one('hr.employee', string='Employee', required=False, store=True, copy=True)
+    employee_id = fields.Many2one('hr.employee', string='Employee', required=False, store=True, copy=True, tracking=True)
+    template_id = fields.Selection([
+        ('0', '0'),
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5'),
+        ('6', '6'),
+        ('7', '7'),
+        ('8', '8'),
+        ('9', '9')],
+        string='Finger Template', tracking=True,
+        help='Finger Template: Every Finger You Can Set....')
+    
     
     
 
@@ -441,7 +455,7 @@ class ZkMachine(models.Model):
         info = self.env['zk.machine'].search([('id','=',m_id)])
         machine_ip = info.name
         zk_port = info.port_no
-        timeout = 50
+        timeout = 15
         try:
             zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
         except NameError:
@@ -455,8 +469,8 @@ class ZkMachine(models.Model):
                 if u.user_id == user_ids:
                     uids = u.uid
                     break
+
             try:
-            
                 if uids:
                     if is_delete:
                         conn.delete_user(uid=uids,user_id=user_ids)
@@ -465,6 +479,7 @@ class ZkMachine(models.Model):
                 else:
                     if is_delete is False:
                         conn.set_user(uid=None, name = names, privilege=const.USER_DEFAULT, password='', group_id='', user_id=user_ids, card=cards)
+                        
             except Exception as e:
                 _logger.info("Process terminate : {}".format(e))
             finally:
@@ -536,15 +551,11 @@ class ZkMachine(models.Model):
             uids = False
             users_ = conn.get_users()
             for u in users_:
-                # if u.user_id == user_ids:
                 uids = u.uid
                 break
-            # template = conn.get_user_template(uid=1, user_id=self.employee_id.barcode, temp_id=4) 
-            # # raise UserError((template))
-            # conn.enroll_user(uid=1, temp_id=4, user_id=self.employee_id.barcode)
-           
-                  
-            # try:
+            
+            try:
+                conn.enroll_user(uid=uids, temp_id=int(self.template_id), user_id=self.employee_id.barcode)
             # print ("-- Restore Finger Information --")
             # user = conn.get_users()
             # for u in user:
@@ -552,10 +563,10 @@ class ZkMachine(models.Model):
             #         bin = my_finger.read()
             #         fing1 = Finger(u.uid, 1, True, bin)
             #         conn.save_user_template(u, [fing1])  
-            # except Exception as e:
-            #     print ("Process terminate : {}".format(e))
-            # finally:
-            #     if conn:
-            #         conn.disconnect()
+            except Exception as e:
+                raise UserError(_("Already Exist your Finger Template: {}".format(e)))
+            finally:
+                if conn:
+                    conn.disconnect()
         else:
             raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))               
