@@ -241,6 +241,7 @@ class SalesXlsx(models.AbstractModel):
                     shade_range = row
                 
                 if _range == product_range:
+                    #raise UserError((_range,product_range,row,last_one,p_last_one))
                     sheet.merge_range(p_last_one, 1, product_range, 1, '', merge_format)
                     product_range = row
                 if _range == slider_range:
@@ -254,7 +255,7 @@ class SalesXlsx(models.AbstractModel):
                     sheet.merge_range(last_one, 16, shade_range, 16, '', merge_format_)
                     shade_range = row
             
-            col=0
+            col = 0
             for l in line:
                 if col in(0,6,7):
                     sheet.write(row, col, l, format_label_1)
@@ -280,10 +281,10 @@ class SalesXlsx(models.AbstractModel):
                     bottom_total += l
                 if col == 20:
                     top_total += l
-                col+=1
+                col += 1
                 
-            row+=1
-            row_+=1
+            row += 1
+            row_ += 1
         
         sheet.write(row, 0, '')
         sheet.write(row, 1, '')

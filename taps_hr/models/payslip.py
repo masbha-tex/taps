@@ -27,50 +27,50 @@ class HrPayslipsss(models.Model):
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", string='Job Position')    
     join_date = fields.Date(related = 'contract_id.date_start', related_sudo=False, string="Join Date", readonly=True, store=True)
     emp_type = fields.Selection(related = 'contract_id.category', related_sudo=False, string="Emp Type", readonly=True, store=True)
-    com_otHours = fields.Float(compute="_compute_ot_rate", string = "C-OT Hours", store=True, copy=True)
-    otHours = fields.Float(compute="_compute_ot_rate", string = "OT Hours", store=True, copy=True)
-    otRate = fields.Float(compute="_compute_ot_rate", string = "OT Rate", store=True, copy=True)
-    gross_wage = fields.Monetary(compute='_compute_basic_net', store=True, copy=True, readonly=True)
-    basic_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    hra_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    medical_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    ot_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    arrear_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    att_bonus_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    convence_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    food_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    tiffin_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    snacks_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    car_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    others_alw_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    incentive_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    pf_empr_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    pf_empe_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    rpf_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    ait_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    basic_absent_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    gross_absent_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    loan_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    adv_salary_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    others_ded_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    earnings_total = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    deduction_total = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    net_wage = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    working_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    basic_absent_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    gross_absent_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    friday_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    holiday_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    coff_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    adjust_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    od_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    late_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    cl_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    sl_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    el_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    ml_days = fields.Float(compute='_compute_basic_net')
-    lw_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
-    total_payable_days = fields.Float(compute='_compute_basic_net', store=True, copy=True)
+    com_otHours = fields.Float(string = "C-OT Hours", store=True, copy=True)#compute="_compute_ot_rate", 
+    otHours = fields.Float(string = "OT Hours", store=True, copy=True)
+    otRate = fields.Float(string = "OT Rate", store=True, copy=True)
+    gross_wage = fields.Monetary( store=True, copy=True, readonly=True)
+    basic_wage = fields.Float( store=True, copy=True)
+    hra_wage = fields.Float( store=True, copy=True)
+    medical_wage = fields.Float( store=True, copy=True)
+    ot_wage = fields.Float( store=True, copy=True)
+    arrear_wage = fields.Float( store=True, copy=True)
+    att_bonus_wage = fields.Float( store=True, copy=True)
+    convence_wage = fields.Float( store=True, copy=True)
+    food_wage = fields.Float( store=True, copy=True)
+    tiffin_wage = fields.Float( store=True, copy=True)
+    snacks_wage = fields.Float( store=True, copy=True)
+    car_wage = fields.Float( store=True, copy=True)
+    others_alw_wage = fields.Float( store=True, copy=True)
+    incentive_wage = fields.Float( store=True, copy=True)
+    pf_empr_wage = fields.Float( store=True, copy=True)
+    pf_empe_wage = fields.Float( store=True, copy=True)
+    rpf_wage = fields.Float( store=True, copy=True)
+    ait_wage = fields.Float( store=True, copy=True)
+    basic_absent_wage = fields.Float( store=True, copy=True)
+    gross_absent_wage = fields.Float( store=True, copy=True)
+    loan_wage = fields.Float( store=True, copy=True)
+    adv_salary_wage = fields.Float( store=True, copy=True)
+    others_ded_wage = fields.Float( store=True, copy=True)
+    earnings_total = fields.Float( store=True, copy=True)
+    deduction_total = fields.Float( store=True, copy=True)
+    net_wage = fields.Float( store=True, copy=True)
+    working_days = fields.Float( store=True, copy=True)
+    basic_absent_days = fields.Float( store=True, copy=True)
+    gross_absent_days = fields.Float( store=True, copy=True)
+    friday_days = fields.Float( store=True, copy=True)
+    holiday_days = fields.Float( store=True, copy=True)
+    coff_days = fields.Float( store=True, copy=True)
+    adjust_days = fields.Float( store=True, copy=True)
+    od_days = fields.Float( store=True, copy=True)
+    late_days = fields.Float( store=True, copy=True)
+    cl_days = fields.Float( store=True, copy=True)
+    sl_days = fields.Float( store=True, copy=True)
+    el_days = fields.Float( store=True, copy=True)
+    ml_days = fields.Float(store=True, copy=True)
+    lw_days = fields.Float( store=True, copy=True)
+    total_payable_days = fields.Float( store=True, copy=True)
     
     @api.depends('employee_id')
     def _compute_employee_contract(self):
@@ -297,7 +297,8 @@ class HrPayslipsss(models.Model):
 #         else:
 #             self.warning_message = False
 
-        self.worked_days_line_ids = self._get_new_worked_days_lines()                
+        self.worked_days_line_ids = self._get_new_worked_days_lines()
+              
     
     def action_payslip_done(self):
         if any(slip.state == 'cancel' for slip in self):
@@ -314,6 +315,18 @@ class HrPayslipsss(models.Model):
                     ('employee_id', '=', regular_payslip.employee_id.id),
                 ])
                 attendance_entries.write({'is_lock' : True})
+                
+                
+                emp = self.env['hr.employee'].search([('id', '=', regular_payslip.employee_id.id),])
+                # for rec in emp:
+                pf_total = emp.contribution_sum
+                pf_total += regular_payslip.pf_empe_wage
+                # odoo_pf = abs(sum(emp.providient_pay_line_ids.mapped('total')))
+                # tms_pf_record = self.env['provident.fund.line'].search([('employee_id', '=', emp.id)])
+                # tms_pf = 0
+                # if tms_pf_record:
+                #     tms_pf = abs(sum(tms_pf_record.mapped('pf_amount')))
+                emp.update({'contribution_sum' : pf_total})     
 
         query_ = """truncate table hr_work_entry;"""
         self.env.cr.execute(query_)
@@ -686,6 +699,7 @@ class HrPayslipsss(models.Model):
             payslip.write({'line_ids': lines, 'number': number, 'state': 'verify', 'compute_date': fields.Date.today()})
             payslip.input_line_ids.unlink()
             payslip._input_compute_sheet(payslip.id, payslip.contract_id, payslip.employee_id, payslip.date_from, payslip.date_to)
+            payslip._compute_basic_net()
         return True
 
 class HrPayslipInputType(models.Model):

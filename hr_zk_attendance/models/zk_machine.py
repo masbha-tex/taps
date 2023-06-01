@@ -32,14 +32,14 @@ class HrAttendance(models.Model):
     #barcode = fields.Char(string='Badge ID')
     check_in = fields.Datetime(string = 'Check In',default=False, required=False, store=True, copy=True)
     
-# class HrEmployeePrivate(models.Model):
-#     _inherit = 'hr.employee'
+class HrEmployeePrivate(models.Model):
+    _inherit = 'hr.employee'
     
-#     @api.model
-#     def _machine_user_registration(self, is_delete, names, user_ids, cards):
-#         machines = self.env['zk.machine'].search([])
-#         for record in machines:
-#             record.action_set_user(record.id,is_delete,names,user_ids,cards)
+    @api.model
+    def _machine_user_registration(self, is_delete, names, user_ids, cards):
+        machines = self.env['zk.machine'].search([])
+        for record in machines:
+            record.action_set_user(record.id,is_delete,names,user_ids,cards)
 
 
 class ZkMachine(models.Model):
@@ -539,9 +539,9 @@ class ZkMachine(models.Model):
                 # if u.user_id == user_ids:
                 uids = u.uid
                 break
-            template = conn.get_user_template(uid=1, user_id=self.employee_id.barcode, temp_id=4) 
-            # raise UserError((template))
-            conn.enroll_user(uid=1, temp_id=4, user_id=self.employee_id.barcode)
+            # template = conn.get_user_template(uid=1, user_id=self.employee_id.barcode, temp_id=4) 
+            # # raise UserError((template))
+            # conn.enroll_user(uid=1, temp_id=4, user_id=self.employee_id.barcode)
            
                   
             # try:
