@@ -441,7 +441,7 @@ class ZkMachine(models.Model):
         info = self.env['zk.machine'].search([('id','=',m_id)])
         machine_ip = info.name
         zk_port = info.port_no
-        timeout = 15
+        timeout = 50
         try:
             zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
         except NameError:
