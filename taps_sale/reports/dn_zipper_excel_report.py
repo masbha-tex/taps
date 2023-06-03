@@ -202,7 +202,10 @@ class SalesXlsx(models.AbstractModel):
         sheet.write(0, 21, "SALESPERSON", column_style)
         col = 0
         row = 1
-        row_ = 0
+        row_p = 0
+        row_sl = 0
+        row_f = 0
+        row_sh = 0
         
         product_range = 0
         slider_range = 0
@@ -210,50 +213,91 @@ class SalesXlsx(models.AbstractModel):
         shade_range = 0
         
         for line in report_data:
-            for x in report_data[row_:]:
+                
+            for x in report_data[row_p:]:
                 p_last_one = row
-                sl_last_one = row
-                f_last_one = row
-                last_one = row
                 if (x[1] == line[1]):
                     product_range += 1
+                    row_p += 1
                 else:
                     sheet.merge_range(row, 1, product_range, 1, '', merge_format)
                     product_range = row
-                    
+                    break
+                if _range == product_range:
+                    sheet.merge_range(p_last_one, 1, product_range, 1, '', merge_format)
+                    product_range = row
+            for x in report_data[row_sl:]:
+                sl_last_one = row
                 if (x[2] == line[2]):
                     slider_range += 1
+                    row_sl += 1
                 else:
                     sheet.merge_range(row, 2, slider_range, 2, '', merge_format)
                     slider_range = row
-                    
-                if (x[3] == line[3]): 
+                    break
+                if _range == slider_range:
+                    sheet.merge_range(sl_last_one, 2, slider_range, 2, '', merge_format)
+                    slider_range = row
+            for x in report_data[row_f:]:
+                f_last_one = row
+                if (x[3] == line[3]):
                     finish_range += 1
+                    row_f += 1
                 else:
                     sheet.merge_range(row, 3, finish_range, 3, '', merge_format)
                     finish_range = row
-                
+                    break
+                if _range == finish_range:
+                    sheet.merge_range(f_last_one, 3, finish_range, 3, '', merge_format)
+                    finish_range = row
+
+            for x in report_data[row_sh:]:
+                last_one = row
                 if (x[9] == line[9]):
                     shade_range += 1
+                    row_sh += 1
                 else:
                     sheet.merge_range(row, 9, shade_range, 9, '', merge_format)
                     sheet.merge_range(row, 16, shade_range, 16, '', merge_format_)
                     shade_range = row
-                
-                if _range == product_range:
-                    #raise UserError((_range,product_range,row,last_one,p_last_one))
-                    sheet.merge_range(p_last_one, 1, product_range, 1, '', merge_format)
-                    product_range = row
-                if _range == slider_range:
-                    sheet.merge_range(sl_last_one, 2, slider_range, 2, '', merge_format)
-                    slider_range = row
-                if _range == finish_range:
-                    sheet.merge_range(f_last_one, 3, finish_range, 3, '', merge_format)
-                    finish_range = row
+                    break
                 if _range == shade_range:
                     sheet.merge_range(last_one, 9, shade_range, 9, '', merge_format)
                     sheet.merge_range(last_one, 16, shade_range, 16, '', merge_format_)
                     shade_range = row
+                    
+#                 if (x[1] == line[1]):
+#                     product_range += 1
+#                 else:
+#                     sheet.merge_range(row, 1, product_range, 1, '', merge_format)
+#                     product_range = row
+                    
+#                 if (x[2] == line[2]):
+#                     slider_range += 1
+#                 else:
+#                     sheet.merge_range(row, 2, slider_range, 2, '', merge_format)
+#                     slider_range = row
+                    
+#                 if (x[3] == line[3]): 
+#                     finish_range += 1
+#                 else:
+#                     sheet.merge_range(row, 3, finish_range, 3, '', merge_format)
+#                     finish_range = row
+                
+                
+                
+                # if _range == product_range:
+                #     sheet.merge_range(p_last_one, 1, product_range, 1, '', merge_format)
+                #     product_range = row
+                # if _range == slider_range:
+                #     sheet.merge_range(sl_last_one, 2, slider_range, 2, '', merge_format)
+                #     slider_range = row
+                # if _range == finish_range:
+                #     sheet.merge_range(f_last_one, 3, finish_range, 3, '', merge_format)
+                #     finish_range = row
+                
+                    
+                
             
             col = 0
             for l in line:
@@ -284,7 +328,7 @@ class SalesXlsx(models.AbstractModel):
                 col += 1
                 
             row += 1
-            row_ += 1
+            row_p = row_sl = row_f = row_sh = row-1
         
         sheet.write(row, 0, '')
         sheet.write(row, 1, '')

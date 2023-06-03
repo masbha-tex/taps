@@ -483,7 +483,7 @@
 																<t t-if="isinstance(line.finish, str)">
 										<t t-set="string_to_output" t-value="line.finish.split(',')"/>
 										<t t-foreach="string_to_output" t-as="string_line">
-											<span  t-esc="string_line"/>
+											<span t-esc="string_line"/>
 											<br/>
 										</t>
 									</t>
@@ -525,7 +525,7 @@
 																<t t-if="isinstance(line.shade, str)">
 										<t t-set="string_to_output" t-value="line.shade.split('\n')"/>
 										<t t-foreach="string_to_output" t-as="string_line">
-											<span  t-esc="string_line"/>
+											<span t-esc="string_line"/>
 											<br/>
 										</t>
 									</t>
@@ -748,8 +748,9 @@
 								</p>
 							</diV>
 						</t>
-						<t t-if="o.remarks">
+						
 							<diV class="col-4">
+							  <t t-if="o.remarks">
 							  <div>
 								<p>
 									<strong>REMARKS:</strong>
@@ -764,6 +765,7 @@
 									</t>
 								</p>
 								</div>
+								</t>
 								<br/>
 								<br/>
 								<div class="float-right mt32 mb32 ! important">
@@ -774,7 +776,7 @@
               </div>
             </div>
 							</diV>
-						</t>
+						
 						<br/>
 						<br/>
 						
