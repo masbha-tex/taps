@@ -342,8 +342,17 @@ class SalarySheet(models.TransientModel):
         emplist = docs.mapped('employee_id.id')
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
         #raise UserError((emplist)) ,department_id.parent_id.id,department_id.id
-        
-        
+        att_record = self.env['hr.attendance'].search([('employee_id', '=', payslip.employee_id.id),('attDate', '>=',payslip.date_from),('attDate', '<=',payslip.date_to)])
+        if emplist.isovertime is True:
+            payslip.otRate = round(((payslip.contract_id.basic/208)*2),2)
+            payslip.otHours = sum(att_record.mapped('otHours'))
+            payslip.com_otHours = sum(att_record.mapped('com_otHours'))
+        else:
+            payslip.otRate = 0.0
+            payslip.otHours = 0.0
+            payslip.com_otHours = 0.0
+        # result = '{0:02.0f}:{1:02.0f}'.format(*divmod(payslip.com_otHours * 60, 60))    
+        raise UserError((payslip.com_otHours))
         catlist = employee.mapped('category_ids.id')
         category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
         
@@ -395,8 +404,8 @@ class SalarySheet(models.TransientModel):
                 payslip._get_salary_line_total('BASIC'),
                 payslip._get_salary_line_total('HRA'),
                 payslip._get_salary_line_total('MEDICAL'), 
-                payslip._get_salary_line_total('OT Hours'),
-                payslip._get_salary_line_total('OT Rate'),
+                payslip.otHours,
+                payslip.otRate,
                 payslip._get_salary_line_total('OT'),
                 payslip._get_salary_line_total('ARREAR'),
                 payslip._get_salary_line_total('ATTBONUS'),
@@ -469,8 +478,8 @@ class SalarySheet(models.TransientModel):
                 payslip._get_salary_line_total('BASIC'),
                 payslip._get_salary_line_total('HRA'),
                 payslip._get_salary_line_total('MEDICAL'),
-                payslip._get_salary_line_total('OT Hours'),
-                payslip._get_salary_line_total('OT Rate'),
+                result,# = sum(att_record.mapped('com_otHours')),
+                payslip.otRate,# = round(((payslip.contract_id.basic/208)*2),2),
                 payslip._get_salary_line_total('OT'),
                 payslip._get_salary_line_total('ARREAR'),
                 payslip._get_salary_line_total('ATTBONUS'),
@@ -727,7 +736,7 @@ class SalarySheet(models.TransientModel):
         worksheet.set_column(48, 49, 16)
         worksheet.set_column(50, 50, 14)
         worksheet.set_column(51, 51, 16)
-        worksheet.set_column(52, 52, 23)
+        worksheet.set_column(52, 52, 25)
         # worksheet.set_column(2, 52, 25)
         
         merge_format = workbook.add_format({'align': 'center','valign': 'top'})
@@ -851,31 +860,68 @@ class SalarySheet(models.TransientModel):
         grandtotal = 0
         #company,cdata,dept_data,section,
         # raise UserError((dept_data[0]))
+        total_col = 0 
+        for line in report_data:
+            total_col = len(line)
+            break
         sec_sr = 0
         for x in [2,1,3,4]:
             com = company.browse(x)
             if com:
                 pr = payslip_runs.filtered(lambda pr: pr.company_id.id == com.id)
-                worksheet.write(row, 0, pr.name, format_label_3)
-                worksheet.set_row(row, None,   format_label_3)
+                col_com = 1
+                for x_c in range(total_col):
+                    if x_c == 0:
+                        worksheet.write(row, x_c, pr.name, format_label_3)
+                    elif (x_c > 7):
+                        if x_c in (8,9,10,11,12,13,14):
+                            worksheet.write(row, col_com, '', format_label_3)
+                        else: 
+                            worksheet.write(row, col_com, 0, format_label_3)
+                        col_com += 1
                 row += 1
+                
                 for cat in cdata:
                     if ((cat[2] == com.id)):
-                        worksheet.write(row, 0, cat[1], format_label_2)
-                        worksheet.set_row(row, None,   format_label_2)
+                        col_cat = 1
+                        for x_c in range(total_col):
+                            if x_c == 0:
+                                worksheet.write(row, x_c, cat[1], format_label_3)
+                            elif (x_c > 7):
+                                if x_c in (8,9,10,11,12,13,14):
+                                    worksheet.write(row, col_cat, '', format_label_3)
+                                else: 
+                                    worksheet.write(row, col_cat, 0, format_label_3)
+                                col_cat += 1
                         row += 1
                         for dep in dept_data:
                             if ((cat[2] == dep[0]) and (cat[0] == dep[3])):
-                                worksheet.write(row, 0, dep[2],format_label_4)
-                                worksheet.set_row(row, None,   format_label_4)
+                                col_dtp = 1
+                                for x_c in range(total_col):
+                                    if x_c == 0:
+                                        worksheet.write(row, x_c, dep[2], format_label_4)
+                                    elif (x_c > 7):
+                                        if x_c in (8,9,10,11,12,13,14):
+                                            worksheet.write(row, col_dtp, '', format_label_4)
+                                        else: 
+                                            worksheet.write(row, col_dtp, 0, format_label_4)
+                                        col_dtp += 1
                                 row += 1
                                 sec_sr = 0
                                 for line in report_data:
                                     if ((dep[0] == line[3]) and (dep[1] == line[4]) and (dep[3] == line[6])):
                                         if sec_sr == 0:
-                                            worksheet.write(row, 0, line[7],format_label_1)
-                                            worksheet.set_row(row, None,   format_label_1)
-                                            row += 1
+                                            col_sec = 1
+                                            for x_c in range(total_col):
+                                                if x_c == 0:
+                                                    worksheet.write(row, x_c, line[7], format_label_4)
+                                                elif (x_c > 7):
+                                                    if x_c in (8,9,10,11,12,13,14):
+                                                        worksheet.write(row, col_sec, '', format_label_4)
+                                                    else: 
+                                                        worksheet.write(row, col_sec, 0, format_label_4)
+                                                    col_sec += 1
+                                            row += 1                                            
                                         sec_sr += 1
                                         col = 0
                                         col_s = 1

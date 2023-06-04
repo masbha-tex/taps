@@ -745,6 +745,7 @@ class SaleOrder(models.Model):
             self.action_done()
         if self.sales_type == 'oa':
             self.generate_mrp()
+            #self.order_line.compute_shadewise_tape()
             
         return True
     def mrp_values(self,id,product,qty,uom,bom):

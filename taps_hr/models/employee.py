@@ -752,4 +752,5 @@ class HrEmployeePublic(models.Model):
     passing_year = fields.Char(readonly=True)
     result = fields.Char(readonly=True)
     rfid = fields.Char(readonly=True)
+    contribution_sum = fields.Char(readonly=True)
     
