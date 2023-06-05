@@ -360,29 +360,37 @@ class HrEmployeePrivate(models.Model):
         for record in emp_obj:
             if record:
                 if record.resign_date:
-                    currentDate = fields.datetime.strptime(str(record.resign_date),'%Y-%m-%d')
+                    currentDate = datetime.strptime(str(record.resign_date), '%Y-%m-%d')
                 else:
-                    currentDate = fields.datetime.now()
+                    currentDate = datetime.now() + timedelta(hours=6)
+                    
                 if record.joining_date:
-                    deadlineDate = fields.datetime.strptime(str(record.joining_date),'%Y-%m-%d')
+                    deadlineDate = datetime.strptime(str(record.joining_date), '%Y-%m-%d')
                 else:
-                    deadlineDate = fields.datetime.now()
+                    deadlineDate = datetime.now() + timedelta(hours=6)
+                if currentDate > deadlineDate:
+                    currentDate, deadlineDate = deadlineDate, currentDate 
+    
+                # Calculate the difference in years and months using relativedelta
+                delta = relativedelta(deadlineDate, (currentDate))
                 
-                daysLeft = deadlineDate - currentDate
-                years = ((daysLeft.total_seconds())/(365.242*24*3600))
-                years = abs(years)
-                yearsInt=int(years)
-                months=(years-yearsInt)*12
-                months = abs(months)
-                monthsInt=int(months)
-                days=(months-monthsInt)*(365.242/12)
-                days = abs(days)
-                daysInt=int(days)
-                length = str(int(yearsInt)) + ' Years ' + str(int(monthsInt)) + ' Months ' + str(int(daysInt)) + ' Days '
-            
-                record[-1].write({'service_length' : length})
+                # years = delta.years
+                # months = delta.months
+
+                years = delta.years
+                total_months = delta.years * 12 + delta.months
+                months = total_months % 12 
+
+                # raise UserError((years,months))
+    
+                # Calculate the remaining days
+                remaining_days = (deadlineDate - (currentDate + relativedelta(years=years, months=months))).days
+    
+                length = f"{years} Years {months} Months {remaining_days} Days"
+                
+                record[-1].write({'service_length': length})
             else:
-                record.write({'service_length' : False})
+                record.write({'service_length': False})        
      
     
 class HrEmployeeBase(models.AbstractModel):
@@ -753,4 +761,5 @@ class HrEmployeePublic(models.Model):
     result = fields.Char(readonly=True)
     rfid = fields.Char(readonly=True)
     contribution_sum = fields.Char(readonly=True)
+    pin = fields.Char(readonly=True)
     

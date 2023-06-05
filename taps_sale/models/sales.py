@@ -157,7 +157,7 @@ class SaleOrder(models.Model):
                 'po_no' : saleorder.order_ref.po_no,
                 'po_date' : saleorder.order_ref.po_date,
                 'revised_date' : saleorder.order_ref.revised_date,
-                
+                'dpi' : saleorder.order_ref.dpi,
                 'bank': saleorder.order_ref.bank,
                 'incoterm' : saleorder.order_ref.incoterm,
                 'shipment_mode' : saleorder.order_ref.shipment_mode,
@@ -249,6 +249,7 @@ class SaleOrder(models.Model):
                     'sizemm':lines.sizemm,
                     'logoref':lines.logoref,
                     'logo':lines.logo,
+                    'logo_type':lines.logo_type,
                     'style_gmt':lines.style_gmt,
                     'shapefin':lines.shapefin,
                     'bcdpart':lines.bcdpart,
@@ -257,6 +258,7 @@ class SaleOrder(models.Model):
                     'd_part':lines.d_part,
                     'product_code':lines.product_code,
                     'shape':lines.shape,
+                    'finish_ref':lines.finish_ref,
                     'nailmat':lines.nailmat,
                     'nailcap':lines.nailcap,
                     'fnamebcd':lines.fnamebcd,
@@ -895,12 +897,14 @@ class SaleOrderLine(models.Model):
     gap = fields.Text(string='Gap', store=True)
     logo = fields.Text(string='Logo', store=True)
     logoref = fields.Text(string='Logo Ref', store=True)
-    style_gmt = fields.Text(string='Style/Gnt', store=True)
+    logo_type = fields.Text(string='Logo Type', store=True)
+    style_gmt = fields.Text(string='Style/GMT', store=True)
     shapefin = fields.Text(string='Shape Finish', store=True)
     bcdpart = fields.Text(string='BCD Part Material Type / Size', store=True)
     b_part = fields.Text(string='B Part', store=True)
     c_part = fields.Text(string='C Part', store=True)
     d_part = fields.Text(string='D Part', store=True)
+    finish_ref = fields.Text(string='Finish Ref', store=True)
     product_code = fields.Text(string='Product Code', store=True)
     shape = fields.Text(string='Shape', store=True)
     nailmat = fields.Text(string='Nail Material / Type / Shape / Size', store=True)
@@ -1021,6 +1025,7 @@ class SaleOrderLine(models.Model):
         self.copy({'order_id': self.order_id.id, 'sequence': max_seq + 1})
         
         
+        
     @api.onchange('product_id')
     def product_id_change(self):
         if not self.product_id:
@@ -1125,8 +1130,14 @@ class SaleOrderLine(models.Model):
             if rec.attribute_id.name == 'Logo ':
                 self.logo = rec.product_attribute_value_id.name
                 continue
+            if rec.attribute_id.name == 'Logo Type':
+                self.logo_type = rec.product_attribute_value_id.name
+                continue
             if rec.attribute_id.name == 'Shape Finish':
                 self.shapefin = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Finish Ref':
+                self.finish_ref = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'BCD Part Material Type / Size':
                 self.bcdpart = rec.product_attribute_value_id.name
