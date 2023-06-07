@@ -67,8 +67,28 @@ class IncludeCateTypeInPT(models.Model):
         ('Resin', 'Resin'),
         ('Scrap', 'Scrap')
     ],string='PUR Description', store=False, readonly=False, copy=True)
+    gap_cm = fields.Float(string="GAP(cm & inc)", copy=True, default=None)
+    gap_inch = fields.Float(string="GAP(inch)", copy=True, default=None)
     #description_purchase = fields.Text('Purchase Description', related='pur_description', translate=True)
+    # fg_product_type = fields.Selection([
+    #     ('Auto Taffeta', 'Auto Taffeta'),
+    #     ('Brass Wire', 'Brass Wire'),
+    #     ('Scrap', 'Scrap')
+    #     ],string='PUR Description', store=True, readonly=True, copy=False)
     
+ 
+#  Plastic #5 CE
+#  Coil #5 OE
+#  Coil #5 CE
+#  Coil #3 CE
+#  Plastic #5 OE
+#  AL #5 CE
+#  Plastic #3 CE
+#  Metal #4 CE
+#  Metal #5 OE
+#  Metal #5 CE
+# Metal #8 OE
+        
     @api.onchange('pur_description')
     def onchange_pur_description(self):
         self.description_purchase = ''

@@ -201,13 +201,13 @@ class SalarySheet(models.TransientModel):
             return self.env.ref('taps_hr.action_bonus_sheet_pdf_report').report_action(self, data=data)
         if self.report_type == 'increment':
             return self.env.ref('taps_hr.action_increment_pdf_report').report_action(self, data=data)
+            
         
     def action_generate_xlsx_report(self):
-        
-        start_time = fields.datetime.now()
-        if self.report_type:
+        if self.report_type == 'SALARY':
+            start_time = fields.datetime.now()
             if self.holiday_type == "employee":#employee company department category
-                #raise UserError((self.report_type))
+                
                 empl = self.employee_id
                 emp = empl.mapped('id')
                     
@@ -284,8 +284,10 @@ class SalarySheet(models.TransientModel):
                         'bank_id': False,
                         'employee_type': False,
                         'company_all': self.company_all,
-                        'is_company': self.is_company}                
-        
+                        'is_company': self.is_company} 
+        # else:
+        #     raise UserError(('This Report are not XLSX Format'))
+            
         domain = []
         if data.get('date_from'):
             domain.append(('date_from', '=', data.get('date_from')))
@@ -315,44 +317,12 @@ class SalarySheet(models.TransientModel):
         if data.get('company_all'):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
-        # domain.append(('code', '=', 'NET'))
-        
-        ######## raise UserError((data.get('mode_company_id')))
-#         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
-#         #raise UserError((docs.id))
-#         datefrom = data.get('date_from')
-#         dateto = data.get('date_to')
-#         bankname = self.bank_id.name
-#         categname=[]
-#         if self.employee_type =='staff':
-#             categname='Staffs'
-#         if self.employee_type =='expatriate':
-#             categname='Expatriates'
-#         if self.employee_type =='worker':
-#             categname='Workers'
-#         if self.employee_type =='cstaff':
-#             categname='C-Staffs'
-#         if self.employee_type =='cworker':
-#             categname='C-Workers'
-            
-        
-#         #raise UserError((datefrom,dateto,bankname,categname))
+
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
         #raise UserError((docs.id)) 
         emplist = docs.mapped('employee_id.id')
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
-        #raise UserError((emplist)) ,department_id.parent_id.id,department_id.id
-        # att_record = self.env['hr.attendance'].search([('employee_id', '=', payslip.employee_id.id),('attDate', '>=',payslip.date_from),('attDate', '<=',payslip.date_to)])
-        # if emplist.isovertime is True:
-        #     payslip.otRate = round(((payslip.contract_id.basic/208)*2),2)
-        #     payslip.otHours = sum(att_record.mapped('otHours'))
-        #     payslip.com_otHours = sum(att_record.mapped('com_otHours'))
-        # else:
-        #     payslip.otRate = 0.0
-        #     payslip.otHours = 0.0
-        #     payslip.com_otHours = 0.0
-        # # result = '{0:02.0f}:{1:02.0f}'.format(*divmod(payslip.com_otHours * 60, 60))    
-        # raise UserError((payslip.com_otHours))
+        
         catlist = employee.mapped('category_ids.id')
         category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
         
@@ -364,17 +334,6 @@ class SalarySheet(models.TransientModel):
         payslip_runs = self.env['hr.payslip.run'].search([('id', 'in', runs.mapped('id'))])
         
         for payslip in docs:
-            # emp_list = self.env['hr.employee'].search([('id', '=', payslip.employee_id.id)])#,("active", '=', True)
-            # att_record = self.env['hr.attendance'].search([('employee_id', '=', payslip.employee_id.id),('attDate', '>=',payslip.date_from),('attDate', '<=',payslip.date_to)])
-            # if emp_list.isovertime is True:
-            #     payslip.otRate = round(((payslip.contract_id.basic/208)*2),2)
-            #     payslip.otHours = sum(att_record.mapped('otHours'))
-            #     payslip.com_otHours = sum(att_record.mapped('com_otHours'))
-            # else:
-            #     payslip.otRate = 0.0
-            #     payslip.otHours = 0.0
-            #     payslip.com_otHours = 0.0
-                
             slnumber = slnumber+1
             if self.is_company == False :
                 emp_data = [
@@ -429,9 +388,9 @@ class SalarySheet(models.TransientModel):
                 payslip._get_salary_line_total('INCENTIVE'),
                 payslip._get_salary_line_total('RPF'),
                 (payslip._get_salary_line_earnings_deduction_total('EARNINGS') +
-                 payslip._get_salary_line_earnings_deduction_total('BASIC') + 
-                 payslip._get_salary_line_earnings_deduction_total('HRA') + 
-                 payslip._get_salary_line_earnings_deduction_total('MEDICAL')),
+                 payslip._get_salary_line_total('BASIC') + 
+                 payslip._get_salary_line_total('HRA') + 
+                 payslip._get_salary_line_total('MEDICAL')),
                 payslip._get_salary_line_total('PFR'),
                 payslip._get_salary_line_total('PFE'),
                 payslip._get_salary_line_total('AIT'),
@@ -491,27 +450,26 @@ class SalarySheet(models.TransientModel):
                 payslip._get_salary_line_total('HRA'),
                 payslip._get_salary_line_total('MEDICAL'),
                 payslip.com_otHours,
-                payslip.otRate,# = round(((payslip.contract_id.basic/208)*2),2),
-                payslip._get_salary_line_total('OT'),
-                payslip._get_salary_line_total('ARREAR'),
+                payslip.otRate,
+                ((payslip.com_otHours)*(payslip.otRate)),
+                0,
                 payslip._get_salary_line_total('ATTBONUS'),
-                payslip._get_salary_line_total('CONVENCE'),
+                (payslip._get_salary_line_total('CONVENCE') + payslip._get_salary_line_total('CAR')),
                 payslip._get_salary_line_total('FOOD'),
                 payslip._get_salary_line_total('TIFFIN'),
                 payslip._get_salary_line_total('SNACKS'),
                 payslip._get_salary_line_total('RPF'),
-                ((payslip._get_salary_line_earnings_deduction_total('BASIC') + 
-                 payslip._get_salary_line_earnings_deduction_total('HRA') + 
-                 payslip._get_salary_line_earnings_deduction_total('MEDICAL')+
-                 payslip._get_salary_line_total('com_otHours')+
-                 payslip._get_salary_line_total('OT Rate')+
-                 payslip._get_salary_line_total('OT')+
-                 payslip._get_salary_line_total('FOOD')+
-                 payslip._get_salary_line_total('TIFFIN')+
-                 payslip._get_salary_line_total('SNACKS')+
-                 payslip._get_salary_line_total('RPF'))-(payslip._get_salary_line_total('CAR')+
-                                                         payslip._get_salary_line_total('OTHERS_ALW')+
-                                                         payslip._get_salary_line_total('INCENTIVE'))),
+                ((payslip._get_salary_line_total('BASIC') + 
+                  payslip._get_salary_line_total('HRA') +                 
+                  payslip._get_salary_line_total('MEDICAL')+
+                  ((payslip.com_otHours)*(payslip.otRate))+
+                  payslip._get_salary_line_total('ATTBONUS')+
+                  payslip._get_salary_line_total('CONVENCE')+ 
+                  payslip._get_salary_line_total('FOOD')+
+                  payslip._get_salary_line_total('TIFFIN')+
+                  payslip._get_salary_line_total('SNACKS')+
+                  payslip._get_salary_line_total('CAR')+
+                  payslip._get_salary_line_total('RPF'))),
                 payslip._get_salary_line_total('PFR'),
                 payslip._get_salary_line_total('PFE'),
                 payslip._get_salary_line_total('AIT'),
@@ -521,18 +479,17 @@ class SalarySheet(models.TransientModel):
                 payslip._get_salary_line_total('ADV_SALARY'),
                 payslip._get_salary_line_total('OTHERS_DED'),
                 payslip._get_salary_line_earnings_deduction_total('DED'),
-                (((payslip._get_salary_line_earnings_deduction_total('BASIC') + 
-                 payslip._get_salary_line_earnings_deduction_total('HRA') + 
-                 payslip._get_salary_line_earnings_deduction_total('MEDICAL')+
-                 payslip._get_salary_line_total('com_otHours')+
-                 payslip._get_salary_line_total('OT Rate')+
-                 payslip._get_salary_line_total('OT')+
+                (((payslip._get_salary_line_total('BASIC') + 
+                 payslip._get_salary_line_total('HRA') + 
+                 payslip._get_salary_line_total('MEDICAL')+
+                 ((payslip.com_otHours)*(payslip.otRate))+
+                 payslip._get_salary_line_total('ATTBONUS')+
+                 payslip._get_salary_line_total('CONVENCE')+ 
                  payslip._get_salary_line_total('FOOD')+
                  payslip._get_salary_line_total('TIFFIN')+
                  payslip._get_salary_line_total('SNACKS')+
-                 payslip._get_salary_line_total('RPF'))-(payslip._get_salary_line_total('CAR')+
-                                                         payslip._get_salary_line_total('OTHERS_ALW')+
-                                                         payslip._get_salary_line_total('INCENTIVE')))-payslip._get_salary_line_earnings_deduction_total('DED')),
+                  payslip._get_salary_line_total('CAR')+
+                  payslip._get_salary_line_total('RPF')))-payslip._get_salary_line_earnings_deduction_total('DED')),
                 payslip.employee_id.bank_account_id.acc_number,
                 payslip.employee_id.bank_id.name,
                 
@@ -543,23 +500,6 @@ class SalarySheet(models.TransientModel):
                     
             report_data.append(emp_data)     
                     
-#####################################             return {
-#             'doc_ids': docs.ids,
-#             'doc_model': 'hr.payslip',
-#             'docs': docs,
-#             'datas': report_data,
-# #            'datas': common_data,
-# #             'alldays': all_datelist,
-#             'dpt': dept_data,
-#             'sec': section,
-#             'com': company,
-#             'cat': cdata,
-#             'cd' : emp_data,
-# #             'stdate': stdate_data,
-# #            'lsdate': lsdate_data,
-#             'is_com' : data.get('is_company')
-#         }
-
         
         categ_data = []
         cdata = []
@@ -969,6 +909,7 @@ class SalarySheet(models.TransientModel):
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Salary Sheet')),
             'target': 'self',
         }
+        
 
 class PaySlipReportPDF(models.AbstractModel):
     _name = 'report.taps_hr.pay_slip_pdf_template'

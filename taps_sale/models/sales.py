@@ -58,7 +58,7 @@ class SaleOrder(models.Model):
     destination_port = fields.Char(string='Destination Port')
     origin_country = fields.Char(string='Country of origin', default='BANGLADESH')
     validity_period = fields.Char(string='Period of validity')
-    amount_in_word = fields.Char(string='Amount In Words')
+    amount_in_word = fields.Char(string='Amount In Words' ,compute="_amount_in_words")
     # amount_in_word = num2words(amount_total, lang='en_IN')
     appr_weight = fields.Char(string='Approximate Weight')
     applicant_bank = fields.Text(string='Applicant Bank')
@@ -90,6 +90,27 @@ class SaleOrder(models.Model):
     assortment = fields.Char(string='Assortment')
     dpi = fields.Char(string='DPI')
     
+    
+    def _amount_in_words(self):
+        total = 0.0
+        for rec in self:
+            total = round(rec.amount_total, 2)
+            # raise UserError((total))
+            # rec.amount_in_word = str (rec.currency_id.amount_to_text (total))
+            # rec.amount_in_word = num2words(total)
+            text = ''
+            entire_num = int((str(total).split('.'))[0])
+            decimal_num = int((str(total).split('.'))[1])
+            if decimal_num < 10:
+                decimal_num = decimal_num * 10        
+            text+=num2words(entire_num, lang='en_IN')
+            text+=' dollers '
+            text+=num2words(decimal_num, lang='en_IN')
+            text+=' cents '
+            rec.amount_in_word = text.upper()
+            
+
+
     
     #dlfkdjfk
     def _compute_avg_price (self): 
@@ -746,7 +767,9 @@ class SaleOrder(models.Model):
         if self.env.user.has_group('sale.group_auto_done_setting'):
             self.action_done()
         if self.sales_type == 'oa':
-            self.generate_mrp()
+            self.order_line.product_consumption(self.id)
+            self.order_line.compute_shadewise_tape()
+            #self.generate_mrp()
             #self.order_line.compute_shadewise_tape()
             
         return True
@@ -1093,9 +1116,13 @@ class SaleOrderLine(models.Model):
                 continue
             if rec.attribute_id.name == 'Size (Inch)':
                 self.sizein = rec.product_attribute_value_id.name
+                if rec.product_attribute_value_id.name !='N/A':
+                    self.gap = self.product_id.product_tmpl_id.gap_inch
                 continue
             if rec.attribute_id.name == 'Size (CM)':
                 self.sizecm = rec.product_attribute_value_id.name
+                if rec.product_attribute_value_id.name !='N/A':
+                    self.gap = self.product_id.product_tmpl_id.gap_cm
                 continue
             if rec.attribute_id.name == 'Size (MM)':
                 self.sizemm = rec.product_attribute_value_id.name
@@ -1117,9 +1144,6 @@ class SaleOrderLine(models.Model):
                 continue
             if rec.attribute_id.name == 'Dipping Finish':
                 self.dippingfinish = rec.product_attribute_value_id.name
-                continue
-            if rec.attribute_id.name == 'Gap':
-                self.gap = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Logo Ref':
                 self.logoref = rec.product_attribute_value_id.name
@@ -1364,4 +1388,87 @@ class SaleOrderLine(models.Model):
                     if wastage_pinbox.wastage>0:
                         con_pinbox += (con_pinbox*wastage_pinbox.wastage)/100
                 self.pinbox_con = round(con_pinbox*self.product_uom_qty,4)
+
+    def product_consumption(self,id):
+        wastage_percent = self.env['wastage.percent']
+        size_type = "inch"
+        size = 0
+        consumption = 0.0
+
+        all_line = self.env['sale.order.line'].search([('order_id', '=', id)])
+        if all_line:
+            for line in all_line:
+                if line.sizein == "N/A":
+                    size_type = "cm"
+                    size = line.sizecm
+                else:
+                    size = line.sizein
+                if line.topbottom:
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),('unit_type', '=', size_type),('topbottom_type', '=', line.topbottom)])
+                else:
+                    formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),('unit_type', '=', size_type)])
+                
+                if formula:
+                    tape_type = 'Cotton'
+                    if line.dyedtape:
+                        if tape_type in line.dyedtape:
+                            wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Cotton Tape')])
+                        else:
+                            wastage_tape = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Tape')])
+                    
+                    else:
+                        wastage_tape = False
+        
+                    wastage_slider = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Slider')])
+                    wastage_top = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Top')])
+                    wastage_bottom = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Bottom')])
+                    wastage_wire = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Wire')])
+                    wastage_pinbox = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Pinbox')])
+        
+                    con_tape = con_wire = con_slider = con_top = con_bottom = con_pinboc = 0       
+                    if formula.tape_python_compute:
+                        con_tape = safe_eval(formula.tape_python_compute, {'s': size, 'g': line.gap})
+                        if wastage_tape:
+                            if wastage_tape.wastage>0:
+                                con_tape += (con_tape*wastage_tape.wastage)/100
+                        line.tape_con = round(con_tape*line.product_uom_qty,4)
+        
+                    if formula.wair_python_compute:
+                        con_wire = safe_eval(formula.wair_python_compute, {'s': size})
+                        if wastage_wire:
+                            if wastage_wire.wastage>0:
+                                con_wire += (con_wire*wastage_wire.wastage)/100
+                        line.wire_con = round(con_wire*line.product_uom_qty,4)
+                    if formula.slider_python_compute:
+                        con_slider = safe_eval(formula.slider_python_compute)
+                        if wastage_slider:
+                            if wastage_slider.wastage>0:
+                                con_slider += (con_slider*wastage_slider.wastage)/100
+                        line.slider_con = round(con_slider*line.product_uom_qty,4)
+                    if formula.twair_python_compute:
+                        con_top = safe_eval(formula.twair_python_compute)
+                        if wastage_top:
+                            if wastage_top.wastage>0:
+                                con_top += (con_top*wastage_top.wastage)/100
+                        line.topwire_con = round(con_top*line.product_uom_qty,4)
+                    if formula.bwire_python_compute:
+                        con_bottom = safe_eval(formula.bwire_python_compute)
+                        if wastage_bottom:
+                            if wastage_bottom.wastage>0:
+                                con_bottom += (con_bottom*wastage_bottom.wastage)/100
+                        line.botomwire_con = round(con_bottom*line.product_uom_qty,4)
+                    if formula.tbwire_python_compute:
+                        con_bottom = safe_eval(formula.tbwire_python_compute)
+                        if wastage_bottom:
+                            if wastage_bottom.wastage>0:
+                                con_bottom += (con_bottom*wastage_bottom.wastage)/100
+                        line.tbwire_con = round(con_bottom*line.product_uom_qty,4)
+                    if formula.pinbox_python_compute:
+                        con_pinbox = safe_eval(formula.pinbox_python_compute)
+                        if wastage_pinbox:
+                            if wastage_pinbox.wastage>0:
+                                con_pinbox += (con_pinbox*wastage_pinbox.wastage)/100
+                        line.pinbox_con = round(con_pinbox*line.product_uom_qty,4)
+
+
         

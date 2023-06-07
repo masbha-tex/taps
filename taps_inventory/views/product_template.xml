@@ -12,6 +12,13 @@
                 <xpath expr="//field[@name='barcode']" position="after">
                     <field name="generic_name" string="Generic Name"/>
                </xpath>
+                <xpath expr="//field[@name='uom_po_id']" position="after">
+                    <label for="gap_cm"/>
+                    <div class="o_row">
+                        <field name="gap_cm" placeholder="CM"/>
+                        <field name="gap_inch" placeholder="Inch"/>
+                    </div>
+               </xpath>
             </field>
         </record>
         

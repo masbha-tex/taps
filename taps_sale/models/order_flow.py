@@ -44,51 +44,56 @@ class OrderFlow(models.Model):
         
         query = """
         CREATE or REPLACE VIEW order_flow AS (
-        select row_number() OVER() AS id,order_id,pi_type,sale_representative,date_order,user_id,
-        pi_number,pi_date,currency_id,partner_id,buyer_name,style_ref,season,po_no,payment_term_id,
-        incoterm,bank,department,product,finish,slider,oa_no,
-        
-        sum(product_uom_qty) as so_qty,
-        sum(price_subtotal) as so_value,
-        sum(oa_qty) as oa_qty,
-        sum(oa_value) as oa_value,
-        
-        (sum(product_uom_qty)-sum(oa_qty)) as quantity_balance,
-        (sum(price_subtotal)-sum(oa_value)) as value_balance
-        
-        
+        select row_number() OVER() AS id,order_id,pi_type,sale_representative,date_order,user_id, 
+        pi_number,pi_date,currency_id,partner_id,buyer_name,style_ref,season,po_no,payment_term_id, 
+        incoterm,bank,department,product,finish,slider,oa_no, 
+        so_qty,so_value,oa_qty,oa_value,quantity_balance,value_balance 
+        from
+        ( 
+        select 
+        so.order_id,so.pi_type,so.sale_representative,so.date_order,so.user_id, 
+        so.pi_number,so.pi_date,so.currency_id,so.partner_id, 
+        so.buyer_name,so.style_ref,so.season,so.po_no,so.payment_term_id, 
+        so.incoterm,so.bank,so.department,so.product,so.finish,so.slider,oa.id as oa_no, 
+        so.product_uom_qty as so_qty, so.price_subtotal as so_value, oa.product_uom_qty as oa_qty, 
+        oa.price_subtotal as oa_value, 
+        (so.product_uom_qty-COALESCE(oa.product_uom_qty,0)) as quantity_balance, 
+        (so.price_subtotal- COALESCE(oa.price_subtotal,0)) as value_balance 
         from
         (
-        select s.id as order_id,s.pi_type,s.sale_representative,s.date_order,s.user_id,s.pi_number,s.pi_date,
+        select s.id as order_id,s.pi_type,s.sale_representative,s.date_order,s.user_id,
+        s.pi_number,s.pi_date,s.currency_id,s.partner_id,s.buyer_name,s.style_ref,s.season,
+        s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
+        pt.name as product,sol.finish,sol.slidercodesfg as slider,
+        sum(sol.product_uom_qty) as product_uom_qty,sum(sol.price_subtotal) as price_subtotal
+        
+        from sale_order as s
+        inner join sale_order_line as sol on s.id=sol.order_id 
+        inner join product_product as p on p.id = sol.product_id 
+        inner join product_template as pt on pt.id = p.product_tmpl_id
+        
+        where s.state='sale' and s.sales_type in('sale','cancel') and sol.product_uom_qty>0
+        group by s.id,s.pi_type,s.sale_representative,
+        s.date_order,s.user_id,s.pi_number,s.pi_date, 
         s.currency_id,s.partner_id,s.buyer_name,s.style_ref,
         s.season,s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
+        pt.name,sol.finish,sol.slidercodesfg
+        ) as so
         
-        pt.name as product,
-        sol.finish,
-        sol.slidercodesfg as slider,
-        oa.id as oa_no,
-        sol.product_uom_qty,
-        sol.price_subtotal,
+        left join
         
-        COALESCE((select sum(oa_l.product_uom_qty)  from sale_order_line as oa_l where oa_l.order_id=oa.id 
-        and oa_l.product_id=sol.product_id and oa_l.finish=sol.finish and oa_l.slidercodesfg=sol.slidercodesfg),0)
-        as oa_qty,
+        (
+        select s.id,s.order_ref,
+        pt.name as product,sol.finish,sol.slidercodesfg as slider,
+        sum(sol.product_uom_qty) as product_uom_qty,sum(sol.price_subtotal) as price_subtotal
         
-        COALESCE((select sum(oa_l.price_subtotal) from sale_order_line as oa_l where oa_l.order_id=oa.id 
-        and oa_l.product_id=sol.product_id and oa_l.finish=sol.finish and oa_l.slidercodesfg=sol.slidercodesfg),0)
-        as oa_value
-
         from sale_order as s
-        inner join sale_order_line as sol on s.id=sol.order_id
-        
-        inner join product_product as p on p.id=sol.product_id
-        inner join product_template as pt on pt.id=p.product_tmpl_id
-        
-        left join sale_order as oa on oa.order_ref=s.id
-        
-        where s.state='sale' and s.sales_type='sale'
-        ) as all_so group by order_id,pi_type,sale_representative,date_order,user_id,
-        pi_number,pi_date,currency_id,partner_id,buyer_name,style_ref,season,po_no,payment_term_id,
-        incoterm,bank,department,product,finish,slider,oa_no order by order_id,product,finish,slider,oa_no)
+        inner join sale_order_line as sol on s.id = sol.order_id 
+        inner join product_product as p on p.id = sol.product_id 
+        inner join product_template as pt on pt.id = p.product_tmpl_id 
+        where s.state='sale' and s.sales_type='oa' and sol.product_uom_qty>0 
+        group by s.id,s.order_ref,pt.name,sol.finish,sol.slidercodesfg 
+        ) as oa  on so.order_id=oa.order_ref and so.product=oa.product and so.finish=oa.finish and 
+        so.slider=oa.slider) as a)
         """
         self.env.cr.execute(query)
