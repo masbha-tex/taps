@@ -100,13 +100,13 @@ class SaleOrder(models.Model):
             # rec.amount_in_word = num2words(total)
             text = ''
             entire_num = int((str(total).split('.'))[0])
-            decimal_num = int((str(total).split('.'))[1])
-            if decimal_num < 10:
-                decimal_num = decimal_num * 10        
+            decimal_num = int((str(total).split('.'))[1])       
             text+=num2words(entire_num, lang='en_IN')
             text+=' dollers '
-            text+=num2words(decimal_num, lang='en_IN')
-            text+=' cents '
+            if decimal_num >= 10:
+                # decimal_num = decimal_num * 10 
+                text+=num2words(decimal_num, lang='en_IN')
+                text+=' cents '
             rec.amount_in_word = text.upper()
             
 
