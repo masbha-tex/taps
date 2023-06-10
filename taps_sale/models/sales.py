@@ -94,7 +94,7 @@ class SaleOrder(models.Model):
     def _amount_in_words(self):
         total = 0.0
         for rec in self:
-            total = round(rec.amount_total, 2)
+            total = format(rec.amount_total, ".2f")
             # raise UserError((total))
             # rec.amount_in_word = str (rec.currency_id.amount_to_text (total))
             # rec.amount_in_word = num2words(total)
@@ -102,12 +102,15 @@ class SaleOrder(models.Model):
             entire_num = int((str(total).split('.'))[0])
             decimal_num = int((str(total).split('.'))[1])       
             text+=num2words(entire_num, lang='en_IN')
-            text+=' dollers '
-            # raise UserError((decimal_num))
-            if decimal_num >= 1:
-                if decimal_num <10:
-                    decimal_num = decimal_num * 10 
-                text+=num2words(decimal_num, lang='en_IN')
+            if entire_num == 1:
+                text+=' doller '
+            else:
+                text+=' dollers '
+        
+            text+=num2words(decimal_num, lang='en_IN')
+            if decimal_num == 1:
+                text+=' cent '
+            else:
                 text+=' cents '
             rec.amount_in_word = text.upper()
             
@@ -141,6 +144,8 @@ class SaleOrder(models.Model):
     def _onchange_orderline_ids(self):
         if self.order_ref:
             self._create_oa()
+        if self.order_ref:
+            self._create_pi()
         else:
             self.order_line = False #product_uom_qty
     
@@ -306,6 +311,171 @@ class SaleOrder(models.Model):
             
             #saleorder.order_ref.order_line#
             saleorder.order_line = [(5, 0)] + [(0, 0, value) for value in orderline_values]
+
+    def _create_pi(self):
+        for saleorder in self:
+            if not saleorder.order_ref:
+                continue
+            saleorder.update({
+                'company_id': saleorder.order_ref.company_id.id,
+                'date_order': saleorder.order_ref.date_order,
+                'pi_date': saleorder.order_ref.pi_date,
+                'validity_date': saleorder.order_ref.validity_date,
+                'require_signature': saleorder.order_ref.require_signature,
+                # 'require_payment': saleorder.order_ref.require_payment,
+                'partner_id': saleorder.order_ref.partner_id,
+                'partner_invoice_id': saleorder.order_ref.partner_invoice_id,
+                'partner_shipping_id': saleorder.order_ref.partner_shipping_id,
+                'pricelist_id': saleorder.order_ref.pricelist_id,
+                'currency_id': saleorder.order_ref.currency_id,
+                'invoice_status': saleorder.order_ref.invoice_status,
+                'invoice_details': saleorder.order_ref.invoice_details,
+                'delivery_details': saleorder.order_ref.delivery_details,
+                'note' : saleorder.order_ref.note,
+                # 'others_note': saleorder.order_ref.others_note,
+                'remarks' : saleorder.order_ref.remarks,
+                'kind_attention' : saleorder.order_ref.kind_attention,
+                'customer_ref' : saleorder.order_ref.customer_ref,
+                'style_ref' : saleorder.order_ref.style_ref,
+                'season' : saleorder.order_ref.season,
+                'department' : saleorder.order_ref.department,
+                'division' : saleorder.order_ref.division,
+                'buyer_name': saleorder.order_ref.buyer_name,
+                'hs_code': saleorder.order_ref.hs_code,
+                'production_type' : saleorder.order_ref.production_type,
+                'production_group' : saleorder.order_ref.production_group,
+                'order_type' : saleorder.order_ref.order_type,
+                # 'po_no' : saleorder.order_ref.po_no,
+                # 'po_date' : saleorder.order_ref.po_date,
+                # 'revised_date' : saleorder.order_ref.revised_date,
+                # 'dpi' : saleorder.order_ref.dpi,
+                # 'bank': saleorder.order_ref.bank,
+                'incoterm' : saleorder.order_ref.incoterm,
+                'shipment_mode' : saleorder.order_ref.shipment_mode,
+                'loading_place' : saleorder.order_ref.loading_place,
+                'destination_port' : saleorder.order_ref.destination_port,
+                'origin_country' : saleorder.order_ref.origin_country,
+                'validity_period' : saleorder.order_ref.validity_period,
+                'sale_representative' : saleorder.order_ref.sale_representative.id
+            })
+            
+            orderline = self.env['sale.order.line'].search([('order_id', '=', saleorder.order_ref.id)]).sorted(key = 'sequence')
+            orderline_values = []
+            for lines in orderline:
+                orderline_values += [{
+                    'order_id':self.id,
+                    'name':lines.name,
+                    'sequence':lines.sequence,
+                    'invoice_lines':lines.invoice_lines,
+                    'invoice_status':lines.invoice_status,
+                    'price_unit':lines.price_unit,
+                    'price_subtotal':lines.price_subtotal,
+                    'price_tax':lines.price_tax,
+                    'price_total':lines.price_total,
+                    'price_reduce':lines.price_reduce,
+                    'tax_id':lines.tax_id,
+                    'price_reduce_taxinc':lines.price_reduce_taxinc,
+                    'price_reduce_taxexcl':lines.price_reduce_taxexcl,
+                    'discount':lines.discount,
+                    'product_id':lines.product_id,
+                    'product_template_id':lines.product_template_id,
+                    'product_updatable':lines.product_updatable,
+                    'product_uom_qty':lines.product_uom_qty,
+                    'product_uom':lines.product_uom,
+                    'product_uom_category_id':lines.product_uom_category_id,
+                    'product_uom_readonly':lines.product_uom_readonly,
+                    'product_custom_attribute_value_ids':lines.product_custom_attribute_value_ids,
+                    'product_no_variant_attribute_value_ids':lines.product_no_variant_attribute_value_ids,
+                    'qty_delivered_method':lines.qty_delivered_method,
+                    'qty_delivered':lines.qty_delivered,
+                    'qty_delivered_manual':lines.qty_delivered_manual,
+                    'qty_to_invoice':lines.qty_to_invoice,
+                    'qty_invoiced':lines.qty_invoiced,
+                    'untaxed_amount_invoiced':lines.untaxed_amount_invoiced,
+                    'untaxed_amount_to_invoice':lines.untaxed_amount_to_invoice,
+                    'salesman_id':lines.salesman_id,
+                    'currency_id':lines.currency_id,
+                    'company_id':lines.company_id,
+                    'order_partner_id':lines.order_partner_id,
+                    'analytic_tag_ids':lines.analytic_tag_ids,
+                    'analytic_line_ids':lines.analytic_line_ids,
+                    'is_expense':lines.is_expense,
+                    'is_downpayment':lines.is_downpayment,
+                    'state':lines.state,
+                    'customer_lead':lines.customer_lead,
+                    'display_type':lines.display_type,
+                    'id':lines.id,
+                    'display_name':lines.display_name,
+                    'create_uid':lines.create_uid,
+                    'create_date':lines.create_date,
+                    'write_uid':lines.write_uid,
+                    'write_date':lines.write_date,
+                    'sale_order_option_ids':lines.sale_order_option_ids,
+                    'product_packaging':lines.product_packaging,
+                    'route_id':lines.route_id,
+                    'move_ids':lines.move_ids,
+                    'product_type':lines.product_type,
+                    'virtual_available_at_date':lines.virtual_available_at_date,
+                    'scheduled_date':lines.scheduled_date,
+                    'forecast_expected_date':lines.forecast_expected_date,
+                    'free_qty_today':lines.free_qty_today,
+                    'qty_available_today':lines.qty_available_today,
+                    'warehouse_id':lines.warehouse_id,
+                    'qty_to_deliver':lines.qty_to_deliver,
+                    'is_mto':lines.is_mto,
+                    'display_qty_widget':lines.display_qty_widget,
+                    'purchase_line_ids':lines.purchase_line_ids,
+                    'purchase_line_count':lines.purchase_line_count,
+                    'is_delivery':lines.is_delivery,
+                    'product_qty':lines.product_qty,
+                    'recompute_delivery_price':lines.recompute_delivery_price,
+                    'is_configurable_product':lines.is_configurable_product,
+                    'product_template_attribute_value_ids':lines.product_template_attribute_value_ids,
+                    'topbottom':lines.topbottom,
+                    'slidercode':lines.slidercode,
+                    'finish':lines.finish,
+                    'shade':lines.shade,
+                    'sizein':lines.sizein,
+                    'sizecm':lines.sizecm,
+                    'sizemm':lines.sizemm,
+                    'logoref':lines.logoref,
+                    'logo':lines.logo,
+                    'logo_type':lines.logo_type,
+                    'style_gmt':lines.style_gmt,
+                    'shapefin':lines.shapefin,
+                    'bcdpart':lines.bcdpart,
+                    'b_part':lines.b_part,
+                    'c_part':lines.c_part,
+                    'd_part':lines.d_part,
+                    'product_code':lines.product_code,
+                    'shape':lines.shape,
+                    'finish_ref':lines.finish_ref,
+                    'nailmat':lines.nailmat,
+                    'nailcap':lines.nailcap,
+                    'fnamebcd':lines.fnamebcd,
+                    'nu1washer':lines.nu1washer,
+                    'nu2washer':lines.nu2washer,
+                    'slidercodesfg':lines.slidercodesfg,
+                    'dyedtape':lines.dyedtape,
+                    'ptopfinish':lines.ptopfinish,
+                    'numberoftop':lines.numberoftop,
+                    'pbotomfinish':lines.pbotomfinish,
+                    'ppinboxfinish':lines.ppinboxfinish,
+                    'dippingfinish':lines.dippingfinish,
+                    'gap':lines.gap,
+                    'bom_id':lines.bom_id,
+                    'tape_con':lines.tape_con,
+                    'slider_con':lines.slider_con,
+                    'topwire_con':lines.topwire_con,
+                    'botomwire_con':lines.botomwire_con,
+                    'wire_con':lines.wire_con,
+                    'pinbox_con':lines.pinbox_con,
+                }]            
+            
+            #saleorder.order_ref.order_line#
+            saleorder.order_line = [(5, 0)] + [(0, 0, value) for value in orderline_values]
+
+
     
     
     
