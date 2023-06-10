@@ -103,8 +103,10 @@ class SaleOrder(models.Model):
             decimal_num = int((str(total).split('.'))[1])       
             text+=num2words(entire_num, lang='en_IN')
             text+=' dollers '
-            if decimal_num >= 10:
-                # decimal_num = decimal_num * 10 
+            # raise UserError((decimal_num))
+            if decimal_num >= 1:
+                if decimal_num <10:
+                    decimal_num = decimal_num * 10 
                 text+=num2words(decimal_num, lang='en_IN')
                 text+=' cents '
             rec.amount_in_word = text.upper()
