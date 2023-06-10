@@ -97,7 +97,7 @@ class ProductionLot(models.Model):
             else:
                 po_line = self.env['purchase.order.line'].search([('product_id', '=', values.get('product_id'))]).sorted(key = 'id', reverse=True)[:1]
                 cur_rate = po_line.order_id.currency_rate
-                if (cur_rate>0) and (po_line>0):
+                if po_line:
                     price = po_line.price_unit/cur_rate
                 
             values.update(pur_price=price,unit_price=price)

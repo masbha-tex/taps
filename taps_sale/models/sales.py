@@ -103,15 +103,15 @@ class SaleOrder(models.Model):
             decimal_num = int((str(total).split('.'))[1])       
             text+=num2words(entire_num, lang='en_IN')
             if entire_num == 1:
-                text+=' doller '
+                text+=' dollar '
             else:
-                text+=' dollers '
-        
-            text+=num2words(decimal_num, lang='en_IN')
-            if decimal_num == 1:
-                text+=' cent '
-            else:
-                text+=' cents '
+                text+=' dollars '
+            if decimal_num > 0:
+                text+=num2words(decimal_num, lang='en_IN')
+                if decimal_num == 1:
+                    text+=' cent '
+                else:
+                    text+=' cents '
             rec.amount_in_word = text.upper()
             
 
