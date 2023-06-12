@@ -465,18 +465,20 @@ class StockForecastReport(models.TransientModel):
         
         
         query = """
-        insert into stock_opening_closing(id,product_id,product_category,parent_category,lot_id,rejected,lot_price,pur_price,landed_cost,opening_qty,opening_value,receive_date,receive_qty,receive_value,issue_qty,issue_value,cloing_qty,cloing_value) select * from (
+        insert into stock_opening_closing(id,product_id,product_category,parent_category,lot_id,rejected,lot_price,pur_price,landed_cost,opening_qty,opening_value,receive_date,receive_qty,receive_value,issue_qty,issue_value,cloing_qty,cloing_value,shipment_mode) select * from (
         select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id, categ_type as product_category,parent_id as parent_category,invoice as lot_id, rejected, avg(lot_price) as lot_price, avg(pur_price) as pur_price, avg(landed_cost) as landed_cost ,sum(opening_qty) as opening_qty,
         case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
         
-        min(COALESCE(receive_date,'2021-01-01 06:00:00')) as receive_date,        
+        min(COALESCE(receive_date,'2021-01-01 06:00:00')) as receive_date,
         
         sum(receive_qty) as receive_qty,
         case when avg(lot_price)>0 then sum(receive_qty)*avg(lot_price) else sum(receive_value) end as receive_value,
         sum(issue_qty) as issue_qty,
         case when avg(lot_price)>0 then sum(issue_qty)*avg(lot_price) else sum(issue_value) end as issue_value,
         sum(cloing_qty) as cloing_qty,
-        case when avg(lot_price)>0 then sum(cloing_qty)*avg(lot_price) else sum(cloing_value) end as cloing_value
+        case when avg(lot_price)>0 then sum(cloing_qty)*avg(lot_price) else sum(cloing_value) end as cloing_value,
+        
+        (select x_studio_shipment_mode from purchase_order where name in(select origin from stock_picking where id in(select distinct sl.picking_id from stock_move_line as sl where sl.product_id=product_id and sl.lot_id=invoice and sl.state='done' and sl.reference like %s order by sl.picking_id asc) order by id limit 1)) as shipment_mode
         
         from(
         select
@@ -564,7 +566,7 @@ class StockForecastReport(models.TransientModel):
         group by stock.product_id,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected,stock.company_id
         ) as atb
         """
-        self.env.cr.execute(query, ('%LC/%','%/IN/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/MR/%','%/MR/%','%/MR/%','%/MR/%','%LC/%',self.env.company.id,'R_%','S_%'))
+        self.env.cr.execute(query, ('%/IN/%','%LC/%','%/IN/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/IN/%','%/OUT/%','%/MR/%','%/MR/%','%/MR/%','%/MR/%','%LC/%',self.env.company.id,'R_%','S_%'))
         
         
         

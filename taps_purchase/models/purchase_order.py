@@ -27,6 +27,7 @@ class PurchaseOrder(models.Model):
         comodel_name="res.users",
         store=True
     )
+    is_received = fields.Boolean(string="Receive Status", related='is_shipped', store=True)
     
     
     @api.model

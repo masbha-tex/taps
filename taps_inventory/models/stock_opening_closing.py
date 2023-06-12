@@ -32,6 +32,7 @@ class Inventory(models.Model):
     issue_value = fields.Float(string='Issue Value', readonly=True)
     cloing_qty = fields.Float(string='Closing Quantity', readonly=True)
     cloing_value = fields.Float(string='Closing Value', readonly=True)
+    shipment_mode = fields.Char(string='Shipmnet Mode', readonly=True)
     #company_id = fields.Many2one('res.company', readonly=True) 
     company_id = fields.Many2one('res.company', 'Company', related='product_id.company_id', readonly=True, index=True, default=lambda self: self.env.company.id)
     

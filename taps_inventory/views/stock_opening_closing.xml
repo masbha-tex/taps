@@ -43,7 +43,8 @@
                 <field name="issue_value" optional="show" sum="Issue Value" decoration-bf="True"/>
                 <field name="cloing_qty" optional="show" sum="Closing Quantity" decoration-bf="True"/>
                 <field name="cloing_value" optional="show" sum="Closing Value" decoration-bf="True"/>
-                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="shipment_mode"/>
+                <!-- <field name="company_id" groups="base.group_multi_company"/> -->
             </tree>
         </field>
     </record>
