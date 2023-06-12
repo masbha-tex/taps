@@ -144,7 +144,12 @@ class SaleOrder(models.Model):
     def _onchange_orderline_ids(self):
         if self.order_ref:
             self._create_oa()
-        if self.order_ref:
+        else:
+            self.order_line = False #product_uom_qty
+   
+    @api.onchange('sample_ref')
+    def _onchange_sample(self):
+        if self.sample_ref:
             self._create_pi()
         else:
             self.order_line = False #product_uom_qty
@@ -314,52 +319,52 @@ class SaleOrder(models.Model):
 
     def _create_pi(self):
         for saleorder in self:
-            if not saleorder.order_ref:
+            if not saleorder.sample_ref:
                 continue
             saleorder.update({
-                'company_id': saleorder.order_ref.company_id.id,
-                'date_order': saleorder.order_ref.date_order,
-                'pi_date': saleorder.order_ref.pi_date,
-                'validity_date': saleorder.order_ref.validity_date,
-                'require_signature': saleorder.order_ref.require_signature,
-                # 'require_payment': saleorder.order_ref.require_payment,
-                'partner_id': saleorder.order_ref.partner_id,
-                'partner_invoice_id': saleorder.order_ref.partner_invoice_id,
-                'partner_shipping_id': saleorder.order_ref.partner_shipping_id,
-                'pricelist_id': saleorder.order_ref.pricelist_id,
-                'currency_id': saleorder.order_ref.currency_id,
-                'invoice_status': saleorder.order_ref.invoice_status,
-                'invoice_details': saleorder.order_ref.invoice_details,
-                'delivery_details': saleorder.order_ref.delivery_details,
-                'note' : saleorder.order_ref.note,
-                # 'others_note': saleorder.order_ref.others_note,
-                'remarks' : saleorder.order_ref.remarks,
-                'kind_attention' : saleorder.order_ref.kind_attention,
-                'customer_ref' : saleorder.order_ref.customer_ref,
-                'style_ref' : saleorder.order_ref.style_ref,
-                'season' : saleorder.order_ref.season,
-                'department' : saleorder.order_ref.department,
-                'division' : saleorder.order_ref.division,
-                'buyer_name': saleorder.order_ref.buyer_name,
-                'hs_code': saleorder.order_ref.hs_code,
-                'production_type' : saleorder.order_ref.production_type,
-                'production_group' : saleorder.order_ref.production_group,
-                'order_type' : saleorder.order_ref.order_type,
-                # 'po_no' : saleorder.order_ref.po_no,
-                # 'po_date' : saleorder.order_ref.po_date,
-                # 'revised_date' : saleorder.order_ref.revised_date,
-                # 'dpi' : saleorder.order_ref.dpi,
-                # 'bank': saleorder.order_ref.bank,
-                'incoterm' : saleorder.order_ref.incoterm,
-                'shipment_mode' : saleorder.order_ref.shipment_mode,
-                'loading_place' : saleorder.order_ref.loading_place,
-                'destination_port' : saleorder.order_ref.destination_port,
-                'origin_country' : saleorder.order_ref.origin_country,
-                'validity_period' : saleorder.order_ref.validity_period,
-                'sale_representative' : saleorder.order_ref.sale_representative.id
+                'company_id': saleorder.sample_ref.company_id.id,
+                'date_order': saleorder.sample_ref.date_order,
+                'pi_date': saleorder.sample_ref.pi_date,
+                'validity_date': saleorder.sample_ref.validity_date,
+                'require_signature': saleorder.sample_ref.require_signature,
+                # 'require_payment': saleorder.sample_ref.require_payment,
+                'partner_id': saleorder.sample_ref.partner_id,
+                'partner_invoice_id': saleorder.sample_ref.partner_invoice_id,
+                'partner_shipping_id': saleorder.sample_ref.partner_shipping_id,
+                'pricelist_id': saleorder.sample_ref.pricelist_id,
+                'currency_id': saleorder.sample_ref.currency_id,
+                'invoice_status': saleorder.sample_ref.invoice_status,
+                'invoice_details': saleorder.sample_ref.invoice_details,
+                'delivery_details': saleorder.sample_ref.delivery_details,
+                'note' : saleorder.sample_ref.note,
+                # 'others_note': saleorder.sample_ref.others_note,
+                'remarks' : saleorder.sample_ref.remarks,
+                'kind_attention' : saleorder.sample_ref.kind_attention,
+                'customer_ref' : saleorder.sample_ref.customer_ref,
+                'style_ref' : saleorder.sample_ref.style_ref,
+                'season' : saleorder.sample_ref.season,
+                'department' : saleorder.sample_ref.department,
+                'division' : saleorder.sample_ref.division,
+                'buyer_name': saleorder.sample_ref.buyer_name,
+                'hs_code': saleorder.sample_ref.hs_code,
+                'production_type' : saleorder.sample_ref.production_type,
+                'production_group' : saleorder.sample_ref.production_group,
+                'order_type' : saleorder.sample_ref.order_type,
+                # 'po_no' : saleorder.sample_ref.po_no,
+                # 'po_date' : saleorder.sample_ref.po_date,
+                # 'revised_date' : saleorder.sample_ref.revised_date,
+                # 'dpi' : saleorder.sample_ref.dpi,
+                # 'bank': saleorder.sample_ref.bank,
+                'incoterm' : saleorder.sample_ref.incoterm,
+                'shipment_mode' : saleorder.sample_ref.shipment_mode,
+                'loading_place' : saleorder.sample_ref.loading_place,
+                'destination_port' : saleorder.sample_ref.destination_port,
+                'origin_country' : saleorder.sample_ref.origin_country,
+                'validity_period' : saleorder.sample_ref.validity_period,
+                'sale_representative' : saleorder.sample_ref.sale_representative.id
             })
             
-            orderline = self.env['sale.order.line'].search([('order_id', '=', saleorder.order_ref.id)]).sorted(key = 'sequence')
+            orderline = self.env['sale.order.line'].search([('order_id', '=', saleorder.sample_ref.id)]).sorted(key = 'sequence')
             orderline_values = []
             for lines in orderline:
                 orderline_values += [{
@@ -580,17 +585,30 @@ class SaleOrder(models.Model):
                 }
                 bomrec = self.env['mrp.bom'].create(bom_info)
                 bom_option = {}
-                bom_option = {
-                    'name':'Metal Assembly',
-                    'workcenter_id':6,
-                    'sequence':6,
-                    'bom_id':bomrec.id,
-                    'company_id':self.company_id.id,
-                    'worksheet_type':'text',
-                    'time_mode':'auto',
-                    'time_mode_batch':10,
-                    'time_cycle_manual':60
-                }               
+                if self.company_id.id == 1:
+                    bom_option = {
+                        'name':'Metal Assembly',
+                        'workcenter_id':6,
+                        'sequence':6,
+                        'bom_id':bomrec.id,
+                        'company_id':self.company_id.id,
+                        'worksheet_type':'text',
+                        'time_mode':'auto',
+                        'time_mode_batch':10,
+                        'time_cycle_manual':0
+                    }
+                else:
+                    bom_option = {
+                        'name':'Metal Assembly',
+                        'workcenter_id':13,
+                        'sequence':6,
+                        'bom_id':bomrec.id,
+                        'company_id':self.company_id.id,
+                        'worksheet_type':'text',
+                        'time_mode':'auto',
+                        'time_mode_batch':10,
+                        'time_cycle_manual':0
+                    }
                 process = []
                 process.append(bom_option)
                 bom_option = {}
@@ -945,7 +963,12 @@ class SaleOrder(models.Model):
             #self.order_line.compute_shadewise_tape()
             
         return True
-    def mrp_values(self,id,product,qty,uom,bom):
+    def mrp_values(self,id,product,qty,uom,bom,shade,finish,sizein,sizecm):
+        if sizein == 'N/A':
+            sizein = ''
+        if sizecm == 'N/A':
+            sizecm = ''
+        
         values = {
             'priority': 0,
             'product_id': product,
@@ -969,14 +992,18 @@ class SaleOrder(models.Model):
             'production_location_id': 15,
             'consumption': 'warning',
             'oa_id':self.id,
-            'sale_order_line':id
+            'sale_order_line':id,
+            'shade':shade,
+            'finish':finish,
+            'sizein':sizein,
+            'sizecm':sizecm
         }
         return values
         
     def generate_mrp(self):
         unique_shade = []
         for products in self.order_line:
-            mrp_production = self.env['mrp.production'].create(self.mrp_values(products.id,products.product_id.id,products.product_qty,products.product_uom.id,products.bom_id))
+            mrp_production = self.env['mrp.production'].create(self.mrp_values(products.id,products.product_id.id,products.product_qty,products.product_uom.id,products.bom_id,products.shade,products.finish,products.sizein,products.sizecm))
             mrp_production.move_raw_ids.create(mrp_production._get_moves_raw_values())
             mrp_production._onchange_workorder_ids()
             mrp_production._create_update_move_finished()

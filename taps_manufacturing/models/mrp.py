@@ -27,6 +27,11 @@ class MrpProduction(models.Model):
     workcenter_id = fields.Many2one('mrp.workcenter', string='Work Center', store=True, readonly=True)
     qc_pass_qty = fields.Float(string='QC Pass Quantity', default=1.0, store=True)
     
+    shade = fields.Text(string='Shade', store=True)
+    finish = fields.Text(string='Finish', store=True)
+    sizein = fields.Text(string='Size (Inch)', store=True)
+    sizecm = fields.Text(string='Size (CM)', store=True)
+    
     # def action_split(self):
     #     self.ensure_one()
     #     return {
@@ -54,7 +59,11 @@ class MrpProduction(models.Model):
         action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
         return action    
     
-    def mrp_values(self,id,origin,product,qty,uom,bom,start_date,end_date):
+    def mrp_values(self,id,origin,product,qty,uom,bom,start_date,end_date,shade,finish,sizein,sizecm):
+        if sizein == 'N/A':
+            sizein = ''
+        if sizecm == 'N/A':
+            sizecm = ''
         values = {
             'priority': 0,
             'origin': origin,
@@ -79,7 +88,11 @@ class MrpProduction(models.Model):
             'production_location_id': 15,
             'consumption': 'warning',
             'oa_id':self.oa_id.id,
-            'sale_order_line':id
+            'sale_order_line':id,
+            'shade':shade,
+            'finish':finish,
+            'sizein':sizein,
+            'sizecm':sizecm
         }
         return values
     
