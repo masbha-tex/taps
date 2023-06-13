@@ -334,8 +334,8 @@
 																					<t t-set="payable_days" t-value="payable_days+o.total_payable_days"/>
 																				</td>
 																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_gross_salary" t-value="o.contract_id.filtered(lambda contract: contract).wage + sec_gross_salary"/>
+																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total+o.line_ids.filtered(lambda line: line.code == 'HRA').total+o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+																					<t t-set="sec_gross_salary" t-value="o.line_ids.filtered(lambda line: line.code == 'BASIC').total+o.line_ids.filtered(lambda line: line.code == 'HRA').total+o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total + sec_gross_salary"/>
 																				</td>
 																				<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
 																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -966,7 +966,7 @@
 													<t t-esc="com_tds" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 												</td>
 												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
-													<t t-esc="com_basicAbsent"  t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+													<t t-esc="com_basicAbsent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 												</td>
 												<td style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 10px;">
 													<t t-esc="com_grossAbsent" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
@@ -1308,8 +1308,8 @@
 																					<t t-set="payable_days" t-value="payable_days+o.total_payable_days"/>
 																				</td>
 																				<td colspan="2" style="vertical-align : middle;-webkit-transform: rotate(-90.0deg);white-space:nowrap;font-size: 12px;font-weight:bold;">
-																					<t t-esc="o.contract_id.filtered(lambda contract: contract).wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-																					<t t-set="sec_gross_salary" t-value="o.contract_id.filtered(lambda contract: contract).wage + sec_gross_salary"/>
+																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total+o.line_ids.filtered(lambda line: line.code == 'HRA').total+o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+																					<t t-set="sec_gross_salary" t-value="o.line_ids.filtered(lambda line: line.code == 'BASIC').total+o.line_ids.filtered(lambda line: line.code == 'HRA').total+o.line_ids.filtered(lambda line: line.code == 'MEDICAL').total + sec_gross_salary"/>
 																				</td>
 																				<td colspan="2" style="vertical-align : middle;white-space:nowrap;font-size: 10px;">
 																					<t t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>

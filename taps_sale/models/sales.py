@@ -283,7 +283,8 @@ class SaleOrder(models.Model):
                     'logoref':lines.logoref,
                     'logo':lines.logo,
                     'logo_type':lines.logo_type,
-                    'style_gmt':lines.style_gmt,
+                    'style':lines.style,
+                    'gmt':lines.gmt,
                     'shapefin':lines.shapefin,
                     'bcdpart':lines.bcdpart,
                     'b_part':lines.b_part,
@@ -446,7 +447,8 @@ class SaleOrder(models.Model):
                     'logoref':lines.logoref,
                     'logo':lines.logo,
                     'logo_type':lines.logo_type,
-                    'style_gmt':lines.style_gmt,
+                    'style':lines.style,
+                    'gmt':lines.gmt,
                     'shapefin':lines.shapefin,
                     'bcdpart':lines.bcdpart,
                     'b_part':lines.b_part,
@@ -1120,7 +1122,8 @@ class SaleOrderLine(models.Model):
     logo = fields.Text(string='Logo', store=True)
     logoref = fields.Text(string='Logo Ref', store=True)
     logo_type = fields.Text(string='Logo Type', store=True)
-    style_gmt = fields.Text(string='Style/GMT', store=True)
+    style = fields.Text(string='Style', store=True)
+    gmt = fields.Text(string='Gmt', store=True)
     shapefin = fields.Text(string='Shape Finish', store=True)
     bcdpart = fields.Text(string='BCD Part Material Type / Size', store=True)
     b_part = fields.Text(string='B Part', store=True)
@@ -1347,8 +1350,11 @@ class SaleOrderLine(models.Model):
             if rec.attribute_id.name == 'Logo Ref':
                 self.logoref = rec.product_attribute_value_id.name
                 continue
-            if rec.attribute_id.name == 'Style/Gmt':
-                self.style_gmt = rec.product_attribute_value_id.name
+            if rec.attribute_id.name == 'Style':
+                self.style = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Gmt':
+                self.style = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Logo ':
                 self.logo = rec.product_attribute_value_id.name
