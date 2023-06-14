@@ -23,8 +23,7 @@
                 <header>
 <!--                     <button name="clear_attendance" type="object" string="Clear Data" class="oe_highlight"
                                 icon="fa-remove " confirm="Are you sure you want to do this?"/> -->
-                    <button name="download_attendance" type="object" string="Download Data" class="oe_button_box"
-                            icon="fa-download " confirm="Are you sure you want to do this?" groups="hr_attendance.group_hr_attendance_user"/>
+                    <button name="download_attendance" type="object" string="Download Data" class="oe_button_box" icon="fa-download " confirm="Are you sure you want to do this?" groups="hr_attendance.group_hr_attendance_user"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -32,18 +31,18 @@
                             <div role="img" class="fa fa-fw fa-circle text-success o_button_icon" attrs="{'invisible': [('device_name', '=', False)]}" aria-label="Connected" title="Connected"/>
                             <div role="img" class="fa fa-fw fa-circle text-danger o_button_icon" attrs="{'invisible': [('device_name', '!=', False)]}" aria-label="Disconnected" title="Disconnected"/>
                             <field name="active" invisible="1"/>
-                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}" >
+                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '=', False)]}">
                                 <span class="o_stat_text">
                                     Connected
                                 </span>
                             </div>
-                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '!=', False)]}" >
+                            <div class="o_stat_info" attrs="{'invisible': [('device_name', '!=', False)]}">
                                 <span class="o_stat_text">
                                     Disconnected
                                 </span>
                             </div>
                         </button>                           
-                        <button name="action_get_device_info" type="object" class="oe_stat_button" icon="fa-refresh" groups="hr_attendance.group_hr_attendance_user">
+                        <button name="action_get_device_info" type="object" class="oe_stat_button" icon="fa-refresh">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Refresh
@@ -60,21 +59,28 @@
                         <button id="att_log_count" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the machine">
                             <field name="att_log_count" widget="statinfo" string="Logs"/>
                         </button>
-                        <button name="action_test_voice" type="object" class="oe_stat_button" icon="fa-play-circle" help="Test Voice to the machine" >
+                        <button name="action_test_voice" type="object" class="oe_stat_button" icon="fa-play-circle" help="Test Voice to the machine">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Play Voice
                                 </span>
                             </div>
                         </button>                          
-                        <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-gears" help="Sync time to the machine" confirm="Are you sure you want to Sync time this machine?" groups="hr_attendance.group_hr_attendance_manager">
+                        <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-gears" help="Sync time to the machine" confirm="Are you sure you want to Sync time this machine?">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Sync Time
                                 </span>
                             </div>
-                        </button>                         
-                        <button name="action_restart" type="object" class="oe_stat_button" icon="fa-power-off" help="Restart to the machine" confirm="Are you sure you want to restart this machine?" groups="hr_attendance.group_hr_attendance_manager">
+                        </button>
+                        <button name="upload_machine_user" type="object" class="oe_stat_button" icon="fa-upload" help="Upload All Users to this machine" confirm="Are you sure you want to do this?" attrs="{'invisible': [('device_name', '=', False)]}">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">
+                                    Upload Users
+                                </span>
+                            </div>
+                        </button>
+                        <button name="action_restart" type="object" class="oe_stat_button" icon="fa-power-off" help="Restart to the machine" confirm="Are you sure you want to restart this machine?">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
                                     Restart
@@ -90,13 +96,7 @@
                                 </span>
                             </div>
                         </button>                          -->
-                      <button name="upload_machine_user" type="object" class="oe_stat_button" icon="fa-upload" help="Upload All Users to this machine" confirm="Are you sure you want to do this?" attrs="{'invisible': [('device_name', '=', False)]}" >
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">
-                                    Upload Users
-                                </span>
-                            </div>
-                        </button> 
+                       
                         <button name="clear_attendance" type="object" class="oe_stat_button" icon="fa-trash-o" help="Clear All Attendance Data to this machine" attrs="{'invisible': [('device_name', '=', False)]}" confirm="Are you sure you want to Clear All Attendance Data this machine?">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
@@ -120,7 +120,7 @@
                         </button>
                     </div> 
 					<widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible':[('active','=',True)]}"/>
-                    <field name="image_1920" widget='image' class="oe_avatar" options='{"zoom": true, "preview_image":"image_1920"}'/>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;image_1920&quot;}"/>
 					<field name="active" invisible="1"/>
                     <div class="oe_title">
                         <h1 class="d-flex">
@@ -132,30 +132,30 @@
                     </div>
                     <group>
                         <group>
-                            <field name="name" groups="hr_attendance.group_hr_attendance_user"/>
-                            <field name="port_no" groups="hr_attendance.group_hr_attendance_user"/>
-                            <field name="users_id" groups="hr_attendance.group_hr_attendance_user"/>
+                            <field name="name"/>
+                            <field name="port_no"/>
+                            <field name="users_id"/>
                             <field name="address_id"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="get_time" string="Last Connected by"/>
                         </group>
                         <group>
                             <field name="device_name"/>
-                            <field name="local_ip" groups="hr_attendance.group_hr_attendance_user"/>                            
-                            <field name="serialnumber" groups="hr_attendance.group_hr_attendance_user"/>
-                            <field name="mac" groups="hr_attendance.group_hr_attendance_user"/>
+                            <field name="local_ip"/>                            
+                            <field name="serialnumber"/>
+                            <field name="mac"/>
 <!--                             <field name="platform"/> -->
-                            <field name="firmwareversion" groups="hr_attendance.group_hr_attendance_user"/>
-                            <field name="fingerprint" groups="hr_attendance.group_hr_attendance_user"/>
+                            <field name="firmwareversion"/>
+                            <field name="fingerprint"/>
 
                             
                         </group>
                     </group>
 						<notebook>
-							<page name="upload_finger_to_machine" string="Enroll Fingers" groups="hr_attendance.group_hr_attendance_manager">
+							<page name="upload_finger_to_machine" string="Enroll Fingers">
 <!--                                     <label for="template_id"/> -->
                                         <div class="o_row col-5">
-                                            <field name="employee_id" options='{"no_create":true, "no_open":true}'/>
+                                            <field name="employee_id" options="{&quot;no_create&quot;:true, &quot;no_open&quot;:true}"/>
                                             <field name="template_id"/>
                                             <button string="Enroll" class="btn btn-link oe_highlight" type="object" name="action_enroll_user" attrs="{'invisible': [('employee_id', '=', False)]}"/>
                                             

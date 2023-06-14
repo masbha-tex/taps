@@ -69,15 +69,20 @@
 					<field name="po_date" attrs="{'invisible': [['sales_type','=','sample']]}"/>
 					<field name="pi_date" attrs="{'invisible': [['sales_type','=','sample']]}"/>
 					<field name="revised_date" attrs="{'invisible': [['sales_type','=','sample']]}"/>
+                    <field name="usage" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','sale'],['sales_type','=',False]]}"/>
+                    <field name="supply_chain" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','sale'],['sales_type','=',False]]}"/>
 				</xpath>
 				<xpath expr="//field[@name='validity_date']" position="attributes">
 					<attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']], 'readonly': [['state','not in',['draft','sent']]]}</attribute>
 				</xpath>
 				<xpath expr="//field[@name='payment_term_id']" position="attributes">
-					<attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']]}</attribute>
+					<attribute name="attrs">{'required': ['|', ('sales_type', '=', 'sale'), ('sales_type', '=', 'oa')]}</attribute>
+				</xpath>
+                <xpath expr="//field[@name='incoterm']" position="attributes">
+					<attribute name="attrs">{'required': ['|', ('sales_type', '=', 'sale'), ('sales_type', '=', 'oa')]}</attribute>
 				</xpath>
 				<xpath expr="//field[@name='payment_term_id']" position="after">
-					<field name="bank" string="Bank" options="{'no_create': True, 'no_create_edit':True}"/>
+					<field name="bank" string="Bank" options="{'no_create': True, 'no_create_edit':True}" attrs="{'required': ['|', ('sales_type', '=', 'sale'), ('sales_type', '=', 'oa')]}"/>
 				</xpath>
 				<xpath expr="//field[@name='sales_type']" position="after">
 					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
@@ -157,6 +162,9 @@
 					<field name="origin_country" style="color: #00A09D"/>
 					<field name="validity_period" style="color: #00A09D"/>
 				</xpath>
+                <!-- <xpath expr="//field[@name='picking_policy']" position="attributes">
+                    <attribute name="attrs">{'required': ['|', ('sales_type', '=', 'sale'), ('sales_type', '=', 'oa')]}</attribute>
+                </xpath> -->
                 <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='other_information']/group[1]/group[@name='sale_info']/field[@name='analytic_account_id']" position="after">
                     <br/>
                     <br/>

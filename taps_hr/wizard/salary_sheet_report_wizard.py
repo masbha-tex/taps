@@ -204,8 +204,8 @@ class SalarySheet(models.TransientModel):
             
         
     def action_generate_xlsx_report(self):
-        if self.report_type == 'SALARY':
-            start_time = fields.datetime.now()
+        if self.report_type:
+            
             if self.holiday_type == "employee":#employee company department category
                 
                 empl = self.employee_id
@@ -285,9 +285,14 @@ class SalarySheet(models.TransientModel):
                         'employee_type': False,
                         'company_all': self.company_all,
                         'is_company': self.is_company} 
+        if self.report_type == 'SALARY':
+            return self.salary_xls_template(self, data=data)
         # else:
         #     raise UserError(('This Report are not XLSX Format'))
-            
+                   
+    
+    def salary_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
         domain = []
         if data.get('date_from'):
             domain.append(('date_from', '=', data.get('date_from')))
@@ -545,9 +550,9 @@ class SalarySheet(models.TransientModel):
         parentdpt = section.mapped('parent_id.id')
         department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
         
-        
         com = employee.mapped('company_id.id')
         company = self.env['res.company'].search([('id', 'in', (com))])
+        
         
         allemp_data = []
         dept_data = []
@@ -908,7 +913,7 @@ class SalarySheet(models.TransientModel):
             'type': 'ir.actions.act_url',
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Salary Sheet')),
             'target': 'self',
-        }
+        }        
         
 
 class PaySlipReportPDF(models.AbstractModel):

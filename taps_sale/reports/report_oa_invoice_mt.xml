@@ -178,175 +178,154 @@
 						</div>
 					</div>
 					<div style="font-size:12px">
-					<t t-set="p_code" t-value="0"/>
-					<t t-set="shape" t-value="0"/> 
-					<t t-set="logo" t-value="0"/>
-					<t t-set="logo_ref" t-value="0"/>
-					<t t-set="logo_type" t-value="0"/>
-					<t t-set="finish" t-value="0"/>
-					<t t-set="finish_ref" t-value="0"/>
-					<t t-set="b_part" t-value="0"/>
-					<t t-set="c_part" t-value="0"/>
-					<t t-set="d_part" t-value="0"/>
-					<t t-set="style_gmt" t-value="0"/>
-					<t t-set="mm" t-value="0"/>
-					<t t-set="dis" t-value="0"/>
-					
-					  <t t-foreach="o.order_line" t-as="line">
-					    <t t-if="p_code == 0">
-								<t t-if="line.product_code">
+						<t t-set="p_code" t-value="0"/>
+						<t t-set="shape" t-value="0"/>
+						<t t-set="logo" t-value="0"/>
+						<t t-set="logo_ref" t-value="0"/>
+						<t t-set="logo_type" t-value="0"/>
+						<t t-set="finish" t-value="0"/>
+						<t t-set="finish_ref" t-value="0"/>
+						<t t-set="b_part" t-value="0"/>
+						<t t-set="c_part" t-value="0"/>
+						<t t-set="d_part" t-value="0"/>
+						<t t-set="style" t-value="0"/>
+						<t t-set="gmt" t-value="0"/>
+						<t t-set="mm" t-value="0"/>
+						<t t-set="dis" t-value="0"/>
+						<t t-foreach="o.order_line" t-as="line">
+							<t t-if="p_code == 0 ">
+								<t t-if="line.product_code and line.product_code != 'N/A'">
 									<t t-set="p_code" t-value="1"/>
 								</t>
 							</t>
-							
 							<t t-if="shape == 0">
-								<t t-if="line.shape">
+								<t t-if="line.shape and line.shape !='N/A'">
 									<t t-set="shape" t-value="1"/>
 								</t>
 							</t>
-							
 							<t t-if="logo == 0">
-								<t t-if="line.logo">
+								<t t-if="line.logo and line.logo != 'N/A'">
 									<t t-set="logo" t-value="1"/>
 								</t>
 							</t>
-							
 							<t t-if="logoref == 0">
-								<t t-if="line.logo_ref">
+								<t t-if="line.logo_ref and line.logo_ref != 'N/A'">
 									<t t-set="logo_ref" t-value="1"/>
 								</t>
 							</t>
-							
-							
 							<t t-if="logo_type == 0">
-								<t t-if="line.logo_type">
+								<t t-if="line.logo_type and line.logo_type !='N/A'">
 									<t t-set="logo_type" t-value="1"/>
 								</t>
 							</t>
-							
 							<t t-if="finish == 0">
-								<t t-if="line.finish">
+								<t t-if="line.finish and line.finish != 'N/A'">
 									<t t-set="finish" t-value="1"/>
 								</t>
 							</t>
-							
-							
 							<t t-if="finish_ref == 0">
-								<t t-if="line.finish_ref">
+								<t t-if="line.finish_ref and line.finish_ref != 'N/A'">
 									<t t-set="finish_ref" t-value="1"/>
 								</t>
 							</t>
-							
-							
 							<t t-if="b_part == 0">
-								<t t-if="line.b_part">
+								<t t-if="line.b_part and line.b_part != 'N/A'">
 									<t t-set="b_part" t-value="1"/>
 								</t>
 							</t>
-							
-							
 							<t t-if="c_part == 0">
-								<t t-if="line.c_part">
+								<t t-if="line.c_part and line.c_part !='N/A'">
 									<t t-set="c_part" t-value="1"/>
 								</t>
 							</t>
-							
-							
 							<t t-if="d_part == 0">
-								<t t-if="line.d_part">
+								<t t-if="line.d_part and line.d_part != 'N/A'">
 									<t t-set="d_part" t-value="1"/>
 								</t>
 							</t>
-							
-							<t t-if="style_gmt == 0">
-								<t t-if="line.style_gmt">
-									<t t-set="style_gmt" t-value="1"/>
+							<t t-if="style == 0">
+								<t t-if="line.style and line.style != 'N/A'">
+									<t t-set="style" t-value="1"/>
 								</t>
 							</t>
-							
+							<t t-if="gmt == 0">
+								<t t-if="line.gmt and line.gmt != 'N/A'">
+									<t t-set="gmt" t-value="1"/>
+								</t>
+							</t>
 							<t t-if="mm == 0">
 								<t t-if="line.sizemm">
-								  <t t-if="line.sizemm != 'N/A'">
-									<t t-set="mm" t-value="1"/>
+									<t t-if="line.sizemm != 'N/A'">
+										<t t-set="mm" t-value="1"/>
 									</t>
 								</t>
 							</t>
-							
-							
-							
-					  </t>
-					  
+							<t t-if="dis == 0">
+								<t t-if="line.discount != 0 ">
+									<t t-set="dis" t-value="1"/>
+								</t>
+							</t>
+						</t>
 						<table class="table table-sm o_main_table">
 							<thead>
-							  <t t-set="line_count" t-value="0"/>
-							   
-							  <tr>
-							 
-								<th class="text-left">Item</th>
-								<th class="text-center">Image</th>
-								<t t-set="line_count" t-value="2"/>
-								<t t-if="p_code == 1">
-								  <th class="text-left">CODE</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="shape == 1">
-								  <th class="text-left">Shape</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								
-								<t t-if="logo == 1">
-								  <th style="white-space: nowrap;">Logo</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="logo_ref == 1">
-								  <th style="white-space: nowrap;">LOGO REF</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="logo_type == 1">
-								  <th class="text-left" style="white-space: nowrap;">LOGO TYPE</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="finish == 1">
-								  <th class="text-left" style="white-space: nowrap;">FINISH</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="finish_ref == 1">
-								<th class="text-right" style="white-space: nowrap;">FINISH REF</th>
-								<t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="b_part == 1">
-								<th class="text-right">B_PART</th>
-								<t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="c_part == 1">
-								<th class="text-right">C_PART</th>
-								<t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="d_part == 1">
-								<th class="text-right">D_PART</th>
-								<t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								<t t-if="mm == 1">
-								  <th class="text-left">Size(MM)</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								</t>
-								
-								  <th class="text-right">Qty/PC</th>
-								  <t t-set="line_count" t-value="line_count+1"/>
-								
-								
-								  <th class="text-right">Qty/Grs</th>
-								
-								
-								
+								<t t-set="line_count" t-value="0"/>
+								<tr>
+									<th class="text-left">Item</th>
+									<th class="text-center">Image</th>
+									<t t-set="line_count" t-value="2"/>
+									<t t-if="p_code == 1">
+										<th class="text-left">CODE</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="shape == 1">
+										<th class="text-left">Shape</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="logo == 1">
+										<th style="white-space: nowrap;">Logo</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="logo_ref == 1">
+										<th style="white-space: nowrap;">LOGO REF</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="logo_type == 1">
+										<th class="text-left" style="white-space: nowrap;">LOGO TYPE</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="finish == 1">
+										<th class="text-left" style="white-space: nowrap;">FINISH</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="finish_ref == 1">
+										<th class="text-left" style="white-space: nowrap;">FINISH REF</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="b_part == 1">
+										<th class="text-left">B_PART</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="c_part == 1">
+										<th class="text-left">C_PART</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="d_part == 1">
+										<th class="text-left">D_PART</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="mm == 1">
+										<th style="text-align: right ! important">Size(MM)</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<th style="text-align: right ! important">Qty/PC</th>
+									<t t-set="line_count" t-value="line_count+1"/>
+									<th style="text-align: right ! important">Qty/Grs</th>
 								</tr>
-								
 							</thead>
 							<tbody>
 								<t t-set="total_quantity" t-value="0"/>
 								<t t-set="id" t-value="0.0"/>
 								<t t-set="item" t-value=""/>
-								
 								<t t-set="fnamebcd" t-value=""/>
 								<t t-set="logo" t-value=""/>
 								<t t-set="bcd" t-value=""/>
@@ -357,131 +336,167 @@
 								<t t-foreach="o.order_line" t-as="line">
 									<tr>
 										<t t-if="not line.display_type">
-										  
-										  
-											<td><strong><span t-esc="line.product_template_id.name"/></strong></td>
-											<td></td>
-											
-											<t t-if="p_code == 1">
-											 <t t-if="line.product_code">
-											    <td><strong><span  t-esc="line.product_code"/></strong></td>
-											 </t>
-											 <t t-if="not line.product_code">
-											    <td></td>
-											 </t>
-											</t>
-											
-											<t t-if="shape == 1">
-											 <t t-if="line.shape">
-											    <td><strong><span t-esc="line.shape"/></strong></td>
-											 </t>
-											 <t t-if="not line.shape">
-											    <td></td>
-											 </t>
-											</t>
-											
-											<t t-if="logo == 1">
-											 <t t-if="line.logo">
-											    <td><strong><span t-esc="line.logo"/></strong></td>
-											 </t>
-											 <t t-if="not line.logo">
-											    <td></td>
-											 </t>
-											</t>
-											
-											<t t-if="logo_ref == 1">
-											 <t t-if="line.logo_ref">
-											    <td><strong><span t-esc="line.logo_ref"/></strong></td>
-											 </t>
-											 <t t-if="not line.logo_ref">
-											    <td></td>
-											 </t>
-											</t>
-											
-											<t t-if="logo_type == 1">
-											 <t t-if="line.logo_type">
-											    <td><strong><span t-esc="line.logo_type"/></strong></td>
-											 </t>
-											 <t t-if="not line.logo_type">
-											    <td></td>
-											 </t>
-											</t>
-											
-											<t t-if="finish == 1">
-											 <t t-if="line.finish">
-											    <td><strong><span t-esc="line.finish"/></strong></td>
-											 </t>
-											 <t t-if="not line.finish">
-											    <td></td>
-											 </t>
-											</t>
-											
-											<t t-if="finish_ref == 1">
-											 <t t-if="line.finish_ref">
-											    <td><strong><span t-esc="line.finish_ref"/></strong></td>
-											 </t>
-											 <t t-if="not line.finish_ref">
-											    <td></td>
-											 </t>
-											</t>
-											
-											<t t-if="b_part == 1">
-											 <t t-if="line.b_part">
-											    <td><strong><span t-esc="line.b_part"/></strong></td>
-											 </t>
-											 <t t-if="not line.b_part">
-											    <td></td>
-											 </t>
-											</t>
-											
-											<t t-if="c_part == 1">
-											 <t t-if="line.c_part">
-											    <td><strong><span t-esc="line.c_part"/></strong></td>
-											 </t>
-											 <t t-if="not line.c_part">
-											    <td></td>
-											 </t>
-											</t>
-											
-											<t t-if="d_part == 1">
-											 <t t-if="line.d_part">
-											    <td><strong><span t-esc="line.d_part"/></strong></td>
-											 </t>
-											 <t t-if="not line.d_part">
-											    <td></td>
-											 </t>
-											</t>
-											
-											
-											<t t-if="style_gmt == 1">
-											 <t t-if="line.style_gmt">
-											    <td><strong><span t-esc="line.style_gmt"/></strong></td>
-											 </t>
-											 <t t-if="not line.style_gmt">
-											    <td></td>
-											 </t>
-											</t>
-											
-											
-											<t t-if="mm == 1">
-											 <t t-if="line.sizemm">
-											    <td><strong><span t-esc="line.sizemm"/></strong></td>
-											 </t>
-											 <t t-if="not line.sizemm">
-											    <td></td>
-											 </t>
-											</t>
-											
-											
-											<td><strong><span t-esc="line.product_uom_qty*144" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/></strong></td>
 											<td>
-											  <strong>
-											    <span t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-											    <t t-set="total_quantity" t-value="line.product_uom_qty+total_quantity"/>
-											  </strong>
-											 </td>
-											
-											
+												<strong>
+													<span t-esc="line.product_template_id.name"/>
+												</strong>
+											</td>
+											<td/>
+											<t t-if="p_code == 1">
+												<t t-if="line.product_code">
+													<td>
+														<strong>
+															<span t-esc="line.product_code"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.product_code">
+													<td/>
+												</t>
+											</t>
+											<t t-if="shape == 1">
+												<t t-if="line.shape">
+													<td>
+														<strong>
+															<span t-esc="line.shape"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.shape">
+													<td/>
+												</t>
+											</t>
+											<t t-if="logo == 1">
+												<t t-if="line.logo">
+													<td>
+														<strong>
+															<span t-esc="line.logo"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.logo">
+													<td/>
+												</t>
+											</t>
+											<t t-if="logo_ref == 1">
+												<t t-if="line.logo_ref">
+													<td>
+														<strong>
+															<span t-esc="line.logo_ref"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.logo_ref">
+													<td/>
+												</t>
+											</t>
+											<t t-if="logo_type == 1">
+												<t t-if="line.logo_type">
+													<td>
+														<strong>
+															<span t-esc="line.logo_type"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.logo_type">
+													<td/>
+												</t>
+											</t>
+											<t t-if="finish == 1">
+												<t t-if="line.finish">
+													<td>
+														<strong>
+															<span t-esc="line.finish"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.finish">
+													<td/>
+												</t>
+											</t>
+											<t t-if="finish_ref == 1">
+												<t t-if="line.finish_ref">
+													<td>
+														<strong>
+															<span t-esc="line.finish_ref"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.finish_ref">
+													<td/>
+												</t>
+											</t>
+											<t t-if="b_part == 1">
+												<t t-if="line.b_part">
+													<td>
+														<strong>
+															<span t-esc="line.b_part"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.b_part">
+													<td/>
+												</t>
+											</t>
+											<t t-if="c_part == 1">
+												<t t-if="line.c_part">
+													<td>
+														<strong>
+															<span t-esc="line.c_part"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.c_part">
+													<td/>
+												</t>
+											</t>
+											<t t-if="d_part == 1">
+												<t t-if="line.d_part">
+													<td>
+														<strong>
+															<span t-esc="line.d_part"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.d_part">
+													<td/>
+												</t>
+											</t>
+											<t t-if="style == 1">
+												<t t-if="line.style">
+													<td>
+														<strong>
+															<span t-esc="line.style"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.style_gmt">
+													<td/>
+												</t>
+											</t>
+											<t t-if="mm == 1">
+												<t t-if="line.sizemm">
+													<td style="text-align: right ! important">
+														<strong>
+															<span t-esc="line.sizemm"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.sizemm">
+													<td/>
+												</t>
+											</t>
+											<td style="text-align: right ! important">
+												<strong>
+													<span t-esc="line.product_uom_qty*144" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+												</strong>
+											</td>
+											<td style="text-align: right ! important">
+												<strong>
+													<span t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+													<t t-set="total_quantity" t-value="line.product_uom_qty+total_quantity"/>
+												</strong>
+											</td>
 										</t>
 									</tr>
 								</t>
@@ -495,12 +510,10 @@
 											<t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 										</strong>
 									</td>
-									
 								</tr>
 							</tbody>
 						</table>
 					</div>
-					
 					<div style="page-break-inside:avoid">
 						<div class="row" style="font-size:12px;page-break-inside:avoid;">
 							<t t-if="o.cause_of_revision">
@@ -548,11 +561,10 @@
 							</div>
 						</div>
 						<br/>
-						
 					</div>
 				</div>
 				<div class="row mt-2 mb-2">
-				  <div class="col-12 text-center">
+					<div class="col-12 text-center">
 				    NOTE : ALL KIND OF TEST MUST BE PASS AS PER BUYER REQUIREMENT.
 				  </div>
 				</div>

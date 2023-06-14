@@ -263,63 +263,69 @@
 						<t t-set="b_part" t-value="0"/>
 						<t t-set="c_part" t-value="0"/>
 						<t t-set="d_part" t-value="0"/>
-						<t t-set="style_gmt" t-value="0"/>
+						<t t-set="style" t-value="0"/>
+						<t t-set="gmt" t-value="0"/>
 						<t t-set="mm" t-value="0"/>
 						<t t-set="dis" t-value="0"/>
 						<t t-foreach="o.order_line" t-as="line">
-							<t t-if="p_code == 0">
-								<t t-if="line.product_code">
+							<t t-if="p_code == 0 ">
+								<t t-if="line.product_code and line.product_code != 'N/A'">
 									<t t-set="p_code" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="shape == 0">
-								<t t-if="line.shape">
+								<t t-if="line.shape and line.shape !='N/A'">
 									<t t-set="shape" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="logo == 0">
-								<t t-if="line.logo">
+								<t t-if="line.logo and line.logo != 'N/A'">
 									<t t-set="logo" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="logoref == 0">
-								<t t-if="line.logo_ref">
+								<t t-if="line.logo_ref and line.logo_ref != 'N/A'">
 									<t t-set="logo_ref" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="logo_type == 0">
-								<t t-if="line.logo_type">
+								<t t-if="line.logo_type and line.logo_type !='N/A'">
 									<t t-set="logo_type" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="finish == 0">
-								<t t-if="line.finish">
+								<t t-if="line.finish and line.finish != 'N/A'">
 									<t t-set="finish" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="finish_ref == 0">
-								<t t-if="line.finish_ref">
+								<t t-if="line.finish_ref and line.finish_ref != 'N/A'">
 									<t t-set="finish_ref" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="b_part == 0">
-								<t t-if="line.b_part">
+								<t t-if="line.b_part and line.b_part != 'N/A'">
 									<t t-set="b_part" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="c_part == 0">
-								<t t-if="line.c_part">
+								<t t-if="line.c_part and line.c_part !='N/A'">
 									<t t-set="c_part" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="d_part == 0">
-								<t t-if="line.d_part">
+								<t t-if="line.d_part and line.d_part != 'N/A'">
 									<t t-set="d_part" t-value="1"/>
 								</t>
 							</t>
-							<t t-if="style_gmt == 0">
-								<t t-if="line.style_gmt">
-									<t t-set="style_gmt" t-value="1"/>
+							<t t-if="style == 0">
+								<t t-if="line.style and line.style != 'N/A'">
+									<t t-set="style" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="gmt == 0">
+								<t t-if="line.gmt and line.gmt != 'N/A'">
+									<t t-set="gmt" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="mm == 0">
@@ -367,33 +373,39 @@
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
 									<t t-if="finish_ref == 1">
-										<th class="text-right" style="white-space: nowrap;">FINISH REF</th>
+										<th class="text-left" style="white-space: nowrap;">FINISH REF</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
 									<t t-if="b_part == 1">
-										<th class="text-right">B_PART</th>
+										<th class="text-left">B_PART</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
 									<t t-if="c_part == 1">
-										<th class="text-right">C_PART</th>
+										<th class="text-left">C_PART</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
 									<t t-if="d_part == 1">
-										<th class="text-right">D_PART</th>
+										<th class="text-left">D_PART</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
 									<t t-if="mm == 1">
-										<th class="text-left">Size(MM)</th>
+										<th style="text-align: right ! important">Size(MM)</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
-									<th class="text-right">Qty/PC</th>
+									<th style="text-align: right ! important">Qty/PC</th>
 									<t t-set="line_count" t-value="line_count+1"/>
-									<th class="text-right">Qty/Grs</th>
-									<th class="text-right">Price/Unit</th>
+									<th style="text-align: right ! important">Qty/Grs</th>
+									<th style="text-align: right ! important">Price/Unit</th>
 									<t t-if="dis == 1">
-										<th class="text-right">Discount</th>
+										<th style="text-align: right ! important">Discount</th>
 									</t>
-									<th>Amount</th>
+									<th style="text-align: right ! important">Amount</th>
+									<t t-if="style == 1">
+										<th style="text-align: right ! important">Style</th>
+									</t>
+									<t t-if="gmt == 1">
+										<th style="text-align: right ! important">Gmt</th>
+									</t>
 								</tr>
 							</thead>
 							<tbody>
@@ -536,21 +548,9 @@
 													<td/>
 												</t>
 											</t>
-											<t t-if="style_gmt == 1">
-												<t t-if="line.style_gmt">
-													<td>
-														<strong>
-															<span t-esc="line.style_gmt"/>
-														</strong>
-													</td>
-												</t>
-												<t t-if="not line.style_gmt">
-													<td/>
-												</t>
-											</t>
 											<t t-if="mm == 1">
 												<t t-if="line.sizemm">
-													<td>
+													<td style="text-align: right ! important">
 														<strong>
 															<span t-esc="line.sizemm"/>
 														</strong>
@@ -560,36 +560,60 @@
 													<td/>
 												</t>
 											</t>
-											<td>
+											<td style="text-align: right ! important">
 												<strong>
 													<span t-esc="line.product_uom_qty*144" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 												</strong>
 											</td>
-											<td>
+											<td style="text-align: right ! important">
 												<strong>
 													<span t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 													<t t-set="total_quantity" t-value="line.product_uom_qty+total_quantity"/>
 												</strong>
 											</td>
-											<td>
+											<td style="text-align: right ! important">
 												<strong>
 													<span t-esc="line.price_unit"/>
 												</strong>
 											</td>
 											<t t-if="dis == 1">
 												<t t-if="line.discount == 1">
-													<td>
+													<td style="text-align: right ! important">
 														<strong>
 															<span t-esc="line.discount"/>
 														</strong>
 													</td>
 												</t>
 											</t>
-											<td>
+											<td style="text-align: right ! important">
 												<strong>
 													<span t-esc="line.price_subtotal"/>
 												</strong>
 											</td>
+											<t t-if="style == 1">
+												<t t-if="line.style">
+													<td style="text-align: right ! important">
+														<strong>
+															<span t-esc="line.style"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.style">
+													<td/>
+												</t>
+											</t>
+											<t t-if="gmt == 1">
+												<t t-if="line.gmt">
+													<td style="text-align: right ! important">
+														<strong>
+															<span t-esc="line.gmt"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.gmt">
+													<td/>
+												</t>
+											</t>
 										</t>
 									</tr>
 								</t>
@@ -770,7 +794,7 @@
 							<table class="table table-sm o_main_table" style="background: white ! important">
 								<tbody>
 									<tr>
-										<td style="width: 5%;background-color: white! important; color: black; border-right: 1px solid Black ! important"> NOTE:</td>
+										<td style="width: 5%;background-color: white! important; color: black; border-right: 1px solid Black ! important; vertical-align:middle ! important"> NOTE:</td>
 										<td style="width: 95%;background-color: white ! important;color: black">DISRUPTION IN SUPPLY AT PRESENT DUE TO THE COVID-19 ( CORONA VIRUS )
 ISSUE THERE IS A LOT OF DISRUPTION IN THE SUPPLY CHAIN, WHICH MAY HAMPERS
 OUR RAW MATERIAL SUPPLIES FROM DIFFERENT LOCATION, WHILE WE WILL TRY OUR BEST TO SUPPLY THE GOODS IN TIME,
@@ -781,7 +805,7 @@ DUE TO DELAYS BEYOND OUR CONTROL, WE WILL NOT TAKE ANY LIABILITY ( FINANCIAL OR 
 						</div>
 						<div class="col-2">
 							<!--<div class="float-right mt32 mb32 ! important;" style="font-size:10px;">-->
-							<img style="max-height: 40px; " src="taps_sale/static/src/img/pi-signature.png"/>
+							<img style="max-height: 40px; " src="taps_sale/static/src/img/pi-signature_mt.png"/>
 							<br/>
               ____________________<br/>
               Authorised Signature

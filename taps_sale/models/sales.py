@@ -89,6 +89,8 @@ class SaleOrder(models.Model):
     avg_size = fields.Float(string='Average Size', compute="_compute_avg_size")
     assortment = fields.Char(string='Assortment')
     dpi = fields.Char(string='DPI')
+    usage = fields.Char(string='Usage')
+    supply_chain = fields.Char(string='Supply Chain')
     
     
     def _amount_in_words(self):
@@ -191,6 +193,8 @@ class SaleOrder(models.Model):
                 'po_date' : saleorder.order_ref.po_date,
                 'revised_date' : saleorder.order_ref.revised_date,
                 'dpi' : saleorder.order_ref.dpi,
+                'usage' : saleorder.order_ref.usage,
+                'supply_chain' : saleorder.order_ref.supply_chain,
                 'bank': saleorder.order_ref.bank,
                 'incoterm' : saleorder.order_ref.incoterm,
                 'shipment_mode' : saleorder.order_ref.shipment_mode,
@@ -351,6 +355,8 @@ class SaleOrder(models.Model):
                 'production_type' : saleorder.sample_ref.production_type,
                 'production_group' : saleorder.sample_ref.production_group,
                 'order_type' : saleorder.sample_ref.order_type,
+                'usage' : saleorder.sample_ref.usage,
+                'supply_chain' : saleorder.sample_ref.supply_chain,
                 # 'po_no' : saleorder.sample_ref.po_no,
                 # 'po_date' : saleorder.sample_ref.po_date,
                 # 'revised_date' : saleorder.sample_ref.revised_date,
@@ -1353,8 +1359,14 @@ class SaleOrderLine(models.Model):
             if rec.attribute_id.name == 'Style':
                 self.style = rec.product_attribute_value_id.name
                 continue
+            if rec.attribute_id.name == 'Usage':
+                self.usage = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Supply Chain':
+                self.supply_chain = rec.product_attribute_value_id.name
+                continue
             if rec.attribute_id.name == 'Gmt':
-                self.style = rec.product_attribute_value_id.name
+                self.gmt = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Logo ':
                 self.logo = rec.product_attribute_value_id.name
