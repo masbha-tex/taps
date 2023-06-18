@@ -968,9 +968,9 @@ class SaleOrder(models.Model):
             self.order_line.product_consumption(self.id)
             self.order_line.compute_shadewise_tape()
             #self.generate_mrp()
-            #self.order_line.compute_shadewise_tape()
-            
         return True
+
+        
     def mrp_values(self,id,product,qty,uom,bom,shade,finish,sizein,sizecm):
         if sizein == 'N/A':
             sizein = ''
@@ -1010,6 +1010,9 @@ class SaleOrder(models.Model):
         
     def generate_mrp(self):
         unique_shade = []
+        unique_slider = []
+        unique_top = []
+        unique_bottom = []
         for products in self.order_line:
             mrp_production = self.env['mrp.production'].create(self.mrp_values(products.id,products.product_id.id,products.product_qty,products.product_uom.id,products.bom_id,products.shade,products.finish,products.sizein,products.sizecm))
             mrp_production.move_raw_ids.create(mrp_production._get_moves_raw_values())
@@ -1019,11 +1022,57 @@ class SaleOrder(models.Model):
             #raise UserError((products.bom_id))
             for lines in bom_lines:
                 bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', lines.product_id.product_tmpl_id.id)])
-                qty = (lines.product_qty/100) * products.product_qty
-                mrp_sf_production = self.env['mrp.production'].create(self.mrp_values(products.id,lines.product_id.id,qty,lines.product_uom_id.id,bom.id))
-                mrp_sf_production.move_raw_ids.create(mrp_sf_production._get_moves_raw_values())
-                mrp_sf_production._onchange_workorder_ids()
-                mrp_sf_production._create_update_move_finished()
+                if 'Slider' in lines.product_id.product_tmpl_id.name:
+                    filtered_slider = [x for x in unique_slider 
+                                       if x[0] == products.product_id.product_tmpl_id.id 
+                                       and x[1] == products.slidercodesfg and x[2] == products.finish]
+                    if not filtered_slider:
+                        same_slider = self.order_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == products.product_id.product_tmpl_id.id and sol.slidercodesfg == products.slidercodesfg and sol.finish == products.finish)
+                        product_qty = sum(same_slider.mapped('product_qty'))
+                        qty = (lines.product_qty/100) * product_qty
+                        mrp_sl_production = self.env['mrp.production'].create(self.mrp_values(products.id,lines.product_id.id,qty,lines.product_uom_id.id,bom.id,'',products.finish,'',''))
+                        mrp_sl_production.move_raw_ids.create(mrp_sl_production._get_moves_raw_values())
+                        mrp_sl_production._onchange_workorder_ids()
+                        mrp_sl_production._create_update_move_finished()
+                        _slider = []
+                        _slider = [products.product_id.product_tmpl_id.id,products.slidercodesfg,products.finish]
+                        unique_slider.append(_slider)
+                elif 'Plated Top' in lines.product_id.product_tmpl_id.name:
+                    filtered_top = [x for x in unique_top
+                                       if x[0] == products.product_id.product_tmpl_id.id 
+                                       and x[1] == products.ptopfinish and x[2] == products.finish]
+                    if not filtered_top:
+                        same_top = self.order_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == products.product_id.product_tmpl_id.id and sol.ptopfinish == products.ptopfinish and sol.finish == products.finish)
+                        product_qty = sum(same_top.mapped('product_qty'))
+                        qty = (lines.product_qty/100) * product_qty
+                        mrp_top_production = self.env['mrp.production'].create(self.mrp_values(products.id,lines.product_id.id,qty,lines.product_uom_id.id,bom.id,'',products.finish,'',''))
+                        mrp_top_production.move_raw_ids.create(mrp_top_production._get_moves_raw_values())
+                        mrp_top_production._onchange_workorder_ids()
+                        mrp_top_production._create_update_move_finished()
+                        _top = []
+                        _top = [products.product_id.product_tmpl_id.id,products.ptopfinish,products.finish]
+                        unique_top.append(_top)
+                elif 'Plated Bottom' in lines.product_id.product_tmpl_id.name:
+                    filtered_bottom = [x for x in unique_bottom 
+                                       if x[0] == products.product_id.product_tmpl_id.id 
+                                       and x[1] == products.pbotomfinish and x[2] == products.finish]
+                    if not filtered_bottom:
+                        same_bottom = self.order_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == products.product_id.product_tmpl_id.id and sol.pbotomfinish == products.pbotomfinish and sol.finish == products.finish)
+                        product_qty = sum(same_bottom.mapped('product_qty'))
+                        qty = (lines.product_qty/100) * product_qty
+                        mrp_bottom_production = self.env['mrp.production'].create(self.mrp_values(products.id,lines.product_id.id,qty,lines.product_uom_id.id,bom.id,'',products.finish,'',''))
+                        mrp_bottom_production.move_raw_ids.create(mrp_bottom_production._get_moves_raw_values())
+                        mrp_bottom_production._onchange_workorder_ids()
+                        mrp_bottom_production._create_update_move_finished()
+                        _bottom = []
+                        _bottom = [products.product_id.product_tmpl_id.id,products.pbotomfinish,products.finish]
+                        unique_bottom.append(_bottom)
+                else:
+                    qty = (lines.product_qty/100) * products.product_qty
+                    mrp_sf_production = self.env['mrp.production'].create(self.mrp_values(products.id,lines.product_id.id,qty,lines.product_uom_id.id,bom.id,products.shade,products.finish,products.sizein,products.sizecm))
+                    mrp_sf_production.move_raw_ids.create(mrp_sf_production._get_moves_raw_values())
+                    mrp_sf_production._onchange_workorder_ids()
+                    mrp_sf_production._create_update_move_finished()
                 bom_sub_lines = self.env['mrp.bom.line'].search([('bom_id','=',bom.id)])
                 #raise UserError((products.product_id.id,lines.product_id.id,sub_lines.product_id.id))
                 for sub_lines in bom_sub_lines:
@@ -1038,29 +1087,29 @@ class SaleOrder(models.Model):
                     if sub_bom:
                         product_qty = products.product_qty
                         
-                        filtered_shade = [x for x in unique_shade if x[0] == products.product_id.product_tmpl_id.id and x[1] == products.shade]
+                        filtered_shade = [x for x in unique_shade if x[0] == products.product_id.product_tmpl_id.id and x[1] == products.dyedtape and x[2] == products.shade]
                         if filtered_shade:
                             #raise UserError((filtered_shade,'sdfdf'))
                             a = 'a'
                         else:
                             #raise UserError((filtered_shade))
-                            same_shade = self.order_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == products.product_id.product_tmpl_id.id and sol.shade == products.shade)
+                            same_shade = self.order_line.filtered(lambda sol: sol.product_id.product_tmpl_id.id == products.product_id.product_tmpl_id.id and sol.dyedtape == products.dyedtape and sol.shade == products.shade)
                             product_qty = sum(same_shade.mapped('product_qty'))
                             #raise UserError(((sub_lines.product_qty/100),product_qty))
                             sub_qty = (sub_lines.product_qty/100) * product_qty
 
-                            sub_production = self.env['mrp.production'].create(self.mrp_values(products.id,sub_lines.product_id.id,sub_qty,sub_lines.product_uom_id.id,sub_bom.id))
+                            sub_production = self.env['mrp.production'].create(self.mrp_values(products.id,sub_lines.product_id.id,sub_qty,sub_lines.product_uom_id.id,sub_bom.id,products.shade,'','',''))
                             sub_production.move_raw_ids.create(sub_production._get_moves_raw_values())
                             sub_production._onchange_workorder_ids()
                             sub_production._create_update_move_finished()
-                            sub_production.action_confirm()
+                            #sub_production.action_confirm()
                             
                         _shade = []
-                        _shade = [products.product_id.product_tmpl_id.id,products.shade]
+                        _shade = [products.product_id.product_tmpl_id.id,products.dyedtape,products.shade]
                         unique_shade.append(_shade)
                         
-                mrp_sf_production.action_confirm()
-            mrp_production.action_confirm()
+                #mrp_sf_production.action_confirm()
+            #mrp_production.action_confirm()
             products.product_id.product_tmpl_id.button_bom_cost()
 
             

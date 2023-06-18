@@ -25,7 +25,7 @@ class MrpProduction(models.Model):
     oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=True)
     sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', store=True, readonly=True)
     workcenter_id = fields.Many2one('mrp.workcenter', string='Work Center', store=True, readonly=True)
-    qc_pass_qty = fields.Float(string='QC Pass Quantity', default=1.0, store=True)
+    qc_pass_qty = fields.Float(string='QC Pass Quantity', default=0.0, store=True)
     
     shade = fields.Text(string='Shade', store=True)
     finish = fields.Text(string='Finish', store=True)

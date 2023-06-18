@@ -83,6 +83,7 @@ class ZkMachine(models.Model):
         ('9', '9')],
         string='Finger Template', tracking=True,
         help='Finger Template: Every Finger You Can Set....')
+    unmap_employee_ids = fields.Many2many('hr.employee', 'unmap', default=lambda self: self.action_unmap_user(), store=False)    
     
     
     
@@ -315,12 +316,14 @@ class ZkMachine(models.Model):
                 #raise UserError(_('Unable to connect, please check the parameters and network connections.'))
     @api.model
     def cron_refresh(self):
+        
         machines = self.env['zk.machine'].search([])
         for machine in machines :
             machine.action_get_device_info()
             
     def action_get_device_info(self):
         # _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
+        self.action_unmap_user()
         for info in self:
             machine_ip = info.name
             zk_port = info.port_no
@@ -460,16 +463,31 @@ class ZkMachine(models.Model):
             uids = False
             users_ = conn.get_users()
             employee = self.env['hr.employee'].search([])#('barcode','=','01001')
-            get_employee = employee.filtered(lambda x: x.barcode not in [u.user_id for u in users_])
+            getemployee = employee.filtered(lambda x: x.barcode not in [u.user_id for u in users_])
+            get_employee = employee.filtered(lambda x: (str(x.barcode)+str(int(x.rfid))) not in [(str(u.user_id)+str(u.card)) for u in users_])
+            
             if get_employee:
                 for emp in get_employee:
                     if emp.barcode == '01607':
                         privileges = const.USER_ADMIN
                     else:
                         privileges = const.USER_DEFAULT
-                    
+
+                    is_create = False
+                    if emp.id in getemployee.mapped('id'):
+                        is_create = True
+                        # raise UserError((is_create))
+                    else:
+                        for u in users_:
+                            if u.user_id == emp.barcode:
+                                uids = u.uid
+                                break
                     try:
-                        conn.set_user(uid=None, name = emp.name, privilege=privileges, password='', group_id='', user_id=emp.barcode, card=emp.rfid)
+                        
+                        if is_create:
+                            conn.set_user(uid=None, name = emp.name, privilege=privileges, password='', group_id='', user_id=emp.barcode, card=emp.rfid)
+                        else:
+                            conn.set_user(uid=uids, name = emp.name, privilege=privileges, password='', group_id='', user_id=emp.barcode, card=emp.rfid)
                     except Exception as e:
                         _logger.info("Process terminate : {}".format(e))
 
@@ -601,5 +619,25 @@ class ZkMachine(models.Model):
             finally:
                 if conn:
                     conn.disconnect()
+        else:
+            raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))
+    
+    def action_unmap_user(self):
+        machine_ip = self.name
+        zk_port = self.port_no
+        timeout = 15
+        try:
+            zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
+        except NameError:
+            raise UserError(_("Please install it with 'pip3 install pyzk'."))
+        conn = zk.connect()
+        
+        if conn:
+            users_ = conn.get_users()
+            employee = self.env['hr.employee'].search([])#('barcode','=','01001')
+            unmap_employee = employee.filtered(lambda x: (str(x.barcode)+str(int(x.rfid))) not in [(str(u.user_id)+str(u.card)) for u in users_])
+
+            return self.env['hr.employee'].search([('id','in',unmap_employee.mapped('id'))])
+            
         else:
             raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))               

@@ -256,7 +256,7 @@
 						<t t-set="p_code" t-value="0"/>
 						<t t-set="shape" t-value="0"/>
 						<t t-set="logo" t-value="0"/>
-						<t t-set="logo_ref" t-value="0"/>
+						<t t-set="logoref" t-value="0"/>
 						<t t-set="logo_type" t-value="0"/>
 						<t t-set="finish" t-value="0"/>
 						<t t-set="finish_ref" t-value="0"/>
@@ -284,8 +284,8 @@
 								</t>
 							</t>
 							<t t-if="logoref == 0">
-								<t t-if="line.logo_ref and line.logo_ref != 'N/A'">
-									<t t-set="logo_ref" t-value="1"/>
+								<t t-if="line.logoref and line.logoref != 'N/A'">
+									<t t-set="logoref" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="logo_type == 0">
@@ -360,7 +360,7 @@
 										<th style="white-space: nowrap;">Logo</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
-									<t t-if="logo_ref == 1">
+									<t t-if="logoref == 1">
 										<th style="white-space: nowrap;">LOGO REF</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
@@ -424,7 +424,7 @@
 										<t t-if="not line.display_type">
 											<td>
 												<strong>
-													<span t-esc="line.product_template_id.name"/>
+													<span t-esc="line.product_template_id.generic_name"/>
 												</strong>
 											</td>
 											<td/>
@@ -464,15 +464,15 @@
 													<td/>
 												</t>
 											</t>
-											<t t-if="logo_ref == 1">
-												<t t-if="line.logo_ref">
+											<t t-if="logoref == 1">
+												<t t-if="line.logoref">
 													<td>
 														<strong>
-															<span t-esc="line.logo_ref"/>
+															<span t-esc="line.logoref"/>
 														</strong>
 													</td>
 												</t>
-												<t t-if="not line.logo_ref">
+												<t t-if="not line.logoref">
 													<td/>
 												</t>
 											</t>

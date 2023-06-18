@@ -42,6 +42,7 @@
         'views/variant_templates.xml',
         'reports/report.xml',
         'views/order_flow.xml',
+        'wizard/sales_report_wizard.xml'
         
     ],
     # only loaded in demonstration mode

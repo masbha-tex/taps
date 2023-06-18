@@ -87,8 +87,8 @@
                                 </span>
                             </div>
                         </button>                          
-                    </div>
-                    <div class="oe_button_box" name="button_box" groups="hr_attendance.group_hr_attendance_manager">
+                    <!-- </div> -->
+                    <!-- <div class="oe_button_box" name="button_box" groups="hr_attendance.group_hr_attendance_manager"> -->
 <!--                       <button name="action_enroll_user" type="object" class="oe_stat_button" icon="fa-barcode" help="Enroll Users Users to this machine" confirm="Are you sure you want to do this?" attrs="{'invisible': [('device_name', '=', False)]}" >
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
@@ -152,6 +152,16 @@
                         </group>
                     </group>
 						<notebook>
+							<page name="unmap_employee_to_machine" string="Unmap Employees" > 
+                                <field name="unmap_employee_ids">
+                                    <tree>
+                                        <field name="barcode" string="Emp ID"/>
+                                        <field name="name"/>
+                                        <field name="rfid"/>
+                                        <!-- Add other fields you want to display -->
+                                    </tree>
+                                </field>
+							</page>                            
 							<page name="upload_finger_to_machine" string="Enroll Fingers">
 <!--                                     <label for="template_id"/> -->
                                         <div class="o_row col-5">
@@ -162,6 +172,7 @@
 <!--                                             <button name="579" string="Print Badge" class="btn btn-link" type="action" attrs="{'invisible': [('employee_id', '=', False)]}"/> -->
                                         </div>
 							</page>
+
 						</notebook>                   
                 </sheet>
                 <div class="oe_chatter">
