@@ -65,7 +65,10 @@
                                     Play Voice
                                 </span>
                             </div>
-                        </button>                          
+                        </button>     
+                      <button id="unmap_employee_ids" class="oe_stat_button" icon="fa-barcode" help="Unmap Users in this machine">
+                            <field name="unmap_employee_ids" widget="statinfo" string="Unmap Users"/>
+                        </button>                                                 
                         <button name="action_sync_time" type="object" class="oe_stat_button" icon="fa-gears" help="Sync time to the machine" confirm="Are you sure you want to Sync time this machine?">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">
@@ -89,13 +92,7 @@
                         </button>                          
                     <!-- </div> -->
                     <!-- <div class="oe_button_box" name="button_box" groups="hr_attendance.group_hr_attendance_manager"> -->
-<!--                       <button name="action_enroll_user" type="object" class="oe_stat_button" icon="fa-barcode" help="Enroll Users Users to this machine" confirm="Are you sure you want to do this?" attrs="{'invisible': [('device_name', '=', False)]}" >
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">
-                                    Enroll Users
-                                </span>
-                            </div>
-                        </button>                          -->
+
                        
                         <button name="clear_attendance" type="object" class="oe_stat_button" icon="fa-trash-o" help="Clear All Attendance Data to this machine" attrs="{'invisible': [('device_name', '=', False)]}" confirm="Are you sure you want to Clear All Attendance Data this machine?">
                             <div class="o_stat_info">
@@ -152,16 +149,14 @@
                         </group>
                     </group>
 						<notebook>
-							<page name="unmap_employee_to_machine" string="Unmap Employees" > 
+							<!-- <page name="unmap_employee_to_machine" string="Unmap Employees" > 
                                 <field name="unmap_employee_ids">
                                     <tree>
                                         <field name="barcode" string="Emp ID"/>
                                         <field name="name"/>
                                         <field name="rfid"/>
-                                        <!-- Add other fields you want to display -->
-                                    </tree>
                                 </field>
-							</page>                            
+							</page>                             -->
 							<page name="upload_finger_to_machine" string="Enroll Fingers">
 <!--                                     <label for="template_id"/> -->
                                         <div class="o_row col-5">

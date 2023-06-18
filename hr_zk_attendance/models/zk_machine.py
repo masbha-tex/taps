@@ -83,7 +83,7 @@ class ZkMachine(models.Model):
         ('9', '9')],
         string='Finger Template', tracking=True,
         help='Finger Template: Every Finger You Can Set....')
-    unmap_employee_ids = fields.Many2many('hr.employee', 'unmap', default=lambda self: self.action_unmap_user(), store=False)    
+    unmap_employee_ids = fields.Integer(string='Unmaped', store=True, copy=True,readonly=True, tracking=True)  
     
     
     
@@ -322,8 +322,9 @@ class ZkMachine(models.Model):
             machine.action_get_device_info()
             
     def action_get_device_info(self):
+        
         # _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
-        self.action_unmap_user()
+        # self.action_unmap_user()
         for info in self:
             machine_ip = info.name
             zk_port = info.port_no
@@ -332,6 +333,7 @@ class ZkMachine(models.Model):
                 zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
             except NameError:
                 raise UserError(_("Please install it with 'pip3 install pyzk'."))
+                
             conn = self.device_connect(zk)        
             if conn:
                 try:
@@ -348,7 +350,8 @@ class ZkMachine(models.Model):
                                 'fingerprint':conn.get_fp_version(),
                                 'device_user_count':("%s/%s" % (conn.users, conn.users_cap)),
                                 'device_finger_count':("%s/%s" % (conn.fingers, conn.fingers_cap)),
-                                'att_log_count':conn.records,})
+                                'att_log_count':conn.records,
+                                'unmap_employee_ids': self.action_unmap_user(),})
                     
                 except Exception as e:
                     _logger.info("Process terminate : {}".format(e))
@@ -377,7 +380,7 @@ class ZkMachine(models.Model):
             zk_port = info.port_no
             timeout = 15
             try:
-                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True)
+                zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
             except NameError:
                 raise UserError(_("Please install it with 'pip3 install pyzk'."))
             try:
@@ -637,7 +640,8 @@ class ZkMachine(models.Model):
             employee = self.env['hr.employee'].search([])#('barcode','=','01001')
             unmap_employee = employee.filtered(lambda x: (str(x.barcode)+str(int(x.rfid))) not in [(str(u.user_id)+str(u.card)) for u in users_])
 
-            return self.env['hr.employee'].search([('id','in',unmap_employee.mapped('id'))])
+            # return self.env['hr.employee'].search([('id','in',unmap_employee.mapped('id'))])
+            return len(unmap_employee)
             
         else:
-            raise UserError(_('Unable to connect to Attendance Device. Please use Refresh Connection button to verify.'))               
+            return False               
