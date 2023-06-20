@@ -59,6 +59,7 @@ class SplitManufacturingOrder(models.TransientModel):
         res["mo_id"] = active_id
         production = self.env["mrp.production"].browse(active_id)
         res["mo_qty"] = production.product_qty
+        res["product_id"] = production.product_id.id
             #raise UserError((active_id))
             #if production.product_tracking == "serial":
                 

@@ -290,8 +290,9 @@ class SalarySheet(models.TransientModel):
             return self.salary_xls_template(self, data=data)
         if self.report_type == 'SALARYTOP':
             return self.top_sheet_salary_xls_template(self, data=data)
+            # raise UserError(('This Report are not XLSX Format'))
         # else:
-        #     raise UserError(('This Report are not XLSX Format'))
+            
                    
     
     def salary_xls_template(self, docids, data=None):
@@ -343,7 +344,7 @@ class SalarySheet(models.TransientModel):
         
         for payslip in docs:
             slnumber = slnumber+1
-            if self.is_company == False :
+            if self.is_company == False:
                 emp_data = [
                 '',
                 payslip.employee_id.emp_id,
@@ -670,7 +671,8 @@ class SalarySheet(models.TransientModel):
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
         column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#FDE9D9', 'font_size': 11})
         row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
-        row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True})        
+        row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        
         format_label_1 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right', 'top': True,  'bottom': True})
         
         format_label_2 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
@@ -751,7 +753,7 @@ class SalarySheet(models.TransientModel):
         worksheet.write(0, 35, 'Strength', column_product_style)
         
 
-        if self.is_company == False :
+        if self.is_company == False:
             worksheet.write(0, 36, 'Car', column_product_style)
             worksheet.write(0, 37, 'Others Alw', column_product_style)
             worksheet.write(0, 38, 'Incentive', column_product_style)
@@ -812,7 +814,7 @@ class SalarySheet(models.TransientModel):
                     if x_c == 0:
                         worksheet.write(row, x_c,(str(pr.name)+"(" +str(len(group_total))+")"), format_label_3)
                     elif (x_c > 7):
-                        if self.is_company == False :
+                        if self.is_company == False:
                             if x_c in (8,9,10,11,12,13,14,58,59):
                                 worksheet.write(row, col_com, '', format_label_3)
                             else:
@@ -836,7 +838,7 @@ class SalarySheet(models.TransientModel):
                             if x_c == 0:
                                 worksheet.write(row, x_c, (cat[1]+"("+str(len(group_total))+")"), format_label_3)
                             elif (x_c > 7):
-                                if self.is_company == False :
+                                if self.is_company == False:
                                     if x_c in (8,9,10,11,12,13,14,58,59):
                                         worksheet.write(row, col_cat, '', format_label_3)
                                     else:
@@ -858,7 +860,7 @@ class SalarySheet(models.TransientModel):
                                     if x_c == 0:
                                         worksheet.write(row, x_c, (str(dep[2])+"("+str(len(group_total))+")"), format_label_4)
                                     elif (x_c > 7):
-                                        if self.is_company == False :
+                                        if self.is_company == False:
                                             if x_c in (8,9,10,11,12,13,14,58,59):
                                                 worksheet.write(row, col_dtp, '', format_label_4)
                                             else:
@@ -883,7 +885,7 @@ class SalarySheet(models.TransientModel):
                                                 if x_c == 0:
                                                     worksheet.write(row, x_c, (str(line[7])+"("+str(len(group_total))+")"), format_label_4)
                                                 elif (x_c > 7):
-                                                    if self.is_company == False :
+                                                    if self.is_company == False:
                                                         if x_c in (8,9,10,11,12,13,14,58,59):
                                                             worksheet.write(row, col_sec, '', format_label_4)
                                                         else:
@@ -928,509 +930,493 @@ class SalarySheet(models.TransientModel):
             'target': 'self',
         } 
 
-
+    # raise UserError((top_sheet_salary_xls_template)) 
     def top_sheet_salary_xls_template(self, docids, data=None):
-            start_time = fields.datetime.now()
-            domain = []
-            if data.get('date_from'):
-                domain.append(('date_from', '=', data.get('date_from')))
-            if data.get('date_to'):
-                domain.append(('date_to', '=', data.get('date_to')))
-            if data.get('mode_company_id'):
-                domain.append(('employee_id.company_id', '=', data.get('mode_company_id')))
-            if data.get('department_id'):
-                domain.append(('department_id.id', '=', data.get('department_id')))
-            if data.get('category_id'):
-                domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
-            if data.get('employee_id'):
-                domain.append(('employee_id.id', '=', data.get('employee_id')))
-            if data.get('bank_id'):
-                domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
-            if data.get('employee_type'):
-                if data.get('employee_type')=='staff':
-                    domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
-                if data.get('employee_type')=='expatriate':
-                    domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
-                if data.get('employee_type')=='worker':
-                    domain.append(('employee_id.category_ids.id', 'in',(20,30)))
-                if data.get('employee_type')=='cstaff':
-                    domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
-                if data.get('employee_type')=='cworker':
-                    domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
-            if data.get('company_all'):
-                if data.get('company_all')=='allcompany':
-                    domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
-    
-            docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
-            #raise UserError((docs.id)) 
-            emplist = docs.mapped('employee_id.id')
-            employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
-            
-            catlist = employee.mapped('category_ids.id')
-            category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
-            
-            report_data = []
-            emp_data = []
-            slnumber=0
-            runs = docs.mapped('payslip_run_id')
-           
-            payslip_runs = self.env['hr.payslip.run'].search([('id', 'in', runs.mapped('id'))])
-            
-            for payslip in docs:
-                slnumber = slnumber+1
-                if self.is_company == False :
-                    emp_data = [
-                    '',
-                    payslip.employee_id.emp_id,
-                    payslip.employee_id.name,
-                    payslip.employee_id.company_id.id,
-                    payslip.employee_id.department_id.parent_id.id,
-                    payslip.employee_id.grade,
-                    payslip.employee_id.category_ids.id,
-                    payslip.employee_id.department_id.name,
-                    payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL'),
-                    payslip._get_salary_line_total('BASIC'),
-                    payslip._get_salary_line_total('HRA'),
-                    payslip._get_salary_line_total('MEDICAL'), 
-                    payslip.otHours,
-                    payslip.otRate,
-                    payslip._get_salary_line_total('OT'),
-                    payslip._get_salary_line_total('ARREAR'),
-                    payslip._get_salary_line_total('ATTBONUS'),
-                    payslip._get_salary_line_total('CONVENCE'),
-                    payslip._get_salary_line_total('FOOD'),
-                    payslip._get_salary_line_total('TIFFIN'),
-                    payslip._get_salary_line_total('SNACKS'),
-                    payslip._get_salary_line_total('CAR'),
-                    payslip._get_salary_line_total('OTHERS_ALW'),
-                    payslip._get_salary_line_total('INCENTIVE'),
-                    payslip._get_salary_line_total('RPF'),
-                    (payslip._get_salary_line_earnings_deduction_total('EARNINGS') +
-                     payslip._get_salary_line_total('BASIC') + 
-                     payslip._get_salary_line_total('HRA') + 
-                     payslip._get_salary_line_total('MEDICAL')),
-                    payslip._get_salary_line_total('PFR'),
-                    payslip._get_salary_line_total('PFE'),
-                    payslip._get_salary_line_total('AIT'),
-                    payslip._get_salary_line_total('BASIC_ABSENT'),
-                    payslip._get_salary_line_total('GROSS_ABSENT'),
-                    payslip._get_salary_line_total('LOAN'),
-                    payslip._get_salary_line_total('ADV_SALARY'),
-                    payslip._get_salary_line_total('OTHERS_DED'),
-                    payslip._get_salary_line_earnings_deduction_total('DED'),
-                    payslip._get_salary_line_total('NET'),
-                    payslip.employee_id.bank_account_id.acc_number,
-                    payslip.employee_id.bank_id.name,
-                    
-                                    #round(edata.total),
-                    
-                    
-                ]
-                else:
-                    
-                    emp_data = [
-                    '',
-                    payslip.employee_id.emp_id,
-                    payslip.employee_id.name,
-                    payslip.employee_id.company_id.id,
-                    payslip.employee_id.department_id.parent_id.id,
-                    payslip.employee_id.grade,
-                    payslip.employee_id.category_ids.id,
-                    payslip.employee_id.department_id.name,
-                    payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL'),
-                    payslip._get_salary_line_total('BASIC'),
-                    payslip._get_salary_line_total('HRA'),
-                    payslip._get_salary_line_total('MEDICAL'),
-                    payslip.com_otHours,
-                    payslip.otRate,
-                    ((payslip.com_otHours)*(payslip.otRate)),
-                    0,
-                    payslip._get_salary_line_total('ATTBONUS'),
-                    (payslip._get_salary_line_total('CONVENCE') + payslip._get_salary_line_total('CAR')),
-                    payslip._get_salary_line_total('FOOD'),
-                    payslip._get_salary_line_total('TIFFIN'),
-                    payslip._get_salary_line_total('SNACKS'),
-                    payslip._get_salary_line_total('RPF'),
-                    ((payslip._get_salary_line_total('BASIC') + 
-                      payslip._get_salary_line_total('HRA') +                 
-                      payslip._get_salary_line_total('MEDICAL')+
-                      ((payslip.com_otHours)*(payslip.otRate))+
-                      payslip._get_salary_line_total('ATTBONUS')+
-                      payslip._get_salary_line_total('CONVENCE')+ 
-                      payslip._get_salary_line_total('FOOD')+
-                      payslip._get_salary_line_total('TIFFIN')+
-                      payslip._get_salary_line_total('SNACKS')+
-                      payslip._get_salary_line_total('CAR')+
-                      payslip._get_salary_line_total('RPF'))),
-                    payslip._get_salary_line_total('PFR'),
-                    payslip._get_salary_line_total('PFE'),
-                    payslip._get_salary_line_total('AIT'),
-                    payslip._get_salary_line_total('BASIC_ABSENT'),
-                    payslip._get_salary_line_total('GROSS_ABSENT'),
-                    payslip._get_salary_line_total('LOAN'),
-                    payslip._get_salary_line_total('ADV_SALARY'),
-                    payslip._get_salary_line_total('OTHERS_DED'),
-                    payslip._get_salary_line_earnings_deduction_total('DED'),
-                    (((payslip._get_salary_line_total('BASIC') + 
-                     payslip._get_salary_line_total('HRA') + 
-                     payslip._get_salary_line_total('MEDICAL')+
-                     ((payslip.com_otHours)*(payslip.otRate))+
-                     payslip._get_salary_line_total('ATTBONUS')+
-                     payslip._get_salary_line_total('CONVENCE')+ 
-                     payslip._get_salary_line_total('FOOD')+
-                     payslip._get_salary_line_total('TIFFIN')+
-                     payslip._get_salary_line_total('SNACKS')+
-                      payslip._get_salary_line_total('CAR')+
-                      payslip._get_salary_line_total('RPF')))-payslip._get_salary_line_earnings_deduction_total('DED')),
-                    
-                                    #round(edata.total),
-    								
-                ]
-                        
-                report_data.append(emp_data)     
-                        
-            
-            categ_data = []
-            cdata = []
-            for c in category:
-                categ_data = []
+        start_time = fields.datetime.now()
+        domain = []
+        if data.get('date_from'):
+            domain.append(('date_from', '=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('date_to', '=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            domain.append(('employee_id.company_id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
+
+        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        #raise UserError((docs.id)) 
+        emplist = docs.mapped('employee_id.id')
+        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+        
+        catlist = employee.mapped('category_ids.id')
+        category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
+        
+        report_data = []
+        emp_data = []
+        slnumber=0
+        runs = docs.mapped('payslip_run_id')
+       
+        payslip_runs = self.env['hr.payslip.run'].search([('id', 'in', runs.mapped('id'))])
+        
+        for payslip in docs:
+            slnumber = slnumber+1
+            if self.is_company == False:
+                emp_data = [
+                '',
+                payslip.employee_id.emp_id,
+                payslip.employee_id.name,
+                payslip.employee_id.company_id.id,
+                payslip.employee_id.department_id.parent_id.id,
+                payslip.employee_id.grade,
+                payslip.employee_id.category_ids.id,
+                payslip.employee_id.department_id.name,
+                payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL'),
+                payslip._get_salary_line_total('BASIC'),
+                payslip._get_salary_line_total('HRA'),
+                payslip._get_salary_line_total('MEDICAL'), 
+                payslip.otHours,
+                payslip.otRate,
+                payslip._get_salary_line_total('OT'),
+                payslip._get_salary_line_total('ARREAR'),
+                payslip._get_salary_line_total('ATTBONUS'),
+                payslip._get_salary_line_total('CONVENCE'),
+                payslip._get_salary_line_total('FOOD'),
+                payslip._get_salary_line_total('TIFFIN'),
+                payslip._get_salary_line_total('SNACKS'),
+                payslip._get_salary_line_total('CAR'),
+                payslip._get_salary_line_total('OTHERS_ALW'),
+                payslip._get_salary_line_total('INCENTIVE'),
+                payslip._get_salary_line_total('RPF'),
+                (payslip._get_salary_line_earnings_deduction_total('EARNINGS') +
+                 payslip._get_salary_line_total('BASIC') + 
+                 payslip._get_salary_line_total('HRA') + 
+                 payslip._get_salary_line_total('MEDICAL')),
+                payslip._get_salary_line_total('PFR'),
+                payslip._get_salary_line_total('PFE'),
+                payslip._get_salary_line_total('AIT'),
+                payslip._get_salary_line_total('BASIC_ABSENT'),
+                payslip._get_salary_line_total('GROSS_ABSENT'),
+                payslip._get_salary_line_total('LOAN'),
+                payslip._get_salary_line_total('ADV_SALARY'),
+                payslip._get_salary_line_total('OTHERS_DED'),
+                payslip._get_salary_line_earnings_deduction_total('DED'),
+                payslip._get_salary_line_total('NET'),
                 
-                 
-                if c.name=='Z-Worker' or c.name=='Z-Staff' or c.name=='Z-Expatriate':
-                    categ_data = [
-                        c.id, #category id
-                        c.name, #category name
-                        1,  #company id
-                        len(c.name)
-                    ]
-                    cdata.append(categ_data)
-                    
-                    continue
-                if c.name=='B-Worker' or c.name=='B-Staff' or c.name=='B-Expatriate':
-                    categ_data = [
-                        c.id, #category id
-                        c.name, #category name
-                        3,  #company id
-                        len(c.name)
-                    ]
-                    cdata.append(categ_data)
-                    continue
-                if c.name=='C-Zipper Worker' or c.name=='C-Zipper Staff' or c.name=='C-Button Worker' or c.name=='C-Button Staff' or c.name=='C-Worker' or c.name=='C-Staff':
-                    categ_data = [
-                        c.id, #category id
-                        c.name, #category name
-                        4,  #company id
-                        len(c.name)
-                    ]
-                    cdata.append(categ_data)
-                    continue
-                if c.name=='Staff' or c.name=='Expatriate':
-                    categ_data = [
-                        c.id, #category id
-                        c.name, #category name
-                        2,  #company id
-                        len(c.name)
-                    ]
-                    cdata.append(categ_data)
-                    continue  
-            
-            sectionlist = employee.mapped('department_id.id')
-            section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
-            
-            parentdpt = section.mapped('parent_id.id')
-            department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
-            
-            com = employee.mapped('company_id.id')
-            company = self.env['res.company'].search([('id', 'in', (com))])
-            
-            
-            allemp_data = []
-            dept_data = []
-            emp_data = []
-            add = True
-            for details in employee:
-                emp_data = []
-                #raise UserError(('allemp_data'))
-                if allemp_data:
-                    for r in allemp_data:
-                        if (r[0] == details.company_id.id) and (r[2] == details.department_id.parent_id.id) and (r[4] == details.department_id.id and r[6]== details.category_ids.id):
-                            add = False
-                            break
-                if add == True:
-                    emp_data = [
-                        details.company_id.id,
-                        details.company_id.name,
-                        details.department_id.parent_id.id, # Department ID
-                        details.department_id.parent_id.name, # Department Name
-                        details.department_id.id, # Section ID
-                        details.department_id.name, # Section Name
-                        details.category_ids.id # Category Id
-                    ]
-                    allemp_data.append(emp_data)
-                add = True
-            #raise UserError((allemp_data))
-            d_data = []
-            add = True
-            for dep in allemp_data:
-                d_data = []
-                if dept_data:
-                    i = 0
-                    for r in dept_data:
-                        if (r[0] == dep[0]) and (r[1] == dep[2]) and (r[3]== dep[6]):
-                            i = i+1
-                            add = False
-                            break
-                if add == True:
-                    d_data = [
-                        dep[0],#0 company id
-                        dep[2],#1 department id
-                        dep[3],#2 department name
-                        dep[6] #3 category id
-                    ]
-                    dept_data.append(d_data)
-                add = True
+                                #round(edata.total),
                 
-           
-            
-            emp = employee.sorted(key = 'id')[:1]
-    
-            if data.get('mode_company_id'):
-                heading_type = emp.company_id.name
-            if data.get('department_id'):
-                heading_type = emp.department_id.name
-            if data.get('category_id'):
-                heading_type = emp.category_ids.name
-            if data.get('employee_id'):
-                heading_type = emp.name 
-            
-    #         for details in docs:
-    #             otTotal = 0
-    #             for de in docs:
-    #                if de.total >2:
-    #                  de.total=2
-    #                else:
-    #                 otTotal = otTotal + de.total
                 
-            common_data = [
-                data.get('report_type'),
-                data.get('bank_id'),
-                data.get('date_from'),
-                # datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B, %Y'),
-               data.get('date_to'),
             ]
-            common_data.append(common_data)  
-            
-    #             'datas': allemp_data,
-    # #            'datas': common_data,
-    # #             'alldays': all_datelist,
-    #             'dpt': dept_data,
-    #             'sec': section,
-    #             'com': company,
-    #             'cat': cdata,
-    #             'cd' : common_data,
-    # #             'stdate': stdate_data,
-    # #            'lsdate': lsdate_data,
-    #             'is_com' : data.get('is_company')        
-            
-            
-            output = io.BytesIO()
-            workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-            worksheet = workbook.add_worksheet()
-    
-            report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
-            # worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
-    
-            report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
-    #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-            # worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
-            # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s SALARY SHEET' % ('','')), report_small_title_style)
-    #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
-            # , 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"??_);_(@_)'
-            column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#FFC000', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
-            column_title_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#E9ECEF', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
-            column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-            column_issued_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#FDE9D9', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
-            row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
-            row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True})        
-            format_label_1 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right', 'top': True,  'bottom': True})
-            
-            format_label_2 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
-            
-            format_label_3 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
-            
-            format_label_4 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right',  'top': True,  'bottom': True, 'bold': True})
-    
-            # set the width od the column
-         
-            
-            worksheet.set_column(0, 0, 52)
-            worksheet.set_column(1, 4, 17)
-            worksheet.set_column(5, 7, 9)
-            worksheet.set_column(8, 14, 12)
-            worksheet.set_column(15, 15, 15)
-            worksheet.set_column(16, 18, 12)
-            worksheet.set_column(19, 23, 14)
-            worksheet.set_column(24, 25, 15)
-            worksheet.set_column(26, 28, 15)
-            
-            # worksheet.set_column(2, 52, 25)
-            
-            merge_format = workbook.add_format({'align': 'center','valign': 'top'})
-            #worksheet.merge_range(4, 0, 9, 0, '', merge_format)
-            # worksheet.set_column(9, 18, 20)
-            merge_format = workbook.add_format({'align': 'center','valign': 'top'})
-            # worksheet.set_column(19, 52, 20)
-            merge_format = workbook.add_format({'align': 'center','valign': 'top'})
-            
-    
-            worksheet.write(0, 0, 'Particulars', column_issued_style)  
-            worksheet.write(0, 1, 'Gross', column_issued_style)  
-            worksheet.write(0, 2, 'Basic', column_issued_style) 
-            worksheet.write(0, 3, 'House Rent', column_issued_style) 
-            worksheet.write(0, 4, 'Medical', column_issued_style) 
-            worksheet.write(0, 5, 'OT Hours', column_issued_style) 
-            worksheet.write(0, 6, 'OT Rate', column_issued_style) 
-            worksheet.write(0, 7, 'OT', column_issued_style)
-            worksheet.write(0, 8, 'Arrear', column_issued_style)
-            worksheet.write(0, 9, 'Att. Bonus', column_issued_style)
-            worksheet.write(0, 10, 'Convence', column_issued_style)
-            worksheet.write(0, 11, 'Food', column_issued_style)
-            worksheet.write(0, 12, 'Tiffin', column_issued_style)
-            worksheet.write(0, 13, 'Strength', column_issued_style)
-            
-    
-            if self.is_company == False :
-                worksheet.write(0, 14, 'Car', column_issued_style)
-                worksheet.write(0, 15, 'Others Alw', column_issued_style)
-                worksheet.write(0, 16, 'Incentive', column_issued_style)
-                worksheet.write(0, 17, 'Rpf', column_issued_style)
-                worksheet.write(0, 18, 'Total Earnings', column_product_style)
-                worksheet.write(0, 19, 'PF(Empr)', column_issued_style)
-                worksheet.write(0, 20, 'PF(Empee)', column_issued_style)
-                worksheet.write(0, 21, 'TDS (AIT)', column_issued_style)
-                worksheet.write(0, 22, 'Basic A.Deduct', column_issued_style)
-                worksheet.write(0, 23, 'Gross A.Deduct', column_issued_style)
-                worksheet.write(0, 24, 'Loan', column_issued_style)
-                worksheet.write(0, 25, 'Adv. Salary', column_issued_style)
-                worksheet.write(0, 26, 'Other Deduction', column_issued_style)
-                worksheet.write(0, 27, 'Total Deduction', column_product_style)
-                worksheet.write(0, 28, 'Net Payable', column_product_style)
-            
             else:
-                worksheet.write(0, 14, 'Rpf', column_issued_style)
-                worksheet.write(0, 15, 'Total Earnings', column_product_style)
-                worksheet.write(0, 16, 'PF(Empr)', column_issued_style)
-                worksheet.write(0, 17, 'PF(Empee)', column_issued_style)
-                worksheet.write(0, 18, 'TDS (AIT)', column_issued_style)
-                worksheet.write(0, 19, 'Basic A.Deduct', column_issued_style)
-                worksheet.write(0, 20, 'Gross A.Deduct', column_issued_style)
-                worksheet.write(0, 21, 'Loan', column_issued_style)
-                worksheet.write(0, 22, 'Adv. Salary', column_issued_style)
-                worksheet.write(0, 23, 'Other Deduction', column_issued_style)
-                worksheet.write(0, 24, 'Total Deduction', column_product_style)
-                worksheet.write(0, 25, 'Net Payable', column_product_style)
                 
-            
-            
-            col = 0
-            row = 1
-            
-            grandtotal = 0
-            #company,cdata,dept_data,section,
-            # raise UserError((dept_data[0]))
-            total_col = 0
-            company_count=0
-            category_count=0
-            departmnt_count=0
-            section_count=0
-            for line in report_data:
-                total_col = len(line)
-                break
-            sec_sr = 0
-            for x in [2,1,3,4]:
-                com = company.browse(x)
-                if com:
-                    pr = payslip_runs.filtered(lambda pr: pr.company_id.id == com.id)
-                    col_com = 1
-                    group_total = [data for data in report_data if data[3] == com.id]
-                    for x_c in range(total_col):
-                        if x_c == 0:
-                            worksheet.write(row, x_c,(str(pr.name)+"(" +str(len(group_total))+")"), format_label_3)
-                        elif (x_c > 7):
-                            column_sum = sum(data[x_c] for data in group_total)
-                            worksheet.write(row, col_com, column_sum, format_label_3)
-                                
-                            col_com += 1
-                    row += 1
+                emp_data = [
+                '',
+                payslip.employee_id.emp_id,
+                payslip.employee_id.name,
+                payslip.employee_id.company_id.id,
+                payslip.employee_id.department_id.parent_id.id,
+                payslip.employee_id.grade,
+                payslip.employee_id.category_ids.id,
+                payslip.employee_id.department_id.name,
+                payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL'),
+                payslip._get_salary_line_total('BASIC'),
+                payslip._get_salary_line_total('HRA'),
+                payslip._get_salary_line_total('MEDICAL'),
+                payslip.com_otHours,
+                payslip.otRate,
+                ((payslip.com_otHours)*(payslip.otRate)),
+                0,
+                payslip._get_salary_line_total('ATTBONUS'),
+                (payslip._get_salary_line_total('CONVENCE') + payslip._get_salary_line_total('CAR')),
+                payslip._get_salary_line_total('FOOD'),
+                payslip._get_salary_line_total('TIFFIN'),
+                payslip._get_salary_line_total('SNACKS'),
+                payslip._get_salary_line_total('RPF'),
+                ((payslip._get_salary_line_total('BASIC') + 
+                  payslip._get_salary_line_total('HRA') +                 
+                  payslip._get_salary_line_total('MEDICAL')+
+                  ((payslip.com_otHours)*(payslip.otRate))+
+                  payslip._get_salary_line_total('ATTBONUS')+
+                  payslip._get_salary_line_total('CONVENCE')+ 
+                  payslip._get_salary_line_total('FOOD')+
+                  payslip._get_salary_line_total('TIFFIN')+
+                  payslip._get_salary_line_total('SNACKS')+
+                  payslip._get_salary_line_total('CAR')+
+                  payslip._get_salary_line_total('RPF'))),
+                payslip._get_salary_line_total('PFR'),
+                payslip._get_salary_line_total('PFE'),
+                payslip._get_salary_line_total('AIT'),
+                payslip._get_salary_line_total('BASIC_ABSENT'),
+                payslip._get_salary_line_total('GROSS_ABSENT'),
+                payslip._get_salary_line_total('LOAN'),
+                payslip._get_salary_line_total('ADV_SALARY'),
+                payslip._get_salary_line_total('OTHERS_DED'),
+                payslip._get_salary_line_earnings_deduction_total('DED'),
+                (((payslip._get_salary_line_total('BASIC') + 
+                 payslip._get_salary_line_total('HRA') + 
+                 payslip._get_salary_line_total('MEDICAL')+
+                 ((payslip.com_otHours)*(payslip.otRate))+
+                 payslip._get_salary_line_total('ATTBONUS')+
+                 payslip._get_salary_line_total('CONVENCE')+ 
+                 payslip._get_salary_line_total('FOOD')+
+                 payslip._get_salary_line_total('TIFFIN')+
+                 payslip._get_salary_line_total('SNACKS')+
+                  payslip._get_salary_line_total('CAR')+
+                  payslip._get_salary_line_total('RPF')))-payslip._get_salary_line_earnings_deduction_total('DED')),
+                
+                                #round(edata.total),
+    				
+            ]
                     
-                    for cat in cdata:
-                        if ((cat[2] == com.id)):
-                            col_cat = 1
-                            group_total = [y for y in report_data if y[3] == com.id and y[6] == cat[0]]
-                            for x_c in range(total_col):
-                                if x_c == 0:
-                                    worksheet.write(row, x_c, (cat[1]+"("+str(len(group_total))+")"), format_label_3)
-                                elif (x_c > 7):
-                                    column_sum = sum(data[x_c] for data in group_total)
-                                    worksheet.write(row, col_cat, column_sum, format_label_3)
-                                    col_cat += 1
-                            row += 1
-                            for dep in dept_data:
-                                if ((cat[2] == dep[0]) and (cat[0] == dep[3])):
-                                    col_dtp = 1
-                                    group_total = [y for y in report_data if y[3] == dep[0] and y[6] == dep[3] and y[4] == dep[1]]
-                                    for x_c in range(total_col):
-                                        if x_c == 0:
-                                            worksheet.write(row, x_c, (str(dep[2])+"("+str(len(group_total))+")"), format_label_4)
-                                        elif (x_c > 7):
-                                            column_sum = sum(data[x_c] for data in group_total)
-                                            worksheet.write(row, col_dtp, column_sum, format_label_4)    
-                                            col_dtp += 1
-                                    row += 1
-                                    sec_sr = 0
-                                    for line in report_data:
-                                        if ((dep[0] == line[3]) and (dep[1] == line[4]) and (dep[3] == line[6])):
-                                            if sec_sr == 0:
-                                                col_sec = 1
-                                                group_total = [y for y in report_data if y[3] == line[3] and y[4] == line[4] and y[6] == line[6]]
-                                                for x_c in range(total_col):
-                                                    if x_c == 0:
-                                                        worksheet.write(row, x_c, (str(line[7])+"("+str(len(group_total))+")"), format_label_4)
-                                                    elif (x_c > 7):
-                                                        column_sum = sum(data[x_c] for data in group_total)
-                                                        worksheet.write(row, col_sec, column_sum, format_label_4)
-                                                        col_sec += 1
-                                                row += 1                                            
-                                            sec_sr += 1
-                                            col = 0
-                                            col_s = 1
-                                            for l in line:
-                                                if (col > 7):
-                                                    worksheet.write(row, col_s, l, row_style)
-                                                    col_s += 1
-                                                col += 1
-                                            row += 1
+            report_data.append(emp_data)     
+                    
+        
+        categ_data = []
+        cdata = []
+        for c in category:
+            categ_data = []
             
-            #worksheet.write(com_row, 8, '=SUM(B{0}:B{1})'.format(1, row), column_product_style)
-            worksheet.write(row, 4, 'Grand Total', report_small_title_style)
-            worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
-            #raise UserError((datefrom,dateto,bankname,categname))
+             
+            if c.name=='Z-Worker' or c.name=='Z-Staff' or c.name=='Z-Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    1,  #company id
+                    len(c.name)
+                ]
+                cdata.append(categ_data)
+                
+                continue
+            if c.name=='B-Worker' or c.name=='B-Staff' or c.name=='B-Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    3,  #company id
+                    len(c.name)
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='C-Zipper Worker' or c.name=='C-Zipper Staff' or c.name=='C-Button Worker' or c.name=='C-Button Staff' or c.name=='C-Worker' or c.name=='C-Staff':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    4,  #company id
+                    len(c.name)
+                ]
+                cdata.append(categ_data)
+                continue
+            if c.name=='Staff' or c.name=='Expatriate':
+                categ_data = [
+                    c.id, #category id
+                    c.name, #category name
+                    2,  #company id
+                    len(c.name)
+                ]
+                cdata.append(categ_data)
+                continue  
+        
+        sectionlist = employee.mapped('department_id.id')
+        section = self.env['hr.department'].search([('id', 'in', (sectionlist))])
+        
+        parentdpt = section.mapped('parent_id.id')
+        department = self.env['hr.department'].search([('id', 'in', (parentdpt))])
+        
+        com = employee.mapped('company_id.id')
+        company = self.env['res.company'].search([('id', 'in', (com))])
+        
+        
+        allemp_data = []
+        dept_data = []
+        emp_data = []
+        add = True
+        for details in employee:
+            emp_data = []
+            #raise UserError(('allemp_data'))
+            if allemp_data:
+                for r in allemp_data:
+                    if (r[0] == details.company_id.id) and (r[2] == details.department_id.parent_id.id) and (r[4] == details.department_id.id and r[6]== details.category_ids.id):
+                        add = False
+                        break
+            if add == True:
+                emp_data = [
+                    details.company_id.id,
+                    details.company_id.name,
+                    details.department_id.parent_id.id, # Department ID
+                    details.department_id.parent_id.name, # Department Name
+                    details.department_id.id, # Section ID
+                    details.department_id.name, # Section Name
+                    details.category_ids.id # Category Id
+                ]
+                allemp_data.append(emp_data)
+            add = True
+        #raise UserError((allemp_data))
+        d_data = []
+        add = True
+        for dep in allemp_data:
+            d_data = []
+            if dept_data:
+                i = 0
+                for r in dept_data:
+                    if (r[0] == dep[0]) and (r[1] == dep[2]) and (r[3]== dep[6]):
+                        i = i+1
+                        add = False
+                        break
+            if add == True:
+                d_data = [
+                    dep[0],#0 company id
+                    dep[2],#1 department id
+                    dep[3],#2 department name
+                    dep[6] #3 category id
+                ]
+                dept_data.append(d_data)
+            add = True
             
-            workbook.close()
-            output.seek(0)
-            # binary_data = output.getvalue()
-            xlsx_data = output.getvalue()
-            #raise UserError(('sfrgr'))
+        
+        
+        emp = employee.sorted(key = 'id')[:1]
+    
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name 
+        
+    #     for details in docs:
+    #         otTotal = 0
+    #         for de in docs:
+    #            if de.total >2:
+    #              de.total=2
+    #            else:
+    #             otTotal = otTotal + de.total
             
-            self.file_data = base64.encodebytes(xlsx_data)
-            end_time = fields.datetime.now()
+        common_data = [
+            data.get('report_type'),
+            data.get('bank_id'),
+            data.get('date_from'),
+            # datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B, %Y'),
+           data.get('date_to'),
+        ]
+        common_data.append(common_data)  
+                
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+    
+        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
+        # worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+    
+        report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
+    #     worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+        # worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+        # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s SALARY SHEET' % ('','')), report_small_title_style)
+    #     worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        # , 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"??_);_(@_)'
+        column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#FFC000', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
+        column_title_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#E9ECEF', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
+        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
+        column_issued_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#FDE9D9', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+        row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_1 = workbook.add_format({'font_size': 11, 'font':'Calibri', 'valign': 'right', 'top': True, 'bottom': True})
+        format_label_1 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right', 'top': True,  'bottom': True})
+        
+        format_label_2 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
+        
+        format_label_3 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
+        
+        format_label_4 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right',  'top': True,  'bottom': True, 'bold': True})
+    
+        # set the width od the column
+        
+        
+        worksheet.set_column(0, 0, 52)
+        worksheet.set_column(1, 4, 17)
+        worksheet.set_column(5, 7, 9)
+        worksheet.set_column(8, 14, 12)
+        worksheet.set_column(15, 15, 15)
+        worksheet.set_column(16, 18, 12)
+        worksheet.set_column(19, 23, 14)
+        worksheet.set_column(24, 25, 15)
+        worksheet.set_column(26, 28, 15)
+        
+        # worksheet.set_column(2, 52, 25)
+        
+        merge_format = workbook.add_format({'align': 'center','valign': 'top'})
+        #worksheet.merge_range(4, 0, 9, 0, '', merge_format)
+        # worksheet.set_column(9, 18, 20)
+        merge_format = workbook.add_format({'align': 'center','valign': 'top'})
+        # worksheet.set_column(19, 52, 20)
+        merge_format = workbook.add_format({'align': 'center','valign': 'top'})
+        
+    
+        worksheet.write(0, 0, 'Particulars', column_issued_style)  
+        worksheet.write(0, 1, 'Gross', column_issued_style)  
+        worksheet.write(0, 2, 'Basic', column_issued_style) 
+        worksheet.write(0, 3, 'House Rent', column_issued_style) 
+        worksheet.write(0, 4, 'Medical', column_issued_style) 
+        worksheet.write(0, 5, 'OT Hours', column_issued_style) 
+        worksheet.write(0, 6, 'OT Rate', column_issued_style) 
+        worksheet.write(0, 7, 'OT', column_issued_style)
+        worksheet.write(0, 8, 'Arrear', column_issued_style)
+        worksheet.write(0, 9, 'Att. Bonus', column_issued_style)
+        worksheet.write(0, 10, 'Convence', column_issued_style)
+        worksheet.write(0, 11, 'Food', column_issued_style)
+        worksheet.write(0, 12, 'Tiffin', column_issued_style)
+        worksheet.write(0, 13, 'Strength', column_issued_style)
+        
+    
+        if self.is_company == False:
+            worksheet.write(0, 14, 'Car', column_issued_style)
+            worksheet.write(0, 15, 'Others Alw', column_issued_style)
+            worksheet.write(0, 16, 'Incentive', column_issued_style)
+            worksheet.write(0, 17, 'Rpf', column_issued_style)
+            worksheet.write(0, 18, 'Total Earnings', column_product_style)
+            worksheet.write(0, 19, 'PF(Empr)', column_issued_style)
+            worksheet.write(0, 20, 'PF(Empee)', column_issued_style)
+            worksheet.write(0, 21, 'TDS (AIT)', column_issued_style)
+            worksheet.write(0, 22, 'Basic A.Deduct', column_issued_style)
+            worksheet.write(0, 23, 'Gross A.Deduct', column_issued_style)
+            worksheet.write(0, 24, 'Loan', column_issued_style)
+            worksheet.write(0, 25, 'Adv. Salary', column_issued_style)
+            worksheet.write(0, 26, 'Other Deduction', column_issued_style)
+            worksheet.write(0, 27, 'Total Deduction', column_product_style)
+            worksheet.write(0, 28, 'Net Payable', column_product_style)
+        
+        else:
+            worksheet.write(0, 14, 'Rpf', column_issued_style)
+            worksheet.write(0, 15, 'Total Earnings', column_product_style)
+            worksheet.write(0, 16, 'PF(Empr)', column_issued_style)
+            worksheet.write(0, 17, 'PF(Empee)', column_issued_style)
+            worksheet.write(0, 18, 'TDS (AIT)', column_issued_style)
+            worksheet.write(0, 19, 'Basic A.Deduct', column_issued_style)
+            worksheet.write(0, 20, 'Gross A.Deduct', column_issued_style)
+            worksheet.write(0, 21, 'Loan', column_issued_style)
+            worksheet.write(0, 22, 'Adv. Salary', column_issued_style)
+            worksheet.write(0, 23, 'Other Deduction', column_issued_style)
+            worksheet.write(0, 24, 'Total Deduction', column_product_style)
+            worksheet.write(0, 25, 'Net Payable', column_product_style)
             
-            _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
-            return {
-                'type': 'ir.actions.act_url',
-                'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Top Sheet Salary')),
-                'target': 'self',
-            } 
+                
+        col = 0
+        row = 1
+        
+        grandtotal = 0
+        #company,cdata,dept_data,section,
+        # raise UserError((dept_data[0]))
+        total_col = 0
+        company_count=0
+        category_count=0
+        departmnt_count=0
+        section_count=0
+        for line in report_data:
+            total_col = len(line)
+            break
+        sec_sr = 0
+        for x in [2,1,3,4]:
+            com = company.browse(x)
+            if com:
+                pr = payslip_runs.filtered(lambda pr: pr.company_id.id == com.id)
+                col_com = 1
+                group_total = [data for data in report_data if data[3] == com.id]
+                for x_c in range(total_col):
+                    if x_c == 0:
+                        worksheet.write(row, x_c,(str(pr.name)+"(" +str(len(group_total))+")"), format_label_3)
+                    elif (x_c > 7):
+                        column_sum = sum(data[x_c] for data in group_total)
+                        worksheet.write(row, col_com, column_sum, format_label_3)
+                        col_com += 1
+                row += 1
+                
+                for cat in cdata:
+                    if ((cat[2] == com.id)):
+                        col_cat = 1
+                        group_total = [y for y in report_data if y[3] == com.id and y[6] == cat[0]]
+                        for x_c in range(total_col):
+                            if x_c == 0:
+                                worksheet.write(row, x_c, (cat[1]+"("+str(len(group_total))+")"), format_label_3)
+                            elif (x_c > 7):
+                                column_sum = sum(data[x_c] for data in group_total)
+                                worksheet.write(row, col_cat, column_sum, format_label_3)
+                                col_cat += 1
+                        row += 1
+                        for dep in dept_data:
+                            if ((cat[2] == dep[0]) and (cat[0] == dep[3])):
+                                col_dtp = 1
+                                group_total = [y for y in report_data if y[3] == dep[0] and y[6] == dep[3] and y[4] == dep[1]]
+                                for x_c in range(total_col):
+                                    # if x_c == 0:
+                                        # worksheet.write(row, x_c, (str(dep[2])+"("+str(len(group_total))+")"), format_label_4)
+                                    if (x_c > 7):
+                                        column_sum = sum(data[x_c] for data in group_total)
+                                        # worksheet.write(row, col_dtp, column_sum, format_label_4)    
+                                        col_dtp += 1
+                                # row += 1
+                                sec_sr = 0
+                                for line in report_data:
+                                    if ((dep[0] == line[3]) and (dep[1] == line[4]) and (dep[3] == line[6])):
+                                        if sec_sr == 0:
+                                            col_sec = 1
+                                            group_total = [y for y in report_data if y[3] == line[3] and y[4] == line[4] and y[6] == line[6]]
+                                            for x_c in range(total_col):
+                                                if x_c == 0:
+                                                    worksheet.write(row, x_c, (str(dep[2])+"/"+str(line[7])+"("+str(len(group_total))+")"), row_style_1)
+                                                elif (x_c > 7):
+                                                    column_sum = sum(data[x_c] for data in group_total)
+                                                    worksheet.write(row, col_sec, column_sum, row_style)
+                                                    col_sec += 1
+                                            row += 1                                            
+                                        sec_sr += 1
+                                        col = 0
+                                        col_s = 1
+                                        # for l in line:
+                                        #     if (col > 7):
+                                        #         worksheet.write(row, col_s, l, row_style)
+                                        #         col_s += 1
+                                        #     col += 1
+                                        # row += 1
+        
+        #worksheet.write(com_row, 8, '=SUM(B{0}:B{1})'.format(1, row), column_product_style)
+        worksheet.write(row, 4, 'Grand Total', report_small_title_style)
+        worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
+        #raise UserError((datefrom,dateto,bankname,categname))
+        
+        workbook.close()
+        output.seek(0)
+        # binary_data = output.getvalue()
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Top Sheet Salary')),
+            'target': 'self',
+        } 
 
 
 class PaySlipReportPDF(models.AbstractModel):

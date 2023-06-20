@@ -10,6 +10,7 @@
                   <field name="oa_id"/>
               </xpath>
               <xpath expr="//tree[1]/field[@name='product_uom_id']" position="after">
+                  
                   <field name="shade"/>
                   <field name="finish"/>
                   <field name="sizein"/>

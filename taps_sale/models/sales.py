@@ -13,6 +13,7 @@ from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 from odoo.tools.safe_eval import safe_eval
 import re
+from decimal import Decimal
 
 
 from werkzeug.urls import url_encode
@@ -96,6 +97,7 @@ class SaleOrder(models.Model):
     def _amount_in_words(self):
         total = 0.0
         for rec in self:
+            number= Decimal(rec.amount_total)
             total = format(rec.amount_total, ".2f")
             # raise UserError((total))
             # rec.amount_in_word = str (rec.currency_id.amount_to_text (total))
@@ -115,6 +117,7 @@ class SaleOrder(models.Model):
                 else:
                     text+=' cents '
             rec.amount_in_word = text.upper()
+            # raise UserError((total,rec.amount_in_word))
             
 
 

@@ -109,7 +109,7 @@ class MrpProduction(models.Model):
             if (bal_qty == 0) and (row == 0):
                 production.update({'product_qty':line.product_qty})
             else:
-                mrp_production = self.env['mrp.production'].create(self.mrp_values(None,production.name,production.product_id.id,line.product_qty,production.product_uom_id.id,production.bom_id.id,line.date_planned_start,line.date_planned_finished))
+                mrp_production = self.env['mrp.production'].create(self.mrp_values(None,production.name,production.product_id.id,line.product_qty,production.product_uom_id.id,production.bom_id.id,line.date_planned_start,line.date_planned_finished,production.shade,production.finish,production.sizein,production.sizecm))
                 mrp_production.move_raw_ids.create(mrp_production._get_moves_raw_values())
                 mrp_production._onchange_workorder_ids()
                 mrp_production._create_update_move_finished()
