@@ -609,8 +609,8 @@ class SalarySheet(models.TransientModel):
                 ]
                 dept_data.append(d_data)
             add = True
-            
-       
+
+     
         
         emp = employee.sorted(key = 'id')[:1]
 
@@ -986,10 +986,10 @@ class SalarySheet(models.TransientModel):
                 payslip.employee_id.emp_id,
                 payslip.employee_id.name,
                 payslip.employee_id.company_id.id,
-                payslip.employee_id.department_id.parent_id.id,
+                payslip.employee_id.department_id.id,
                 payslip.employee_id.grade,
                 payslip.employee_id.category_ids.id,
-                payslip.employee_id.department_id.name,
+                payslip.employee_id.department_id.display_name,
                 payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL'),
                 payslip._get_salary_line_total('BASIC'),
                 payslip._get_salary_line_total('HRA'),
@@ -1033,10 +1033,10 @@ class SalarySheet(models.TransientModel):
                 payslip.employee_id.emp_id,
                 payslip.employee_id.name,
                 payslip.employee_id.company_id.id,
-                payslip.employee_id.department_id.parent_id.id,
+                payslip.employee_id.department_id.id,
                 payslip.employee_id.grade,
                 payslip.employee_id.category_ids.id,
-                payslip.employee_id.department_id.name,
+                payslip.employee_id.department_id.display_name,
                 payslip._get_salary_line_total('BASIC') + payslip._get_salary_line_total('HRA') + payslip._get_salary_line_total('MEDICAL'),
                 payslip._get_salary_line_total('BASIC'),
                 payslip._get_salary_line_total('HRA'),
@@ -1146,6 +1146,7 @@ class SalarySheet(models.TransientModel):
         
         allemp_data = []
         dept_data = []
+        section_data = []
         emp_data = []
         add = True
         for details in employee:
@@ -1189,7 +1190,28 @@ class SalarySheet(models.TransientModel):
                 ]
                 dept_data.append(d_data)
             add = True
-            
+        
+        d_data = []
+        add = True
+        for sec in allemp_data:
+            d_data = []
+            if section_data:
+                i = 0
+                for r in section_data:
+                    if (r[0] == sec[0]) and (r[1] == sec[2]) and (r[3]== sec[6]):
+                        i = i+1
+                        add = False
+                        break
+            if add == True:
+                d_data = [
+                    sec[0],#0 company id
+                    sec[2],#1 department id
+                    sec[6], #2 category id
+                    sec[4],#3 section id
+                    sec[5],#4 section name
+                ]
+                section_data.append(d_data)
+            add = True            
         
         
         emp = employee.sorted(key = 'id')[:1]
@@ -1361,27 +1383,20 @@ class SalarySheet(models.TransientModel):
                                 worksheet.write(row, col_cat, column_sum, format_label_3)
                                 col_cat += 1
                         row += 1
-                        for dep in dept_data:
-                            if ((cat[2] == dep[0]) and (cat[0] == dep[3])):
-                                col_dtp = 1
-                                group_total = [y for y in report_data if y[3] == dep[0] and y[6] == dep[3] and y[4] == dep[1]]
-                                for x_c in range(total_col):
-                                    # if x_c == 0:
-                                        # worksheet.write(row, x_c, (str(dep[2])+"("+str(len(group_total))+")"), format_label_4)
-                                    if (x_c > 7):
-                                        column_sum = sum(data[x_c] for data in group_total)
-                                        # worksheet.write(row, col_dtp, column_sum, format_label_4)    
-                                        col_dtp += 1
-                                # row += 1
+                        for sec in section_data:
+                            # raise UserError(('ddd'))
+                            if ((cat[2] == sec[0]) and (cat[0] == sec[2])):
+                                
                                 sec_sr = 0
                                 for line in report_data:
-                                    if ((dep[0] == line[3]) and (dep[1] == line[4]) and (dep[3] == line[6])):
+                                    if ((sec[0] == line[3]) and (sec[3] == line[4]) and (sec[2] == line[6])):
+                                        #raise UserError(('ddd'))
                                         if sec_sr == 0:
                                             col_sec = 1
                                             group_total = [y for y in report_data if y[3] == line[3] and y[4] == line[4] and y[6] == line[6]]
                                             for x_c in range(total_col):
                                                 if x_c == 0:
-                                                    worksheet.write(row, x_c, (str(dep[2])+"/"+str(line[7])+"("+str(len(group_total))+")"), row_style_1)
+                                                    worksheet.write(row, x_c, (line[7]+"("+str(len(group_total))+")"), row_style_1)
                                                 elif (x_c > 7):
                                                     column_sum = sum(data[x_c] for data in group_total)
                                                     worksheet.write(row, col_sec, column_sum, row_style)

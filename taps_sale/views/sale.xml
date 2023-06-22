@@ -36,8 +36,11 @@
 					<field name="customer_ref"/>
 					<field name="style_ref"/>
 					<field name="sale_representative" options="{'no_create': True, 'no_create_edit':True}"/>
-					<field name="remarks"/>
-					<field name="applicant_bank" attrs="{'invisible': [['sales_type','=','sample']]}"/>
+					
+                    
+                    
+                    <field name="remarks"/>
+					<field name="applicant_bank" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oa']]}"/>
 				</xpath>
 				<xpath expr="//field[@name='validity_date']" position="before">
 					<label for="is_revised" invisible='1'/>
@@ -71,6 +74,10 @@
 					<field name="revised_date" attrs="{'invisible': [['sales_type','=','sample']]}"/>
                     <field name="usage" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','sale'],['sales_type','=',False]]}"/>
                     <field name="supply_chain" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','sale'],['sales_type','=',False]]}"/>
+                    <field name="priority" attrs="{'invisible': ['|',['sales_type','=','sale'],['sales_type','=','oa']]}"/>
+                    <field name="washing_type" attrs="{'invisible': ['|',['sales_type','=','sale'],['sales_type','=','oa']]}"/>
+                    <field name="bcd_part_finish" attrs="{'invisible': ['|',['sales_type','=','sale'],['sales_type','=','oa']]}"/>
+                    <field name="metal_detection" attrs="{'invisible': ['|',['sales_type','=','sale'],['sales_type','=','oa']]}"/>
 				</xpath>
 				<xpath expr="//field[@name='validity_date']" position="attributes">
 					<attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']], 'readonly': [['state','not in',['draft','sent']]]}</attribute>

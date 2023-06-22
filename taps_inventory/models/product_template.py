@@ -94,7 +94,17 @@ class IncludeCateTypeInPT(models.Model):
         self.description_purchase = ''
         if self.pur_description !="":
             self.description_purchase = self.pur_description
+
+# class ProductTemplateAttributeLine(models.Model):
+
+#     _inherit = "product.template.attribute.value"
             
+#     def _get_combination_name(self):
+#         """Exclude values from single value lines or from no_variant attributes."""
+#         ptavs = self._without_no_variant_attributes().with_prefetch(self._prefetch_ids)
+#         ptavs = ptavs._filter_single_value_lines().with_prefetch(self._prefetch_ids)
+#         raise UserError((ptavs))
+#         return ", ".join([ptav.name for ptav in ptavs])
             
             
 class ProductTemplateAttributeLine(models.Model):
