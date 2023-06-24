@@ -975,7 +975,7 @@ class SaleOrder(models.Model):
         if self.sales_type == 'oa':
             self.order_line.product_consumption(self.id)
             self.order_line.compute_shadewise_tape()
-            #self.generate_mrp()
+            self.generate_mrp()
         return True
 
         
@@ -1320,7 +1320,6 @@ class SaleOrderLine(models.Model):
             return
         valid_values = self.product_id.product_tmpl_id.valid_product_template_attribute_line_ids.product_template_value_ids
         # remove the is_custom values that don't belong to this template
-        
         for pacv in self.product_custom_attribute_value_ids:
             if pacv.custom_product_template_attribute_value_id not in valid_values:
                 self.product_custom_attribute_value_ids -= pacv
@@ -1354,7 +1353,7 @@ class SaleOrderLine(models.Model):
         temp = re.findall(r'\d+', test_string)
         res = list(map(int, temp))
         atv = self.env['product.template.attribute.value'].search([('id', 'in', res)])
-        
+        #raise UserError((atv))
         for rec in atv:
             if rec.attribute_id.name == 'Top / Bottom':
                 self.topbottom = rec.product_attribute_value_id.name

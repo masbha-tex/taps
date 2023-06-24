@@ -69,6 +69,19 @@ class IncludeCateTypeInPT(models.Model):
     ],string='PUR Description', store=False, readonly=False, copy=True)
     gap_cm = fields.Float(string="GAP(cm & inc)", copy=True, default=None)
     gap_inch = fields.Float(string="GAP(inch)", copy=True, default=None)
+    fg_categ_type = fields.Selection([
+        ('AL #5 CE', 'AL #5 CE'),
+        ('Coil #3 CE', 'Coil #3 CE'),
+        ('Coil #5 OE', 'Coil #5 OE'),
+        ('Coil #5 CE', 'Coil #5 CE'),
+        ('Metal #4 CE', 'Metal #4 CE'),
+        ('Metal #5 CE', 'Metal #5 CE'),
+        ('Metal #5 OE', 'Metal #5 OE'),
+        ('Metal #8 OE', 'Metal #8 OE'),
+        ('Plastic #3 CE', 'Plastic #3 CE'),
+        ('Plastic #5 CE', 'Plastic #5 CE'),
+        ('Plastic #5 OE', 'Plastic #5 OE')
+    ],string='FG Category', store=True, readonly=True, copy=False)
     #description_purchase = fields.Text('Purchase Description', related='pur_description', translate=True)
     # fg_product_type = fields.Selection([
     #     ('Auto Taffeta', 'Auto Taffeta'),
