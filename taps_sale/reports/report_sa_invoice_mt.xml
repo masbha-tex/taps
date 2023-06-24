@@ -39,41 +39,38 @@
 								<!--<span style="font-size:11px" t-esc="o.partner_id.contact_address_complete"/>-->
 							</p>
 						</div>
-						
-						
-						
 						<div class="col-2 mw-50 mb-2">
-						  <strong>SA DATE</strong>
+							<strong>SA DATE</strong>
 							<p>
 								<t t-esc="o.date_order.strftime('%d-%m-%Y')"/>
 							</p>
 						</div>
 						<div class="col-2 mw-50 mb-2">
-						  <strong>DELIVERY DATE</strong>
+							<strong>DELIVERY DATE</strong>
 							<p>
 								<t t-esc="o.commitment_date.strftime('%d-%m-%Y')"/>
 							</p>
 						</div>
 						<div class="col-2 mw-50 mb-2">
-						  <strong>SALES PERSON</strong>
+							<strong>SALES PERSON</strong>
 							<p>
 								<t t-esc="o.sale_representative.name"/>
 							</p>
 						</div>
-						<t t-if ="o.remarks">
-						<div class="col-3 mw-50 mb-2">
-							<p>
-								<strong>OTHER REQUIREMENTS</strong>
-								<br/>
-								<t t-if="isinstance(o.remarks, str)">
-									<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
-									<t t-foreach="string_to_output" t-as="string_line">
-										<span t-esc="string_line"/>
-										<br/>
+						<t t-if="o.remarks">
+							<div class="col-3 mw-50 mb-2">
+								<p>
+									<strong>OTHER REQUIREMENTS</strong>
+									<br/>
+									<t t-if="isinstance(o.remarks, str)">
+										<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
+										<t t-foreach="string_to_output" t-as="string_line">
+											<span t-esc="string_line"/>
+											<br/>
+										</t>
 									</t>
-								</t>
-							</p>
-						</div>
+								</p>
+							</div>
 						</t>
 					</div>
 					<br/>
@@ -91,31 +88,30 @@
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
-						  <strong>STYLE REF.</strong>
+							<strong>STYLE REF.</strong>
 							<p>
 								<t t-esc="o.style_ref"/>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
-						  <strong>SEASON</strong>
+							<strong>SEASON</strong>
 							<p>
 								<t t-esc="o.season"/>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
-						  <strong>DEPARTMENT</strong>
+							<strong>DEPARTMENT</strong>
 							<p>
 								<t t-esc="o.department"/>
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
-						  <strong>DEVISION</strong>
+							<strong>DEVISION</strong>
 							<p>
 								<t t-esc="o.division"/>
 							</p>
 						</div>
 					</div>
-					
 					<div class="row mt32 mb32" style="font-size:12px">
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>BUYER NAME</strong>
@@ -154,7 +150,6 @@
 							</p>
 						</div>
 					</div>
-				
 					<div class="row mt32 mb32" style="font-size:12px">
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>B, C, D PART FINISH</strong>
@@ -193,7 +188,7 @@
 						<t t-set="b_part" t-value="0"/>
 						<t t-set="c_part" t-value="0"/>
 						<t t-set="d_part" t-value="0"/>
-						<t t-set="style" t-value="0"/>
+						<t t-set="style_line" t-value="0"/>
 						<t t-set="gmt" t-value="0"/>
 						<t t-set="mm" t-value="0"/>
 						<t t-set="dis" t-value="0"/>
@@ -246,6 +241,11 @@
 							<t t-if="d_part == 0">
 								<t t-if="line.d_part and line.d_part != 'N/A'">
 									<t t-set="d_part" t-value="1"/>
+								</t>
+							</t>
+							<t t-if="style_line == 0">
+								<t t-if="line.style and line.style != 'N/A'">
+									<t t-set="style_line" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="mm == 0">
@@ -309,14 +309,14 @@
 									<th style="text-align: right ! important">Qty/PC</th>
 									<t t-set="line_count" t-value="line_count+1"/>
 									<th style="text-align: right ! important">Qty/Grs</th>
+									<t t-if="style_line == 1">
+										<th class="text-left">STYLE</th>
+									</t>
 								</tr>
 							</thead>
 							<tbody>
 								<t t-set="total_quantity" t-value="0"/>
 								<t t-set="id" t-value="0.0"/>
-								
-								
-								
 								<t t-foreach="o.order_line" t-as="line">
 									<tr>
 										<t t-if="not line.display_type">
@@ -449,7 +449,10 @@
 												<t t-if="line.sizemm">
 													<td style="text-align: right ! important">
 														<strong>
-															<span><t t-esc="line.sizemm"/></span><span> MM</span>
+															<span>
+																<t t-esc="line.sizemm"/>
+															</span>
+															<span> MM</span>
 														</strong>
 													</td>
 												</t>
@@ -468,6 +471,18 @@
 													<t t-set="total_quantity" t-value="line.product_uom_qty+total_quantity"/>
 												</strong>
 											</td>
+											<t t-if="style_line == 1">
+												<t t-if="line.style">
+													<td>
+														<strong>
+															<span t-esc="line.style"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.style">
+													<td/>
+												</t>
+											</t>
 										</t>
 									</tr>
 								</t>

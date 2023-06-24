@@ -18,6 +18,7 @@
                         <field name="gap_cm" placeholder="CM"/>
                         <field name="gap_inch" placeholder="Inch"/>
                     </div>
+                    <field name="fg_categ_type" string="FG Category"/>
                </xpath>
             </field>
         </record>
