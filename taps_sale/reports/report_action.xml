@@ -11,7 +11,7 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/>
             <field name="default_print_option">print</field>
-            <field name="print_report_name">"PI_Zipper_"+(object.name)</field>
+            <field name="print_report_name">(object.pi_number)</field>
         </record>
         <record id="action_report_oa_invoice" model="ir.actions.report">
             <field name="name">OA-Zipper</field>
@@ -23,7 +23,7 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_sale.paperformat_sale_report_landscape"/>
             <field name="default_print_option">print</field>
-            <field name="print_report_name">"OA_Zipper_"+(object.name)</field>
+            <field name="print_report_name">(object.name)</field>
             
         </record>
         <record id="action_report_proforma_invoice_mt" model="ir.actions.report">
@@ -36,7 +36,7 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/>
             <field name="default_print_option">print</field>
-            <field name="print_report_name">"PI_MT_"+(object.name)</field>
+            <field name="print_report_name">(object.pi_number)</field>
         </record>
         <record id="action_report_oa_invoice_mt" model="ir.actions.report">
             <field name="name">OA-Metal Trims</field>
@@ -48,7 +48,7 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_sale.paperformat_sale_report_landscape"/>
             <field name="default_print_option">print</field>
-            <field name="print_report_name">"OA_MT_"+(object.name)</field>
+            <field name="print_report_name">"(object.name)</field>
             
         </record>
         <record id="action_report_sa_invoice_mt" model="ir.actions.report">
@@ -61,7 +61,7 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/>
             <field name="default_print_option">print</field>
-            <field name="print_report_name">"SA_MT_"+(object.name)</field>
+            <field name="print_report_name">(object.name)</field>
             
         </record>
     
