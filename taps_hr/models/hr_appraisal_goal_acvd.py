@@ -17,6 +17,8 @@ class HrAppraisalGoalsAcvd(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _description = 'Employee Appraisal Goals Achievement'
 
+
+
     name = fields.Char('Code', store=True,required=True, readonly=True, index=True, copy=False, tracking=True, default='Goals Monthly Achievement')
     employee_id = fields.Many2one('hr.employee', string="Owner",
          required=True, tracking=True)#default=lambda self: self.env.user.employee_id,
@@ -33,7 +35,7 @@ class HrAppraisalGoalsAcvd(models.Model):
         ('jan', 'January'),
         ('feb', 'February'),
         ('mar', 'March'),], string="Month",tracking=True, store=True, required=True)
-    acvd_line = fields.One2many('hr.appraisal.goal.acvd.line', 'acvd_id', state={'refused': [('readonly', True)], 'approved': [('readonly', True)]}, string='Achievement Lines',tracking=True, store=True, required=True)
+    acvd_line = fields.One2many('hr.appraisal.goal.acvd.line', 'acvd_id', state={'refused': [('readonly', True)], 'approved': [('readonly', True)]}, string='Achievement Lines', tracking=True, store=True, required=True)
     state = fields.Selection([
     ('draft', 'To Submit'),
     ('submit', 'Submitted'),
@@ -41,14 +43,43 @@ class HrAppraisalGoalsAcvd(models.Model):
     ('refused', 'Refused')], string='Status', copy=False, 
         index=True, readonly=True, store=True, default='draft', tracking=True, help="Status of the Goals ACVD")
     
-    # @api.onchange('acvd_line')
-    # def check_duplicates(self):
-    #     for line in self.acvd_line:
-    #         if line.id:
-    #             continue  # skip lines that are already saved
-    #         for other in self.acvd_line.filtered(lambda x: x != line):
-    #             if other.objective_line_id == line.objective_line_id:
-    #                 raise ValidationError("Duplicate objective found: {}".format(line.objective_line_id.name))
+    @api.onchange('employee_id')
+    def on_employee_change(self):
+        # Clear existing acvd_line records
+        self.acvd_line = [(5, 0, 0)]
+        if self.employee_id:
+            # Fetch the desired acvd_line records based on the selected employee
+            acvd_lines = self.env['hr.appraisal.goal'].search([('employee_id','=',self.employee_id.id)])
+            # Add the acvd_line records to the one2many field
+            # self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': 0, 'acvd': 0}) for id in acvd_lines]
+            if self.month == 'apr':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_apr, 'acvd': id.t_apr}) for id in acvd_lines]
+            elif self.month == 'may':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_may, 'acvd': id.t_may}) for id in acvd_lines]
+            elif self.month == 'jun':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_jun, 'acvd': id.t_jun}) for id in acvd_lines]
+            elif self.month == 'jul':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_jul, 'acvd': id.t_jul}) for id in acvd_lines]
+            elif self.month == 'aug':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_aug, 'acvd': id.t_aug}) for id in acvd_lines]
+            elif self.month == 'sep':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_sep, 'acvd': id.t_sep}) for id in acvd_lines]
+            elif self.month == 'oct':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_oct, 'acvd': id.t_oct}) for id in acvd_lines]
+            elif self.month == 'nov':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_nov, 'acvd': id.t_nov}) for id in acvd_lines]
+            elif self.month == 'dec':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_dec, 'acvd': id.t_dec}) for id in acvd_lines]
+            elif self.month == 'jan':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_jan, 'acvd': id.t_jan}) for id in acvd_lines]
+            elif self.month == 'feb':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_feb, 'acvd': id.t_feb}) for id in acvd_lines]
+            elif self.month == 'mar':
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': id.t_mar, 'acvd': id.t_mar}) for id in acvd_lines]
+            else:
+                self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': 0, 'acvd': 0}) for id in acvd_lines]
+            
+            
     @api.onchange('acvd_line')
     def check_duplicate_lines(self):
         for index, line in enumerate(self.acvd_line):
@@ -59,45 +90,45 @@ class HrAppraisalGoalsAcvd(models.Model):
                         raise ValidationError("Duplicate Objective line found: {}".format(objective_line_id.name))
    
                
-    # @api.onchange('month')
-    # def calculate_target_acvd(self):
-    #     for acvd in self.acvd_line:
-    #         if self.month == 'apr':
-    #             acvd.target = acvd.objective_line_id.t_apr
-    #             acvd.acvd = acvd.objective_line_id.a_apr
-    #         elif self.month == 'may':
-    #             acvd.target = acvd.objective_line_id.t_may
-    #             acvd.acvd = acvd.objective_line_id.a_may
-    #         elif self.month == 'jun':
-    #             acvd.target = acvd.objective_line_id.t_jun
-    #             acvd.acvd = acvd.objective_line_id.a_jun
-    #         elif self.month == 'jul':
-    #             acvd.target = acvd.objective_line_id.t_jul
-    #             acvd.acvd = acvd.objective_line_id.a_jul
-    #         elif self.month == 'aug':
-    #             acvd.target = acvd.objective_line_id.t_aug
-    #             acvd.acvd = acvd.objective_line_id.a_aug
-    #         elif self.month == 'sep':
-    #             acvd.target = acvd.objective_line_id.t_sep
-    #             acvd.acvd = acvd.objective_line_id.a_sep
-    #         elif self.month == 'oct':
-    #             acvd.target = acvd.objective_line_id.t_oct
-    #             acvd.acvd = acvd.objective_line_id.a_oct
-    #         elif self.month == 'nov':
-    #             acvd.target = acvd.objective_line_id.t_nov
-    #             acvd.acvd = acvd.objective_line_id.a_nov
-    #         elif self.month == 'dec':
-    #             acvd.target = acvd.objective_line_id.t_dec
-    #             acvd.acvd = acvd.objective_line_id.a_dec
-    #         elif self.month == 'jan':
-    #             acvd.target = acvd.objective_line_id.t_jan
-    #             acvd.acvd = acvd.objective_line_id.a_jan
-    #         elif self.month == 'feb':
-    #             acvd.target = acvd.objective_line_id.t_feb
-    #             acvd.acvd = acvd.objective_line_id.a_feb
-    #         elif self.month == 'mar':
-    #             acvd.target = acvd.objective_line_id.t_mar
-    #             acvd.acvd = acvd.objective_line_id.a_mar    
+    @api.onchange('month')
+    def calculate_target_acvd_on(self):
+        for acvd in self.acvd_line:
+            if self.month == 'apr':
+                acvd.target = acvd.objective_line_id.t_apr
+                acvd.acvd = acvd.objective_line_id.a_apr
+            elif self.month == 'may':
+                acvd.target = acvd.objective_line_id.t_may
+                acvd.acvd = acvd.objective_line_id.a_may
+            elif self.month == 'jun':
+                acvd.target = acvd.objective_line_id.t_jun
+                acvd.acvd = acvd.objective_line_id.a_jun
+            elif self.month == 'jul':
+                acvd.target = acvd.objective_line_id.t_jul
+                acvd.acvd = acvd.objective_line_id.a_jul
+            elif self.month == 'aug':
+                acvd.target = acvd.objective_line_id.t_aug
+                acvd.acvd = acvd.objective_line_id.a_aug
+            elif self.month == 'sep':
+                acvd.target = acvd.objective_line_id.t_sep
+                acvd.acvd = acvd.objective_line_id.a_sep
+            elif self.month == 'oct':
+                acvd.target = acvd.objective_line_id.t_oct
+                acvd.acvd = acvd.objective_line_id.a_oct
+            elif self.month == 'nov':
+                acvd.target = acvd.objective_line_id.t_nov
+                acvd.acvd = acvd.objective_line_id.a_nov
+            elif self.month == 'dec':
+                acvd.target = acvd.objective_line_id.t_dec
+                acvd.acvd = acvd.objective_line_id.a_dec
+            elif self.month == 'jan':
+                acvd.target = acvd.objective_line_id.t_jan
+                acvd.acvd = acvd.objective_line_id.a_jan
+            elif self.month == 'feb':
+                acvd.target = acvd.objective_line_id.t_feb
+                acvd.acvd = acvd.objective_line_id.a_feb
+            elif self.month == 'mar':
+                acvd.target = acvd.objective_line_id.t_mar
+                acvd.acvd = acvd.objective_line_id.a_mar    
 
     def button_approve(self, force=False):
         self.write({'state': 'approved'})
@@ -130,36 +161,13 @@ class HrAppraisalGoalsAcvd(models.Model):
                 objec.write({'a_mar':line.acvd_entry})
         
         return {}
-        # if self.increment_line:
-        #     for app in self.increment_line:
-        #         elist = self.env['hr.employee'].search([('id','=',app.employee_id.id)])
-        #         conlist = self.env['hr.contract'].search([('employee_id','=',app.employee_id.id)])
-                # if app.new_job_id:
-                #     elist[-1].write({'job_id': app.new_job_id.id})
-                #     conlist[-1].write({'job_id': app.new_job_id.id})
-                # if app.new_grade:
-                #     conlist[-1].write({'structure_type_id': app.new_grade.id})
-                # if app.increment_amount > 0:
-                #     conlist[-1].write({'wage': app.employee_id.contract_id.wage + app.increment_amount})
-                # if app.ot_type == "true":
-                #     elist[-1].write({'isovertime': True})
-                # if app.ot_type == "false":
-                #     elist[-1].write({'isovertime': False})
-                # if not app.new_category == app.category:
-                #     conlist[-1].write({'category': app.new_category})
-                
-                    
-                    
-                    
-                    
-
-
+            
     def button_confirm(self):
         for order in self:
             if order.state not in ['draft', 'submit']:
                 continue
             order.write({'state': 'submit'})
-        return True     
+        return True    
     
     def button_draft(self):
         self.write({'state': 'draft'})

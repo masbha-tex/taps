@@ -93,8 +93,19 @@ class SaleOrder(models.Model):
     supply_chain = fields.Char(string='Supply Chain')
     priority = fields.Char(string="Priority")
     washing_type = fields.Char(string="Washing Type")
-    bcd_part_finish = fields.Char(string="B,C,D Part Finish")
-    metal_detection = fields.Char(string="Metal Detection")
+    bcd_part_finish = fields.Selection([
+            ('n/a', 'N/A'),
+            ('sf', 'SILVER FINISH'),
+            ('asample', 'AS SAMPLE'),
+            ('same', 'SAME FINISH'),],
+            string='B, C, D Part Finish', default='sf')
+    metal_detection = fields.Selection([
+            ('n/a', 'N/A'),
+            ('q1', 'ϕ 1.0 m'),
+            ('q2', 'ϕ 1.2 m'),
+            ('q3', 'ϕ 1.5 m'),
+            ('q4', 'ϕ 2.0 m'),],
+            string='Metal Detection', default='q1')
     
     
     def _amount_in_words(self):
@@ -1200,6 +1211,7 @@ class SaleOrderLine(models.Model):
     fnamebcd = fields.Text(string='Finish Name ( BCD/NAIL/ NAIL CAP)', store=True)
     nu1washer = fields.Text(string='1 NO. Washer Material & Size', store=True)
     nu2washer = fields.Text(string='2 NO. Washer Material & Size', store=True)
+    back_part = fields.Text(string='Back Part', store=True)
     bom_id = fields.Integer('Bom Id', copy=True, store=True)
     
     tape_con = fields.Float('Tape Consumption', required=True, digits='Unit Price', default=0.0)
@@ -1446,6 +1458,9 @@ class SaleOrderLine(models.Model):
                 self.c_part = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'D Part':
+                self.d_part = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Back Part':
                 self.d_part = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Product Code':

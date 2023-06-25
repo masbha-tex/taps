@@ -21,7 +21,7 @@ class HeadwisePDFReport(models.TransientModel):
         ('score',	'Scorecard'),
         ('scorequarter',	'Scorecard Quarterly'),
         ('kpi',	'KPI Objective'),
-        ('plan',	'KPI objective with Action Plan (weekly)'),],
+        ('plan',	'KPI objective with Action Plan'),],
         string='Report Type', required=True,
         help='Report Type', default='score')
     
@@ -327,7 +327,9 @@ class HeadwisePDFReport(models.TransientModel):
                 edata.name,
                 round(edata.baseline,2),
                 round(edata.target,2),
-                round(edata.weight,2),
+                (edata.weight/100),
+                "",
+                "",
                 "",
             ]
             report_data.append(emp_data)     
@@ -337,13 +339,14 @@ class HeadwisePDFReport(models.TransientModel):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet()
         
-        report_title_style = workbook.add_format({'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB', 'border': True, 'right': True})
-        report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12, 'border': True})
-        report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'border': True})
+        report_title_style = workbook.add_format({'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB','right': True, 'border': True})
+        report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
+        report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
         report_column_style_2.set_text_wrap()
+        report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '0.00%'})
         worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
 
-        report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True})
+        report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
 #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
         worksheet.merge_range('A2:H2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
         worksheet.merge_range('A3:H3', ('KPI objective with Action Plan'), report_small_title_style)
@@ -359,13 +362,14 @@ class HeadwisePDFReport(models.TransientModel):
 
         # set the width od the column
         
+        percent_format = workbook.add_format({"num_format": "0%"})
+
         
-        worksheet.set_column(0,0,3, report_column_style)
-        worksheet.set_column(1,1,50, report_column_style_2)
-        worksheet.set_column(2,4,8, report_column_style)
-        worksheet.set_column(5,5,20, report_column_style)
-        worksheet.set_column(6,6,20, report_column_style)
-        worksheet.set_column(7,7,20, report_column_style)
+        worksheet.set_column(0,0,3)
+        worksheet.set_column(1,1,50)
+        worksheet.set_column(2,3,8)
+        worksheet.set_column(4,4,9.44)
+        worksheet.set_column(5,7,20)
         
         
         
@@ -384,6 +388,7 @@ class HeadwisePDFReport(models.TransientModel):
 #         grandtotal2 = 0
 #         grandtotal3 = 0
         
+        
         for line in report_data:
             col=0
             for l in line:
@@ -393,16 +398,23 @@ class HeadwisePDFReport(models.TransientModel):
 #                     grandtotal3 = grandtotal3+l
                 if col==4:
                     grandtotal = grandtotal+l
-                worksheet.write(row, col, l)
+                    # format = workbook.add_format({'num_format': num_formats})
+                    worksheet.write(row, col, l, report_column_style_3)
+                else:
+                    worksheet.write(row, col, l, report_column_style_2)
                 col+=1
             row+=1
         
         #worksheet.write(4, 0, 'SL.', column_product_style)
         #raise UserError((row+1))
+        worksheet.write(row, 0, '', report_small_title_style)
         worksheet.write(row, 1, 'Grand Total', report_small_title_style)
-#         worksheet.write(row, 2, round(grandtotal2,2), report_small_title_style)
-#         worksheet.write(row, 3, round(grandtotal3,2), report_small_title_style)
+        worksheet.write(row, 2, '', report_small_title_style)
+        worksheet.write(row, 3, '', report_small_title_style)
         worksheet.write(row, 4, round(grandtotal,2), report_small_title_style)
+        worksheet.write(row, 5, '', report_small_title_style)
+        worksheet.write(row, 6, '', report_small_title_style)
+        worksheet.write(row, 7, '', report_small_title_style)
         #raise UserError((datefrom,dateto,bankname,categname))
         
         workbook.close()
@@ -416,7 +428,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s-%s - KPI objective with Action Plan (weekly)'% (docs.employee_id.pin,docs.employee_id.name))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s-%s - KPI objective with Action Plan'% (docs.employee_id.pin,docs.employee_id.name))),
             'target': 'self',
         }    
 

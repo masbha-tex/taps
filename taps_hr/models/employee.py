@@ -63,8 +63,7 @@ class HrEmployeePrivate(models.Model):
         if user.tz:
             vals['tz'] = user.tz
         return vals
- 
-    
+        
     @api.model
     def create(self, vals):
         if not vals.get('emp_id'):
@@ -762,4 +761,5 @@ class HrEmployeePublic(models.Model):
     rfid = fields.Char(readonly=True)
     contribution_sum = fields.Char(readonly=True)
     pin = fields.Char(readonly=True)
+    barcode = fields.Char(readonly=True)
     

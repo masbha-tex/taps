@@ -671,15 +671,15 @@ class SalarySheet(models.TransientModel):
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
         column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#FDE9D9', 'font_size': 11})
         row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
-        row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         
         format_label_1 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right', 'top': True,  'bottom': True})
         
         format_label_2 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
         
-        format_label_3 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
+        format_label_3 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True,'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         
-        format_label_4 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right',  'top': True,  'bottom': True, 'bold': True})
+        format_label_4 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right',  'top': True,  'bottom': True, 'bold': True,'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
 
         # set the width od the column
      
@@ -701,7 +701,11 @@ class SalarySheet(models.TransientModel):
         worksheet.set_column(29, 39, 11)
         worksheet.set_column(40, 40, 14)
         worksheet.set_column(41, 47, 14)
-        worksheet.set_column(48, 49, 16)
+        worksheet.set_column(48, 48, 16)
+        if self.is_company == False:
+            worksheet.set_column(49, 49, 16)
+        else:
+            worksheet.set_column(49, 49, 25)
         worksheet.set_column(50, 50, 14)
         worksheet.set_column(51, 51, 16)
         worksheet.set_column(52, 52, 25)
@@ -1260,13 +1264,13 @@ class SalarySheet(models.TransientModel):
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
         column_issued_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#FDE9D9', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
         row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
-        row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         row_style_1 = workbook.add_format({'font_size': 11, 'font':'Calibri', 'valign': 'right', 'top': True, 'bottom': True})
         format_label_1 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right', 'top': True,  'bottom': True})
         
         format_label_2 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
         
-        format_label_3 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True})
+        format_label_3 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True,  'top': True,  'bottom': True,'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         
         format_label_4 = workbook.add_format({'bg_color': '#E9ECEF','font':'Calibri', 'font_size': 11, 'valign': 'right',  'top': True,  'bottom': True, 'bold': True})
     

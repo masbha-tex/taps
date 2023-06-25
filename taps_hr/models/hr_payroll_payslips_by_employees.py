@@ -31,12 +31,21 @@ class HrPayslipEmployee(models.TransientModel):
     def _get_employees(self):
         active_employee_ids = self.env.context.get('active_employee_ids', False)
         if active_employee_ids:
-            # raise UserError((from_date))
             return self.env['hr.employee'].browse(active_employee_ids)
                # YTI check dates too
-        return self.env['hr.employee'].search(self._get_available_contracts_domain())
+        #raise UserError((self._get_available_contracts_domain()))
 
-    employee_ids = fields.Many2many('hr.employee', 'hr_employee_group_rel', 'payslip_id', 'employee_id', 'Employees', default=lambda self: self._get_employees(), required=True)
+        query = """select id from hr_employee where resign_date<=%s and resign_date>=%s and company_id=%s;"""
+        self.env.cr.execute(query,("2023-05-25","2023-04-26",2))
+        result = self.env.cr.fetchall()
+        #raise UserError((result))
+        emp = self.env['hr.employee'].browse(784)
+        #emp = emp.get_archived_emp(self._get_available_contracts_domain())
+
+        #raise UserError((emp.name))
+        return self.env['hr.employee'].search([('id','=',784)])
+
+    employee_ids = fields.Many2many('hr.employee', 'hr_employee_group_rel', 'payslip_id', 'employee_id', 'Employees', default=lambda self: self._get_employees(), required=True, domain=lambda self: [('active', 'in', [True, False])])
     structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')    
 
     def _check_undefined_slots(self, work_entries, payslip_run):

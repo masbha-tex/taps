@@ -85,7 +85,7 @@ class ProductionLot(models.Model):
             stock_moves = self.env['stock.move.line'].search([
                 ('lot_name', '=', values.get('name')),
                 ('product_id', '=', values.get('product_id'))
-            ])
+            ],limit=1)
             po_line = self.env['purchase.order.line'].search([
                 ('order_id.name', '=', stock_moves.picking_id.origin),
                 ('product_id', '=', values.get('product_id'))
