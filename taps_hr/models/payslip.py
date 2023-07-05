@@ -27,9 +27,9 @@ class HrPayslipsss(models.Model):
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", string='Job Position')    
     join_date = fields.Date(related = 'contract_id.date_start', related_sudo=False, string="Join Date", readonly=True, store=True)
     emp_type = fields.Selection(related = 'contract_id.category', related_sudo=False, string="Emp Type", readonly=True, store=True)
-    com_otHours = fields.Float(string = "C-OT Hours", store=True, copy=True)#compute="_compute_ot_rate", 
-    otHours = fields.Float(string = "OT Hours", store=True, copy=True)
-    otRate = fields.Float(string = "OT Rate", store=True, copy=True)
+    com_otHours = fields.Float(string = "C-OT Hours", compute="_compute_ot_rate", store=True, copy=True) 
+    otHours = fields.Float(string = "OT Hours", compute="_compute_ot_rate", store=True, copy=True)
+    otRate = fields.Float(string = "OT Rate", compute="_compute_ot_rate", store=True, copy=True)
     gross_wage = fields.Monetary( store=True, copy=True, readonly=True)
     basic_wage = fields.Float( store=True, copy=True)
     hra_wage = fields.Float( store=True, copy=True)
