@@ -985,6 +985,14 @@ class SaleOrderLine(models.Model):
         atv = self.env['product.template.attribute.value'].search([('id', 'in', res)])
         #raise UserError((atv))
         for rec in atv:
+            # if rec.attribute_id.name == 'Size (Inch)':
+            #     name = rec.product_attribute_value_id.name
+            #     custom_values = self.product_custom_attribute_value_ids.filtered(lambda p: p.custom_product_template_attribute_value_id.id == rec.id)
+            #     if custom_values.custom_value:
+            #         raise UserError((custom_values.custom_value))
+            #         name += "\n" + custom_values.custom_value
+            #         self.shade = name
+                    
             if rec.attribute_id.name == 'Top / Bottom':
                 self.topbottom = rec.product_attribute_value_id.name
                 continue

@@ -43,9 +43,9 @@ class HrPayslipEmployee(models.TransientModel):
         #emp = emp.get_archived_emp(self._get_available_contracts_domain())
 
         #raise UserError((emp.name))
-        return self.env['hr.employee'].search([('id','=',784)])
+        return self.env['hr.employee'].search(self._get_available_contracts_domain())
 
-    employee_ids = fields.Many2many('hr.employee', 'hr_employee_group_rel', 'payslip_id', 'employee_id', 'Employees', default=lambda self: self._get_employees(), required=True, domain=lambda self: [('active', 'in', [True, False])])
+    employee_ids = fields.Many2many('hr.employee', 'hr_employee_group_rel', 'payslip_id', 'employee_id', 'Employees', default=lambda self: self._get_employees(), required=True)
     structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')    
 
     def _check_undefined_slots(self, work_entries, payslip_run):

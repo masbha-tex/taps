@@ -266,7 +266,7 @@ class HeadwisePDFReport(models.TransientModel):
         if data.get('mode_company_id'):
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
-            domain.append(('department_id.id', '=', data.get('department_id')))
+            domain.append(('employee_id.department_id.parent_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
@@ -291,12 +291,12 @@ class HeadwisePDFReport(models.TransientModel):
         
         #raise UserError((domain))
         docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
-        if docs1.employee_id.company_id.id == 1:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
-        elif docs1.employee_id.company_id.id == 3:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
-        else:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
+        # if docs1.employee_id.company_id.id == 1:
+        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
+        # elif docs1.employee_id.company_id.id == 3:
+        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
+        # else:
+        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
         
         docs = docs1
         #raise UserError((docs.id))
@@ -331,92 +331,122 @@ class HeadwisePDFReport(models.TransientModel):
                 "",
                 "",
                 "",
+                edata.employee_id.id,
             ]
             report_data.append(emp_data)     
-        
-        
+        emply = docs.mapped('employee_id')
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        worksheet = workbook.add_worksheet()
-        
-        report_title_style = workbook.add_format({'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB','right': True, 'border': True})
-        report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
-        report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
-        report_column_style_2.set_text_wrap()
-        report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '0.00%'})
-        worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
-
-        report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
-#         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-        worksheet.merge_range('A2:H2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
-        worksheet.merge_range('A3:H3', ('KPI objective with Action Plan'), report_small_title_style)
-        worksheet.merge_range('A4:E4', ('%s - %s' % (docs.employee_id.pin,docs.employee_id.name)), report_title_style)
-        worksheet.merge_range('F4:H4', "",report_title_style)
-        # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
-#         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
-        
-        column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#EEED8A', 'font_size': 12, 'border': True})
-        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
-        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
-        row_categ_style = workbook.add_format({'border': True})
-
-        # set the width od the column
-        
-        percent_format = workbook.add_format({"num_format": "0%"})
-
-        
-        worksheet.set_column(0,0,3)
-        worksheet.set_column(1,1,50)
-        worksheet.set_column(2,3,8)
-        worksheet.set_column(4,4,9.44)
-        worksheet.set_column(5,7,20)
-        
-        
-        
-        worksheet.write(4, 0, 'SL.', column_product_style)
-        worksheet.write(4, 1, 'Objectives', column_product_style)        
-        worksheet.write(4, 2, 'Baseline', column_product_style)
-        worksheet.write(4, 3, 'Target', column_product_style)
-        worksheet.write(4, 4, 'Weight', column_product_style)
-        worksheet.write(4, 5, 'Last Month Achieved', column_product_style)
-        worksheet.write(4, 6, 'Current Monthly Plan', column_product_style)
-        worksheet.write(4, 7, 'Actions', column_product_style)
-        col = 0
-        row=5
-        
-        grandtotal = 0
-#         grandtotal2 = 0
-#         grandtotal3 = 0
-        
-        
-        for line in report_data:
-            col=0
-            for l in line:
-#                 if col==2:
-#                     grandtotal2 = grandtotal2+l
-#                 if col==3:
-#                     grandtotal3 = grandtotal3+l
-                if col==4:
-                    grandtotal = grandtotal+l
-                    # format = workbook.add_format({'num_format': num_formats})
-                    worksheet.write(row, col, l, report_column_style_3)
-                else:
-                    worksheet.write(row, col, l, report_column_style_2)
-                col+=1
-            row+=1
-        
-        #worksheet.write(4, 0, 'SL.', column_product_style)
-        #raise UserError((row+1))
-        worksheet.write(row, 0, '', report_small_title_style)
-        worksheet.write(row, 1, 'Grand Total', report_small_title_style)
-        worksheet.write(row, 2, '', report_small_title_style)
-        worksheet.write(row, 3, '', report_small_title_style)
-        worksheet.write(row, 4, round(grandtotal,2), report_small_title_style)
-        worksheet.write(row, 5, '', report_small_title_style)
-        worksheet.write(row, 6, '', report_small_title_style)
-        worksheet.write(row, 7, '', report_small_title_style)
-        #raise UserError((datefrom,dateto,bankname,categname))
-        
+        # raise UserError((emply))
+        for emp in emply:
+            
+            worksheet = workbook.add_worksheet(('%s - %s' % (emp.pin,emp.name)))
+            report_title_style = workbook.add_format({'bold': True, 'font_size': 16, 'bg_color': '#9C5789','right': True, 'border': True, 'font_color':'#FFFFFF'})
+            report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
+            report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
+            report_column_style_2.set_text_wrap()
+            report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '0.00%'})
+            worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+    
+            report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
+    #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+            worksheet.merge_range('A2:H2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+            worksheet.merge_range('A3:H3', ('KPI objective with Action Plan'), report_small_title_style)
+            worksheet.merge_range('A4:E4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
+            worksheet.merge_range('F4:H4', "",report_title_style)
+            # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
+    #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+            
+            column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#00A09D', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
+            column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
+            column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
+            row_categ_style = workbook.add_format({'border': True})
+    
+            # set the width od the column
+            
+            percent_format = workbook.add_format({"num_format": "0%"})
+    
+            
+            worksheet.set_column(0,0,3)
+            worksheet.set_column(1,1,50)
+            worksheet.set_column(2,3,8)
+            worksheet.set_column(4,4,9.44)
+            worksheet.set_column(5,7,20)
+            
+            
+            
+            worksheet.write(4, 0, 'SL.', column_product_style)
+            worksheet.write(4, 1, 'Objectives', column_product_style)        
+            worksheet.write(4, 2, 'Baseline', column_product_style)
+            worksheet.write(4, 3, 'Target', column_product_style)
+            worksheet.write(4, 4, 'Weight', column_product_style)
+            worksheet.write(4, 5, 'Last Month Achieved', column_product_style)
+            worksheet.write(4, 6, 'Current Monthly Plan', column_product_style)
+            worksheet.write(4, 7, 'Actions', column_product_style)
+            col = 0
+            row=5
+            
+            grandtotal = 0
+    #         grandtotal2 = 0
+    #         grandtotal3 = 0
+            
+            slnumber = 0
+            for line in report_data:
+                # raise UserError((line[8],emp.id))
+                # slnumber=0
+                
+                
+                
+                if line[8] == emp.id:
+                    slnumber += 1
+                    col=0
+                    for l in line:
+                        if col == 1:
+                            etype = l[:1]
+                        if col == 0:
+                            worksheet.write(row, col, slnumber, report_column_style_2)  
+                        elif col == 2:
+                            
+                            if etype == '%':
+                                # raise UserError((etype))
+                                ld = l/100
+                                worksheet.write(row, col, ld, report_column_style_3)
+                            else:
+                                # raise UserError((etype))
+                                worksheet.write(row, col, l, report_column_style_2)                    
+                        elif col == 3:
+                            
+                            if etype == '%':
+                                # raise UserError((etype))
+                                ld = l/100
+                                worksheet.write(row, col, ld, report_column_style_3)
+                            else:
+                                # raise UserError((etype))
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col==4:
+                            grandtotal = grandtotal+l
+                            # format = workbook.add_format({'num_format': num_formats})
+                            worksheet.write(row, col, l, report_column_style_3)
+                        elif col==8:
+                            break
+                        else:
+                            worksheet.write(row, col, l, report_column_style_2)
+                        col+=1
+                    row+=1
+                    
+            
+                    #worksheet.write(4, 0, 'SL.', column_product_style)
+                    #raise UserError((row+1))
+                    worksheet.write(row, 0, '', report_small_title_style)
+                    worksheet.write(row, 1, 'Grand Total', report_small_title_style)
+                    worksheet.write(row, 2, '', report_small_title_style)
+                    worksheet.write(row, 3, '', report_small_title_style)
+                    worksheet.write(row, 4, round(grandtotal,2), report_small_title_style)
+                    worksheet.write(row, 5, '', report_small_title_style)
+                    worksheet.write(row, 6, '', report_small_title_style)
+                    worksheet.write(row, 7, '', report_small_title_style)
+                    #raise UserError((datefrom,dateto,bankname,categname))
+            
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -428,7 +458,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s-%s - KPI objective with Action Plan'% (docs.employee_id.pin,docs.employee_id.name))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s - KPI objective with Action Plan'% (emp.department_id.parent_id.name))),
             'target': 'self',
         }    
 

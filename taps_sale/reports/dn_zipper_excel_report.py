@@ -352,7 +352,6 @@ class SalesXlsx(models.AbstractModel):
         sheet.write(row, 19, bottom_total, row_style)
         sheet.write(row, 20, top_total, row_style)
         sheet.write(row, 21, '')
-        
         #'=SUM({0}:{1})'.format(cell_sum_start, cell_sum_end)
         
         #sheet['M37'] = '= SUM(M2:M30)'
