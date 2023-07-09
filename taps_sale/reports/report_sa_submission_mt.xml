@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<template id="report_sa_submission_mt">
+		<t t-call="web.html_container">
+			
+				
+					<div class="page">
+                        <div class="page-content">
+                          <table class="badge-table">
+                            <tbody>
+                              <t t-foreach="range(0, len(docs), 6)" t-as="row_index">
+                                <tr>
+                                  <t t-foreach="range(row_index, row_index+6)" t-as="badge_index">
+                                    <td>
+                                      <div class="badge">
+                                        <div class="badge-content">
+                                          <div class="name"><span t-esc="docs[badge_index][0]" /></div>
+                                          <div class="designation"><span t-esc="docs[badge_index][1]" /></div>
+                                          <!-- Add other badge fields as needed -->
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </t>
+                                </tr>
+                              </t>
+                            </tbody>
+                          </table>
+                        </div>
+                            
+                    </div>
+				
+			
+		</t>
+	</template>
+</odoo>   
+    

@@ -56,15 +56,18 @@ class OrderFlow(models.Model):
         so.buyer_name,so.style_ref,so.season,so.po_no,so.payment_term_id, 
         so.incoterm,so.bank,so.department,so.product,so.finish,so.slider,oa.id as oa_no, 
         so.product_uom_qty as so_qty, so.price_subtotal as so_value, oa.product_uom_qty as oa_qty, 
-        oa.price_subtotal as oa_value, 
-        (so.product_uom_qty-COALESCE(oa.product_uom_qty,0)) as quantity_balance, 
-        (so.price_subtotal- COALESCE(oa.price_subtotal,0)) as value_balance 
+        oa.price_subtotal as oa_value,
+        ((select sum(l.product_uom_qty) from sale_order_line as l where l.order_id=so.order_id)
+        -COALESCE((select sum(l.product_uom_qty) from sale_order as s inner join sale_order_line as l on s.id=l.order_id where s.order_ref=so.order_id),0)) as quantity_balance,
+        ((select sum(l.price_subtotal) from sale_order_line as l where l.order_id=so.order_id)
+        -COALESCE((select sum(l.price_subtotal) from sale_order as s inner join sale_order_line as l on s.id=l.order_id where s.order_ref=so.order_id),0)) as value_balance
+        
         from
         (
         select s.id as order_id,s.pi_type,s.sale_representative,s.date_order,s.user_id,
         s.pi_number,s.pi_date,s.currency_id,s.partner_id,s.buyer_name,s.style_ref,s.season,
         s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
-        pt.name as product,sol.finish,sol.slidercodesfg as slider,
+        pt.name as product,trim(regexp_replace(sol.finish, E'[\\n\\r\\s]+', ' ', 'g')) as finish,sol.slidercodesfg as slider,
         sum(sol.product_uom_qty) as product_uom_qty,sum(sol.price_subtotal) as price_subtotal
         
         from sale_order as s
@@ -77,14 +80,14 @@ class OrderFlow(models.Model):
         s.date_order,s.user_id,s.pi_number,s.pi_date, 
         s.currency_id,s.partner_id,s.buyer_name,s.style_ref,
         s.season,s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
-        pt.name,sol.finish,sol.slidercodesfg
+        pt.name,trim(regexp_replace(sol.finish, E'[\\n\\r\\s]+', ' ', 'g')),sol.slidercodesfg
         ) as so
         
         left join
         
         (
         select s.id,s.order_ref,
-        pt.name as product,sol.finish,sol.slidercodesfg as slider,
+        pt.name as product,trim(regexp_replace(sol.finish, E'[\\n\\r\\s]+', ' ', 'g')) as finish,sol.slidercodesfg as slider,
         sum(sol.product_uom_qty) as product_uom_qty,sum(sol.price_subtotal) as price_subtotal
         
         from sale_order as s
@@ -92,7 +95,7 @@ class OrderFlow(models.Model):
         inner join product_product as p on p.id = sol.product_id 
         inner join product_template as pt on pt.id = p.product_tmpl_id 
         where s.state='sale' and s.sales_type='oa' and sol.product_uom_qty>0 
-        group by s.id,s.order_ref,pt.name,sol.finish,sol.slidercodesfg 
+        group by s.id,s.order_ref,pt.name,trim(regexp_replace(sol.finish, E'[\\n\\r\\s]+', ' ', 'g')),sol.slidercodesfg 
         ) as oa  on so.order_id=oa.order_ref and so.product=oa.product and so.finish=oa.finish and 
         so.slider=oa.slider) as a)
         """

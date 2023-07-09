@@ -322,7 +322,10 @@
 										<t t-if="not line.display_type">
 											<td>
 												<strong>
-													<span t-esc="line.product_template_id.generic_name"/>
+													<span>FRONT PART: </span><span t-esc="line.product_template_id.generic_name"/>
+                                                <br/>
+                                                <br/>
+                                                <span>BACK PART: </span><span t-esc="line.back_part"/>
 												</strong>
 											</td>
 											<t t-if="p_code == 1">

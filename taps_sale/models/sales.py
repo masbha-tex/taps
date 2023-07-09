@@ -94,18 +94,18 @@ class SaleOrder(models.Model):
     priority = fields.Char(string="Priority")
     washing_type = fields.Char(string="Washing Type")
     bcd_part_finish = fields.Selection([
-            ('n/a', 'N/A'),
-            ('sf', 'SILVER FINISH'),
-            ('asample', 'AS SAMPLE'),
-            ('same', 'SAME FINISH'),],
-            string='B, C, D Part Finish', default='sf')
+            ('N/A', 'N/A'),
+            ('SILVER FINISH', 'SILVER FINISH'),
+            ('AS SAMPLE', 'AS SAMPLE'),
+            ('SAME FINISH', 'SAME FINISH'),],
+            string='B, C, D Part Finish', default='SILVER FINISH')
     metal_detection = fields.Selection([
-            ('n/a', 'N/A'),
-            ('q1', 'ϕ 1.0 m'),
-            ('q2', 'ϕ 1.2 m'),
-            ('q3', 'ϕ 1.5 m'),
-            ('q4', 'ϕ 2.0 m'),],
-            string='Metal Detection', default='q1')
+            ('N/A', 'N/A'),
+            ('ϕ 1.0 m', 'ϕ 1.0 m'),
+            ('ϕ 1.2 m', 'ϕ 1.2 m'),
+            ('ϕ 1.5 m', 'ϕ 1.5 m'),
+            ('ϕ 2.0 m', 'ϕ 2.0 m'),],
+            string='Metal Detection', default='ϕ 1.0 m')
     
     
     def _amount_in_words(self):
@@ -1087,7 +1087,7 @@ class SaleOrderLine(models.Model):
                 self.d_part = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Back Part':
-                self.d_part = rec.product_attribute_value_id.name
+                self.back_part = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Product Code':
                 self.product_code = rec.product_attribute_value_id.name

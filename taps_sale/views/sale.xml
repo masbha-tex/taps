@@ -107,6 +107,7 @@
 					<field name="gap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
 					<field name="sizein" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
 					<field name="sizecm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
+                    <field name="back_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                     <field name="product_code" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                     <field name="shape" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                     <field name="logo" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
