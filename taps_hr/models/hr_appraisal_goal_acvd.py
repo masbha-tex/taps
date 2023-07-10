@@ -22,8 +22,8 @@ class HrAppraisalGoalsAcvd(models.Model):
 
 
     name = fields.Char('Code', store=True,required=True, readonly=True, index=True, copy=False, tracking=True, default='Goals Monthly Achievement')
-    employee_id = fields.Many2one('hr.employee', string="Owner",
-         required=True, tracking=True)#default=lambda self: self.env.user.employee_id,
+    employee_id = fields.Many2one('hr.employee', string="Owner", default=lambda self: self.env.user.employee_id, required=True, tracking=True)
+    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(), tracking=True, store=True, required=True)
     month = fields.Selection(selection=[
         ('apr', 'April'),
         ('may', 'May'),
@@ -44,14 +44,29 @@ class HrAppraisalGoalsAcvd(models.Model):
     ('approved', 'Approved'),
     ('refused', 'Refused')], string='Status', copy=False, 
         index=True, readonly=True, store=True, default='draft', tracking=True, help="Status of the Goals ACVD")
-    
-    @api.onchange('employee_id')
+
+    @staticmethod
+    def _get_year_list():
+        current_year = datetime.date.today().year
+        return [(str(year), str(year)) for year in range(current_year - 1, current_year + 2)]  
+
+    def _get_default_year(self):
+        # Return the default year value
+        current_year = datetime.date.today().year
+        # raise UserError((str(current_year)))
+        return str(current_year)  # Change it to the desired default year    
+        
+    @api.onchange('employee_id','year')
     def on_employee_change(self):
         # Clear existing acvd_line records
         self.acvd_line = [(5, 0, 0)]
         if self.employee_id:
             # Fetch the desired acvd_line records based on the selected employee
-            acvd_lines = self.env['hr.appraisal.goal'].search([('employee_id','=',self.employee_id.id)])
+            deadlines = str(self.year + '-03-31')
+            
+            acvd_lines = self.env['hr.appraisal.goal'].search([('employee_id','=',self.employee_id.id), ('deadline', '=', deadlines)])
+            
+            # raise UserError((deadlines))
             # Add the acvd_line records to the one2many field
             # self.acvd_line = [(0, 0, {'objective_line_id': id, 'target': 0, 'acvd': 0}) for id in acvd_lines]
             if self.month == 'apr':
@@ -134,7 +149,8 @@ class HrAppraisalGoalsAcvd(models.Model):
 
     def button_approve(self, force=False):
         self.write({'state': 'approved'})
-        goal = self.env['hr.appraisal.goal'].search([('employee_id','=',self.employee_id.id)])
+        deadlines = str(self.year + '-03-31')
+        goal = self.env['hr.appraisal.goal'].search([('employee_id','=',self.employee_id.id),('deadline', '=', deadlines)])
         for line in self.acvd_line:
             objec = goal.filtered(lambda g: g.id == line.objective_line_id.id)
             if self.month == 'apr':
@@ -182,19 +198,7 @@ class HrAppraisalGoalsAcvd(models.Model):
     def create(self, vals):
         if vals.get('name', 'GA') == 'GA':
             vals['name'] = self.env['ir.sequence'].next_by_code('hr.appraisal.goal.acvd.code')
-        return super(HrAppraisalGoalsAcvd, self).create(vals)
-
-    @http.route('/taps_hr/action_check_all', type='json', auth='user')
-    def action_check_all(self):
-        model = request.env['hr.appraisal.goal.acvd']
-        model.search([]).write({'selected': True})
-        return True
-    
-    @http.route('/taps_hr/action_uncheck_all', type='json', auth='user')
-    def action_uncheck_all(self):
-        model = request.env['hr.appraisal.goal.acvd']
-        model.search([]).write({'selected': False})
-        return True        
+        return super(HrAppraisalGoalsAcvd, self).create(vals)    
 
 class HrAppraisalGoalsAcvdLine(models.Model):
     _name = 'hr.appraisal.goal.acvd.line'

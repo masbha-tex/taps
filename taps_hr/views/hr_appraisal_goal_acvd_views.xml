@@ -8,7 +8,7 @@
             <form string="Employee Appraisal Goals Achievement">
                 <header>
                     <button name="button_confirm" type="object" states="draft" string="Submit" class="oe_highlight"/>
-                    <button name="button_approve" type="object" states='submit' string="Approve" class="oe_highlight"/>
+                    <button name="button_approve" type="object" states="submit" string="Approve" class="oe_highlight"/>
                     <button name="button_draft" states="refused" string="Set to Draft" type="object" class="oe_highlight" />
                     <button name="button_cancel" states="draft,approved" string="Refused" type="object" class="oe_highlight" />
                     <field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,refused" readonly="1"/>
@@ -21,28 +21,25 @@
                     </div>
                     <group>
                         <group>
-                            <field name="employee_id"/>
+                            <field name="employee_id" options="{'no_create':true, 'no_open':true}"/>
+                            <field name="year" widget="selection"/>
                             <field name="month"/>
                         </group>
                     </group>
 <!--                     <div class="oe_title"> -->
                     <field name="acvd_line" widget="one2many_list" mode="tree">
-                        <tree string="Employee Appraisal Goals Achievement Line" multi_edit="1" editable="bottom">
+                        <tree string="Employee Appraisal Goals Achievement Line" editable="bottom">
                             <!-- <control>
                                 <create name="add_employee_control" string="Add a objective"/>
                             </control> -->
                             
-                            <field name="objective_line_id" options='{"no_create":true}'/>
-                            <field name="employe_id" optional="hide"/>
-                            <field name="selected" widget="boolean_checkbox"/> 
+                            <field name="objective_line_id" options="{'no_create':true, 'no_open':true}"/>
+                            <field name="employe_id" optional="hide" readonly="True"/>
+                            <field name="selected" widget="boolean_toggle" string=" "/> 
                             <field name="target"/>
                             <field name="acvd"/>
                             <field name="acvd_entry"/>
                         </tree>
-                        <footer>
-                            <button name="action_check_all" type="object" class="btn btn-secondary o_tree_check_all" string="Check All"/>
-                            <button name="action_uncheck_all" type="object" class="btn btn-secondary o_tree_uncheck_all" string="Uncheck All"/>
-                        </footer>
                     </field>
 <!--                     </div> -->
                 </sheet>
@@ -60,7 +57,9 @@
         <field name="model">hr.appraisal.goal.acvd.line</field>
         <field name="arch" type="xml">
             <tree string="Employee Appraisal Goals Achievement Lines" create="false">
-                <field name="objective_line_id" options='{"no_create":true}'/>
+                <field name="objective_line_id" options="{'no_create':true}"/>
+                <field name="employe_id" optional="hide" readonly="True"/>
+                <field name="selected" widget="boolean_toggle" string="Update"/> 
                 <field name="target"/>
                 <field name="acvd"/>
                 <field name="acvd_entry"/>    
@@ -75,6 +74,7 @@
             <field name="name"/>
             <field name="employee_id"/>
             <field name="acvd_line"/>
+            <field name="year"/>
             <field name="month"/>
             <field name="state" optional="show" readonly="1" decoration-info="state == 'draft'" decoration-success="state in ['submit','approved']" decoration-danger="state in 'refused'" widget="badge"/>
         </tree>

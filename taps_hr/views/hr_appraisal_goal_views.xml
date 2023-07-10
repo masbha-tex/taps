@@ -5,13 +5,13 @@
         <field name="model">hr.appraisal.goal</field>
         <field name="inherit_id" ref="hr_appraisal.hr_appraisal_goal_view_form"/>
         <field name="arch" type="xml">
-                <header>
+                <!-- <header>
                     <button name="button_confirm" type="object" states="draft" string="Submit" class="oe_highlight"/>
                     <button name="button_approve" type="object" states='submit' string="Approve" class="oe_highlight"/>
                     <button name="button_draft" states="refused" string="Set to Draft" type="object" class="oe_highlight" />
                     <button name="button_cancel" states="draft,approved" string="Refused" type="object" class="oe_highlight" />
                     <field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,refused" readonly="1"/>
-                </header>
+                </header> -->
                 <xpath expr="//field[@name='progression']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
@@ -306,12 +306,13 @@
         </field>
     </record> -->
 
-<!--     <record id="action_hr_appraisal_goal" model="ir.actions.act_window">
+    <record id="hr_appraisal.action_hr_appraisal_goal" model="ir.actions.act_window">
         <field name="name">Goals</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hr.appraisal.goal</field>
         <field name="view_mode">kanban,tree,form</field>
-    </record> -->
+        <field name="context">{'search_default_filter_my_goals':1, 'search_default_people_i_manage':1, 'order_by': ['employee_id'], 'group_by': 'deadline'}</field>
+    </record>
 
 <!--     <menuitem name="Goals"
         parent="menu_hr_appraisal_root"
@@ -320,5 +321,30 @@
         sequence="2"/>
  -->
     <!-- YTI Manage goal security -->
+
+    <record model="ir.actions.act_window" id="hr_appraisal.open_view_hr_appraisal_tree">
+        <field name="name">Appraisal</field>
+        <field name="res_model">hr.appraisal</field>
+        <field name="view_mode">kanban,tree,gantt,calendar,form,activity</field>
+        <field name="context">{"search_default_next_month": 1, "group_by": "date_close"}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new appraisal</p>
+            <p>You will be able to plan an appraisal with your employees, to ask your appraisal with your
+                manager, to realize 360° Feedback with the Survey app, to make custom forms and to see the results.
+            </p>
+        </field>
+    </record>    
+
+    <record id="view_hr_appraisal_form_inherit" model="ir.ui.view">
+        <field name="name">hr.appraisal.form.inherit</field>
+        <field name="model">hr.appraisal</field>
+        <field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_done']" position="attributes">
+                <attribute name="attrs">{'invisible': [('state', '!=', 'pending')]}</attribute>
+                <attribute name="effect">{}</attribute>
+            </xpath>
+        </field>
+    </record>
 
 </odoo>

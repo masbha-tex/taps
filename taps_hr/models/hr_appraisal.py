@@ -23,10 +23,31 @@ class HrAppraisal(models.Model):
 
     def _compute_ytd_weightage_acvd(self):
         for appraisal in self:
-            app_goal = self.env['hr.appraisal.goal'].search([('employee_id', '=', appraisal.employee_id.id)])
+            app_goal = self.env['hr.appraisal.goal'].search([('employee_id', '=', appraisal.employee_id.id), ('deadline', '=', appraisal.date_close)])
             ytd = 0
             weight = 0
             ytd = sum(app_goal.mapped('y_ytd'))
             weight = sum(app_goal.mapped('weight'))
             appraisal.ytd_weightage_acvd = ytd
             appraisal.total_weightage = weight
+
+    def action_open_goals(self):
+        self.ensure_one()
+        return {
+            'name': _('%s Goals') % self.employee_id.name,
+            'view_mode': 'kanban,tree,form',
+            'res_model': 'hr.appraisal.goal',
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+            'domain': [('employee_id', '=', self.employee_id.id), ('deadline', '=', self.date_close)],
+            'context': {'default_employee_id': self.employee_id.id},
+        }
+    def action_done(self):
+        current_date = datetime.date.today()
+        self.activity_feedback(['mail.mail_activity_data_meeting', 'mail.mail_activity_data_todo'])
+        self.write({'state': 'done'})
+        for appraisal in self:
+            appraisal.employee_id.write({
+                'last_appraisal_id': appraisal.id,
+                'last_appraisal_date': appraisal.date_close,#current_date
+                'next_appraisal_date': False})

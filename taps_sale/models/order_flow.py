@@ -75,7 +75,7 @@ class OrderFlow(models.Model):
         inner join product_product as p on p.id = sol.product_id 
         inner join product_template as pt on pt.id = p.product_tmpl_id
         
-        where s.state='sale' and s.sales_type in('sale','cancel') and sol.product_uom_qty>0
+        where  s.sales_type='sale' and sol.product_uom_qty>0
         group by s.id,s.pi_type,s.sale_representative,
         s.date_order,s.user_id,s.pi_number,s.pi_date, 
         s.currency_id,s.partner_id,s.buyer_name,s.style_ref,
