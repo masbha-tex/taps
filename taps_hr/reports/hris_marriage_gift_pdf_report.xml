@@ -151,6 +151,28 @@
                                     </strong>
                                 </div>
 							</div>
+                            <div class="row">
+                                <div class="col-4 mt-2">
+									<strong>
+                                        ____________________________________________________
+                                    </strong>
+                                </div>
+                                <div class="col-2 mt-2">
+									<strong>
+                                        ____________________________________________________
+                                    </strong>
+                                </div>
+                                <div class="col-2 mt-2">
+									<strong>
+                                        ____________________________________________________
+                                    </strong>
+                                </div>
+                                <div class="col-4 mt-2">
+									<strong>
+                                        ____________________________________________________
+                                    </strong>
+                                </div>
+                            </div>
 							<div class="clearfix mt-4">
 								<div class="float-left">
 									<p>Date:</p>
