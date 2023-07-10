@@ -94,18 +94,18 @@ class SaleOrder(models.Model):
     priority = fields.Char(string="Priority")
     washing_type = fields.Char(string="Washing Type")
     
-    bcd_part_finish = fields.Selection([
-        ('N/A', 'N/A'),
-        ('SILVER FINISH', 'SILVER FINISH'),
-        ('AS SAMPLE', 'AS SAMPLE'),
-        ('SAME FINISH', 'SAME FINISH')], string='B, C, D Part Finish', default='SILVER FINISH')
+    # bcd_part_finish = fields.Selection([
+    #     ('N/A', 'N/A'),
+    #     ('SILVER FINISH', 'SILVER FINISH'),
+    #     ('AS SAMPLE', 'AS SAMPLE'),
+    #     ('SAME FINISH', 'SAME FINISH')], string='B, C, D Part Finish', default='SILVER FINISH')
     
-    metal_detection = fields.Selection([
-        ('N/A', 'N/A'),
-        ('ϕ 1.0 m', 'ϕ 1.0 m'),
-        ('ϕ 1.2 m', 'ϕ 1.2 m'),
-        ('ϕ 1.5 m', 'ϕ 1.5 m'),
-        ('ϕ 2.0 m', 'ϕ 2.0 m')],string='Metal Detection', default='ϕ 1.0 m')
+    # metal_detection = fields.Selection([
+    #     ('N/A', 'N/A'),
+    #     ('ϕ 1.0 m', 'ϕ 1.0 m'),
+    #     ('ϕ 1.2 m', 'ϕ 1.2 m'),
+    #     ('ϕ 1.5 m', 'ϕ 1.5 m'),
+    #     ('ϕ 2.0 m', 'ϕ 2.0 m')],string='Metal Detection', default='ϕ 1.0 m')
     
     
     def _amount_in_words(self):
