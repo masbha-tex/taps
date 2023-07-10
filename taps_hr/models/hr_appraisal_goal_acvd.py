@@ -6,8 +6,10 @@ import logging
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models, _, http
 from odoo.exceptions import AccessError, UserError, ValidationError
+# from odoo import http
+from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
@@ -182,6 +184,18 @@ class HrAppraisalGoalsAcvd(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('hr.appraisal.goal.acvd.code')
         return super(HrAppraisalGoalsAcvd, self).create(vals)
 
+    @http.route('/taps_hr/action_check_all', type='json', auth='user')
+    def action_check_all(self):
+        model = request.env['hr.appraisal.goal.acvd']
+        model.search([]).write({'selected': True})
+        return True
+    
+    @http.route('/taps_hr/action_uncheck_all', type='json', auth='user')
+    def action_uncheck_all(self):
+        model = request.env['hr.appraisal.goal.acvd']
+        model.search([]).write({'selected': False})
+        return True        
+
 class HrAppraisalGoalsAcvdLine(models.Model):
     _name = 'hr.appraisal.goal.acvd.line'
     _description = 'Employee Appraisal Goals Achievement Lines'
@@ -191,6 +205,7 @@ class HrAppraisalGoalsAcvdLine(models.Model):
     acvd_id = fields.Many2one('hr.appraisal.goal.acvd', string='Achievement Reference', index=True, required=True, ondelete='cascade')
     employe_id = fields.Many2one('hr.employee', string='Employee', related='acvd_id.employee_id', store=True, readonly=True)
     objective_line_id = fields.Many2one('hr.appraisal.goal', string='Objective', store=True, index=True, tracking=True,required=True, ondelete='cascade', domain="[('employee_id', '=', employe_id)]")
+    selected = fields.Boolean(string="Selected", store=True, default=False)
     target = fields.Float(string="Target", store=True, copy=True,tracking=True, index=True)
     acvd = fields.Float(string="ACVD", store=True, copy=True, tracking=True,index=True)
     acvd_entry = fields.Float(string="ACVD Entry", store=True, copy=True, index=True, tracking=True,required=True)

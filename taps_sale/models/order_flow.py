@@ -58,9 +58,9 @@ class OrderFlow(models.Model):
         so.product_uom_qty as so_qty, so.price_subtotal as so_value, oa.product_uom_qty as oa_qty, 
         oa.price_subtotal as oa_value,
         ((select sum(l.product_uom_qty) from sale_order_line as l where l.order_id=so.order_id)
-        -COALESCE((select sum(l.product_uom_qty) from sale_order as s inner join sale_order_line as l on s.id=l.order_id where s.order_ref=so.order_id),0)) as quantity_balance,
+        -COALESCE((select sum(l.product_uom_qty) from sale_order as s inner join sale_order_line as l on s.id=l.order_id where s.state<>'cancel' and s.order_ref=so.order_id),0)) as quantity_balance,
         ((select sum(l.price_subtotal) from sale_order_line as l where l.order_id=so.order_id)
-        -COALESCE((select sum(l.price_subtotal) from sale_order as s inner join sale_order_line as l on s.id=l.order_id where s.order_ref=so.order_id),0)) as value_balance
+        -COALESCE((select sum(l.price_subtotal) from sale_order as s inner join sale_order_line as l on s.id=l.order_id where s.state<>'cancel' and s.order_ref=so.order_id),0)) as value_balance
         
         from
         (
@@ -94,7 +94,7 @@ class OrderFlow(models.Model):
         inner join sale_order_line as sol on s.id = sol.order_id 
         inner join product_product as p on p.id = sol.product_id 
         inner join product_template as pt on pt.id = p.product_tmpl_id 
-        where s.state='sale' and s.sales_type='oa' and sol.product_uom_qty>0 
+        where s.state<>'cancel' and s.sales_type='oa' and sol.product_uom_qty>0 
         group by s.id,s.order_ref,pt.name,trim(regexp_replace(sol.finish, E'[\\n\\r\\s]+', ' ', 'g')),sol.slidercodesfg 
         ) as oa  on so.order_id=oa.order_ref and so.product=oa.product and so.finish=oa.finish and 
         so.slider=oa.slider) as a)

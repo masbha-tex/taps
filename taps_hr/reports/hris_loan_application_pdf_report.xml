@@ -144,7 +144,7 @@
 											<span t-esc="employee.contract_id.wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 										</strong> 
                           Loan Entitlement ____________________________________________________</p>
-									<p>Recommended Loan of ______________________ without/with interest @ 8 % per year. Total: ______________________________ </p>
+									<p>Recommended Loan of ______________________ without/with interest @ 12 % per year. Total: ______________________________ </p>
 									<p>EMI Amount :_______________________________ Loan to be recovered in __________________________________________________ insatllments</p>
 									<p>Last Loan taken on_______________________________ Outstanding Amount :________________________________________________ </p>
 								</div>

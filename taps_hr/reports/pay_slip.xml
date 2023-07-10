@@ -325,8 +325,12 @@
 								<td class="w-25" align="center" style="border: 1pt solid white;">
 									<strong>Total Earnings</strong>
 								</td>
-								<td class="w-25" align="center" style="border: 1pt solid white;"/>
-								<td class="w-25" align="center" style="border: 1pt solid white;"/>
+								<td class="w-25" align="center" style="border: 1pt solid white;">
+                                    <strong>Total Employee PF Contribution</strong>
+                                </td>
+								<td class="w-25" align="center" style="border: 1pt solid white;">
+                                    <strong>Total Company PF Contribution</strong>
+                                </td>
 								<td class="w-25" align="center" style="border: 1pt solid white;">
 									<strong>Total Deduction</strong>
 								</td>
@@ -343,8 +347,12 @@
 										o.line_ids.filtered(lambda line: line.code == 'CONVENCE').total))+line_ot_total+line_food_total+line_conv_total)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
 									</t>
 								</td>
-								<td class="w-25" align="center" style="border: 1pt solid white;"/>
-								<td class="w-25" align="center" style="border: 1pt solid white;"/>
+								<td class="w-25" align="center" style="border: 1pt solid white;">
+									<span t-field="o.employee_id.contribution_sum"/>
+								</td>
+								<td class="w-25" align="center" style="border: 1pt solid white;">
+									<span t-field="o.employee_id.contribution_sum"/>
+								</td>
 								<td class="w-25" align="center" style="border: 1pt solid white;">
 									<span t-field="o.deduction_total"/>
 								</td>

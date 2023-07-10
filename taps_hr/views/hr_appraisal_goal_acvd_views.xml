@@ -27,16 +27,22 @@
                     </group>
 <!--                     <div class="oe_title"> -->
                     <field name="acvd_line" widget="one2many_list" mode="tree">
-                        <tree string="Employee Appraisal Goals Achievement Line" editable="bottom">
+                        <tree string="Employee Appraisal Goals Achievement Line" multi_edit="1" editable="bottom">
                             <!-- <control>
                                 <create name="add_employee_control" string="Add a objective"/>
                             </control> -->
+                            
                             <field name="objective_line_id" options='{"no_create":true}'/>
-                            <field name="employe_id" invisible="1"/>
+                            <field name="employe_id" optional="hide"/>
+                            <field name="selected" widget="boolean_checkbox"/> 
                             <field name="target"/>
                             <field name="acvd"/>
                             <field name="acvd_entry"/>
                         </tree>
+                        <footer>
+                            <button name="action_check_all" type="object" class="btn btn-secondary o_tree_check_all" string="Check All"/>
+                            <button name="action_uncheck_all" type="object" class="btn btn-secondary o_tree_uncheck_all" string="Uncheck All"/>
+                        </footer>
                     </field>
 <!--                     </div> -->
                 </sheet>

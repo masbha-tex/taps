@@ -2,35 +2,143 @@
 <odoo>
 	<template id="report_sa_submission_mt">
 		<t t-call="web.html_container">
-			
-				
-					<div class="page">
-                        <div class="page-content">
-                          <table class="badge-table">
-                            <tbody>
-                              <t t-foreach="range(0, len(docs), 6)" t-as="row_index">
-                                <tr>
-                                  <t t-foreach="range(row_index, row_index+6)" t-as="badge_index">
-                                    <td>
-                                      <div class="badge">
-                                        <div class="badge-content">
-                                          <div class="name"><span t-esc="docs[badge_index][0]" /></div>
-                                          <div class="designation"><span t-esc="docs[badge_index][1]" /></div>
-                                          <!-- Add other badge fields as needed -->
-                                        </div>
-                                      </div>
-                                    </td>
-                                  </t>
-                                </tr>
-                              </t>
-                            </tbody>
-                          </table>
-                        </div>
-                            
-                    </div>
-				
-			
+            <t t-call="web.internal_layout">
+			<div class="page">
+	<style>
+					  tr,td,th
+					  {
+					    border: 1px solid Black !important;
+					  }
+					 </style>
+	<t t-foreach="docs" t-as="o">
+		<div class="container" style="font-size: 10px; width: 50%; page-break-inside: avoid">
+			<table class="table table-sm o_main_table">
+				<tr>
+					<td>
+						<img style="max-height: 40px; " src="taps_sale/static/src/img/logo_tex_tiny.png"/>
+					</td>
+					<td style="border-left: hidden ! important"/>
+				</tr>
+                <tr>
+					<td>SA NO</td>
+					<td>
+						<span t-esc="o.order_id.name"/>
+						
+					</td>
+				</tr>
+                <tr>
+					<td>BUYER</td>
+					<td>
+						<span t-esc="o.order_id.buyer_name.name"/>
+						
+					</td>
+				</tr>
+                <tr>
+					<td>CUSTOMER</td>
+					<td>
+						<span t-esc="o.order_id.partner_id.name"/>
+						
+					</td>
+				</tr>
+                <tr>
+					<td>STYLE REF</td>
+					<td>
+						<span t-esc="o.order_id.style_ref"/>
+						
+					</td>
+				</tr>
+                <tr>
+					<td>SALES PERSON</td>
+					<td>
+						<span t-esc="o.order_id.sale_representative.name"/>
+						
+					</td>
+				</tr>
+				<tr>
+					<td>ITEM &amp; MATERIAL</td>
+					<td>
+						<span t-esc="o.product_template_id.name"/>
+						<span>
+							<t t-esc="o.sizemm"/> MM</span>
+					</td>
+				</tr>
+				<tr>
+					<td>SHAPE</td>
+					<td>
+						<span t-esc="o.shape"/>
+					</td>
+				</tr>
+				<tr>
+					<td>LOGO</td>
+					<td>
+						<span t-esc="o.logo"/>
+					</td>
+				</tr>
+				<tr>
+					<td>LOGO REF</td>
+					<td>
+						<span t-esc="o.logoref"/>
+					</td>
+				</tr>
+				<tr>
+					<td>LOGO TYPE</td>
+					<td>
+						<span t-esc="o.logo_type"/>
+					</td>
+				</tr>
+				<tr>
+					<td>FINISH</td>
+					<td>
+						<span t-esc="o.finish"/>
+					</td>
+				</tr>
+				<tr>
+					<td>FINISH REF</td>
+					<td>
+						<span t-esc="o.finish_ref"/>
+					</td>
+				</tr>
+				<tr>
+					<td>B PART</td>
+					<td>
+						<span t-esc="o.b_part"/>
+					</td>
+				</tr>
+				<tr>
+					<td>C PART</td>
+					<td>
+						<span t-esc="o.c_part"/>
+					</td>
+				</tr>
+				<tr>
+					<td>D PART</td>
+					<td>
+						<span t-esc="o.d_part"/>
+					</td>
+				</tr>
+				<tr>
+					<td>QTY(GROSS)</td>
+					<td>
+						<span t-esc="o.product_uom_qty"/>
+					</td>
+				</tr>
+                <tr>
+					<td>DATE</td>
+					<td>
+						<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+						
+					</td>
+				</tr>
+			</table>
+		</div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+	</t>
+</div>
 		</t>
+        </t>
 	</template>
 </odoo>   
     

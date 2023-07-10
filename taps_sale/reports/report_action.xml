@@ -48,7 +48,7 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_sale.paperformat_sale_report_landscape"/>
             <field name="default_print_option">print</field>
-            <field name="print_report_name">"(object.name)</field>
+            <field name="print_report_name">(object.name)</field>
             
         </record>
         <record id="action_report_sa_invoice_mt" model="ir.actions.report">
@@ -72,7 +72,7 @@
             <field name="report_file">taps_sale.report_sa_submission_mt</field>
             <field name="binding_model_id" ref="model_sale_order"/>
             <field name="binding_type">report</field>
-            <field name="paperformat_id" ref="taps_sale.paperformat_sale_report_landscape"/>
+            <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/>
             <field name="default_print_option">print</field>
             <field name="print_report_name">"Sa_Submission_"+(object.name)</field>
             
