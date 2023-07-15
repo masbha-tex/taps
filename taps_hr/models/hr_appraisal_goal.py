@@ -39,15 +39,10 @@ class HrAppraisalGoal(models.Model):
     t_ytd = fields.Float(string="Target Total", store=True, copy=True, compute='compute_target_ytd')
     a_ytd = fields.Float(string="ACHV Total", store=True, copy=True, compute='compute_acvd_ytd')
     
-    q_1_ytd = fields.Float(string="Q1 YTD",store=True, copy=True, compute='compute_q_1_ytd')
-    q_2_ytd = fields.Float(string="Q2 YTD",store=True, copy=True, compute='compute_q_2_ytd')
-    q_3_ytd = fields.Float(string="Q3 YTD",store=True, copy=True, compute='compute_q_3_ytd')
-    q_4_ytd = fields.Float(string="Q4 YTD",store=True, copy=True, compute='compute_q_4_ytd')
-    
-    q_1 = fields.Float(string="Q1",store=True, copy=True, compute='compute_q_1_ytd')
-    q_2 = fields.Float(string="Q2",store=True, copy=True, compute='compute_q_2_ytd')
-    q_3 = fields.Float(string="Q3",store=True, copy=True, compute='compute_q_3_ytd')
-    q_4 = fields.Float(string="Q4",store=True, copy=True, compute='compute_q_4_ytd')    
+    q_1_ytd = fields.Float(string="Q1",store=True, copy=True)
+    q_2_ytd = fields.Float(string="Q2",store=True, copy=True)
+    q_3_ytd = fields.Float(string="Q3",store=True, copy=True)
+    q_4_ytd = fields.Float(string="Q4",store=True, copy=True) 
     
     y_ytd = fields.Float(string="Weight YTD",store=True, copy=True, compute='compute_y_ytd')
     y_t_ytd = fields.Float(string="Target YTD",store=True, copy=True, compute='compute_y_target_ytd')
@@ -56,53 +51,53 @@ class HrAppraisalGoal(models.Model):
     t_apr = fields.Float('T-Apr', store=True, copy=True, default="0", tracking=True)
     t_may = fields.Float('T-May', store=True, copy=True, default="0", tracking=True)
     t_jun = fields.Float('T-Jun', store=True, copy=True, default="0", tracking=True)
-    t_q1 = fields.Float('T-Q1', store=True, copy=True, default="0", tracking=True)
+    t_q1 = fields.Float('T-Q1', store=True, copy=True, default="0")
     t_jul = fields.Float('T-Jul', store=True, copy=True, default="0", tracking=True)
     t_aug = fields.Float('T-Aug', store=True, copy=True, default="0", tracking=True)
     t_sep = fields.Float('T-Sep', store=True, copy=True, default="0", tracking=True)
-    t_q2 = fields.Float('T-Q2', store=True, copy=True, default="0", tracking=True)
+    t_q2 = fields.Float('T-Q2', store=True, copy=True, default="0")
     t_oct = fields.Float('T-Oct', store=True, copy=True, default="0", tracking=True)
     t_nov = fields.Float('T-Nov', store=True, copy=True, default="0", tracking=True)
     t_dec = fields.Float('T-Dec', store=True, copy=True, default="0", tracking=True)
-    t_q3 = fields.Float('T-Q3', store=True, copy=True, default="0", tracking=True)
+    t_q3 = fields.Float('T-Q3', store=True, copy=True, default="0")
     t_jan = fields.Float('T-Jan', store=True, copy=True, default="0", tracking=True)
     t_feb = fields.Float('T-Feb', store=True, copy=True, default="0", tracking=True)
     t_mar = fields.Float('T-Mar', store=True, copy=True, default="0", tracking=True)
-    t_q4 = fields.Float('T-Q4', store=True, copy=True, default="0", tracking=True)
+    t_q4 = fields.Float('T-Q4', store=True, copy=True, default="0")
 
     a_apr = fields.Float('A_Apr', store=True, copy=True, default="0", tracking=True)
     a_may = fields.Float('A_May', store=True, copy=True, default="0", tracking=True)
     a_jun = fields.Float('A_Jun', store=True, copy=True, default="0", tracking=True)
-    a_q1 = fields.Float('A_Q1', store=True, copy=True, default="0", tracking=True)
+    a_q1 = fields.Float('A_Q1', store=True, copy=True, default="0")
     a_jul = fields.Float('A_Jul', store=True, copy=True, default="0", tracking=True)
     a_aug = fields.Float('A_Aug', store=True, copy=True, default="0", tracking=True)
     a_sep = fields.Float('A_Sep', store=True, copy=True, default="0", tracking=True)
-    a_q2 = fields.Float('A_Q2', store=True, copy=True, default="0", tracking=True)
+    a_q2 = fields.Float('A_Q2', store=True, copy=True, default="0")
     a_oct = fields.Float('A_Oct', store=True, copy=True, default="0", tracking=True)
     a_nov = fields.Float('A_Nov', store=True, copy=True, default="0", tracking=True)
     a_dec = fields.Float('A_Dec', store=True, copy=True, default="0", tracking=True)
-    a_q3 = fields.Float('A_Q3', store=True, copy=True, default="0", tracking=True)
+    a_q3 = fields.Float('A_Q3', store=True, copy=True, default="0")
     a_jan = fields.Float('A_Jan', store=True, copy=True, default="0", tracking=True)
     a_feb = fields.Float('A_Feb', store=True, copy=True, default="0", tracking=True)
     a_mar = fields.Float('A_Mar', store=True, copy=True, default="0", tracking=True)
-    a_q4 = fields.Float('A_Q4', store=True, copy=True, default="0", tracking=True)
+    a_q4 = fields.Float('A_Q4', store=True, copy=True, default="0")
     
     apr = fields.Float('W-Apr', store=True, copy=True, default="0", compute='compute_weight')
     may = fields.Float('W-May', store=True, copy=True, default="0", compute='compute_weight')
     jun = fields.Float('W-Jun', store=True, copy=True, default="0", compute='compute_weight')
-    q1 = fields.Float('W-Q1', store=True, copy=True, default="0", compute='compute_weight')
+    q1 = fields.Float('W-Q1', store=True, default="0", copy=True)
     jul = fields.Float('W-Jul', store=True, copy=True, default="0", compute='compute_weight')
     aug = fields.Float('W-Aug', store=True, copy=True, default="0", compute='compute_weight')
     sep = fields.Float('W-Sep', store=True, copy=True, default="0", compute='compute_weight')
-    q2 = fields.Float('W-Q2', store=True, copy=True, default="0", compute='compute_weight')
+    q2 = fields.Float('W-Q2', store=True, default="0", copy=True)
     oct = fields.Float('W-Oct', store=True, copy=True, default="0", compute='compute_weight')
     nov = fields.Float('W-Nov', store=True, copy=True, default="0", compute='compute_weight')
     dec = fields.Float('W-Dec', store=True, copy=True, default="0", compute='compute_weight')
-    q3 = fields.Float('W-Q3', store=True, copy=True, default="0", compute='compute_weight')
+    q3 = fields.Float('W-Q3', store=True, default="0", copy=True)
     jan = fields.Float('W-Jan', store=True, copy=True, default="0", compute='compute_weight')
     feb = fields.Float('W-Feb', store=True, copy=True, default="0", compute='compute_weight')
     mar = fields.Float('W-Mar', store=True, copy=True, default="0", compute='compute_weight')
-    q4 = fields.Float('W-Q4', store=True, copy=True, default="0", compute='compute_weight')
+    q4 = fields.Float('W-Q4', store=True, default="0", copy=True)
     state = fields.Selection([
     ('draft', 'To Submit'),
     ('submit', 'Submitted'),
@@ -676,6 +671,8 @@ class HrAppraisalGoal(models.Model):
         self.q_1_ytd = 0
         aaa = 0
         ss = 0
+        tt = 0
+        aa = 0
         d = 0
         for app in self:
             if app.apr == "":
@@ -705,58 +702,89 @@ class HrAppraisalGoal(models.Model):
                 
             if app.month == 'apr':
                 ss = app.apr
+                tt = app.t_apr
+                aa = app.a_apr
                 d = 1
             elif app.month == 'may':
                 ss = app.apr + app.may
+                tt = app.t_apr + app.t_may
+                aa = app.a_apr + app.a_may
                 d = 1+1
             elif app.month == 'jun':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
             elif app.month == 'jul':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
             elif app.month == 'aug':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
             elif app.month == 'sep':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
             elif app.month == 'oct':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
             elif app.month == 'nov':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
             elif app.month == 'dec':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
             elif app.month == 'jan':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
             elif app.month == 'feb':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
             elif app.month == 'mar':
                 ss = app.apr + app.may + app.jun
+                tt = app.t_apr + app.t_may + app.t_jun
+                aa = app.a_apr + app.a_may + app.a_jun
                 d = 1+1+1
                 
             if ss>0:
                 aaa = round((ss/(int(app.weight)*d))*int(app.weight),2)
-                app.write({'q_1_ytd': aaa})
+                app.write({'q_1_ytd': aaa,
+                           'q1': aaa})
+            if tt >0:
+                if app.calculate == 'avg':
+                    app.write({'t_q1': round((tt/d),2)})
+                else:
+                    app.write({'t_q1': round(tt,2)})  
+            if aa >0:
+                if app.calculate == 'avg':
+                    app.write({'a_q1': round((aa/d),2)})
+                else:
+                    app.write({'a_q1': round(aa,2)})  
                 
     @api.depends('jul','aug','sep','oct','nov','dec','jan','feb','mar','month')
     def compute_q_2_ytd(self):
         self.q_2_ytd = 0
         aaa = 0
         ss = 0
+        tt = 0
+        aa = 0
         d = 0
         for app in self:
-            # if app.apr == "":
-            #     app.apr = 0
-            # if app.may == "":
-            #     app.may = 0
-            # if app.jun == "":
-            #     app.jun = 0
             if app.jul == "":
                 app.jul = 0
             if app.aug == "":
@@ -776,66 +804,76 @@ class HrAppraisalGoal(models.Model):
             if app.mar == "":
                 app.mar = 0
                 
-            # if app.month == 'apr':
-            #     ss = app.apr
-            #     d = 1
-            # elif app.month == 'may':
-            #     ss = app.apr + app.may
-            #     d = 1+1
-            # elif app.month == 'jun':
-            #     ss = app.apr + app.may + app.jun
-            #     d = 1+1+1
             if app.month == 'jul':
                 ss = app.jul
+                tt = app.t_jul
+                aa = app.a_jul
                 d = 1
             elif app.month == 'aug':
                 ss = app.jul + app.aug
+                tt = app.t_jul + app.t_aug
+                aa = app.a_jul + app.a_aug
                 d = 1+1
             elif app.month == 'sep':
                 ss = app.jul + app.aug + app.sep
+                tt = app.t_jul + app.t_aug + app.t_sep
+                aa = app.a_jul + app.a_aug + app.a_sep
                 d = 1+1+1
             elif app.month == 'oct':
                 ss = app.jul + app.aug + app.sep
+                tt = app.t_jul + app.t_aug + app.t_sep
+                aa = app.a_jul + app.a_aug + app.a_sep
                 d = 1+1+1
             elif app.month == 'nov':
                 ss = app.jul + app.aug + app.sep
+                tt = app.t_jul + app.t_aug + app.t_sep
+                aa = app.a_jul + app.a_aug + app.a_sep
                 d = 1+1+1
             elif app.month == 'dec':
                 ss = app.jul + app.aug + app.sep
+                tt = app.t_jul + app.t_aug + app.t_sep
+                aa = app.a_jul + app.a_aug + app.a_sep
                 d = 1+1+1
             elif app.month == 'jan':
                 ss = app.jul + app.aug + app.sep
+                tt = app.t_jul + app.t_aug + app.t_sep
+                aa = app.a_jul + app.a_aug + app.a_sep
                 d = 1+1+1
             elif app.month == 'feb':
                 ss = app.jul + app.aug + app.sep
+                tt = app.t_jul + app.t_aug + app.t_sep
+                aa = app.a_jul + app.a_aug + app.a_sep
                 d = 1+1+1
             elif app.month == 'mar':
                 ss = app.jul + app.aug + app.sep
+                tt = app.t_jul + app.t_aug + app.t_sep
+                aa = app.a_jul + app.a_aug + app.a_sep
                 d = 1+1+1
                 
             if ss>0:
                 aaa = round((ss/(int(app.weight)*d))*int(app.weight),2)
-                app.write({'q_2_ytd': aaa})
+                app.write({'q_2_ytd': aaa,
+                           'q2': aaa})
+            if tt >0:
+                if app.calculate == 'avg':
+                    app.write({'t_q2': round((tt/d),2)})
+                else:
+                    app.write({'t_q2': round(tt,2)})  
+            if aa >0:
+                if app.calculate == 'avg':
+                    app.write({'a_q2': round((aa/d),2)})
+                else:
+                    app.write({'a_q2': round(aa,2)})             
     
     @api.depends('oct','nov','dec','jan','feb','mar','month')
     def compute_q_3_ytd(self):
         self.q_3_ytd = 0
         aaa = 0
         ss = 0
+        tt = 0
+        aa = 0
         d = 0
         for app in self:
-            # if app.apr == "":
-            #     app.apr = 0
-            # if app.may == "":
-            #     app.may = 0
-            # if app.jun == "":
-            #     app.jun = 0
-            # if app.jul == "":
-            #     app.jul = 0
-            # if app.aug == "":
-            #     app.aug = 0
-            # if app.sep == "":
-            #     app.sep = 0
             if app.oct == "":
                 app.oct = 0
             if app.nov == "":
@@ -848,130 +886,96 @@ class HrAppraisalGoal(models.Model):
                 app.feb = 0
             if app.mar == "":
                 app.mar = 0
-                
-            # if app.month == 'apr':
-            #     ss = app.apr
-            #     d = 1
-            # elif app.month == 'may':
-            #     ss = app.apr + app.may
-            #     d = 1+1
-            # elif app.month == 'jun':
-            #     ss = app.apr + app.may + app.jun
-            #     d = 1+1+1
-            # elif app.month == 'jul':
-            #     ss = app.apr + app.may + app.jun + app.jul
-            #     d = 1+1+1+1
-            # elif app.month == 'aug':
-            #     ss = app.apr + app.may + app.jun + app.jul + app.aug
-            #     d = 1+1+1+1+1
-            # elif app.month == 'sep':
-            #     ss = app.apr + app.may + app.jun + app.jul + app.aug + app.sep
-            #     d = 1+1+1+1+1+1
+
             if app.month == 'oct':
                 ss = app.oct
+                tt = app.t_oct
+                aa = app.a_oct
                 d = 1
             elif app.month == 'nov':
                 ss = app.oct + app.nov
+                tt = app.t_oct + app.t_nov
+                aa = app.a_oct + app.a_nov
                 d = 1+1
             elif app.month == 'dec':
                 ss = app.oct + app.nov + app.dec
+                tt = app.t_oct + app.t_nov + app.t_dec
+                aa = app.a_oct + app.a_nov + app.a_dec
                 d = 1+1+1
             elif app.month == 'jan':
                 ss = app.oct + app.nov + app.dec
+                tt = app.t_oct + app.t_nov + app.t_dec
+                aa = app.a_oct + app.a_nov + app.a_dec
                 d = 1+1+1
             elif app.month == 'feb':
                 ss = app.oct + app.nov + app.dec
+                tt = app.t_oct + app.t_nov + app.t_dec
+                aa = app.a_oct + app.a_nov + app.a_dec
                 d = 1+1+1
             elif app.month == 'mar':
                 ss = app.oct + app.nov + app.dec
+                tt = app.t_oct + app.t_nov + app.t_dec
+                aa = app.a_oct + app.a_nov + app.a_dec
                 d = 1+1+1
                 
             if ss>0:
                 aaa = round((ss/(int(app.weight)*d))*int(app.weight),2)
-                app.write({'q_3_ytd': aaa}) 
+                app.write({'q_3_ytd': aaa,
+                           'q3': aaa})
+            if tt >0:
+                if app.calculate == 'avg':
+                    app.write({'t_q3': round((tt/d),2)})
+                else:
+                    app.write({'t_q3': round(tt,2)})  
+            if aa >0:
+                if app.calculate == 'avg':
+                    app.write({'a_q3': round((aa/d),2)})
+                else:
+                    app.write({'a_q3': round(aa,2)})                 
                 
     @api.depends('jan','feb','mar','month')
     def compute_q_4_ytd(self):
         self.q_4_ytd = 0
         aaa = 0
         ss = 0
+        tt = 0
+        aa = 0
         d = 0
         for app in self:
-            # if app.apr == "":
-            #     app.apr = 0
-            # if app.may == "":
-            #     app.may = 0
-            # if app.jun == "":
-            #     app.jun = 0
-            # if app.jul == "":
-            #     app.jul = 0
-            # if app.aug == "":
-            #     app.aug = 0
-            # if app.sep == "":
-            #     app.sep = 0
-            # if app.oct == "":
-            #     app.oct = 0
-            # if app.nov == "":
-            #     app.nov = 0
-            # if app.dec == "":
-            #     app.dec = 0
             if app.jan == "":
                 app.jan = 0
             if app.feb == "":
                 app.feb = 0
             if app.mar == "":
                 app.mar = 0
-                
-            # if app.month == 'apr':
-            #     ss = app.apr
-            #     d = 1
-            # elif app.month == 'may':
-            #     ss = app.apr + app.may
-            #     d = 1+1
-            # elif app.month == 'jun':
-            #     ss = app.apr + app.may + app.jun
-            #     d = 1+1+1
-            # elif app.month == 'jul':
-            #     ss = app.apr + app.may + app.jun + app.jul
-            #     d = 1+1+1+1
-            # elif app.month == 'aug':
-            #     ss = app.apr + app.may + app.jun + app.jul + app.aug
-            #     d = 1+1+1+1+1
-            # elif app.month == 'sep':
-            #     ss = app.apr + app.may + app.jun + app.jul + app.aug + app.sep
-            #     d = 1+1+1+1+1+1
-            # elif app.month == 'oct':
-            #     ss = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct
-            #     d = 1+1+1+1+1+1+1
-            # elif app.month == 'nov':
-            #     ss = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct + app.nov
-            #     d = 1+1+1+1+1+1+1+1
-            # elif app.month == 'dec':
-            #     ss = app.apr + app.may + app.jun + app.jul + app.aug + app.sep + app.oct + app.nov + app.dec
-            #     d = 1+1+1+1+1+1+1+1+1
+
             if app.month == 'jan':
                 ss = app.jan
+                tt = app.t_jan
+                aa = app.a_jan
                 d = 1
             elif app.month == 'feb':
                 ss = app.jan + app.feb
+                tt = app.t_jan + app.t_feb
+                aa = app.a_jan + app.a_feb
                 d = 1+1
             elif app.month == 'mar':
                 ss = app.jan + app.feb + app.mar
+                tt = app.t_jan + app.t_feb + app.t_mar
+                aa = app.a_jan + app.a_feb + app.a_mar
                 d = 1+1+1
                 
             if ss>0:
                 aaa = round((ss/(int(app.weight)*d))*int(app.weight),2)
-                app.write({'q_4_ytd': aaa})                
-    
-# class HrAppraisal(models.Model):
-#     _inherit = "hr.appraisal"
-#     _description = "Employee Appraisal"
-
-
-#     ytd_weightage_acvd = fields.Float(string='YTD Weightage ACVD', compute='_compute_ytd_weightage_acvd')
-
-#     def _compute_ytd_weightage_acvd(self):
-#         for appraisal in self:
-#             app_goal = self.env['hr.appraisal.goal'].search([('employee_id', '=', appraisal.employee_id.id)])
-#             ytd = sum(app_goal.mapped('y_ytd'))
-#             appraisal.ytd_weightage_acvd = ytd
+                app.write({'q_4_ytd': aaa,
+                           'q4': aaa})
+            if tt >0:
+                if app.calculate == 'avg':
+                    app.write({'t_q4': round((tt/d),2)})
+                else:
+                    app.write({'t_q4': round(tt,2)})  
+            if aa >0:
+                if app.calculate == 'avg':
+                    app.write({'a_q4': round((aa/d),2)})
+                else:
+                    app.write({'a_q4': round(aa,2)})                 

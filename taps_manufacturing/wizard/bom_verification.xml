@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_bom_verification" model="ir.ui.view">
+        <field name="name">bom.verification.form.view</field>
+        <field name="model">bom.verification</field>
+        <field name="arch" type="xml">
+            <form string="Bom Verification">
+                <group>
+                    <group>
+                        <!-- <field name="mo_id"/> -->
+                        <field name="product_id" string="Product" groups=""/>
+                        <field name="unit" string="Unit"/>
+                        <field name="size" string="Size"/>
+                        <field name="mo_qty" string="QTY"/>
+                    </group>
+                </group>
+                <group>
+                    <notebook>
+                        <page name="split_line" string="Split Line">
+                            <field name="split_line" required="True">
+                                
+                                <tree string="Split Lines" editable="bottom">
+                                    <field name="tape" string="Tape"/>
+                                    <field name="slider" string="Slider"/>
+                                    <field name="wire" string="Wire"/>
+                                    <field name="top" string="Top"/>
+                                    <field name="bottom" string="Bottom"/>
+                                    <field name="pinbox" string="Pinbox"/>
+                                    <field name="cost" string="Cost"/>
+                                    <!-- <field name="split_id" invisible="1"/>
+                                    <field name="product_qty" required="True" optional="show" sum="Quantity To Produce" decoration-bf="True"/>
+                                    <field name="date_planned_start" required="True"/>
+                                    <field name="date_planned_finished" required="True"/>
+                                    <field name="qty_total" invisible="1"/> -->
+                                </tree>
+                                
+                                <group class="oe_subtotal_footer oe_right" name="sale_total">
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="split_totalqty" />
+                                    </div>
+                                    <field name="split_totalqty" nolabel="1" class="oe_subtotal_footer_separator"/>
+                                </group>
+                                
+                            </field>
+                        </page>
+                    </notebook>
+                </group>
+                <footer>
+                    <button name="done_mo_split" string="Done" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    
+    <record id="view_bom_verification_line_tree" model="ir.ui.view">
+        <field name="name">bom.verification.line.tree</field>
+        <field name="model">bom.verification.line</field>
+        <field name="arch" type="xml">
+            <tree string="MRP Split Lines" create="false">
+                <field name="split_id"/>
+                <field name="sequence" widget="handle" />
+                <field name="split_id" invisible="1"/>
+                <field name="product_qty" required="True"/>
+                <field name="date_planned_start" required="True"/>
+                <field name="date_planned_finished" required="True"/>
+                <field name="qty_total" invisible="1"/>
+            </tree>
+        </field>
+    </record>    
+
+    <record id="bom_verification" model="ir.actions.act_window">
+        <field name="name">Bom Verification</field>
+        <field name="res_model">bom.verification</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="taps_manufacturing.menu_bom_verification_report"
+              name="Bom Verification"
+              sequence="11"
+              action="bom_verification"
+              parent="mrp.menu_mrp_reporting"/> 
+    
+<!--     <menuitem name="Split Manufacturing Order" id="menu_action_split_mrp" action="action_split_mrp" parent="stock.menu_warehouse_report" /> -->
+</odoo>

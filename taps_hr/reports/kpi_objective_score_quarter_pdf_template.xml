@@ -106,7 +106,7 @@
 									<th style="color:white; text-align: center">Feb</th>
 									<th style="color:white; text-align: center">Mar</th>
 									<th style="background-color:grey;color:white; text-align: center">Q4</th>
-									<th style="background-color:grey;color:white; text-align: center">YTD</th>
+									<th style="background-color:#714B67; color: white; text-align: center">YTD</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -164,7 +164,7 @@
 									<td style="background-color:grey;color:white">
 										<t t-esc="datas[21]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
-									<td style="background-color:grey;color:white">
+									<td style="background-color:#714B67; color: white;">
 										<t t-esc="datas[15]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
 								</tr>
@@ -245,7 +245,7 @@
 												<t t-esc="o.weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 											</td>
 											<td colspan="39">
-												<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt">
+												<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:8pt">
 													<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 														<td colspan="3" style="color:white; text-align: left;background-color:#714B67;">
 															<span>Target</span>
@@ -259,7 +259,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_jun" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -271,7 +271,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_sep" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -283,7 +283,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_dec" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -295,7 +295,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_mar" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:white;background-color:#714B67;">
@@ -315,7 +315,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_jun" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -327,7 +327,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_sep" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -339,7 +339,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_dec" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -351,7 +351,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_mar" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:white;background-color:#714B67;">
@@ -380,7 +380,7 @@
 															<t t-set="jun_total" t-value="jun_total+o.jun"/>
 															<t t-set="jun_gtotal" t-value="jun_gtotal+jun_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q1_total" t-value="q1_total+o.q1"/>
@@ -404,7 +404,7 @@
 															<t t-set="sep_total" t-value="sep_total+o.sep"/>
 															<t t-set="sep_gtotal" t-value="sep_gtotal+sep_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q2_total" t-value="q1_total+o.q2"/>
@@ -428,7 +428,7 @@
 															<t t-set="dec_total" t-value="dec_total+o.dec"/>
 															<t t-set="dec_gtotal" t-value="dec_gtotal+dec_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q3_total" t-value="q3_total+o.q3"/>
@@ -452,7 +452,7 @@
 															<t t-set="mar_total" t-value="mar_total+o.mar"/>
 															<t t-set="mar_gtotal" t-value="mar_gtotal+mar_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q4_total" t-value="q4_total+o.q4"/>
@@ -473,7 +473,7 @@
 								<tr>
 									<td colspan="18" style="border-bottom-style: hidden;border-left-style: hidden"/>
 									<td colspan="39">
-										<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt">
+										<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:8pt">
 											<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 												<td colspan="3" style="color:white; text-align: left;background-color:#714B67;">
 													<span>Total</span>
@@ -490,7 +490,7 @@
 													<t t-esc="jun_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q1_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -506,7 +506,7 @@
 													<t t-esc="sep_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q2_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -522,7 +522,7 @@
 													<t t-esc="dec_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q3_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -538,7 +538,7 @@
 													<t t-esc="mar_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q4_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -627,7 +627,7 @@
 												<t t-esc="o.weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 											</td>
 											<td colspan="39">
-												<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt">
+												<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:8pt">
 													<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 														<td colspan="3" style="color:white; text-align: left;background-color:#714B50;">
 															<span>Target</span>
@@ -641,7 +641,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_jun" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -653,7 +653,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_sep" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -665,7 +665,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_dec" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -677,7 +677,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_mar" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:white;background-color:#714B50;">
@@ -697,7 +697,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_jun" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -709,7 +709,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_sep" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -721,7 +721,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_dec" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -733,7 +733,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_mar" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:white;background-color:#714B50;">
@@ -762,7 +762,7 @@
 															<t t-set="jun_total" t-value="jun_total+o.jun"/>
 															<t t-set="jun_gtotal" t-value="jun_gtotal+jun_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q1_total" t-value="q1_total+o.q1"/>
@@ -786,7 +786,7 @@
 															<t t-set="sep_total" t-value="sep_total+o.sep"/>
 															<t t-set="sep_gtotal" t-value="sep_gtotal+sep_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q2_total" t-value="q2_total+o.q2"/>
@@ -810,7 +810,7 @@
 															<t t-set="dec_total" t-value="dec_total+o.dec"/>
 															<t t-set="dec_gtotal" t-value="dec_gtotal+dec_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q3_total" t-value="q3_total+o.q3"/>
@@ -834,7 +834,7 @@
 															<t t-set="mar_total" t-value="mar_total+o.mar"/>
 															<t t-set="mar_gtotal" t-value="mar_gtotal+mar_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q4_total" t-value="q4_total+o.q4"/>
@@ -855,7 +855,7 @@
 								<tr>
 									<td colspan="18" style="border-bottom-style: hidden;border-left-style: hidden"/>
 									<td colspan="39">
-										<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt">
+										<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:8pt">
 											<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 												<td colspan="3" style="color:white; text-align: left;background-color:#714B50;">
 													<span>Total</span>
@@ -872,7 +872,7 @@
 													<t t-esc="jun_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q1_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -888,7 +888,7 @@
 													<t t-esc="sep_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q2_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -904,7 +904,7 @@
 													<t t-esc="dec_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q3_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -920,7 +920,7 @@
 													<t t-esc="mar_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q4_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -1009,7 +1009,7 @@
 												<t t-esc="o.weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 											</td>
 											<td colspan="39">
-												<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt">
+												<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:8pt">
 													<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 														<td colspan="3" style="color:white; text-align: left;background-color:#714B40;">
 															<span>Target</span>
@@ -1023,7 +1023,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_jun" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -1035,7 +1035,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_sep" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -1047,7 +1047,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_dec" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -1059,7 +1059,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.t_mar" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.t_q4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:white;background-color:#714B40;">
@@ -1079,7 +1079,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_jun" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -1091,7 +1091,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_sep" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -1103,7 +1103,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_dec" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:black;">
@@ -1115,7 +1115,7 @@
 														<td colspan="2" style="color:black;">
 															<t t-esc="o.a_mar" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.a_q4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 														<td colspan="2" style="color:white;background-color:#714B40;">
@@ -1144,7 +1144,7 @@
 															<t t-set="jun_total" t-value="jun_total+o.jun"/>
 															<t t-set="jun_gtotal" t-value="jun_gtotal+jun_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q1_total" t-value="q1_total+o.q1"/>
@@ -1168,7 +1168,7 @@
 															<t t-set="sep_total" t-value="sep_total+o.sep"/>
 															<t t-set="sep_gtotal" t-value="sep_gtotal+sep_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q2_total" t-value="q2_total+o.q2"/>
@@ -1192,7 +1192,7 @@
 															<t t-set="dec_total" t-value="dec_total+o.dec"/>
 															<t t-set="dec_gtotal" t-value="dec_gtotal+dec_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q3_total" t-value="q3_total+o.q3"/>
@@ -1216,7 +1216,7 @@
 															<t t-set="mar_total" t-value="mar_total+o.mar"/>
 															<t t-set="mar_gtotal" t-value="mar_gtotal+mar_total"/>
 														</td>
-														<td colspan="2" style="color:black;">
+														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
 															<t t-set="q4_total" t-value="q4_total+o.q4"/>
@@ -1237,7 +1237,7 @@
 								<tr>
 									<td colspan="18" style="border-bottom-style: hidden;border-left-style: hidden"/>
 									<td colspan="39">
-										<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt">
+										<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:8pt">
 											<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 												<td colspan="3" style="color:white; text-align: left;background-color:#714B40;">
 													<span>Total</span>
@@ -1254,7 +1254,7 @@
 													<t t-esc="jun_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q1_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -1270,7 +1270,7 @@
 													<t t-esc="sep_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q2_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -1286,7 +1286,7 @@
 													<t t-esc="dec_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q3_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
@@ -1302,7 +1302,7 @@
 													<t t-esc="mar_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>
-												<td colspan="2" style="color:black;">
+												<td colspan="2" style="background-color:grey;color:white; text-align: center">
 													<t t-esc="q4_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													<span>%</span>
 												</td>

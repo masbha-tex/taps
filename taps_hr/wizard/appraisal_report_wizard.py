@@ -24,7 +24,7 @@ class HeadwisePDFReport(models.TransientModel):
         ('plan',	'KPI objective with Action Plan'),],
         string='Report Type', required=True,
         help='Report Type', default='score')
-    
+    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(), required=True)    
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
@@ -48,6 +48,7 @@ class HeadwisePDFReport(models.TransientModel):
         'res.company',  string='Company Mode', readonly=False)
     department_id = fields.Many2one(
         'hr.department',  string='Department', readonly=False)
+
     
     employee_type = fields.Selection([
         ('staff', 'Staffs'),
@@ -61,7 +62,18 @@ class HeadwisePDFReport(models.TransientModel):
         ('allcompany', 'TEX ZIPPERS (BD) LIMITED')],
         string='All Company', required=False)   
     
-    file_data = fields.Binary(readonly=True, attachment=False)    
+    file_data = fields.Binary(readonly=True, attachment=False) 
+
+    @staticmethod
+    def _get_year_list():
+        current_year = datetime.today().year
+        return [(str(year), str(year)) for year in range(current_year - 1, current_year + 2)]  
+
+    def _get_default_year(self):
+        # Return the default year value
+        current_year = datetime.today().year
+        # raise UserError((str(current_year)))
+        return str(current_year)  # Change it to the desired default year        
     
     @api.depends('employee_id', 'holiday_type')
     def _compute_department_id(self):
@@ -118,7 +130,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'report_type': self.report_type,
                         'bank_id': False,
                         'company_all': False,
-                        'employee_type': False}
+                        'employee_type': False,
+                        'year': self.year}
 
             if self.holiday_type == "company":
                 data = {'date_from': self.date_from, 
@@ -130,7 +143,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'report_type': self.report_type,
                         'bank_id': False,
                         'company_all': False,
-                        'employee_type': False}
+                        'employee_type': False,
+                        'year': self.year}
 
             if self.holiday_type == "department":
                 data = {'date_from': self.date_from, 
@@ -142,7 +156,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'report_type': self.report_type,
                         'bank_id': False,
                         'company_all': False,
-                        'employee_type': False}
+                        'employee_type': False,
+                        'year': self.year}
 
             if self.holiday_type == "category":
                 data = {'date_from': self.date_from, 
@@ -154,7 +169,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'report_type': self.report_type,
                         'bank_id': False,
                         'company_all': False,
-                        'employee_type': False}
+                        'employee_type': False,
+                        'year': self.year}
                 
             if self.holiday_type == "emptype":
                 data = {'date_from': self.date_from, 
@@ -166,7 +182,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'report_type': self.report_type,
                         'bank_id': False,
                         'employee_type': self.employee_type,
-                        'company_all': False}              
+                        'company_all': False,
+                        'year': self.year}              
             if self.holiday_type == "companyall":
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -177,7 +194,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'report_type': self.report_type,
                         'bank_id': False,
                         'employee_type': False,
-                        'company_all': self.company_all}
+                        'company_all': self.company_all,
+                        'year': self.year}
                 
 #         return self.env.ref('taps_hr.action_kpi_objective_pdf_report').report_action(self, data=data)
         if self.report_type == 'score':
@@ -203,7 +221,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': self.employee_id.id, 
                         'bank_id': False,
-                        'company_all': False}
+                        'company_all': False,
+                        'year': self.year}
 
             if self.holiday_type == "company":
                 data = {'date_from': self.date_from, 
@@ -214,7 +233,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'employee_id': False, 
                         'report_type': False,
                         'bank_id': False,
-                        'company_all': False}
+                        'company_all': False,
+                        'year': self.year}
 
             if self.holiday_type == "department":
                 data = {'date_from': self.date_from, 
@@ -224,7 +244,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'bank_id': False,
-                        'company_all': False}
+                        'company_all': False,
+                        'year': self.year}
 
             if self.holiday_type == "category":
                 data = {'date_from': self.date_from, 
@@ -234,7 +255,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': self.category_id.id, 
                         'employee_id': False, 
                         'bank_id': False,
-                        'company_all': False}
+                        'company_all': False,
+                        'year': self.year}
 
             if self.holiday_type == "emptype":
                 data = {'date_from': self.date_from, 
@@ -245,7 +267,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'employee_id': False, 
                         'bank_id': False,
                         'employee_type': self.employee_type,
-                        'company_all': False}
+                        'company_all': False,
+                        'year': self.year}
             if self.holiday_type == "companyall":
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -254,7 +277,8 @@ class HeadwisePDFReport(models.TransientModel):
                         'category_id': False, 
                         'employee_id': False, 
                         'bank_id': False,
-                        'company_all': self.company_all}
+                        'company_all': self.company_all,
+                        'year': self.year}
         else:
             raise UserError(('This Report are not XLSX Format'))
         
@@ -263,6 +287,9 @@ class HeadwisePDFReport(models.TransientModel):
 #             domain.append(('date_from', '=', data.get('date_from')))
 #         if data.get('date_to'):
 #             domain.append(('date_to', '=', data.get('date_to')))
+        if data.get('year'):
+            deadlines = str(data.get('year') + '-03-31')
+            domain.append(('deadline', '=', deadlines))   
         if data.get('mode_company_id'):
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
@@ -478,6 +505,9 @@ class KpiScoreReportPDF(models.AbstractModel):
 #             domain.append(('date_from', '>=', data.get('date_from')))
 #         if data.get('date_to'):
 #             domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('year'):
+            deadlines = str(data.get('year') + '-03-31')
+            domain.append(('deadline', '=', deadlines))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
@@ -623,6 +653,9 @@ class KpiScoreQuaterReportPDF(models.AbstractModel):
 #             domain.append(('date_from', '>=', data.get('date_from')))
 #         if data.get('date_to'):
 #             domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('year'):
+            deadlines = str(data.get('year') + '-03-31')
+            domain.append(('deadline', '=', deadlines))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
@@ -780,6 +813,9 @@ class KpiReportPDF(models.AbstractModel):
 #             domain.append(('date_from', '>=', data.get('date_from')))
 #         if data.get('date_to'):
 #             domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('year'):
+            deadlines = str(data.get('year') + '-03-31')
+            domain.append(('deadline', '=', deadlines))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))

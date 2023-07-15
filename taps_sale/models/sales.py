@@ -92,7 +92,15 @@ class SaleOrder(models.Model):
     usage = fields.Char(string='Usage')
     supply_chain = fields.Char(string='Supply Chain')
     priority = fields.Char(string="Priority")
-    washing_type = fields.Char(string="Washing Type")
+    washing_type = fields.Selection([
+        ('3HL40', '3HL40'),
+        ('5HL40', '5HL40'),
+        ('3HL60', '3HL60'),
+        ('5HL60', '5HL60'),
+        ('30HL40', '30HL40'),
+        ('20HL40', '20HL40'),
+        ('50HL40', '50HL40'),
+        ('ENZYME WASH', 'ENZYME WASH')], string='Washing Type', default='3HL40')
     
     bcd_part_finish = fields.Selection([
         ('N/A', 'N/A'),
@@ -106,7 +114,22 @@ class SaleOrder(models.Model):
         ('ϕ 1.2 m', 'ϕ 1.2 m'),
         ('ϕ 1.5 m', 'ϕ 1.5 m'),
         ('ϕ 2.0 m', 'ϕ 2.0 m')],string='Metal Detection', default='ϕ 1.0 m')
+    total_product_qty = fields.Float(string='Total PI Quantity' ,compute="_total_pi_quantity")
     
+    
+    # def _action_daily_oa_release_email(self, empl_id):
+    #     template_id = self.env.ref('taps_sale.daily_oa_release_email_template', raise_if_not_found=False).id
+    #     template = self.env['mail.template'].browse(template_id)
+    #     att = self.env['hr.employee'].search([('id', 'in', (empl_id)), ('active', '=', True)])
+    #     if template:
+    #         for at in att:
+    #             if at.id:
+    #                 template.send_mail(at.id, force_send=False)
+    
+    def _total_pi_quantity(self):
+        for rec in self:
+            rec.total_product_qty = sum(rec.order_line.mapped('product_uom_qty'))
+        
     
     def _amount_in_words(self):
         
@@ -316,6 +339,7 @@ class SaleOrder(models.Model):
                     'product_code':lines.product_code,
                     'shape':lines.shape,
                     'finish_ref':lines.finish_ref,
+                    'dimension':lines.dimension,
                     'nailmat':lines.nailmat,
                     'nailcap':lines.nailcap,
                     'fnamebcd':lines.fnamebcd,
@@ -841,6 +865,7 @@ class SaleOrderLine(models.Model):
     pinbox_con = fields.Float('Pinbox Consumption', required=True, digits='Unit Price', default=0.0)
     shadewise_tape = fields.Float('Shadwise Tape', required=True, digits='Unit Price', default=0.0, compute='compute_shadewise_tape', compute_sudo=True, store=True)
     color = fields.Integer(string='Color')
+    dimension = fields.Char(string='Dimension')
     #def write
   
     @api.model_create_multi
@@ -1049,6 +1074,9 @@ class SaleOrderLine(models.Model):
                 continue
             if rec.attribute_id.name == 'Logo Ref':
                 self.logoref = rec.product_attribute_value_id.name
+                continue
+            if rec.attribute_id.name == 'Dimension':
+                self.dimension = rec.product_attribute_value_id.name
                 continue
             if rec.attribute_id.name == 'Style':
                 self.style = rec.product_attribute_value_id.name

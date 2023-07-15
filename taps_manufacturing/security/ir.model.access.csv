@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_mrp_production_custom,mrp_production_custom,model_mrp_production,base.group_user,1,1,1,1
 access_mrp_split,mrp_split,model_mrp_split,base.group_user,1,1,1,1
 access_mrp_split_line,mrp_split_line,model_mrp_split_line,base.group_user,1,1,1,1
+access_bom_verification,bom_verification,model_bom_verification,base.group_user,1,1,1,1

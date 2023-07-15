@@ -118,6 +118,7 @@
                     <field name="b_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                     <field name="c_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                     <field name="d_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                    <field name="dimension" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                     <field name="style" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
                     <field name="gmt" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
 					<field name="shade"  attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}" options="{'color_field': 'color'}"/>
@@ -160,6 +161,7 @@
 					<field name="appr_weight"/>
                     <field name="avg_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                     <field name="avg_size" />
+                    <field name="total_product_qty" />
 					<!--                   <field name="others_note" nolabel="1" placeholder="Others Terms and conditions..."/> -->
 				</xpath>
 				<xpath expr="//field[@name='picking_policy']" position="after">

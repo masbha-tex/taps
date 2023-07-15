@@ -14,6 +14,7 @@
 <!--                         <field name="is_company" string="" widget="boolean_toggle"/> -->
                     </group>
                     <group>
+                        <field name="year" widget="selection"/>
                         <field name="holiday_type" string="Mode"/>
                         <field name="employee_id" attrs="{
                         'required': [('holiday_type', '=', 'employee')],

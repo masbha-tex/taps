@@ -65,6 +65,7 @@
         'reports/hris_confirmation_letter_pdf_report.xml',
         'reports/hris_joining_letter_pdf_report.xml',
         'reports/hris_loan_application_pdf_report.xml',
+        'reports/hris_pf_loan_application_pdf_report.xml',
         'reports/hris_acopening_pdf_template.xml',
         'reports/hris_marriage_gift_pdf_report.xml',
         'reports/hris_no_dues_letter_pdf_report.xml',

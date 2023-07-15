@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_data_daily_oa_release_email_template" model="ir.cron">
+            <field name="name">OA: Daily Released OA Send by email</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model._action_daily_oa_release_email((757,758,3204,796,1754,810,777,2107))</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall">2023-01-05 11:00:00</field>
+        </record>
+        <record id="daily_oa_release_email_template" model="mail.template">
+            <field name="name">OA: Daily Released OA Send by email</field>
+            <field name="model_id" ref="taps_sale.model_sale_order"/>
+            <field name="email_from">${user.email_formatted | safe}</field>
+            <field name="email_to">	${(object.email)}</field>
+            <field name="subject">Attendance Report dated up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))} for ${object.name}</field>
+            <field name="body_html" type="html">
+                <div class="container" style="margin:0px;padding: 0px;">
+                <div>
+                    <p>Dear ${object.name},</p>
+                    <p>Please find below OA report for your direct reportings dated up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))}</p>
+                    <br/><br/>
+                </div>
+
+                <style type="text/css">  
+                    .tem_table{
+                        display:table;
+                        table-layout:fixed;
+                        font-size:10px;
+                        width:100%;     
+                    }
+                    .tem_table_1{
+                        display:table;
+                        table-layout:fixed;
+                        width: 60%;
+                        font-size:11px; 
+                    }
+                </style>
+
+
+                <table class="tem_table table-responsive" align="center" cellspacing="0" cellpadding="0" border="1">
+                    <thead>
+                            <tr style="color:white;background-color:rgb(113, 75, 98);">
+                            <th colspan="2" style="text-align:center;width:8%">Sales Person</th>
+                            <th colspan="2" style="text-align:center;width:5%">Date</th>
+                            <th colspan="3" style="text-align:left;width:15%">Customer</th>
+                            <th colspan="2" style="text-align:center;width:5%">Buyer</th>
+                            <th colspan="1" style="text-align:center;width:3%">IN</th>
+                            <th colspan="1" style="text-align:center;width:5%">Product</th>
+                            <th colspan="2" style="text-align:center;width:5%">Finish</th>
+                            <th colspan="1" style="text-align:center;width:5%">Slider</th>
+                            <th colspan="1" style="text-align:center;width:3%">PI No</th>
+                            <th colspan="2" style="text-align:center;width:5%">OA No</th>
+                            <th colspan="2" style="text-align:center;width:5%">CM</th>
+                            <th colspan="1" style="text-align:center;width:5%">INCH</th>
+                            <th colspan="1" style="text-align:center;width:5%">Qty/Pcs</th>
+                            <th colspan="1" style="text-align:center;width:5%">Payment Terms</th>
+                            <th colspan="1" style="text-align:center;width:5%">Pending Qty</th>
+                            <th colspan="1" style="text-align:center;width:3%">Tentative LC Date</th>
+                            <th colspan="1" style="text-align:center;width:3%">Total WT(Kg)</th>
+                            <th colspan="1" style="text-align:center;width:5%">CM</th>
+                            <th colspan="2" style="text-align:center;width:5%">INCH</th>
+
+                        </tr>
+                    </thead>
+                </table>
+
+
+
+
+                <!-- % set attendance = object.env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)),('attDate', '=', (datetime.datetime.today() - relativedelta(days=1))), '|','|','|', ('employee_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', object.id)])
+                        % for line in attendance:
+                        % set tt = object.total_attendance(line.employee_id)
+                        % set pp = object.total_present(line.employee_id)
+                        % set aa = object.total_absent(line.employee_id)
+                        % set ll = object.total_leave(line.employee_id)
+                        % set od = object.total_od(line.employee_id)
+                        % set fr = object.total_friday(line.employee_id)
+                        % set hh = object.total_holiday(line.employee_id)
+                        % set co = object.total_co(line.employee_id)
+                        % set aj = object.total_aj(line.employee_id)
+                        % set la = object.total_late(line.employee_id)
+                        % set eo = object.total_earlyout(line.employee_id)
+                            % if line.employee_id.emp_id != '01607':
+                                <table class="tem_table table-responsive" align="center" cellspacing="0" cellpadding="0" border="1">	
+
+
+                                <tbody><tr>
+
+                                    <td colspan="2" style="width:8%;text-align:center">${line.attDate.strftime('%d/%m/%Y')}</td>
+                                    <td colspan="2" style="width:5%;text-align:center">${line.employee_id.emp_id}</td>
+                                    <td colspan="3" style="width:15%;text-align:left">${line.employee_id.name}</td>
+                                    <td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">${('%d:%02d' % (line.inTime,(line.inTime*60)%60))}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">
+                                    % if line.inHour != 0:
+                                        ${('%d:%02d' % (line.inHour,(line.inHour*60)%60))}
+                                    % endif
+                                    % if line.inHour == 0:
+                                        <span></span>
+                                    % endif
+                                    </td>
+                                    <td colspan="1" style="width:5%;text-align:center">${line.inFlag}</td>
+                                    <td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">${('%d:%02d' % (line.outTime,(line.outTime*60)%60))}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">
+                                    % if line.outHour != 0:
+                                        ${('%d:%02d' % (line.outHour,(line.outHour*60)%60))}
+                                    % endif
+                                    % if line.outHour == 0:
+                                        <span></span>
+                                    % endif
+                                    </td>
+                                    <td colspan="1" style="width:5%;text-align:center">${tt}</td>
+                                    <td colspan="2" style="width:5%;text-align:center">${pp}</td>
+                                    <td colspan="2" style="width:5%;text-align:center">${aa}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${ll}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${od}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${fr}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${hh}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${co}</td>
+                                    <td colspan="1" style="width:3%;text-align:center">${aj}</td>
+                                    <td colspan="1" style="width:5%;text-align:center">${la}</td>
+                                    <td colspan="2" style="width:5%;text-align:center">${eo}</td>
+
+
+
+
+                                </tr>
+                             </tbody></table>
+                            % endif
+                        % endfor
+
+                <br/> -->
+
+                <!-- <div style="text-align:center;">
+                <h3 align="center">Today's Attendance status ${datetime.datetime.now().strftime('%d/%m/%Y')} till 11:00AM</h3>
+                </div> -->
+
+
+                <!-- <div align="center" style="margin:auto;width:100%">
+                % set attendance = object.env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)), ('attDate', '=', (datetime.datetime.today())), '|','|','|', ('employee_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', object.id)])
+
+                            <table class="tem_table_1 table-responsive" cellspacing="0" cellpadding="0" border="1">
+                                <thead>
+                                    <tr style="color:white;background-color:rgb(113, 75, 98);">
+                                        <th style="text-align:center;width:5%">Date</th>
+                                        <th style="text-align:center;width:5%">Emp ID</th>
+                                        <th style="text-align:left;width:20%">Employee Name</th>
+                                        <th style="text-align:center;width:5%">InTime</th>
+                                        <th style="text-align:center;width:5%">IN</th>
+                                        <th style="width:5%;text-align:center">Flag</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            % for line in attendance:
+                                % if line.employee_id.emp_id != '01607':
+                                <table class="tem_table_1 table-responsive" cellspacing="0" cellpadding="0" border="1">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:5%;text-align:center">${line.attDate.strftime('%d/%m/%Y')}</td>
+                                        <td style="width:5%;text-align:center">${line.employee_id.emp_id}</td>
+                                        <td style="width:20%">${line.employee_id.name}</td>
+                                        <td style="width:5%;color:white;background-color:rgb(113, 75, 98);text-align:center">${('%d:%02d' % (line.inTime,(line.inTime*60)%60))}</td>
+                                        <td style="width:5%;text-align:center">
+                                        % if line.inHour != 0:
+                                            ${('%d:%02d' % (line.inHour,(line.inHour*60)%60))}
+                                        % endif
+                                        % if line.inHour == 0:
+                                            <span></span>
+                                        % endif
+                                        </td>
+                                        <td style="width:5%;text-align:center">${line.inFlag}</td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                                % endif
+                            % endfor
+
+                </div> -->
+
+                <div style="text-align:center;">
+                <p>** This is an auto generated mail from Odoo. Please do not reply **</p>
+                </div></div>
+            </field>
+        </record>
+    </data>
+</odoo>

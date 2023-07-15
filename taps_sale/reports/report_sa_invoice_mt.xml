@@ -39,26 +39,40 @@
 								<!--<span style="font-size:11px" t-esc="o.partner_id.contact_address_complete"/>-->
 							</p>
 						</div>
-						<div class="col-2 mw-50 mb-2">
+						<div class="col-1 mw-50 mb-2">
 							<strong>SA DATE</strong>
 							<p>
 								<t t-esc="o.date_order.strftime('%d-%m-%Y')"/>
 							</p>
 						</div>
-						<div class="col-2 mw-50 mb-2">
+						<div class="col-1 mw-50 mb-2">
 							<strong>DELIVERY DATE</strong>
 							<p>
 								<t t-esc="o.commitment_date.strftime('%d-%m-%Y')"/>
 							</p>
 						</div>
-						<div class="col-2 mw-50 mb-2">
+						<div class="col-1 mw-50 mb-2">
 							<strong>SALES PERSON</strong>
 							<p>
 								<t t-esc="o.sale_representative.name"/>
 							</p>
 						</div>
-						<t t-if="o.remarks">
-							<div class="col-3 mw-50 mb-2">
+                        <div class="col-auto col-1 mw-50 mb-2">
+							<strong>KIND ATTENTION</strong>
+							<p>
+								<t t-esc="o.kind_attention"/>
+							</p>
+						</div>
+                        <div class="col-auto col-1 mw-50 mb-2">
+							<strong>BUYER NAME</strong>
+							<p>
+								<t t-esc="o.buyer_name.name"/>
+							</p>
+						</div>
+                        
+						
+							<div class="col-4 mw-50 mb-2">
+                                <t t-if="o.remarks">
 								<p>
 									<strong>OTHER REQUIREMENTS</strong>
 									<br/>
@@ -70,87 +84,92 @@
 										</t>
 									</t>
 								</p>
+                                </t>
 							</div>
-						</t>
+						
 					</div>
 					<br/>
 					<div class="row mt32 mb32" style="font-size:12px">
-						<div class="col-auto col-2 mw-50 mb-2">
-							<strong>KIND ATTENTION</strong>
-							<p>
-								<t t-esc="o.kind_attention"/>
-							</p>
-						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
-							<strong>CUSTOMER REF.</strong>
-							<p>
-								<t t-esc="o.customer_ref"/>
-							</p>
-						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
+						
+						
+						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>STYLE REF.</strong>
 							<p>
 								<t t-esc="o.style_ref"/>
 							</p>
 						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
+						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>SEASON</strong>
 							<p>
 								<t t-esc="o.season"/>
 							</p>
 						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
+						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>DEPARTMENT</strong>
 							<p>
 								<t t-esc="o.department"/>
 							</p>
 						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
+						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>DEVISION</strong>
 							<p>
 								<t t-esc="o.division"/>
 							</p>
 						</div>
-					</div>
-					<div class="row mt32 mb32" style="font-size:12px">
-						<div class="col-auto col-2 mw-50 mb-2">
-							<strong>BUYER NAME</strong>
+                        
+                        <div class="col-auto col-2 mw-50 mb-2">
+							<strong>CUSTOMER REF.</strong>
 							<p>
-								<t t-esc="o.buyer_name.name"/>
+								<t t-esc="o.customer_ref"/>
 							</p>
 						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
+						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>PRODUCTION TYPE</strong>
 							<p>
 								<t t-esc="o.production_type"/>
 							</p>
 						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
+						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>USAGE</strong>
 							<p>
 								<t t-esc="o.usage"/>
 							</p>
 						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
+						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>SUPPLY CHAIN</strong>
 							<p>
 								<t t-esc="o.supply_chain"/>
 							</p>
 						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
+						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>PRIORITY</strong>
 							<p>
 								<t t-esc="o.priority"/>
 							</p>
 						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
+						<div class="col-auto col-1 mw-50 mb-2">
 							<strong>WASHING TYPE</strong>
 							<p>
 								<t t-esc="o.washing_type"/>
 							</p>
 						</div>
+                        <div class="col-auto col-1 mw-50 mb-2">
+							<strong>B, C, D PART FINISH</strong>
+							<p>
+								<t t-esc="o.bcd_part_finish"/>
+							</p>
+						</div>
+						<div class="col-auto col-1 mw-50 mb-2">
+							<strong>METAL DETECTION</strong>
+							<p>
+								<t t-esc="o.metal_detection"/>
+							</p>
+						</div>
 					</div>
-					<div class="row mt32 mb32" style="font-size:12px">
+					<!-- <div class="row mt32 mb32" style="font-size:12px">
+						
+					</div> -->
+					<!-- <div class="row mt32 mb32" style="font-size:12px">
 						<div class="col-auto col-2 mw-50 mb-2">
 							<strong>B, C, D PART FINISH</strong>
 							<p>
@@ -175,9 +194,10 @@
 						<div class="col-auto col-2 mw-50 mb-2">
 							
 						</div>
-					</div>
+					</div> -->
 					<br/>
 					<div style="font-size:12px">
+						<t t-set="back_part" t-value="0"/>
 						<t t-set="p_code" t-value="0"/>
 						<t t-set="shape" t-value="0"/>
 						<t t-set="logo" t-value="0"/>
@@ -193,6 +213,11 @@
 						<t t-set="mm" t-value="0"/>
 						<t t-set="dis" t-value="0"/>
 						<t t-foreach="o.order_line" t-as="line">
+							<t t-if="back_part == 0 ">
+								<t t-if="line.back_part and line.back_part != 'N/A'">
+									<t t-set="back_part" t-value="1"/>
+								</t>
+							</t>
 							<t t-if="p_code == 0 ">
 								<t t-if="line.product_code and line.product_code != 'N/A'">
 									<t t-set="p_code" t-value="1"/>
@@ -219,7 +244,7 @@
 								</t>
 							</t>
 							<t t-if="finish == 0">
-								<t t-if="line.finish and line.finish != 'N/A'">
+								<t t-if="line.finish">
 									<t t-set="finish" t-value="1"/>
 								</t>
 							</t>
@@ -262,6 +287,10 @@
 								<tr>
 									<th class="text-left">Item</th>
 									<t t-set="line_count" t-value="1"/>
+									<t t-if="back_part == 1">
+										<th class="text-left">BACK_PART</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
 									<t t-if="p_code == 1">
 										<th class="text-left">CODE</th>
 										<t t-set="line_count" t-value="line_count+1"/>
@@ -322,12 +351,26 @@
 										<t t-if="not line.display_type">
 											<td>
 												<strong>
-													<span>FRONT PART: </span><span t-esc="line.product_template_id.generic_name"/>
-                                                <br/>
-                                                <br/>
-                                                <span>BACK PART: </span><span t-esc="line.back_part"/>
+													<span t-esc="line.product_template_id.generic_name"/>
 												</strong>
+												<t t-if="line.dimension">
+													<strong>
+														<span t-esc="line.dimension"/>
+													</strong>
+												</t>
 											</td>
+											<t t-if="back_part == 1">
+												<t t-if="line.back_part">
+													<td>
+														<strong>
+															<span t-esc="line.back_part"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.back_part">
+													<td/>
+												</t>
+											</t>
 											<t t-if="p_code == 1">
 												<t t-if="line.product_code">
 													<td>
@@ -391,9 +434,16 @@
 											<t t-if="finish == 1">
 												<t t-if="line.finish">
 													<td>
-														<strong>
-															<span t-esc="line.finish"/>
-														</strong>
+														<t t-if="'N/A' not in line.finish">
+															<strong>
+																<span t-esc="line.finish"/>
+															</strong>
+														</t>
+														<t t-if="'N/A' in line.finish">
+															<strong>
+																<span t-esc="line.finish[4:]"/>
+															</strong>
+														</t>
 													</td>
 												</t>
 												<t t-if="not line.finish">

@@ -15,20 +15,32 @@ from typing import List, Union
 _logger = logging.getLogger(__name__)
 
 
-class SplitManufacturingOrder(models.TransientModel):
-    _name = 'mrp.split'
-    _description = 'Split Manufacturing Order'
+class BomVerification(models.TransientModel):
+    _name = 'bom.verification'
+    _description = 'Bom Verification'
     _check_company_auto = True
     
-    mo_id = fields.Many2one('mrp.production', 'Manufacturing Order', readonly=True, ondelete="cascade")
-    product_id = fields.Many2one('product.product', 'Product', readonly=True, required=True, check_company=True)
+    # mo_id = fields.Many2one('mrp.production', 'Manufacturing Order', readonly=True, ondelete="cascade")
+    product_id = fields.Many2one('product.template', 'Product',  required=True)
     
-    mo_qty = fields.Float('Total Qty',digits='Product Unit of Measure', readonly=True)
+    mo_qty = fields.Float('Total Qty',digits='Product Unit of Measure')
     #,states={'draft': [('readonly', False)]}
-    split_line = fields.One2many('mrp.split.line', 'split_id', string='Split Lines',copy=True, auto_join=True)
+    split_line = fields.One2many('bom.verification.line', 'split_id', string='Split Lines',copy=True, auto_join=True)
     split_totalqty = fields.Float(string='Total', store=True, compute='_qty_all', default=1.0, digits='Product Unit of Measure')
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
-    
+    size = fields.Float(required=True, string="size")
+    unit = fields.Selection([
+        ('in',	'Inch'),
+        ('cm',	'CM'),
+        ('mm',	'MM'),],
+        string='unit', required=True)
+
+    @api.onchange('product_id', 'mo_qty','size','unit')
+    def bom_change(self):
+        raise UserError((self.product_id))
+        a = ''
+
+        
     @api.depends('split_line.qty_total')
     def _qty_all(self):
         """
@@ -69,16 +81,22 @@ class SplitManufacturingOrder(models.TransientModel):
         #     res["split_qty"] = production._get_quantity_to_backorder()
         return res            
     
-class SplitManufacturingOrderLine(models.TransientModel):
-    _name = 'mrp.split.line'
-    _description = 'Split Manufacturing Order'
+class BomVerificationLine(models.TransientModel):
+    _name = 'bom.verification.line'
+    _description = 'Bom Verification'
     #_order = 'order_id, sequence, id'
     _check_company_auto = True
     
     sequence = fields.Integer(string='Sequence', default=10)
-    split_id = fields.Many2one('mrp.split', string='Split MO', required=True, ondelete='cascade', index=True, copy=False)    
+    split_id = fields.Many2one('bom.verification', string='Split MO', required=True, ondelete='cascade', index=True, copy=False)    
     product_qty = fields.Float('Quantity To Produce',default=1.0, digits='Product Unit of Measure',required=True)
-    
+    tape = fields.Text(required=True, string="Tape")
+    slider = fields.Text(readonly=True,string='Slider')
+    wire = fields.Text(readonly=True,string='Wire')
+    top = fields.Text(readonly=True,string='Top')
+    bottom = fields.Text(readonly=True,string='Bottom')
+    pinbox = fields.Text(readonly=True,string='Pinbox')
+    cost = fields.Text(readonly=True,string='Cost')
     #,states={'draft': [('readonly', False)]}
     date_planned_start = fields.Datetime(
         'Scheduled Date', copy=False, 
@@ -111,6 +129,4 @@ class SplitManufacturingOrderLine(models.TransientModel):
     #     for line in self:
     #         qty += line.product_qty
     #         line.update({'qty_total': qty})
-
-
 
