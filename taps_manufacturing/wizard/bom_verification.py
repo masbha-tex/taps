@@ -19,114 +19,127 @@ class BomVerification(models.TransientModel):
     _name = 'bom.verification'
     _description = 'Bom Verification'
     _check_company_auto = True
+
     
-    # mo_id = fields.Many2one('mrp.production', 'Manufacturing Order', readonly=True, ondelete="cascade")
-    product_id = fields.Many2one('product.template', 'Product',  required=True)
-    
-    mo_qty = fields.Float('Total Qty',digits='Product Unit of Measure')
-    #,states={'draft': [('readonly', False)]}
-    split_line = fields.One2many('bom.verification.line', 'split_id', string='Split Lines',copy=True, auto_join=True)
-    split_totalqty = fields.Float(string='Total', store=True, compute='_qty_all', default=1.0, digits='Product Unit of Measure')
-    company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
-    size = fields.Float(required=True, string="size")
+    product_tmpl_id = fields.Many2one('product.template', 'Product',  required=True)
     unit = fields.Selection([
-        ('in',	'Inch'),
+        ('inch',	'Inch'),
         ('cm',	'CM'),
         ('mm',	'MM'),],
         string='unit', required=True)
+    size = fields.Float(required=True, string="size")
+    uom_qty = fields.Float('Total Qty',digits='Product Unit of Measure')
+    veri_line = fields.One2many('bom.verification.line', 'verification_id', string='BOM Lines',copy=True, auto_join=True)
+    company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
 
-    @api.onchange('product_id', 'mo_qty','size','unit')
+    @api.onchange('product_tmpl_id', 'mo_qty','size','unit')
     def bom_change(self):
-        raise UserError((self.product_id))
+        raise UserError((self.product_tmpl_id))
         a = ''
-
+        wastage_percent = self.env['wastage.percent']
         
-    @api.depends('split_line.qty_total')
-    def _qty_all(self):
-        """
-        Compute the total splited.
-        """
-        for split in self:
-            qty = 0.0
-            for line in split.split_line:
-                qty += line.qty_total
-            split.update({
-                'split_totalqty': qty
-            })
-            
+        formula = self.env['fg.product.formula'].search([('product_tmpl_id', '=', self.product_tmpl_id.id),('unit_type', '=', self.unit)])
+        
+        gap = self.product_tmpl_id.gap_inch
+        if self.unit == 'cm':
+            gap = self.product_tmpl_id.gap_cm
+        
+        if formula:
+            for f in formula:
+                wastage_tape_cotton = wastage_percent.search([('product_type', '=', f.product_type),('material', '=', 'Cotton Tape')])
+                wastage_tape = wastage_percent.search([('product_type', '=', f.product_type),('material', '=', 'Tape')])
     
-    def done_mo_split(self):
-        if self.split_totalqty > self.mo_qty:
-            raise UserError(('Split quantity should not greterthen the base quantity'))
-            return
-        return self.mo_id.split_mo(self.mo_id.id,self.split_line)#with_context({'disable_cancel_warning': True}).
+                wastage_slider = wastage_percent.search([('product_type', '=', f.product_type),('material', '=', 'Slider')])
+                wastage_top = wastage_percent.search([('product_type', '=', f.product_type),('material', '=', 'Top')])
+                wastage_bottom = wastage_percent.search([('product_type', '=', f.product_type),('material', '=', 'Bottom')])
+                wastage_wire = wastage_percent.search([('product_type', '=', f.product_type),('material', '=', 'Wire')])
+                wastage_pinbox = wastage_percent.search([('product_type', '=', f.product_type),('material', '=', 'Pinbox')])
+    
+                con_tape_cotton = con_tape = con_wire = con_slider = con_top = con_bottom = con_pinboc = 0
+                if f.tape_python_compute:
+                    con_tape = safe_eval(f.tape_python_compute, {'s': size, 'g': self.gap})
+                    if wastage_tape_cotton:
+                        if wastage_tape_cotton.wastage>0:
+                            con_tape_cotton += (con_tape*wastage_tape_cotton.wastage)/100
+                    if wastage_tape:
+                        if wastage_tape.wastage>0:
+                            con_tape += (con_tape*wastage_tape.wastage)/100
+                    con_tape_cotton = round(con_tape_cotton*self.product_uom_qty,4)
+                    con_tape = round(con_tape*self.product_uom_qty,4)
+    
+                if f.wair_python_compute:
+                    con_wire = safe_eval(f.wair_python_compute, {'s': size})
+                    if wastage_wire:
+                        if wastage_wire.wastage>0:
+                            con_wire += (con_wire*wastage_wire.wastage)/100
+                    con_wire = round(con_wire*self.product_uom_qty,4)
+                if f.slider_python_compute:
+                    con_slider = safe_eval(f.slider_python_compute)
+                    if wastage_slider:
+                        if wastage_slider.wastage>0:
+                            con_slider += (con_slider*wastage_slider.wastage)/100
+                    con_slider = round(con_slider*self.product_uom_qty,4)
+                if f.twair_python_compute:
+                    con_top = safe_eval(f.twair_python_compute)
+                    if wastage_top:
+                        if wastage_top.wastage>0:
+                            con_top += (con_top*wastage_top.wastage)/100
+                    con_top = round(con_top*self.product_uom_qty,4)
+                if f.bwire_python_compute:
+                    con_bottom = safe_eval(f.bwire_python_compute)
+                    if wastage_bottom:
+                        if wastage_bottom.wastage>0:
+                            con_bottom += (con_bottom*wastage_bottom.wastage)/100
+                    con_bottom = round(con_bottom*self.product_uom_qty,4)
+                if f.tbwire_python_compute:
+                    con_bottom = safe_eval(f.tbwire_python_compute)
+                    if wastage_bottom:
+                        if wastage_bottom.wastage>0:
+                            con_bottom += (con_bottom*wastage_bottom.wastage)/100
+                    con_bottom = round(con_bottom*self.product_uom_qty,4)
+                if f.pinbox_python_compute:
+                    con_pinbox = safe_eval(f.pinbox_python_compute)
+                    if wastage_pinbox:
+                        if wastage_pinbox.wastage>0:
+                            con_pinbox += (con_pinbox*wastage_pinbox.wastage)/100
+                    con_pinbox = round(con_pinbox*self.product_uom_qty,4)
+
+                orderline_values += [{
+                    'varification_id':lines.name,
+                    'topbottom_type':lines.sequence,
+                    'tape_con_cotton':con_tape_cotton,
+                    'tape_con':con_tape,
+                    'wire_con':con_wire,
+                    'slider_con':con_slider,
+                    'topwire_con':con_top,
+                    'botomwire_con':con_bottom,
+                    'pinbox_con':con_pinboc,
+                    'total_cost':0,
+                }]
+                self.veri_line = [(5, 0)] + [(0, 0, value) for value in orderline_values]
+
+
                 
-    @api.model
-    def default_get(self, fields_list):
-        res = super().default_get(fields_list)
-        active_model = self.env.context.get("active_model")
-        active_id = self.env.context.get("active_id")
-        # Auto-complete production_id from context
-        #if "mo_id" in fields_list and active_model == "mrp.production":
-        res["mo_id"] = active_id
-        production = self.env["mrp.production"].browse(active_id)
-        res["mo_qty"] = production.product_qty
-        res["product_id"] = production.product_id.id
-            #raise UserError((active_id))
-            #if production.product_tracking == "serial":
-                
-        # # Auto-complete split_qty from production_id
-        # if "split_qty" in fields_list and res.get("production_id"):
-        #     production = self.env["mrp.production"].browse(res["production_id"])
-        #     res["split_qty"] = production._get_quantity_to_backorder()
-        return res            
+
     
 class BomVerificationLine(models.TransientModel):
     _name = 'bom.verification.line'
     _description = 'Bom Verification'
     #_order = 'order_id, sequence, id'
     _check_company_auto = True
-    
-    sequence = fields.Integer(string='Sequence', default=10)
-    split_id = fields.Many2one('bom.verification', string='Split MO', required=True, ondelete='cascade', index=True, copy=False)    
-    product_qty = fields.Float('Quantity To Produce',default=1.0, digits='Product Unit of Measure',required=True)
-    tape = fields.Text(required=True, string="Tape")
-    slider = fields.Text(readonly=True,string='Slider')
-    wire = fields.Text(readonly=True,string='Wire')
-    top = fields.Text(readonly=True,string='Top')
-    bottom = fields.Text(readonly=True,string='Bottom')
-    pinbox = fields.Text(readonly=True,string='Pinbox')
-    cost = fields.Text(readonly=True,string='Cost')
-    #,states={'draft': [('readonly', False)]}
-    date_planned_start = fields.Datetime(
-        'Scheduled Date', copy=False, 
-        # default=_get_default_date_planned_start,
-        help="Date at which you plan to start the production.",
-        index=True, required=True)
-    
-    date_planned_finished = fields.Datetime(
-        'Scheduled End Date',
-        # default=_get_default_date_planned_finished,
-        help="Date at which you plan to finish the production.",
-        copy=False)
-    qty_total = fields.Float(compute='_compute_qty', string='Total', store=True)    
-    company_id = fields.Many2one(related='split_id.company_id', string='Company', store=True, readonly=True, index=True)
-    
-    @api.depends('product_qty')
-    def _compute_qty(self):
-        """
-        Compute the quantity of the Split line.
-        """
-        qty = 0
-        for line in self:
-            qty += line.product_qty
-            line.update({'qty_total': qty})
-            
-            
-    # @api.onchange('product_qty')
-    # def product_qty_change(self):
-    #     qty = 0
-    #     for line in self:
-    #         qty += line.product_qty
-    #         line.update({'qty_total': qty})
 
+    
+    verification_id = fields.Many2one('bom.verification', string='Verification ID', required=True, ondelete='cascade', index=True, copy=False)
+    topbottom_type = fields.Text(string='Type')
+
+    tape_con_cotton = fields.Float('Cotton Tape', required=True, digits='Unit Price', default=0.0)
+    tape_con = fields.Float('Polister Tape', required=True, digits='Unit Price', default=0.0)
+    slider_con = fields.Float('Slider Consumption', required=True, digits='Unit Price', default=0.0)
+    topwire_con = fields.Float('Topwire Consumption', required=True, digits='Unit Price', default=0.0)
+    botomwire_con = fields.Float('Botomwire Consumption', required=True, digits='Unit Price', default=0.0)
+    tbwire_con = fields.Float('TBwire Consumption', required=True, digits='Unit Price', default=0.0)
+    wire_con = fields.Float('Wire Consumption', required=True, digits='Unit Price', default=0.0)
+    pinbox_con = fields.Float('Pinbox Consumption', required=True, digits='Unit Price', default=0.0)
+    total_cost = fields.Float('Pinbox Consumption', required=True, digits='Unit Price', default=0.0)
+
+    

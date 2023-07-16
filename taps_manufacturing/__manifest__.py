@@ -28,7 +28,7 @@
         'views/mrp_productivity.xml',
         'views/mrp_production.xml',
         'views/mrp_workorder.xml',
-        'wizard/bom_verification.xml',
+        #'wizard/bom_verification.xml',
         
         # 'wizard/manufacturing_report_wizard.xml'
     ],
