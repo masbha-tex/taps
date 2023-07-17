@@ -111,5 +111,19 @@
                 </tree>
             </field>
         </record>
+
+        <record id="quality_check_view_search_inherit" model="ir.ui.view">
+        <field name="name">quality.check.view.search.inherit</field>
+        <field name="model">quality.check</field>
+        <field name="inherit_id" ref="quality_control.quality_check_view_search"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="QC"/>
+            </search>
+        </field>
+    </record>
+
+
+        
     </data>
 </odoo>

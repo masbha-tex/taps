@@ -263,14 +263,26 @@
             <field name="model">hr.expense</field>
             <field name="inherit_id" ref="hr_expense.hr_expense_view_search"/>
             <field name="arch" type="xml">
-                <search string="Expense">
-                   
-                    <field name="product_id"/>
+                <search>
                     
-                    
+                    <field name="expense_line" string="Partner" filter_domain="[('expense_line.partner_id', 'ilike', self)]"/>
+                    <field name="expense_line" string="Note" filter_domain="[('expense_line.name', 'ilike', self)]"/>
                 </search>
             </field>
-        </record>
+    </record>
+
+    <record id="hr_expense_sheet_view_search_inherit" model="ir.ui.view">
+            <field name="name">hr.expense.sheet.view.search.inherit</field>
+            <field name="model">hr.expense.sheet</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_sheet_view_search"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="expense_lines" string="Partner" filter_domain="[('expense_lines.partner_id', 'ilike', self)]"/>
+                    <field name="expense_lines" string="Note" filter_domain="[('expense_lines.name', 'ilike', self)]"/>
+                </search>
+            </field>
+    </record>
+    
     
     <record id="expense_action_dashboard_list" model="ir.actions.act_window">
         <field name="name">Expense</field>
