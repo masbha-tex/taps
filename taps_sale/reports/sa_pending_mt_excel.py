@@ -17,12 +17,12 @@ class SalesXlsx(models.AbstractModel):
 
     
     def generate_xlsx_report(self, workbook, data, orders):
-        report_name = orders.name
+        # report_name = orders.name
 
         
-       
+        
 
-        sheet = workbook.add_worksheet(report_name[:41])
+        sheet = workbook.add_worksheet("SA")
         column_style = workbook.add_format({'bold': True, 'font_size': 12})
         
         row_style = workbook.add_format({'font_size': 12, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'center', 'text_wrap':True})#
@@ -61,8 +61,11 @@ class SalesXlsx(models.AbstractModel):
         
         col = 0
         row = 1
-        
-        docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
+        # domain[]
+        # domain.append(('order_id','in',orders))
+        list = orders.mapped('id')
+        # raise UserError((list))
+        docs = self.env['sale.order.line'].search([('order_id', 'in', list)])
         
         for o_data in docs:
             col = 0
@@ -70,18 +73,18 @@ class SalesXlsx(models.AbstractModel):
                 if col == 0:
                     sheet.write(row, col, '', row_style)
                 elif col == 1:
-                    sheet.write(row, col, orders.create_date.strftime("%d/%m/%Y"), row_style)
+                    sheet.write(row, col, o_data.order_id.create_date.strftime("%d/%m/%Y"), row_style)
                 elif col == 2:
-                    if orders.commitment_date:
-                        sheet.write(row, col, orders.commitment_date.strftime("%d/%m/%Y"), row_style)
+                    if o_data.order_id.commitment_date:
+                        sheet.write(row, col, o_data.order_id.commitment_date.strftime("%d/%m/%Y"), row_style)
                     else:
                         sheet.write(row, col, '', row_style)
                 elif col == 3:
-                    sheet.write(row, col, orders.name, row_style)
+                    sheet.write(row, col, o_data.order_id.name, row_style)
                 elif col == 4:
                     sheet.write(row, col,'', row_style)
                 elif col == 5:
-                    sheet.write(row, col, orders.create_date.strftime("%d/%m/%Y"), row_style)
+                    sheet.write(row, col, o_data.order_id.create_date.strftime("%d/%m/%Y"), row_style)
                 elif col == 6:
                     sheet.write(row, col, o_data.product_code, row_style)
                 elif col == 7:
@@ -89,7 +92,7 @@ class SalesXlsx(models.AbstractModel):
                 elif col == 8:
                     sheet.write(row, col, (str(o_data.sizemm)+" MM"), row_style)
                 elif col == 9:
-                    sheet.write(row, col, orders.style_ref, row_style)
+                    sheet.write(row, col, o_data.order_id.style_ref, row_style)
                 elif col == 10:
                     sheet.write(row, col, o_data.shape, row_style)
                 elif col == 11:
@@ -111,25 +114,25 @@ class SalesXlsx(models.AbstractModel):
                 elif col == 19:
                     sheet.write(row, col,(o_data.product_uom_qty), row_style)
                 elif col == 20:
-                    sheet.write(row, col, orders.buyer_name.name, row_style)
+                    sheet.write(row, col, o_data.order_id.buyer_name.name, row_style)
                 elif col == 21:
-                    sheet.write(row, col, orders.partner_id.name, row_style)
+                    sheet.write(row, col, o_data.order_id.partner_id.name, row_style)
                 elif col == 22:
-                    sheet.write(row, col, orders.production_type, row_style)
+                    sheet.write(row, col, o_data.order_id.production_type, row_style)
                 elif col == 23:
-                    sheet.write(row, col, orders.supply_chain, row_style)
+                    sheet.write(row, col, o_data.order_id.supply_chain, row_style)
                 elif col == 24:
-                    sheet.write(row, col, orders.season, row_style)
+                    sheet.write(row, col, o_data.order_id.season, row_style)
                 elif col == 25:
-                    sheet.write(row, col, orders.priority, row_style)
+                    sheet.write(row, col, o_data.order_id.priority, row_style)
                 elif col == 26:
-                    sheet.write(row, col, orders.washing_type, row_style)
+                    sheet.write(row, col, o_data.order_id.washing_type, row_style)
                 elif col == 27:
-                    sheet.write(row, col, orders.bcd_part_finish, row_style)
+                    sheet.write(row, col, o_data.order_id.bcd_part_finish, row_style)
                 elif col == 28:
-                    sheet.write(row, col, orders.remarks, row_style)
+                    sheet.write(row, col, o_data.order_id.remarks, row_style)
                 elif col == 29:
-                    sheet.write(row, col, orders.sale_representative.name, row_style)
+                    sheet.write(row, col, o_data.order_id.sale_representative.name, row_style)
                 col += 1
             row += 1
         # sheet.write(row, 15, '=SUM(P{0}:P{1})'.format(2, row), row_style)

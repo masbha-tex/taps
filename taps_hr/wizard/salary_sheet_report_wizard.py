@@ -968,7 +968,7 @@ class SalarySheet(models.TransientModel):
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
 
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
-        #raise UserError((docs.id)) 
+            #raise UserError((docs.id)) 
         emplist = docs.mapped('employee_id.id')
         employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
         

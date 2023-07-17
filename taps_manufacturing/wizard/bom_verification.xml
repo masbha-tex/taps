@@ -8,47 +8,32 @@
                 <group>
                     <group>
                         <!-- <field name="mo_id"/> -->
-                        <field name="product_id" string="Product" />
+                        <field name="product_tmpl_id" string="Product" />
                         <field name="unit" string="Unit"/>
                         <field name="size" string="Size"/>
-                        <field name="mo_qty" string="QTY"/>
+                        <field name="gap" string="Gap"/>
+                        <field name="uom_qty" string="QTY"/>
                     </group>
                 </group>
                 <group>
                     <notebook>
-                        <page name="split_line" string="Split Line">
-                            <field name="split_line" required="True">
+                        <page name="verification_line" string="Verification Line">
+                            <field name="veri_line" required="True">
                                 
-                                <tree string="Split Lines" editable="bottom">
-                                    <field name="tape" string="Tape"/>
-                                    <field name="slider" string="Slider"/>
-                                    <field name="wire" string="Wire"/>
-                                    <field name="top" string="Top"/>
-                                    <field name="bottom" string="Bottom"/>
-                                    <field name="pinbox" string="Pinbox"/>
-                                    <field name="cost" string="Cost"/>
-                                    <!-- <field name="split_id" invisible="1"/>
-                                    <field name="product_qty" required="True" optional="show" sum="Quantity To Produce" decoration-bf="True"/>
-                                    <field name="date_planned_start" required="True"/>
-                                    <field name="date_planned_finished" required="True"/>
-                                    <field name="qty_total" invisible="1"/> -->
+                                <tree string="Verification Lines" editable="bottom">
+                                    <field name="tape_con_cotton" string="Cotton Tape"/>
+                                    <field name="tape_con" string="Tape"/>
+                                    <field name="slider_con" string="Slider"/>
+                                    <field name="wire_con" string="Wire"/>
+                                    <field name="topwire_con" string="Top"/>
+                                    <field name="botomwire_con" string="Bottom"/>
+                                    <field name="pinbox_con" string="Pinbox"/>
+                                    <field name="total_cost" string="Cost"/>
                                 </tree>
-                                
-                                <group class="oe_subtotal_footer oe_right" name="sale_total">
-                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
-                                        <label for="split_totalqty" />
-                                    </div>
-                                    <field name="split_totalqty" nolabel="1" class="oe_subtotal_footer_separator"/>
-                                </group>
-                                
                             </field>
                         </page>
                     </notebook>
                 </group>
-                <footer>
-                    <button name="done_mo_split" string="Done" type="object" default_focus="1" class="oe_highlight"/>
-                    <button string="Cancel" class="btn btn-secondary" special="cancel" />
-                </footer>
             </form>
         </field>
     </record>
@@ -59,13 +44,16 @@
         <field name="model">bom.verification.line</field>
         <field name="arch" type="xml">
             <tree string="MRP Split Lines" create="false">
-                <field name="split_id"/>
-                <field name="sequence" widget="handle" />
-                <field name="split_id" invisible="1"/>
-                <field name="product_qty" required="True"/>
-                <field name="date_planned_start" required="True"/>
-                <field name="date_planned_finished" required="True"/>
-                <field name="qty_total" invisible="1"/>
+                <field name="verification_id" invisible="1"/>
+                <field name="topbottom_type"/>
+                <field name="tape_con_cotton"/>
+                <field name="tape_con"/>
+                <field name="slider_con"/>
+                <field name="topwire_con"/>
+                <field name="botomwire_con"/>
+                <field name="wire_con"/>
+                <field name="pinbox_con"/>
+                <field name="total_cost"/>
             </tree>
         </field>
     </record>    
