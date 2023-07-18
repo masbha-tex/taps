@@ -115,8 +115,8 @@
                 <xpath expr="//field[@name='company_id']" position="move"/>
                 <field name="category_ids" widget="many2many_tags" 
                        options="{&quot;color_field&quot;: &quot;color&quot;}" string="Category" groups="hr.group_hr_user"/>
-                <!-- <field name="risk"groups="hr.group_hr_user"/> -->
-                <!-- <field name="impact"groups="hr.group_hr_user"/> -->
+                <field name="risk"/>
+                <field name="impact"/>
                 <xpath expr="//field[@name='department_id']" position="move"/>
                 <xpath expr="//field[@name='job_id']" position="move"/>
                 <field name="joining_date"/>

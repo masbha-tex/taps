@@ -1,25 +1,3 @@
-# -*- coding: utf-8 -*-
-###################################################################################
-#    A part of OpenHRMS Project <https://www.openhrms.com>
-#
-#    Cybrosys Technologies Pvt. Ltd.
-#    Copyright (C) 2018-TODAY Cybrosys Technologies (<https://www.cybrosys.com>).
-#    Author: Cybrosys Technologies (<https://www.cybrosys.com>)
-#
-#    This program is free software: you can modify
-#    it under the terms of the GNU Affero General Public License (AGPL) as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-###################################################################################
 
 from odoo import http
 from odoo.exceptions import UserError
@@ -81,8 +59,9 @@ class EmployeeChart(http.Controller):
                 view = """ <div id='""" + str(child.id) + """' class='o_level_1'><a>
                     <div id='""" + str(child.id) + """' class="o_employee_border">
                     <img src='/web/image/hr.employee.public/""" + str(child.id) + """/image_1024/'/></div>
-                    <div class='employee_name'><p>""" + str(child.name) + """</p>
-                    <p>""" + str(child.job_id.name) + """</p></div></a></div>"""
+                    <div class='employee_name'><p>""" + str(child.name) + """</p>  
+                    <p>""" + str(child.job_id.name) + """</p>
+                    <span class='badge badge-pill'>""" + str(len(child.child_ids)) + """</span></div></a></div>"""
                 child_nodes += child_table + view + """</div></td></tr></table></td>"""
             nodes = child_nodes + """</tr>"""
             return nodes
@@ -101,7 +80,8 @@ class EmployeeChart(http.Controller):
                 <div id='""" + str(val) + """' class="o_employee_border">
                 <img class='o_emp_active' src='/web/image/hr.employee.public/""" + str(val) + """/image_1024/'/></div>
                 <div class='employee_name o_width'><p>""" + str(emp.name) + """</p>
-                <p>""" + str(emp.job_id.name) + """</p></div></a></div>"""
+                <p>""" + str(emp.job_id.name) + """</p>
+                <span class='badge badge-pill'>""" + str(len(emp.child_ids)) + """</span></div></a></div>"""
             table += view + """</div></td></tr>"""
             loop_len = len(child_ids)*2
             lines = self.get_lines(loop_len)

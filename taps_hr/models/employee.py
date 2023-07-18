@@ -53,14 +53,14 @@ class HrEmployeePrivate(models.Model):
     'emp_id', 'category_id', groups="hr.group_hr_user",
     string='Tags')
     
-    # risk = fields.Selection(selection=[
-    #     ('1', 'Low-Risk'),
-    #     ('2', 'Medium-Risk'),
-    #     ('3', 'High-Risk')], string="Risk", tracking=True, help="How likely is it that this employee will leave?" )
-    # impact = fields.Selection(selection=[
-    #     ('1', 'Low-Impact'),
-    #     ('2', 'Medium-Impact'),
-    #     ('3', 'High-Impact')], string="Impact", tracking=True, help="What would be the impact of this employee leaving?" )    
+    risk = fields.Selection(selection=[
+        ('1', 'Low-Risk'),
+        ('2', 'Medium-Risk'),
+        ('3', 'High-Risk')], string="Risk", tracking=True, help="How likely is it that this employee will leave?" )
+    impact = fields.Selection(selection=[
+        ('1', 'Low-Impact'),
+        ('2', 'Medium-Impact'),
+        ('3', 'High-Impact')], string="Impact", tracking=True, help="What would be the impact of this employee leaving?" )    
     
     def _sync_user(self, user, employee_has_image=False):
         vals = dict(
@@ -120,10 +120,12 @@ class HrEmployeePrivate(models.Model):
                 mc._machine_user_registration(False, mc.name, mc.barcode, mc.rfid)
         if vals.get('active'):
             for mc in self:
-                mc._machine_user_registration(False, mc.name, mc.barcode, mc.rfid)
+                if mc.barcode:
+                    mc._machine_user_registration(False, mc.name, mc.barcode, mc.rfid)
         if vals.get('active') is False:
             for mc in self:
-                mc._machine_user_registration(True, mc.name, mc.barcode, mc.rfid)
+                if mc.barcode:
+                    mc._machine_user_registration(True, mc.name, mc.barcode, mc.rfid)
         return res
     
     
@@ -350,7 +352,7 @@ class HrEmployeePrivate(models.Model):
     def name_get(self):
         result = []
         for record in self:
-            name = record.emp_id  + ' - ' +  record.name
+            name = (record.emp_id or '')  + ' - ' +  record.name
             result.append((record.id, name))
         return result
     
@@ -771,4 +773,6 @@ class HrEmployeePublic(models.Model):
     contribution_sum = fields.Char(readonly=True)
     pin = fields.Char(readonly=True)
     barcode = fields.Char(readonly=True)
+    risk = fields.Char(readonly=True)
+    impact = fields.Char(readonly=True) 
     

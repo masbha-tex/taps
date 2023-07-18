@@ -27,8 +27,6 @@ class SaleOrder(models.Model):
     #_order = 'date_order desc, id desc'
     _check_company_auto = True
 
-
-    
     sequence = fields.Integer(string='Sequence')
     sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', store=True, readonly=True)
     oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', store=True, readonly=True)
@@ -90,7 +88,6 @@ class SaleOrder(models.Model):
     nu1washer = fields.Text(string='1 NO. Washer Material & Size', store=True)
     nu2washer = fields.Text(string='2 NO. Washer Material & Size', store=True)
     back_part = fields.Text(string='Back Part', store=True)
-    bom_id = fields.Integer('Bom Id', copy=True, store=True)
     
     tape_con = fields.Float('Tape Consumption', readonly=True, digits='Unit Price', store=True)
     slider_con = fields.Float('Slider Consumption', readonly=True, digits='Unit Price', store=True)
@@ -100,6 +97,8 @@ class SaleOrder(models.Model):
     wire_con = fields.Float('Wire Consumption', readonly=True, digits='Unit Price', store=True)
     pinbox_con = fields.Float('Pinbox Consumption', readonly=True, digits='Unit Price', store=True)
     shadewise_tape = fields.Float('Shadwise Tape', readonly=True, digits='Unit Price', store=True, compute='compute_shadewise_tape', compute_sudo=True, store=True)
+
+    dyeing_plan = fields.Date(string='Dyeing Plan', related='oa_id.validity_date', readonly=True)
 
 
     

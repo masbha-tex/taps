@@ -14,6 +14,7 @@ class SalesXlsx(models.AbstractModel):
     _inherit = 'report.report_xlsx.abstract'
     _description = 'report for Pi Pending MT'
     
+    
 
     
     def generate_xlsx_report(self, workbook, data, orders):
@@ -66,6 +67,7 @@ class SalesXlsx(models.AbstractModel):
         list = orders.mapped('id')
         # raise UserError((list))
         docs = self.env['sale.order.line'].search([('order_id', 'in', list)])
+        docs = sorted(docs, key=lambda r: r.order_id.id, reverse=False)
         
         for o_data in docs:
             col = 0
@@ -92,19 +94,34 @@ class SalesXlsx(models.AbstractModel):
                 elif col == 8:
                     sheet.write(row, col, (str(o_data.sizemm)+" MM"), row_style)
                 elif col == 9:
-                    sheet.write(row, col, o_data.order_id.style_ref, row_style)
+                    if o_data.order_id.style_ref:
+                        sheet.write(row, col, o_data.order_id.style_ref, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 10:
                     sheet.write(row, col, o_data.shape, row_style)
                 elif col == 11:
-                    sheet.write(row, col, o_data.logo, row_style)
+                    if o_data.logo:
+                        sheet.write(row, col, o_data.logo, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 12:
-                    sheet.write(row, col, o_data.logoref, row_style)
+                    if o_data.logoref:
+                        sheet.write(row, col, o_data.logoref, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 13:
                     sheet.write(row, col, o_data.logo_type, row_style)
                 elif col == 14:
-                    sheet.write(row, col, o_data.finish, row_style)
+                    if 'N/A' in o_data.finish:
+                        sheet.write(row, col, o_data.finish[4:], row_style)
+                    if 'N/A' not in o_data.finish:
+                        sheet.write(row, col, o_data.finish, row_style)
                 elif col == 15:
-                    sheet.write(row, col, o_data.finish_ref, row_style)
+                    if o_data.finish_ref:
+                        sheet.write(row, col, o_data.finish_ref, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 16:
                     sheet.write(row, col, o_data.b_part, row_style)
                 elif col == 17:
@@ -114,23 +131,47 @@ class SalesXlsx(models.AbstractModel):
                 elif col == 19:
                     sheet.write(row, col,(o_data.product_uom_qty), row_style)
                 elif col == 20:
-                    sheet.write(row, col, o_data.order_id.buyer_name.name, row_style)
+                    if o_data.order_id.buyer_name.name:
+                        sheet.write(row, col, o_data.order_id.buyer_name.name, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 21:
                     sheet.write(row, col, o_data.order_id.partner_id.name, row_style)
                 elif col == 22:
-                    sheet.write(row, col, o_data.order_id.production_type, row_style)
+                    if o_data.order_id.production_type:
+                        sheet.write(row, col, o_data.order_id.production_type, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 23:
-                    sheet.write(row, col, o_data.order_id.supply_chain, row_style)
+                    if o_data.order_id.supply_chain:
+                        sheet.write(row, col, o_data.order_id.supply_chain, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 24:
-                    sheet.write(row, col, o_data.order_id.season, row_style)
+                    if o_data.order_id.season:
+                        sheet.write(row, col, o_data.order_id.season, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 25:
-                    sheet.write(row, col, o_data.order_id.priority, row_style)
+                    if o_data.order_id.priority:
+                        sheet.write(row, col, o_data.order_id.priority, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 26:
-                    sheet.write(row, col, o_data.order_id.washing_type, row_style)
+                    if o_data.order_id.washing_type:
+                        sheet.write(row, col, o_data.order_id.washing_type, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 27:
-                    sheet.write(row, col, o_data.order_id.bcd_part_finish, row_style)
+                    if o_data.order_id.bcd_part_finish:
+                        sheet.write(row, col, o_data.order_id.bcd_part_finish, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 28:
-                    sheet.write(row, col, o_data.order_id.remarks, row_style)
+                    if o_data.order_id.remarks:
+                        sheet.write(row, col, o_data.order_id.remarks, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 29:
                     sheet.write(row, col, o_data.order_id.sale_representative.name, row_style)
                 col += 1
