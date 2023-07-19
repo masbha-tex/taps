@@ -634,6 +634,7 @@ class SaleOrder(models.Model):
 
     def generate_m_order():
         a = ''
+        b = ''
 
     def mrp_values(self,id,product,qty,uom,bom,shade,finish,sizein,sizecm):
         if sizein == 'N/A':
