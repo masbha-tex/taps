@@ -146,6 +146,9 @@
 					<field name="wire_con" invisible="1"/>
 					<field name="pinbox_con" invisible="1"/>
 				</xpath>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_template_id']" position="before">
+                    <field name="line_code" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                </xpath>
 				<!--               <xpath expr="//form/sheet/div/div/label[@string='Is a Company?']" position="attributes">
                   <attribute name="string">My Company</attribute>
               </xpath> -->

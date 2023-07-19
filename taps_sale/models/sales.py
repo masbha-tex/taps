@@ -629,9 +629,9 @@ class SaleOrder(models.Model):
             self.order_line.product_consumption(self.id)
             self.order_line.compute_shadewise_tape()
             #self.generate_mrp()
+            #self.generate_m_order()
         return True
 
-        
     def mrp_values(self,id,product,qty,uom,bom,shade,finish,sizein,sizecm):
         if sizein == 'N/A':
             sizein = ''
@@ -866,7 +866,16 @@ class SaleOrderLine(models.Model):
     shadewise_tape = fields.Float('Shadwise Tape', required=True, digits='Unit Price', default=0.0, compute='compute_shadewise_tape', compute_sudo=True, store=True)
     color = fields.Integer(string='Color')
     dimension = fields.Char(string='Dimension')
+    line_code = fields.Char(string='Line Code', compute="_compute_line_code")
     #def write
+
+
+    def _compute_line_code(self):
+        count = 0
+        for rec in self:
+            count += 1
+            rec.line_code = rec.order_id.name +"_0"+str(count)
+    
   
     @api.model_create_multi
     def create(self, vals_list):

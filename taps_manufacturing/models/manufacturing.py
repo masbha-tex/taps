@@ -32,55 +32,51 @@ class SaleOrder(models.Model):
     oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', store=True, readonly=True)
     company_id = fields.Many2one(related='oa_id.company_id', string='Company', store=True, readonly=True, index=True)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
-
     date_order = fields.Datetime(string='Order Date', related='oa_id.date_order', readonly=True)
     validity_date = fields.Date(string='Expiration', related='oa_id.validity_date', readonly=True)
+    
     product_id = fields.Many2one(
-        'product.product', string='Product',ondelete='restrict', check_company=True)  # Unrequired company
+        'product.product', related='sale_order_line.product_id', string='Product',ondelete='restrict', check_company=True)  # Unrequired company
     product_template_id = fields.Many2one(
         'product.template', string='Product Template',
         related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)])
     fg_categ_type = fields.Selection(related='product_template_id.fg_categ_type')
-    
-    product_uom_qty = fields.Float(string='Quantity', digits='Product Unit of Measure', readonly=True)
+    product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
+    product_uom_qty = fields.Float(string='Quantity', related='sale_order_line.product_uom_qty', digits='Product Unit of Measure', readonly=True)
     done_qty = fields.Float(string='Done Quantity', digits='Product Unit of Measure', readonly=True)
     balance_qty = fields.Float(string='Balance Quantity', digits='Product Unit of Measure', readonly=True)
-    
-    product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
-    
-    state = fields.Selection( 
-        related='oa_id.state', string='Order Status', readonly=True, copy=False, store=True, default='draft')
+    state = fields.Selection(related='oa_id.state', string='Order Status', readonly=True)
 
-    topbottom = fields.Text(string='Top/Bottom', store=True)
-    slidercodesfg = fields.Text(string='Slider Code (SFG)', store=True)
-    finish = fields.Text(string='Finish', store=True)
-    shade = fields.Text(string='Shade', store=True)
-    sizein = fields.Text(string='Size (Inch)', store=True)
-    sizecm = fields.Text(string='Size (CM)', store=True)
-    sizemm = fields.Text(string='Size (MM)', store=True)
+    topbottom = fields.Text(string='Top/Bottom', related='sale_order_line.topbottom', store=True)
+    slidercodesfg = fields.Text(string='Slider Code (SFG)', related='sale_order_line.slidercodesfg', store=True)
+    finish = fields.Text(string='Finish', related='sale_order_line.finish', store=True)
+    shade = fields.Text(string='Shade', related='sale_order_line.shade', store=True)
+    sizein = fields.Text(string='Size (Inch)', related='sale_order_line.sizein', store=True)
+    sizecm = fields.Text(string='Size (CM)', related='sale_order_line.sizecm', store=True)
+    sizemm = fields.Text(string='Size (MM)', related='sale_order_line.sizemm', store=True)
     
-    dyedtape = fields.Text(string='Dyed Tape', store=True)
-    ptopfinish = fields.Text(string='Plated Top Finish', store=True)
+    dyedtape = fields.Text(string='Dyed Tape', related='sale_order_line.dyedtape', store=True)
+    ptopfinish = fields.Text(string='Plated Top Finish', related='sale_order_line.ptopfinish', store=True)
     
-    numberoftop = fields.Text(string='Number of Top', store=True)
+    numberoftop = fields.Text(string='Number of Top', related='sale_order_line.numberoftop', store=True)
     
-    pbotomfinish = fields.Text(string='Plated Bottom Finish', store=True)
-    ppinboxfinish = fields.Text(string='Plated Pin-Box Finish', store=True)
-    dippingfinish = fields.Text(string='Dipping Finish', store=True)
-    gap = fields.Text(string='Gap', store=True)
+    pbotomfinish = fields.Text(string='Plated Bottom Finish', related='sale_order_line.pbotomfinish', store=True)
+    ppinboxfinish = fields.Text(string='Plated Pin-Box Finish', related='sale_order_line.ppinboxfinish', store=True)
+    dippingfinish = fields.Text(string='Dipping Finish', related='sale_order_line.dippingfinish', store=True)
+    gap = fields.Text(string='Gap', related='sale_order_line.gap', store=True)
     
-    logo = fields.Text(string='Logo', store=True)
-    logoref = fields.Text(string='Logo Ref', store=True)
-    logo_type = fields.Text(string='Logo Type', store=True)
-    style = fields.Text(string='Style', store=True)
-    gmt = fields.Text(string='Gmt', store=True)
-    shapefin = fields.Text(string='Shape Finish', store=True)
-    bcdpart = fields.Text(string='BCD Part Material Type / Size', store=True)
-    b_part = fields.Text(string='B Part', store=True)
-    c_part = fields.Text(string='C Part', store=True)
-    d_part = fields.Text(string='D Part', store=True)
-    finish_ref = fields.Text(string='Finish Ref', store=True)
-    product_code = fields.Text(string='Product Code', store=True)
+    logo = fields.Text(string='Logo', related='sale_order_line.logo', store=True)
+    logoref = fields.Text(string='Logo Ref', related='sale_order_line.logoref', store=True)
+    logo_type = fields.Text(string='Logo Type', related='sale_order_line.logo_type', store=True)
+    style = fields.Text(string='Style', related='sale_order_line.style', store=True)
+    gmt = fields.Text(string='Gmt', related='sale_order_line.gmt', store=True)
+    shapefin = fields.Text(string='Shape Finish', related='sale_order_line.shapefin', store=True)
+    bcdpart = fields.Text(string='BCD Part Material Type / Size', related='sale_order_line.bcdpart', store=True)
+    b_part = fields.Text(string='B Part', related='sale_order_line.b_part', store=True)
+    c_part = fields.Text(string='C Part', related='sale_order_line.c_part', store=True)
+    d_part = fields.Text(string='D Part', related='sale_order_line.d_part', store=True)
+    finish_ref = fields.Text(string='Finish Ref', related='sale_order_line.finish_ref', store=True)
+    product_code = fields.Text(string='Product Code', related='sale_order_line.order_id', store=True)
     shape = fields.Text(string='Shape', store=True)
     nailmat = fields.Text(string='Nail Material / Type / Shape / Size', store=True)
     nailcap = fields.Text(string='Nail Cap Logo', store=True)
