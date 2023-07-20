@@ -7,7 +7,6 @@
     'category': 'Generic Modules/Human Resources',
     'author': "Mohammad Adnan",
     'website': "http://www.odoo.com",
-    'category': 'Generic Modules/Human Resources',
     'depends': ['base_setup', 'hr_attendance', 'taps_hr'],
     'data': [
         'security/ir.model.access.csv',
