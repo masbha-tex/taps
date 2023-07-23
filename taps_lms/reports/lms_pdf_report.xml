@@ -2,7 +2,7 @@
 <odoo>
 
     <report
-        id="action_openacademy_pdf_report"
+        id="action_lms_pdf_report"
         model="lms.pdf.report"
         string="PDF Report"
         name="taps_lms.lms_pdf_template"

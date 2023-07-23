@@ -3,9 +3,14 @@
    <template id="monthly_atten_summary_pdf_template">
        <t t-call="web.html_container">
 
-        <t t-call="web.external_layout">
+        <t t-call="web.internal_layout">
 
             <div class="page">
+              <style>
+                table,tr,td,th,tbody,thead{
+                border:1px solid black ! important;
+                }
+              </style>
                 <h4 class="text-right">
                     <strong>
                        Monthly Attendance Summary 
@@ -74,6 +79,7 @@
 
                     <t t-foreach="sec.filtered(lambda x: (x.parent_id.id == dp.id))" t-as="se">
                        <t t-set="total_sec_employee" t-value="0"/>
+                       <t t-set="total_sec_ot" t-value="0"/>
                         <div class="container">
                         <!--<div class="row">-->
                         <div style="font-size: 12px;">
@@ -122,6 +128,7 @@
                             <t t-foreach="datas" t-as="emp">
                                
                                 <t t-if="emp[9] == se.id">
+                                  
                                 <t t-set="total_dep_employee" t-value="total_dep_employee+1"/>
                                  <t t-set="total_sec_employee" t-value="total_sec_employee+1"/>
                                     <table class="table table-sm p-0 m-0" style="font-size:7px; table-layout:fixed; page-break-inside: avoid;">
@@ -157,7 +164,9 @@
                                             <t t-set="a" t-value="0"/>
                                             <t t-set="po" t-value="0"/>
                                             <t t-set="total_ot" t-value="0"/>
+                                            <t t-set="total_ot_cost" t-value="0"/>
                                             <t t-set="otHours" t-value="0"/>
+                                            <t t-set="otRate" t-value="0"/>
                                             <t t-set="outTime" t-value="0"/>
                                             <tr align="center" style="border-style: ridge;">
                                                 <td rowspan="3" style="color:black;">
@@ -313,7 +322,7 @@
                                                 <td style="color:black;"><span t-esc="eo"/></td>
                                                 <td style="color:black;"><span t-esc="po"/></td>
                                             </tr>
-                                            <tr align="center">
+                                            <tr align="center" style="border-style: ridge;">
                                               <t t-foreach="alldays" t-as="ald">
                                               <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att">
                                                 <t t-if="is_com==True">
@@ -342,35 +351,92 @@
                                                 	
                                                 </t>
                                                <td style="color:black;">
-                                                 <t t-if="otHours !=0.0">
+                                                 <t t-if="att.otHours !=0.0">
                                                 <span t-esc="otHours" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+                                                
+                                                <t t-set="total_sec_ot" t-value="total_sec_ot+otHours"/>
                                                 <t t-set="total_ot" t-value="total_ot+otHours"/>
+                                                <t t-set="total_ot_cost" t-value="total_ot_cost+(((att.employee_id.contract_id.basic)*2*(att.otHours))/208)"/>
                                                 </t>          
                                                             
                                                 </td>
                                                 </t>
                                                 </t>
                                                 <td style="color:black;"><b>Total</b></td>
-                                                <td style="color:black;"><b>OT=</b></td>
-                                                <td style="color:black;"><span t-esc="total_ot" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></td>
+                                                <td style="color:black text-wrap:balance;"><b><span t-esc="total_ot" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/></b></td>
+                                                <td style="color:black;"><b>৳<span t-esc="total_ot_cost" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/></b></td>
                                             </tr>
+                                            
                                             
                                                
                                         </tbody>
                                     </table>
+                                    
                                 </t>
                             </t>
                         </div>
                         <br/>
                         <div class="container">
-                      <div class="row justify-content-end" style="font-size:12px;">
+                      
+                        
+                        
+                        <table class="table table-sm p-0 m-0" style="font-size:7px; table-layout:fixed; page-break-inside: avoid;">
+                                      <tbody>
+                                        <t t-set="otHours" t-value="0.0"/>
+                                        <tr align="center" style="border-style: ridge;">
+                                          <td rowspan="3" style="color:black;">
+                                                    
+                                                </td>
+                                                <td rowspan="3" colspan="3" style="color:black;">
+                                                   
+                                                </td>
+                                                <td rowspan="3" colspan="3" style="color:black;">
+                                                    
+                                                </td>
+                                          <t t-foreach="alldays" t-as="ald">
+                                          
+                                            <td><t t-esc="total_sec_ot"/></td>
+                                            
+                                          
+                                          </t>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                      </tbody>
+                                    </table><br/>
                     <p>Section <strong t-esc="se.name" style="color: #cc7000"/> Total Employee : <strong t-esc="total_sec_employee" style="color: #cc7000"/></p>
-                      </div>
+                      
                     </div>
                     <!--<br/>-->
 
                     </t>
                     <div class="container">
+                      <table class="table table-sm p-0 m-0" style="font-size:7px; table-layout:fixed; page-break-inside: avoid;">
+                                      <tbody>
+                                        <t t-set="otHours" t-value="0.0"/>
+                                        <tr align="center" style="border-style: ridge;">
+                                          <td rowspan="3" style="color:black;">
+                                                    
+                                                </td>
+                                                <td rowspan="3" colspan="3" style="color:black;">
+                                                   
+                                                </td>
+                                                <td rowspan="3" colspan="3" style="color:black;">
+                                                    
+                                                </td>
+                                          <t t-foreach="alldays" t-as="ald">
+                                          
+                                            <td><t t-esc="total_sec_ot"/></td>
+                                            
+                                          
+                                          </t>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                      </tbody>
+                                    </table><br/>
                       <div class="row justify-content-end" style="font-size:12px;">
                     <p>Department <strong t-esc="dp.name" style="color: #cc7000"/> total Employee : <strong t-esc="total_dep_employee" style="color: #cc7000"/></p>
                       </div>

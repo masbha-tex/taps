@@ -8,8 +8,8 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('settings')]" position="inside">
-                <div class="app_settings_block" data-string="LMS" string="LMS" data-key="lms">
-                    <h2>Sessions Settings</h2>
+                <div class="app_settings_block" data-string="taps_lms" string="LMS" data-key="taps_lms" groups="taps_lms.group_user_lms">
+                    <h2>LMS Sessions Settings</h2>
                     <div class="row mt16 o_settings_container">
                         <div class="col-12 col-lg-6 o_setting_box">
                             <div class="o_setting_right_pane">
@@ -17,12 +17,12 @@
                                 <field name="session_allowed_seats"/>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-6 o_setting_box">
+                        <!-- <div class="col-12 col-lg-6 o_setting_box">
                             <div class="o_setting_right_pane">
                                 <label for="group_stock_multi_lms"/>
                                 <field name="group_stock_multi_lms"/>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-12 col-lg-6 o_setting_box">
                             <div class="o_setting_right_pane">
                                 <label for="session_duration"/>

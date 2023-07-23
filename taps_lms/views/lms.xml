@@ -90,7 +90,7 @@
                 </group>
                 <searchpanel>
                     <field name="state"/>
-                    <field name="responsible_id" icon="fa-users"/>
+                    <!-- <field name="responsible_id" icon="fa-users"/> -->
                 </searchpanel>
             </search>
         </field>
@@ -109,9 +109,13 @@
     </record>
 
 
-    <menuitem id="main_lms_menu" name="LMS"/>
+    <menuitem 
+        id="main_lms_menu" 
+        name="LMS"
+        groups="taps_lms.group_user_lms"
+        web_icon="taps_lms,static/description/icon.png"/>
 
-    <menuitem id="lms_menu" name="LMS" parent="main_lms_menu"/>
+    <menuitem id="lms_menu" name="Operation" parent="main_lms_menu"/>
 
     <menuitem id="courses_menu" name="Training Courses" parent="lms_menu" action="course_list_action"/>
 
@@ -232,7 +236,7 @@
     <record model="ir.actions.act_window" id="session_list_action">
         <field name="name">Training Sessions</field>
         <field name="res_model">lms.session</field>
-        <field name="view_mode">tree,form,calendar,graph</field>
+        <field name="view_mode">kanban,tree,form,calendar,graph</field>
     </record>
 
     <menuitem id="session_menu" name="Training Sessions"

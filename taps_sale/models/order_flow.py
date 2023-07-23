@@ -7,8 +7,10 @@ class OrderFlow(models.Model):
     _name = "order.flow"
     _auto = False
     _description = "Sale Order Flow"
+    _check_company_auto = True
     
     order_id = fields.Many2one('sale.order', string='Sale Orde')
+    company_id = fields.Many2one('res.company', 'Company')
     #name = fields.Char(related='check_id.name',string='Sale Orde')
     # Pi_number = fields.Char(related='check_id.pi_number',string='Pi')
     pi_type = fields.Selection(related='order_id.pi_type',string='Type')
@@ -45,14 +47,14 @@ class OrderFlow(models.Model):
         
         query = """
         CREATE or REPLACE VIEW order_flow AS (
-        select row_number() OVER() AS id,order_id,pi_type,sale_representative,date_order,user_id, 
+        select row_number() OVER() AS id,order_id,company_id,pi_type,sale_representative,date_order,user_id, 
         pi_number,pi_date,currency_id,partner_id,buyer_name,style_ref,season,po_no,payment_term_id, 
         incoterm,bank,department,product,finish,slider,oa_no, 
         so_qty,so_value,oa_qty,oa_value,quantity_balance,value_balance 
         from
         ( 
         select 
-        so.order_id,so.pi_type,so.sale_representative,so.date_order,so.user_id, 
+        so.order_id,so.company_id,so.pi_type,so.sale_representative,so.date_order,so.user_id, 
         so.pi_number,so.pi_date,so.currency_id,so.partner_id, 
         so.buyer_name,so.style_ref,so.season,so.po_no,so.payment_term_id, 
         so.incoterm,so.bank,so.department,so.product,
@@ -68,7 +70,7 @@ class OrderFlow(models.Model):
         
         from
         (
-        select s.id as order_id,s.pi_type,s.sale_representative,s.date_order,s.user_id,
+        select s.id as order_id,s.company_id,s.pi_type,s.sale_representative,s.date_order,s.user_id,
         s.pi_number,s.pi_date,s.currency_id,s.partner_id,s.buyer_name,s.style_ref,s.season,
         s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
         pt.name as product,
@@ -79,8 +81,8 @@ class OrderFlow(models.Model):
         inner join product_product as p on p.id = sol.product_id 
         inner join product_template as pt on pt.id = p.product_tmpl_id
         
-        where  s.sales_type='sale' and sol.product_uom_qty>0
-        group by s.id,s.pi_type,s.sale_representative,
+        where  s.company_id=%s and 'a'=%s and s.sales_type='sale' and sol.product_uom_qty>0
+        group by s.id,s.company_id,s.pi_type,s.sale_representative,
         s.date_order,s.user_id,s.pi_number,s.pi_date, 
         s.currency_id,s.partner_id,s.buyer_name,s.style_ref,
         s.season,s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
@@ -90,7 +92,7 @@ class OrderFlow(models.Model):
         left join
         
         (
-        select STRING_AGG(s.name,',') as oa_no ,s.order_ref,
+        select STRING_AGG(s.name,',') as oa_no,s.company_id,s.order_ref,
         pt.name as product,
         sum(sol.product_uom_qty) as product_uom_qty,sum(sol.price_subtotal) as price_subtotal
         
@@ -99,7 +101,7 @@ class OrderFlow(models.Model):
         inner join product_product as p on p.id = sol.product_id 
         inner join product_template as pt on pt.id = p.product_tmpl_id 
         where s.state<>'cancel' and s.sales_type='oa' and sol.product_uom_qty>0 
-        group by s.order_ref,pt.name
-        ) as oa  on so.order_id=oa.order_ref and so.product=oa.product) as a)
+        group by s.company_id,s.order_ref,pt.name
+        ) as oa  on so.order_id=oa.order_ref and so.product=oa.product and so.company_id=oa.company_id) as a)
         """
-        self.env.cr.execute(query)
+        self.env.cr.execute(query,(self.env.company.id,'a'))

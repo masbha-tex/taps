@@ -10,7 +10,7 @@
         <field name="name">lms.pdf.report.form.view</field>
         <field name="model">lms.pdf.report</field>
         <field name="arch" type="xml">
-            <form string="PDF Report">
+            <form string="Training Report">
                 <group>
                     <group>
                         <field name="date_from"/>
@@ -31,14 +31,14 @@
     </record>
 
     <record id="lms_pdf_report" model="ir.actions.act_window">
-        <field name="name">PDF Report</field>
+        <field name="name">Training Report</field>
         <field name="res_model">lms.pdf.report</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
 
     <menuitem id="lms_reporting_sub"
-              name="PDF Report"
+              name="Training Report"
               sequence="3"
               action="lms_pdf_report"
               parent="taps_lms.lms_reporting"/>

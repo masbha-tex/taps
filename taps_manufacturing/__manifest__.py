@@ -25,11 +25,11 @@
     'data': [
         'security/ir.model.access.csv',
         'wizard/mrp_split.xml',
+        'wizard/bom_verification.xml',
         'views/mrp_productivity.xml',
         'views/mrp_production.xml',
         'views/mrp_workorder.xml',
-        'wizard/bom_verification.xml',
-        
+        'views/manufacturing.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     # only loaded in demonstration mode

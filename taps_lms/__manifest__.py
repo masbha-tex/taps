@@ -38,7 +38,7 @@
     # only loaded in demonstration mode
     'demo': [
     ],
-    'images': ['static/img/success.png'],
+    'images': ['static/img/icon.png'],
     'installable': True,
     'application': True,
 }

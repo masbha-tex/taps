@@ -46,7 +46,7 @@ class Course(models.Model):
                 course_ids = self._search([('course_name', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
         else:
             course_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
-        return models.lazy_name_get(self.browse(course_ids).with_user(name_get_uid))
+        return course_ids #models.lazy_name_get(self.browse(course_ids).with_user(name_get_uid))
 
     @api.model
     def create(self, vals):
@@ -74,7 +74,7 @@ class Course(models.Model):
                     'fadeout': 'slow',
                     'message': 'Course Completed',
                     'type': 'rainbow_man',
-                    'img_url': 'taps_lms/static/img/success.png'
+                    'img_url': 'taps_lms/static/img/icon.png'
                 }
             }
 
@@ -126,9 +126,9 @@ class Session(models.Model):
         return {'domain': {'instructor_id': [('id', '=', self.course_id.responsible_id.partner_id.id)]}}
 
     name = fields.Char(required=True)
-    start_date = fields.Date(default=fields.date.today())
+    start_date = fields.Datetime(default=fields.datetime.today())
     duration = fields.Float(digits=(6, 2), help="Duration in days", default=get_default_duration)
-    end_date = fields.Date(string="End Date", store=True, compute='_get_end_date', inverse='_set_end_date')
+    end_date = fields.Datetime(string="End Date", store=True, compute='_get_end_date', inverse='_set_end_date')
     seats = fields.Integer(string="Number of seats", default=get_default_seats)
     instructor_id = fields.Many2one('res.partner', string="Instructor")
     country_id = fields.Many2one('res.country', related='instructor_id.country_id')
@@ -163,7 +163,7 @@ class Session(models.Model):
             ctx['send_email'] = True
             ctx['attendee'] = ''
             template = self.env.ref('taps_lms.email_template_lms_session')
-            template.with_context(ctx).send_mail(self.id, force_send=True, raise_exception=False)
+            template.with_context(ctx).send_mail(self.id, force_send=False, raise_exception=False)
 
     @api.depends('attendee_ids')
     def _get_attendees_count(self):
@@ -179,7 +179,7 @@ class Session(models.Model):
 
             # Add duration to start_date, but: Monday + 5 days = Saturday, so
             # subtract one second to get on Friday instead
-            duration = timedelta(days=r.duration, seconds=-1)
+            duration = timedelta(hours=r.duration)
             r.end_date = r.start_date + duration
 
     def _set_end_date(self):

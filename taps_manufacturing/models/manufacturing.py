@@ -112,7 +112,6 @@ class SaleOrder(models.Model):
     packing_done = fields.Float(string='Packing Output')
 
 
-    
     def _get_line_value(self):
         self.slidercodesfg = self.sale_order_line.slidercodesfg
         self.finish = self.sale_order_line.finish

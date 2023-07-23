@@ -24,6 +24,7 @@
         <field name="arch" type="xml" >
             <tree string="Sale Order Flow" create="false" delete="false" >
                 <field name="order_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
                 <field name="pi_type"/>
                 <field name="sale_representative"/>
                 <field name="date_order"/>
