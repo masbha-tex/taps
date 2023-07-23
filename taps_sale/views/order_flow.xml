@@ -43,7 +43,7 @@
                 <field name="finish"/>
                 <field name="slider"/>
                 <field name="oa_no"/>
-                <field name="so_qty" invisible="1"/>
+                <field name="so_qty"/>
                 <field name="so_value"/>
                 <field name="oa_qty"/>
                 <field name="oa_value"/>
