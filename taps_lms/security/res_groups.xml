@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.module.category" id="base.module_category_generic_modules_lms">
+        <field name="description">Helps you manage your LMS.</field>
+        <field name="sequence">16</field>
+    </record>
+    <record id="group_user_lms" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="base.module_category_generic_modules_lms"/>
+         <field name="implied_ids" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>        
+
+    <record id="group_manager_lms" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="base.module_category_generic_modules_lms"/>
+        <field name="implied_ids" eval="[(4, ref('taps_lms.group_user_lms'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>            
+    </record>
+
+    <record id="group_course_approval" model="res.groups">
+        <field name="name">Approval</field>
+        <field name="category_id" ref="base.module_category_generic_modules_lms"/>
+        <field name="implied_ids" eval="[(4, ref('taps_lms.group_manager_lms'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>   
+    </record>
+    <record id="group_stock_multi_lms" model="res.groups">
+        <field name="name">Manage Multiple</field>
+        <field name="category_id" ref="base.module_category_generic_modules_lms"/>
+        <field name="implied_ids" eval="[(4, ref('taps_lms.group_manager_lms'))]"/>
+    </record>        
+    <data noupdate="0">
+        <record id="only_responsible_can_modify" model="ir.rule">
+            <field name="name">Only Responsible can modify Course</field>
+            <field name="model_id" ref="model_lms_course"/>
+            <field name="groups" eval="[(4, ref('taps_lms.group_manager_lms'))]"/>
+            <field name="perm_read" eval="0"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="domain_force">
+                ['|', ('responsible_id','=',False),
+                      ('responsible_id','=',user.id)]
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -93,7 +93,7 @@
 				</xpath>
 				<xpath expr="//field[@name='sales_type']" position="after">
 					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
-					<field name="sample_ref" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}"/>
+					<field name="sample_ref" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}" widget="many2many_tags"/>
 				</xpath>
 				<xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="before">
                     <field name="dyedtape" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>

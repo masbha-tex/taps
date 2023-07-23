@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <report
+            id="action_lms_xlsx_report"
+            model="lms.pdf.report"
+            string="Generate XLSX Report"
+            report_type="xlsx"
+            name="taps_lms.lms_xlsx_report"
+            file="lms_xlsx_report"
+            attachment_use="False"
+    />
+
+</odoo>

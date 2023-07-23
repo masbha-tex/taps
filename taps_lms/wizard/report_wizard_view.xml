@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <menuitem id="lms_reporting"
+              name="Reporting"
+              sequence="10"
+              parent="main_lms_menu"/>
+
+    <record model="ir.ui.view" id="lms_pdf_report_form_view">
+        <field name="name">lms.pdf.report.form.view</field>
+        <field name="model">lms.pdf.report</field>
+        <field name="arch" type="xml">
+            <form string="PDF Report">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="course_ids" widget="many2many_tags"/>
+                        <field name="responsible_id"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Print" name="action_print_report" type="object" class="btn-primary"/>
+                    <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="lms_pdf_report" model="ir.actions.act_window">
+        <field name="name">PDF Report</field>
+        <field name="res_model">lms.pdf.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="lms_reporting_sub"
+              name="PDF Report"
+              sequence="3"
+              action="lms_pdf_report"
+              parent="taps_lms.lms_reporting"/>
+
+</odoo>

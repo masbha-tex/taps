@@ -28,9 +28,9 @@ class SaleOrder(models.Model):
     _check_company_auto = True
 
     sequence = fields.Integer(string='Sequence')
-    sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', store=True, readonly=True)
-    oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', store=True, readonly=True)
-    company_id = fields.Many2one(related='oa_id.company_id', string='Company', store=True, readonly=True, index=True)
+    sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', readonly=True, store=True)
+    oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', readonly=True, store=True)
+    company_id = fields.Many2one('res.company', related='oa_id.company_id', string='Company', readonly=True, store=True)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
     date_order = fields.Datetime(string='Order Date', related='oa_id.date_order', readonly=True)
     validity_date = fields.Date(string='Expiration', related='oa_id.validity_date', readonly=True)
@@ -45,60 +45,109 @@ class SaleOrder(models.Model):
     product_uom_qty = fields.Float(string='Quantity', related='sale_order_line.product_uom_qty', digits='Product Unit of Measure', readonly=True)
     done_qty = fields.Float(string='Done Quantity', digits='Product Unit of Measure', readonly=True)
     balance_qty = fields.Float(string='Balance Quantity', digits='Product Unit of Measure', readonly=True)
-    state = fields.Selection(related='oa_id.state', string='Order Status', readonly=True)
+    #state = fields.Selection(related='oa_id.state', string='Order Status', readonly=True)
+    
+    topbottom = fields.Text(string='Top/Bottom', compute='_get_line_value', readonly=True)
+    slidercodesfg = fields.Text(string='Slider Code (SFG)', compute='_get_line_value', readonly=True)
+    finish = fields.Text(string='Finish', compute='_get_line_value')
+    shade = fields.Text(string='Shade', compute='_get_line_value')
+    sizein = fields.Text(string='Size (Inch)', compute='_get_line_value')
+    sizecm = fields.Text(string='Size (CM)', compute='_get_line_value')
+    sizemm = fields.Text(string='Size (MM)', compute='_get_line_value')
+    
+    dyedtape = fields.Text(string='Dyed Tape', compute='_get_line_value')
+    ptopfinish = fields.Text(string='Plated Top Finish', compute='_get_line_value')
+    
+    numberoftop = fields.Text(string='Number of Top', compute='_get_line_value')
+    
+    pbotomfinish = fields.Text(string='Plated Bottom Finish', compute='_get_line_value')
+    ppinboxfinish = fields.Text(string='Plated Pin-Box Finish', compute='_get_line_value')
+    dippingfinish = fields.Text(string='Dipping Finish', compute='_get_line_value')
+    gap = fields.Text(string='Gap', compute='_get_line_value')
+    
+    logo = fields.Text(string='Logo', compute='_get_line_value')
+    logoref = fields.Text(string='Logo Ref', compute='_get_line_value')
+    logo_type = fields.Text(string='Logo Type', compute='_get_line_value')
+    style = fields.Text(string='Style', compute='_get_line_value')
+    gmt = fields.Text(string='Gmt', compute='_get_line_value')
+    shapefin = fields.Text(string='Shape Finish', compute='_get_line_value')
+    bcdpart = fields.Text(string='BCD Part Material Type / Size', compute='_get_line_value')
+    b_part = fields.Text(string='B Part', compute='_get_line_value')
+    c_part = fields.Text(string='C Part', compute='_get_line_value')
+    d_part = fields.Text(string='D Part', compute='_get_line_value')
+    finish_ref = fields.Text(string='Finish Ref', compute='_get_line_value')
+    product_code = fields.Text(string='Product Code', compute='_get_line_value')
+    shape = fields.Text(string='Shape', compute='_get_line_value')
+    nailmat = fields.Text(string='Nail Material / Type / Shape / Size', compute='_get_line_value')
+    nailcap = fields.Text(string='Nail Cap Logo', compute='_get_line_value')
+    fnamebcd = fields.Text(string='Finish Name ( BCD/NAIL/ NAIL CAP)', compute='_get_line_value')
+    nu1washer = fields.Text(string='1 NO. Washer Material & Size', compute='_get_line_value')
+    nu2washer = fields.Text(string='2 NO. Washer Material & Size', compute='_get_line_value')
+    back_part = fields.Text(string='Back Part', compute='_get_line_value')
+    
+    tape_con = fields.Float('Tape Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
+    slider_con = fields.Float('Slider Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
+    topwire_con = fields.Float('Topwire Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
+    botomwire_con = fields.Float('Botomwire Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
+    tbwire_con = fields.Float('TBwire Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
+    wire_con = fields.Float('Wire Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
+    pinbox_con = fields.Float('Pinbox Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
+    shadewise_tape = fields.Float('Shadwise Tape', compute='_get_line_value', readonly=True, digits='Unit Price')
 
-    topbottom = fields.Text(string='Top/Bottom', related='sale_order_line.topbottom', store=True)
-    slidercodesfg = fields.Text(string='Slider Code (SFG)', related='sale_order_line.slidercodesfg', store=True)
-    finish = fields.Text(string='Finish', related='sale_order_line.finish', store=True)
-    shade = fields.Text(string='Shade', related='sale_order_line.shade', store=True)
-    sizein = fields.Text(string='Size (Inch)', related='sale_order_line.sizein', store=True)
-    sizecm = fields.Text(string='Size (CM)', related='sale_order_line.sizecm', store=True)
-    sizemm = fields.Text(string='Size (MM)', related='sale_order_line.sizemm', store=True)
-    
-    dyedtape = fields.Text(string='Dyed Tape', related='sale_order_line.dyedtape', store=True)
-    ptopfinish = fields.Text(string='Plated Top Finish', related='sale_order_line.ptopfinish', store=True)
-    
-    numberoftop = fields.Text(string='Number of Top', related='sale_order_line.numberoftop', store=True)
-    
-    pbotomfinish = fields.Text(string='Plated Bottom Finish', related='sale_order_line.pbotomfinish', store=True)
-    ppinboxfinish = fields.Text(string='Plated Pin-Box Finish', related='sale_order_line.ppinboxfinish', store=True)
-    dippingfinish = fields.Text(string='Dipping Finish', related='sale_order_line.dippingfinish', store=True)
-    gap = fields.Text(string='Gap', related='sale_order_line.gap', store=True)
-    
-    logo = fields.Text(string='Logo', related='sale_order_line.logo', store=True)
-    logoref = fields.Text(string='Logo Ref', related='sale_order_line.logoref', store=True)
-    logo_type = fields.Text(string='Logo Type', related='sale_order_line.logo_type', store=True)
-    style = fields.Text(string='Style', related='sale_order_line.style', store=True)
-    gmt = fields.Text(string='Gmt', related='sale_order_line.gmt', store=True)
-    shapefin = fields.Text(string='Shape Finish', related='sale_order_line.shapefin', store=True)
-    bcdpart = fields.Text(string='BCD Part Material Type / Size', related='sale_order_line.bcdpart', store=True)
-    b_part = fields.Text(string='B Part', related='sale_order_line.b_part', store=True)
-    c_part = fields.Text(string='C Part', related='sale_order_line.c_part', store=True)
-    d_part = fields.Text(string='D Part', related='sale_order_line.d_part', store=True)
-    finish_ref = fields.Text(string='Finish Ref', related='sale_order_line.finish_ref', store=True)
-    product_code = fields.Text(string='Product Code', related='sale_order_line.order_id', store=True)
-    shape = fields.Text(string='Shape', store=True)
-    nailmat = fields.Text(string='Nail Material / Type / Shape / Size', store=True)
-    nailcap = fields.Text(string='Nail Cap Logo', store=True)
-    fnamebcd = fields.Text(string='Finish Name ( BCD/NAIL/ NAIL CAP)', store=True)
-    nu1washer = fields.Text(string='1 NO. Washer Material & Size', store=True)
-    nu2washer = fields.Text(string='2 NO. Washer Material & Size', store=True)
-    back_part = fields.Text(string='Back Part', store=True)
-    
-    tape_con = fields.Float('Tape Consumption', readonly=True, digits='Unit Price', store=True)
-    slider_con = fields.Float('Slider Consumption', readonly=True, digits='Unit Price', store=True)
-    topwire_con = fields.Float('Topwire Consumption', readonly=True, digits='Unit Price', store=True)
-    botomwire_con = fields.Float('Botomwire Consumption', readonly=True, digits='Unit Price', store=True)
-    tbwire_con = fields.Float('TBwire Consumption', readonly=True, digits='Unit Price', store=True)
-    wire_con = fields.Float('Wire Consumption', readonly=True, digits='Unit Price', store=True)
-    pinbox_con = fields.Float('Pinbox Consumption', readonly=True, digits='Unit Price', store=True)
-    shadewise_tape = fields.Float('Shadwise Tape', readonly=True, digits='Unit Price', store=True, compute='compute_shadewise_tape', compute_sudo=True, store=True)
+    dyeing_plan = fields.Date(string='Dyeing Plan')
+    dyeing_plan_qty = fields.Float(string='Dyeing Plan Qty')
+    dyeing_output = fields.Float(string='Dyeing Output')
+    dyeing_qc_pass = fields.Float(string='Dyeing QC Pass')
 
-    dyeing_plan = fields.Date(string='Dyeing Plan', related='oa_id.validity_date', readonly=True)
+    plating_plan = fields.Date(string='Plating Plan')
+    plating_plan_qty = fields.Float(string='Plating Plan Qty')
+    plating_output = fields.Float(string='Plating Output')
+    plating_qc_pass = fields.Float(string='Plating QC Pass')
+
+    painting_done = fields.Float(string='painting Output')
+    
+    chain_making_done = fields.Float(string='CM Output')
+    diping_done = fields.Float(string='Dipping Output')
+    assembly_done = fields.Float(string='Assembly Output')
+    packing_done = fields.Float(string='Packing Output')
 
 
     
-
+    def _get_line_value(self):
+        self.slidercodesfg = self.sale_order_line.slidercodesfg
+        self.finish = self.sale_order_line.finish
+        self.shade = self.sale_order_line.shade
+        self.sizein = self.sale_order_line.sizein
+        self.sizecm = self.sale_order_line.sizecm
+        self.sizemm = self.sale_order_line.sizemm
+        self.dyedtape = self.sale_order_line.dyedtape
+        self.ptopfinish = self.sale_order_line.ptopfinish
+        self.numberoftop = self.sale_order_line.numberoftop
+        self.pbotomfinish = self.sale_order_line.pbotomfinish
+        self.ppinboxfinish = self.sale_order_line.ppinboxfinish
+        self.dippingfinish = self.sale_order_line.dippingfinish
+        self.gap = self.sale_order_line.gap
+        self.logo = self.sale_order_line.logo
+        self.logoref = self.sale_order_line.logoref
+        self.logo_type = self.sale_order_line.logo_type
+        self.style = self.sale_order_line.style
+        self.gmt = self.sale_order_line.gmt
+        self.shapefin = self.sale_order_line.shapefin
+        self.bcdpart = self.sale_order_line.bcdpart
+        self.b_part = self.sale_order_line.b_part
+        self.c_part = self.sale_order_line.c_part
+        self.d_part = self.sale_order_line.d_part
+        self.finish_ref = self.sale_order_line.finish_ref
+        self.product_code = self.sale_order_line.product_code
+        self.shape = self.sale_order_line.shape
+        self.nailmat = self.sale_order_line.nailmat
+        self.nailcap = self.sale_order_line.nailcap
+        self.fnamebcd = self.sale_order_line.fnamebcd
+        self.nu1washer = self.sale_order_line.nu1washer
+        self.nu2washer = self.sale_order_line.nu2washer
+        self.back_part = self.sale_order_line.back_part
+        
+        
     
 
 
