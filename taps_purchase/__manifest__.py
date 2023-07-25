@@ -4,7 +4,7 @@
     "summary": """
         Show the last approver of the purchase on view
         """,
-    "category": "",
+    'category': 'Generic Modules/Purchase',
     "version": "14.0.1.0.1",
     "author": "Odoo PS",
     "website": "http://www.odoo.com",

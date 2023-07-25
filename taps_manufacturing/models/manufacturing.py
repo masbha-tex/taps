@@ -95,11 +95,13 @@ class SaleOrder(models.Model):
     shadewise_tape = fields.Float('Shadwise Tape', compute='_get_line_value', readonly=True, digits='Unit Price')
 
     dyeing_plan = fields.Date(string='Dyeing Plan')
+    dyeing_plan_end = fields.Date(string='Dyeing Plan')
     dyeing_plan_qty = fields.Float(string='Dyeing Plan Qty')
     dyeing_output = fields.Float(string='Dyeing Output')
     dyeing_qc_pass = fields.Float(string='Dyeing QC Pass')
 
     plating_plan = fields.Date(string='Plating Plan')
+    plating_plan_end = fields.Date(string='Plating Plan')
     plating_plan_qty = fields.Float(string='Plating Plan Qty')
     plating_output = fields.Float(string='Plating Output')
     plating_qc_pass = fields.Float(string='Plating QC Pass')
@@ -146,13 +148,60 @@ class SaleOrder(models.Model):
         self.nu2washer = self.sale_order_line.nu2washer
         self.back_part = self.sale_order_line.back_part
         
-        
+
+    def button_plan(self):
+        self.ensure_one()
+        self._check_company()
+        if self.state in ("done", "to_close", "cancel"):
+            raise UserError(
+                _(
+                    "Cannot split a manufacturing order that is in '%s' state.",
+                    self._fields["state"].convert_to_export(self.state, self),
+                )
+            )
+        action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
+        action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
+        return action
+
+    def button_requisition(self):
+        self.ensure_one()
+        self._check_company()
+        if self.state in ("done", "to_close", "cancel"):
+            raise UserError(
+                _(
+                    "Cannot split a manufacturing order that is in '%s' state.",
+                    self._fields["state"].convert_to_export(self.state, self),
+                )
+            )
+        action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
+        action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
+        return action
     
+    def button_createlot(self):
+        self.ensure_one()
+        self._check_company()
+        if self.state in ("done", "to_close", "cancel"):
+            raise UserError(
+                _(
+                    "Cannot split a manufacturing order that is in '%s' state.",
+                    self._fields["state"].convert_to_export(self.state, self),
+                )
+            )
+        action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
+        action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
+        return action
 
-
-
-
-
-
-    
+    def button_output(self):
+        self.ensure_one()
+        self._check_company()
+        if self.state in ("done", "to_close", "cancel"):
+            raise UserError(
+                _(
+                    "Cannot split a manufacturing order that is in '%s' state.",
+                    self._fields["state"].convert_to_export(self.state, self),
+                )
+            )
+        action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
+        action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
+        return action
 

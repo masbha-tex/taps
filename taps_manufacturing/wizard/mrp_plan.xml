@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_mrp_plan" model="ir.ui.view">
+        <field name="name">mrp.plan.form.view</field>
+        <field name="model">mrp.plan</field>
+        <field name="arch" type="xml">
+            <form string="Manufacturing Plan">
+                <group>
+                    <group>
+                        <field name="plan_for"/>
+                        <field name="plan_start"/>
+                        <field name="plan_end"/>
+                        <field name="item_qty"/>
+                        <field name="material_qty"/>
+                        <field name="plan_qty"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="done_mo_plan" string="Done" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_mrp_plan" model="ir.actions.act_window">
+        <field name="name">Manufacturing Plan</field>
+        <field name="res_model">mrp.plan</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_form_mrp_plan"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

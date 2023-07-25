@@ -11,7 +11,7 @@
     'version': '14.0.1.0.0',
     'summary': """Integrating Shift Time Transfer With HR Attendance""",
     'description': """This module integrates Odoo with the Shift Time Transfer,hr,attendance""",
-    'category': 'Generic Modules',
+    'category': 'Generic Modules/Shift Transfer',
 
     # any module necessary for this one to work correctly
     'depends': ['base','web_studio','hr','base_setup'],
@@ -25,7 +25,7 @@
         'views/bulk_shift_transfer.xml',
     ],
     # only loaded in demonstration mode
-    'license': 'OEEL-1',
+    'license': 'AGPL-3',
     'demo': [],
     'installable': True,
     'auto_install': True,

@@ -70,6 +70,7 @@
         'reports/hris_marriage_gift_pdf_report.xml',
         'reports/hris_no_dues_letter_pdf_report.xml',
         'reports/hris_pf_statement_pdf_report.xml',
+        'reports/hris_retention_risk_matrix_report.xml',
         'reports/hris_retentionincentive_letter_pdf_report.xml',
         #'reports/hris_shift_pdf_report.xml',
         'reports/hris_trail_extension_letter_pdf_report.xml',

@@ -57,7 +57,7 @@ class MrpProduction(models.Model):
             )
         action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
         action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
-        return action    
+        return action
     
     def mrp_values(self,id,origin,product,qty,uom,bom,start_date,end_date,shade,finish,sizein,sizecm):
         if sizein == 'N/A':

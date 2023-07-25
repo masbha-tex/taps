@@ -27,12 +27,13 @@ class SaleOrder(models.Model):
     sample_ref = fields.Many2many(comodel_name='sale.order',
                                   relation='id_name',column1='id',column2='name',
                                   string='Sample Ref.', readonly=False, 
-                                  domain=[('sales_type', '=', 'sample')])
+                                  domain=['|', ('sales_type', '=', 'sample'),('sales_type', '=', 'oldsa')])
 
     #sample_ref = fields.Many2many('sale.order', string='Sample Ref.', copy=False, states={'done': [('readonly', True)]})
 
     
     sales_type = fields.Selection([
+            ('oldsa', 'Old Sample'),
             ('sample', 'Sample Order'),
             ('sale', 'Sales Order'),
             ('oa', 'OA')],
@@ -121,16 +122,10 @@ class SaleOrder(models.Model):
         ('ϕ 1.5 m', 'ϕ 1.5 m'),
         ('ϕ 2.0 m', 'ϕ 2.0 m')],string='Metal Detection', default='ϕ 1.0 m')
     total_product_qty = fields.Float(string='Total PI Quantity' ,compute="_total_pi_quantity")
+    sa_date = fields.Date(string='SA Date')
+    old_sa_num = fields.Char(string='Old Sa Number')
     
     
-    # def _action_daily_oa_release_email(self, empl_id):
-    #     template_id = self.env.ref('taps_sale.daily_oa_release_email_template', raise_if_not_found=False).id
-    #     template = self.env['mail.template'].browse(template_id)
-    #     att = self.env['hr.employee'].search([('id', 'in', (empl_id)), ('active', '=', True)])
-    #     if template:
-    #         for at in att:
-    #             if at.id:
-    #                 template.send_mail(at.id, force_send=False)
     
     def _total_pi_quantity(self):
         for rec in self:
@@ -645,7 +640,28 @@ class SaleOrder(models.Model):
     def generate_m_order():
         a = ''
         b = ''
-
+        
+        # for products in self.order_line:
+        #     mrp_production = self.env['manufacturing.order'].create(self.manuf_values(products.sequence,products.id,products.order_id,products.order_id.company_id.id,
+        #                                                                               products.product_id.id,products.product_qty,products.product_uom.id,products.bom_id,products.shade,products.finish,products.sizein,products.sizecm))
+ 
+            
+    # def manuf_values(self,seq,id,oa,company,customer,product,qty,uom,bom,shade,finish,sizein,sizecm):
+    #     values = {
+    #         'sequence':seq,
+    #         'sale_order_line':id,
+    #         'oa_id':oa,
+    #         'company_id':company,
+    #         'partner_id':customer,
+    #         'date_order':
+    #         'validity_date':
+    #         'product_id':product
+    #         'product_template_id':
+    #         'product_uom':
+    #         'product_uom_qty':
+    #         }
+    #     return values
+        
     def mrp_values(self,id,product,qty,uom,bom,shade,finish,sizein,sizecm):
         if sizein == 'N/A':
             sizein = ''
@@ -801,6 +817,11 @@ class SaleOrder(models.Model):
             if vals.get('sales_type') == "sample":
                 ref = self.env['ir.sequence'].next_by_code('sale.order.sa', sequence_date=seq_date) or _('New')
                 vals['name'] = ref
+                
+            if vals.get('sales_type') == "oldsa":
+                ref = self.env['ir.sequence'].next_by_code('', sequence_date=seq_date) or _(vals['old_sa_num'])
+                vals['name'] = ref
+                # raise UserError((vals['name']))
             if vals.get('sales_type') == "sale":
                 ref = self.env['ir.sequence'].next_by_code('sale.order', sequence_date=seq_date) or _('New')
                 vals['name'] = ref

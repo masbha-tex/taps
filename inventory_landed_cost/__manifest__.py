@@ -4,7 +4,7 @@
     "summary": """
         Addition of landed cost, unit value and total unit value under stock inventory report and product.product.
         """,
-    "category": "",
+    'category': 'Generic Modules/Inventory Landed Cost',
     "version": "14.0.2.0.0",
     "author": "Odoo PS",
     "website": "http://www.odoo.com",

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Biometric Device Integration',
-    'version': '14.0.1.0.0',
+    'version': '14.0.1.0.1',
     'summary': "Integrating Biometric Device (Model: ZKteco uFace 202) With HR Attendance (Face + Thumb)",
     'description': "This module integrates Odoo with the biometric device(Model: ZKteco uFace 202),odoo13,odd,hr,attendance",
-    'category': 'Generic Modules/Human Resources',
+    'category': 'Generic Modules/Biometric',
     'author': "Mohammad Adnan",
-    'website': "http://www.odoo.com",
+    'website': "http://www.texfasteners.com",
     'depends': ['base_setup', 'hr_attendance', 'taps_hr'],
     'data': [
         'security/ir.model.access.csv',
@@ -17,6 +17,7 @@
 
     ],
     'images': ['static/description/banner.gif'],
+    'license': 'AGPL-3',
     'installable': True,
     'auto_install': False,
     'application': False,

@@ -34,11 +34,16 @@
         'reports/lms_xlsx_report.xml',
         'views/template.xml',
         'views/templates.xml',
+        'views/session_attendance_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
     ],
-    'images': ['static/img/icon.png'],
+    'qweb': [
+        "static/src/xml/attendance.xml",
+    ],    
+    'images': ['static/img/success.png'],
+    'license': 'AGPL-3',
     'installable': True,
     'application': True,
 }

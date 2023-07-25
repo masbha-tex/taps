@@ -127,8 +127,18 @@
             <form string="Session Form">
                 <header>
                     <button name="action_send_session_by_email" type="object" class="oe_highlight" string="Send Email"/>
+                    <button name="action_open_barcode_scanner" string="Mark Attendance" type="object" class="oe_highlight"/>
                 </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="mark_attendance" type="object" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the training session" context="{'default_session_id': active_id}">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">
+                                        Mark Attendance
+                                    </span>
+                                </div>
+                            </button>
+                        </div>
                         <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_1920', 'zoom': true, 'zoom_delay': 1000}"/>
                         <group>
                             <group string="General">
@@ -236,8 +246,24 @@
     <record model="ir.actions.act_window" id="session_list_action">
         <field name="name">Training Sessions</field>
         <field name="res_model">lms.session</field>
-        <field name="view_mode">kanban,tree,form,calendar,graph</field>
+        <field name="view_mode">tree,form,calendar,graph</field>
     </record>
+    <record id="action_barcode_scanner" model="ir.actions.client">
+        <field name="name">LMS Attendances</field>
+        <field name="tag">taps_lms_barcode_scanner</field>
+        <!-- <field name="target">main</field> -->
+    </record>
+
+    <record id="action_my_attendances" model="ir.actions.client">
+        <field name="name">LMS Attendance</field>
+        <field name="tag">taps_lms_my_attendances</field>
+        <field name="target">main</field>
+    </record>
+
+    <record id="action_greeting_message" model="ir.actions.client">
+        <field name="name">LMS Message</field>
+        <field name="tag">taps_lms_greeting_message</field>
+    </record>    
 
     <menuitem id="session_menu" name="Training Sessions"
               parent="lms_menu"

@@ -519,7 +519,18 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
 <!--             <field name="default_print_option">print</field> -->
-        </record>              
+        </record> 
+        <record id="action_hris_retention_risk_matrix_pdf_report" model="ir.actions.report">
+            <field name="name">Retention Risk Matrix Report</field>
+            <field name="model">employee.profile.card.pdf.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taps_hr.hris_retention_risk_matrix_pdf_template</field>
+            <field name="report_file">taps_hr.hris_retention_risk_matrix_pdf_template</field>
+            <field name="binding_model_id" ref="model_hris_pdf_report"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
+<!--             <field name="default_print_option">print</field> -->
+        </record>
         
 
     </data>

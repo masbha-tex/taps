@@ -3,4 +3,5 @@ course_manager,course manager,model_lms_course,group_manager_lms,1,1,1,1
 session_manager,session manager,model_lms_session,group_manager_lms,1,1,1,1
 course_read_all,course all,model_lms_course,group_user_lms,1,0,0,0
 session_read_all,session all,model_lms_session,group_user_lms,1,0,0,0
-access_lms_report,access_lms_wizard_report,model_lms_pdf_report,,1,1,1,1
+access_lms_report,access_lms_wizard_report,model_lms_pdf_report,group_user_lms,1,1,1,1
+access_lms_session_attendance,lms_session_attendance,model_lms_session_attendance,group_user_lms,1,1,1,1

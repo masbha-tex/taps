@@ -1,0 +1,51 @@
+<odoo>
+    <data>
+        <!-- Form View to Mark Attendance -->
+        <record id="view_session_attendance_form" model="ir.ui.view">
+            <field name="name">lms.session.attendance.form</field>
+            <field name="model">lms.session.attendance</field>
+            <field name="arch" type="xml">
+                <form string="Mark Attendance">
+                    <sheet>
+                        <group>
+                            <field name="attendee_id"/>
+                            <field name="attendance_date"/>
+                            <field name="is_present"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- tree View to Mark Attendance -->
+        <record id="view_session_attendance_tree" model="ir.ui.view">
+            <field name="name">lms.session.attendance.tree</field>
+            <field name="model">lms.session.attendance</field>
+            <field name="arch" type="xml">
+                <tree string="Mark Attendance" edit="1" editable="top">
+                    <field name="attendee_id" options="{'no_create':true, 'no_open':true}"/>
+                    <field name="attendance_date"/>
+                    <field name="is_present"/>
+                </tree>
+            </field>
+        </record>        
+
+        <!-- Action Window to Open Attendance Form -->
+        <record model="ir.actions.act_window" id="action_mark_attendance">
+            <field name="name">Mark Attendance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">lms.session.attendance</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_session_id': active_id}</field>
+        </record>
+        <!-- <record model="ir.actions.client" id="action_open_barcode_scanner">
+            <field name="name">Mark Attendance</field>
+            <field name="tag">taps_lms.barcode_scanner</field>
+        </record>
+        <menuitem id="menu_lms_session" name="Barcode" parent="lms_menu" action="action_open_barcode_scanner"/> -->
+        
+        
+        <!-- <menuitem id="menu_session_attendance" name="Session Attendance" parent="lms_menu" action="action_session_attendance_form"/> -->
+        
+    </data>
+</odoo>

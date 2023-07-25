@@ -4,7 +4,7 @@
     "summary": """
         Inventory New Columns scaffold module
         """,
-    "category": "",
+    'category': 'Generic Modules/Inventory New Columns',
     "version": "14.0.1.0.0",
     "author": "Odoo PS",
     "website": "http://www.odoo.com",

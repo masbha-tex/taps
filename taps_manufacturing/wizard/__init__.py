@@ -2,3 +2,4 @@
 from . import mrp_split
 #from . import manufacturing_report_wizard
 from . import bom_verification
+from . import mrp_plan

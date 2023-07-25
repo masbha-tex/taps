@@ -11,7 +11,7 @@
     'version': '14.0.1.0.0',
     'summary': """Integrating Shift Time Setup With HR Attendance""",
     'description': """This module integrates Odoo with the Shift Time Setup,hr,attendance""",
-    'category': 'Generic Modules',
+    'category': 'Generic Modules/Shift Setup',
 
     # any module necessary for this one to work correctly
     'depends': ['base_setup','web_studio'],

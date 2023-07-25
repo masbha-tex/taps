@@ -4,7 +4,7 @@
     'summary': 'HR Employees organizational chart',
     'description': 'HR Employees organizational chart',
     'author': "Mohammad Adnan",
-    'category': 'Generic Modules/Human Resources',
+    'category': 'Generic Modules/Organizational Chart',
     'depends': ['hr'],
     'data': [
         'views/show_employee_chart.xml',

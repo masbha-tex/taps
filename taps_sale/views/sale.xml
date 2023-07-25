@@ -10,7 +10,7 @@
 				</xpath>
 				<xpath expr="//field[@name='partner_id']" position="before">
 					<field name="sales_type" attrs="{'readonly':[('state','=','sale')]}"/>
-                    <field name="pi_type" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]],'readonly':[('state','=','sale')] }"/>
+                    <field name="pi_type" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']],'readonly':[('state','=','sale')] }"/>
                     <field name="cause_of_replacement" attrs="{'invisible': ['|',['pi_type','=','regular'],['pi_type','=','block']]}"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_invoice_id']" position="attributes">
@@ -40,11 +40,13 @@
                     
                     
                     <field name="remarks"/>
-					<field name="applicant_bank" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oa']]}"/>
+                    <field name="old_sa_num" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale']]}"/>
+                    <field name="sa_date" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale']]}"/>
+					<field name="applicant_bank" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','oldsa']]}"/>
 				</xpath>
 				<xpath expr="//field[@name='validity_date']" position="before">
 					<label for="is_revised" invisible='1'/>
-					<div name="reminder" class="o_row" title="Need to revise this Sale Order?" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}">
+					<div name="reminder" class="o_row" title="Need to revise this Sale Order?" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}">
 						<field name="is_revised"/>
 						<span>Revision</span>
 						<div class="o_row oe_inline" attrs="{'invisible': [('is_revised', '=', False)]}">
@@ -52,28 +54,28 @@
 						</div>
 					</div>
 					<label for="is_hold" invisible='1'/>
-                    <div name="reminder" class="o_row" title="Need to hold the OA?" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','sale']]}">
+                    <div name="reminder" class="o_row" title="Need to hold the OA?" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','sale'],['sales_type','=','oldsa']]}">
 						<field name="is_hold"/>
 						<span>Hold</span>
 						
 					</div>
 					<field name="cause_of_revision" attrs="{'invisible': [('is_revised', '=', False), ('is_hold', '=', False)]}"/>
-                    <field name="assortment" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-                    <field name="dpi" attrs="{'invisible': [['sales_type','=','sample']]}"/>
+                    <field name="assortment" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
+                    <field name="dpi" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="season"/>
 					<field name="department"/>
 					<field name="division"/>
 					<field name="buyer_name" options="{'no_create': True, 'no_create_edit':True}"/>
-					<field name="hs_code" attrs="{'invisible': [['sales_type','=','sample']]}"/>
+					<field name="hs_code" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="production_type" />
-					<field name="production_group" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-					<field name="order_type" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-					<field name="po_no" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-					<field name="po_date" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-					<field name="pi_date" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-					<field name="revised_date" attrs="{'invisible': [['sales_type','=','sample']]}"/>
-                    <field name="usage" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','sale'],['sales_type','=',False]]}"/>
-                    <field name="supply_chain" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','sale'],['sales_type','=',False]]}"/>
+					<field name="production_group" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
+					<field name="order_type" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
+					<field name="po_no" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
+					<field name="po_date" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
+					<field name="pi_date" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
+					<field name="revised_date" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
+                    <field name="usage" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','oa'],['sales_type','=',False]]}"/>
+                    <field name="supply_chain" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','oa'],['sales_type','=',False]]}"/>
                     <field name="priority" attrs="{'invisible': ['|',['sales_type','=','sale'],['sales_type','=','oa']]}"/>
                     <field name="washing_type" attrs="{'invisible': ['|',['sales_type','=','sale'],['sales_type','=','oa']]}"/>
                     <field name="bcd_part_finish" attrs="{'invisible': ['|',['sales_type','=','sale'],['sales_type','=','oa']]}"/>
@@ -93,7 +95,7 @@
 				</xpath>
 				<xpath expr="//field[@name='sales_type']" position="after">
 					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
-					<field name="sample_ref" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=',False]]}" widget="many2many_tags"/>
+					<field name="sample_ref" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}" widget="many2many_tags"/>
 				</xpath>
 				<xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="before">
                     <field name="dyedtape" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>

@@ -4,6 +4,9 @@
     <template id="assets_backend_lms" name="taps_lms assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/css" href="/taps_lms/static/src/css/style.css"/>
+            <script type="text/javascript" src="/taps_lms/static/src/js/barcode_scanner.js"></script>
+            <script type="text/javascript" src="/taps_lms/static/src/js/greeting_message.js"></script>
+            <link rel="stylesheet" type="text/scss" href="/taps_lms/static/src/scss/hr_attendance.scss"/>
         </xpath>
     </template>
 

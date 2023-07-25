@@ -92,7 +92,7 @@ class OrderFlow(models.Model):
         left join
         
         (
-        select STRING_AGG(s.name,',') as oa_no,s.company_id,s.order_ref,
+        select STRING_AGG(distinct s.name,',') as oa_no,s.company_id,s.order_ref,
         pt.name as product,
         sum(sol.product_uom_qty) as product_uom_qty,sum(sol.price_subtotal) as price_subtotal
         
@@ -102,6 +102,7 @@ class OrderFlow(models.Model):
         inner join product_template as pt on pt.id = p.product_tmpl_id 
         where s.state<>'cancel' and s.sales_type='oa' and sol.product_uom_qty>0 
         group by s.company_id,s.order_ref,pt.name
-        ) as oa  on so.order_id=oa.order_ref and so.product=oa.product and so.company_id=oa.company_id) as a)
+        ) as oa  on so.order_id=oa.order_ref and so.product=oa.product and so.company_id=oa.company_id) as a 
+        order by a.order_id)
         """
         self.env.cr.execute(query,(self.env.company.id,'a'))

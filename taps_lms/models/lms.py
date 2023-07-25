@@ -1,5 +1,5 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from datetime import timedelta
 from odoo.tools.misc import get_lang
 import logging
@@ -74,7 +74,7 @@ class Course(models.Model):
                     'fadeout': 'slow',
                     'message': 'Course Completed',
                     'type': 'rainbow_man',
-                    'img_url': 'taps_lms/static/img/icon.png'
+                    'img_url': 'taps_lms/static/img/success.png'
                 }
             }
 
@@ -141,6 +141,152 @@ class Session(models.Model):
     color = fields.Integer()
     email_sent = fields.Boolean('Email Sent', default=False)
     image_1920 = fields.Image("Image")
+    attendance_ids = fields.One2many('lms.session.attendance', 'session_id', string="Attendance")
+
+    def action_open_barcode_scanner(self):
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'taps_lms_barcode_scanner',
+            'name': 'LMS Attendances',
+            'target': 'main',
+        }
+    
+    @api.model
+    def attendance_scan(self, barcode):
+        """ Receive a barcode scanned from the Kiosk Mode and change the attendances of corresponding employee.
+            Returns either an action or a warning.
+        """
+        employee = self.env['hr.employee'].search([('barcode', '=', barcode)], limit=1)
+        if employee:
+            return self._attendance_action('taps_lms.session_list_action',barcode)
+        return {'warning': _("No employee corresponding to Badge ID '%(barcode)s.'") % {'barcode': barcode}}
+
+    def attendance_manual(self, next_action, entered_pin=None):
+        self.ensure_one()
+        employee = self.env['hr.employee']
+        attendance_user_and_no_pin = self.user_has_groups(
+            'hr_attendance.group_hr_attendance_user,'
+            '!hr_attendance.group_hr_attendance_use_pin')
+        can_check_without_pin = attendance_user_and_no_pin or (self.user_id == self.env.user and entered_pin is None)
+        if can_check_without_pin or entered_pin is not None and entered_pin == employee.pin:
+            return self._attendance_action(next_action)
+        return {'warning': _('Wrong PIN')}
+
+    def _attendance_action(self, next_action, barcode=None):
+        """ Changes the attendance of the employee.
+            Returns an action to the check in/out message,
+            next_action defines which menu the check in/out message should return to. ("My Attendances" or "Kiosk Mode")
+        """
+        # self.ensure_one()
+        
+        employee = self.env['hr.employee'].search([('barcode', '=', barcode)], limit=1)
+        action_message = self.env["ir.actions.actions"]._for_xml_id("taps_lms.action_greeting_message")
+        action_message['previous_attendance_change_date'] = employee.last_attendance_id and (employee.last_attendance_id.check_out or employee.last_attendance_id.check_in) or False
+        action_message['employee_name'] = employee.name
+        action_message['barcode'] = employee.barcode
+        action_message['next_action'] = next_action
+        action_message['hours_today'] = employee.hours_today
+
+        if employee.user_id:
+            
+            modified_attendance = self.with_user(employee.user_id)._attendance_action_change(barcode)
+        else:
+            
+            modified_attendance = self._attendance_action_change(barcode)
+        action_message['attendance'] = modified_attendance.read()[0]
+        # raise UserError((action_message['attendance'].check_in_time))
+        return {'action': action_message}
+
+    def _attendance_action_change(self, barcode=None):
+        """ Check In/Check Out action
+            Check In: create a new attendance record
+            Check Out: modify check_out field of appropriate attendance record
+        """
+        # self.ensure_one()
+        employee = self.env['hr.employee'].search([('barcode', '=', barcode)], limit=1)
+        action_date = fields.Datetime.now()
+        at_date = fields.Date.today()
+        
+
+        if employee.attendance_state != 'checked_in':
+            # raise UserError((barcode,'ss'))
+            vals = {
+                'attDate': at_date,
+                'employee_id': employee.id,
+                'check_in': action_date,
+            }
+            return self.env['hr.attendance'].create(vals)
+        attendance = self.env['hr.attendance'].search([('attDate', '=', at_date),('employee_id', '=', employee.id), ('check_out', '=', False)], limit=1)
+        if attendance:
+            attendance.check_out = action_date
+        else:
+            raise UserError(_('Cannot perform check out on %(empl_name)s, could not find corresponding check in. '
+                'Your attendances have probably been modified manually by human resources.') % {'empl_name': self.sudo().name, })
+        return attendance
+    
+
+    @api.model
+    def mark_attendances(self, barcode):
+        # raise UserError((barcode))
+        attendee = self.env['res.partner'].search([('barcode_id', '=', barcode)], limit=1)
+    
+        if attendee:
+            # Check if an attendance record already exists for the given session and attendee
+            existing_attendance = self.env['lms.session.attendance'].search([
+                ('session_id', '=', self.id),
+                ('attendee_id', '=', attendee.id),
+            ], limit=1)
+    
+            if not existing_attendance:
+                # Create a new attendance record if not already present
+                self.env['lms.session.attendance'].create({
+                    'session_id': self.id,
+                    'attendee_id': attendee.id,
+                    'barcode_id': barcode,
+                })
+    
+        return {
+            'name': "Mark Attendance",
+            'view_mode': 'tree,form',
+            'res_model': 'lms.session.attendance',
+            'type': 'ir.actions.act_window',
+            'context': {
+                'default_session_id': self.id,
+            },
+        }     
+    @api.model
+    def mark_attendance(self, barcode):
+        # raise UserError((barcode))
+        # self.ensure_one()
+        # attendees = self.attendee_ids.filtered(lambda att: att.active)
+        # attendance_vals = []
+        # for attendee in attendees:
+        #     attendance_vals.append({
+        #         'session_id': self.id,
+        #         'attendee_id': attendee.id,
+        #         'attendance_date': fields.Datetime.today(),
+        #         'attended': False,  # You can set this to True if you want to default to attended
+        #     })
+        # self.env['lms.session.attendance'].create(attendance_vals)
+        # return self.action_view_attendance()
+        return {
+            'name': "Mark Attendance",
+            'view_mode': 'tree,form',
+            'res_model': 'lms.session.attendance',
+            'type': 'ir.actions.act_window',
+            'context': {
+                'default_session_id': self.id,
+            },
+        }        
+
+    def action_view_attendance(self):
+        return {
+            'name': "Attendance",
+            'view_mode': 'tree,form',
+            'res_model': 'lms.session.attendance',
+            'type': 'ir.actions.act_window',
+            'domain': [('session_id', '=', self.id)],
+        }    
 
     def number_of_attendees(self):
         return len(self.attendee_ids)
@@ -221,4 +367,14 @@ class Session(models.Model):
                     'message': "Increase seats or remove excess attendees",
                 },
             }
+
+class SessionAttendance(models.Model):
+    _name = 'lms.session.attendance'
+    _description = "Training Session Attendance"
+
+    session_id = fields.Many2one('lms.session', string="Session", required=True, ondelete='cascade')
+    attendee_id = fields.Many2one('res.partner', string="Attendee", required=True)
+    attendance_date = fields.Datetime(string="Attendance Date", default=fields.datetime.today(), required=True)
+    is_present = fields.Boolean(string="Is Present", default=True)
+            
 
