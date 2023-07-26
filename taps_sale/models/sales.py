@@ -109,11 +109,7 @@ class SaleOrder(models.Model):
         ('50HL40', '50HL40'),
         ('ENZYME WASH', 'ENZYME WASH')], string='Washing Type', default='3HL40')
     
-    bcd_part_finish = fields.Selection([
-        ('N/A', 'N/A'),
-        ('SILVER FINISH', 'SILVER FINISH'),
-        ('AS SAMPLE', 'AS SAMPLE'),
-        ('SAME FINISH', 'SAME FINISH')], string='B, C, D Part Finish', default='SILVER FINISH')
+    bcd_part_finish = fields.Char(string='B, C, D Part Finish')
     
     metal_detection = fields.Selection([
         ('N/A', 'N/A'),
