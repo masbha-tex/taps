@@ -7,12 +7,14 @@
             <form string="Manufacturing Plan">
                 <group>
                     <group>
+                        <field name="item"/>
                         <field name="plan_for"/>
                         <field name="plan_start"/>
                         <field name="plan_end"/>
                         <field name="item_qty"/>
                         <field name="material_qty"/>
                         <field name="plan_qty"/>
+                        <field name="machine_no" attrs="{'invisible': ['|','|','|',['plan_for','=','sliderplating'],['plan_for','=','topplating'],['plan_for','=','bottomplating'],['plan_for','=','pinboxplating'],['plan_for','=','sliassembly']]}"/>
                     </group>
                 </group>
                 <footer>

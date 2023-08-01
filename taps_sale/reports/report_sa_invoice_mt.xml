@@ -14,155 +14,158 @@
 					<div class="footer text-center" style="margin:0px; padding:0px;">
                     Page: <span class="page"/>/<span class="topage"/>
 					</div>
+					<div class="container">
 					<h4 class="text-center">
-						<strong>
+						<strong style="color: Black">
 							SAMPLE ACCEPTANCE
 							</strong>
 					</h4>
 					<div>
 						<div class="float-left">
-							<h2 class="mt15" style="font-size: 15px">
-								<span>SA # TZBD- <t t-esc="o.name"/>
+						  
+							<h2 class="mt15" style="font-size: 16px">
+								<span style="color: Black">SA # TZBD- <t t-esc="o.name"/>
 								</span>
 							</h2>
+							
 						</div>
 					</div>
 					<br/>
-					<div class="row mt32 mb32" style="font-size:12px">
+					<div class="row mt32 mb32" style="font-size:13px">
 						<div class="col-3 mw-50 mb-2">
 							<div>
-								<strong style="font-size:12px">CUSTOMER DETAILS</strong>
+								<strong style="color: Black">CUSTOMER DETAILS</strong>
 							</div>
 							<p>
-								<span style="font-size:12px;" t-esc="o.partner_id.name"/>
+								<span  style="color: Black" t-esc="o.partner_id.name"/>
 								<br/>
 								<!--<span style="font-size:11px" t-esc="o.partner_id.contact_address_complete"/>-->
 							</p>
 						</div>
 						<div class="col-1 mw-50 mb-2">
-							<strong>SA DATE</strong>
+							<strong style="color: Black">SA DATE</strong>
 							<p>
-								<t t-esc="o.date_order.strftime('%d-%m-%Y')"/>
+								<span style="color: Black" t-esc="o.date_order.strftime('%d-%m-%Y')"/>
 							</p>
 						</div>
 						<div class="col-1 mw-50 mb-2">
-							<strong>DELIVERY DATE</strong>
+							<strong style="color: Black">DELIVERY DATE</strong>
 							<p>
-								<t t-esc="o.commitment_date.strftime('%d-%m-%Y')"/>
+								<span style="color: Black" t-esc="o.commitment_date.strftime('%d-%m-%Y')"/>
 							</p>
 						</div>
-						<div class="col-1 mw-50 mb-2">
-							<strong>SALES PERSON</strong>
+						<div class="col-aut col-1 mw-50 mb-2">
+							<strong style="color: Black">SALES PERSON</strong>
 							<p>
-								<t t-esc="o.sale_representative.name"/>
+								<span style="color: Black" t-esc="o.sale_representative.name"/>
 							</p>
 						</div>
-                        <div class="col-auto col-1 mw-50 mb-2">
-							<strong>KIND ATTENTION</strong>
+              <div class="col-auto col-1 mw-50 mb-2">
+							<strong style="color: Black">KIND ATTENTION</strong>
 							<p>
-								<t t-esc="o.kind_attention"/>
+								<span style="color: Black" t-esc="o.kind_attention"/>
 							</p>
 						</div>
-                        <div class="col-auto col-1 mw-50 mb-2">
-							<strong>BUYER NAME</strong>
+              <div class="col-auto col-1 mw-50 mb-2">
+							<strong style="color: Black">BUYER NAME</strong>
 							<p>
-								<t t-esc="o.buyer_name.name"/>
+								<span style="color: Black" t-esc="o.buyer_name.name"/>
 							</p>
 						</div>
                         
 						
 							<div class="col-4 mw-50 mb-2">
-                                <t t-if="o.remarks">
+               <t t-if="o.remarks">
 								<p>
-									<strong>OTHER REQUIREMENTS</strong>
+									<strong style="color: Black">OTHER REQUIREMENTS</strong>
 									<br/>
 									<t t-if="isinstance(o.remarks, str)">
 										<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
 										<t t-foreach="string_to_output" t-as="string_line">
-											<span t-esc="string_line"/>
+											<span style="color: Black" t-esc="string_line"/>
 											<br/>
 										</t>
 									</t>
 								</p>
-                                </t>
+               </t>
 							</div>
 						
 					</div>
 					<br/>
-					<div class="row mt32 mb32" style="font-size:12px">
+					<div class="row mt32 mb32" style="font-size:13px">
 						
 						
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>STYLE REF.</strong>
+							<strong style="color: Black">STYLE REF:</strong>
 							<p>
-								<t t-esc="o.style_ref"/>
+								<span style="color: Black" t-esc="o.style_ref"/>
 							</p>
 						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>SEASON</strong>
+							<strong style="color: Black">SEASON:</strong>
 							<p>
-								<t t-esc="o.season"/>
+								<span style="color: Black" t-esc="o.season"/>
 							</p>
 						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>DEPARTMENT</strong>
+							<strong style="color: Black">DEPARTMENT:</strong>
 							<p>
-								<t t-esc="o.department"/>
+								<span style="color: Black" t-esc="o.department"/>
 							</p>
 						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>DEVISION</strong>
+							<strong style="color: Black">DEVISION:</strong>
 							<p>
-								<t t-esc="o.division"/>
+								<span t-esc="o.division"/>
 							</p>
 						</div>
                         
-                        <div class="col-auto col-2 mw-50 mb-2">
-							<strong>CUSTOMER REF.</strong>
+              <div class="col-auto col-2 mw-50 mb-2">
+							<strong style="color: Black">CUSTOMER REF:</strong>
 							<p>
-								<t t-esc="o.customer_ref"/>
+								<span style="color: Black" t-esc="o.customer_ref"/>
 							</p>
 						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>PRODUCTION TYPE</strong>
+							<strong style="color: Black">PRODUCTION TYPE:</strong>
 							<p>
-								<t t-esc="o.production_type"/>
+								<span style="color: Black" t-esc="o.production_type"/>
 							</p>
 						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>USAGE</strong>
+							<strong style="color: Black">USAGE:</strong>
 							<p>
-								<t t-esc="o.usage"/>
+								<span style="color: Black" t-esc="o.usage"/>
 							</p>
 						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>SUPPLY CHAIN</strong>
+							<strong style="color: Black">SUPPLY CHAIN:</strong>
 							<p>
-								<t t-esc="o.supply_chain"/>
+								<span style="color: Black" t-esc="o.supply_chain"/>
 							</p>
 						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>PRIORITY</strong>
+							<strong style="color: Black">PRIORITY:</strong>
 							<p>
-								<t t-esc="o.priority"/>
+								<span style="color: Black" t-esc="o.priority"/>
 							</p>
 						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>WASHING TYPE</strong>
+							<strong style="color: Black">WASHING TYPE:</strong>
 							<p>
-								<t t-esc="o.washing_type"/>
+								<span style="color: Black" t-esc="o.washing_type"/>
 							</p>
 						</div>
                         <div class="col-auto col-1 mw-50 mb-2">
-							<strong>B, C, D PART FINISH</strong>
+							<strong style="color: Black">B, C, D PART FINISH:</strong>
 							<p>
-								<t t-esc="o.bcd_part_finish"/>
+								<span style="color: Black" t-esc="o.bcd_part_finish"/>
 							</p>
 						</div>
 						<div class="col-auto col-1 mw-50 mb-2">
-							<strong>METAL DETECTION</strong>
+							<strong style="color: Black">METAL DETECTION:</strong>
 							<p>
-								<t t-esc="o.metal_detection"/>
+								<span style="color: Black" t-esc="o.metal_detection"/>
 							</p>
 						</div>
 					</div>
@@ -196,7 +199,7 @@
 						</div>
 					</div> -->
 					<br/>
-					<div style="font-size:12px">
+					<div style="font-size:14px">
 						<t t-set="back_part" t-value="0"/>
 						<t t-set="p_code" t-value="0"/>
 						<t t-set="shape" t-value="0"/>
@@ -282,7 +285,7 @@
 							</t>
 						</t>
 						<table class="table table-sm o_main_table">
-							<thead>
+							<thead style="color: Black ! important">
 								<t t-set="line_count" t-value="0"/>
 								<tr>
 									<th class="text-left">Item</th>
@@ -351,11 +354,11 @@
 										<t t-if="not line.display_type">
 											<td>
 												<strong>
-													<span t-esc="line.product_template_id.generic_name"/>
+													<span style="color: Black" t-esc="line.product_template_id.name" />
 												</strong>
 												<t t-if="line.dimension">
 													<strong>
-														<span t-esc="line.dimension"/>
+														<span style="color: Black" t-esc="line.dimension"/>
 													</strong>
 												</t>
 											</td>
@@ -363,7 +366,7 @@
 												<t t-if="line.back_part">
 													<td>
 														<strong>
-															<span t-esc="line.back_part"/>
+															<span style="color: Black" t-esc="line.back_part"/>
 														</strong>
 													</td>
 												</t>
@@ -375,7 +378,7 @@
 												<t t-if="line.product_code">
 													<td>
 														<strong>
-															<span t-esc="line.product_code"/>
+															<span style="color: Black" t-esc="line.product_code"/>
 														</strong>
 													</td>
 												</t>
@@ -387,7 +390,7 @@
 												<t t-if="line.shape">
 													<td>
 														<strong>
-															<span t-esc="line.shape"/>
+															<span style="color: Black" t-esc="line.shape"/>
 														</strong>
 													</td>
 												</t>
@@ -399,7 +402,7 @@
 												<t t-if="line.logo">
 													<td>
 														<strong>
-															<span t-esc="line.logo"/>
+															<span style="color: Black" t-esc="line.logo"/>
 														</strong>
 													</td>
 												</t>
@@ -411,7 +414,7 @@
 												<t t-if="line.logoref">
 													<td>
 														<strong>
-															<span t-esc="line.logoref"/>
+															<span style="color: Black" t-esc="line.logoref"/>
 														</strong>
 													</td>
 												</t>
@@ -423,7 +426,7 @@
 												<t t-if="line.logo_type">
 													<td>
 														<strong>
-															<span t-esc="line.logo_type"/>
+															<span style="color: Black" t-esc="line.logo_type"/>
 														</strong>
 													</td>
 												</t>
@@ -436,12 +439,12 @@
 													<td>
 														<t t-if="'N/A' not in line.finish">
 															<strong>
-																<span t-esc="line.finish"/>
+																<span style="color: Black" t-esc="line.finish"/>
 															</strong>
 														</t>
 														<t t-if="'N/A' in line.finish">
 															<strong>
-																<span t-esc="line.finish[4:]"/>
+																<span style="color: Black" t-esc="line.finish[4:]"/>
 															</strong>
 														</t>
 													</td>
@@ -454,7 +457,7 @@
 												<t t-if="line.finish_ref">
 													<td>
 														<strong>
-															<span t-esc="line.finish_ref"/>
+															<span style="color: Black" t-esc="line.finish_ref"/>
 														</strong>
 													</td>
 												</t>
@@ -466,7 +469,7 @@
 												<t t-if="line.b_part">
 													<td>
 														<strong>
-															<t t-esc="line.b_part"/>
+															<span style="color: Black" t-esc="line.b_part"/>
 														</strong>
 													</td>
 												</t>
@@ -478,7 +481,7 @@
 												<t t-if="line.c_part">
 													<td>
 														<strong>
-															<span t-esc="line.c_part"/>
+															<span style="color: Black" t-esc="line.c_part"/>
 														</strong>
 													</td>
 												</t>
@@ -490,7 +493,7 @@
 												<t t-if="line.d_part">
 													<td>
 														<strong>
-															<span t-esc="line.d_part"/>
+															<span style="color: Black" t-esc="line.d_part"/>
 														</strong>
 													</td>
 												</t>
@@ -503,9 +506,9 @@
 													<td style="text-align: right ! important">
 														<strong>
 															<span>
-																<t t-esc="line.sizemm"/>
+																<span style="color: Black" t-esc="line.sizemm"/>
 															</span>
-															<span> MM</span>
+															<span style="color: Black"> MM</span>
 														</strong>
 													</td>
 												</t>
@@ -515,12 +518,12 @@
 											</t>
 											<td style="text-align: right ! important">
 												<strong>
-													<span t-esc="line.product_uom_qty*144" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+													<span style="color: Black" t-esc="line.product_uom_qty*144" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 												</strong>
 											</td>
 											<td style="text-align: right ! important">
 												<strong>
-													<span t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+													<span style="color: Black" t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
 													<t t-set="total_quantity" t-value="line.product_uom_qty+total_quantity"/>
 												</strong>
 											</td>
@@ -528,7 +531,7 @@
 												<t t-if="line.style">
 													<td>
 														<strong>
-															<span t-esc="line.style"/>
+															<span style="color: Black" t-esc="line.style"/>
 														</strong>
 													</td>
 												</t>
@@ -546,12 +549,13 @@
 									<!--</td>-->
 									<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 										<strong>
-											<t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+											<span style="color: Black" t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
 										</strong>
 									</td>
 								</tr>
 							</tbody>
 						</table>
+					</div>
 					</div>
 				</div>
 				</t>

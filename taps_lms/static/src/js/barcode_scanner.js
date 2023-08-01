@@ -11,7 +11,7 @@ var QWeb = core.qweb;
 
 var BarcodeScanner = AbstractAction.extend({
     events: {
-        "click .o_hr_attendance_button_employees": function() {
+        "click .o_lms_attendance_button_employees": function() {
             
             this.do_action('hr_attendance.hr_employee_attendance_action_kanban', {
                 additional_context: {'no_group_by': true},
@@ -24,7 +24,9 @@ var BarcodeScanner = AbstractAction.extend({
         var self = this;
         core.bus.on('barcode_scanned', this, this._onBarcodeScanned);
         self.session = Session;
+        this.active_id = this.getSession().active_id;
         const company_id = this.session.user_context.allowed_company_ids[0];
+       
         var def = this._rpc({
                 model: 'res.company',
                 method: 'search_read',
@@ -33,7 +35,7 @@ var BarcodeScanner = AbstractAction.extend({
             .then(function (companies){
                 self.company_name = companies[0].name;
                 self.company_image_url = self.session.url('/web/image', {model: 'res.company', id: company_id, field: 'logo',});
-                self.$el.html(QWeb.render("HrAttendanceKioskMode", {widget: self}));
+                self.$el.html(QWeb.render("LMSAttendanceKioskMode", {widget: self}));
                 self.start_clock();
             });
         // Make a RPC call every day to keep the session alive
@@ -46,15 +48,14 @@ var BarcodeScanner = AbstractAction.extend({
         this.call('bus_service', 'stopPolling');
         $('body').find('.o_ChatWindowHeader_commandClose').click();
     },
-
     _onBarcodeScanned: function(barcode) {
         var self = this;
-//         alert('adnan');
         core.bus.off('barcode_scanned', this, this._onBarcodeScanned);
+        // var activeId = this.getSession().user_context.active_id;
         this._rpc({
                 model: 'lms.session',
                 method: 'attendance_scan',
-                args: [barcode, ],
+                args: [barcode, this.active_id],
             })
             .then(function (result) {
                 if (result.action) {
@@ -69,9 +70,9 @@ var BarcodeScanner = AbstractAction.extend({
     },
 
     start_clock: function() {
-        this.clock_start = setInterval(function() {this.$(".o_hr_attendance_clock").text(new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit', second:'2-digit'}));}, 500);
+        this.clock_start = setInterval(function() {this.$(".o_lms_attendance_clock").text(new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit', second:'2-digit'}));}, 500);
         // First clock refresh before interval to avoid delay
-        this.$(".o_hr_attendance_clock").show().text(new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit', second:'2-digit'}));
+        this.$(".o_lms_attendance_clock").show().text(new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit', second:'2-digit'}));
     },
 
     destroy: function () {

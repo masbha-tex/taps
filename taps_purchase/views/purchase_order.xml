@@ -40,6 +40,22 @@
 <!--                    ["date_order",">=","2022-03-31 18:00:00"],["date_order","<=","2022-04-30 17:59:59"] ,('date_order','=', '2022-04-30 23:59:59') "search_default_rmtype": true, ('date_order', '>=', '2022-04-01 00:00:00'),('date_order','&lt;', '2022-04-30 23:59:59')-->
                    
                </xpath>
+                
+            </field>
+        </record>
+        <record id="purchase_order_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                   <field  name="po_type" />
+                   
+               </xpath>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/tree[1]/field[@name='product_qty']" position="before">
+                   <field  name="quality_standard" />
+                   
+               </xpath>
             </field>
         </record>
         

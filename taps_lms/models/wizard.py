@@ -10,7 +10,7 @@ class Wizard(models.TransientModel):
 
     session_ids = fields.Many2many('lms.session',
                                    string="Sessions", required=True, default=_default_sessions)
-    attendee_ids = fields.Many2many('res.partner', string="Attendees")
+    attendee_ids = fields.Many2many('hr.employee', string="Attendees")
 
     def subscribe(self):
         for session in self.session_ids:

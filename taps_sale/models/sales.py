@@ -630,32 +630,16 @@ class SaleOrder(models.Model):
             self.order_line.product_consumption(self.id)
             self.order_line.compute_shadewise_tape()
             #self.generate_mrp()
-            #self.generate_m_order()
+            self.generate_m_order()
         return True
 
-    def generate_m_order():
-        a = ''
-        b = ''
-        
-        # for products in self.order_line:
-        #     mrp_production = self.env['manufacturing.order'].create(self.manuf_values(products.sequence,products.id,products.order_id,products.order_id.company_id.id,
-        #                                                                               products.product_id.id,products.product_qty,products.product_uom.id,products.bom_id,products.shade,products.finish,products.sizein,products.sizecm))
+    def generate_m_order(self):
+        for products in self.order_line:
+            mrp_ = self.env['manufacturing.order'].create({'sequence':products.sequence,'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap})
  
             
-    # def manuf_values(self,seq,id,oa,company,customer,product,qty,uom,bom,shade,finish,sizein,sizecm):
-    #     values = {
-    #         'sequence':seq,
-    #         'sale_order_line':id,
-    #         'oa_id':oa,
-    #         'company_id':company,
-    #         'partner_id':customer,
-    #         'date_order':
-    #         'validity_date':
-    #         'product_id':product
-    #         'product_template_id':
-    #         'product_uom':
-    #         'product_uom_qty':
-    #         }
+    # def manuf_values(self,seq,id,oa,company):
+    #     values = 
     #     return values
         
     def mrp_values(self,id,product,qty,uom,bom,shade,finish,sizein,sizecm):

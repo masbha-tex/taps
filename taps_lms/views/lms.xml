@@ -9,7 +9,7 @@
             <tree string="Courses" expand="1">
                 <field name="course_name"/>
                 <field name="description"/>
-                <field name="responsible_id"/>
+                <field name="responsible_id" options="{'no_create':true, 'no_open':true}"/>
             </tree>
         </field>
     </record>
@@ -41,15 +41,15 @@
                     <group>
                         <group>
                             <field name="course_name" attrs="{'readonly': [('state', '!=', 'draft')]}" style="background-color: yellow;" />
-                            <field name="responsible_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="responsible_id" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create':true, 'no_open':true}"/>
                         </group>
                         <group>
                             <field name="course_date" class="oe_read_only"/>
                         </group>
                     </group>
-                    <separator string="General" colspan="2" />
+                    <separator string="Content" colspan="2" />
                     <group colspan="2" col="2">
-                        <field name="description" placeholder="Course description..." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="description" placeholder="Content description..." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     </group>
                     <notebook>
                         <page string="Sessions">
@@ -57,9 +57,9 @@
                                 <tree editable="bottom" class="custom_class">
                                     <field name="name"/>
                                     <field name="start_date"/>
-                                    <field name="duration"/>
+                                    <field name="duration" widget="float_time"/>
                                     <field name="seats"/>
-                                    <field name="instructor_id"/>
+                                    <field name="instructor_id" options="{'no_create':true, 'no_open':true}"/>
                                 </tree>
                             </field>
                         </page>
@@ -115,11 +115,11 @@
         groups="taps_lms.group_user_lms"
         web_icon="taps_lms,static/description/icon.png"/>
 
-    <menuitem id="lms_menu" name="Operation" parent="main_lms_menu"/>
+    <menuitem id="lms_menu" name="Operation" sequence="1" parent="main_lms_menu"/>
 
     <menuitem id="courses_menu" name="Training Courses" parent="lms_menu" action="course_list_action"/>
 
-    <!-- session form view -->
+    <!-- session form view --> 
     <record model="ir.ui.view" id="session_form_view">
         <field name="name">session.form</field>
         <field name="model">lms.session</field>
@@ -127,7 +127,10 @@
             <form string="Session Form">
                 <header>
                     <button name="action_send_session_by_email" type="object" class="oe_highlight" string="Send Email"/>
-                    <button name="action_open_barcode_scanner" string="Mark Attendance" type="object" class="oe_highlight"/>
+                    <button name="action_open_barcode_scanner" icon="fa-barcode" string="Scan your ID Card" type="object" class="oe_highlight"/>
+                    <!-- <div class="o_lms_attendance_barcode_scanner" data-oe-id="record.id">
+                        <t t-call="taps_lms.barcode_scanner" />
+                    </div> -->
                 </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -150,13 +153,28 @@
                             </group>
                             <group string="Schedule">
                                 <field name="start_date"/>
-                                <field name="duration"/>
+                                <field name="duration" widget="float_time"/>
                                 <field name="seats"/>
                                 <field name="taken_seats" widget="progressbar"/>
                             </group>
                         </group>
-                        <label for="attendee_ids"/>
-                        <field name="attendee_ids" domain="[('country_id', '=', country_id)]"/>
+                        <notebook>
+                            <!-- Add a new page for the attendee list -->
+                            <page string="Attendees">
+                                <field name="attendee_ids" widget="one2many_list" mode="tree" class="custom_class">
+                                    <tree>
+                                        <field name="barcode" string="Emp ID"/>
+                                        <field name="name"/>
+                                        <field name="private_email" string="Email"/>
+                                        <field name="mobile_phone" string="Phone"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Attendance">
+                                <field name="attendance_ids" readonly="True" class="custom_class"/>
+                            </page>                            
+                        </notebook>
+                            
                     </sheet>
                 </form>
         </field>
@@ -166,11 +184,11 @@
         <field name="name">session.tree</field>
         <field name="model">lms.session</field>
         <field name="arch" type="xml">
-            <tree string="Session Tree" decoration-bf="duration&lt;5" decoration-it="duration&gt;15">
+            <tree string="Session Tree" decoration-bf="duration&lt;5" decoration-it="duration&gt;15" class="custom_class">
                 <field name="name"/>
                 <field name="course_id"/>
                 <field name="start_date"/>
-                <field name="duration"/>
+                <field name="duration" widget="float_time"/>
                 <field name="end_date"/>
                 <field name="taken_seats" widget="progressbar"/>
             </tree>
@@ -234,7 +252,7 @@
                                 <field name="start_date"/>
                                 <br/>
                                 duration:
-                                <field name="duration"/>
+                                <field name="duration" widget="float_time"/>
                             </div>
                         </div>
                     </t>
@@ -242,6 +260,7 @@
             </kanban>
         </field>
     </record>
+    
 
     <record model="ir.actions.act_window" id="session_list_action">
         <field name="name">Training Sessions</field>
@@ -269,14 +288,22 @@
               parent="lms_menu"
               action="session_list_action"/>
 
+
     <record model="ir.ui.view" id="wizard_form_view">
         <field name="name">wizard.form</field>
         <field name="model">lms.wizard</field>
         <field name="arch" type="xml">
-            <form string="Add Attendees">
+            <form string="Quick Registration">
                 <group>
                     <field name="session_ids"/>
-                    <field name="attendee_ids"/>
+                    <field name="attendee_ids" widget="one2many_list" mode="tree" class="custom_class">
+                        <tree>
+                            <field name="barcode" string="Emp ID"/>
+                            <field name="name"/>
+                            <field name="private_email" string="Email"/>
+                            <field name="mobile_phone" string="Phone"/>
+                        </tree>
+                    </field>
                 </group>
 
                 <footer>
@@ -290,11 +317,15 @@
     </record>
 
     <act_window id="launch_session_wizard"
-                    name="Add Attendees"
+                    name="Quick Registration"
                     binding_model="lms.session"
                     res_model="lms.wizard"
                     view_mode="form"
                     target="new"/>
+    <menuitem id="atten_session_menu" name="Quick Registration"
+        parent="main_lms_menu"
+        sequence="10"
+        action="launch_session_wizard"/>        
 
 
 </odoo>

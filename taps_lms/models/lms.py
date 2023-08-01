@@ -15,8 +15,8 @@ class Course(models.Model):
     _rec_name = 'course_name'
 
     name = fields.Char(string="Course Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
-    course_name = fields.Char(string='Course Name', required=True, translate=True, tracking=True)
-    description = fields.Text('Description', help='Add course description here...')
+    course_name = fields.Char(string='Title', required=True, translate=True, tracking=True)
+    description = fields.Text('Content', help='Add content description here...')
     responsible_id = fields.Many2one('res.users', ondelete='set null', string="Responsible", index=True, tracking=True)
     session_ids = fields.One2many('lms.session', 'course_id', string="Sessions")
     state = fields.Selection([('draft', 'Draft'), ('submitted', 'Submitted'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancel', 'Cancel')
@@ -123,17 +123,18 @@ class Session(models.Model):
 
     @api.onchange('course_id', 'instructor_id')
     def _get_instructor_domain(self):
-        return {'domain': {'instructor_id': [('id', '=', self.course_id.responsible_id.partner_id.id)]}}
+        # raise UserError((self.course_id.responsible_id.partner_id.id))
+        return {'domain': {'instructor_id': [('user_id', '=', self.course_id.responsible_id.id)]}}
 
-    name = fields.Char(required=True)
-    start_date = fields.Datetime(default=fields.datetime.today())
-    duration = fields.Float(digits=(6, 2), help="Duration in days", default=get_default_duration)
+    name = fields.Char(string="Venue", required=True)
+    start_date = fields.Datetime(string="Plan Date",default=fields.datetime.today())
+    duration = fields.Float(digits=(6, 2), help="Duration in hours", default=get_default_duration)
     end_date = fields.Datetime(string="End Date", store=True, compute='_get_end_date', inverse='_set_end_date')
     seats = fields.Integer(string="Number of seats", default=get_default_seats)
-    instructor_id = fields.Many2one('res.partner', string="Instructor")
+    instructor_id = fields.Many2one('hr.employee', string="Facilitator")    
     country_id = fields.Many2one('res.country', related='instructor_id.country_id')
     course_id = fields.Many2one('lms.course', ondelete='cascade', string="Course", required=True)
-    attendee_ids = fields.Many2many('res.partner', string="Attendees")
+    attendee_ids = fields.Many2many('hr.employee', string="Attendees")
     taken_seats = fields.Float(string="Taken seats", compute='_taken_seats')
     active = fields.Boolean(string='Active', default=True)
     attendees_count = fields.Integer(
@@ -142,21 +143,32 @@ class Session(models.Model):
     email_sent = fields.Boolean('Email Sent', default=False)
     image_1920 = fields.Image("Image")
     attendance_ids = fields.One2many('lms.session.attendance', 'session_id', string="Attendance")
-
+    
     def action_open_barcode_scanner(self):
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'taps_lms_barcode_scanner',
-            'name': 'LMS Attendances',
-            'target': 'main',
-        }
+        action = self.env.ref('taps_lms.action_barcode_scanner').read()[0]
+        # action['context'] = {
+        #     'active_id': self.id,
+        # }
+        context = dict(self.env.context, active_id=self.id)
+        action['context'] = context
+        return action
+        # return {
+        #     'type': 'ir.actions.client',
+        #     'tag': 'taps_lms_barcode_scanner',
+        #     'name': 'LMS Attendances',
+        #     'target': 'main',
+        #     'context': {},
+        # }
     
     @api.model
-    def attendance_scan(self, barcode):
+    def attendance_scan(self, barcode, activeId):        
+        # active_id = context.get('activeId')
+        # active_id = self.env['lms.session'].browse(self.env.context.get('active_id'))
         """ Receive a barcode scanned from the Kiosk Mode and change the attendances of corresponding employee.
             Returns either an action or a warning.
         """
         employee = self.env['hr.employee'].search([('barcode', '=', barcode)], limit=1)
+        raise UserError((activeId))
         if employee:
             return self._attendance_action('taps_lms.session_list_action',barcode)
         return {'warning': _("No employee corresponding to Badge ID '%(barcode)s.'") % {'barcode': barcode}}
@@ -206,9 +218,11 @@ class Session(models.Model):
         employee = self.env['hr.employee'].search([('barcode', '=', barcode)], limit=1)
         action_date = fields.Datetime.now()
         at_date = fields.Date.today()
-        
+        # active_session_id = self.env.context.get('active_id')
+        # raise UserError((self.env.context.get('default_session_id')))
+        # raise UserError((barcode,active_session_id))
 
-        if employee.attendance_state != 'checked_in':
+        if employee:
             # raise UserError((barcode,'ss'))
             vals = {
                 'attDate': at_date,
@@ -221,11 +235,10 @@ class Session(models.Model):
             attendance.check_out = action_date
         else:
             raise UserError(_('Cannot perform check out on %(empl_name)s, could not find corresponding check in. '
-                'Your attendances have probably been modified manually by human resources.') % {'empl_name': self.sudo().name, })
+                'Your attendances have probably been modified manually by human resources.') % {'empl_name': employee.name, })
         return attendance
     
 
-    @api.model
     def mark_attendances(self, barcode):
         # raise UserError((barcode))
         attendee = self.env['res.partner'].search([('barcode_id', '=', barcode)], limit=1)
@@ -254,9 +267,8 @@ class Session(models.Model):
                 'default_session_id': self.id,
             },
         }     
-    @api.model
-    def mark_attendance(self, barcode):
-        # raise UserError((barcode))
+    def mark_attendance(self):
+        # raise UserError((self.env.context.get('default_session_id')))
         # self.ensure_one()
         # attendees = self.attendee_ids.filtered(lambda att: att.active)
         # attendance_vals = []
@@ -274,6 +286,7 @@ class Session(models.Model):
             'view_mode': 'tree,form',
             'res_model': 'lms.session.attendance',
             'type': 'ir.actions.act_window',
+            'domain': [('session_id', '=', self.id)],
             'context': {
                 'default_session_id': self.id,
             },
@@ -373,8 +386,9 @@ class SessionAttendance(models.Model):
     _description = "Training Session Attendance"
 
     session_id = fields.Many2one('lms.session', string="Session", required=True, ondelete='cascade')
-    attendee_id = fields.Many2one('res.partner', string="Attendee", required=True)
+    attendee_id = fields.Many2one('hr.employee', string="Attendee", required=True)
     attendance_date = fields.Datetime(string="Attendance Date", default=fields.datetime.today(), required=True)
     is_present = fields.Boolean(string="Is Present", default=True)
+    session_name = fields.Char(related='session_id.name')
             
 

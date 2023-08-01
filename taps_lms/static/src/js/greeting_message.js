@@ -9,10 +9,10 @@ var _t = core._t;
 
 
 var GreetingMessage = AbstractAction.extend({
-    contentTemplate: 'HrAttendanceGreetingMessage',
+    contentTemplate: 'LMSAttendanceGreetingMessage',
 
     events: {
-        "click .o_hr_attendance_button_dismiss": function() { this.do_action(this.next_action, {clear_breadcrumbs: true}); },
+        "click .o_lms_attendance_button_dismiss": function() { this.do_action(this.next_action, {clear_breadcrumbs: true}); },
     },
 
     init: function(parent, action) {
@@ -92,31 +92,31 @@ var GreetingMessage = AbstractAction.extend({
         this.return_to_main_menu = setTimeout( function() { self.do_action(self.next_action, {clear_breadcrumbs: true}); }, 5000);
 
         if (now.hours() < 5) {
-            this.$('.o_hr_attendance_message_message').append(_t("Good night"));
+            this.$('.o_lms_attendance_message_message').append(_t("Good night"));
         } else if (now.hours() < 12) {
             if (now.hours() < 8 && Math.random() < 0.3) {
                 if (Math.random() < 0.75) {
-                    this.$('.o_hr_attendance_message_message').append(_t("The early bird catches the worm"));
+                    this.$('.o_lms_attendance_message_message').append(_t("The early bird catches the worm"));
                 } else {
-                    this.$('.o_hr_attendance_message_message').append(_t("First come, first served"));
+                    this.$('.o_lms_attendance_message_message').append(_t("First come, first served"));
                 }
             } else {
-                this.$('.o_hr_attendance_message_message').append(_t("Good morning"));
+                this.$('.o_lms_attendance_message_message').append(_t("Good morning"));
             }
         } else if (now.hours() < 17){
-            this.$('.o_hr_attendance_message_message').append(_t("Good afternoon"));
+            this.$('.o_lms_attendance_message_message').append(_t("Good afternoon"));
         } else if (now.hours() < 23){
-            this.$('.o_hr_attendance_message_message').append(_t("Good evening"));
+            this.$('.o_lms_attendance_message_message').append(_t("Good evening"));
         } else {
-            this.$('.o_hr_attendance_message_message').append(_t("Good night"));
+            this.$('.o_lms_attendance_message_message').append(_t("Good night"));
         }
         if(this.previous_attendance_change_date){
             var last_check_out_date = this.previous_attendance_change_date.clone();
             if(now - last_check_out_date > 24*7*60*60*1000){
-                this.$('.o_hr_attendance_random_message').html(_t("Glad to have you back, it's been a while!"));
+                this.$('.o_lms_attendance_random_message').html(_t("Glad to have you back, it's been a while!"));
             } else {
                 if(Math.random() < 0.02){
-                    this.$('.o_hr_attendance_random_message').html(_t("If a job is worth doing, it is worth doing well!"));
+                    this.$('.o_lms_attendance_random_message').html(_t("If a job is worth doing, it is worth doing well!"));
                 }
             }
         }
@@ -130,36 +130,37 @@ var GreetingMessage = AbstractAction.extend({
         if(this.previous_attendance_change_date){
             var last_check_in_date = this.previous_attendance_change_date.clone();
             if(now - last_check_in_date > 1000*60*60*12){
-                this.$('.o_hr_attendance_warning_message').show().append(_t("<b>Warning! Last check in was over 12 hours ago.</b><br/>If this isn't right, please contact Human Resource staff"));
+                this.$('.o_lms_attendance_warning_message').show().append(_t("<b>Warning! Last check in was over 12 hours ago.</b><br/>If this isn't right, please contact Human Resource staff"));
                 clearTimeout(this.return_to_main_menu);
                 this.activeBarcode = false;
             } else if(now - last_check_in_date > 1000*60*60*8){
-                this.$('.o_hr_attendance_random_message').html(_t("Another good day's work! See you soon!"));
+                this.$('.o_lms_attendance_random_message').html(_t("Another good day's work! See you soon!"));
             }
         }
 
         if (now.hours() < 12) {
-            this.$('.o_hr_attendance_message_message').append(_t("Have a good day!"));
+            this.$('.o_lms_attendance_message_message').append(_t("Have a good day!"));
         } else if (now.hours() < 14) {
-            this.$('.o_hr_attendance_message_message').append(_t("Have a nice lunch!"));
+            this.$('.o_lms_attendance_message_message').append(_t("Have a nice lunch!"));
             if (Math.random() < 0.05) {
-                this.$('.o_hr_attendance_random_message').html(_t("Eat breakfast as a king, lunch as a merchant and supper as a beggar"));
+                this.$('.o_lms_attendance_random_message').html(_t("Eat breakfast as a king, lunch as a merchant and supper as a beggar"));
             } else if (Math.random() < 0.06) {
-                this.$('.o_hr_attendance_random_message').html(_t("An apple a day keeps the doctor away"));
+                this.$('.o_lms_attendance_random_message').html(_t("An apple a day keeps the doctor away"));
             }
         } else if (now.hours() < 17) {
-            this.$('.o_hr_attendance_message_message').append(_t("Have a good afternoon"));
+            this.$('.o_lms_attendance_message_message').append(_t("Have a good afternoon"));
         } else {
             if (now.hours() < 18 && Math.random() < 0.2) {
-                this.$('.o_hr_attendance_message_message').append(_t("Early to bed and early to rise, makes a man healthy, wealthy and wise"));
+                this.$('.o_lms_attendance_message_message').append(_t("Early to bed and early to rise, makes a man healthy, wealthy and wise"));
             } else {
-                this.$('.o_hr_attendance_message_message').append(_t("Have a good evening"));
+                this.$('.o_lms_attendance_message_message').append(_t("Have a good evening"));
             }
         }
     },
 
     _onBarcodeScanned: function(barcode) {
         var self = this;
+        // self.session = Session;
         if (this.attendanceBarcode !== barcode){
             if (this.return_to_main_menu) {  // in case of multiple scans in the greeting message view, delete the timer, a new one will be created.
                 clearTimeout(this.return_to_main_menu);
@@ -169,6 +170,7 @@ var GreetingMessage = AbstractAction.extend({
                     model: 'lms.session',
                     method: 'attendance_scan',
                     args: [barcode, ],
+                    // context: {'default_session_id': this.session.user_context.default_session_id}, // Pass the current record ID
                 })
                 .then(function (result) {
                     if (result.action) {

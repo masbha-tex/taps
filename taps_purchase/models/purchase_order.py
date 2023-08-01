@@ -28,6 +28,7 @@ class PurchaseOrder(models.Model):
         store=True
     )
     is_received = fields.Boolean(string="Receive Status", related='is_shipped', store=True)
+    po_type = fields.Selection([('Import', 'Import'), ('Local', 'Local')], 'PO Type',states={'cancel': [('readonly', True)], 'done': [('readonly', True)], 'purchase': [('readonly', True)], 'to approve': [('readonly', True)]})
     
     
     @api.model
@@ -138,5 +139,11 @@ class PurchaseOrder(models.Model):
         result['all_total_last_7_days'] = format_amount(self.env, povalue, currency)
 
         return result
+
+
+class PurchaseOrderLineInherit(models.Model):
+    _inherit = "purchase.order.line"
+
+    quality_standard = fields.Char(String="Quality Standaed")
     
     

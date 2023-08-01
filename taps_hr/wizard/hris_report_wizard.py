@@ -1294,27 +1294,37 @@ class HRISReportPDF11(models.AbstractModel):
         #     domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
             
         domain.append(('active', 'in',(False,True)))
-        
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
+        
+        
+        
+        
 
-#         for details in docs:
-#             otTotal = 0
-#             for de in docs:
-#                 otTotal = otTotal + de.total
-        common_data=[]    
-        common_data = [
-            data.get('report_type'),
-            data.get('bank_id'),
-#             otTotal,
-            datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%d-%m-%Y'),
-            data.get('date_to'),
-        ]
-        common_data.append(common_data)
+        
+#         common_data=[]    
+#         common_data = [
+#             data.get('report_type'),
+#             data.get('bank_id'),
+#             data.id,
+#             data.emp_id,
+#             data.name,
+#             data.department_id.parent_id.name,
+#             data.department_id.name,
+#             data.job_id.name,
+            
+#             data.department_id.id,
+# #             otTotal,
+#             datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%d-%m-%Y'),
+#             data.get('date_to'),
+#         ]
+#         common_data.append(common_data)
         #raise UserError((common_data[2]))
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.employee',
             'docs': docs,
-            'datas': common_data,
+            
+            
+            
 #             'alldays': all_datelist
         }

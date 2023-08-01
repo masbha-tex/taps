@@ -5,12 +5,13 @@
             <field name="name">lms.session.attendance.form</field>
             <field name="model">lms.session.attendance</field>
             <field name="arch" type="xml">
-                <form string="Mark Attendance">
+                <form string="Attendance">
                     <sheet>
                         <group>
                             <field name="attendee_id"/>
                             <field name="attendance_date"/>
                             <field name="is_present"/>
+                            <field name="session_name"/>
                         </group>
                     </sheet>
                 </form>
@@ -22,9 +23,13 @@
             <field name="model">lms.session.attendance</field>
             <field name="arch" type="xml">
                 <tree string="Mark Attendance" edit="1" editable="top">
+                    <!-- <header>
+                        <button name="action_open_barcode_scanner" icon="fa-barcode" string="Scan your ID Card" type="object" class="oe_highlight"/>
+                    </header>   -->
                     <field name="attendee_id" options="{'no_create':true, 'no_open':true}"/>
                     <field name="attendance_date"/>
                     <field name="is_present"/>
+                    <field name="session_name"/>
                 </tree>
             </field>
         </record>        

@@ -36,13 +36,13 @@
             <field name="page_height">0</field>
             <field name="page_width">0</field>
             <field name="orientation">Landscape</field>
-            <field name="margin_top">26</field>
+            <field name="margin_top">28</field>
             <field name="margin_bottom">6</field>
             <field name="margin_left">10</field>
             <field name="margin_right">3</field>
             <field name="header_line" eval="False"/>
-            <field name="header_spacing">26</field>
-            <field name="dpi">90</field>
+            <field name="header_spacing">28</field>
+            <field name="dpi">80</field>
         </record>
         
         

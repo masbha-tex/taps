@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+     <record id="view_manufacturing_form" model="ir.ui.view">
+        <field name="name">manufacturing.order.form</field>
+        <field name="model">manufacturing.order</field>
+        <field name="arch" type="xml">
+            <form string="Manufacturing Order">
+                <sheet>
+                    <group>
+                        <field name="oa_id"/>
+                        <field name="company_id"/>
+                        <field name="partner_id"/>
+                        <field name="date_order"/>
+                        <field name="validity_date"/>
+                        <field name="lead_time"/>
+                        <field name="product_template_id"/>
+                        <field name="fg_categ_type"/>
+                        <field name="product_uom"/>
+                        <field name="topbottom"/>
+                        <field name="slidercodesfg"/>
+                        <field name="finish"/>
+                        <field name="shade"/>
+                        <field name="sizein"/>
+                        <field name="sizecm"/>
+                        <field name="product_uom_qty"/>
+                        <field name="done_qty"/>
+                        <field name="balance_qty"/>
+                        <field name="tape_con"/>
+                        <field name="slider_con"/>
+                        <field name="topwire_con"/>
+                        <field name="botomwire_con"/>
+                        <field name="wire_con"/>
+                        <field name="pinbox_con"/>
+                        <field name="dyeing_plan"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+     </record>    
+
+
+    
     <record id="view_manufacturing_tree" model="ir.ui.view">
         <field name="name">manufacturing.order.tree</field>
         <field name="model">manufacturing.order</field>
@@ -16,6 +57,7 @@
                 <field name="partner_id"/>
                 <field name="date_order"/>
                 <field name="validity_date"/>
+                <field name="lead_time"/>
                 <field name="product_template_id"/>
                 <field name="fg_categ_type"/>
                 <field name="product_uom"/>
@@ -28,6 +70,12 @@
                 <field name="product_uom_qty"/>
                 <field name="done_qty"/>
                 <field name="balance_qty"/>
+                <field name="tape_con"/>
+                <field name="slider_con"/>
+                <field name="topwire_con"/>
+                <field name="botomwire_con"/>
+                <field name="wire_con"/>
+                <field name="pinbox_con"/>
                 <field name="dyeing_plan"/>
             </tree>
         </field>

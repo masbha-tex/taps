@@ -1,24 +1,24 @@
 
-.o_kanban_view #oe_hr_attendance_status {
+.o_kanban_view #oe_lms_attendance_status {
     margin-right: .3em;
 }
 
-#oe_hr_attendance_status {
+#oe_lms_attendance_status {
     color: $o-brand-secondary;
-    &.oe_hr_attendance_status_green {
+    &.oe_lms_attendance_status_green {
         color: theme-color('success');
     }
-    &.oe_hr_attendance_status_orange {
+    &.oe_lms_attendance_status_orange {
         color: theme-color('warning');
     }
 }
 
-.o_hr_attendance_kiosk_backdrop {
+.o_lms_attendance_kiosk_backdrop {
     @include o-position-absolute(0,0,0,0);
     background-color: fade-out(black, 0.7);
 }
 
-.o_hr_attendance_clock {
+.o_lms_attendance_clock {
     display: none;
     position: relative;
     width: 100%;
@@ -36,7 +36,7 @@
     }
 }
 
-.o_hr_attendance_kiosk_mode_container {
+.o_lms_attendance_kiosk_mode_container {
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
@@ -48,7 +48,7 @@
     }
 }
 
-.o_hr_attendance_kiosk_mode {
+.o_lms_attendance_kiosk_mode {
     width: 100%;
     text-align: center;
     position: relative;
@@ -63,7 +63,7 @@
             width: 115px;
             height: 60px;
         }
-        .o_hr_attendance_kiosk_welcome_row img {
+        .o_lms_attendance_kiosk_welcome_row img {
             max-width: inherit;
         }
         @include media-breakpoint-down(sm) {
@@ -94,7 +94,7 @@
         animation: fadeInDownSmall .3s;
     }
 
-    .o_hr_attendance_kiosk_welcome_row {
+    .o_lms_attendance_kiosk_welcome_row {
         @include media-breakpoint-up(md) {
             display: flex;
             align-items: center;
@@ -105,7 +105,7 @@
         }
     }
 
-    .o_hr_attendance_sign_in_out_icon {
+    .o_lms_attendance_sign_in_out_icon {
         cursor: pointer;
         margin: 0.1em 0 0.1em;
         padding: 0.15em 0.3em;
@@ -117,7 +117,7 @@
         }
     }
 
-    .o_hr_attendance_back_button {
+    .o_lms_attendance_back_button {
         .visible-xs{
             background: gray('200');
             margin: 0 -2em;
@@ -148,7 +148,7 @@
         color: $headings-color;
     }
 
-    .o_hr_attendance_user_badge {
+    .o_lms_attendance_user_badge {
         background: linear-gradient(to right bottom, #77717e, #c9a8a9);
 
         img {
@@ -184,10 +184,10 @@
         }
     }
 
-    .o_hr_attendance_pin_pad [class*="col-"] {
+    .o_lms_attendance_pin_pad [class*="col-"] {
         padding: 4px;
 
-        .o_hr_attendance_PINbox {
+        .o_lms_attendance_PINbox {
             font-size: 2em;
             border: none;
             padding: 0 $input-btn-padding-x-lg;
@@ -195,7 +195,7 @@
         }
     }
 
-    .o_hr_attendance_random_message {
+    .o_lms_attendance_random_message {
         font-style: italic;
     }
 
@@ -204,7 +204,7 @@
         margin: 0;
     }
 
-    img.o_hr_attendance_kiosk_company_image {
+    img.o_lms_attendance_kiosk_company_image {
         overflow:hidden; // prevent margins colapsing with h1
         margin: 1rem 0 2rem;
         width: 100px;

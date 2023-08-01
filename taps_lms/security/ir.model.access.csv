@@ -5,3 +5,4 @@ course_read_all,course all,model_lms_course,group_user_lms,1,0,0,0
 session_read_all,session all,model_lms_session,group_user_lms,1,0,0,0
 access_lms_report,access_lms_wizard_report,model_lms_pdf_report,group_user_lms,1,1,1,1
 access_lms_session_attendance,lms_session_attendance,model_lms_session_attendance,group_user_lms,1,1,1,1
+access_lms_wizard,lms_wizard,model_lms_wizard,,1,1,1,1

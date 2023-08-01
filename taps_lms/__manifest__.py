@@ -13,7 +13,7 @@
             - attendees registration
     """,
     # any module necessary for this one to work correctly
-    'depends': ['base', 'mail', 'report_xlsx'],
+    'depends': ['base', 'mail', 'report_xlsx', 'hr','barcodes'],
 
     # always loaded
     'data': [
