@@ -14,6 +14,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'data/activity.xml',
         'data/employee_id_generate.xml',
         'data/attendance_date_generate.xml',
         'data/attendance_flag_generate.xml',

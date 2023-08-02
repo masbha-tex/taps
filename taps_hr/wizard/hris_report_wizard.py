@@ -1279,7 +1279,7 @@ class HRISReportPDF11(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
@@ -1301,28 +1301,33 @@ class HRISReportPDF11(models.AbstractModel):
         
 
         
-#         common_data=[]    
-#         common_data = [
-#             data.get('report_type'),
-#             data.get('bank_id'),
-#             data.id,
-#             data.emp_id,
-#             data.name,
-#             data.department_id.parent_id.name,
-#             data.department_id.name,
-#             data.job_id.name,
+        common_data=[]    
+        common_data = [
+            data.get('report_type'),
             
-#             data.department_id.id,
-# #             otTotal,
-#             datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%d-%m-%Y'),
-#             data.get('date_to'),
-#         ]
-#         common_data.append(common_data)
-        #raise UserError((common_data[2]))
+#             otTotal,
+            datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%d-%m-%Y'),
+            data.get('date_to'),
+        ]
+        common_data.append(common_data)
+        
+        emp = docs.sorted(key = 'id')[:1]
+        # count = 0
+        if data.get('mode_company_id'):
+            heading_type = emp.company_id.name
+            # raise UserError((heading_type))
+        if data.get('department_id'):
+            heading_type = emp.department_id.name
+        if data.get('category_id'):
+            heading_type = emp.category_ids.name
+        if data.get('employee_id'):
+            heading_type = emp.name
+        
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.employee',
             'docs': docs,
+            'category' : heading_type,
             
             
             

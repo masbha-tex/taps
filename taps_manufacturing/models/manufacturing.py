@@ -99,6 +99,7 @@ class SaleOrder(models.Model):
     dyeing_plan = fields.Datetime(string='Dyeing Plan Start', readonly=False)
     dyeing_plan_end = fields.Datetime(string='Dyeing Plan End', readonly=False)
     dyeing_plan_qty = fields.Float(string='Dyeing Plan Qty', readonly=False)
+    dyeing_plan_due = fields.Float(string='Dyeing Plan Due', readonly=False, compute='_dy_plane_due')
     dyeing_output = fields.Float(string='Dyeing Output', readonly=False)
     dyeing_qc_pass = fields.Float(string='Dyeing QC Pass', readonly=False)
 
@@ -107,6 +108,10 @@ class SaleOrder(models.Model):
     plating_plan_qty = fields.Float(string='Plating Plan Qty', readonly=False)
     plating_output = fields.Float(string='Plating Output', readonly=False)
     plating_qc_pass = fields.Float(string='Plating QC Pass', readonly=False)
+
+    sli_asmbl_plan = fields.Datetime(string='Slider Asmbl Plan Start', readonly=False)
+    sli_asmbl_plan_end = fields.Datetime(string='Slider Asmbl Plan End', readonly=False)
+    sli_asmbl_plan_qty = fields.Float(string='Slider Asmbl Plan Qty', readonly=False)
 
     painting_done = fields.Float(string='painting Output', readonly=False)
     
@@ -124,6 +129,10 @@ class SaleOrder(models.Model):
     def _balance_qty(self):
         for s in self:
             s.balance_qty = s.product_uom_qty - s.done_qty
+    
+    def _dy_plane_due(self):
+        for s in self:
+            s.dyeing_plan_due = s.tape_con - s.dyeing_plan_qty
     
     def _get_line_value(self):
         for s in self:
@@ -167,7 +176,6 @@ class SaleOrder(models.Model):
         
 
     def button_plan(self):
-        #self.ensure_one()
         self._check_company()
         # if self.state in ("done", "to_close", "cancel"):
         #     raise UserError(
@@ -177,8 +185,6 @@ class SaleOrder(models.Model):
         #         )
         #     )
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_plan")
-        
-        #raise UserError((sum(self.mapped('tape_con'))))
         action["domain"] = [('default_id','in',self.mapped('id'))]
         #action["context"] = {"default_item_qty": 20,"default_material_qty": 12}
         return action
@@ -189,12 +195,31 @@ class SaleOrder(models.Model):
 # dyeing_plan,dyeing_plan_end,dyeing_plan_qty,dyeing_output,dyeing_qc_pass
 # plating_plan,plating_plan_end,plating_plan_qty,plating_output,plating_qc_pass
         m_qty = 0
-        sest_pl_q = plan_qty
+        rest_pl_q = plan_qty
+        p_len = len(production)
+        dist_qty = plan_qty / p_len
+        
+        addition = 0
         for p in production:
             if plan_for == 'dyeing':
-                m_qty += self.tape_con
+                if self.tape_con < dist_qty + addition:
+                    m_qty = self.tape_con
+                    addition = (dist_qty + addition) - self.tape_con
+                else:
+                    m_qty = dist_qty + addition
+                    addition = 0
+                m_qty += p.dyeing_plan_qty
+                p.write({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty})
+                
             elif plan_for == 'sliderplating':
-                m_qty += self.slider_con
+                if self.tape_con < dist_qty + addition:
+                    m_qty = self.slider_con
+                    addition = (dist_qty + addition) - self.slider_con
+                else:
+                    m_qty = dist_qty + addition
+                    addition = 0
+                m_qty += p.plating_plan_qty
+                p.write({'plating_plan':plan_start,'plating_plan_end':plan_end,'plating_plan_qty':m_qty})
             elif plan_for == 'topplating':
                 m_qty += self.topwire_con
             elif plan_for == 'bottomplating':
@@ -220,7 +245,7 @@ class SaleOrder(models.Model):
         #     row += 1
 
     def button_requisition(self):
-        self.ensure_one()
+        #self.ensure_one()
         self._check_company()
         if self.state in ("done", "to_close", "cancel"):
             raise UserError(

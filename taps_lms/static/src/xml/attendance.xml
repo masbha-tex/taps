@@ -107,31 +107,31 @@
             <span class="o_lms_attendance_kiosk_backdrop"/>
             <div class="o_lms_attendance_clock text-center"/>
             <div class="o_lms_attendance_kiosk_mode">
-                <t t-if="widget.attendance">
+                <t t-if="widget.att_date">
                     <div class="o_lms_attendance_user_badge o_home_menu_background">
-                        <img class="img rounded-circle" t-attf-src="/web/image?model=hr.employee.public&amp;field=image_128&amp;id=#{widget.attendance.employee_id[0]}" t-att-title="widget.employee_name" t-att-alt="widget.employee_name"/>
+                        <img class="img rounded-circle" t-attf-src="/web/image?model=hr.employee.public&amp;field=image_128&amp;id=#{widget.employee_id}" t-att-title="widget.employee_name" t-att-alt="widget.employee_name"/>
                     </div>
-                    <t t-if="widget.attendance.check_out">
+                    <!-- <t t-if="widget.att_date">
                         <h1 class="mb0">Goodbye <t t-esc="widget.employee_name"/>!</h1>
                         <h2 class="o_lms_attendance_message_message mt4 mb24"/>
                         <div class="alert alert-info h2 mt0" role="status">
-                            Checked out at <b><t t-esc="widget.attendance.check_out_time"/></b>
+                            Checked out at <b><t t-esc="widget.att_date"/></b>
                             <br/><b><t t-esc="widget.hours_today"/></b>
                         </div>
                         <h3 class="o_lms_attendance_random_message mb24"/>
                         <div class="o_lms_attendance_warning_message mt24 alert alert-warning" style="display:none" role="alert"/>
-                    </t>
-                    <t t-else="">
+                    </t> -->
+                    <t>
                         <h1 class="mb0">Welcome <t t-esc="widget.employee_name"/>!</h1>
                         <h2 class="o_lms_attendance_message_message mt4 mb24"/>
                         <div class="alert alert-info h2 mt0" role="status">
-                            Checked in at <b><t t-esc="widget.attendance.check_in_time"/></b>
+                            Checked in at <b><t t-esc="widget.att_date_time"/></b>
                         </div>
                         <h3 class="o_lms_attendance_random_message mb24"/>
                         <div class="o_lms_attendance_warning_message mt24 alert alert-warning" style="display:none" role="alert"/>
                     </t>
                     <button class="o_lms_attendance_button_dismiss btn btn-primary btn-lg">
-                        <span class="text-capitalize" t-if="widget.attendance.check_out">Goodbye</span>
+                        <span class="text-capitalize" t-if="widget.att_date">Goodbye</span>
                         <span class="text-capitalize" t-else="">OK</span>
                     </button>
                 </t>

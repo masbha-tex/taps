@@ -142,7 +142,7 @@
                                 </div>
                             </button>
                         </div>
-                        <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_1920', 'zoom': true, 'zoom_delay': 1000}"/>
+                        <!-- <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_1920', 'zoom': true, 'zoom_delay': 1000}"/> -->
                         <group>
                             <group string="General">
                                 <field name="course_id"/>
@@ -160,7 +160,11 @@
                         </group>
                         <notebook>
                             <!-- Add a new page for the attendee list -->
-                            <page string="Attendees">
+                            
+                            <page string="Attendance">
+                                <field name="attendance_ids" readonly="True" class="custom_class"/>
+                            </page> 
+                            <page string="Particpants">
                                 <field name="attendee_ids" widget="one2many_list" mode="tree" class="custom_class">
                                     <tree>
                                         <field name="barcode" string="Emp ID"/>
@@ -170,9 +174,6 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Attendance">
-                                <field name="attendance_ids" readonly="True" class="custom_class"/>
-                            </page>                            
                         </notebook>
                             
                     </sheet>
@@ -188,7 +189,7 @@
                 <field name="name"/>
                 <field name="course_id"/>
                 <field name="start_date"/>
-                <field name="duration" widget="float_time"/>
+                <field name="duration" widget="float_time" sum="Sum of Duration"/>
                 <field name="end_date"/>
                 <field name="taken_seats" widget="progressbar"/>
             </tree>

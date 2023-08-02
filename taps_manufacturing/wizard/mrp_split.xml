@@ -46,7 +46,6 @@
         </field>
     </record>
     
-    
     <record id="view_mrp_split_line_tree" model="ir.ui.view">
         <field name="name">mrp.split.line.tree</field>
         <field name="model">mrp.split.line</field>
@@ -61,7 +60,7 @@
                 <field name="qty_total" invisible="1"/>
             </tree>
         </field>
-    </record>    
+    </record>
     
     <record id="action_split_mrp" model="ir.actions.act_window">
         <field name="name">Split Manufacturing Order</field>

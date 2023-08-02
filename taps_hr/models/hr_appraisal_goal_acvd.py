@@ -148,43 +148,58 @@ class HrAppraisalGoalsAcvd(models.Model):
                 acvd.acvd = acvd.objective_line_id.a_mar    
 
     def button_approve(self, force=False):
-        self.write({'state': 'approved'})
-        deadlines = str(self.year + '-03-31')
-        goal = self.env['hr.appraisal.goal'].search([('employee_id','=',self.employee_id.id),('deadline', '=', deadlines)])
-        for line in self.acvd_line:
-            objec = goal.filtered(lambda g: g.id == line.objective_line_id.id)
-            if self.month == 'apr':
-                objec.write({'a_apr':line.acvd_entry})
-            elif self.month == 'may':
-                objec.write({'a_may':line.acvd_entry})
-            elif self.month == 'jun':
-                objec.write({'a_jun':line.acvd_entry})
-            elif self.month == 'jul':
-                objec.write({'a_jul':line.acvd_entry})
-            elif self.month == 'aug':
-                objec.write({'a_aug':line.acvd_entry})
-            elif self.month == 'sep':
-                objec.write({'a_sep':line.acvd_entry})
-            elif self.month == 'oct':
-                objec.write({'a_oct':line.acvd_entry})
-            elif self.month == 'nov':
-                objec.write({'a_nov':line.acvd_entry})
-            elif self.month == 'dec':
-                objec.write({'a_dec':line.acvd_entry})
-            elif self.month == 'jan':
-                objec.write({'a_jan':line.acvd_entry})
-            elif self.month == 'feb':
-                objec.write({'a_feb':line.acvd_entry})
-            elif self.month == 'mar':
-                objec.write({'a_mar':line.acvd_entry})
+        for record in self:
+            record.write({'state': 'approved'})
+            activity_id = self.env['mail.activity'].search([('res_id', '=', self.id), ('user_id', '=', self.env.user.id),
+                                                            ('activity_type_id', '=', self.env.ref('taps_lms.mail_act_goals_approval').id)])
+            activity_id.action_feedback(feedback='Approved')
         
-        return {}
+            deadlines = str(self.year + '-03-31')
+            goal = self.env['hr.appraisal.goal'].search([('employee_id','=',self.employee_id.id),('deadline', '=', deadlines)])
+            for line in self.acvd_line:
+                objec = goal.filtered(lambda g: g.id == line.objective_line_id.id)
+                if self.month == 'apr':
+                    objec.write({'a_apr':line.acvd_entry})
+                elif self.month == 'may':
+                    objec.write({'a_may':line.acvd_entry})
+                elif self.month == 'jun':
+                    objec.write({'a_jun':line.acvd_entry})
+                elif self.month == 'jul':
+                    objec.write({'a_jul':line.acvd_entry})
+                elif self.month == 'aug':
+                    objec.write({'a_aug':line.acvd_entry})
+                elif self.month == 'sep':
+                    objec.write({'a_sep':line.acvd_entry})
+                elif self.month == 'oct':
+                    objec.write({'a_oct':line.acvd_entry})
+                elif self.month == 'nov':
+                    objec.write({'a_nov':line.acvd_entry})
+                elif self.month == 'dec':
+                    objec.write({'a_dec':line.acvd_entry})
+                elif self.month == 'jan':
+                    objec.write({'a_jan':line.acvd_entry})
+                elif self.month == 'feb':
+                    objec.write({'a_feb':line.acvd_entry})
+                elif self.month == 'mar':
+                    objec.write({'a_mar':line.acvd_entry})
+            
+        return {
+                'effect': {
+                    'fadeout': 'slow',
+                    'message': 'Appraisal Goals Achievement Approved',
+                    'type': 'rainbow_man',
+                    'img_url': 'taps_hr/static/img/success.png'
+                }
+            }
             
     def button_confirm(self):
         for order in self:
             if order.state not in ['draft', 'submit']:
                 continue
             order.write({'state': 'submit'})
+            users = self.employee_id.parent_id.user_id.id
+            # raise UserError((users))
+            self.activity_schedule('taps_lms.mail_act_goals_approval', user_id=users, note=f'Please Approve Goals Achievement for the Month of {self.month, self.year} and Code is {self.name}')
         return True    
     
     def button_draft(self):

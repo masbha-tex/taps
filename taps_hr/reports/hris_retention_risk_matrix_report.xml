@@ -3,10 +3,10 @@
 
  <template id="hris_retention_risk_matrix_pdf_template">
  
-<t t-call="web.html_container">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                      <style>
+    <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <style>
 				    table{
 				    table-layout:fixed;
 				    font-size: 12px;
@@ -28,27 +28,18 @@
             							<!--<div class="row">-->
             							<div style="font-size: 12px;">
             							  
-            								<strong>SECTION:</strong>
-            								<t t-set="count" t-value="0"/>
-            								<t t-foreach="docs" t-as="employee">
-            								  
-            								<!--<t t-foreach="sec" t-as="se">-->
-            								<!--  <span t-esc="se.name" style="color:  #cc7000"/>-->
-            								<t t-if="count == 0" >
-            								  
-            								  <span t-esc="employee.department_id.name" style="color:  #cc7000"/>
-            								  <t t-set="count" t-value="1"/>
-            								</t>
-            								
-            								</t>
+            								<!--<strong>Report Type:</strong>-->
+
+            								  <strong><span t-esc="category" style="color:#cc7000; font-size: 16px"/></strong>
+
             							</div>
             							<!--</div>-->
             				</div>
                 			<br/>
 											 
 											 
-							<div class="container" align="center">
-                                <table class="table table-sm mb-4">
+						<div class="container" align="center">
+                            <table class="table table-sm mb-4">
                                     <thead>
                                         <tr>
                                             <th colspan="5" style="background-color: #31216B;color: white">Impact of turn over</th>
@@ -67,25 +58,27 @@
                                       	<tr align="center">
                                       	 
                                       	    
-                                          <th rowspan="15" style="background-color: #E9FAFF;color: #31216B">RISK OF TURN OVER</th>
-                                          <th style="background-color: #E9FAFF">LOW</th>
+                                          <th rowspan="15" style="background-color: #E9FAFF;color: #31216B; vertical-align : middle">RISK OF TURN OVER</th>
+                                          <th style="background-color: #E9FAFF; vertical-align : middle;">LOW</th>
                                           
-                                          <td style="background-color: #8BD4DB">
+                                          <td align="left" style="background-color: #8BD4DB">
+                                          
                                             <t t-foreach="docs" t-as="employee">
                                             <t t-if="employee.impact == '1' and employee.risk == '1'">
                                             <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
                                             </t>
                                             </t>
+                                              
                                             </td>
                                           
-                                          <td style="background-color: #C5EDEC">
+                                          <td align="left" style="background-color: #C5EDEC">
                                             <t t-foreach="docs" t-as="employee">
                                             <t t-if="employee.impact == '2' and employee.risk == '1'">
                                             <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
                                             </t>
                                             </t>
                                           </td>
-                                          <td style="background-color: #FFEBED">
+                                          <td align="left" style="background-color: #FFEBED">
                                             <t t-foreach="docs" t-as="employee">
                                             <t t-if="employee.impact == '3' and employee.risk == '1'">
                                             <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
@@ -95,22 +88,22 @@
                                           
                                           </tr>
                                         <tr align="center">
-                                          <th style="background-color: #E9FAFF;color: #31216B">MEDIUM</th>
-                                          <td style="background-color: #C5EDEC">
+                                          <th style="background-color: #E9FAFF;color: #31216B; vertical-align : middle">MEDIUM</th>
+                                          <td align="left" style="background-color: #C5EDEC">
                                             <t t-foreach="docs" t-as="employee">
                                             <t t-if="employee.impact == '1' and employee.risk == '2'">
                                             <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
                                             </t>
                                             </t>
                                           </td>
-                                          <td style="background-color: #FFEBED">
+                                          <td align="left" style="background-color: #FFEBED">
                                             <t t-foreach="docs" t-as="employee">
                                             <t t-if="employee.impact == '2' and employee.risk == '2'">
                                             <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
                                             </t>
                                             </t>
                                           </td>
-                                          <td style="background-color: #FFD0D4">
+                                          <td align="left" style="background-color: #FFD0D4">
                                             <t t-foreach="docs" t-as="employee">
                                             <t t-if="employee.impact == '3' and employee.risk == '2'">
                                             <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
@@ -119,22 +112,22 @@
                                           </td>
                                         </tr>
                                         <tr align="center">
-                                          <th style="background-color: #E9FAFF;color: #31216B">HIGH</th>
-                                          <td style="background-color: #FFEBED">
+                                          <th style="vertical-align : middle; background-color: #E9FAFF;color: #31216B">HIGH</th>
+                                          <td align="left" style="background-color: #FFEBED">
                                             <t t-foreach="docs" t-as="employee">
                                             <t t-if="employee.impact == '1' and employee.risk == '3'">
                                             <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
                                             </t>
                                             </t>
                                           </td>
-                                          <td style="background-color: #FFD0D4">
+                                          <td align="left" style="background-color: #FFD0D4">
                                             <t t-foreach="docs" t-as="employee">
                                             <t t-if="employee.impact == '2' and employee.risk == '3'">
                                             <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
                                             </t>
                                             </t>
                                           </td>
-                                          <td style="background-color: #FFA1A1">
+                                          <td align="left" style="background-color: #FFA1A1">
                                             <t t-foreach="docs" t-as="employee">
                                             <t t-if="employee.impact == '3' and employee.risk == '3'">
                                             <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
@@ -148,9 +141,8 @@
 															
 						</div>
                     
-                    </div>
+                </div>
 
-                
             </t>
         </t>
 

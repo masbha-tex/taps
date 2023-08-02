@@ -16,13 +16,13 @@ _logger = logging.getLogger(__name__)
 
 
 class ManufacturingPlan(models.TransientModel):
-    _name = 'mrp.plan'
-    _description = 'Manufacturing Plan'
+    _name = 'mrp.requisition'
+    _description = 'Requisition'
     _check_company_auto = True
 
     item = fields.Text(string='Item', readonly=True)
     shade_finish = fields.Text(string='Shade / Finish', readonly=True)
-    plan_for = fields.Selection([
+    requisition_for = fields.Selection([
         ('dyeing', 'Dyeing'),
         ('sliderplating', 'Slider Plating'),
         ('topplating', 'Top Plating'),
@@ -30,16 +30,8 @@ class ManufacturingPlan(models.TransientModel):
         ('pinboxplating', 'Pinbox Plating'),
         ('painting', 'Painting'),
         ('sliassembly', 'Slider Assembly')],
-        string='Plan For')
-    
-    plan_start = fields.Datetime(string='Start Date', required=True)
-    plan_end = fields.Datetime(string='End Date')
-    item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
+        string='Requisition For')
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
-    plan_qty = fields.Float(string='Qty', store=True, default=0.0, digits='Product Unit of Measure')
-    
-    machine_line = fields.One2many('machine.line', 'plan_id', string='Machines',copy=True, auto_join=True)
-    
 
     @api.model
     def default_get(self, fields_list):
@@ -63,7 +55,7 @@ class ManufacturingPlan(models.TransientModel):
         #     res["split_qty"] = production._get_quantity_to_backorder()
         return res 
     
-    @api.onchange('plan_for')
+    @api.onchange('requisition_for')
     def _onchange_plan(self):
         active_id = self.env.context.get("active_ids")
         production = self.env["manufacturing.order"].browse(active_id)
@@ -93,8 +85,8 @@ class ManufacturingPlan(models.TransientModel):
 
 
 class MachineLine(models.TransientModel):
-    _name = 'machine.line'
-    _description = 'Machine wise plan'
+    _name = 'mrp.requisition.line'
+    _description = 'RM Requisition'
     #_order = 'order_id, sequence, id'
     _check_company_auto = True
     

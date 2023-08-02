@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="mail_act_goals_approval" model="mail.activity.type">
+        <field name="name">Appraisal Goals Achievement Approval</field>
+        <field name="res_model_id" ref="taps_hr.model_hr_appraisal_goal_acvd"/>
+    </record>
+
+</odoo>

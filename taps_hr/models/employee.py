@@ -774,5 +774,6 @@ class HrEmployeePublic(models.Model):
     pin = fields.Char(readonly=True)
     barcode = fields.Char(readonly=True)
     risk = fields.Char(readonly=True)
-    impact = fields.Char(readonly=True) 
+    impact = fields.Char(readonly=True)
+    instructor = fields.Char(readonly=True)
     

@@ -18,15 +18,16 @@ var BarcodeScanner = AbstractAction.extend({
             });
         },
     },
-
+    init: function (parent, action) {
+        this._super.apply(this, arguments);
+        this.active_id = action.context.active_id;
+    },
     start: function () {
         
         var self = this;
         core.bus.on('barcode_scanned', this, this._onBarcodeScanned);
         self.session = Session;
-        this.active_id = this.getSession().active_id;
         const company_id = this.session.user_context.allowed_company_ids[0];
-       
         var def = this._rpc({
                 model: 'res.company',
                 method: 'search_read',
@@ -51,11 +52,10 @@ var BarcodeScanner = AbstractAction.extend({
     _onBarcodeScanned: function(barcode) {
         var self = this;
         core.bus.off('barcode_scanned', this, this._onBarcodeScanned);
-        // var activeId = this.getSession().user_context.active_id;
         this._rpc({
                 model: 'lms.session',
                 method: 'attendance_scan',
-                args: [barcode, this.active_id],
+                args: [barcode, this.active_id,],
             })
             .then(function (result) {
                 if (result.action) {

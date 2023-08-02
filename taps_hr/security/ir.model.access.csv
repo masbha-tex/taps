@@ -9,5 +9,5 @@ access_attenance_report,access_attendance_pdf_report,model_attendance_pdf_report
 access_increment_promotion,increment.promotion,model_increment_promotion,base.group_user,1,1,1,1
 access_increment_promotion_line,increment.promotion.line,model_increment_promotion_line,base.group_user,1,1,1,1
 access_kpi_objective_pdf_report,kpi.objective.pdf.report,model_kpi_objective_pdf_report,hr_appraisal.group_hr_appraisal_user,1,1,1,1
-access_hr_appraisal_goal_acvd,hr.appraisal.goal.acvd,model_hr_appraisal_goal_acvd,hr_appraisal.group_hr_appraisal_user,1,1,1,1
-access_hr_appraisal_goal_acvd_line,hr.appraisal.goal.acvd.line,model_hr_appraisal_goal_acvd_line,hr_appraisal.group_hr_appraisal_user,1,1,1,1
+access_hr_appraisal_goal_acvd,hr.appraisal.goal.acvd,model_hr_appraisal_goal_acvd,base.group_user,1,1,1,1
+access_hr_appraisal_goal_acvd_line,hr.appraisal.goal.acvd.line,model_hr_appraisal_goal_acvd_line,base.group_user,1,1,1,1
