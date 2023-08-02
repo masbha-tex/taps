@@ -15,6 +15,7 @@ _logger = logging.getLogger(__name__)
 class HrAppraisal(models.Model):
     _inherit = "hr.appraisal"
     _description = "Employee Appraisal"
+    _order = 'employee_id'
 
 
     ytd_weightage_acvd = fields.Float(string='YTD Weightage ACVD', compute='_compute_ytd_weightage_acvd')

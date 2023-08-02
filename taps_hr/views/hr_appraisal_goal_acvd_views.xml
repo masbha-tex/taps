@@ -2,9 +2,9 @@
 <odoo>
   <data>
       <record id="view_hr_appraisal_goal_acvd_form" model="ir.ui.view">
-        <field name="name">hr_appraisal_goal_acvd.view.from</field>
-        <field name="model">hr.appraisal.goal.acvd</field>
-        <field name="arch" type="xml">
+          <field name="name">hr_appraisal_goal_acvd.view.from</field>
+          <field name="model">hr.appraisal.goal.acvd</field>
+          <field name="arch" type="xml">
             <form string="Employee Appraisal Goals Achievement">
                 <header>
                     <button name="button_confirm" type="object" states="draft" string="Submit" class="oe_highlight"/>
@@ -85,9 +85,9 @@
     <!-- actions opening views on models -->
 
     <record id="hr_appraisal_goal_acvd_action" model="ir.actions.act_window">
-      <field name="name">Employee Appraisal Goals Achievement</field>
-      <field name="res_model">hr.appraisal.goal.acvd</field>
-      <field name="view_mode">tree,form</field>
+        <field name="name">Employee Appraisal Goals Achievement</field>
+        <field name="res_model">hr.appraisal.goal.acvd</field>
+        <field name="view_mode">tree,form</field>
     </record>
 
 
@@ -114,7 +114,8 @@
     <menuitem id="hr_appraisal_goal_acvd_menu" 
               parent="hr_appraisal.menu_hr_appraisal_root" 
               sequence="1" 
-              name="Achievement" 
+              name="Achievement"
+              groups="base.group_user"
               action="hr_appraisal_goal_acvd_action"/>
 
       

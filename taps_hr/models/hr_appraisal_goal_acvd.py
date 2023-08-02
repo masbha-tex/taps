@@ -19,8 +19,6 @@ class HrAppraisalGoalsAcvd(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _description = 'Employee Appraisal Goals Achievement'
 
-
-
     name = fields.Char('Code', store=True,required=True, readonly=True, index=True, copy=False, tracking=True, default='Goals Monthly Achievement')
     employee_id = fields.Many2one('hr.employee', string="Owner", default=lambda self: self.env.user.employee_id, required=True, tracking=True)
     year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(), tracking=True, store=True, required=True)
@@ -198,7 +196,6 @@ class HrAppraisalGoalsAcvd(models.Model):
                 continue
             order.write({'state': 'submit'})
             users = self.employee_id.parent_id.user_id.id
-            # raise UserError((users))
             self.activity_schedule('taps_lms.mail_act_goals_approval', user_id=users, note=f'Please Approve Goals Achievement for the Month of {self.month, self.year} and Code is {self.name}')
         return True    
     
