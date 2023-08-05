@@ -28,7 +28,7 @@ class SaleOrder(models.Model):
     #_order = 'date_order desc, id desc'
     _check_company_auto = True
 
-    sequence = fields.Integer(string='Sequence')
+    #sequence = fields.Integer(string='Sequence')
     sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', readonly=True, store=True)
     oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', readonly=True, store=True)
     company_id = fields.Many2one('res.company', related='oa_id.company_id', string='Company', readonly=True, store=True)

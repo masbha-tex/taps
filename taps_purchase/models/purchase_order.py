@@ -145,5 +145,18 @@ class PurchaseOrderLineInherit(models.Model):
     _inherit = "purchase.order.line"
 
     quality_standard = fields.Char(String="Quality Standaed")
+    # last_purchase_price = fields.Char(String="Last Purchase",compute="_last_purchase_price")
+    
+    
+    # def _last_purchase_price(self):
+    #     for line in self:
+    #         domain = [
+                
+    #             ("product_id", "=", line.product_id.id),
+    #             ("date_order", "<", line.date_order),
+    #         ]
+    #         docs = self.env["purchase.order.line"].search(domain, limit=1)
+    #         line.last_purchase_price = docs.price_unit
+    #         # raise UserError((docs.id))
     
     

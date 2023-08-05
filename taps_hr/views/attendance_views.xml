@@ -30,7 +30,7 @@
               <field name="worked_hours" position="after">
                   <field name="otHours" widget="float_time"/>
                   <field name="com_otHours" widget="float_time" optional="hide" />
-                  <field name="com_worked_hours" widget="float_time" optional="hide" />
+                  <field name="com_worked_hour" widget="float_time" optional="hide" />
               </field>
           </field>
       </record>

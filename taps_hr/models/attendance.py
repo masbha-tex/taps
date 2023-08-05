@@ -24,17 +24,16 @@ class HrAttendance(models.Model):
     is_lock = fields.Boolean(readonly=False, default=False)
     ad_in = fields.Float(string = "IN")
     ad_out = fields.Float(string = "OUT")
-    com_worked_hours = fields.Float(string='C-Worked Hours', compute='_compute_com_worked_hours', store=True, readonly=True)
+    com_worked_hour = fields.Float(string='C-Worked Hours', compute='_compute_com_worked_hours', store=True, readonly=True)
     
     @api.depends('check_in', 'check_out')
     def _compute_com_worked_hours(self):
         for attendance in self:
-            if attendance.outHour and attendance.inHour:
-                com_out_hour = (attendance.outHour-(attendance.otHours-attendance.com_otHours))
-                delta = com_out_hour - attendance.inHour
-                attendance.com_worked_hours = delta
+            if attendance.check_in and attendance.check_out:
+                delta = ((attendance.worked_hours+0.01999) - (attendance.otHours))+attendance.com_otHours
+                attendance.com_worked_hour = delta
             else:
-                attendance.com_worked_hours = False
+                attendance.com_worked_hour = False
     
     def _action_daily_attendance_email(self, empl_id):
         template_id = self.env.ref('taps_hr.daily_attendance_email_template', raise_if_not_found=False).id

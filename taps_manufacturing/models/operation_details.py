@@ -25,7 +25,7 @@ class OperationDetails(models.Model):
     _description = "Operation Details"
     _check_company_auto = True
 
-    
+    mrp_line = fields.Many2one('manufacturing.order', string='Mrp Id', store=True, readonly=True)
     sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', store=True, readonly=True)
     oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', store=True, readonly=True)
     operation_of = fields.Selection([
@@ -36,6 +36,7 @@ class OperationDetails(models.Model):
         string='Operation Of')
     operation_by = fields.Text(string='Operation By', store=True)
     based_on = fields.Text(string='Based On', store=True)
+    qty = fields.Float(string='Qty', readonly=False)
 
 
 

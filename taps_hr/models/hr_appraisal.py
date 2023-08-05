@@ -34,27 +34,30 @@ class HrAppraisal(models.Model):
             'target': 'new',
             # 'context': {'default_meeting_date': self.date_close},  # Pass the meeting_date to the wizard
         }    
-    def action_create_meeting_events(self, meeting_date=False):
-        for appraisal in self:
-            employees = appraisal.employee_id
-            if not employees:
-                continue
-            if not meeting_date:
-                raise UserError(('Please set a meeting date before call the meeting event button.'))
-            # raise UserError(('Please set a meeting date before call the meeting event button.'))
+    # def action_create_meeting_events(self, meeting_date=False):
+    #     # raise UserError((self))
+    #     for appraisal in self:
+    #         # employees = appraisal.employee_id
+    #         # if not employees:
+    #         #     continue
+    #         if not meeting_date:
+    #             raise UserError(('Please set a meeting date before call the meeting event button.'))
+            
     
-            event_vals = {
-                'name': 'Appraisal Meeting',
-                'start': meeting_date,
-                'stop': meeting_date,
-                'start_date': meeting_date,
-                'stop_date': meeting_date,
-                'user_id': appraisal.employee_id.user_id.id,
-            }
-            meeting = self.env['calendar.event'].create(event_vals)
-            appraisal.meeting_id = meeting.id
+    #         event_vals = {
+    #             'name': 'Appraisal Meeting',
+    #             'start': meeting_date,
+    #             'stop': meeting_date,
+    #             'start_date': meeting_date,
+    #             'stop_date': meeting_date,
+    #             'user_id': appraisal.employee_id.user_id.id,
+    #         }
+    #         meeting = self.env['calendar.event'].create(event_vals)
+    #         # raise UserError((self.employee_id))
+    #         appraisal.meeting_id = meeting.id
+    #         appraisal.date_final_interview = meeting_date
 
-        return True
+    #     # return True
     def _compute_ytd_weightage_acvd(self):
         for appraisal in self:
             app_goal = self.env['hr.appraisal.goal'].search([('employee_id', '=', appraisal.employee_id.id), ('deadline', '=', appraisal.date_close)])
@@ -103,8 +106,20 @@ class MeetingEventWizard(models.TransientModel):
         # Call the action_create_meeting_event method for each hr.appraisal record
         hr_appraisal = self.env['hr.appraisal'].browse(active_ids)
         # raise UserError((hr_appraisal))
-        for mt in hr_appraisal:
-            mt.action_create_meeting_events(meeting_date)
+        for appraisal in hr_appraisal:
+            # mt.action_create_meeting_events(meeting_date)
+            event_vals = {
+                'name': 'Appraisal Meeting',
+                'start': meeting_date,
+                'stop': meeting_date,
+                'start_date': meeting_date,
+                'stop_date': meeting_date,
+                'user_id': appraisal.employee_id.user_id.id,
+            }
+            meeting = self.env['calendar.event'].create(event_vals)
+            # raise UserError((self.employee_id))
+            appraisal.meeting_id = meeting.id
+            appraisal.date_final_interview = meeting_date
 
         return {'type': 'ir.actions.act_window_close'} 
 
@@ -115,13 +130,14 @@ class CalendarEvent(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         events = super().create(vals_list)
-        for event in events:
-            if event.res_model == 'hr.appraisal':
-                appraisal = self.env['hr.appraisal'].browse(event.res_id)
-                # raise UserError((appraisal))
-                if appraisal.exists():
-                    appraisal.write({
-                        'meeting_id': event.id,
-                        'date_final_interview': event.start_date if event.allday else event.start
-                    })
+        
+        # for event in events:
+        #     if event.res_model == 'hr.appraisal':
+        #         appraisal = self.env['hr.appraisal'].browse(event.res_id)
+        #         # raise UserError((appraisal))
+        #         if appraisal.exists():
+        #             appraisal.write({
+        #                 'meeting_id': event.id,
+        #                 'date_final_interview': event.start_date if event.allday else event.start
+        #             })
         return events
