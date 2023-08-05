@@ -10,7 +10,7 @@
     'category': 'Generic Modules/Human Resources',
     "version": "14.0.1.0.0",
     "license": "OEEL-1",
-    'depends': ['base_setup', 'hr_attendance', 'web_studio','hr','hr_payroll_account','hr_payroll','barcodes'],
+    'depends': ['base_setup', 'hr_attendance', 'web_studio','hr','hr_payroll_account','hr_payroll','barcodes','hr_appraisal'],
     # always loaded
     'data': [
         'security/ir.model.access.csv',

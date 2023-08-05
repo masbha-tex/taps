@@ -346,5 +346,36 @@
             </xpath>
         </field>
     </record>
+    <record model="ir.ui.view" id="view_hr_appraisal_tree_inherit">
+        <field name="name">hr.appraisal.tree.inherit</field>
+        <field name="model">hr.appraisal</field>
+        <field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_tree"/>
+        <field name="arch" type="xml">
+            <data>
+            <header>
+                <button name="action_create_meeting_event" string="Create Meeting Event" type="object" class="oe_highlight"/>
+            </header>
+            </data>
+        </field>
+    </record>
+
+    
+    <record id="view_meeting_event_wizard_form" model="ir.ui.view">
+        <field name="name">meeting.event.wizard.form</field>
+        <field name="model">meeting.event.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Meeting Event Wizard" create="false">
+                <group>
+                    <field name="meeting_date"/>
+                    <!-- Add more fields here if needed -->
+                </group>
+                <footer>
+                    <button string="Confirm" type="object" name="create_event_and_appraisal" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
 
 </odoo>

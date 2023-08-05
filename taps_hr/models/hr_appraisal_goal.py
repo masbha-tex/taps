@@ -105,48 +105,6 @@ class HrAppraisalGoal(models.Model):
     ('refused', 'Refused')], string='Status', copy=False, 
         index=True, readonly=True, store=True, default='draft', tracking=False, help="Status of the Goal")
     
-
-    
-    def button_approve(self, force=False):
-        if self:
-            for app in self:
-                elist = self.env['hr.employee'].search([('id','=',app.employee_id.id)])
-                conlist = self.env['hr.contract'].search([('employee_id','=',app.employee_id.id)])
-                # if app.new_job_id:
-                #     elist[-1].write({'job_id': app.new_job_id.id})
-                #     conlist[-1].write({'job_id': app.new_job_id.id})
-                # if app.new_grade:
-                #     conlist[-1].write({'structure_type_id': app.new_grade.id})
-                # if app.increment_amount > 0:
-                #     conlist[-1].write({'wage': app.employee_id.contract_id.wage + app.increment_amount})
-                # if app.ot_type == "true":
-                #     elist[-1].write({'isovertime': True})
-                # if app.ot_type == "false":
-                #     elist[-1].write({'isovertime': False})
-                # if not app.new_category == app.category:
-                #     conlist[-1].write({'category': app.new_category})
-                
-                    
-                    
-                    
-                    
-        self.write({'state': 'approved'})
-        return {}
-
-    def button_confirm(self):
-        for order in self:
-            if order.state not in ['draft', 'submit']:
-                continue
-            order.write({'state': 'submit'})
-        return True     
-    
-    def button_draft(self):
-        self.write({'state': 'draft'})
-        return {}    
-    
-    def button_cancel(self):
-        self.write({'state': 'refused'})
-        
     def action_confirm(self):
         self.write({'progression': '100'})
 

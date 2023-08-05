@@ -178,6 +178,7 @@
 						</div>
 					</div>
 					<div style="font-size:12px">
+					  <t t-set="back_part" t-value="0"/>
 						<t t-set="p_code" t-value="0"/>
 						<t t-set="shape" t-value="0"/>
 						<t t-set="logo" t-value="0"/>
@@ -193,11 +194,17 @@
 						<t t-set="mm" t-value="0"/>
 						<t t-set="dis" t-value="0"/>
 						<t t-foreach="o.order_line" t-as="line">
+						  <t t-if="back_part == 0 ">
+								<t t-if="line.back_part and line.back_part != 'N/A'">
+									<t t-set="back_part" t-value="1"/>
+								</t>
+							</t>
 							<t t-if="p_code == 0 ">
 								<t t-if="line.product_code and line.product_code != 'N/A'">
 									<t t-set="p_code" t-value="1"/>
 								</t>
 							</t>
+							
 							<t t-if="shape == 0">
 								<t t-if="line.shape and line.shape !='N/A'">
 									<t t-set="shape" t-value="1"/>
@@ -271,8 +278,12 @@
 								<t t-set="line_count" t-value="0"/>
 								<tr>
 									<th class="text-left">Item</th>
-									<th class="text-center">Image</th>
-									<t t-set="line_count" t-value="2"/>
+									<!--<th class="text-center">Image</th>-->
+									<t t-set="line_count" t-value="1"/>
+									<t t-if="back_part == 1">
+										<th class="text-left">BACK_PART</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
 									<t t-if="p_code == 1">
 										<th class="text-left">CODE</th>
 										<t t-set="line_count" t-value="line_count+1"/>
@@ -341,7 +352,19 @@
 													<span t-esc="line.product_template_id.name"/>
 												</strong>
 											</td>
-											<td/>
+											<!--<td/>-->
+											<t t-if="back_part == 1">
+												<t t-if="line.back_part">
+													<td>
+														<strong>
+															<span style="color: Black" t-esc="line.back_part"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.back_part">
+													<td/>
+												</t>
+											</t>
 											<t t-if="p_code == 1">
 												<t t-if="line.product_code">
 													<td>

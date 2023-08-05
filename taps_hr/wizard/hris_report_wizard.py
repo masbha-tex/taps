@@ -66,10 +66,10 @@ class HRISPDFReport(models.TransientModel):
         'hr.department',  string='Department', readonly=False)
     
     employee_type = fields.Selection([
-        ('staf', 'Stafs'),
+        ('staff', 'Staffs'),
         ('worker', 'Workers'),
         ('expatriate', 'Expatriates'),
-        ('cstaf', 'C-Stafs'),
+        ('cstaff', 'C-Staffs'),
         ('cworker', 'C-workers')],
         string='Employee Type', required=False)
     
@@ -135,7 +135,8 @@ class HRISPDFReport(models.TransientModel):
                         'employee_id': self.employee_id.id,
                         'report_type': self.report_type,
                         'bank_id': self.bank_id.id,
-                        'types': self.types}
+                        'types': self.types,
+                        'employee_type': self.employee_type}
 
             if self.mode_type == "company":
                 data = {'date_from': self.date_from, 
@@ -146,7 +147,8 @@ class HRISPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'report_type': self.report_type,
                         'bank_id': self.bank_id.id,
-                        'types': self.types}
+                        'types': self.types,
+                        'employee_type': self.employee_type}
 
             if self.mode_type == "department":
                 data = {'date_from': self.date_from, 
@@ -157,7 +159,8 @@ class HRISPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'report_type': self.report_type,
                         'bank_id': self.bank_id.id,
-                        'types': self.types}
+                        'types': self.types,
+                        'employee_type': self.employee_type}
 
             if self.mode_type == "category":
                 data = {'date_from': self.date_from, 
@@ -168,7 +171,19 @@ class HRISPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'report_type': self.report_type,
                         'bank_id': self.bank_id.id,
-                        'types': self.types}
+                        'types': self.types,
+                        'employee_type': self.employee_type}
+            if self.mode_type == "emptype":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': self.bank_id.id,
+                        'types': self.types,
+                        'employee_type': self.employee_type}                
         if self.report_type == 'employee_profile':
             return self.env.ref('taps_hr.action_hris_employee_card_pdf_report').report_action(self, data=data)
         if self.report_type == 'joining':
@@ -1285,13 +1300,27 @@ class HRISReportPDF11(models.AbstractModel):
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
         # if data.get('bank_id'):
         #     #str = re.sub("[^0-9]","",data.get('employee_id'))
         #     domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))
+
+
+        
             
         domain.append(('active', 'in',(False,True)))
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
@@ -1322,6 +1351,8 @@ class HRISReportPDF11(models.AbstractModel):
             heading_type = emp.category_ids.name
         if data.get('employee_id'):
             heading_type = emp.name
+        if data.get('employee_type'):
+            heading_type = emp.category_ids.name
         
         return {
             'doc_ids': docs.ids,

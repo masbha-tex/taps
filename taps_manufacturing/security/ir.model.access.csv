@@ -5,3 +5,6 @@ access_mrp_split_line,mrp_split_line,model_mrp_split_line,base.group_user,1,1,1,
 access_bom_verification,bom_verification,model_bom_verification,base.group_user,1,1,1,1
 access_manufacturing_order,manufacturing_order,model_manufacturing_order,base.group_user,1,1,1,1
 access_mrp_plan,mrp_plan,model_mrp_plan,base.group_user,1,1,1,1
+access_machine_line,machine_line,model_machine_line,base.group_user,1,1,1,1
+access_requisition,requisition,model_mrp_requisition,base.group_user,1,1,1,1
+access_requisition_line,requisition_line,model_mrp_requisition_line,base.group_user,1,1,1,1

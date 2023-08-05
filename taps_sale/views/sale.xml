@@ -138,8 +138,8 @@
 					<!-- <field name="nailcap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/> -->
 					
 					<!-- <field name="fnamebcd" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/> -->
-					<field name="nu1washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-					<field name="nu2washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+					<!-- <field name="nu1washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/> -->
+					<!-- <field name="nu2washer" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/> -->
 					<field name="tape_con" invisible="1"/>
 					<field name="shadewise_tape" invisible="1"/>
 					<field name="slider_con" invisible="1"/>

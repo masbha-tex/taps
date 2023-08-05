@@ -346,12 +346,9 @@
 								<t t-set="line_count" t-value="0"/>
 								<tr>
 									<th class="text-left">Item</th>
-									<th class="text-center">Image</th>
-									<t t-set="line_count" t-value="2"/>
-									<t t-if="p_code == 1">
-										<th class="text-left">CODE</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
+									<!--<th class="text-center">Image</th>-->
+									<t t-set="line_count" t-value="1"/>
+									
 									<t t-if="shape == 1">
 										<th class="text-left">Shape</th>
 										<t t-set="line_count" t-value="line_count+1"/>
@@ -411,14 +408,7 @@
 							<tbody>
 								<t t-set="total_quantity" t-value="0"/>
 								<t t-set="id" t-value="0.0"/>
-								<t t-set="item" t-value=""/>
-								<t t-set="fnamebcd" t-value=""/>
-								<t t-set="logo" t-value=""/>
-								<t t-set="bcd" t-value=""/>
-								<t t-set="nailmart" t-value=""/>
-								<t t-set="nailcap" t-value=""/>
-								<t t-set="nu1washer" t-value=""/>
-								<t t-set="nu2washer" t-value=""/>
+								
 								<t t-foreach="o.order_line" t-as="line">
 									<tr>
 										<t t-if="not line.display_type">
@@ -427,19 +417,9 @@
 													<span t-esc="line.product_template_id.generic_name"/>
 												</strong>
 											</td>
-											<td/>
-											<t t-if="p_code == 1">
-												<t t-if="line.product_code">
-													<td>
-														<strong>
-															<span t-esc="line.product_code"/>
-														</strong>
-													</td>
-												</t>
-												<t t-if="not line.product_code">
-													<td/>
-												</t>
-											</t>
+											<!--<td/>-->
+											
+												
 											<t t-if="shape == 1">
 												<t t-if="line.shape">
 													<td>
@@ -736,7 +716,7 @@
 							</p> -->
 						</div>
 					</div>
-					<div class="row mb32 mt32" style="font-size:10px;page-break-inside:avoid;">
+					<div class="row mb32 mt32" style="font-size:11px;page-break-inside:avoid;">
 						<diV class="col-6">
 							<strong>TERMS AND CONDITION:</strong>
 							<br/>
@@ -791,17 +771,17 @@
 					<br/>
 					<div class="row mb32 mt32" style="font-size:10px; page-break-inside:avoid;">
 						<div class="col-10">
-							<table class="table table-sm o_main_table" style="background: white ! important">
-								<tbody>
-									<tr>
-										<td style="width: 5%;background-color: white! important; color: black; border-right: 1px solid Black ! important; vertical-align:middle ! important"> NOTE:</td>
-										<td style="width: 95%;background-color: white ! important;color: black">DISRUPTION IN SUPPLY AT PRESENT DUE TO THE COVID-19 ( CORONA VIRUS )
-ISSUE THERE IS A LOT OF DISRUPTION IN THE SUPPLY CHAIN, WHICH MAY HAMPERS
-OUR RAW MATERIAL SUPPLIES FROM DIFFERENT LOCATION, WHILE WE WILL TRY OUR BEST TO SUPPLY THE GOODS IN TIME,
-DUE TO DELAYS BEYOND OUR CONTROL, WE WILL NOT TAKE ANY LIABILITY ( FINANCIAL OR OTHERWISE ) ARISING OUT OF SUCH DELAY.</td>
-									</tr>
-								</tbody>
-							</table>
+<!--							<table class="table table-sm o_main_table" style="background: white ! important">-->
+<!--								<tbody>-->
+<!--									<tr>-->
+<!--										<td style="width: 5%;background-color: white! important; color: black; border-right: 1px solid Black ! important; vertical-align:middle ! important"> NOTE:</td>-->
+<!--										<td style="width: 95%;background-color: white ! important;color: black">DISRUPTION IN SUPPLY AT PRESENT DUE TO THE COVID-19 ( CORONA VIRUS )-->
+<!--ISSUE THERE IS A LOT OF DISRUPTION IN THE SUPPLY CHAIN, WHICH MAY HAMPERS-->
+<!--OUR RAW MATERIAL SUPPLIES FROM DIFFERENT LOCATION, WHILE WE WILL TRY OUR BEST TO SUPPLY THE GOODS IN TIME,-->
+<!--DUE TO DELAYS BEYOND OUR CONTROL, WE WILL NOT TAKE ANY LIABILITY ( FINANCIAL OR OTHERWISE ) ARISING OUT OF SUCH DELAY.</td>-->
+<!--									</tr>-->
+<!--								</tbody>-->
+<!--							</table>-->
 						</div>
 						<div class="col-2">
 							<!--<div class="float-right mt32 mb32 ! important;" style="font-size:10px;">-->
