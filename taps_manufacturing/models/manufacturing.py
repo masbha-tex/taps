@@ -49,23 +49,23 @@ class SaleOrder(models.Model):
     done_qty = fields.Float(string='Done Quantity', digits='Product Unit of Measure', readonly=False)
     balance_qty = fields.Float(string='Balance Quantity', compute='_balance_qty', digits='Product Unit of Measure', readonly=True)
     
-    topbottom = fields.Text(string='Top/Bottom', store=True, readonly=True)
-    slidercodesfg = fields.Text(string='Slider Code (SFG)', store=True, readonly=True)
-    finish = fields.Text(string='Finish', store=True)
-    shade = fields.Text(string='Shade', store=True)
-    sizein = fields.Text(string='Size (Inch)', store=True)
-    sizecm = fields.Text(string='Size (CM)', store=True)
-    sizemm = fields.Text(string='Size (MM)', store=True)
+    topbottom = fields.Char(string='Top/Bottom', store=True, readonly=True)
+    slidercodesfg = fields.Char(string='Slider Code (SFG)', store=True, readonly=True)
+    finish = fields.Char(string='Finish', store=True, readonly=True)
+    shade = fields.Char(string='Shade', store=True, readonly=True)
+    sizein = fields.Char(string='Size (Inch)', store=True, readonly=True)
+    sizecm = fields.Char(string='Size (CM)', store=True, readonly=True)
+    sizemm = fields.Char(string='Size (MM)', store=True, readonly=True)
     
-    dyedtape = fields.Text(string='Dyed Tape', store=True)
-    ptopfinish = fields.Text(string='Plated Top Finish', store=True)
+    dyedtape = fields.Char(string='Dyed Tape', store=True, readonly=True)
+    ptopfinish = fields.Char(string='Plated Top Finish', store=True, readonly=True)
     
-    numberoftop = fields.Text(string='Number of Top', store=True)
+    numberoftop = fields.Char(string='Number of Top', store=True, readonly=True)
     
-    pbotomfinish = fields.Text(string='Plated Bottom Finish', store=True)
-    ppinboxfinish = fields.Text(string='Plated Pin-Box Finish', store=True)
-    dippingfinish = fields.Text(string='Dipping Finish', store=True)
-    gap = fields.Text(string='Gap', store=True)
+    pbotomfinish = fields.Char(string='Plated Bottom Finish', store=True)
+    ppinboxfinish = fields.Char(string='Plated Pin-Box Finish', store=True)
+    dippingfinish = fields.Char(string='Dipping Finish', store=True)
+    gap = fields.Char(string='Gap', store=True)
     
     logo = fields.Text(string='Logo', store=True)
     logoref = fields.Text(string='Logo Ref', store=True)
@@ -226,7 +226,22 @@ class SaleOrder(models.Model):
                 m_qty += self.botomwire_con
             elif plan_for == 'sliassembly':
                 m_qty += self.slider_con
+        
+        # operation = self.env["operation.details"].browse(mo_ids)
 
+        # operation = operation.read_group(
+        #     fields=['oa_id', 'shade'],  # Fields to group by
+        #     groupby=['oa_id', 'shade'],  # Fields to group by
+        #     offset=0,
+        #     limit=None
+        # )
+
+        # mrp_ = self.env['operation.details'].create({'mrp_lines':products.id,
+        #                                              'sale_lines':products.id,'oa_id':products.order_id.id,
+        #                                              'operation_of':products.order_id.company_id.id,
+        #                                              'operation_by':products.topbottom,'based_on':products.slidercodesfg,
+        #                                              'qty':products.finish,'done_qty':products.shade
+        #                                             })
             
         # spl_qty = sum(split_line.mapped('product_qty'))
         # mrp_qty = production.product_qty

@@ -335,15 +335,7 @@
 							</thead>
 							<tbody>
 								<t t-set="total_quantity" t-value="0"/>
-								<t t-set="id" t-value="0.0"/>
-								<t t-set="item" t-value=""/>
-								<t t-set="fnamebcd" t-value=""/>
-								<t t-set="logo" t-value=""/>
-								<t t-set="bcd" t-value=""/>
-								<t t-set="nailmart" t-value=""/>
-								<t t-set="nailcap" t-value=""/>
-								<t t-set="nu1washer" t-value=""/>
-								<t t-set="nu2washer" t-value=""/>
+								
 								<t t-foreach="o.order_line" t-as="line">
 									<tr>
 										<t t-if="not line.display_type">

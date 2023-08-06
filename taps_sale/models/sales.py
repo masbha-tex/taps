@@ -120,6 +120,8 @@ class SaleOrder(models.Model):
     total_product_qty = fields.Float(string='Total PI Quantity' ,compute="_total_pi_quantity")
     sa_date = fields.Date(string='SA Date')
     old_sa_num = fields.Char(string='Old Sa Number')
+    garments = fields.Char(string='Garments')
+    corrosions_test = fields.Char(string='Corrosions Test Method')
     
     
     
@@ -234,6 +236,12 @@ class SaleOrder(models.Model):
                 'dpi' : saleorder.order_ref.dpi,
                 'usage' : saleorder.order_ref.usage,
                 'supply_chain' : saleorder.order_ref.supply_chain,
+                'priority' : saleorder.order_ref.priority,
+                'washing_type' : saleorder.order_ref.washing_type,
+                'metal_detection' : saleorder.order_ref.metal_detection,
+                'bcd_part_finish' : saleorder.order_ref.bcd_part_finish,
+                'garments' : saleorder.order_ref.garments,
+                'corrosions_test' : saleorder.order_ref.corrosions_test,
                 'bank': saleorder.order_ref.bank,
                 'incoterm' : saleorder.order_ref.incoterm,
                 'shipment_mode' : saleorder.order_ref.shipment_mode,
@@ -398,6 +406,12 @@ class SaleOrder(models.Model):
                 'order_type' : saleorder.sample_ref[0].order_type,
                 'usage' : saleorder.sample_ref[0].usage,
                 'supply_chain' : saleorder.sample_ref[0].supply_chain,
+                'priority' : saleorder.sample_ref[0].priority,
+                'washing_type' : saleorder.sample_ref[0].washing_type,
+                'metal_detection' : saleorder.sample_ref[0].metal_detection,
+                'bcd_part_finish' : saleorder.sample_ref[0].bcd_part_finish,
+                'garments' : saleorder.sample_ref[0].garments,
+                'corrosions_test' : saleorder.sample_ref[0].corrosions_test,
                 # 'po_no' : saleorder.sample_ref[0].po_no,
                 # 'po_date' : saleorder.sample_ref[0].po_date,
                 # 'revised_date' : saleorder.sample_ref[0].revised_date,
@@ -882,6 +896,7 @@ class SaleOrderLine(models.Model):
     color = fields.Integer(string='Color')
     dimension = fields.Char(string='Dimension')
     line_code = fields.Char(string='Line Code', compute="_compute_line_code")
+    mold_set = fields.Char(string='Mold Set')
     #def write
 
 

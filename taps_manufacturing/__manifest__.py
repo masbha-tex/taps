@@ -19,7 +19,7 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','web_studio','product', 'stock', 'resource','sale','mrp'],
+    'depends': ['base','web','web_studio','product', 'stock', 'resource','sale','mrp'],
 
     # always loaded
     'data': [
@@ -28,6 +28,7 @@
         'wizard/bom_verification.xml',
         'wizard/mrp_plan.xml',
         'wizard/requisition.xml',
+        'views/assets.xml',
         'views/mrp_productivity.xml',
         'views/mrp_production.xml',
         'views/mrp_workorder.xml',

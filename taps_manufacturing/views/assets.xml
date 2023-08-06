@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="assets_backend" name="Assets Backend"
+                  inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet"
+                      href="/taps_manufacturing/static/src/scss/list_view.scss"/>
+                <script src="/taps_manufacturing/static/src/js/list_renderer.js"/>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>
+
+
+<!-- <?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" name="Assets Backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/static/src/js/list_view_search.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo> -->

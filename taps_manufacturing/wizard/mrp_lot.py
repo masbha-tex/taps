@@ -15,14 +15,14 @@ from typing import List, Union
 _logger = logging.getLogger(__name__)
 
 
-class ManufacturingPlan(models.TransientModel):
-    _name = 'mrp.plan'
-    _description = 'Manufacturing Plan'
+class ManufacturingLot(models.TransientModel):
+    _name = 'mrp.lot'
+    _description = 'Mrp Lot'
     _check_company_auto = True
 
     item = fields.Text(string='Item', readonly=True)
     shade_finish = fields.Text(string='Shade / Finish', readonly=True)
-    shade_finish = fields.Text(string='Shade / Finish', readonly=True)
+    size = fields.Text(string='Size', readonly=True)
     plan_for = fields.Selection([
         ('dyeing', 'Dyeing'),
         ('sliderplating', 'Slider Plating'),
@@ -33,8 +33,6 @@ class ManufacturingPlan(models.TransientModel):
         ('sliassembly', 'Slider Assembly')],
         string='Plan For')
     
-    plan_start = fields.Datetime(string='Start Date', required=True)
-    plan_end = fields.Datetime(string='End Date')
     item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
     plan_qty = fields.Float(string='Qty', store=True, default=0.0, digits='Product Unit of Measure')

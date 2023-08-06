@@ -1051,7 +1051,7 @@ class PfReportPDF(models.AbstractModel):
          
             
         domain.append(('active', 'in',(False,True)))
-        domain.append(('contract_id.isActivePF', '=', True))
+        domain.append(('contribution_sum', '!=', 0))
         
         
            
