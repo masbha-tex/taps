@@ -99,6 +99,7 @@ class SaleOrder(models.Model):
     dyeing_plan = fields.Datetime(string='Dyeing Plan Start', readonly=False)
     dyeing_plan_end = fields.Datetime(string='Dyeing Plan End', readonly=False)
     dyeing_plan_qty = fields.Float(string='Dyeing Plan Qty', readonly=False)
+    dy_rec_plan_qty = fields.Float(string='Dyeing Plan Qty', readonly=False)
     dyeing_plan_due = fields.Float(string='Dyeing Plan Due', readonly=False, compute='_dy_plane_due')
     dyeing_output = fields.Float(string='Dyeing Output', readonly=False)
     dyeing_qc_pass = fields.Float(string='Dyeing QC Pass', readonly=False)
@@ -208,8 +209,10 @@ class SaleOrder(models.Model):
                 else:
                     m_qty = dist_qty + addition
                     addition = 0
+                re_pqty = m_qty 
                 m_qty += p.dyeing_plan_qty
-                p.write({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty})
+                p.write({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty,
+                         'dy_rec_plan_qty':re_pqty})
                 
             elif plan_for == 'sliderplating':
                 if self.tape_con < dist_qty + addition:
@@ -226,7 +229,15 @@ class SaleOrder(models.Model):
                 m_qty += self.botomwire_con
             elif plan_for == 'sliassembly':
                 m_qty += self.slider_con
+
+
+        query = """ select oa_id,shade from manufacturing_order where id in (%s) group by oa_id,shade """
         
+        cr = self._cr
+        cursor = self.env.cr
+        cr.execute(query,(mo_ids))
+        work_anniversey = cursor.fetchall()
+                
         # operation = self.env["operation.details"].browse(mo_ids)
 
         # operation = operation.read_group(

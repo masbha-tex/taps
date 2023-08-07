@@ -644,12 +644,12 @@ class SaleOrder(models.Model):
             self.order_line.product_consumption(self.id)
             self.order_line.compute_shadewise_tape()
             #self.generate_mrp()
-            self.generate_m_order()
+            #self.generate_m_order()
         return True
 
     def generate_m_order(self):
         for products in self.order_line:
-            mrp_ = self.env['manufacturing.order'].create({'sequence':products.sequence,'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap})
+            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap})
  
             
     # def manuf_values(self,seq,id,oa,company):

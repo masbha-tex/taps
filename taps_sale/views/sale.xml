@@ -36,8 +36,8 @@
 					<field name="customer_ref"/>
 					<field name="style_ref"/>
 					<field name="sale_representative" options="{'no_create': True, 'no_create_edit':True}"/>
-					<field name="garments" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['company_id','in', (1,2)]]}"/>
-                    <field name="corrosions_test" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['company_id','in', (1,2)]]}"/>
+					<field name="garments" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2)]]}"/>
+                    <field name="corrosions_test" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2)]]}"/>
                     <field name="assortment" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
                     <field name="dpi" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="season"/>
