@@ -120,7 +120,11 @@
 									</strong>
 								</div>
 								<div align="center" style="font-size:12px;">
-								  <span><b>Pf Effective Date: <t t-esc="emp[12].strftime('%d-%m-%Y')"/></b></span>
+								  <span><b>Pf Effective Date:
+								  <t t-if="emp[12]">
+								  <t t-esc="emp[12].strftime('%d-%m-%Y')"/>
+								  </t>
+								  </b></span>
 								</div>
 								<table class="table table-sm table-bordered">
 									<thead>

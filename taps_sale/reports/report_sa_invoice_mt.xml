@@ -6,21 +6,40 @@
 				<t t-call="web.external_layout">
 					<div class="page">
 					<style>
-					  tr 
+					   
+				    table,th,td,tr
+				    {
+				    border: 1px solid black !important;
+				    }
+				     td
 					  {
-					    border: 1px solid Black !important;
+					    text-align: center ! important;
 					  }
+            
 					</style>
 					<div class="footer text-center" style="margin:0px; padding:0px;">
                     Page: <span class="page"/>/<span class="topage"/>
 					</div>
 					<div class="container">
-					<h4 class="text-center">
+					  <div class="row mt32">
+					    
+					<div class="col-4">
+					  <img style="max-height: 60px; " src="taps_sale/static/src/img/logo_tex_tiny.png"/>
+					</div> 
+					<div class="col-4">
+					  <h4 class="text-center" style="font-size: 20px">
 						<strong style="color: Black">
 							SAMPLE ACCEPTANCE
 							</strong>
 					</h4>
-					<div>
+					</div>
+					<div class="col-4">
+					 </div>
+					
+					
+					
+					</div>
+					<br/>
 						<div class="float-left">
 						  
 							<h2 class="mt15" style="font-size: 16px">
@@ -29,178 +48,232 @@
 							</h2>
 							
 						</div>
-					</div>
+					
 					<br/>
-					<div class="row mt32 mb32" style="font-size:13px">
-						<div class="col-3 mw-50 mb-2">
-							<div>
-								<strong style="color: Black">CUSTOMER DETAILS</strong>
-							</div>
-							<p>
-								<span  style="color: Black" t-esc="o.partner_id.name"/>
-								<br/>
-								<!--<span style="font-size:11px" t-esc="o.partner_id.contact_address_complete"/>-->
-							</p>
-						</div>
-						<div class="col-1 mw-50 mb-2">
-							<strong style="color: Black">SA DATE</strong>
-							<p>
-								<span style="color: Black" t-esc="o.date_order.strftime('%d-%m-%Y')"/>
-							</p>
-						</div>
-						<div class="col-1 mw-50 mb-2">
-							<strong style="color: Black">DELIVERY DATE</strong>
-							<p>
-								<span style="color: Black" t-esc="o.commitment_date.strftime('%d-%m-%Y')"/>
-							</p>
-						</div>
-						<div class="col-aut col-1 mw-50 mb-2">
-							<strong style="color: Black">SALES PERSON</strong>
-							<p>
-								<span style="color: Black" t-esc="o.sale_representative.name"/>
-							</p>
-						</div>
-              <div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">KIND ATTENTION</strong>
-							<p>
-								<span style="color: Black" t-esc="o.kind_attention"/>
-							</p>
-						</div>
-              <div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">BUYER NAME</strong>
-							<p>
-								<span style="color: Black" t-esc="o.buyer_name.name"/>
-							</p>
-						</div>
-                        
-						
-							<div class="col-4 mw-50 mb-2">
-               <t t-if="o.remarks">
-								<p>
-									<strong style="color: Black">OTHER REQUIREMENTS</strong>
-									<br/>
-									<t t-if="isinstance(o.remarks, str)">
-										<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
-										<t t-foreach="string_to_output" t-as="string_line">
-											<span style="color: Black" t-esc="string_line"/>
-											<br/>
+					
+					
+					
+					<div class="row mt32" style="font-size:13px">
+						<!--<div class="col-3">-->
+						<!--	<div class="row mt32 mb32">-->
+						<!--		<div class="col-auto col-6">-->
+						<!--			<div>-->
+						<!--				<strong>CUSTOMER DETAILS</strong>-->
+						<!--			</div>-->
+						<!--			<p>-->
+						<!--				<span t-esc="o.partner_id.name"/>-->
+						<!--				<br/>-->
+						<!--				<span style="font-size:11px" t-esc="o.partner_id.contact_address_complete"/>-->
+						<!--			</p>-->
+						<!--		</div>-->
+						<!--		<div class="col-auto col-6">-->
+						<!--			<div>-->
+						<!--				<strong>DELIVERY ADDRESS</strong>-->
+						<!--			</div>-->
+						<!--			<p>-->
+						<!--				<span t-esc="o.partner_shipping_id.name"/>-->
+						<!--				<br/>-->
+						<!--				<span style="font-size:11px" t-esc="o.partner_shipping_id.contact_address_complete"/>-->
+						<!--			</p>-->
+						<!--		</div>-->
+						<!--	</div>-->
+						<!--</div>-->
+						<div class="col-10">
+						  <div class="row mb32 mt32">
+						   
+								<div class="col-auto col-2">
+									<div>
+										<strong>CUSTOMER DETAILS</strong>
+									</div>
+									<p>
+										<span t-esc="o.partner_id.name"/>
+									
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<div>
+										<strong>SA DATE</strong>
+									</div>
+									<p>
+										<span t-esc="o.create_date.strftime('%d-%m-%Y')"/>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<div>
+										<strong>DELIVERY DATE</strong>
+									</div>
+									<p>
+										<t t-if="o.commitment_date">
+											<t t-esc="o.commitment_date.strftime('%d-%m-%Y')"/>
 										</t>
-									</t>
-								</p>
-               </t>
+									</p>
+								</div>
+								
+								<div class="col-auto col-2">
+									<div>
+										<strong>SALESPERSON</strong>
+									</div>
+									<p>
+										<span t-esc="o.sale_representative.name"/>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<div>
+										<strong>KIND ATTENTION</strong>
+									</div>
+									<p>
+										<span t-esc="o.kind_attention"/>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<div>
+										<strong>BUYER NAME</strong>
+									</div>
+									<p>
+										<span t-esc="o.buyer_name.name"/>
+									</p>
+								</div>
+								
+								
+								
+								
+								
+								
+								
 							</div>
-						
+							<br/>
+							<div class="row mb32 mt32">
+							  
+								<div class="col-auto col-2">
+									<p>
+										<strong>STYLE REF</strong>
+										<br/>
+										<t t-if="o.style_ref">
+											<t t-esc="o.style_ref"/>
+										</t>
+									</p>
+								</div>
+								
+								<div class="col-auto col-2">
+									<p>
+										<strong>SEASON</strong>
+										<br/>
+										<t t-if="o.season">
+											<t t-esc="o.season"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<p>
+										<strong>USAGE</strong>
+										<br/>
+										<t t-if="o.usage">
+											<t t-esc="o.usage"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<p>
+										<strong>SUPPLY CHAIN</strong>
+										<br/>
+										<t t-if="o.supply_chain">
+											<t t-esc="o.supply_chain"/>
+										</t>
+									</p>
+								</div>
+								  <div class="col-auto col-2">
+									<p>
+										<strong>PRIORITY</strong>
+										<br/>
+										<t t-if="o.priority">
+											<t t-esc="o.priority"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<p>
+										<strong>WASHING TYPE</strong>
+										<br/>
+										<t t-if="o.washing_type">
+											<t t-esc="o.washing_type"/>
+										</t>
+									</p>
+								</div>
+								
+								
+								
+							</div>
+							<br/>
+							<div class="row mt32">
+								
+								<div class="col-auto col-2">
+									<p>
+										<strong>METAL DETECTION</strong>
+										<br/>
+										<t t-if="o.metal_detection">
+											<t t-esc="o.metal_detection"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<p>
+										<strong>CORROSIONS TEST</strong>
+										<br/>
+										<t t-if="o.corrosions_test">
+											<t t-esc="o.corrosions_test"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+								  <p>
+										<strong>B,C,D PART FINISH</strong>
+										<br/>
+										<t t-if="o.bcd_part_finish">
+											<t t-esc="o.bcd_part_finish"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+								  <p>
+										<strong>GARMENTS</strong>
+										<br/>
+										<t t-if="o.garments">
+											<t t-esc="o.garments"/>
+										</t>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+								  
+								</div>
+								<div class="col-auto col-2">
+								  
+								</div>
+								
+							</div>
+						</div>
+						<div class="col-2">
+							<p>
+								<strong>OTHER REQUIREMENTS</strong>
+								<br/>
+								<t t-if="isinstance(o.remarks, str)">
+									<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>
+									<t t-foreach="string_to_output" t-as="string_line">
+										<span t-esc="string_line"/>
+										<br/>
+									</t>
+								</t>
+							</p>
+						</div>
 					</div>
+					
+					
+					
+					
+					
 					<br/>
-					<div class="row mt32 mb32" style="font-size:13px">
-						
-						
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">STYLE REF:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.style_ref"/>
-							</p>
-						</div>
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">SEASON:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.season"/>
-							</p>
-						</div>
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">DEPARTMENT:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.department"/>
-							</p>
-						</div>
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">DEVISION:</strong>
-							<p>
-								<span t-esc="o.division"/>
-							</p>
-						</div>
-                        
-              <div class="col-auto col-2 mw-50 mb-2">
-							<strong style="color: Black">CUSTOMER REF:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.customer_ref"/>
-							</p>
-						</div>
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">PRODUCTION TYPE:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.production_type"/>
-							</p>
-						</div>
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">USAGE:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.usage"/>
-							</p>
-						</div>
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">SUPPLY CHAIN:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.supply_chain"/>
-							</p>
-						</div>
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">PRIORITY:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.priority"/>
-							</p>
-						</div>
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">WASHING TYPE:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.washing_type"/>
-							</p>
-						</div>
-                        <div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">B, C, D PART FINISH:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.bcd_part_finish"/>
-							</p>
-						</div>
-						<div class="col-auto col-1 mw-50 mb-2">
-							<strong style="color: Black">METAL DETECTION:</strong>
-							<p>
-								<span style="color: Black" t-esc="o.metal_detection"/>
-							</p>
-						</div>
-					</div>
-					<!-- <div class="row mt32 mb32" style="font-size:12px">
-						
-					</div> -->
-					<!-- <div class="row mt32 mb32" style="font-size:12px">
-						<div class="col-auto col-2 mw-50 mb-2">
-							<strong>B, C, D PART FINISH</strong>
-							<p>
-								<t t-esc="o.bcd_part_finish"/>
-							</p>
-						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
-							<strong>METAL DETECTION</strong>
-							<p>
-								<t t-esc="o.metal_detection"/>
-							</p>
-						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
-							
-						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
-						
-						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
-							
-						</div>
-						<div class="col-auto col-2 mw-50 mb-2">
-							
-						</div>
-					</div> -->
-					<br/>
-					<div style="font-size:14px">
-						<t t-set="back_part" t-value="0"/>
+					<div style="font-size:12px">
+					  
+					  <t t-set="back_part" t-value="0"/>
 						<t t-set="p_code" t-value="0"/>
 						<t t-set="shape" t-value="0"/>
 						<t t-set="logo" t-value="0"/>
@@ -211,71 +284,80 @@
 						<t t-set="b_part" t-value="0"/>
 						<t t-set="c_part" t-value="0"/>
 						<t t-set="d_part" t-value="0"/>
-						<t t-set="style_line" t-value="0"/>
+						<t t-set="style" t-value="0"/>
 						<t t-set="gmt" t-value="0"/>
+						<t t-set="mold" t-value="0"/>
 						<t t-set="mm" t-value="0"/>
-						<t t-set="dis" t-value="0"/>
+						
 						<t t-foreach="o.order_line" t-as="line">
-							<t t-if="back_part == 0 ">
-								<t t-if="line.back_part and line.back_part != 'N/A'">
+						  <t t-if="back_part == 0 ">
+								<t t-if="line.back_part">
 									<t t-set="back_part" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="p_code == 0 ">
-								<t t-if="line.product_code and line.product_code != 'N/A'">
+								<t t-if="line.product_code">
 									<t t-set="p_code" t-value="1"/>
 								</t>
 							</t>
+							
 							<t t-if="shape == 0">
-								<t t-if="line.shape and line.shape != 'N/A'">
+								<t t-if="line.shape">
 									<t t-set="shape" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="logo == 0">
-								<t t-if="line.logo and line.logo != 'N/A'">
+								<t t-if="line.logo">
 									<t t-set="logo" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="logoref == 0">
-								<t t-if="line.logoref and line.logoref != 'N/A'">
+								<t t-if="line.logoref">
 									<t t-set="logoref" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="logo_type == 0">
-								<t t-if="line.logo_type and line.logo_type != 'N/A'">
+								<t t-if="line.logo_type">
 									<t t-set="logo_type" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="finish == 0">
-								<t t-if="line.finish">
+								<t t-if="line.finish ">
 									<t t-set="finish" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="finish_ref == 0">
-								<t t-if="line.finish_ref and line.finish_ref != 'N/A'">
+								<t t-if="line.finish_ref">
 									<t t-set="finish_ref" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="b_part == 0">
-								<t t-if="line.b_part and line.b_part != 'N/A'">
+								<t t-if="line.b_part">
 									<t t-set="b_part" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="c_part == 0">
-								<t t-if="line.c_part and line.c_part !='N/A'">
+								<t t-if="line.c_part">
 									<t t-set="c_part" t-value="1"/>
 								</t>
 							</t>
 							<t t-if="d_part == 0">
-								<t t-if="line.d_part and line.d_part != 'N/A'">
+								<t t-if="line.d_part">
 									<t t-set="d_part" t-value="1"/>
 								</t>
 							</t>
-							<t t-if="style_line == 0">
-								<t t-if="line.style and line.style != 'N/A'">
-									<t t-set="style_line" t-value="1"/>
+							<t t-if="style == 0">
+								<t t-if="line.style">
+									<t t-set="style" t-value="1"/>
 								</t>
 							</t>
+							<t t-if="gmt == 0">
+								<t t-if="line.gmt">
+									<t t-set="gmt" t-value="1"/>
+								</t>
+							</t>
+							
+							
 							<t t-if="mm == 0">
 								<t t-if="line.sizemm">
 									<t t-if="line.sizemm != 'N/A'">
@@ -283,85 +365,137 @@
 									</t>
 								</t>
 							</t>
+							
 						</t>
 						<table class="table table-sm o_main_table">
-							<thead style="color: Black ! important">
+							<thead>
 								<t t-set="line_count" t-value="0"/>
 								<tr>
-									<th class="text-left">Item</th>
-									<t t-set="line_count" t-value="1"/>
+								  
+								  <t t-if="p_code == 1">
+										<th class="text-center">CODE</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<th class="text-center">ITEM</th>
+									<!--<th class="text-center">Image</th>-->
+									<t t-set="line_count" t-value="line_count+1"/>
 									<t t-if="back_part == 1">
-										<th class="text-left">BACK_PART</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="p_code == 1">
-										<th class="text-left">CODE</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="shape == 1">
-										<th class="text-left">Shape</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="logo == 1">
-										<th style="white-space: nowrap;">Logo</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="logoref == 1">
-										<th style="white-space: nowrap;">LOGO REF</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="logo_type == 1">
-										<th class="text-left" style="white-space: nowrap;">LOGO TYPE</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="finish == 1">
-										<th class="text-left" style="white-space: nowrap;">FINISH</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="finish_ref == 1">
-										<th class="text-left" style="white-space: nowrap;">FINISH REF</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="b_part == 1">
-										<th class="text-left">B_PART</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="c_part == 1">
-										<th class="text-left">C_PART</th>
-										<t t-set="line_count" t-value="line_count+1"/>
-									</t>
-									<t t-if="d_part == 1">
-										<th class="text-left">D_PART</th>
+										<th class="text-center">BACK_PART</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
 									<t t-if="mm == 1">
-										<th style="text-align: right ! important">Size(MM)</th>
+										<th style="text-align: center ! important">Size(MM)</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
-									<th style="text-align: right ! important">Qty/PC</th>
-									<t t-set="line_count" t-value="line_count+1"/>
-									<th style="text-align: right ! important">Qty/Grs</th>
-									<t t-if="style_line == 1">
-										<th class="text-left">STYLE</th>
+									<t t-if="shape == 1">
+										<th class="text-center">SHAPE</th>
+										<t t-set="line_count" t-value="line_count+1"/>
 									</t>
+									<t t-if="logo == 1">
+										<th class="text-center" style="white-space: nowrap;">LOGO</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="logoref == 1">
+										<th class="text-center" style="white-space: nowrap;">LOGO REF</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="logo_type == 1">
+										<th class="text-center" style="white-space: nowrap;">LOGO TYPE</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="finish == 1">
+										<th class="text-center" style="white-space: nowrap;">FINISH</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="finish_ref == 1">
+										<th class="text-center" style="white-space: nowrap;">FINISH REF</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<!--<t t-if="back_part == 1">-->
+									<!--	<th class="text-left">BACK_PART</th>-->
+									<!--	<t t-set="line_count" t-value="line_count+1"/>-->
+									<!--</t>-->
+									
+									
+									
+									
+									
+									
+									
+									<t t-if="b_part == 1">
+										<th class="text-center">B_PART</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="c_part == 1">
+										<th class="text-center">C_PART</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									<t t-if="d_part == 1">
+										<th class="text-center">D_PART</th>
+										<t t-set="line_count" t-value="line_count+1"/>
+									</t>
+									
+									<th style="text-align: center ! important">Qty/PC</th>
+									<t t-set="line_count" t-value="line_count+1"/>
+									<th style="text-align: center ! important">Qty/Grs</th>
+									<t t-if="style == 1">
+									<th style="text-align: center ! important">STYLE</th>
+									</t>
+									<t t-if="gmt == 1">
+									<th style="text-align: center ! important">GMT</th>
+									</t>
+									
 								</tr>
 							</thead>
 							<tbody>
 								<t t-set="total_quantity" t-value="0"/>
-								<t t-set="id" t-value="0.0"/>
+								
 								<t t-foreach="o.order_line" t-as="line">
 									<tr>
+									  
 										<t t-if="not line.display_type">
+										  
+										  
+										  
+												
+										  
+										  <t t-if="p_code == 1">
+												<t t-if="line.product_code">
+													<td >
+														<strong>
+															<span t-esc="line.product_code"/>
+														</strong>
+														<br/>
+														
+													</td>
+												</t>
+												<t t-if="not line.product_code">
+													<td/>
+												</t>
+											</t>
 											<td>
 												<strong>
-													<span style="color: Black" t-esc="line.product_template_id.name" />
+													<span t-esc="line.product_template_id.generic_name"/>
 												</strong>
+												<!--<br/>-->
+												<!--<t t-if="line.sizemm">-->
+												<!--    <strong>-->
+												<!--		<span><t t-esc="line.sizemm"/> MM</span>-->
+												<!--		</strong>-->
+												<!--</t>-->
+												<!--<t t-if="line.back_part">-->
+												<!--    <strong>-->
+												<!--			<span t-esc="line.back_part"/>-->
+												<!--		</strong>-->
+												<!--</t>-->
+												<br/>
 												<t t-if="line.dimension">
 													<strong>
 														<span style="color: Black" t-esc="line.dimension"/>
 													</strong>
 												</t>
 											</td>
+											<!--<td/>-->
 											<t t-if="back_part == 1">
 												<t t-if="line.back_part">
 													<td>
@@ -374,15 +508,18 @@
 													<td/>
 												</t>
 											</t>
-											<t t-if="p_code == 1">
-												<t t-if="line.product_code">
+											
+											<t t-if="mm == 1">
+												<t t-if="line.sizemm">
 													<td>
+													  <t t-if="line.sizemm">
 														<strong>
-															<span style="color: Black" t-esc="line.product_code"/>
+															<span style="font-size:13px"><t t-esc="line.sizemm"/> MM</span>
 														</strong>
+														</t>
 													</td>
 												</t>
-												<t t-if="not line.product_code">
+												<t t-if="not line.sizemm">
 													<td/>
 												</t>
 											</t>
@@ -390,7 +527,7 @@
 												<t t-if="line.shape">
 													<td>
 														<strong>
-															<span style="color: Black" t-esc="line.shape"/>
+															<span t-esc="line.shape"/>
 														</strong>
 													</td>
 												</t>
@@ -402,7 +539,7 @@
 												<t t-if="line.logo">
 													<td>
 														<strong>
-															<span style="color: Black" t-esc="line.logo"/>
+															<span t-esc="line.logo"/>
 														</strong>
 													</td>
 												</t>
@@ -414,7 +551,7 @@
 												<t t-if="line.logoref">
 													<td>
 														<strong>
-															<span style="color: Black" t-esc="line.logoref"/>
+															<span t-esc="line.logoref"/>
 														</strong>
 													</td>
 												</t>
@@ -426,7 +563,7 @@
 												<t t-if="line.logo_type">
 													<td>
 														<strong>
-															<span style="color: Black" t-esc="line.logo_type"/>
+															<span t-esc="line.logo_type"/>
 														</strong>
 													</td>
 												</t>
@@ -437,16 +574,9 @@
 											<t t-if="finish == 1">
 												<t t-if="line.finish">
 													<td>
-														<t t-if="'N/A' not in line.finish">
-															<strong>
-																<span style="color: Black" t-esc="line.finish"/>
-															</strong>
-														</t>
-														<t t-if="'N/A' in line.finish">
-															<strong>
-																<span style="color: Black" t-esc="line.finish[4:]"/>
-															</strong>
-														</t>
+														<strong>
+															<span t-esc="line.finish"/>
+														</strong>
 													</td>
 												</t>
 												<t t-if="not line.finish">
@@ -457,7 +587,7 @@
 												<t t-if="line.finish_ref">
 													<td>
 														<strong>
-															<span style="color: Black" t-esc="line.finish_ref"/>
+															<span t-esc="line.finish_ref"/>
 														</strong>
 													</td>
 												</t>
@@ -469,7 +599,7 @@
 												<t t-if="line.b_part">
 													<td>
 														<strong>
-															<span style="color: Black" t-esc="line.b_part"/>
+															<span t-esc="line.b_part"/>
 														</strong>
 													</td>
 												</t>
@@ -481,7 +611,7 @@
 												<t t-if="line.c_part">
 													<td>
 														<strong>
-															<span style="color: Black" t-esc="line.c_part"/>
+															<span t-esc="line.c_part"/>
 														</strong>
 													</td>
 												</t>
@@ -493,7 +623,7 @@
 												<t t-if="line.d_part">
 													<td>
 														<strong>
-															<span style="color: Black" t-esc="line.d_part"/>
+															<span t-esc="line.d_part"/>
 														</strong>
 													</td>
 												</t>
@@ -501,37 +631,24 @@
 													<td/>
 												</t>
 											</t>
-											<t t-if="mm == 1">
-												<t t-if="line.sizemm">
-													<td style="text-align: right ! important">
-														<strong>
-															<span>
-																<span style="color: Black" t-esc="line.sizemm"/>
-															</span>
-															<span style="color: Black"> MM</span>
-														</strong>
-													</td>
-												</t>
-												<t t-if="not line.sizemm">
-													<td/>
-												</t>
-											</t>
-											<td style="text-align: right ! important">
+											
+											
+											<td>
 												<strong>
-													<span style="color: Black" t-esc="line.product_uom_qty*144" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+													<span t-esc="line.product_uom_qty*144" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 												</strong>
 											</td>
-											<td style="text-align: right ! important">
+											<td>
 												<strong>
-													<span style="color: Black" t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+													<span style="font-size: 16px; font-weight: bold" t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
 													<t t-set="total_quantity" t-value="line.product_uom_qty+total_quantity"/>
 												</strong>
 											</td>
-											<t t-if="style_line == 1">
+											<t t-if="style == 1">
 												<t t-if="line.style">
 													<td>
 														<strong>
-															<span style="color: Black" t-esc="line.style"/>
+															<span t-esc="line.style"/>
 														</strong>
 													</td>
 												</t>
@@ -539,6 +656,19 @@
 													<td/>
 												</t>
 											</t>
+											<t t-if="gmt == 1">
+												<t t-if="line.gmt">
+													<td>
+														<strong>
+															<span t-esc="line.gmt"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.gmt">
+													<td/>
+												</t>
+											</t>
+											
 										</t>
 									</tr>
 								</t>
@@ -547,9 +677,9 @@
 									<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
 									<!--	<strong>Total Quantity :</strong>-->
 									<!--</td>-->
-									<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+									<td colspan="1" class="text-center" style="vertical-align:middle;border-top: 1px solid black;">
 										<strong>
-											<span style="color: Black" t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+											<span style="font-size: 16px; font-weight: bold;" t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
 										</strong>
 									</td>
 								</tr>

@@ -33,6 +33,8 @@ class SaleOrder(models.Model):
     oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', readonly=True, store=True)
     company_id = fields.Many2one('res.company', related='oa_id.company_id', string='Company', readonly=True, store=True)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
+    #buyer_name = fields.Many2one('sale.buyer', related='oa_id.buyer_name.id', string='Buyer', readonly=True)
+    payment_term = fields.Many2one('account.payment.term', related='oa_id.payment_term_id', string='Payment Term', readonly=True)
     date_order = fields.Datetime(string='Order Date', related='oa_id.date_order', readonly=True)
     validity_date = fields.Date(string='Expiration', related='oa_id.validity_date', readonly=True)
     
@@ -99,7 +101,7 @@ class SaleOrder(models.Model):
     dyeing_plan = fields.Datetime(string='Dyeing Plan Start', readonly=False)
     dyeing_plan_end = fields.Datetime(string='Dyeing Plan End', readonly=False)
     dyeing_plan_qty = fields.Float(string='Dyeing Plan Qty', readonly=False)
-    dy_rec_plan_qty = fields.Float(string='Dyeing Plan Qty', readonly=False)
+    dy_rec_plan_qty = fields.Float(string='Dyeing Replan Qty', readonly=False, default=0.0)
     dyeing_plan_due = fields.Float(string='Dyeing Plan Due', readonly=False, compute='_dy_plane_due')
     dyeing_output = fields.Float(string='Dyeing Output', readonly=False)
     dyeing_qc_pass = fields.Float(string='Dyeing QC Pass', readonly=False)
@@ -107,6 +109,7 @@ class SaleOrder(models.Model):
     plating_plan = fields.Datetime(string='Plating Plan Start', readonly=False)
     plating_plan_end = fields.Datetime(string='Plating Plan End', readonly=False)
     plating_plan_qty = fields.Float(string='Plating Plan Qty', readonly=False)
+    pl_rec_plan_qty = fields.Float(string='Plating Replan Qty', readonly=False, default=0.0)
     plating_output = fields.Float(string='Plating Output', readonly=False)
     plating_qc_pass = fields.Float(string='Plating QC Pass', readonly=False)
 
@@ -191,84 +194,98 @@ class SaleOrder(models.Model):
         return action
 
 # mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty
-    def set_plan(self,mo_ids,plan_for,plan_start,plan_end,plan_qty):
+    def set_plan(self,mo_ids,plan_for,plan_start,plan_end,plan_qty,machine_line):
+        #raise UserError((mo_ids,plan_for,plan_start,plan_end,plan_qty))
         production = self.env["manufacturing.order"].browse(mo_ids)
 # dyeing_plan,dyeing_plan_end,dyeing_plan_qty,dyeing_output,dyeing_qc_pass
 # plating_plan,plating_plan_end,plating_plan_qty,plating_output,plating_qc_pass
-        m_qty = 0
+        m_qty = 0.00
         rest_pl_q = plan_qty
         p_len = len(production)
         dist_qty = plan_qty / p_len
         
-        addition = 0
+        addition = 0.00
         for p in production:
             if plan_for == 'dyeing':
-                if self.tape_con < dist_qty + addition:
-                    m_qty = self.tape_con
-                    addition = (dist_qty + addition) - self.tape_con
+                if p.tape_con <= rest_pl_q:
+                    m_qty = p.tape_con
+                    rest_pl_q = rest_pl_q - p.tape_con
                 else:
-                    m_qty = dist_qty + addition
-                    addition = 0
+                    m_qty = rest_pl_q
+                    rest_pl_q = 0.00
                 re_pqty = m_qty 
                 m_qty += p.dyeing_plan_qty
-                p.write({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty,
+                p.update({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty,
                          'dy_rec_plan_qty':re_pqty})
+
+            # if plan_for == 'dyeing':
+            #     if p.tape_con < dist_qty + addition:
+            #         m_qty = p.tape_con
+            #         addition = (dist_qty + addition) - p.tape_con
+            #     else:
+            #         m_qty = dist_qty + addition
+            #         addition = 0.00
+            #     re_pqty = m_qty 
+            #     m_qty += p.dyeing_plan_qty
+            #     p.write({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty,
+            #              'dy_rec_plan_qty':re_pqty})
                 
             elif plan_for == 'sliderplating':
-                if self.tape_con < dist_qty + addition:
-                    m_qty = self.slider_con
-                    addition = (dist_qty + addition) - self.slider_con
+                if p.tape_con < dist_qty + addition:
+                    m_qty = p.slider_con
+                    addition = (dist_qty + addition) - p.slider_con
                 else:
                     m_qty = dist_qty + addition
                     addition = 0
                 m_qty += p.plating_plan_qty
-                p.write({'plating_plan':plan_start,'plating_plan_end':plan_end,'plating_plan_qty':m_qty})
+                p.update({'plating_plan':plan_start,'plating_plan_end':plan_end,'plating_plan_qty':m_qty})
             elif plan_for == 'topplating':
-                m_qty += self.topwire_con
+                m_qty += p.topwire_con
             elif plan_for == 'bottomplating':
-                m_qty += self.botomwire_con
+                m_qty += p.botomwire_con
             elif plan_for == 'sliassembly':
-                m_qty += self.slider_con
-
-
-        query = """ select oa_id,shade from manufacturing_order where id in (%s) group by oa_id,shade """
-        
+                m_qty += p.slider_con
+    
+    
+        if plan_for == 'dyeing':
+            query = """ select oa_id,shade,'' as finish,'' as slidercodesfg,sum(dy_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade """
+        if plan_for == 'sliderplating':
+            query = """ select oa_id,'' as shade, finish,slidercodesfg,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,slidercodesfg """
+            
         cr = self._cr
         cursor = self.env.cr
-        cr.execute(query,(mo_ids))
-        work_anniversey = cursor.fetchall()
-                
-        # operation = self.env["operation.details"].browse(mo_ids)
+        cr.execute(query,[tuple(mo_ids),1])
+        plan = cursor.fetchall()
+        if machine_line:
+            for m in machine_line:
+                for p in plan:
+                    qty = 0.0
+                    if plan_for == 'dyeing':
+                        p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.shade == p[1])
+                        qty = sum(p_q.mapped('dy_rec_plan_qty'))
+                    if plan_for == 'sliderplating':
+                        p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.slidercodesfg == p[3])
+                        qty = sum(p_q.mapped('pl_rec_plan_qty'))
 
-        # operation = operation.read_group(
-        #     fields=['oa_id', 'shade'],  # Fields to group by
-        #     groupby=['oa_id', 'shade'],  # Fields to group by
-        #     offset=0,
-        #     limit=None
-        # )
-
-        # mrp_ = self.env['operation.details'].create({'mrp_lines':products.id,
-        #                                              'sale_lines':products.id,'oa_id':products.order_id.id,
-        #                                              'operation_of':products.order_id.company_id.id,
-        #                                              'operation_by':products.topbottom,'based_on':products.slidercodesfg,
-        #                                              'qty':products.finish,'done_qty':products.shade
-        #                                             })
-            
-        # spl_qty = sum(split_line.mapped('product_qty'))
-        # mrp_qty = production.product_qty
-        # bal_qty = mrp_qty - spl_qty
-        # if bal_qty>0:
-        #     production.update({'product_qty':bal_qty})
-        # row = 0
-        # for line in split_line:
-        #     if (bal_qty == 0) and (row == 0):
-        #         production.update({'product_qty':line.product_qty})
-        #     else:
-        #         mrp_production = self.env['mrp.production'].create(self.mrp_values(None,production.name,production.product_id.id,line.product_qty,production.product_uom_id.id,production.bom_id.id,line.date_planned_start,line.date_planned_finished,production.shade,production.finish,production.sizein,production.sizecm))
-        #         mrp_production.move_raw_ids.create(mrp_production._get_moves_raw_values())
-        #         mrp_production._onchange_workorder_ids()
-        #         mrp_production._create_update_move_finished()
-        #     row += 1
+                    #raise UserError((p_q[0].dy_rec_plan_qty))
+                    
+                    #and sol.finish == p[2]
+                    
+                    mrp_ = self.env['operation.details'].create({'mrp_lines':None,
+                                                                 'sale_lines':None,
+                                                                 'mrp_line':None,
+                                                                 'sale_order_line':None,
+                                                                 'oa_id':p[0],
+                                                                 'action_date':plan_start,
+                                                                 'shade':p[1],
+                                                                 'finish':p[2],
+                                                                 'slidercodesfg':p[3],
+                                                                 'operation_of':'plan',
+                                                                 'operation_by':'planning',
+                                                                 'based_on':m.machine_no,
+                                                                 'qty':qty,
+                                                                 'done_qty':0
+                                                                 })
 
     def button_requisition(self):
         self._check_company()

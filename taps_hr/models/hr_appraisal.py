@@ -105,21 +105,46 @@ class MeetingEventWizard(models.TransientModel):
 
         # Call the action_create_meeting_event method for each hr.appraisal record
         hr_appraisal = self.env['hr.appraisal'].browse(active_ids)
-        # raise UserError((hr_appraisal))
-        for appraisal in hr_appraisal:
+        user_id = self.env.user.id
+        partner_ids = [appraisal.employee_id.address_home_id.id for appraisal in hr_appraisal]
+        # raise UserError(([appraisal.employee_id.address_home_id.id for appraisal in hr_appraisal]))
+        # for appraisal in hr_appraisal:
             # mt.action_create_meeting_events(meeting_date)
-            event_vals = {
-                'name': 'Appraisal Meeting',
-                'start': meeting_date,
-                'stop': meeting_date,
-                'start_date': meeting_date,
-                'stop_date': meeting_date,
-                'user_id': appraisal.employee_id.user_id.id,
-            }
-            meeting = self.env['calendar.event'].create(event_vals)
-            # raise UserError((self.employee_id))
+        event_vals = {
+            'name': 'Appraisal Meeting',
+            'start': meeting_date,
+            'stop': meeting_date,
+            'start_date': meeting_date,
+            'stop_date': meeting_date,
+            'user_id': user_id,
+            'partner_ids': [(6, 0, partner_ids)],
+        }
+        meeting = self.env['calendar.event'].create(event_vals)
+        # raise UserError((self.employee_id))
+        for appraisal in hr_appraisal:
             appraisal.meeting_id = meeting.id
             appraisal.date_final_interview = meeting_date
+            meeting_activity_type = self.env['mail.activity.type'].search([('category', '=', 'meeting')], limit=1)
+    
+            # Create an activity note for each partner in partner_ids
+        # for appraisal in hr_appraisal:
+            
+            activity_vals = {
+                'activity_type_id': meeting_activity_type.id,  # You may need to adjust this activity type ID
+                'user_id': appraisal.employee_id.user_id.id,
+                'summary': 'Appraisal Meeting',
+                'note': f'Appraisal Meeting with {appraisal.employee_id.name}',
+                'res_model_id': self.env['ir.model']._get('hr.appraisal').id,
+                'res_id': appraisal.id,
+                'date_deadline': meeting_date,  # Associate all partners with this activity deadline
+                'calendar_event_id': meeting.id,
+            }
+            activity = self.env['mail.activity'].create(activity_vals)
+    
+                # # Send email notification
+            # template_id = self.env.ref('your_module.your_email_template_id')
+            # if template_id:
+            #             template_id.send_mail(activity.id, force_send=True, email_values={'calendar_event_id': meeting.id})
 
         return {'type': 'ir.actions.act_window_close'} 
 

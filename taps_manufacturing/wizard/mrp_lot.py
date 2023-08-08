@@ -23,21 +23,13 @@ class ManufacturingLot(models.TransientModel):
     item = fields.Text(string='Item', readonly=True)
     shade_finish = fields.Text(string='Shade / Finish', readonly=True)
     size = fields.Text(string='Size', readonly=True)
-    plan_for = fields.Selection([
-        ('dyeing', 'Dyeing'),
-        ('sliderplating', 'Slider Plating'),
-        ('topplating', 'Top Plating'),
-        ('bottomplating', 'Bottom Plating'),
-        ('pinboxplating', 'Pinbox Plating'),
-        ('painting', 'Painting'),
-        ('sliassembly', 'Slider Assembly')],
-        string='Plan For')
+    work_center = fields.Char(string='Create From', readonly=True)
     
     item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
     plan_qty = fields.Float(string='Qty', store=True, default=0.0, digits='Product Unit of Measure')
     
-    machine_line = fields.One2many('machine.line', 'plan_id', string='Machines',copy=True, auto_join=True)
+    lot_line = fields.One2many('lot.line', 'plan_id', string='Machines',copy=True, auto_join=True)
     
 
     @api.model
@@ -52,7 +44,13 @@ class ManufacturingLot(models.TransientModel):
         # res["item_qty"] = active_id
         production = self.env["manufacturing.order"].browse(active_id)
         res["item"] = production[0].fg_categ_type
-        res["item_qty"] = sum(production.mapped('balance_qty'))
+        #res["item_qty"] = sum(production.mapped('balance_qty'))
+        
+        res["shade_finish"] = production[0].shade + production[0].finish
+        res["size"] = production[0].size
+        res["work_center"] = 'Dyeing'
+        res["material_qty"] = production[0].fg_categ_type
+        
             #raise UserError((active_id))
             #if production.product_tracking == "serial":
                 
@@ -61,26 +59,6 @@ class ManufacturingLot(models.TransientModel):
         #     production = self.env["mrp.production"].browse(res["production_id"])
         #     res["split_qty"] = production._get_quantity_to_backorder()
         return res 
-    
-    @api.onchange('plan_for')
-    def _onchange_plan(self):
-        active_id = self.env.context.get("active_ids")
-        production = self.env["manufacturing.order"].browse(active_id)
-        if self.plan_for == 'dyeing':
-            self.material_qty = sum(production.mapped('tape_con'))
-            self.shade_finish = production[0].shade
-        elif self.plan_for == 'sliderplating':
-            self.material_qty = sum(production.mapped('slider_con'))
-            self.shade_finish = production[0].finish
-        elif self.plan_for == 'topplating':
-            self.material_qty = sum(production.mapped('topwire_con'))
-            self.shade_finish = production[0].finish
-        elif self.plan_for == 'bottomplating':
-            self.material_qty = sum(production.mapped('botomwire_con'))
-            self.shade_finish = production[0].finish
-        elif self.plan_for == 'sliassembly':
-            self.material_qty = sum(production.mapped('slider_con'))
-            self.shade_finish = production[0].finish
             
     def done_mo_plan(self):
         if  self.plan_qty > self.material_qty:
@@ -91,21 +69,15 @@ class ManufacturingLot(models.TransientModel):
         return production.set_plan(mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty)
 
 
-class MachineLine(models.TransientModel):
-    _name = 'machine.line'
-    _description = 'Machine wise plan'
+class LotLine(models.TransientModel):
+    _name = 'lot.line'
+    _description = 'Lot Details'
     #_order = 'order_id, sequence, id'
     _check_company_auto = True
-    
-    sequence = fields.Integer(string='Sequence', default=10)
-    plan_id = fields.Many2one('mrp.plan', string='Plan ID', ondelete='cascade', index=True, copy=False)
-    machine_no = fields.Selection([
-        ('m1', 'M/C 1'),
-        ('m2', 'M/C 2'),
-        ('m3', 'M/C 3'),
-        ('m4', 'M/C 4')],
-        string='Machine No', domain=[('plan_for', '=', 'dyeing')])
-    material_qty = fields.Float('Quantity',default=1.0, digits='Product Unit of Measure',required=True)
+
+    lot_id = fields.Many2one('mrp.lot', string='Lot ID', ondelete='cascade', index=True, copy=False)
+    lot_code = fields.Char(string='Lot', store=True)
+    material_qty = fields.Float('Quantity', default=1.0, digits='Product Unit of Measure', required=True)
     
     
 #     @api.depends('product_qty')

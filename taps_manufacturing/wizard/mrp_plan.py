@@ -84,12 +84,14 @@ class ManufacturingPlan(models.TransientModel):
             self.shade_finish = production[0].finish
             
     def done_mo_plan(self):
-        if  self.plan_qty > self.material_qty:
-            raise UserError(('Split quantity should not greterthen the base quantity'))
-            return
+        # if  self.plan_qty > self.material_qty:
+        #     raise UserError(('Split quantity should not greterthen the base quantity'))
+        #     return
         mo_ids = self.env.context.get("active_ids")
         production = self.env["manufacturing.order"].browse(mo_ids)
-        return production.set_plan(mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty)
+        production.set_plan(mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty,self.machine_line)
+        #production.set_operation(mo_ids,self.plan_for,self.machine_line)
+        return 
 
 
 class MachineLine(models.TransientModel):

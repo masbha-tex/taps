@@ -16,6 +16,8 @@
                 <field name="oa_id"/>
                 <field name="company_id"/>
                 <field name="partner_id"/>
+                <!-- <field name="buyer_id"/> -->
+                <field name="payment_term"/>
                 <field name="date_order"/>
                 <field name="validity_date"/>
                 <field name="lead_time"/>
@@ -38,6 +40,13 @@
                 <field name="wire_con"/>
                 <field name="pinbox_con"/>
                 <field name="dyeing_plan"/>
+                <field name="dyeing_plan_end" invisible="1"/>
+                <field name="dyeing_plan_qty"/>
+                <field name="dy_rec_plan_qty"/>
+                <field name="dyeing_plan_due" invisible="1"/>
+                <field name="dyeing_output" invisible="1"/>
+                <field name="dyeing_qc_pass" invisible="1"/>
+                
             </tree>
         </field>
     </record>

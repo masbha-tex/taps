@@ -2,3 +2,4 @@
 
 from . import mrp
 from . import manufacturing
+from . import operation_details

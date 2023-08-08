@@ -34,6 +34,7 @@
         'views/mrp_workorder.xml',
         'views/manufacturing.xml',
         'views/mrp_workcenter.xml',
+        'views/operation_details.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     # only loaded in demonstration mode

@@ -2273,7 +2273,7 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))   
                 struct_id.name
         domain.append(('struct_id.name', '=','F&F'))  
-        
+        # domain.append(('employee_id.active', 'in',(False,True)))
         att_obj = self.env['hr.attendance']
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
         # if len(docs) <=0:
