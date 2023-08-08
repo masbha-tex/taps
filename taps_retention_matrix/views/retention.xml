@@ -1,6 +1,0 @@
-<odoo>
-    <data>
-        <menuitem id="retention_matrix" name="Retention Matrix"/>
-        <menuitem id="retention_heat_matrix" parent="retention_matrix" name="Heat Matrix" action="action_retention" sequence="4"/>
-    </data>
-</odoo>
