@@ -34,30 +34,7 @@ class HrAppraisal(models.Model):
             'target': 'new',
             # 'context': {'default_meeting_date': self.date_close},  # Pass the meeting_date to the wizard
         }    
-    # def action_create_meeting_events(self, meeting_date=False):
-    #     # raise UserError((self))
-    #     for appraisal in self:
-    #         # employees = appraisal.employee_id
-    #         # if not employees:
-    #         #     continue
-    #         if not meeting_date:
-    #             raise UserError(('Please set a meeting date before call the meeting event button.'))
-            
-    
-    #         event_vals = {
-    #             'name': 'Appraisal Meeting',
-    #             'start': meeting_date,
-    #             'stop': meeting_date,
-    #             'start_date': meeting_date,
-    #             'stop_date': meeting_date,
-    #             'user_id': appraisal.employee_id.user_id.id,
-    #         }
-    #         meeting = self.env['calendar.event'].create(event_vals)
-    #         # raise UserError((self.employee_id))
-    #         appraisal.meeting_id = meeting.id
-    #         appraisal.date_final_interview = meeting_date
 
-    #     # return True
     def _compute_ytd_weightage_acvd(self):
         for appraisal in self:
             app_goal = self.env['hr.appraisal.goal'].search([('employee_id', '=', appraisal.employee_id.id), ('deadline', '=', appraisal.date_close)])
@@ -107,9 +84,7 @@ class MeetingEventWizard(models.TransientModel):
         hr_appraisal = self.env['hr.appraisal'].browse(active_ids)
         user_id = self.env.user.id
         partner_ids = [appraisal.employee_id.address_home_id.id for appraisal in hr_appraisal]
-        # raise UserError(([appraisal.employee_id.address_home_id.id for appraisal in hr_appraisal]))
-        # for appraisal in hr_appraisal:
-            # mt.action_create_meeting_events(meeting_date)
+
         event_vals = {
             'name': 'Appraisal Meeting',
             'start': meeting_date,

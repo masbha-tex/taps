@@ -65,30 +65,22 @@ class HeadwisePDFReport(models.TransientModel):
     file_data = fields.Binary(readonly=True, attachment=False) 
 
     
-    # def _get_year_list():
-    #     current_year = datetime.today().year
-    #     return [(str(year), str(year)) for year in range(current_year - 1, current_year + 2)]  
     @staticmethod
     def _get_year_list():
         current_year = datetime.today().year
-        year_list = []
-
-        # Add current year and previous year as separate entries
+        year_options = []
+        
         for year in range(current_year - 1, current_year + 2):
-            year_label = str(year)
-            if year == current_year:
-                year_list.append((year_label, year_label))
-            else:
-                year_label += "-" + str(year + 1)[2:]
-                year_list.append((year_label, year_label))
+            year_str = str(year)
+            next_year = str(year+1)
+            year_label = f'{year_str}-{next_year[2:]}'
+            year_options.append((year_str, year_label))
+        return year_options     
 
-        return year_list     
-
-    def _get_default_year(self):
-        # Return the default year value
+    @staticmethod
+    def _get_default_year():
         current_year = datetime.today().year
-        # raise UserError((str(current_year)))
-        return str(current_year)  # Change it to the desired default year        
+        return str(current_year)     
     
     @api.depends('employee_id', 'holiday_type')
     def _compute_department_id(self):

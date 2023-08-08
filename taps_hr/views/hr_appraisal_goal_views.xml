@@ -356,6 +356,13 @@
                 <button name="action_create_meeting_event" string="Create Meeting Event" type="object" class="oe_highlight"/>
             </header>
             </data>
+            <xpath expr="//field[@name='date_final_interview']" position="attributes">
+                <attribute name="string">Next Review</attribute>
+            </xpath>
+            <!-- <xpath expr="//tree[1]" position="attributes">
+                <attribute name="default_order">date_close desc</attribute>
+            </xpath> -->
+            
         </field>
     </record>
 
