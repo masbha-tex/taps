@@ -64,10 +64,25 @@ class HeadwisePDFReport(models.TransientModel):
     
     file_data = fields.Binary(readonly=True, attachment=False) 
 
+    
+    # def _get_year_list():
+    #     current_year = datetime.today().year
+    #     return [(str(year), str(year)) for year in range(current_year - 1, current_year + 2)]  
     @staticmethod
     def _get_year_list():
         current_year = datetime.today().year
-        return [(str(year), str(year)) for year in range(current_year - 1, current_year + 2)]  
+        year_list = []
+
+        # Add current year and previous year as separate entries
+        for year in range(current_year - 1, current_year + 2):
+            year_label = str(year)
+            if year == current_year:
+                year_list.append((year_label, year_label))
+            else:
+                year_label += "-" + str(year + 1)[2:]
+                year_list.append((year_label, year_label))
+
+        return year_list     
 
     def _get_default_year(self):
         # Return the default year value

@@ -75,10 +75,10 @@ class SalesXlsx(models.AbstractModel):
                 if col == 0:
                     sheet.write(row, col, '', row_style)
                 elif col == 1:
-                    sheet.write(row, col, o_data.order_id.create_date.strftime("%d/%m/%Y"), row_style)
+                    sheet.write(row, col, o_data.order_id.create_date.strftime("%d-%b-%y"), row_style)
                 elif col == 2:
                     if o_data.order_id.commitment_date:
-                        sheet.write(row, col, o_data.order_id.commitment_date.strftime("%d/%m/%Y"), row_style)
+                        sheet.write(row, col, o_data.order_id.commitment_date.strftime("%d-%b-%y"), row_style)
                     else:
                         sheet.write(row, col, '', row_style)
                 elif col == 3:
@@ -86,7 +86,7 @@ class SalesXlsx(models.AbstractModel):
                 elif col == 4:
                     sheet.write(row, col,'', row_style)
                 elif col == 5:
-                    sheet.write(row, col, o_data.order_id.create_date.strftime("%d/%m/%Y"), row_style)
+                    sheet.write(row, col, o_data.order_id.create_date.strftime("%d-%b-%y"), row_style)
                 elif col == 6:
                     sheet.write(row, col, o_data.product_code, row_style)
                 elif col == 7:

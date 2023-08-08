@@ -70,21 +70,7 @@ class OperationDetails(models.Model):
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_requisition")
         action["domain"] = [('default_id','in',self.mapped('id'))]
         return action
-    
-    def button_createlot(self):
-        self.ensure_one()
-        self._check_company()
-        if self.state in ("done", "to_close", "cancel"):
-            raise UserError(
-                _(
-                    "Cannot split a manufacturing order that is in '%s' state.",
-                    self._fields["state"].convert_to_export(self.state, self),
-                )
-            )
-        action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
-        action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
-        return action
-
+  
     def button_output(self):
         self.ensure_one()
         self._check_company()
@@ -99,7 +85,7 @@ class OperationDetails(models.Model):
         action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
         return action
 
-    def button_start(self):
+    def button_start(self):#button_createlot
         self.ensure_one()
         
 

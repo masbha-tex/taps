@@ -9,7 +9,7 @@
                 <!-- editable="top" -->
                 <header>
                     <button name="button_requisition" type="object" string="Requisition"/>
-                    <button name="button_createlot" type="object" string="Create Lot"/>
+                    <!-- <button name="button_createlot" type="object" string="Create Lot"/> -->
                     <button name="button_output" type="object" string="Output"/>
                 </header>
                 <field name="code" invisible="1"/>

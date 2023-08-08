@@ -208,10 +208,10 @@
 							</p>
 						</div>
 						<div class="col-auto col-2 mw-50 mb-2">
-							<strong>SAMPLE REF</strong>
-							<p>
-								<t t-esc="o.sample_ref.name"/>
-							</p>
+							<!--<strong>SAMPLE REF</strong>-->
+							<!--<p>-->
+							<!--	<t t-esc="o.sample_ref.name"/>-->
+							<!--</p>-->
 						</div>
 					</div>
 					<div class="row mt32 mb32" style="font-size:10px">
@@ -547,7 +547,7 @@
 											</td>
 											<td style="text-align: right ! important">
 												<strong>
-													<span t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+													<span t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
 													<t t-set="total_quantity" t-value="line.product_uom_qty+total_quantity"/>
 												</strong>
 											</td>
@@ -604,7 +604,7 @@
 									<!--</td>-->
 									<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 										<strong>
-											<t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+											<t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
 										</strong>
 									</td>
 									<td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/>

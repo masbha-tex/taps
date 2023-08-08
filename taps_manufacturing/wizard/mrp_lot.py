@@ -25,7 +25,7 @@ class ManufacturingLot(models.TransientModel):
     size = fields.Text(string='Size', readonly=True)
     work_center = fields.Char(string='Create From', readonly=True)
     
-    item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
+    #item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
     plan_qty = fields.Float(string='Qty', store=True, default=0.0, digits='Product Unit of Measure')
     
