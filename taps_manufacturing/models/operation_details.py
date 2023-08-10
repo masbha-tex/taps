@@ -79,6 +79,7 @@ class OperationDetails(models.Model):
         self._check_company()
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_requisition")
         action["domain"] = [('default_id','in',self.mapped('id'))]
+        a = 'a'
         return action
   
     def button_output(self):
