@@ -519,18 +519,6 @@ class HrEmployeeBase(models.AbstractModel):
             employee.attendance_state = att and not att.check_out and 'checked_in' or 'checked_out'
 
     @api.model
-#     def attendance_scan(self, barcode):
-#         """ Receive a barcode scanned from the Kiosk Mode and change the attendances of corresponding employee.
-#             Returns either an action or a warning.
-#         """
-# #         raise UserError(('adad'))
-#         employee = self.sudo().search([('barcode', '=', barcode)], limit=1)
-# #         raise UserError((employee))
-        
-#         if employee:
-            
-#             return employee._attendance_action('taps_hr.action_job_card_kiosk_report', barcode)
-#         return {'warning': _("No employee corresponding to Badge ID '%(barcode)s.'") % {'barcode': barcode}}
     def attendance_scan(self, barcode):
         """ Receive a barcode scanned from the Kiosk Mode and change the attendances of corresponding employee.
             Returns either an action or a warning.

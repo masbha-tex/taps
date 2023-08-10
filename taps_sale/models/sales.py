@@ -122,6 +122,7 @@ class SaleOrder(models.Model):
     old_sa_num = fields.Char(string='Old Sa Number')
     garments = fields.Char(string='Garments')
     corrosions_test = fields.Char(string='Corrosions Test Method')
+    brand = fields.Char(string='Brand')
     
     
     
@@ -760,7 +761,7 @@ class SaleOrder(models.Model):
             self.order_line.product_consumption(self.id)
             self.order_line.compute_shadewise_tape()
             #self.generate_mrp()
-            #self.generate_m_order()
+            self.generate_m_order()
         return True
 
     def generate_m_order(self):

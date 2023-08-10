@@ -74,8 +74,9 @@
 					<field name="po_date" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="pi_date" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="revised_date" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
+                    <field name="brand" attrs="{'invisible': ['|','|','|','|',['sales_type','=','oa'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','sa'],['company_id','in', (1,2)]]}"/>
                     <field name="usage" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','oa'],['sales_type','=',False]]}"/>
-                    <field name="supply_chain" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','oa'],['sales_type','=',False]]}"/>
+                    <field name="supply_chain" attrs="{'invisible': ['|',['sales_type','=','oa'],['sales_type','=',False]]}"/>
                     <field name="priority" attrs="{'invisible': [['sales_type','=','sale']]}"/>
                     <field name="washing_type" attrs="{'invisible': [['sales_type','=','sale']]}"/>
                     <field name="bcd_part_finish" attrs="{'invisible': [['sales_type','=','sale']]}"/>

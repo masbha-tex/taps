@@ -698,11 +698,11 @@ class KpiScoreQuaterReportPDF(models.AbstractModel):
         
         docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
         if docs1.employee_id.company_id.id == 1:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
         elif docs1.employee_id.company_id.id == 3:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
         else:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
         
         docs = docs2 | docs1
 #         raise UserError((docs.id))
@@ -858,11 +858,11 @@ class KpiReportPDF(models.AbstractModel):
         
         docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
         if docs1.employee_id.company_id.id == 1:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
         elif docs1.employee_id.company_id.id == 3:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
         else:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
         
         docs = docs2 | docs1
 #         raise UserError((docs.id))

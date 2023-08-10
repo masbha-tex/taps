@@ -30,23 +30,36 @@ class HrPayslipEmployee(models.TransientModel):
 
     def _get_employees(self):
         active_employee_ids = self.env.context.get('active_employee_ids', False)
+        payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
         if active_employee_ids:
             return self.env['hr.employee'].browse(active_employee_ids)
                # YTI check dates too
-        #raise UserError((self._get_available_contracts_domain()))
-
-        query = """select id from hr_employee where resign_date<=%s and resign_date>=%s and company_id=%s;"""
-        self.env.cr.execute(query,("2023-05-25","2023-04-26",2))
-        result = self.env.cr.fetchall()
-        #raise UserError((result))
-        emp = self.env['hr.employee'].browse(784)
-        #emp = emp.get_archived_emp(self._get_available_contracts_domain())
-
-        #raise UserError((emp.name))
+        if payslip_run.is_final:
+            query = """
+            update hr_contract set active=True where active=False and date_end<=%s and date_end>=%s and company_id=%s;
+            update hr_employee set active=True where active=False and resign_date<=%s and resign_date>=%s and company_id=%s;"""
+            self.env.cr.execute(query,(payslip_run.date_end,payslip_run.date_start,payslip_run.company_id.id,payslip_run.date_end,payslip_run.date_start,payslip_run.company_id.id))
+            # contract_id
+            # result = self.env.cr.fetchall()
+            # emp = self.env['hr.employee'].search([('id', '=', result), ('active', '=', False)])
+            # if emp:
+            #     emp.active = True
         return self.env['hr.employee'].search(self._get_available_contracts_domain())
+        
+    def _get_structure(self):
+        payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
+        if payslip_run.is_final:
+            structure = self.env['hr.payroll.structure'].search([('name', '=', 'F&F')])
+        elif payslip_run.is_bonus:
+            structure = self.env['hr.payroll.structure'].search([('name', '=', 'FESTIVAL BONUS')])
+        else:
+            structure = self.env['hr.payroll.structure']
+
+        return structure   
 
     employee_ids = fields.Many2many('hr.employee', 'hr_employee_group_rel', 'payslip_id', 'employee_id', 'Employees', default=lambda self: self._get_employees(), required=True)
-    structure_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')    
+    structure_id = fields.Many2one('hr.payroll.structure', default=lambda self: self._get_structure(), string='Salary Structure')    
+
 
     def _check_undefined_slots(self, work_entries, payslip_run):
         """
@@ -103,6 +116,8 @@ class HrPayslipEmployee(models.TransientModel):
             payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
 
         employees = self.with_context(active_test=False).employee_ids
+        
+        # raise UserError((employees))
         if not employees:
             raise UserError(_("You must select employee(s) to generate payslip(s)."))
 
@@ -112,35 +127,6 @@ class HrPayslipEmployee(models.TransientModel):
         contracts = employees._get_contracts(
             payslip_run.date_start, payslip_run.date_end, states=['open', 'close']
         ).filtered(lambda c: c.active)
-        # contracts._generate_work_entries(payslip_run.date_start, payslip_run.date_end)
-        # work_entries = self.env['hr.work.entry'].search([
-        #     ('date_start', '<=', payslip_run.date_end),
-        #     ('date_stop', '>=', payslip_run.date_start),
-        #     ('employee_id', 'in', employees.ids),
-        # ])
-        # self._check_undefined_slots(work_entries, payslip_run)
-
-#         if(self.structure_id.type_id.default_struct_id == self.structure_id):
-#             work_entries = work_entries.filtered(lambda work_entry: work_entry.state != 'validated')
-#             if work_entries._check_if_error():
-#                 work_entries_by_contract = defaultdict(lambda: self.env['hr.work.entry'])
-
-#                 for work_entry in work_entries.filtered(lambda w: w.state == 'conflict'):
-#                     work_entries_by_contract[work_entry.contract_id] |= work_entry
-
-#                 for contract, work_entries in work_entries_by_contract.items():
-#                     conflicts = work_entries._to_intervals()
-#                     time_intervals_str = "\n - ".join(['', *["%s -> %s" % (s[0], s[1]) for s in conflicts._items]])
-#                 return {
-#                     'type': 'ir.actions.client',
-#                     'tag': 'display_notification',
-#                     'params': {
-#                         'title': _('Some work entries could not be validated.'),
-#                         'message': _('Time intervals to look for:%s', time_intervals_str),
-#                         'sticky': False,
-#                     }
-#                 }
-
 
         default_values = Payslip.default_get(Payslip.fields_get())
         if payslip_run.is_final:

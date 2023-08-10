@@ -41,7 +41,7 @@ class SalaryAdjustmentLine(models.Model):
     
     sequence = fields.Integer(string='Sequence', default=10)
     adjustment_id = fields.Many2one('salary.adjustment', string='Adjustment Reference', index=True, required=True, ondelete='cascade')
-    employee_id = fields.Many2one('hr.employee', string='Employee', required=True, store=True)
+    employee_id = fields.Many2one('hr.employee', string='Employee', domain="['|', ('active', '=', False), ('active', '=', True)]", required=True, store=True)
     emp_id = fields.Char(related = 'employee_id.emp_id', string="Emp ID", readonly=True, store=True)
     mode_type = fields.Selection([('Pay', "Pay"),('Deduct', "Deduct")], string="Mode Type", default='Deduct', required=True)
     adjustment_type = fields.Many2one('hr.payslip.input.type', string='Type',required=True,store=True)

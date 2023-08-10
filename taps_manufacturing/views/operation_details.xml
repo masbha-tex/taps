@@ -18,6 +18,10 @@
                 <field name="mrp_line" invisible="1"/>
                 <field name="sale_order_line" invisible="1"/>
                 <field name="oa_id"/>
+                <field name="date_order"/>
+                <field name="action_date"/>
+                <field name="partner_id"/>
+                <field name="fg_categ_type"/>
                 <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
@@ -27,7 +31,12 @@
                 <field name="qty"/>
                 <field name="done_qty"/>
                 <field name="balance_qty"/>
-                <button name="button_start" type="object" string="Create Lot" class="btn-success"/>
+                <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
+                <field name="num_of_lots"/>
+                <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
+                
+                <!-- <button name="action_view_lots" class="oe_highlight" type="object" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/> "Create Lot (Lots: #{record.num_of_lots})"-->
+                
             </tree>
         </field>
     </record>

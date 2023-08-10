@@ -30,8 +30,8 @@ class SaleOrder(models.Model):
 
     #sequence = fields.Integer(string='Sequence')
     sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', readonly=True, store=True)
-    oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', readonly=True, store=True)
-    company_id = fields.Many2one('res.company', related='oa_id.company_id', string='Company', readonly=True, store=True)
+    oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', readonly=True, store=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", check_company=True)
+    company_id = fields.Many2one('res.company', string='Company', readonly=True, store=True, required=True, index=True, default=lambda self: self.env.company.id)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
     #buyer_name = fields.Many2one('sale.buyer', related='oa_id.buyer_name.id', string='Buyer', readonly=True)
     payment_term = fields.Many2one('account.payment.term', related='oa_id.payment_term_id', string='Payment Term', readonly=True)
@@ -267,7 +267,7 @@ class SaleOrder(models.Model):
                         p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.slidercodesfg == p[3])
                         qty = sum(p_q.mapped('pl_rec_plan_qty'))
 
-                    #raise UserError((p_q[0].dy_rec_plan_qty))
+                    #raise UserError((p_q.product_template_id.id))
                     
                     #and sol.finish == p[2]
                     
@@ -276,6 +276,7 @@ class SaleOrder(models.Model):
                                                                  'mrp_line':None,
                                                                  'sale_order_line':None,
                                                                  'oa_id':p[0],
+                                                                 'product_template_id':p_q.product_template_id.id,
                                                                  'action_date':plan_start,
                                                                  'shade':p[1],
                                                                  'finish':p[2],

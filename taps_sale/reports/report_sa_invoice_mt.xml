@@ -574,9 +574,16 @@
 											<t t-if="finish == 1">
 												<t t-if="line.finish">
 													<td>
+													<t t-if="'N/A' not in line.finish">
 														<strong>
 															<span t-esc="line.finish"/>
 														</strong>
+        											</t>
+													<t t-if="'N/A' in line.finish">
+														<strong>
+															<span t-esc="line.finish[4:]"/>
+														</strong>
+													</t>
 													</td>
 												</t>
 												<t t-if="not line.finish">

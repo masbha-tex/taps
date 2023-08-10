@@ -28,8 +28,8 @@ class ManufacturingLot(models.TransientModel):
     #item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
     
-    lot_line = fields.One2many('lot.line', 'plan_id', string='Machines',copy=True, auto_join=True)
-    parent_id = fields.Many2one('mrp.lot', 'Parent Operation', index=True, ondelete='cascade')
+    lot_line = fields.One2many('lot.line', 'lot_id',  string='Lot List',copy=True, auto_join=True)
+    
 
     @api.model
     def default_get(self, fields_list):
@@ -41,18 +41,18 @@ class ManufacturingLot(models.TransientModel):
         res["item"] = operation[0].fg_categ_type
         
         res["shade_finish"] = operation[0].shade + operation[0].finish
-        res["size"] = operation[0].size
+        #res["size"] = operation[0].size
         res["work_center"] = 'Dyeing'
         res["material_qty"] = operation[0].qty
         return res 
             
-    def done_mo_plan(self):
+    def done_mo_lot(self):
         # if  self.plan_qty > self.material_qty:
         #     raise UserError(('Split quantity should not greterthen the base quantity'))
         #     return
-        mo_ids = self.env.context.get("active_ids")
-        operation = self.env["operation.details"].browse(mo_ids)
-        return operation.set_plan(mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty)
+        ope_id = self.env.context.get("active_id")
+        operation = self.env["operation.details"].browse(ope_id)
+        return operation.set_lot(ope_id,self.lot_line)
 
 
 class LotLine(models.TransientModel):

@@ -46,13 +46,19 @@ class HrAppraisalGoalsAcvd(models.Model):
     @staticmethod
     def _get_year_list():
         current_year = datetime.date.today().year
-        return [(str(year), str(year)) for year in range(current_year - 1, current_year + 2)]  
+        year_options = []
+        
+        for year in range(current_year - 1, current_year + 2):
+            year_str = str(year)
+            next_year = str(year+1)
+            year_label = f'{year_str}-{next_year[2:]}'
+            year_options.append((year_str, year_label))
+        return year_options     
 
-    def _get_default_year(self):
-        # Return the default year value
+    @staticmethod
+    def _get_default_year():
         current_year = datetime.date.today().year
-        # raise UserError((str(current_year)))
-        return str(current_year)  # Change it to the desired default year    
+        return str(current_year)  
         
     @api.onchange('employee_id','year')
     def on_employee_change(self):
