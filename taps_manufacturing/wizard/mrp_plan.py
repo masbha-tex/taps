@@ -22,15 +22,14 @@ class ManufacturingPlan(models.TransientModel):
 
     item = fields.Text(string='Item', readonly=True)
     shade_finish = fields.Text(string='Shade / Finish', readonly=True)
-    plan_for = fields.Selection([
-        ('dyeing', 'Dyeing'),
-        ('sliderplating', 'Slider Plating'),
-        ('topplating', 'Top Plating'),
-        ('bottomplating', 'Bottom Plating'),
-        ('pinboxplating', 'Pinbox Plating'),
-        ('painting', 'Painting'),
-        ('sliassembly', 'Slider Assembly')],
-        string='Plan For')
+    plan_for = fields.Many2one('mrp.workcenter', required=True, string='Plan For', help="Assign to")
+    material = fields.Selection([
+        ('tape', 'Tape'),
+        ('slider', 'Slider'),
+        ('top', 'Top'),
+        ('bottom', 'Bottom'),
+        ('pinbox', 'Pinbox')],
+        string='Material', default='tape', required=True)
     
     plan_start = fields.Datetime(string='Start Date', required=True)
     plan_end = fields.Datetime(string='End Date')
@@ -51,7 +50,7 @@ class ManufacturingPlan(models.TransientModel):
         # Auto-complete production_id from context
         #if "mo_id" in fields_list and active_model == "mrp.production":
         # res["item_qty"] = active_id
-        production = self.env["manufacturing.order"].browse(active_id)
+        production = self.env[""+active_model+""].browse(active_id)
         res["item"] = production[0].fg_categ_type
         res["item_qty"] = sum(production.mapped('balance_qty'))
             #raise UserError((active_id))
@@ -63,25 +62,57 @@ class ManufacturingPlan(models.TransientModel):
         #     res["split_qty"] = production._get_quantity_to_backorder()
         return res 
     
+    # @api.onchange('machine_line.material_qty')
+    # def _onchange_qty(self):
+    #     raise UserError((sum(self.machine_line.mapped('material_qty'))))
+    #     self.plan_qty = sum(self.machine_line.mapped('material_qty'))
+
+        
     @api.onchange('plan_for')
     def _onchange_plan(self):
         active_id = self.env.context.get("active_ids")
         production = self.env["manufacturing.order"].browse(active_id)
-        if self.plan_for == 'dyeing':
+        if self.plan_for == 'Dyeing':
             self.material_qty = sum(production.mapped('tape_con'))
             self.shade_finish = production[0].shade
-        elif self.plan_for == 'sliderplating':
+        elif self.material == 'slider':
             self.material_qty = sum(production.mapped('slider_con'))
             self.shade_finish = production[0].finish
-        elif self.plan_for == 'topplating':
+        elif self.material == 'top':
             self.material_qty = sum(production.mapped('topwire_con'))
             self.shade_finish = production[0].finish
-        elif self.plan_for == 'bottomplating':
+        elif self.material == 'bottom':
             self.material_qty = sum(production.mapped('botomwire_con'))
             self.shade_finish = production[0].finish
-        elif self.plan_for == 'sliassembly':
+        elif self.material == 'pinbox':
+            self.material_qty = sum(production.mapped('pinbox_con'))
+            self.shade_finish = production[0].finish
+        elif self.plan_for == 'Slider assembly':
             self.material_qty = sum(production.mapped('slider_con'))
             self.shade_finish = production[0].finish
+
+    @api.onchange('material')
+    def _onchange_plan(self):
+        active_id = self.env.context.get("active_ids")
+        production = self.env["manufacturing.order"].browse(active_id)
+        if self.material == 'Tape':
+            self.material_qty = sum(production.mapped('tape_con'))
+            self.shade_finish = production[0].shade
+        elif self.material == 'Slider':
+            self.material_qty = sum(production.mapped('slider_con'))
+            self.shade_finish = production[0].finish
+        elif self.material == 'Top':
+            self.material_qty = sum(production.mapped('topwire_con'))
+            self.shade_finish = production[0].finish
+        elif self.material == 'Bottom':
+            self.material_qty = sum(production.mapped('botomwire_con'))
+            self.shade_finish = production[0].finish
+        elif self.material == 'Pinbox':
+            self.material_qty = sum(production.mapped('pinbox_con'))
+            self.shade_finish = production[0].finish
+        elif self.plan_for == 'Slider assembly':
+            self.material_qty = sum(production.mapped('slider_con'))
+            self.shade_finish = production[0].finish            
             
     def done_mo_plan(self):
         # if  self.plan_qty > self.material_qty:
@@ -89,7 +120,8 @@ class ManufacturingPlan(models.TransientModel):
         #     return
         mo_ids = self.env.context.get("active_ids")
         production = self.env["manufacturing.order"].browse(mo_ids)
-        production.set_plan(mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty,self.machine_line)
+        production.set_plan(mo_ids,self.plan_for.id,self.material,self.plan_start,
+                            self.plan_end,self.plan_qty,self.machine_line)
         #production.set_operation(mo_ids,self.plan_for,self.machine_line)
         return 
 
@@ -107,10 +139,11 @@ class MachineLine(models.TransientModel):
         ('m2', 'M/C 2'),
         ('m3', 'M/C 3'),
         ('m4', 'M/C 4')],
-        string='Machine No', domain=[('plan_for', '=', 'dyeing')])
+        string='Machine No', domain=[('material', '=', 'tape')])
     material_qty = fields.Float('Quantity',default=1.0, digits='Product Unit of Measure',required=True)
     
     
+
 #     @api.depends('product_qty')
 #     def _compute_qty(self):
 #         """

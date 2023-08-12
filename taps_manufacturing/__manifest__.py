@@ -29,6 +29,7 @@
         'wizard/mrp_plan.xml',
         'wizard/mrp_lot.xml',
         'wizard/requisition.xml',
+        'wizard/mrp_output.xml',
         'views/assets.xml',
         'views/mrp_productivity.xml',
         'views/mrp_production.xml',
@@ -36,6 +37,7 @@
         'views/manufacturing.xml',
         'views/mrp_workcenter.xml',
         'views/operation_details.xml',
+        'data/ir_lot_sequence.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     # only loaded in demonstration mode

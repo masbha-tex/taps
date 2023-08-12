@@ -16,9 +16,15 @@
                     </div>
                     <group>
                         <group>
-                            <!-- <field name="employee_id" options="{'no_create':true, 'no_open':true}"/> -->
+                            <field name="employee_id" options="{'no_create':true, 'no_open':true}"/>
+                            <field name="job_id"/>
+                            <field name="grade"/>
+                            <field name="impact"/>
+                        </group>
+                        <group>
                             <field name="year" widget="selection"/>
                             <field name="month"/>
+                            <field name="risk"/>
                         </group>
                     </group>
 <!--                     <div class="oe_title"> -->
@@ -49,6 +55,18 @@
             </form>
         </field>
     </record>
+      <record model="ir.ui.view" id="view_retention_matrix_tree">
+        <field name="name">retention.matrix.tree</field>
+        <field name="model">retention.matrix</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <tree string="Courses" expand="1">
+                <field name="employee_id"/>
+                <field name="impact"/>
+                <field name="risk"/>
+            </tree>
+        </field>
+    </record>
 
 
 
@@ -77,7 +95,7 @@
     <menuitem id="retention_menu" name="Retention" sequence="1" parent="main_retention_menu"/>
 
     <menuitem id="courses_menu" name="Heat Map" parent="main_retention_menu" action="retention_list_action"/>
-    <!-- <menuitem id="courses_menu" name="Reporting" parent="main_retention_menu" action="retention_list_action"/> -->
+    <menuitem id="reporting_menu" name="Reporting" parent="main_retention_menu" action="retention_list_action"/>
     
   </data>
 </odoo>

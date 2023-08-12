@@ -18,9 +18,10 @@ class RetentionMatrix(models.Model):
 
 
     employee_id = fields.Many2one('hr.employee', string='Employee', required=True, store=True)
-    name = fields.Char('Name', store=True,required=True, readonly=True, index=True, copy=False,  tracking=True)
+    name = fields.Char('Name', store=True,readonly=True, index=True, copy=False,  tracking=True)
     # retantion_line = fields.One2many('retantion.line', string='Retention Lines',tracking=True, store=True, required=True)
     job_id = fields.Many2one('hr.job', 'Position', store=True, readonly=True, compute='_compute_job_id')
+    grade = fields.Many2one('hr.payroll.structure.type', 'Grade', store=True, readonly=True, compute='_compute_job_id')
     risk = fields.Selection(selection=[
         ('1', 'Low-Risk'),
         ('2', 'Medium-Risk'),
@@ -60,3 +61,15 @@ class RetentionMatrix(models.Model):
     def _get_default_year():
         current_year = datetime.date.today().year
         return str(current_year)
+
+    @api.depends('employee_id')
+    def _compute_job_id(self):
+        for line in self.filtered('employee_id'):
+            line.job_id = line.employee_id.job_id.id
+            line.grade = line.employee_id.contract_id.structure_type_id
+
+
+# class RetentionMatrixLine(models.Model):
+#     _name = 'retention.matrix.line'
+#     _description = 'Retention Matrix Line'
+           
