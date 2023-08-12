@@ -79,9 +79,9 @@ class IncludeCateTypeInPT(models.Model):
         ('Metal #5 OE', 'Metal #5 OE'),
         ('Metal #8 OE', 'Metal #8 OE'),
         ('Plastic #3 CE', 'Plastic #3 CE'),
-        ('Plastic #3 OE', 'Plastic #3 OE'),
         ('Plastic #5 CE', 'Plastic #5 CE'),
         ('Plastic #5 OE', 'Plastic #5 OE')
+        ('Plastic #3 OE', 'Plastic #3 OE'),
     ],string='FG Category', store=True, readonly=False, copy=False)
     #description_purchase = fields.Text('Purchase Description', related='pur_description', translate=True)
     # fg_product_type = fields.Selection([
