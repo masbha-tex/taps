@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <record id="view_retention_matrix_form" model="ir.ui.view">
+        <field name="name">retention.matrix.view.from</field>
+        <field name="model">retention.matrix</field>
+        <field name="arch" type="xml">
+            <form string="Retention Matrix">
+                 <header>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" options="{'no_create':true, 'no_open':true}"/>
+                            <field name="job_id"/>
+                            <field name="grade"/>
+                            <field name="impact"/>
+                        </group>
+                        <group>
+                            <field name="year" widget="selection"/>
+                            <field name="month"/>
+                            <field name="risk"/>
+                        </group>
+                    </group>
+<!--                     <div class="oe_title"> -->
+                        <!-- <field name="retantion_line"
+                               widget="section_and_note_one2many" mode="tree">
+                            <tree string="Retention Line" editable="bottom">
+                                <control>
+                                    <create name="add_employee_control" string="Add a employee"/>
+                                </control>
+                                <field name="employee_id" options='{"no_create":true}'/>
+                                <field name="job_id"/>
+                                <field name="impact" string="Impact"/>
+                                <field name="risk" string="Risk"/>
+                                
+
+                                
+                            </tree>
+                        </field> -->
+<!--                     </div> -->
+                </sheet>
+               <!-- <field name="employee_id" /> -->
+                
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div> -->
+            </form>
+        </field>
+    </record>
+      <record model="ir.ui.view" id="view_retention_matrix_tree">
+        <field name="name">retention.matrix.tree</field>
+        <field name="model">retention.matrix</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <tree string="Courses" expand="1">
+                <field name="employee_id"/>
+                <field name="impact"/>
+                <field name="risk"/>
+            </tree>
+        </field>
+    </record>
+
+
+
+          
+      <record model="ir.actions.act_window" id="retention_list_action">
+        <field name="name">Retention</field>
+        <field name="res_model">retention.matrix</field>
+        <!-- <field name="context" eval="{'search_default_my_retention': 1}"/> -->
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first Retention Heat Map
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem 
+        id="main_retention_menu" 
+        name="Retention Matrix" 
+
+        web_icon="taps_retention_matrix,static/description/icon.png"/>
+        
+        
+        
+
+    <menuitem id="retention_menu" name="Retention" sequence="1" parent="main_retention_menu"/>
+
+    <menuitem id="courses_menu" name="Heat Map" parent="main_retention_menu" action="retention_list_action"/>
+    <menuitem id="reporting_menu" name="Reporting" parent="main_retention_menu" action="retention_list_action"/>
+    
+  </data>
+</odoo>

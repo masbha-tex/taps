@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_mrp_plan" model="ir.ui.view">
+        <field name="name">mrp.plan.form.view</field>
+        <field name="model">mrp.plan</field>
+        <field name="arch" type="xml">
+            <form string="Manufacturing Plan">
+                <group>
+                    <group>
+                        <field name="item"/>
+                        <field name="shade_finish"/>
+                        <field name="plan_for"/>
+                        <field name="material"/>
+                        <field name="plan_start"/>
+                        <field name="plan_end"/>
+                        <field name="item_qty"/>
+                        <field name="material_qty"/>
+                        <field name="plan_qty"/>
+                        <!-- <field name="machine_no" attrs="{'invisible': ['|','|','|',['plan_for','=','sliderplating'],['plan_for','=','topplating'],['plan_for','=','bottomplating'],['plan_for','=','pinboxplating'],['plan_for','=','sliassembly']]}"/> -->
+                    </group>
+                </group>
+                <group>
+                    <notebook>
+                        <page name="machine_line" string="Machinewise Plan">
+                            <field name="machine_line">
+                                <tree string="Machinewise Plan" editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="plan_id" invisible="1"/>
+                                    <field name="machine_no" required="True"/>
+                                    <field name="material_qty" required="True" optional="show" sum="Quantity" decoration-bf="True"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </group>
+                
+                <footer>
+                    <button name="done_mo_plan" string="Done" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_machine_line_tree" model="ir.ui.view">
+        <field name="name">machine.line.tree</field>
+        <field name="model">machine.line</field>
+        <field name="arch" type="xml">
+            <tree string="Machinewise Plan" create="false">
+                <field name="sequence" widget="handle" />
+                <field name="plan_id" invisible="1"/>
+                <field name="machine_no" required="True"/>
+                <field name="material_qty" required="True"/>
+            </tree>
+        </field>
+    </record> 
+
+    
+    <record id="action_mrp_plan" model="ir.actions.act_window">
+        <field name="name">Manufacturing Plan</field>
+        <field name="res_model">mrp.plan</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_form_mrp_plan"/>
+        <field name="target">new</field>
+    </record>
+</odoo>
