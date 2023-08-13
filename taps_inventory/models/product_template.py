@@ -7,7 +7,7 @@ class IncludeCateTypeInPT(models.Model):
     categ_type = fields.Many2one('category.type', 'Category Type', check_company=True, change_default=True)
     
     
-    generic_name = fields.Char(String="Generic Name")
+    generic_name = fields.Char(string="Generic Name")
     pur_description = fields.Selection([
         ('Auto Taffeta', 'Auto Taffeta'),
         ('Brass Wire', 'Brass Wire'),
@@ -79,6 +79,7 @@ class IncludeCateTypeInPT(models.Model):
         ('Metal #5 OE', 'Metal #5 OE'),
         ('Metal #8 OE', 'Metal #8 OE'),
         ('Plastic #3 CE', 'Plastic #3 CE'),
+        ('Plastic #3 OE', 'Plastic #3 OE'),
         ('Plastic #5 CE', 'Plastic #5 CE'),
         ('Plastic #5 OE', 'Plastic #5 OE')
     ],string='FG Category', store=True, readonly=False, copy=False)
