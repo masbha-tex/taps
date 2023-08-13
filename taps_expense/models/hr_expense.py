@@ -367,12 +367,12 @@ class taps_expense_sheet(models.Model):
     
     state = fields.Selection(selection_add=[('checked', 'Checked'),('approve',)], ondelete={'checked': lambda records: record.write({'state': 'draft'})})
     
-    expense_lines = fields.Many2many('hr.expense.line', string='Expense Lines', copy=False, domain="[('id', '=', expense_line_ids)]")
+    expense_lines = fields.Many2many('hr.expense.line', string='Expense Lines.', copy=False, domain="[('id', '=', expense_line_ids)]")
     
 
     amount_untaxed = fields.Monetary(related='expense_line_ids.amount_untaxed', string='Untaxed Amount', readonly=True, tracking=True, currency_field='ex_currency_id')
     amount_tax = fields.Monetary(related='expense_line_ids.amount_tax', string='Total Taxes', readonly=True, currency_field='ex_currency_id')#, compute='_amount_all'
-    amount_total = fields.Monetary(related='expense_line_ids.amount_total', string='Total Amount', readonly=True, currency_field='ex_currency_id')
+    amount_total = fields.Monetary(related='expense_line_ids.amount_total', string='Total Amount.', readonly=True, currency_field='ex_currency_id')
     
     purpose = fields.Char('Description', related='expense_line_ids.purpose', store=True, readonly=True)
     
