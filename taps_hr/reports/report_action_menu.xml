@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate='0'>
+    <data noupdate='1'>
          <record id="action_fnf_pdf_report" model="ir.actions.report">
             <field name="name">Full n Final Settlement</field>
             <field name="model">salary.sheet.pdf.report</field>
