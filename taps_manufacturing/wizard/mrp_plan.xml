@@ -10,6 +10,7 @@
                         <field name="item"/>
                         <field name="shade_finish"/>
                         <field name="plan_for"/>
+                        <field name="material"/>
                         <field name="plan_start"/>
                         <field name="plan_end"/>
                         <field name="item_qty"/>
@@ -21,7 +22,7 @@
                 <group>
                     <notebook>
                         <page name="machine_line" string="Machinewise Plan">
-                            <field name="machine_line" required="True">
+                            <field name="machine_line">
                                 <tree string="Machinewise Plan" editable="bottom">
                                     <field name="sequence" widget="handle" />
                                     <field name="plan_id" invisible="1"/>

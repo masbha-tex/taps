@@ -194,7 +194,7 @@ class SaleOrder(models.Model):
         return action
 
 # mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty
-    def set_plan(self,mo_ids,plan_for,plan_start,plan_end,plan_qty,machine_line):
+    def set_plan(self,mo_ids,plan_for,material,plan_start,plan_end,plan_qty,machine_line):
         #raise UserError((mo_ids,plan_for,plan_start,plan_end,plan_qty))
         production = self.env["manufacturing.order"].browse(mo_ids)
 # dyeing_plan,dyeing_plan_end,dyeing_plan_qty,dyeing_output,dyeing_qc_pass
@@ -206,7 +206,7 @@ class SaleOrder(models.Model):
         
         addition = 0.00
         for p in production:
-            if plan_for == 'dyeing':
+            if material == 'Tape':
                 if p.tape_con <= rest_pl_q:
                     m_qty = p.tape_con
                     rest_pl_q = rest_pl_q - p.tape_con
@@ -230,7 +230,7 @@ class SaleOrder(models.Model):
             #     p.write({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty,
             #              'dy_rec_plan_qty':re_pqty})
                 
-            elif plan_for == 'sliderplating':
+            elif material == 'Slider':
                 if p.tape_con < dist_qty + addition:
                     m_qty = p.slider_con
                     addition = (dist_qty + addition) - p.slider_con
@@ -239,17 +239,19 @@ class SaleOrder(models.Model):
                     addition = 0
                 m_qty += p.plating_plan_qty
                 p.update({'plating_plan':plan_start,'plating_plan_end':plan_end,'plating_plan_qty':m_qty})
-            elif plan_for == 'topplating':
+            elif material == 'Top':
                 m_qty += p.topwire_con
-            elif plan_for == 'bottomplating':
+            elif material == 'Bottom':
                 m_qty += p.botomwire_con
-            elif plan_for == 'sliassembly':
-                m_qty += p.slider_con
+            elif material == 'Pinbox':
+                m_qty += p.pinbox_con
+            # elif plan_for == 'sliassembly':
+            #     m_qty += p.slider_con
     
     
-        if plan_for == 'dyeing':
+        if material == 'Tape':
             query = """ select oa_id,shade,'' as finish,'' as slidercodesfg,sum(dy_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade """
-        if plan_for == 'sliderplating':
+        if material == 'Slider':
             query = """ select oa_id,'' as shade, finish,slidercodesfg,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,slidercodesfg """
             
         cr = self._cr
@@ -260,10 +262,10 @@ class SaleOrder(models.Model):
             for m in machine_line:
                 for p in plan:
                     qty = 0.0
-                    if plan_for == 'dyeing':
+                    if material == 'Tape':
                         p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.shade == p[1])
                         qty = sum(p_q.mapped('dy_rec_plan_qty'))
-                    if plan_for == 'sliderplating':
+                    if material == 'Slider':
                         p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.slidercodesfg == p[3])
                         qty = sum(p_q.mapped('pl_rec_plan_qty'))
 
@@ -282,7 +284,8 @@ class SaleOrder(models.Model):
                                                                  'finish':p[2],
                                                                  'slidercodesfg':p[3],
                                                                  'operation_of':'plan',
-                                                                 'operation_by':'planning',
+                                                                 'work_center':plan_for,
+                                                                 'operation_by':'Planning',
                                                                  'based_on':m.machine_no,
                                                                  'qty':qty,
                                                                  'done_qty':0

@@ -7,7 +7,7 @@ class IncludeCateTypeInPT(models.Model):
     categ_type = fields.Many2one('category.type', 'Category Type', check_company=True, change_default=True)
     
     
-    generic_name = fields.Char(String="Generic Name")
+    generic_name = fields.Char(string="Generic Name")
     pur_description = fields.Selection([
         ('Auto Taffeta', 'Auto Taffeta'),
         ('Brass Wire', 'Brass Wire'),
@@ -88,20 +88,7 @@ class IncludeCateTypeInPT(models.Model):
     #     ('Brass Wire', 'Brass Wire'),
     #     ('Scrap', 'Scrap')
     #     ],string='PUR Description', store=True, readonly=True, copy=False)
-    
- 
-#  Plastic #5 CE
-#  Coil #5 OE
-#  Coil #5 CE
-#  Coil #3 CE
-#  Plastic #5 OE
-#  AL #5 CE
-#  Plastic #3 CE
-#  Metal #4 CE
-#  Metal #5 OE
-#  Metal #5 CE
-# Metal #8 OE
-        
+       
     @api.onchange('pur_description')
     def onchange_pur_description(self):
         self.description_purchase = ''
@@ -138,6 +125,7 @@ class ProductTemplateAttributeLine(models.Model):
         - Clean up related values and related variants when archiving or when
             updating `value_ids`.
         """
+        
         if 'product_tmpl_id' in values:
             for ptal in self:
                 if ptal.product_tmpl_id.id != values['product_tmpl_id']:

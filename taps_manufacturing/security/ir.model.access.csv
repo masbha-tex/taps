@@ -8,4 +8,11 @@ access_mrp_plan,mrp_plan,model_mrp_plan,base.group_user,1,1,1,1
 access_machine_line,machine_line,model_machine_line,base.group_user,1,1,1,1
 access_requisition,requisition,model_mrp_requisition,base.group_user,1,1,1,1
 access_requisition_line,requisition_line,model_mrp_requisition_line,base.group_user,1,1,1,1
+<<<<<<< HEAD
 access_operation_details,operation_details,model_operation_details,base.group_user,1,1,1,1
+=======
+access_operation_details,operation_details,model_operation_details,base.group_user,1,1,1,1
+access_mrp_lot,mrp_lot,model_mrp_lot,base.group_user,1,1,1,1
+access_lot_line,lot_line,model_lot_line,base.group_user,1,1,1,1
+access_mrp_output,mrp_output,model_mrp_output,base.group_user,1,1,1,1
+>>>>>>> fed867adae0ddf53ad8bbc77c460f81ea76674e4

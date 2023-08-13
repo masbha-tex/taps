@@ -23,7 +23,7 @@ class ManufacturingLot(models.TransientModel):
     item = fields.Text(string='Item', readonly=True)
     shade_finish = fields.Text(string='Shade / Finish', readonly=True)
     size = fields.Text(string='Size', readonly=True)
-    work_center = fields.Char(string='Create From', readonly=True)
+    work_center = fields.Many2one('mrp.workcenter', string='Create From', readonly=True)
     
     #item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
@@ -42,7 +42,7 @@ class ManufacturingLot(models.TransientModel):
         
         res["shade_finish"] = operation[0].shade + operation[0].finish
         #res["size"] = operation[0].size
-        res["work_center"] = 'Dyeing'
+        res["work_center"] = operation[0].work_center.id
         res["material_qty"] = operation[0].qty
         return res 
             

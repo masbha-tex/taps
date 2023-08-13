@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_mrp_output" model="ir.ui.view">
+        <field name="name">mrp.output.form.view</field>
+        <field name="model">mrp.output</field>
+        <field name="arch" type="xml">
+            <form string="Manufacturing Output">
+                <group>
+                    <group>
+                        <field name="lot_code"/>
+                        <field name="oa_id"/>
+                        <field name="item"/>
+                        <field name="shade"/>
+                        <field name="finish"/>
+                        <field name="sizein"/>
+                        <field name="sizecm"/>
+                        <field name="output_of"/>
+                        <field name="manuf_date"/>
+                        <field name="qty"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="done_mo_output" string="Done" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+
+    
+    <record id="action_mrp_output" model="ir.actions.act_window">
+        <field name="name">Manufacturing Output</field>
+        <field name="res_model">mrp.output</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_form_mrp_output"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

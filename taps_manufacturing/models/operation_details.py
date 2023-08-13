@@ -50,15 +50,15 @@ class OperationDetails(models.Model):
     slidercodesfg = fields.Char(string='Slider Code (SFG)', store=True, readonly=True)
     finish = fields.Char(string='Finish', store=True, readonly=True)
     shade = fields.Char(string='Shade', store=True, readonly=True)
-
     
     operation_of = fields.Selection([
         ('plan', 'Planning'),
         ('lot', 'Create Lot'),
         ('output', 'Output'),
         ('req', 'Requisition')],
-        string='Operation Of')
-    operation_by = fields.Text(string='Operation By', store=True)
+        string='Operation Of', help="What has done")
+    work_center = fields.Many2one('mrp.workcenter', string='Assign To', store=True, readonly=True, help="Assign to")
+    operation_by = fields.Char(string='Operation By', store=True, help="Done by")
     based_on = fields.Char(string='Based On', store=True)
     qty = fields.Float(string='Qty', readonly=False)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
@@ -111,22 +111,23 @@ class OperationDetails(models.Model):
         if lot_line:
             for l in lot_line:
                 ope = operation.create({'mrp_lines':None,
-                                  'sale_lines':None,
-                                  'mrp_line':None,
-                                  'sale_order_line':None,
-                                  'parent_id':ope_id,
-                                  'oa_id':operation.oa_id.id,
-                                  'product_template_id':operation.product_template_id.id,
-                                  'action_date':datetime.now(),
-                                  'shade':operation.shade,
-                                  'finish':operation.finish,
-                                  'slidercodesfg':operation.slidercodesfg,
-                                  'operation_of':'lot',
-                                  'operation_by':'dyeing',
-                                  'based_on':'Lot Code',
-                                  'qty':l.material_qty,
-                                  'done_qty':0
-                                 })
+                                        'sale_lines':None,
+                                        'mrp_line':None,
+                                        'sale_order_line':None,
+                                        'parent_id':ope_id,
+                                        'oa_id':operation.oa_id.id,
+                                        'product_template_id':operation.product_template_id.id,
+                                        'action_date':datetime.now(),
+                                        'shade':operation.shade,
+                                        'finish':operation.finish,
+                                        'slidercodesfg':operation.slidercodesfg,
+                                        'operation_of':'lot',
+                                        'work_center':operation.work_center.id,
+                                        'operation_by':operation.work_center.name,
+                                        'based_on':'Lot Code',
+                                        'qty':l.material_qty,
+                                        'done_qty':0
+                                        })
     def action_view_lots(self):
         """ This function returns an action that display existing picking orders of given purchase order ids. When only one found, show the picking immediately.
         """
@@ -141,14 +142,29 @@ class OperationDetails(models.Model):
         result['domain'] = "[('id','in',%s)]" % (lot_ids)
         return result
 
+    @api.model
+    def create(self, vals):
+        if 'company_id' in vals:
+            self = self.with_company(vals['company_id'])
+        seq_date = None
+        seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(datetime.now()))
 
+        if vals.get('operation_of') == "lot":
+            ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
+            vals['code'] = ref
         
-        # elif len(pick_ids) == 1:
-        #     res = self.env.ref('stock.view_picking_form', False)
-        #     form_view = [(res and res.id or False, 'form')]
-        #     if 'views' in result:
-        #         result['views'] = form_view + [(state,view) for state,view in result['views'] if view != 'form']
-        #     else:
-        #         result['views'] = form_view
-        #     result['res_id'] = pick_ids.id
-                        
+        result = super(SaleOrder, self).create(vals)
+        return result                
+    
+    def set_output(self,mo_ids,manuf_date,qty,output_of):
+        operation = self.env["operation.details"].browse(mo_ids)
+        ope = operation.write({'action_date':manuf_date,'done_qty':l.done_qty + qty})
+
+
+
+
+
+
+
+
+
