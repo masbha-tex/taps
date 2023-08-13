@@ -79,7 +79,6 @@ class IncludeCateTypeInPT(models.Model):
         ('Metal #5 OE', 'Metal #5 OE'),
         ('Metal #8 OE', 'Metal #8 OE'),
         ('Plastic #3 CE', 'Plastic #3 CE'),
-        ('Plastic #3 OE', 'Plastic #3 OE'),
         ('Plastic #5 CE', 'Plastic #5 CE'),
         ('Plastic #5 OE', 'Plastic #5 OE')
     ],string='FG Category', store=True, readonly=False, copy=False)
@@ -89,20 +88,7 @@ class IncludeCateTypeInPT(models.Model):
     #     ('Brass Wire', 'Brass Wire'),
     #     ('Scrap', 'Scrap')
     #     ],string='PUR Description', store=True, readonly=True, copy=False)
-    
- 
-#  Plastic #5 CE
-#  Coil #5 OE
-#  Coil #5 CE
-#  Coil #3 CE
-#  Plastic #5 OE
-#  AL #5 CE
-#  Plastic #3 CE
-#  Metal #4 CE
-#  Metal #5 OE
-#  Metal #5 CE
-# Metal #8 OE
-        
+       
     @api.onchange('pur_description')
     def onchange_pur_description(self):
         self.description_purchase = ''
