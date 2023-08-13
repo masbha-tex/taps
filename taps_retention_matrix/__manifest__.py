@@ -10,12 +10,11 @@
         Long description of module's purpose
     """,
 
-    'author': "My Company",
+    'author': "Reazul",
     'website': "http://www.yourcompany.com",
     'category': 'Generic Modules/Retention Matrix',
     'version': '0.1',
 
-    # any module necessary for this one to work correctly
     'depends': ['base','hr','taps_hr'],
 
     # always loaded
