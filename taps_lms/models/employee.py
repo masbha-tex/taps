@@ -12,8 +12,7 @@ class HrEmployee(models.Model):
             employee.session_ids = self.env['lms.session'].search([('attendance_ids.attendee_id', '=', employee.id)])
 
 class HrEmployeePublic(models.Model):
-    _inherit = ["hr.employee.public"]
-    _description = 'Public Employee'
+    _inherit = 'hr.employee.public'
 
     instructor = fields.Boolean(readonly=True)
     session_ids = fields.Many2many(readonly=True)
