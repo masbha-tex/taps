@@ -4,7 +4,6 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
-from odoo.addons.hr_payroll.models.browsable_object import BrowsableObject, InputLine, WorkedDays, Payslips, ResultRules
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_round, date_utils
 from odoo.tools.misc import format_date
