@@ -35,7 +35,8 @@ class HrAppraisalGoalsAcvd(models.Model):
         ('jan', 'January'),
         ('feb', 'February'),
         ('mar', 'March'),], string="Month",tracking=True, store=True, required=True)
-    acvd_line = fields.One2many('hr.appraisal.goal.acvd.line', 'acvd_id', state={'refused': [('readonly', True)], 'approved': [('readonly', True)]}, string='Achievement Lines', tracking=True, store=True, required=True)
+    acvd_line = fields.One2many('hr.appraisal.goal.acvd.line', 'acvd_id', string='Achievement Lines', tracking=True, store=True, required=True)
+     #state={'refused': [('readonly', True)], 'approved': [('readonly', True)]},
     state = fields.Selection([
     ('draft', 'To Submit'),
     ('submit', 'Submitted'),
@@ -226,11 +227,11 @@ class HrAppraisalGoalsAcvdLine(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     acvd_id = fields.Many2one('hr.appraisal.goal.acvd', string='Achievement Reference', index=True, required=True, ondelete='cascade')
     employe_id = fields.Many2one('hr.employee', string='Employee', related='acvd_id.employee_id', store=True, readonly=True)
-    objective_line_id = fields.Many2one('hr.appraisal.goal', string='Objective', store=True, index=True, tracking=True,required=True, ondelete='cascade', domain="[('employee_id', '=', employe_id)]")
+    objective_line_id = fields.Many2one('hr.appraisal.goal', string='Objective', store=True, index=True, required=True, ondelete='cascade', domain="[('employee_id', '=', employe_id)]")
     selected = fields.Boolean(string="Selected", store=True, default=False)
-    target = fields.Float(string="Target", store=True, copy=True,tracking=True, index=True)
-    acvd = fields.Float(string="ACVD", store=True, copy=True, tracking=True,index=True)
-    acvd_entry = fields.Float(string="ACVD Entry", store=True, copy=True, index=True, tracking=True,required=True)
+    target = fields.Float(string="Target", store=True, copy=True,index=True)
+    acvd = fields.Float(string="ACVD", store=True, copy=True, index=True)
+    acvd_entry = fields.Float(string="ACVD Entry", store=True, copy=True, index=True, required=True)
     
 
     def write(self, values):

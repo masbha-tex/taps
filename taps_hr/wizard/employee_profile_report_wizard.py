@@ -16,13 +16,13 @@ class EmployeeCardPDFReport(models.TransientModel):
 
     date_from = fields.Date('Date from', required=True, default = date.today().strftime('2000-%m-01'))
     date_to = fields.Date('Date to', required=True, default = date.today())
-    mode_type = fields.Selection([
-        ('employee', 'By Employee'),
-        ('company', 'By Company'),
-        ('department', 'By Department'),
-        ('category', 'By Employee Tag')],
-        string='Mode', required=True, default='employee',
-        help='By Employee: Request for individual Employee, By Employee Tag: Request for group of employees in category')
+    # mode_type = fields.Selection([
+    #     ('employee', 'By Employee'),
+    #     ('company', 'By Company'),
+    #     ('department', 'By Department'),
+    #     ('category', 'By Employee Tag')],
+    #     string='Mode', required=True, default='employee',
+    #     help='By Employee: Request for individual Employee, By Employee Tag: Request for group of employees in category')
     
     employee_id = fields.Many2one(
         'hr.employee',  domain="['|', ('active', '=', False), ('active', '=', True)]", string='Employee', index=True, readonly=False, ondelete="restrict")

@@ -144,7 +144,7 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLineInherit(models.Model):
     _inherit = "purchase.order.line"
 
-    quality_standard = fields.Char(String="Quality Standaed")
+    quality_standard = fields.Char(string="Quality Standaed")
     # last_purchase_price = fields.Char(String="Last Purchase",compute="_last_purchase_price")
     
     

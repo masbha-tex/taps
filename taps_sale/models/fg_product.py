@@ -26,7 +26,7 @@ class ProductBomFormula(models.Model):
     pinbox_python_compute = fields.Text(string='Pin BOx')
     taffeta_python_compute = fields.Text(string='Taffeta')
     tbwire_python_compute = fields.Text(string='Top & Botom')
-    topbottom_type = fields.Text(string='Type')
+    topbottom_type = fields.Text(string='Top/Bottom Type')
     tape_price= fields.Float('Tape Price', required=True, digits='Unit Price', default=0.0)
     slider_price= fields.Float('Slider Price', required=True, digits='Unit Price', default=0.0)
     wire_price= fields.Float('Wire Price', required=True, digits='Unit Price', default=0.0)

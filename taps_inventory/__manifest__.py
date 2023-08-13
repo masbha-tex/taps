@@ -20,7 +20,7 @@
     "license": "OEEL-1",
 
     # any module necessary for this one to work correctly
-    'depends': ['base_setup', 'stock', 'account', 'web_studio'],
+    'depends': ['base_setup', 'stock', 'account', 'web_studio','base'],
 
     # always loaded
     

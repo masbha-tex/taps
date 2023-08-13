@@ -78,7 +78,7 @@
             <field name="paperformat_id" ref="taps_hr.paperformat_salary_sheet_report"/>
 <!--             <field name="default_print_option">print</field> -->
         </record>        
-        <record id="action_job_card_pdf_report" model="ir.actions.report">
+        <!-- <record id="action_job_card_pdf_report" model="ir.actions.report">
             <field name="name">Job Card</field>
             <field name="model">job.card.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
@@ -87,9 +87,8 @@
             <field name="binding_model_id" ref="model_job_card_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_jobcard_report"/>
-<!--             <field name="default_print_option">print</field> -->
-        </record>           
-        <record id="action_employee_card_pdf_report" model="ir.actions.report">
+        </record>            -->
+        <!-- <record id="action_employee_card_pdf_report" model="ir.actions.report">
             <field name="name">Employee Profile</field>
             <field name="model">employee.profile.card.pdf.report</field>
             <field name="report_type">qweb-pdf</field>
@@ -98,8 +97,7 @@
             <field name="binding_model_id" ref="model_employee_profile_card_pdf_report"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_profile_report"/>
-<!--             <field name="default_print_option">print</field> -->
-        </record>
+        </record> -->
         <record id="action_salary_headwise_pdf_report" model="ir.actions.report">
             <field name="name">Headwise Report</field>
             <field name="model">salary.headwise.pdf.report</field>

@@ -21,7 +21,7 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
     
     priority_sales = fields.Selection(
-        [('0', 'Normal'), ('1', 'Urgent')], 'Priority', default='0', index=True)
+        [('0', 'Normal'), ('1', 'Urgent')], 'Priority Sales', default='0', index=True)
     buyer_name = fields.Many2one('sale.buyer', string='Buyer Name')
     season = fields.Char(string='Season')
     sample_ref = fields.Many2many(comodel_name='sale.order',
