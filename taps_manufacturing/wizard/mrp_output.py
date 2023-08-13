@@ -48,6 +48,7 @@ class ManufacturingOutput(models.TransientModel):
         return res 
             
     def done_mo_output(self):
+        a = 'a'
         mo_ids = self.env.context.get("active_id")
         active_model = self.env.context.get("active_model")
         production = self.env[""+active_model+""].browse(mo_ids)

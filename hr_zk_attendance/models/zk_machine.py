@@ -598,7 +598,6 @@ class ZkMachine(models.Model):
             zk = ZK(machine_ip, port=zk_port, timeout=timeout, password=0, force_udp=False, ommit_ping=True, verbose=True, encoding='UTF-8')
         except NameError:
             raise UserError(_("Please install it with 'pip3 install pyzk'."))
-        # finger_path = get_module_resource('hr_zk_attendance', 'models', 'finger_1.bin')
         conn = zk.connect()
         
         if conn:
@@ -609,14 +608,7 @@ class ZkMachine(models.Model):
                 break
             
             try:
-                conn.enroll_user(uid=uids, temp_id=int(self.template_id), user_id=self.employee_id.barcode)
-            # print ("-- Restore Finger Information --")
-            # user = conn.get_users()
-            # for u in user:
-            #     with open(finger_path, 'rb') as my_finger:
-            #         bin = my_finger.read()
-            #         fing1 = Finger(u.uid, 1, True, bin)
-            #         conn.save_user_template(u, [fing1])  
+                conn.enroll_user(uid=uids, temp_id=int(self.template_id), user_id=self.employee_id.barcode) 
             except Exception as e:
                 raise UserError(_("Already Exist your Finger Template: {}".format(e)))
             finally:
@@ -637,10 +629,8 @@ class ZkMachine(models.Model):
         
         if conn:
             users_ = conn.get_users()
-            employee = self.env['hr.employee'].search([])#('barcode','=','01001')
+            employee = self.env['hr.employee'].search([])
             unmap_employee = employee.filtered(lambda x: (str(x.barcode)+str(int(x.rfid))) not in [(str(u.user_id)+str(u.card)) for u in users_])
-
-            # return self.env['hr.employee'].search([('id','in',unmap_employee.mapped('id'))])
             return len(unmap_employee)
             
         else:

@@ -139,7 +139,7 @@ class MachineLine(models.TransientModel):
         ('m2', 'M/C 2'),
         ('m3', 'M/C 3'),
         ('m4', 'M/C 4')],
-        string='Machine No', domain=[('material', '=', 'tape')])
+        string='Machine No')
     material_qty = fields.Float('Quantity',default=1.0, digits='Product Unit of Measure',required=True)
     
     
