@@ -34,7 +34,7 @@ class BomVerification(models.TransientModel):
     veri_line = fields.One2many('bom.verification.line', 'verification_id', string='BOM Lines',copy=True, auto_join=True)
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
 
-    @api.onchange('product_tmpl_id', 'mo_qty','size','unit','uom_qty')
+    @api.onchange('product_tmpl_id','size','unit','uom_qty')
     def bom_change(self):
         wastage_percent = self.env['wastage.percent']
         
