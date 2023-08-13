@@ -27,7 +27,7 @@
         'wizard/mrp_split.xml',
         'wizard/bom_verification.xml',
         'wizard/mrp_plan.xml',
-        'wizard/mrp_lot.xml',
+        #'wizard/mrp_lot.xml',
         'wizard/requisition.xml',
         'views/assets.xml',
         'views/mrp_productivity.xml',
