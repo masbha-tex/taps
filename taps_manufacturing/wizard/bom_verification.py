@@ -34,7 +34,7 @@ class BomVerification(models.TransientModel):
     veri_line = fields.One2many('bom.verification.line', 'verification_id', string='BOM Lines',copy=True, auto_join=True)
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
 
-    @api.onchange('product_tmpl_id', 'mo_qty','size','unit','uom_qty')
+    @api.onchange('product_tmpl_id','size','unit','uom_qty')
     def bom_change(self):
         wastage_percent = self.env['wastage.percent']
         
@@ -139,6 +139,6 @@ class BomVerificationLine(models.TransientModel):
     tbwire_con = fields.Float('TBwire Consumption', required=True, digits='Unit Price', default=0.0)
     wire_con = fields.Float('Wire Consumption', required=True, digits='Unit Price', default=0.0)
     pinbox_con = fields.Float('Pinbox Consumption', required=True, digits='Unit Price', default=0.0)
-    total_cost = fields.Float('Pinbox Consumption', required=True, digits='Unit Price', default=0.0)
+    total_cost = fields.Float('Total Cost', required=True, digits='Unit Price', default=0.0)
 
     
