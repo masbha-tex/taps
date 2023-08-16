@@ -36,7 +36,7 @@ class OperationDetails(models.Model):
     
     oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=True)
     company_id = fields.Many2one('res.company', related='oa_id.company_id', string='Company', readonly=True, store=True)
-
+    buyer_name = fields.Char(string='Buyer', readonly=True)
     product_template_id = fields.Many2one('product.template', domain=[('sale_ok', '=', True)])
     fg_categ_type = fields.Selection(related='product_template_id.fg_categ_type')
     
@@ -85,15 +85,9 @@ class OperationDetails(models.Model):
     def button_output(self):
         self.ensure_one()
         self._check_company()
-        if self.state in ("done", "to_close", "cancel"):
-            raise UserError(
-                _(
-                    "Cannot split a manufacturing order that is in '%s' state.",
-                    self._fields["state"].convert_to_export(self.state, self),
-                )
-            )
-        action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
-        action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_output")
+        #action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
+        action["domain"] = [('default_id','in',self.mapped('id'))]
         return action
 
     def button_createlot(self):
@@ -124,7 +118,7 @@ class OperationDetails(models.Model):
                                         'operation_of':'lot',
                                         'work_center':operation.work_center.id,
                                         'operation_by':operation.work_center.name,
-                                        'based_on':'Lot Code',
+                                        'based_on':'Shade',
                                         'qty':l.material_qty,
                                         'done_qty':0
                                         })
@@ -153,12 +147,33 @@ class OperationDetails(models.Model):
             ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
             vals['code'] = ref
         
-        result = super(SaleOrder, self).create(vals)
+        result = super(OperationDetails, self).create(vals)
         return result                
     
+
     def set_output(self,mo_ids,manuf_date,qty,output_of):
         operation = self.env["operation.details"].browse(mo_ids)
-        ope = operation.write({'action_date':manuf_date,'done_qty':l.done_qty + qty})
+        ope = operation.write({'action_date':manuf_date,'done_qty':operation.done_qty + qty})
+        ope = operation.create({'mrp_lines':None,
+                                'sale_lines':None,
+                                'mrp_line':None,
+                                'sale_order_line':None,
+                                'parent_id':mo_ids,
+                                'oa_id':operation.oa_id.id,
+                                'product_template_id':operation.product_template_id.id,
+                                'action_date':datetime.now(),
+                                'shade':operation.shade,
+                                'finish':operation.finish,
+                                'slidercodesfg':operation.slidercodesfg,
+                                'operation_of':'output',
+                                'work_center':operation.work_center.id,
+                                'operation_by':operation.work_center.name,
+                                'based_on':'Lot Code',
+                                'qty':qty,
+                                'done_qty':qty
+                                })
+
+        
 
 
 

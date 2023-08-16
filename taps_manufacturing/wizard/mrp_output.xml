@@ -26,7 +26,6 @@
             </form>
         </field>
     </record>
-    
 
     
     <record id="action_mrp_output" model="ir.actions.act_window">
@@ -36,4 +35,12 @@
         <field name="view_id" ref="view_form_mrp_output"/>
         <field name="target">new</field>
     </record>
+    
+    <menuitem id="menu_manufacturing_output" 
+              name="Process Output" 
+              action="action_mrp_output" 
+              parent="mrp.menu_mrp_manufacturing"
+              sequence="6"/>
+
+    
 </odoo>

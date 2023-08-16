@@ -54,7 +54,11 @@
                </xpath>
                 <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/tree[1]/field[@name='product_qty']" position="before">
                    <field  name="quality_standard" />
-                   <!-- <field  name="last_purchase_price" /> -->
+                   
+               </xpath>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/tree[1]/field[@name='price_unit']" position="before">
+                   
+                   <field  name="last_purchase_price" style="background-color: #00A09D; color: white"/>
                </xpath>
             </field>
         </record>

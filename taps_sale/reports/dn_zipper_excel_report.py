@@ -27,6 +27,7 @@ class SalesXlsx(models.AbstractModel):
         customer = ''
         pi_num = ''
         oa_num = ''
+        remarks = ''
         create_date = ''
         expected_date = ''
         for x,o_data in enumerate(docs):
@@ -35,12 +36,14 @@ class SalesXlsx(models.AbstractModel):
                 customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name,orders.payment_term_id.name])
                 pi_num = orders.order_ref.pi_number
                 oa_num = orders.name
+                remarks = orders.remarks
                 create_date = orders.create_date.strftime("%d-%m-%Y")
                 expected_date = orders.expected_date.strftime("%d-%m-%Y")
             else:
                 customer = ''
                 pi_num = ''
                 oa_num = ''
+                remarks = ''
                 create_date = ''
                 expected_date = ''
             
@@ -110,7 +113,7 @@ class SalesXlsx(models.AbstractModel):
                 oa_num,
                 create_date,
                 '',
-                '',
+                remarks,
                 #expected_date,
                 shade,
                 sizein,
@@ -165,6 +168,7 @@ class SalesXlsx(models.AbstractModel):
         sheet.set_column(3, 3, 20)
         sheet.set_column(4, 4, 20)
         sheet.set_column(5, 5, 20)
+        sheet.set_column(8, 8, 40)
         sheet.set_column(9, 9, 40)
         sheet.merge_range(1, 0, _range, 0, '', merge_format)
         #sheet.merge_range(1, 1, _range, 1, '', merge_format)

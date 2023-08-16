@@ -21,7 +21,7 @@ from datetime import datetime
 SIZE_BACK_ORDER_NUMERING = 3
 
 
-class SaleOrder(models.Model):
+class ManufacturingOrder(models.Model):
     _name = "manufacturing.order"
     #_inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
     _description = "Manufacturing Order"
@@ -34,6 +34,7 @@ class SaleOrder(models.Model):
     company_id = fields.Many2one('res.company', string='Company', readonly=True, store=True, required=True, index=True, default=lambda self: self.env.company.id)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
     #buyer_name = fields.Many2one('sale.buyer', related='oa_id.buyer_name.id', string='Buyer', readonly=True)
+    buyer_name = fields.Char(string='Buyer', readonly=True)
     payment_term = fields.Many2one('account.payment.term', related='oa_id.payment_term_id', string='Payment Term', readonly=True)
     date_order = fields.Datetime(string='Order Date', related='oa_id.date_order', readonly=True)
     validity_date = fields.Date(string='Expiration', related='oa_id.validity_date', readonly=True)
@@ -41,18 +42,18 @@ class SaleOrder(models.Model):
     lead_time = fields.Integer(string='Lead Time', compute='get_leadtime', readonly=True)
     
     product_id = fields.Many2one(
-        'product.product', related='sale_order_line.product_id', string='Product',ondelete='restrict', check_company=True)  # Unrequired company
+        'product.product', related='sale_order_line.product_id', string='Product Id',ondelete='restrict', check_company=True)  # Unrequired company
     product_template_id = fields.Many2one(
-        'product.template', string='Product Template',
+        'product.template', string='Product',
         related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)])
-    fg_categ_type = fields.Selection(related='product_template_id.fg_categ_type')
-    product_uom = fields.Many2one('uom.uom', string='Unit of Measure', related='product_template_id.uom_id')
+    fg_categ_type = fields.Selection(related='product_template_id.fg_categ_type', string='Item')
+    product_uom = fields.Many2one('uom.uom', string='Unit', related='product_template_id.uom_id')
     product_uom_qty = fields.Float(string='Quantity', related='sale_order_line.product_uom_qty', digits='Product Unit of Measure', readonly=True)
-    done_qty = fields.Float(string='Done Quantity', digits='Product Unit of Measure', readonly=False)
-    balance_qty = fields.Float(string='Balance Quantity', compute='_balance_qty', digits='Product Unit of Measure', readonly=True)
+    done_qty = fields.Float(string='Done Qty', digits='Product Unit of Measure', readonly=False)
+    balance_qty = fields.Float(string='Balance', compute='_balance_qty', digits='Product Unit of Measure', readonly=True)
     
     topbottom = fields.Char(string='Top/Bottom', store=True, readonly=True)
-    slidercodesfg = fields.Char(string='Slider Code (SFG)', store=True, readonly=True)
+    slidercodesfg = fields.Char(string='Slider', store=True, readonly=True)
     finish = fields.Char(string='Finish', store=True, readonly=True)
     shade = fields.Char(string='Shade', store=True, readonly=True)
     sizein = fields.Char(string='Size (Inch)', store=True, readonly=True)
@@ -60,12 +61,12 @@ class SaleOrder(models.Model):
     sizemm = fields.Char(string='Size (MM)', store=True, readonly=True)
     
     dyedtape = fields.Char(string='Dyed Tape', store=True, readonly=True)
-    ptopfinish = fields.Char(string='Plated Top Finish', store=True, readonly=True)
+    ptopfinish = fields.Char(string='Top Finish', store=True, readonly=True)
     
-    numberoftop = fields.Char(string='Number of Top', store=True, readonly=True)
+    numberoftop = fields.Char(string='N.Top', store=True, readonly=True)
     
-    pbotomfinish = fields.Char(string='Plated Bottom Finish', store=True)
-    ppinboxfinish = fields.Char(string='Plated Pin-Box Finish', store=True)
+    pbotomfinish = fields.Char(string='Bottom Finish', store=True)
+    ppinboxfinish = fields.Char(string='Pin-Box Finish', store=True)
     dippingfinish = fields.Char(string='Dipping Finish', store=True)
     gap = fields.Char(string='Gap', store=True)
     
@@ -89,22 +90,22 @@ class SaleOrder(models.Model):
     nu2washer = fields.Text(string='2 NO. Washer Material & Size', store=True)
     back_part = fields.Text(string='Back Part', store=True)
     
-    tape_con = fields.Float('Tape Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
-    slider_con = fields.Float('Slider Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
-    topwire_con = fields.Float('Topwire Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
-    botomwire_con = fields.Float('Botomwire Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
-    tbwire_con = fields.Float('TBwire Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
-    wire_con = fields.Float('Wire Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
-    pinbox_con = fields.Float('Pinbox Consumption', compute='_get_line_value', readonly=True, digits='Unit Price')
+    tape_con = fields.Float('Tape C.', compute='_get_line_value', readonly=True, digits='Unit Price')
+    slider_con = fields.Float('Slider C.', compute='_get_line_value', readonly=True, digits='Unit Price')
+    topwire_con = fields.Float('Topwire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
+    botomwire_con = fields.Float('Botomwire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
+    tbwire_con = fields.Float('TBwire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
+    wire_con = fields.Float('Wire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
+    pinbox_con = fields.Float('Pinbox C.', compute='_get_line_value', readonly=True, digits='Unit Price')
     shadewise_tape = fields.Float('Shadwise Tape', compute='_get_line_value', readonly=True, digits='Unit Price')
 
-    dyeing_plan = fields.Datetime(string='Dyeing Plan Start', readonly=False)
-    dyeing_plan_end = fields.Datetime(string='Dyeing Plan End', readonly=False)
-    dyeing_plan_qty = fields.Float(string='Dyeing Plan Qty', readonly=False)
-    dy_rec_plan_qty = fields.Float(string='Dyeing Replan Qty', readonly=False, default=0.0)
-    dyeing_plan_due = fields.Float(string='Dyeing Plan Due', readonly=False, compute='_dy_plane_due')
-    dyeing_output = fields.Float(string='Dyeing Output', readonly=False)
-    dyeing_qc_pass = fields.Float(string='Dyeing QC Pass', readonly=False)
+    dyeing_plan = fields.Datetime(string='Dye Plan', readonly=False)
+    dyeing_plan_end = fields.Datetime(string='Dye Plan End', readonly=False)
+    dyeing_plan_qty = fields.Float(string='Dye Plan Qty', readonly=False)
+    dy_rec_plan_qty = fields.Float(string='Dye Last Plan', readonly=False, default=0.0)
+    dyeing_plan_due = fields.Float(string='Dye Plan Due', readonly=False, default=0.0, compute='_dy_plane_due')
+    dyeing_output = fields.Float(string='Dye Output', readonly=False, default=0.0)
+    dyeing_qc_pass = fields.Float(string='Dye QC Pass', readonly=False, default=0.0)
 
     plating_plan = fields.Datetime(string='Plating Plan Start', readonly=False)
     plating_plan_end = fields.Datetime(string='Plating Plan End', readonly=False)
@@ -195,6 +196,7 @@ class SaleOrder(models.Model):
 
 # mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty
     def set_plan(self,mo_ids,plan_for,material,plan_start,plan_end,plan_qty,machine_line):
+        #raise UserError((mo_ids,plan_for,material,plan_start,plan_end,plan_qty,machine_line))
         #raise UserError((mo_ids,plan_for,plan_start,plan_end,plan_qty))
         production = self.env["manufacturing.order"].browse(mo_ids)
 # dyeing_plan,dyeing_plan_end,dyeing_plan_qty,dyeing_output,dyeing_qc_pass
@@ -206,7 +208,7 @@ class SaleOrder(models.Model):
         
         addition = 0.00
         for p in production:
-            if material == 'Tape':
+            if material == 'tape':
                 if p.tape_con <= rest_pl_q:
                     m_qty = p.tape_con
                     rest_pl_q = rest_pl_q - p.tape_con
@@ -230,7 +232,7 @@ class SaleOrder(models.Model):
             #     p.write({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty,
             #              'dy_rec_plan_qty':re_pqty})
                 
-            elif material == 'Slider':
+            elif material == 'slider':
                 if p.tape_con < dist_qty + addition:
                     m_qty = p.slider_con
                     addition = (dist_qty + addition) - p.slider_con
@@ -239,35 +241,42 @@ class SaleOrder(models.Model):
                     addition = 0
                 m_qty += p.plating_plan_qty
                 p.update({'plating_plan':plan_start,'plating_plan_end':plan_end,'plating_plan_qty':m_qty})
-            elif material == 'Top':
+            elif material == 'top':
                 m_qty += p.topwire_con
-            elif material == 'Bottom':
+            elif material == 'bottom':
                 m_qty += p.botomwire_con
-            elif material == 'Pinbox':
+            elif material == 'pinbox':
                 m_qty += p.pinbox_con
             # elif plan_for == 'sliassembly':
             #     m_qty += p.slider_con
     
     
-        if material == 'Tape':
+        if material == 'tape':
             query = """ select oa_id,shade,'' as finish,'' as slidercodesfg,sum(dy_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade """
-        if material == 'Slider':
+        if material == 'slider':
             query = """ select oa_id,'' as shade, finish,slidercodesfg,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,slidercodesfg """
             
         cr = self._cr
         cursor = self.env.cr
         cr.execute(query,[tuple(mo_ids),1])
         plan = cursor.fetchall()
+        #raise UserError((plan))
         if machine_line:
             for m in machine_line:
                 for p in plan:
                     qty = 0.0
-                    if material == 'Tape':
+                    if material == 'tape':
                         p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.shade == p[1])
-                        qty = sum(p_q.mapped('dy_rec_plan_qty'))
-                    if material == 'Slider':
+                        if len(p_q) > 1:
+                            qty = m.material_qty
+                        else:
+                            qty = sum(p_q.mapped('dy_rec_plan_qty'))
+                    if material == 'slider':
                         p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.slidercodesfg == p[3])
-                        qty = sum(p_q.mapped('pl_rec_plan_qty'))
+                        if len(p_q) > 1:
+                            qty = m.material_qty
+                        else:
+                            qty = sum(p_q.mapped('pl_rec_plan_qty'))
 
                     #raise UserError((p_q.product_template_id.id))
                     

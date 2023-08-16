@@ -13,12 +13,12 @@ class Inventory(models.Model):
     
     
     product_id = fields.Many2one('product.product', string='Item', readonly=True)
-    #product_tmpl_id = fields.Many2one('product.template', related='product_id.product_tmpl_id')
+    pr_code = fields.Char(string='Item Code', readonly=True)
     product_category = fields.Many2one('category.type', string='Category')
     parent_category = fields.Many2one('category.type', string='Product')
     
     lot_id = fields.Many2one('stock.production.lot', string='Invoice', readonly=True)
-    rejected = fields.Boolean(string='Rejected', readonly=True)
+    rejected = fields.Text(string='Rejected', readonly=True)
     lot_price = fields.Float(string='Price', readonly=True, digits='Unit Price')
     pur_price = fields.Float(string='Pur Price', readonly=True, digits='Unit Price')
     landed_cost = fields.Float(string='Landed Cost', readonly=True, digits='Unit Price')
@@ -33,6 +33,7 @@ class Inventory(models.Model):
     cloing_qty = fields.Float(string='Closing Quantity', readonly=True)
     cloing_value = fields.Float(string='Closing Value', readonly=True)
     shipment_mode = fields.Char(string='Shipmnet Mode', readonly=True)
+    po_type = fields.Char(string='Po Type', readonly=True)
     #company_id = fields.Many2one('res.company', readonly=True) 
     company_id = fields.Many2one('res.company', 'Company', related='product_id.company_id', readonly=True, index=True, default=lambda self: self.env.company.id)
     

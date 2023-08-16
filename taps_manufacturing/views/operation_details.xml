@@ -5,12 +5,12 @@
         <field name="name">operation.details.tree</field>
         <field name="model">operation.details</field>
         <field name="arch" type="xml" >
-            <tree string="Operation Details" create="false" delete ="false"> 
+            <tree string="Operation Details" create="false" delete ="false" editable="top"> 
                 <!-- editable="top" -->
                 <header>
                     <button name="button_requisition" type="object" string="Requisition"/>
                     <!-- <button name="button_createlot" type="object" string="Create Lot"/> -->
-                    <button name="button_output" type="object" string="Output"/>
+                    <!-- <button name="button_output" type="object" string="Output"/> -->
                 </header>
                 <field name="code" invisible="1"/>
                 <field name="mrp_lines" invisible="1"/>
@@ -21,6 +21,7 @@
                 <field name="date_order"/>
                 <field name="action_date"/>
                 <field name="partner_id"/>
+                <field name="buyer_name"/>
                 <field name="fg_categ_type"/>
                 <field name="slidercodesfg"/>
                 <field name="finish"/>

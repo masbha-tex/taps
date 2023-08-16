@@ -20,7 +20,7 @@ class ManufacturingOutput(models.TransientModel):
     _description = 'Process Output'
     _check_company_auto = True
     
-    lot_code = fields.Text(string='Lot', readonly=False)
+    lot_code = fields.Char(string='Lot', readonly=False)
     oa_id = fields.Many2one('sale.order', string='OA', readonly=True)
     item = fields.Text(string='Item', readonly=True)
     shade = fields.Text(string='Shade', readonly=True)
@@ -38,8 +38,8 @@ class ManufacturingOutput(models.TransientModel):
         active_id = self.env.context.get("active_id")
         production = self.env[""+active_model+""].browse(active_id)
         res["lot_code"] = production[0].code
-        res["oa_id"] = production[0].oa_id
-        res["item"] = production[0].item
+        res["oa_id"] = production[0].oa_id.id
+        res["item"] = production[0].fg_categ_type
         res["shade"] = production[0].shade
         res["finish"] = production[0].finish
         # res["sizein"] = production[0].size_in
@@ -48,10 +48,22 @@ class ManufacturingOutput(models.TransientModel):
         return res 
             
     def done_mo_output(self):
-        mo_ids = self.env.context.get("active_id")
+        mo_ids = self.env.context.get("active_ids")
         active_model = self.env.context.get("active_model")
         production = self.env[""+active_model+""].browse(mo_ids)
         
         production.set_output(mo_ids,self.manuf_date,self.qty,self.output_of)
         #production.set_operation(mo_ids,self.plan_for,self.machine_line)
         return
+
+    @api.onchange('lot_code')
+    def _onchange_lot(self):
+        production = self.env['operation.details'].search([('lot_code', '=', self.lot_code)])
+        res["lot_code"] = production[0].code
+        res["oa_id"] = production[0].oa_id.id
+        res["item"] = production[0].fg_categ_type
+        res["shade"] = production[0].shade
+        res["finish"] = production[0].finish
+        # res["sizein"] = production[0].size_in
+        # res["sizecm"] = production[0].size_cm
+        res["output_of"] = production[0].work_center.name        

@@ -19,11 +19,11 @@
                             <field name="employee_id" options="{'no_create':true, 'no_open':true}"/>
                             <field name="job_id"/>
                             <field name="grade"/>
-                            <field name="impact"/>
+                            <field name="year" widget="selection"/>
                         </group>
                         <group>
-                            <field name="year" widget="selection"/>
-                            <field name="month"/>
+                            <field name="quarter"/>
+                            <field name="impact"/>
                             <field name="risk"/>
                         </group>
                     </group>
@@ -68,14 +68,51 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="view_retention_kanban">
+        <field name="name">retention.matrix.kanban</field>
+        <field name="model">retention.matrix</field>
+        <field name="arch" type="xml">
+            <kanban>
+               <field name="employee_id"/>
+                <field name="impact"/>
+                <field name="risk"/>
+                <templates>
+                    <t t-name="kanban-box">
+                    <ul>
+                        <li>Impact:<field name="impact"/></li>
+                        <li>Risk:<field name="risk"/></li>
+                    </ul>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
 
+
+      <record model="ir.ui.view" id="retention_search_view">
+        <field name="name">retention.matrix.search</field>
+        <field name="model">retention.matrix</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="department_id"/>
+                <field name="employee_id"/>
+                <field name="impact"/>
+                <field name="risk"/>
+                
+                <searchpanel>
+                    <!-- <field name="department_id" icon="fa-users" enable_counters="1"/> -->
+                    <field name="employee_id" icon="fa-users" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
 
           
       <record model="ir.actions.act_window" id="retention_list_action">
         <field name="name">Retention</field>
         <field name="res_model">retention.matrix</field>
-        <!-- <field name="context" eval="{'search_default_my_retention': 1}"/> -->
-        <field name="view_mode">tree,form</field>
+        <field name="context" eval="{'search_default_my_retention': 1}"/>
+        <field name="view_mode">tree,kanban,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create the first Retention Heat Map
             </p>

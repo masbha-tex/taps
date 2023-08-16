@@ -4,10 +4,9 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
-<<<<<<< HEAD
-=======
+
 # from odoo.addons.hr_payroll.models.browsable_object import BrowsableObject, InputLine, WorkedDays, Payslips, ResultRules
->>>>>>> fed867adae0ddf53ad8bbc77c460f81ea76674e4
+
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_round, date_utils
 from odoo.tools.misc import format_date
@@ -21,7 +20,10 @@ class RetentionMatrix(models.Model):
 
 
     employee_id = fields.Many2one('hr.employee', string='Employee', required=True, store=True)
+    # company_id = fields.Many2one('res.company',required=True)
+    department_id = fields.Many2one('hr.department', 'Department', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     name = fields.Char('Name', store=True,readonly=True, index=True, copy=False,  )
+    color = fields.Integer()
     # retantion_line = fields.One2many('retantion.line', string='Retention Lines',tracking=True, store=True, required=True)
     job_id = fields.Many2one('hr.job', 'Position', store=True, readonly=True, compute='_compute_job_id')
     grade = fields.Many2one('hr.payroll.structure.type', 'Grade', store=True, readonly=True, compute='_compute_job_id')
@@ -34,19 +36,11 @@ class RetentionMatrix(models.Model):
         ('2', 'Medium-Impact'),
         ('3', 'High-Impact')], string="Impact",  help="What would be the impact of this employee leaving?" ) 
     year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(),  store=True, required=True)
-    month = fields.Selection(selection=[
-        ('apr', 'April'),
-        ('may', 'May'),
-        ('jun', 'Jun'),
-        ('jul', 'July'),
-        ('aug', 'August'),
-        ('sep', 'September'),
-        ('oct', 'October'),
-        ('nov', 'November'),
-        ('dec', 'December'),
-        ('jan', 'January'),
-        ('feb', 'February'),
-        ('mar', 'March'),], string="Month",tracking=True)
+    quarter = fields.Selection(selection=[
+        ('q1', 'Q1'),
+        ('q2', 'Q2'),
+        ('q3', 'Q3'),
+        ('q4', 'Q4'),], string="Quarter")
 
     @staticmethod
     def _get_year_list():

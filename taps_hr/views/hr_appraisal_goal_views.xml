@@ -282,9 +282,66 @@
         <field name="model">hr.appraisal</field>
         <field name="inherit_id" ref="hr_appraisal.hr_appraisal_kanban"/>
         <field name="arch" type="xml">
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[2]/t[1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[2]/t[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[2]/t[3]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_close']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='department_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='department_id']" position="after">
-                <field name="total_weightage" display="full" widget="progressbar"/>
-                <field name="ytd_weightage_acvd" display="full" widget="progressbar"/>
+                <div>
+                    <table class="table table-sm p-0 m-0 left bg-dark" style="font-size:8pt; width:100%; table-layout:fixed;color: white">
+                        <thead>
+                            <tr align="left">
+                                
+                                <th style="background-color:grey;color:white; text-align: center">Q1</th>
+                                
+                                <th style="background-color:grey;color:white; text-align: center">Q2</th>
+                                
+                                <th style="background-color:grey;color:white; text-align: center">Q3</th>
+                                
+                                <th style="background-color:grey;color:white; text-align: center">Q4</th>
+                                <th style="background-color:#714B67; color: white; text-align: center">YTD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr align="left">
+                                <td style="background-color:grey;color:white; text-align: center">
+                                    <!-- <t t-esc="datas[18]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+                                    <field name="q_1_ytd"/>
+                                </td>
+                                
+                                <td style="background-color:grey;color:white; text-align: center">
+                                    <!-- <t t-esc="datas[19]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+                                    <field name="q_2_ytd"/>
+                                </td>
+                                
+                                <td style="background-color:grey;color:white; text-align: center">
+                                    <!-- <t t-esc="datas[20]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+                                    <field name="q_3_ytd"/>
+                                </td>
+                                
+                                <td style="background-color:grey;color:white; text-align: center">
+                                    <!-- <t t-esc="datas[21]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+                                    <field name="q_4_ytd"/>
+                                </td>
+                                <td style="background-color:#714B67;color:white; text-align: center">
+                                    <!-- <t t-esc="datas[15]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+                                    <field name="ytd_weightage_acvd"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </xpath>
         </field>
     </record>
@@ -326,7 +383,7 @@
         <field name="name">Appraisal</field>
         <field name="res_model">hr.appraisal</field>
         <field name="view_mode">kanban,tree,gantt,calendar,form,activity</field>
-        <field name="context">{"search_default_next_month": 1, "group_by": "date_close"}</field>
+        <!-- <field name="context">{"search_default_next_month": 1, "group_by": "date_close"}</field> -->
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create a new appraisal</p>
             <p>You will be able to plan an appraisal with your employees, to ask your appraisal with your

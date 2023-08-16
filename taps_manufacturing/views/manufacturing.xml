@@ -16,7 +16,7 @@
                 <field name="oa_id"/>
                 <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="partner_id"/>
-                <!-- <field name="buyer_id"/> -->
+                <field name="buyer_name"/>
                 <field name="payment_term"/>
                 <field name="date_order"/>
                 <field name="validity_date"/>
@@ -31,22 +31,22 @@
                 <field name="shade"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
-                <field name="product_uom_qty"/>
-                <field name="done_qty"/>
-                <field name="balance_qty"/>
-                <field name="tape_con"/>
-                <field name="slider_con"/>
-                <field name="topwire_con"/>
-                <field name="botomwire_con"/>
-                <field name="wire_con"/>
-                <field name="pinbox_con"/>
+                <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>
+                <field name="done_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
+                <field name="balance_qty" optional="show" sum="Balance" decoration-bf="True"/>
+                <field name="tape_con" optional="show" sum="Tape C." decoration-bf="True"/>
+                <field name="slider_con" optional="show" sum="Slider C." decoration-bf="True"/>
+                <field name="topwire_con" optional="show" sum="Topwire C." decoration-bf="True"/>
+                <field name="botomwire_con" optional="show" sum="Botomwire C." decoration-bf="True"/>
+                <field name="wire_con" optional="show" sum="Wire C." decoration-bf="True"/>
+                <field name="pinbox_con" optional="show" sum="Pinbox C." decoration-bf="True"/>
                 <field name="dyeing_plan"/>
                 <field name="dyeing_plan_end" invisible="1"/>
-                <field name="dyeing_plan_qty"/>
-                <field name="dy_rec_plan_qty"/>
-                <field name="dyeing_plan_due" invisible="1"/>
-                <field name="dyeing_output" invisible="1"/>
-                <field name="dyeing_qc_pass" invisible="1"/>
+                <field name="dyeing_plan_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
+                <field name="dy_rec_plan_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
+                <field name="dyeing_plan_due" optional="show" sum="Done Qty" decoration-bf="True"/>
+                <field name="dyeing_output" optional="show" sum="Done Qty" decoration-bf="True"/>
+                <field name="dyeing_qc_pass" optional="show" sum="Done Qty" decoration-bf="True"/>
                 
             </tree>
         </field>

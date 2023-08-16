@@ -28,7 +28,7 @@ class PurchaseOrder(models.Model):
         store=True
     )
     is_received = fields.Boolean(string="Receive Status", related='is_shipped', store=True)
-    po_type = fields.Selection([('Import', 'Import'), ('Local', 'Local')], 'PO Type',states={'cancel': [('readonly', True)], 'done': [('readonly', True)], 'purchase': [('readonly', True)], 'to approve': [('readonly', True)]})
+    po_type = fields.Selection([('Import', 'Import'), ('Local', 'Local')], 'PO Type',required=True, states={'cancel': [('readonly', True)], 'done': [('readonly', True)], 'purchase': [('readonly', True)], 'to approve': [('readonly', True)]})
     
     
     @api.model
@@ -145,18 +145,21 @@ class PurchaseOrderLineInherit(models.Model):
     _inherit = "purchase.order.line"
 
     quality_standard = fields.Char(string="Quality Standaed")
-    # last_purchase_price = fields.Char(String="Last Purchase",compute="_last_purchase_price")
+    last_purchase_price = fields.Char(string="Last Purchase",compute="_last_purchase_price")
     
     
-    # def _last_purchase_price(self):
-    #     for line in self:
-    #         domain = [
+    def _last_purchase_price(self):
+        for line in self:
+            domain = [
                 
-    #             ("product_id", "=", line.product_id.id),
-    #             ("date_order", "<", line.date_order),
-    #         ]
-    #         docs = self.env["purchase.order.line"].search(domain, limit=1)
-    #         line.last_purchase_price = docs.price_unit
-    #         # raise UserError((docs.id))
+                ("product_id", "=", line.product_id.id),
+                ("order_id.date_approve", "<", line.order_id.create_date),
+                ("order_id.state", "=", "purchase"),
+            ]
+            docs = self.env["purchase.order.line"].search(domain, limit=1)
+            line.last_purchase_price = str("{:.2f}".format(docs.price_unit))+" "
+            if docs.order_id.currency_id.name:
+                line.last_purchase_price += str(docs.order_id.currency_id.name)
+            # raise UserError((docs.id))
     
     
