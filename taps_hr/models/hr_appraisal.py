@@ -24,7 +24,8 @@ class HrAppraisal(models.Model):
     q_1_ytd = fields.Float(string="Q1",store=True, copy=True, compute='_compute_ytd_weightage_acvd')
     q_2_ytd = fields.Float(string="Q2",store=True, copy=True, compute='_compute_ytd_weightage_acvd')
     q_3_ytd = fields.Float(string="Q3",store=True, copy=True, compute='_compute_ytd_weightage_acvd')
-    q_4_ytd = fields.Float(string="Q4",store=True, copy=True, compute='_compute_ytd_weightage_acvd') 
+    q_4_ytd = fields.Float(string="Q4",store=True, copy=True, compute='_compute_ytd_weightage_acvd')
+    kpi_state = fields.Char(string="Kpi Status",store=True)
     
     
     # @api.multi

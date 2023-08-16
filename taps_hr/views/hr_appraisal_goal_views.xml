@@ -277,6 +277,47 @@
             </tree>
         </field>
     </record>
+    <record id="hr_appraisal_search_inherit" model="ir.ui.view">
+        <field name="name">hr.appraisal.search.inherit</field>
+        <field name="model">hr.appraisal</field>
+        <field name="inherit_id" ref="hr_appraisal.hr_appraisal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search[1]/group[1]" position="inside">
+                <filter string='Final Review' name="final" icon="fa-user" domain="[]" context="{'group_by': 'date_close'}"/>
+            </xpath>
+            
+            <!-- <search string="Search Appraisal">
+                <field name="employee_id"/>
+                <filter string="To Do" name="my_appraisals" domain="[
+                    '|',
+                    ('employee_id.user_id', '=', uid),
+                    ('manager_ids.user_id', 'in', [uid]),
+                ]"/>
+                <filter string="Done" name="filter_done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter string="My Appraisals" name="my_appraisals" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter string="People I Manage" name="people_i_manage" domain="[('employee_id.parent_id.user_id', '=', uid)]" groups="hr_appraisal.group_hr_appraisal_user"/>
+                <separator/>
+                <filter string="Late" name="late_appraisals" domain="[('date_close', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter invisible="1" string="Late Activities" name="activities_overdue"
+                    domain="[('my_activity_date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                    help="Show all records which has next action date is before today"/>
+                <filter invisible="1" string="Today Activities" name="activities_today"
+                    domain="[('my_activity_date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
+                    domain="[('my_activity_date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <group expand='0' string='Group by...'>
+                    <filter string='Employee' name="employee" icon="fa-user" domain="[]" context="{'group_by': 'employee_id'}"/>
+                    <filter name="groupby_state" context="{'group_by': 'state'}"/>
+               </group>
+                <searchpanel>
+                    <field name="company_id" groups="base.group_multi_company" icon="fa-building"/>
+                    <field name="department_id" icon="fa-users"/>
+                </searchpanel>
+           </search> -->
+        </field>
+    </record>    
     <record id="hr_appraisal_kanban_inherit" model="ir.ui.view">
         <field name="name">hr.appraisal.kanban.inherit</field>
         <field name="model">hr.appraisal</field>
@@ -291,9 +332,17 @@
             <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[2]/t[3]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <!-- <xpath expr="//field[@name='date_close']" position="attributes">
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[3]/t[1]" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </xpath> -->
+            </xpath>
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[3]/span[1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[3]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <!-- <xpath expr="//field[@name='activity_ids']" position="replace"/> -->
             <xpath expr="//field[@name='department_id']" position="replace"/>
             <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[1]" position="after">
                 <div>
@@ -334,15 +383,14 @@
                     <t t-if="record.date_final_interview.raw_value and record.state.raw_value != 'new' and record.date_final_interview.raw_value &lt; (new Date())" t-set="deadline">oe_kanban_text_red</t>
                     <t t-if="record.date_final_interview.raw_value and record.state.raw_value != 'new'"><strong><span>Next Review: </span></strong>
                     <span t-attf-class="#{deadline}"><i><field name="date_final_interview"/></i></span></t>
-                </div>                
-            </xpath>
-            <!-- <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[3]" position="after">
-                <div>
+                </div> 
+                <div class="o_kanban_inline_block">
                     <t t-if="record.date_close.raw_value and record.date_close.raw_value &lt; (new Date())" t-set="red">oe_kanban_text_red</t>
                     <strong><span>Final Review: </span></strong>
-                    <span t-attf-class="#{red}"><xpath expr="//field[@name='date_close']" position="move"/></span>
+                    <span t-attf-class="#{red}"><field name="date_close"/></span>
+                    <field name="activity_ids" widget="kanban_activity"/>
                 </div>                
-            </xpath> -->
+            </xpath>
         </field>
     </record>
 
@@ -383,7 +431,7 @@
         <field name="name">Appraisal</field>
         <field name="res_model">hr.appraisal</field>
         <field name="view_mode">kanban,tree,gantt,calendar,form,activity</field>
-        <!-- <field name="context">{"search_default_next_month": 1, "group_by": "date_close"}</field> -->
+        <field name="context">{"search_default_next_year": 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create a new appraisal</p>
             <p>You will be able to plan an appraisal with your employees, to ask your appraisal with your
@@ -416,9 +464,9 @@
             <xpath expr="//field[@name='date_final_interview']" position="attributes">
                 <attribute name="string">Next Review</attribute>
             </xpath>
-            <!-- <xpath expr="//tree[1]" position="attributes">
-                <attribute name="default_order">date_close desc</attribute>
-            </xpath> -->
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="kpi_state"/>
+            </xpath>
             
         </field>
     </record>

@@ -419,15 +419,15 @@
 										<th style="text-align: center ! important">Qty/PC</th>
 										<t t-set="line_count" t-value="line_count+1"/>
 										<th style="text-align: center ! important">Qty/Grs</th>
-										<t t-if="style == 1">
+										
 											<th style="text-align: center ! important">STYLE</th>
-										</t>
-										<t t-if="gmt == 1">
+										
+										
 											<th style="text-align: center ! important">GMT</th>
-										</t>
-										<t t-if="mold == 1">
-											<th style="text-align: center ! important">MOLD SET</th>
-										</t>
+										
+										
+											<th style="text-align: center ! important">MOLD</th>
+										
 									</tr>
 								</thead>
 								<tbody>
@@ -618,7 +618,7 @@
 														<t t-set="total_quantity" t-value="line.product_uom_qty+total_quantity"/>
 													</strong>
 												</td>
-												<t t-if="style == 1">
+												
 													<t t-if="line.style">
 														<td>
 															<strong>
@@ -629,8 +629,8 @@
 													<t t-if="not line.style">
 														<td/>
 													</t>
-												</t>
-												<t t-if="gmt == 1">
+												
+												
 													<t t-if="line.gmt">
 														<td>
 															<strong>
@@ -641,8 +641,8 @@
 													<t t-if="not line.gmt">
 														<td/>
 													</t>
-												</t>
-												<t t-if="mold == 1">
+												
+												
 													<t t-if="line.mold_set">
 														<td>
 															<strong>
@@ -653,7 +653,8 @@
 													<t t-if="not line.mold_set">
 														<td/>
 													</t>
-												</t>
+												
+												
 											</t>
 										</tr>
 									</t>
