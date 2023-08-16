@@ -29,12 +29,13 @@
                 <field name="operation_of"/>
                 <field name="operation_by"/>
                 <field name="based_on"/>
-                <field name="qty"/>
+                <field name="qty" readonly="1"/>
                 <field name="done_qty"/>
                 <field name="balance_qty"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>
                 <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
+                <!-- <button name="button_output" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/> -->
                 
                 <!-- <button name="action_view_lots" class="oe_highlight" type="object" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/> "Create Lot (Lots: #{record.num_of_lots})"-->
                 

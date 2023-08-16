@@ -2,12 +2,10 @@
 {
     'name': "taps_retention_matrix",
 
-    'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+    'summary': """Create new module for Retention Heat matrix""",
 
     'description': """
-        Long description of module's purpose
+        It's for the Retention Heat map.
     """,
 
     'author': "Reazul",
@@ -15,7 +13,7 @@
     'category': 'Generic Modules/Retention Matrix',
     'version': '0.1',
 
-    'depends': ['base','hr','taps_hr'],
+    'depends': ['base','hr','taps_hr', 'web_studio'],
 
     # always loaded
     'data': [

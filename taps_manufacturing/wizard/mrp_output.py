@@ -31,21 +31,21 @@ class ManufacturingOutput(models.TransientModel):
     manuf_date = fields.Datetime(string='Production Date', required=True)
     qty = fields.Float(string='Qty', default=0.0, digits='Product Unit of Measure')
     
-    @api.model
-    def default_get(self, fields_list):
-        res = super().default_get(fields_list)
-        active_model = self.env.context.get("active_model")
-        active_id = self.env.context.get("active_id")
-        production = self.env[""+active_model+""].browse(active_id)
-        res["lot_code"] = production[0].code
-        res["oa_id"] = production[0].oa_id.id
-        res["item"] = production[0].fg_categ_type
-        res["shade"] = production[0].shade
-        res["finish"] = production[0].finish
-        # res["sizein"] = production[0].size_in
-        # res["sizecm"] = production[0].size_cm
-        res["output_of"] = production[0].work_center.name
-        return res 
+    # @api.model
+    # def default_get(self, fields_list):
+    #     res = super().default_get(fields_list)
+    #     active_model = self.env.context.get("active_model")
+    #     active_id = self.env.context.get("active_id")
+    #     production = self.env[""+active_model+""].browse(active_id)
+    #     res["lot_code"] = production[0].code
+    #     res["oa_id"] = production[0].oa_id.id
+    #     res["item"] = production[0].fg_categ_type
+    #     res["shade"] = production[0].shade
+    #     res["finish"] = production[0].finish
+    #     # res["sizein"] = production[0].size_in
+    #     # res["sizecm"] = production[0].size_cm
+    #     res["output_of"] = production[0].work_center.name
+    #     return res 
             
     def done_mo_output(self):
         mo_ids = self.env.context.get("active_ids")
@@ -58,12 +58,13 @@ class ManufacturingOutput(models.TransientModel):
 
     @api.onchange('lot_code')
     def _onchange_lot(self):
-        production = self.env['operation.details'].search([('lot_code', '=', self.lot_code)])
-        res["lot_code"] = production[0].code
-        res["oa_id"] = production[0].oa_id.id
-        res["item"] = production[0].fg_categ_type
-        res["shade"] = production[0].shade
-        res["finish"] = production[0].finish
-        # res["sizein"] = production[0].size_in
-        # res["sizecm"] = production[0].size_cm
-        res["output_of"] = production[0].work_center.name        
+        production = self.env['operation.details'].search([('code', '=', self.lot_code),('code', '!=', None)])
+        if production:
+            self.lot_code = production[0].code
+            self.oa_id = production[0].oa_id.id
+            self.item = production[0].fg_categ_type
+            self.shade = production[0].shade
+            self.finish = production[0].finish
+            # res["sizein"] = production[0].size_in
+            # res["sizecm"] = production[0].size_cm
+            self.output_of = production[0].work_center.name        

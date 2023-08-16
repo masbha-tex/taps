@@ -291,9 +291,9 @@
             <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[2]/t[3]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//field[@name='date_close']" position="attributes">
+            <!-- <xpath expr="//field[@name='date_close']" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </xpath>
+            </xpath> -->
             <xpath expr="//field[@name='department_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -302,13 +302,9 @@
                     <table class="table table-sm p-0 m-0 left bg-dark" style="font-size:8pt; width:100%; table-layout:fixed;color: white">
                         <thead>
                             <tr align="left">
-                                
                                 <th style="background-color:grey;color:white; text-align: center">Q1</th>
-                                
                                 <th style="background-color:grey;color:white; text-align: center">Q2</th>
-                                
                                 <th style="background-color:grey;color:white; text-align: center">Q3</th>
-                                
                                 <th style="background-color:grey;color:white; text-align: center">Q4</th>
                                 <th style="background-color:#714B67; color: white; text-align: center">YTD</th>
                             </tr>
@@ -316,32 +312,45 @@
                         <tbody>
                             <tr align="left">
                                 <td style="background-color:grey;color:white; text-align: center">
-                                    <!-- <t t-esc="datas[18]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
                                     <field name="q_1_ytd"/>
                                 </td>
-                                
                                 <td style="background-color:grey;color:white; text-align: center">
-                                    <!-- <t t-esc="datas[19]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
                                     <field name="q_2_ytd"/>
                                 </td>
-                                
                                 <td style="background-color:grey;color:white; text-align: center">
-                                    <!-- <t t-esc="datas[20]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
                                     <field name="q_3_ytd"/>
                                 </td>
-                                
                                 <td style="background-color:grey;color:white; text-align: center">
-                                    <!-- <t t-esc="datas[21]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
                                     <field name="q_4_ytd"/>
                                 </td>
                                 <td style="background-color:#714B67;color:white; text-align: center">
-                                    <!-- <t t-esc="datas[15]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
                                     <field name="ytd_weightage_acvd"/>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+            </xpath>
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[2]" position="after">
+                <div>
+                    <!-- <t t-if="! record.date_final_interview.raw_value and record.state.raw_value === 'pending'">
+                    <strong><a name="action_calendar_event" type="object">Schedule The Next Review</a></strong></t> -->
+                    <t t-if="record.date_final_interview.raw_value and record.state.raw_value != 'new' and record.date_final_interview.raw_value &lt; (new Date())" t-set="deadline">oe_kanban_text_red</t>
+                    <t t-if="record.date_final_interview.raw_value and record.state.raw_value != 'new'"><strong><span>Next Review: </span></strong>
+                    <span t-attf-class="#{deadline}"><i><field name="date_final_interview"/></i></span></t>
+                </div>
+                <!-- <div class="o_kanban_inline_block">
+                    <t t-if="record.date_close.raw_value and record.date_close.raw_value &lt; (new Date())" t-set="red">oe_kanban_text_red</t><strong><span>Final Review: </span></strong>
+                        <span t-attf-class="#{red}"><field name="date_close"/></span>
+                    <field name="activity_ids" widget="kanban_activity"/>
+                </div>                 -->
+            </xpath>
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[3]" position="after">
+                <div>
+                    <t t-if="record.date_close.raw_value and record.date_close.raw_value &lt; (new Date())" t-set="red">oe_kanban_text_red</t>
+                    <strong><span>Final Review: </span></strong>
+                    <span t-attf-class="#{red}"><xpath expr="//field[@name='date_close']" position="move"/></span>
+                </div>                
             </xpath>
         </field>
     </record>

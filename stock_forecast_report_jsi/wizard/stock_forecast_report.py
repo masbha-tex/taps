@@ -694,9 +694,9 @@ class StockForecastReport(models.TransientModel):
         
         
         query = """
-        insert into stock_ageing(id,product_id,name,product_category,parent_category,lot_id,rejected,lot_price,pur_price,landed_cost,receive_date,duration,cloing_qty,cloing_value,slot_1,slot_2,slot_3,slot_4,slot_5,slot_6) 
+        insert into stock_ageing(id,product_id,product_category,parent_category,lot_id,rejected,lot_price,pur_price,landed_cost,receive_date,duration,cloing_qty,cloing_value,slot_1,slot_2,slot_3,slot_4,slot_5,slot_6) 
         select * from (
-        select ROW_NUMBER () OVER (ORDER BY product_id) as id,product_id,name
+        select ROW_NUMBER () OVER (ORDER BY product_id) as id,product_id,
         product_category,parent_category,lot_id, case when rejected=true then 'Reject' else 'Ok' end as rejected,lot_price,pur_price,
         landed_cost,receive_date,duration,cloing_qty,cloing_value,
         case when duration>=0 and duration<=30 then cloing_value else 0 end as slot_1,
@@ -706,7 +706,7 @@ class StockForecastReport(models.TransientModel):
         case when duration>180 and duration<=365 then cloing_value else 0 end as slot_5,
         case when duration>365 then cloing_value else 0 end as slot_6
         from (
-        select product_id,name,categ_type as product_category,parent_id as parent_category,invoice as lot_id, rejected, avg(lot_price) as lot_price, avg(pur_price) as pur_price, avg(landed_cost) as landed_cost,
+        select product_id,categ_type as product_category,parent_id as parent_category,invoice as lot_id, rejected, avg(lot_price) as lot_price, avg(pur_price) as pur_price, avg(landed_cost) as landed_cost,
         
         --sum(opening_qty) as opening_qty,
         --case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
@@ -725,7 +725,7 @@ class StockForecastReport(models.TransientModel):
         
         from(
         select
-        product.id as product_id,pt.name,pt.categ_type,catype.parent_id,lot.id as invoice,lot.rejected,
+        product.id as product_id,pt.categ_type,catype.parent_id,lot.id as invoice,lot.rejected,
         
         (case when lot.id is not null then
         lot.unit_price else 0 end
@@ -764,7 +764,7 @@ class StockForecastReport(models.TransientModel):
         left join searching_date as sd on 1=1
         where pt.company_id = %s and (product.default_code like %s or product.default_code like %s)
         ) as stock where stock.cloing_qty>0
-        group by stock.product_id,stock.name,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected,stock.company_id
+        group by stock.product_id,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected,stock.company_id
         ) as atb) as ageing
         """
         self.env.cr.execute(query, (to_date,'%/IN/%',to_date,to_date,'%LC/%',to_date,to_date,self.env.company.id,'R_%','S_%'))        
