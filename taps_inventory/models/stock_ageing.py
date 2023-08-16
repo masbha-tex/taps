@@ -33,7 +33,7 @@ class Ageing(models.Model):
     parent_category = fields.Many2one('category.type', string='Product')
     
     lot_id = fields.Many2one('stock.production.lot', string='Invoice', readonly=True)
-    rejected = fields.Boolean(string='Rejected', readonly=True)
+    rejected = fields.Text(string='Rejected', readonly=True)
     lot_price = fields.Float(string='Price', readonly=True, digits='Unit Price')
     pur_price = fields.Float(string='Pur Price', readonly=True, digits='Unit Price')
     landed_cost = fields.Float(string='Landed Cost', readonly=True, digits='Unit Price')

@@ -294,10 +294,8 @@
             <!-- <xpath expr="//field[@name='date_close']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath> -->
-            <xpath expr="//field[@name='department_id']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='department_id']" position="after">
+            <xpath expr="//field[@name='department_id']" position="replace"/>
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[1]" position="after">
                 <div>
                     <table class="table table-sm p-0 m-0 left bg-dark" style="font-size:8pt; width:100%; table-layout:fixed;color: white">
                         <thead>
@@ -330,28 +328,21 @@
                         </tbody>
                     </table>
                 </div>
-            </xpath>
-            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[2]" position="after">
                 <div>
                     <!-- <t t-if="! record.date_final_interview.raw_value and record.state.raw_value === 'pending'">
                     <strong><a name="action_calendar_event" type="object">Schedule The Next Review</a></strong></t> -->
                     <t t-if="record.date_final_interview.raw_value and record.state.raw_value != 'new' and record.date_final_interview.raw_value &lt; (new Date())" t-set="deadline">oe_kanban_text_red</t>
                     <t t-if="record.date_final_interview.raw_value and record.state.raw_value != 'new'"><strong><span>Next Review: </span></strong>
                     <span t-attf-class="#{deadline}"><i><field name="date_final_interview"/></i></span></t>
-                </div>
-                <!-- <div class="o_kanban_inline_block">
-                    <t t-if="record.date_close.raw_value and record.date_close.raw_value &lt; (new Date())" t-set="red">oe_kanban_text_red</t><strong><span>Final Review: </span></strong>
-                        <span t-attf-class="#{red}"><field name="date_close"/></span>
-                    <field name="activity_ids" widget="kanban_activity"/>
-                </div>                 -->
+                </div>                
             </xpath>
-            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[3]" position="after">
+            <!-- <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[3]" position="after">
                 <div>
                     <t t-if="record.date_close.raw_value and record.date_close.raw_value &lt; (new Date())" t-set="red">oe_kanban_text_red</t>
                     <strong><span>Final Review: </span></strong>
                     <span t-attf-class="#{red}"><xpath expr="//field[@name='date_close']" position="move"/></span>
                 </div>                
-            </xpath>
+            </xpath> -->
         </field>
     </record>
 
