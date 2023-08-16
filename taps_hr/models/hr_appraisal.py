@@ -18,13 +18,13 @@ class HrAppraisal(models.Model):
     _order = 'employee_id'
 
 
-    ytd_weightage_acvd = fields.Float(string='YTD Weightage ACVD', store=True, copy=True,  compute='_compute_ytd_weightage_acvd')
+    ytd_weightage_acvd = fields.Float(string='YTD Weightage ACVD', store=True, copy=True,  compute='_compute_ytd_weightage_acvd', default="0")
     total_weightage = fields.Float(string='Weightage', store=True, copy=True, default="0", compute='_compute_ytd_weightage_acvd')
     manager_ids = fields.Many2many('hr.employee', 'appraisal_manager_rel', 'hr_appraisal_id', domain=[])
-    q_1_ytd = fields.Float(string="Q1",store=True, copy=True, compute='_compute_ytd_weightage_acvd')
-    q_2_ytd = fields.Float(string="Q2",store=True, copy=True, compute='_compute_ytd_weightage_acvd')
-    q_3_ytd = fields.Float(string="Q3",store=True, copy=True, compute='_compute_ytd_weightage_acvd')
-    q_4_ytd = fields.Float(string="Q4",store=True, copy=True, compute='_compute_ytd_weightage_acvd')
+    q_1_ytd = fields.Float(string="Q1",store=True, copy=True, compute='_compute_ytd_weightage_acvd', default="0")
+    q_2_ytd = fields.Float(string="Q2",store=True, copy=True, compute='_compute_ytd_weightage_acvd', default="0")
+    q_3_ytd = fields.Float(string="Q3",store=True, copy=True, compute='_compute_ytd_weightage_acvd', default="0")
+    q_4_ytd = fields.Float(string="Q4",store=True, copy=True, compute='_compute_ytd_weightage_acvd', default="0")
     kpi_state = fields.Char(string="Kpi Status",store=True)
     
     
@@ -48,12 +48,12 @@ class HrAppraisal(models.Model):
             # weight = 0
             # ytd = sum(app_goal.mapped('y_ytd'))
             # weight = sum(app_goal.mapped('weight'))
-            appraisal.ytd_weightage_acvd = sum(app_goal.mapped('y_ytd')) | 0
-            appraisal.total_weightage = sum(app_goal.mapped('weight')) | 0
-            appraisal.q_1_ytd = sum(app_goal.mapped('q_1_ytd')) | 0
-            appraisal.q_2_ytd = sum(app_goal.mapped('q_2_ytd')) | 0
-            appraisal.q_3_ytd = sum(app_goal.mapped('q_3_ytd')) | 0
-            appraisal.q_4_ytd = sum(app_goal.mapped('q_4_ytd')) | 0
+            appraisal.ytd_weightage_acvd = sum(app_goal.mapped('y_ytd'))
+            appraisal.total_weightage = sum(app_goal.mapped('weight'))
+            appraisal.q_1_ytd = sum(app_goal.mapped('q_1_ytd'))
+            appraisal.q_2_ytd = sum(app_goal.mapped('q_2_ytd'))
+            appraisal.q_3_ytd = sum(app_goal.mapped('q_3_ytd'))
+            appraisal.q_4_ytd = sum(app_goal.mapped('q_4_ytd'))
 
     def action_open_goals(self):
         self.ensure_one()
