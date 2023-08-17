@@ -93,7 +93,7 @@ class MeetingEventWizard(models.TransientModel):
         if not active_ids:
             return
 
-        meeting_date = self.meeting_date  # Assuming you have a field 'meeting_date' in the wizard
+        meeting_date = self.meeting_date + timedelta(hours=self.duration)  # Assuming you have a field 'meeting_date' in the wizard
 
         # Call the action_create_meeting_event method for each hr.appraisal record
         hr_appraisal = self.env['hr.appraisal'].browse(active_ids)
@@ -102,9 +102,9 @@ class MeetingEventWizard(models.TransientModel):
 
         event_vals = {
             'name': self.meeting_subject,
-            'start': meeting_date,
+            'start': self.meeting_date,
             'stop': meeting_date,
-            'start_date': meeting_date,
+            'start_date': self.meeting_date,
             'stop_date': meeting_date,
             'user_id': user_id,
             'partner_ids': [(6, 0, partner_ids)],
