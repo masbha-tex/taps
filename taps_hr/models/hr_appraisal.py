@@ -77,10 +77,8 @@ class HrAppraisal(models.Model):
                 'next_appraisal_date': False})
     @api.model
     def create(self, vals):
-        raise UserError(('create'))
         result = super(HrAppraisal, self).create(vals)
         if vals.get('state') and vals['state'] == 'pending':
-            raise UserError(('create'))
             self.send_appraisal()
 
         result.employee_id.sudo().write({
@@ -90,14 +88,11 @@ class HrAppraisal(models.Model):
         return result
         
     def write(self, vals):
-        # raise UserError(('write'))
         self._check_access(vals.keys())
         if 'state' in vals and vals['state'] == 'pending':
-            raise UserError(('write if'))
             self.send_appraisal()
         result = super(HrAppraisal, self).write(vals)
         if vals.get('date_final_interview'):
-            # raise UserError(('date_final_interview'))
             self.mapped('employee_id').write({'next_appraisal_date': vals.get('date_final_interview')})
             self.activity_reschedule(['mail.mail_activity_data_meeting'], date_deadline=vals['date_final_interview'])
         return result
@@ -129,6 +124,7 @@ class MeetingEventWizard(models.TransientModel):
         combined_ids = partner_id + [user_partner_ids]
         
         # raise UserError((combined_ids))
+        hr_appraisal.mapped('meeting_id').unlink()
         event_vals = {
             'name': self.meeting_subject,
             'start': self.meeting_date,
@@ -138,11 +134,12 @@ class MeetingEventWizard(models.TransientModel):
             'alarm_ids': self.reminder,
             'duration': self.duration,
             'location': self.location,
-            'description': _(self.note),
+            'description': f'{self.note}',
             'user_id': user_id,
             'partner_ids': [(6, 0, combined_ids)],
         }
         meeting = self.env['calendar.event'].create(event_vals)
+        # self.activity_unlink(['mail.mail_activity_data_meeting', 'mail.mail_activity_data_todo'])
         # raise UserError((self.employee_id))
         for appraisal in hr_appraisal:
             appraisal.meeting_id = meeting.id
@@ -155,14 +152,14 @@ class MeetingEventWizard(models.TransientModel):
             employee = appraisal.employee_id
             managers = appraisal.manager_ids
             if employee.user_id:
-                appraisal.activity_schedule(
+                appraisal.with_context(mail_activity_quick_update=True).activity_schedule(
                     'mail.mail_activity_data_meeting', 
                     self.meeting_date,
                     summary=_(self.meeting_subject),
                     note=_(self.note),
                     user_id=employee.user_id.id)
             for manager in managers.filtered(lambda m: m.user_id):
-                appraisal.activity_schedule(
+                appraisal.with_context(mail_activity_quick_update=True).activity_schedule(
                     'mail.mail_activity_data_meeting', 
                     self.meeting_date,
                     summary=_(self.meeting_subject),
