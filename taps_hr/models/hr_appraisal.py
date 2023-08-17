@@ -75,6 +75,32 @@ class HrAppraisal(models.Model):
                 'last_appraisal_id': appraisal.id,
                 'last_appraisal_date': appraisal.date_close,#current_date
                 'next_appraisal_date': False})
+    @api.model
+    def create(self, vals):
+        raise UserError(('create'))
+        result = super(HrAppraisal, self).create(vals)
+        if vals.get('state') and vals['state'] == 'pending':
+            raise UserError(('create'))
+            self.send_appraisal()
+
+        result.employee_id.sudo().write({
+            'next_appraisal_date': result.date_final_interview,
+        })
+        result.subscribe_employees()
+        return result
+        
+    def write(self, vals):
+        # raise UserError(('write'))
+        self._check_access(vals.keys())
+        if 'state' in vals and vals['state'] == 'pending':
+            raise UserError(('write if'))
+            self.send_appraisal()
+        result = super(HrAppraisal, self).write(vals)
+        if vals.get('date_final_interview'):
+            # raise UserError(('date_final_interview'))
+            self.mapped('employee_id').write({'next_appraisal_date': vals.get('date_final_interview')})
+            self.activity_reschedule(['mail.mail_activity_data_meeting'], date_deadline=vals['date_final_interview'])
+        return result
             
 class MeetingEventWizard(models.TransientModel):
     _name = 'meeting.event.wizard'
@@ -93,50 +119,76 @@ class MeetingEventWizard(models.TransientModel):
         if not active_ids:
             return
 
-        meeting_date = self.meeting_date + timedelta(hours=self.duration)  # Assuming you have a field 'meeting_date' in the wizard
+        meeting_date = self.meeting_date + relativedelta(hours=self.duration)  # Assuming you have a field 'meeting_date' in the wizard
 
         # Call the action_create_meeting_event method for each hr.appraisal record
         hr_appraisal = self.env['hr.appraisal'].browse(active_ids)
         user_id = self.env.user.id
-        partner_ids = [appraisal.employee_id.address_home_id.id for appraisal in hr_appraisal]
-
+        partner_id = [appraisal.employee_id.address_home_id.id for appraisal in hr_appraisal]
+        user_partner_ids = self.env.user.partner_id.id 
+        combined_ids = partner_id + [user_partner_ids]
+        
+        # raise UserError((combined_ids))
         event_vals = {
             'name': self.meeting_subject,
             'start': self.meeting_date,
             'stop': meeting_date,
             'start_date': self.meeting_date,
             'stop_date': meeting_date,
+            'alarm_ids': self.reminder,
+            'duration': self.duration,
+            'location': self.location,
+            'description': _(self.note),
             'user_id': user_id,
-            'partner_ids': [(6, 0, partner_ids)],
+            'partner_ids': [(6, 0, combined_ids)],
         }
         meeting = self.env['calendar.event'].create(event_vals)
         # raise UserError((self.employee_id))
         for appraisal in hr_appraisal:
             appraisal.meeting_id = meeting.id
-            appraisal.date_final_interview = meeting_date
-            meeting_activity_type = self.env['mail.activity.type'].search([('category', '=', 'meeting')], limit=1)
+            appraisal.date_final_interview = self.meeting_date
+            # meeting_activity_type = self.env['mail.activity.type'].search([('category', '=', 'meeting')], limit=1)
+            appraisal.activity_unlink(['mail.mail_activity_data_meeting', 'mail.mail_activity_data_todo'])
     
             # Create an activity note for each partner in partner_ids
         # for appraisal in hr_appraisal:
+            employee = appraisal.employee_id
+            managers = appraisal.manager_ids
+            if employee.user_id:
+                appraisal.activity_schedule(
+                    'mail.mail_activity_data_meeting', 
+                    self.meeting_date,
+                    summary=_(self.meeting_subject),
+                    note=_(self.note),
+                    user_id=employee.user_id.id)
+            for manager in managers.filtered(lambda m: m.user_id):
+                appraisal.activity_schedule(
+                    'mail.mail_activity_data_meeting', 
+                    self.meeting_date,
+                    summary=_(self.meeting_subject),
+                    note=_(self.note),
+                    user_id=manager.user_id.id)
             
-            activity_vals = {
-                'activity_type_id': meeting_activity_type.id,  # You may need to adjust this activity type ID
-                'user_id': appraisal.employee_id.user_id.id,
-                'summary': 'Appraisal Meeting',
-                'note': f'Appraisal Meeting with {appraisal.employee_id.name}',
-                'res_model_id': self.env['ir.model']._get('hr.appraisal').id,
-                'res_id': appraisal.id,
-                'date_deadline': meeting_date,  # Associate all partners with this activity deadline
-                'calendar_event_id': meeting.id,
-            }
-            activity = self.env['mail.activity'].create(activity_vals)
+            # activity_vals = {
+            #     'activity_type_id': meeting_activity_type.id,  # You may need to adjust this activity type ID
+            #     'user_id': appraisal.employee_id.user_id.id,
+            #     'summary': self.meeting_subject,
+            #     'note': f'{self.note}',
+            #     'res_model_id': self.env['ir.model']._get('hr.appraisal').id,
+            #     'res_id': appraisal.id,
+            #     'date_deadline': self.meeting_date,  # Associate all partners with this activity deadline
+            #     'calendar_event_id': meeting.id,
+            # }
+            # activity = self.env['mail.activity'].create(activity_vals)
     
                 # # Send email notification
             # template_id = self.env.ref('your_module.your_email_template_id')
             # if template_id:
             #             template_id.send_mail(activity.id, force_send=True, email_values={'calendar_event_id': meeting.id})
 
-        return {'type': 'ir.actions.act_window_close'} 
+        return {'type': 'ir.actions.act_window_close'}
+        
+
 
 class CalendarEvent(models.Model):
     """ Model for Calendar Event """

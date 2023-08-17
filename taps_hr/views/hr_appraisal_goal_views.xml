@@ -341,6 +341,7 @@
             <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[3]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[6]/div[2]/t[1]/img[1]" position="replace"/>
             
             <!-- <xpath expr="//field[@name='activity_ids']" position="replace"/> -->
             <xpath expr="//field[@name='department_id']" position="replace"/>
