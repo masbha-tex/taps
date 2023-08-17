@@ -345,10 +345,11 @@
             <!-- <xpath expr="//field[@name='activity_ids']" position="replace"/> -->
             <xpath expr="//field[@name='department_id']" position="replace"/>
             <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[1]" position="after">
+                <field name="job_id"/>
                 <div>
-                    <table class="table table-sm p-0 m-0 left bg-dark" style="font-size:8pt; width:100%; table-layout:fixed;color: white">
+                    <table class="table table-sm p-0 m-0 left bg-dark" style="font-size:7.5pt; width:100%; table-layout:fixed;color: white">
                         <thead>
-                            <tr align="left">
+                            <tr align="left" >
                                 <th style="background-color:grey;color:white; text-align: center">Q1</th>
                                 <th style="background-color:grey;color:white; text-align: center">Q2</th>
                                 <th style="background-color:grey;color:white; text-align: center">Q3</th>
@@ -357,7 +358,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr align="left">
+                            <tr class="p-0 m-0" align="left">
                                 <td style="background-color:grey;color:white; text-align: center">
                                     <field name="q_1_ytd"/>
                                 </td>
@@ -431,7 +432,7 @@
         <field name="name">Appraisal</field>
         <field name="res_model">hr.appraisal</field>
         <field name="view_mode">kanban,tree,gantt,calendar,form,activity</field>
-        <field name="context">{"search_default_next_year": 1}</field>
+        <field name="context">{"search_default_next_month": 1, 'group_by':'date_close:year'}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create a new appraisal</p>
             <p>You will be able to plan an appraisal with your employees, to ask your appraisal with your
@@ -478,9 +479,20 @@
         <field name="arch" type="xml">
             <form string="Meeting Event Wizard" create="false">
                 <group>
-                    <field name="meeting_date"/>
-                    <!-- Add more fields here if needed -->
+                    <group>
+                        <field name="meeting_date"/>
+                        <field name="meeting_subject" placeholder="e.g. Discuss proposal"/>
+                        <field name="location" placeholder="Event Location..."/> 
+                    </group>
+                    <group>
+                        <field name="reminder" widget="many2many_tags"/>
+                        <field name="duration" widget="float_time"/> 
+                        
+                    </group>
+                       
                 </group>
+                <field name="note" placeholder="Log a note..."/>                
+                
                 <footer>
                     <button string="Confirm" type="object" name="create_event_and_appraisal" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>

@@ -1,30 +1,21 @@
 import base64
-
 import datetime
 from dateutil.relativedelta import relativedelta
-
 from odoo import api, fields, models, _
-
-# from odoo.addons.hr_payroll.models.browsable_object import BrowsableObject, InputLine, WorkedDays, Payslips, ResultRules
-
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_round, date_utils
 from odoo.tools.misc import format_date
 
-
-
-
 class RetentionMatrix(models.Model):
     _name = 'retention.matrix'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _description = 'Retention Matrix'
 
-
-    employee_id = fields.Many2one('hr.employee', string='Employee', required=True, store=True)
-    # company_id = fields.Many2one('res.company',required=True)
-    department_id = fields.Many2one('hr.department', 'Department', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    name = fields.Char('Name', store=True,readonly=True, index=True, copy=False,  )
+    name = fields.Char(string="Code", store=True,readonly=True, index=True, default='New')
+    employee_id = fields.Many2one('hr.employee', string='Employee', store=True)
+    company_id = fields.Many2one(related='employee_id.company_id', store=True, required=False)
+    department_id = fields.Many2one(related='employee_id.department_id', store=True)
     color = fields.Integer()
-    # retantion_line = fields.One2many('retantion.line', string='Retention Lines',tracking=True, store=True, required=True)
     job_id = fields.Many2one('hr.job', 'Position', store=True, readonly=True, compute='_compute_job_id')
     grade = fields.Many2one('hr.payroll.structure.type', 'Grade', store=True, readonly=True, compute='_compute_job_id')
     risk = fields.Selection(selection=[
@@ -65,8 +56,10 @@ class RetentionMatrix(models.Model):
             line.job_id = line.employee_id.job_id.id
             line.grade = line.employee_id.contract_id.structure_type_id
 
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'RM') == 'RM':
+            vals['name'] = self.env['ir.sequence'].next_by_code('retention.code')
+        return super(RetentionMatrix, self).create(vals)
 
-# class RetentionMatrixLine(models.Model):
-#     _name = 'retention.matrix.line'
-#     _description = 'Retention Matrix Line'
-           
+

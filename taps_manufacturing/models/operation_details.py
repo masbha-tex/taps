@@ -60,9 +60,31 @@ class OperationDetails(models.Model):
     work_center = fields.Many2one('mrp.workcenter', string='Assign To', store=True, readonly=True, help="Assign to")
     operation_by = fields.Char(string='Operation By', store=True, help="Done by")
     based_on = fields.Char(string='Based On', store=True)
+    next_operation = fields.Selection([
+        ('plan', 'Planning'),
+        ('dye', 'Dyeing'),
+        ('dyelot', 'Dyeing Lot'),
+        ('dyeout', 'Dyeing Output'),
+        ('dyeqc', 'Dyeing Qc'),
+        ('cm', 'Chain Making'),
+        ('cmlot', 'CM Lot'),
+        ('cmout', 'CM Output'),
+        ('deep', 'Deeping'),
+        ('deepqc', 'Deeping Qc'),
+        ('assemb', 'Assembly'),
+        ('assembout', 'Assembly Output'),
+        ('assembqc', 'Assembly Qc'),
+        ('plating', 'Plating'),
+        ('platout', 'Plating Output'),
+        ('paint', 'Painting'),
+        ('paintout', 'Painting Output'),
+        ('slasemb', 'Slider Assembly'),
+        ('slassout', 'Slider Assembly Output')],
+        string='Next Operation', help="Next Operation")
     qty = fields.Float(string='Qty', readonly=False)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=True, compute='get_balance')
+    uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     # lot_ids = fields.Many2one('operation.details', compute='get_lots', string='Lots', copy=False, store=True)
     def get_balance(self):
@@ -173,7 +195,10 @@ class OperationDetails(models.Model):
                                 'done_qty':qty
                                 })
 
-        
+    @api.onchange('uotput_qty')
+    def _output(self):
+        for out in self:
+            out.done_qty = out.done_qty + out.uotput_qty
 
 
 

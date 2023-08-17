@@ -39,6 +39,8 @@
         'reports/report_sa_submission_mt.xml',
         'data/ir_oa_sequence.xml',
         'data/daily_oa_release_email.xml',
+        'data/ir_ui_view.xml',
+        'data/mail_template.xml',
         #'views/fg_product.xml',
         # 'views/assets.xml',
         'views/variant_templates.xml',

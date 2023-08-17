@@ -13,17 +13,15 @@
     'category': 'Generic Modules/Retention Matrix',
     'version': '0.1',
 
-    'depends': ['base','hr','taps_hr', 'web_studio'],
+    'depends': ['base','hr','taps_hr'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'data/ir_sequence.xml',
         # 'views/views.xml',
         # 'views/templates.xml',
         'views/retention_matrix.xml',
-    ],
-    'demo': [
-        # 'demo/demo.xml',
     ],
     'installable': True,
     'application': True,

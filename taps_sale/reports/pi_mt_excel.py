@@ -15,9 +15,9 @@ class SalesXlsx(models.AbstractModel):
     _description = 'report for Pi MT'
     
     def generate_xlsx_report(self, workbook, data, orders):
-        report_name = orders.name
+        # report_name = orders.name
 
-        sheet = workbook.add_worksheet(report_name[:41])
+        sheet = workbook.add_worksheet("PI_MT_EXCEL")
         column_style = workbook.add_format({'bold': True, 'font_size': 9})
         
         row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'middle', 'text_wrap':True})#
@@ -52,56 +52,89 @@ class SalesXlsx(models.AbstractModel):
         sheet.write(0, 22, "SEARCH", column_style)
         col = 0
         row = 1
-        
-        docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
-        
+        list = orders.mapped('id')
+        docs = self.env['sale.order.line'].search([('order_id', 'in', list)])
+        docs = sorted(docs, key=lambda r: r.order_id.id, reverse=False)
         for o_data in docs:
             col = 0
             for l in range(23):
                 if col == 0:
-                    sheet.write(row, col, orders.name, row_style)
+                    sheet.write(row, col, o_data.order_id.name, row_style)
                 elif col == 1:
-                    sheet.write(row, col, orders.create_date.strftime("%d/%m/%Y"), row_style)
+                    sheet.write(row, col, o_data.order_id.create_date.strftime("%d/%m/%Y"), row_style)
                 elif col == 2:
-                    sheet.write(row, col, orders.order_ref.pi_number, row_style)
+                    sheet.write(row, col, o_data.order_id.order_ref.pi_number, row_style)
                 elif col == 3:
-                    sheet.write(row, col, orders.partner_id.name, row_style)
+                    sheet.write(row, col, o_data.order_id.partner_id.name, row_style)
                 elif col == 4:
-                    sheet.write(row, col, orders.buyer_name.name, row_style)
+                    sheet.write(row, col, o_data.order_id.buyer_name.name, row_style)
                 elif col == 5:
-                    sheet.write(row, col, orders.expected_date.strftime("%d/%m/%Y"), row_style)
+                    sheet.write(row, col, o_data.order_id.expected_date.strftime("%d/%m/%Y"), row_style)
                 elif col == 6:
                     sheet.write(row, col, '', row_style)
                 elif col == 7:
                     sheet.write(row, col, '', row_style)
                 elif col == 8:
-                    sheet.write(row, col, o_data.product_code, row_style)
+                    if o_data.product_code:
+                        sheet.write(row, col, o_data.product_code, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 9:
                     sheet.write(row, col, o_data.product_template_id.name, row_style)
                 elif col == 10:
                     sheet.write(row, col, o_data.sizemm, row_style)
                 elif col == 11:
-                    sheet.write(row, col, o_data.shape, row_style)
+                    if o_data.shape:
+                        sheet.write(row, col, o_data.shape, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 12:
-                    sheet.write(row, col, o_data.logo, row_style)
+                    if o_data.logo:
+                        sheet.write(row, col, o_data.logo, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 13:
-                    sheet.write(row, col, o_data.logoref, row_style)
+                    if o_data.logoref:
+                        sheet.write(row, col, o_data.logoref, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 14:
-                    sheet.write(row, col, o_data.logo_type, row_style)
+                    if o_data.logo_type:
+                        sheet.write(row, col, o_data.logo_type, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 15:
-                    sheet.write(row, col, o_data.finish, row_style)
+                    if o_data.finish:
+                        sheet.write(row, col, o_data.finish, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 16:
-                    sheet.write(row, col, o_data.finish_ref, row_style)
+                    if o_data.finish_ref:
+                        sheet.write(row, col, o_data.finish_ref, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 17:
-                    sheet.write(row, col, o_data.b_part, row_style)
+                    if o_data.b_part:
+                        sheet.write(row, col, o_data.b_part, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 18:
-                    sheet.write(row, col, o_data.c_part, row_style)
+                    if o_data.c_part:
+                        sheet.write(row, col, o_data.c_part, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 19:
-                    sheet.write(row, col, o_data.d_part, row_style)
+                    if o_data.d_part:
+                        sheet.write(row, col, o_data.d_part, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 20:
                     sheet.write(row, col, o_data.product_uom_qty, row_style)
                 elif col == 21:
-                    sheet.write(row, col, o_data.style, row_style)
+                    if o_data.style:
+                        sheet.write(row, col, o_data.style, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 22:
                     sheet.write(row, col, '', row_style)
                 col += 1

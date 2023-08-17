@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<template id="view_email_template_corporate_identity">
+		<body>
+			<html>
+				<div class="container">
+                    <style>
+                        .temp_table th,td,tr
+                        {
+                            border: 1px solid black;
+                            font-weight: bold;
+                        }
+                        
+                    </style>
+					<table class="table-sm temp_table" style="table-layout:fixed;font-size:8px; border: 1px solid black">
+						<thead>
+							<tr style="color:white;background-color:rgb(113, 75, 98);">
+								<th colspan="5">Sales Person</th>
+								<th colspan="2">Date</th>
+								<th colspan="4">Customer</th>
+								<th colspan="2">Buyer</th>
+								<th colspan="2">SL</th>
+								<th colspan="5">Product</th>
+								<th colspan="2">PI No</th>
+								<th colspan="2">OA No</th>
+								<th colspan="4">Qty/Pcs</th>
+								<th colspan="4">Value</th>
+								<th colspan="3">Avg_Price</th>
+								<th colspan="4">Pending</th>
+								<th colspan="5">P_Terms</th>
+                                <th colspan="5">P_Terms</th>
+                                <th colspan="5">P_Terms</th>
+                                <th colspan="5">P_Terms</th>
+							</tr>
+						</thead>
+						<tbody>
+							<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('date_order', '&gt;=',((datetime.datetime.today() - relativedelta(days=5))))])" t-as="order">
+								<tr>
+									<td colspan="5">
+										<t t-esc="order.sale_representative.name"/>
+									</td>
+									<td colspan="2">
+                                        <t t-esc="order.date_order.strftime('%d/%m/%Y')"/>
+                                    </td>
+									<td colspan="4">
+                                        <t t-esc="order.partner_id.name"/>
+                                    </td>
+									<td colspan="2">
+                                        <t t-esc="order.buyer_name.name"/>
+                                    </td>
+									<td colspan="2">
+                                        <t t-esc="order_index"/>
+                                    </td>
+									<td colspan="5">
+                                        <t t-esc="order.order_line[0].product_template_id.name"/>
+                                    </td>
+									<td colspan="2">
+                                        <t t-esc="order.order_ref.pi_number"/>
+                                    </td>
+									<td colspan="2">
+                                        <t t-esc="order.name"/>
+                                    </td>
+									<td colspan="4">
+                                        <t t-esc="order.order_ref.total_product_qty"/>
+                                    </td>
+									<td colspan="4">
+                                        <t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                    </td>
+									<td colspan="3">
+                                        <t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                    </td>
+									<td colspan="4">Pending</td>
+									<td colspan="5">
+                                        <t t-esc="order.order_ref.payment_term_id.name"/>
+                                    </td>
+                                    <td colspan="5">
+                                        <t t-esc="order.order_ref.payment_term_id.name"/>
+                                    </td>
+                                    <td colspan="5">
+                                        <t t-esc="order.order_ref.payment_term_id.name"/>
+                                    </td>
+                                    <td colspan="5">
+                                        <t t-esc="order.order_ref.payment_term_id.name"/>
+                                    </td>
+								</tr>
+							</t>
+						</tbody>
+					</table>
+				</div>
+			</html>
+		</body>
+	</template>
+	<template id="view_email_template_demo1">
+		<!-- because we can simply call the ci here, we don't need to
+             repeat it /-->
+		<t t-call="taps_sale.view_email_template_corporate_identity">
+			<!-- the template we call uses this as title if we set it /-->
+			<t t-set="email_heading" t-value="email_template.subject"/>
+			<h2>Dear <t t-esc="object.name"/>,</h2>
+			<p>
+                This is an email template using qweb.
+            </p>
+		</t>
+	</template>
+</odoo>

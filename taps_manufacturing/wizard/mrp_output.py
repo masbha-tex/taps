@@ -55,9 +55,26 @@ class ManufacturingOutput(models.TransientModel):
         production.set_output(mo_ids,self.manuf_date,self.qty,self.output_of)
         #production.set_operation(mo_ids,self.plan_for,self.machine_line)
         return
-
+    
+    @api.model
+    def onevent_lot(self,code=None):
+        production = self.env['operation.details'].search([('code', '=', code),('code', '!=', None)])
+        if production:
+            production.update({'oa_id':production[0].oa_id.id, 'item':production[0].fg_categ_type,'shade':production[0].shade, 'finish':production[0].finish,'output_of':production[0].work_center.name})
+            #raise UserError((production[0].shade))
+            # self.lot_code = production[0].code
+            # self.oa_id = production[0].oa_id.id
+            # self.item = production[0].fg_categ_type
+            # self.shade = production[0].shade
+            # self.finish = production[0].finish
+            # # res["sizein"] = production[0].size_in
+            # # res["sizecm"] = production[0].size_cm
+            # self.output_of = production[0].work_center.name
+        return True
+    
+    
     @api.onchange('lot_code')
-    def _onchange_lot(self):
+    def on_lot_code_change(self):
         production = self.env['operation.details'].search([('code', '=', self.lot_code),('code', '!=', None)])
         if production:
             self.lot_code = production[0].code

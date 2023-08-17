@@ -92,6 +92,22 @@
 								</div>
 								<div class="col-auto col-2">
 									<div>
+										<strong>BUYER NAME</strong>
+									</div>
+									<p>
+										<span t-esc="o.buyer_name.name"/>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<div>
+										<strong>SALESPERSON</strong>
+									</div>
+									<p>
+										<span t-esc="o.sale_representative.name"/>
+									</p>
+								</div>
+								<div class="col-auto col-2">
+									<div>
 										<strong>SA DATE</strong>
 									</div>
 									<p>
@@ -110,29 +126,16 @@
 								</div>
 								
 								<div class="col-auto col-2">
-									<div>
-										<strong>SALESPERSON</strong>
-									</div>
-									<p>
-										<span t-esc="o.sale_representative.name"/>
+								  <p>
+										<strong>B,C,D PART FINISH</strong>
+										<br/>
+										<t t-if="o.bcd_part_finish">
+											<t t-esc="o.bcd_part_finish"/>
+										</t>
 									</p>
 								</div>
-								<div class="col-auto col-2">
-									<div>
-										<strong>KIND ATTENTION</strong>
-									</div>
-									<p>
-										<span t-esc="o.kind_attention"/>
-									</p>
-								</div>
-								<div class="col-auto col-2">
-									<div>
-										<strong>BUYER NAME</strong>
-									</div>
-									<p>
-										<span t-esc="o.buyer_name.name"/>
-									</p>
-								</div>
+								
+								
 								
 								
 								
@@ -225,14 +228,15 @@
 									</p>
 								</div>
 								<div class="col-auto col-2">
-								  <p>
-										<strong>B,C,D PART FINISH</strong>
-										<br/>
-										<t t-if="o.bcd_part_finish">
-											<t t-esc="o.bcd_part_finish"/>
-										</t>
+									<div>
+										<strong>KIND ATTENTION</strong>
+									</div>
+									<p>
+										<span t-esc="o.kind_attention"/>
 									</p>
 								</div>
+								
+								
 								<div class="col-auto col-2">
 								  <p>
 										<strong>GARMENTS</strong>
@@ -461,7 +465,7 @@
 										  
 										  <t t-if="p_code == 1">
 												<t t-if="line.product_code">
-													<td >
+													<td>
 														<strong>
 															<span t-esc="line.product_code"/>
 														</strong>

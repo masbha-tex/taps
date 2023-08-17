@@ -81,6 +81,11 @@ class MeetingEventWizard(models.TransientModel):
     _description = 'Meeting Event Wizard'
 
     meeting_date = fields.Datetime(string='Meeting Date', required=True)
+    meeting_subject = fields.Char(string='Subject', default="Appraisal Meeting")
+    reminder = fields.Many2many('calendar.alarm',string='Reminders')
+    location = fields.Char(string='Location')
+    duration = fields.Float(string='Duration')
+    note = fields.Html()
     # Add more fields if needed for your wizard
 
     def create_event_and_appraisal(self):
@@ -96,7 +101,7 @@ class MeetingEventWizard(models.TransientModel):
         partner_ids = [appraisal.employee_id.address_home_id.id for appraisal in hr_appraisal]
 
         event_vals = {
-            'name': 'Appraisal Meeting',
+            'name': self.meeting_subject,
             'start': meeting_date,
             'stop': meeting_date,
             'start_date': meeting_date,
