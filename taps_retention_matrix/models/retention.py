@@ -65,13 +65,12 @@ class RetentionMatrix(models.Model):
         return super(RetentionMatrix, self).create(vals)
 
     @api.model
-    def retrieve_dashboard(self):
+    def retrieve_dashboard(self, companyId=None, departmentId=None):
         """ This function returns the values to populate the custom dashboard in
             the purchase order views.
         """
-        # raise UserError(('efrrgrg'))
+        raise UserError((self.env.context.get('active_ids'),companyId, departmentId))
         self.check_access_rights('read')
-        povalue = 0
 
         result = {
             'retention_low_low': '',

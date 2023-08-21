@@ -70,6 +70,22 @@ var ExpenseListDashboardRenderer = ListRenderer.extend({
 });
 
 var ExpenseListDashboardModel = ListModel.extend({
+    events: _.extend({}, ListRenderer.prototype.events, {
+        'click .o_searchpanel_field[data-field="company_id"]': '_onCompanyClick',
+        'click .o_searchpanel_field[data-field="department_id"]': '_onDepartmentClick',
+    }),
+
+    _onCompanyClick: function (ev) {
+        var companyId = $(ev.currentTarget).data('value');
+        console.log("Company Clicked:", companyId);
+        this._retrieveDashboard(companyId);
+    },
+
+    _onDepartmentClick: function (ev) {
+        var departmentId = $(ev.currentTarget).data('value');
+        console.log("Department Clicked:", departmentId);
+        this._retrieveDashboard(null, departmentId);
+    },    
     /**
      * @override
      */
@@ -108,11 +124,13 @@ var ExpenseListDashboardModel = ListModel.extend({
      * @param {Promise} super_def a promise that resolves with a dataPoint id
      * @returns {Promise -> string} resolves to the dataPoint id
      */
-    _loadDashboard: function (super_def) {
+    _loadDashboard: function (super_def, companyId, departmentId) {
         var self = this;
+        console.log("Load Dashboard:", companyId, departmentId);
         var dashboard_def = this._rpc({
             model: 'retention.matrix',
             method: 'retrieve_dashboard',
+            args: [companyId, departmentId],
         });
         return Promise.all([super_def, dashboard_def]).then(function(results) {
             var id = results[0];

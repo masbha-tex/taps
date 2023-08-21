@@ -167,9 +167,7 @@
                 </kanban>
             </field>
         </record>
-
         
-
         <record id="view_mrp_workcenter_search_1" model="ir.ui.view">
             <field name="name">mrp.workcenter.search</field>
             <field name="model">mrp.workcenter</field>
