@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-
-    <report
-        id="action_lms_pdf_report"
-        model="lms.pdf.report"
-        string="PDF Report"
-        name="taps_lms.lms_pdf_template"
-        file="taps_lms.lms_pdf_template"
-        report_type="qweb-pdf"
-    />
+    <record id="action_lms_pdf_report" model="ir.actions.report">
+        <field name="name">Generate PDF Report</field>
+        <field name="model">lms.pdf.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">taps_lms.lms_pdf_template</field>
+        <field name="report_file">taps_lms.lms_pdf_template</field>
+    </record>    
 
     <template id="lms_pdf_template">
         <t t-call="web.html_container">

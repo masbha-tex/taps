@@ -171,3 +171,32 @@ class MrpWoProductivity(models.Model):
         'Quantity Produced', default=0.0,
         digits='Product Unit of Measure',
         copy=False)
+
+class MrpWoProductivity(models.Model):
+    _inherit = "mrp.workcenter"
+
+
+    order_toproduce_count = fields.Integer('# To Produce', compute='_compute_mrorder_count')
+    order_tooutput_count = fields.Integer('# To Output', compute='_compute_mrorder_count')
+    order_toqc_count = fields.Integer('# To Qc', compute='_compute_mrorder_count')
+
+
+    def _compute_mrorder_count(self):
+        mrpWorkorder = self.env['operation.details'].search([])
+        # mrpWorkorder
+        for wc in self:
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'plan' and op.qty != op.done_qty)
+            wc.order_toproduce_count = len(operation)
+            operation = None
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'lot' and op.qty != op.done_qty)
+            wc.order_tooutput_count = len(operation)
+            operation = None
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'output' and op.qty != op.done_qty)
+            wc.order_toqc_count = len(operation)
+
+    
+    def action_work_order(self):
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_operations")
+        return action
+
+

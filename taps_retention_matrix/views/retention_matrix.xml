@@ -41,7 +41,7 @@
         <field name="model">retention.matrix</field>
         <field name="priority" eval="1"/>
         <field name="arch" type="xml">
-            <tree string="Retention" expand="1" edit="1" editable="top">
+            <tree string="Retention" multi_edit="1" sample="1" js_class="taps_retention_matrix_tree_dashboard_upload">         
                 <field name="employee_id" required="1"/>
                 <field name="company_id"/>
                 <field name="department_id"/>
@@ -49,8 +49,8 @@
                 <field name="quarter"/>
                 <field name="impact"/>
                 <field name="risk"/>
-                
             </tree>
+             
         </field>
     </record>
 
@@ -65,12 +65,40 @@
                 <templates>
                     <t t-name="kanban-box">
                     <ul>
-                        <li>Impact:<field name="impact"/></li>
-                        <li>Risk:<field name="risk"/></li>
+                        <li><field name="employee_id"/></li>
+                        <li><field name="impact"/></li>
+                        <li><field name="risk"/></li>
                     </ul>
                     </t>
                 </templates>
             </kanban>
+        </field>
+    </record>
+
+    <record id="view_retention_matrix_gantt" model="ir.ui.view">
+        <field name="name">retention.matrix.gantt</field>
+        <field name="model">retention.matrix</field>
+        <field name="arch" type="xml">
+            <gantt date_start="date_from"
+               date_stop="date_to">
+                <field name="employee_id"/>
+                <field name="impact"/>
+                <field name="risk"/>
+                <templates>
+                     <div t-name="gantt-popover" class="container-fluid">
+                         <div class="row no-gutters">
+                              <div class="container" align="center">
+                                  <ul class="pl-1 mb-0">
+                                    <li><field name="employee_id"/></li>
+                                    <li><field name="impact"/></li>
+                                    <li><field name="risk"/></li>
+                                  </ul>
+                              </div>
+                         </div>
+                    </div>
+                </templates>
+            </gantt>
+                
         </field>
     </record>
 
@@ -100,7 +128,7 @@
         <field name="name">Retention</field>
         <field name="res_model">retention.matrix</field>
         <field name="context" eval="{'search_default_my_retention': 1}"/>
-        <field name="view_mode">tree,kanban</field>
+        <field name="view_mode">tree,kanban,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create the first Retention Heat Map
             </p>
@@ -119,7 +147,7 @@
 
     <menuitem id="retention_menu" name="Retention" sequence="1" parent="main_retention_menu"/>
 
-    <menuitem id="heat_map_menu" name="Heat Map" parent="main_retention_menu" action="retention_list_action"/>
+    
     <menuitem id="reporting_menu" name="Reporting" parent="main_retention_menu" action="retention_list_action"/>
     
   </data>

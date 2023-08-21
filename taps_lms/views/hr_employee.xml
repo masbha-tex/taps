@@ -9,19 +9,10 @@
             <xpath expr="//notebook/page[1]" position="after">
                 <page string="Training Sessions">
                     <group>
-                        <field name="instructor"/>
                         <field name="session_ids"/>
                     </group>
                 </page>
             </xpath>
-<!--            <notebook position="inside">-->
-<!--                <page string="Sessions">-->
-<!--                    <group>-->
-<!--                        <field name="instructor"/>-->
-<!--                        <field name="session_ids"/>-->
-<!--                    </group>-->
-<!--                </page>-->
-<!--            </notebook>-->
         </field>
     </record>
 

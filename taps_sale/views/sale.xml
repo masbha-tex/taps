@@ -5,6 +5,7 @@
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_form"/>
 			<field name="arch" type="xml">
+                
 				<xpath expr="//field[@name='name']" position="before">
 					<field name="priority_sales" widget="priority" class="mr-3"/>
 				</xpath>
@@ -98,6 +99,9 @@
 					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
 					<field name="sample_ref" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','oa']]}" widget="many2many_tags"/>
 				</xpath>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_template_id']" position="attributes">
+    <attribute name="domain">[('categ_id.complete_name', 'ilike', 'ALL / FG')]</attribute>
+</xpath>
 				<xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='name']" position="before">
                     
                     <field name="dyedtape" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
@@ -111,21 +115,24 @@
 					<field name="gap" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
 					<field name="sizein" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
 					<field name="sizecm" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}"/>
-                    <field name="back_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="product_code" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                   
+                    <field name="back_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    
+                    <field name="product_code" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
                     <field name="shape" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="logo" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-					<field name="logoref" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="logo_type" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-					<field name="finish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,4))]}"/>
-                    <field name="finish_ref" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="b_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="c_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="d_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="dimension" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="style" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="gmt" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
-                    <field name="mold_set" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}"/>
+                    <field name="logo" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+					<field name="logoref" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <field name="logo_type" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+					<field name="finish" attrs="{'column_invisible':[('parent.company_id', 'in',(2,4))]}" />
+                    <field name="finish_ref" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <field name="b_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <field name="c_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <field name="d_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <field name="dimension" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <field name="style" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <field name="gmt" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <field name="mold_set" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <!-- <field name="weight_per_gross" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" /> -->
 					<field name="shade"  attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}" options="{'color_field': 'color'}"/>
                     
                     <field name="color" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}" widget="color_picker"/>

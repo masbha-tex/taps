@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<template id="report_mrp_lot_barcode">
+      <t t-call="web.basic_layout">
+        <div class="page">
+          <t t-foreach="docs" t-as="morder">
+            <table style="width:173pt; height:260pt; border: 1pt solid black; border-collapse:separate; border-radius:8pt; margin:5pt">
+                <tr><th><div style="font-size:9pt;margin-left:2pt;margin-bottom:0pt;margin-top:0pt;max-height:11pt;"><span>OA: </span><t t-esc="morder.oa_id.name"/></div></th></tr>
+                <tr><th><div style="font-size:9pt;margin-left:2pt;margin-bottom:0pt;margin-top:0pt;max-height:11pt;"><span>Item: </span><t t-esc="morder.fg_categ_type"/></div></th></tr>
+                <tr><td><div style="font-size:9pt;margin-left:2pt;margin-bottom:0pt;margin-top:0pt;max-height:11pt;"><span>Shade: </span><t t-esc="morder.shade"/></div></td></tr>
+                <tr><td><div style="font-size:9pt;margin-left:2pt;margin-bottom:0pt;margin-top:0pt;max-height:11pt;"><span>Finish: </span><t t-esc="morder.finish"/></div></td></tr>
+                <tr><td><div style="font-size:9pt;margin-left:2pt;margin-bottom:0pt;margin-top:0pt;max-height:11pt;"><span>Machine: </span><t t-esc="morder.based_on"/></div></td></tr>
+                <tr><td align="center"><img alt="barcode" t-if="morder.code" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', morder.code, 300, 100)" style="max-height:40pt;max-width:99%;" align="center"/></td></tr>
+            </table>
+          </t>
+        </div>
+      </t>
+	</template>
+</odoo>   
+    

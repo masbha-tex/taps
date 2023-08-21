@@ -107,25 +107,85 @@ class ManufacturingOrder(models.Model):
     dyeing_output = fields.Float(string='Dye Output', readonly=False, default=0.0)
     dyeing_qc_pass = fields.Float(string='Dye QC Pass', readonly=False, default=0.0)
 
-    plating_plan = fields.Datetime(string='Plating Plan Start', readonly=False)
-    plating_plan_end = fields.Datetime(string='Plating Plan End', readonly=False)
-    plating_plan_qty = fields.Float(string='Plating Plan Qty', readonly=False)
-    pl_rec_plan_qty = fields.Float(string='Plating Replan Qty', readonly=False, default=0.0)
-    plating_output = fields.Float(string='Plating Output', readonly=False)
-    plating_qc_pass = fields.Float(string='Plating QC Pass', readonly=False)
+    plating_plan = fields.Datetime(string='Plat/Paint Start', readonly=False)
+    plating_plan_end = fields.Datetime(string='Plat/Paint End', readonly=False)
+    plating_plan_qty = fields.Float(string='Plat/Paint Plan Qty', readonly=False)
+    pl_rec_plan_qty = fields.Float(string='Plat/Paint Rceplan Qty', readonly=False, default=0.0)
+    plating_output = fields.Float(string='Plat/Paint Output', readonly=False)
+    #plating_qc_pass = fields.Float(string='Plating QC Pass', readonly=False)
+
+    top_plat_plan = fields.Datetime(string='Top Plat/Paint Start', readonly=False)
+    top_plat_plan_end = fields.Datetime(string='Top Plat/Paint End', readonly=False)
+    top_plat_plan_qty = fields.Float(string='Top Plat/Paint Plan Qty', readonly=False)
+    tpl_rec_plan_qty = fields.Float(string='Top Plat/Paint Recplan Qty', readonly=False, default=0.0)
+    top_plat_output = fields.Float(string='Top Plat/Paint Output', readonly=False)
+    #top_plat_qc_pass = fields.Float(string='Plating QC Pass', readonly=False)
+
+    bot_plat_plan = fields.Datetime(string='Btm Plat/Paint Start', readonly=False)
+    bot_plat_plan_end = fields.Datetime(string='Btm Plat/Paint End', readonly=False)
+    bot_plat_plan_qty = fields.Float(string='Btm Plat/Paint Plan Qty', readonly=False)
+    bpl_rec_plan_qty = fields.Float(string='Btm Plat/Paint Recplan Qty', readonly=False, default=0.0)
+    bot_plat_output = fields.Float(string='Btm Plat/Paint Output', readonly=False)
+    #bot_plat_qc_pass = fields.Float(string='Plating QC Pass', readonly=False)    
+
+    pin_plat_plan = fields.Datetime(string='Pbox Plat/Paint Start', readonly=False)
+    pin_plat_plan_end = fields.Datetime(string='Pbox Plat/Paint End', readonly=False)
+    pin_plat_plan_qty = fields.Float(string='Pbox Plat/Paint Plan Qty', readonly=False)
+    ppl_rec_plan_qty = fields.Float(string='Pbox Plat/Paint Recplan Qty', readonly=False, default=0.0)
+    pin_plat_output = fields.Float(string='Pbox Plat/Paint Output', readonly=False)
+    #pin_plat_qc_pass = fields.Float(string='Plating QC Pass', readonly=False)    
 
     sli_asmbl_plan = fields.Datetime(string='Slider Asmbl Plan Start', readonly=False)
     sli_asmbl_plan_end = fields.Datetime(string='Slider Asmbl Plan End', readonly=False)
     sli_asmbl_plan_qty = fields.Float(string='Slider Asmbl Plan Qty', readonly=False)
+    sass_rec_plan_qty = fields.Float(string='Slider Asmbl Rceplan Qty', readonly=False, default=0.0)
+    sli_asmbl_output = fields.Float(string='Slider Asmbl Output', readonly=False)
 
-    painting_done = fields.Float(string='painting Output', readonly=False)
+    # painting_done = fields.Float(string='Painting Output', readonly=False)
+    # p_plan = fields.Datetime(string='Slider Asmbl Plan Start', readonly=False)
+    # sli_asmbl_plan_end = fields.Datetime(string='Slider Asmbl Plan End', readonly=False)
+    # sli_asmbl_plan_qty = fields.Float(string='Slider Asmbl Plan Qty', readonly=False)
+    # sass_rec_plan_qty = fields.Float(string='Plating Replan Qty', readonly=False, default=0.0)
+    # sli_asmbl_output = fields.Float(string='Plating Output', readonly=False)
     
     chain_making_done = fields.Float(string='CM Output', readonly=False)
     diping_done = fields.Float(string='Dipping Output', readonly=False)
     assembly_done = fields.Float(string='Assembly Output', readonly=False)
     packing_done = fields.Float(string='Packing Output', readonly=False)
+    oa_total_qty = fields.Float(string='OA Total Qty', readonly=True)
+    oa_total_balance = fields.Float(string='OA Balance', readonly=True, store=True)#, compute='_oa_balance'
+    remarks = fields.Text(string='Remarks')
+    num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
+    
+    def button_createlot(self):
+        self.ensure_one()
+        self._check_company()
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_lot")
+        return action
+    
+    def action_view_lots(self):
+        """ This function returns an action that display existing picking orders of given purchase order ids. When only one found, show the picking immediately.
+        """
+        result = self.env["ir.actions.actions"]._for_xml_id('taps_manufacturing.action_operation_details')
+        # override the context to get rid of the default filtering on operation type
+        result['context'] = {'mrp_line': self.id, 'operation_of': 'lot'}
+        lots_ = self.env['operation.details'].search([('mrp_line', '=', self.id),('operation_of', '=', 'lot')])
+        lot_ids = lots_.mapped('id')
+        #raise UserError((lot_ids))
+        # choose the view_mode accordingly
+        result['domain'] = "[('id','in',%s)]" % (lot_ids)
+        return result
+        
+    def get_lots(self):
+        for s in self:
+            count_lots = self.env['operation.details'].search_count([('mrp_line', '=', s.id),('operation_of', '=', 'lot')])
+            s.num_of_lots = count_lots
+            #s.lot_ids = count_lots.mapped('id')    
 
-
+    def _oa_balance(self):
+        for s in self:
+            mr = self.env["manufacturing.order"].search([('oa_id','=',s.oa_id.id)])
+            s.oa_total_balance = s.oa_total_qty-sum(mr.mapped('done_qty'))
 
     def get_leadtime(self):
         for s in self:
@@ -194,13 +254,9 @@ class ManufacturingOrder(models.Model):
         #action["context"] = {"default_item_qty": 20,"default_material_qty": 12}
         return action
 
-# mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty
-    def set_plan(self,mo_ids,plan_for,material,plan_start,plan_end,plan_qty,machine_line):
-        #raise UserError((mo_ids,plan_for,material,plan_start,plan_end,plan_qty,machine_line))
-        #raise UserError((mo_ids,plan_for,plan_start,plan_end,plan_qty))
+    
+    def set_plan(self,mo_ids,plan_for_id,plan_for,material,plan_start,plan_end,plan_qty,machine_line):
         production = self.env["manufacturing.order"].browse(mo_ids)
-# dyeing_plan,dyeing_plan_end,dyeing_plan_qty,dyeing_output,dyeing_qc_pass
-# plating_plan,plating_plan_end,plating_plan_qty,plating_output,plating_qc_pass
         m_qty = 0.00
         rest_pl_q = plan_qty
         p_len = len(production)
@@ -217,9 +273,60 @@ class ManufacturingOrder(models.Model):
                     rest_pl_q = 0.00
                 re_pqty = m_qty 
                 m_qty += p.dyeing_plan_qty
-                p.update({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty,
+                p.update({'dyeing_plan':plan_start,'dyeing_plan_qty':m_qty,
                          'dy_rec_plan_qty':re_pqty})
 
+            elif material == 'slider':
+                if p.slider_con <= rest_pl_q:
+                    m_qty = p.slider_con
+                    rest_pl_q = rest_pl_q - p.slider_con
+                else:
+                    m_qty = rest_pl_q
+                    rest_pl_q = 0.00
+                re_pqty = m_qty
+              
+                if plan_for == 'Slider assembly':
+                    m_qty += p.sli_asmbl_plan_qty
+                    p.update({'sli_asmbl_plan':plan_start,'sli_asmbl_plan_qty':m_qty,'sass_rec_plan_qty':re_pqty})
+                else:
+                    m_qty += p.plating_plan_qty
+                    p.update({'plating_plan':plan_start,'plating_plan_qty':m_qty,'pl_rec_plan_qty':re_pqty})
+            
+            elif material == 'top':
+                if p.topwire_con <= rest_pl_q:
+                    m_qty = p.topwire_con
+                    rest_pl_q = rest_pl_q - p.topwire_con
+                else:
+                    m_qty = rest_pl_q
+                    rest_pl_q = 0.00
+                re_pqty = m_qty 
+                m_qty += p.top_plat_plan_qty
+                p.update({'top_plat_plan':plan_start,'top_plat_plan_qty':m_qty,
+                         'tpl_rec_plan_qty':re_pqty})
+
+            elif material == 'bottom':
+                if p.botomwire_con <= rest_pl_q:
+                    m_qty = p.botomwire_con
+                    rest_pl_q = rest_pl_q - p.botomwire_con
+                else:
+                    m_qty = rest_pl_q
+                    rest_pl_q = 0.00
+                re_pqty = m_qty 
+                m_qty += p.bot_plat_plan_qty
+                p.update({'bot_plat_plan':plan_start,'bot_plat_plan_qty':m_qty,
+                         'bpl_rec_plan_qty':re_pqty})
+
+            elif material == 'pinbox':
+                if p.pinbox_con <= rest_pl_q:
+                    m_qty = p.pinbox_con
+                    rest_pl_q = rest_pl_q - p.pinbox_con
+                else:
+                    m_qty = rest_pl_q
+                    rest_pl_q = 0.00
+                re_pqty = m_qty 
+                m_qty += p.bot_plat_plan_qty
+                p.update({'pin_plat_plan':plan_start,'pin_plat_plan_qty':m_qty,
+                         'ppl_rec_plan_qty':re_pqty})            
             # if plan_for == 'dyeing':
             #     if p.tape_con < dist_qty + addition:
             #         m_qty = p.tape_con
@@ -232,29 +339,18 @@ class ManufacturingOrder(models.Model):
             #     p.write({'dyeing_plan':plan_start,'dyeing_plan_end':plan_end,'dyeing_plan_qty':m_qty,
             #              'dy_rec_plan_qty':re_pqty})
                 
-            elif material == 'slider':
-                if p.tape_con < dist_qty + addition:
-                    m_qty = p.slider_con
-                    addition = (dist_qty + addition) - p.slider_con
-                else:
-                    m_qty = dist_qty + addition
-                    addition = 0
-                m_qty += p.plating_plan_qty
-                p.update({'plating_plan':plan_start,'plating_plan_end':plan_end,'plating_plan_qty':m_qty})
-            elif material == 'top':
-                m_qty += p.topwire_con
-            elif material == 'bottom':
-                m_qty += p.botomwire_con
-            elif material == 'pinbox':
-                m_qty += p.pinbox_con
-            # elif plan_for == 'sliassembly':
-            #     m_qty += p.slider_con
     
-    
+    # ptopfinish pbotomfinish ppinboxfinish
         if material == 'tape':
-            query = """ select oa_id,shade,'' as finish,'' as slidercodesfg,sum(dy_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade """
+            query = """ select oa_id,shade,'' as finish,'' as material,sum(dy_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade """
         if material == 'slider':
-            query = """ select oa_id,'' as shade, finish,slidercodesfg,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,slidercodesfg """
+            query = """ select oa_id,'' as shade, finish,slidercodesfg as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,slidercodesfg """
+        if material == 'top':
+            query = """ select oa_id,'' as shade, finish,ptopfinish as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,ptopfinish """
+        if material == 'bottom':
+            query = """ select oa_id,'' as shade, finish,pbotomfinish as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,pbotomfinish """
+        if material == 'pinbox':
+            query = """ select oa_id,'' as shade, finish,ppinboxfinish as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,ppinboxfinish """            
             
         cr = self._cr
         cursor = self.env.cr
@@ -265,40 +361,124 @@ class ManufacturingOrder(models.Model):
             for m in machine_line:
                 for p in plan:
                     qty = 0.0
+                    mrp_lines = None
+                    sale_lines = None
+                    next_operation = None
+                    mrp_line = sal_line = None
                     if material == 'tape':
+                        next_operation = 'dye'
                         p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.shade == p[1])
+                        mrp_lines = p_q.mapped('id')
+                        sale_lines = p_q.mapped('sale_order_line')
                         if len(p_q) > 1:
                             qty = m.material_qty
                         else:
+                            mrp_line = p_q.id
+                            sal_line = p_q.sale_order_line
                             qty = sum(p_q.mapped('dy_rec_plan_qty'))
-                    if material == 'slider':
-                        p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.slidercodesfg == p[3])
-                        if len(p_q) > 1:
-                            qty = m.material_qty
-                        else:
-                            qty = sum(p_q.mapped('pl_rec_plan_qty'))
-
-                    #raise UserError((p_q.product_template_id.id))
                     
-                    #and sol.finish == p[2]
-                    
-                    mrp_ = self.env['operation.details'].create({'mrp_lines':None,
-                                                                 'sale_lines':None,
-                                                                 'mrp_line':None,
-                                                                 'sale_order_line':None,
+                    mrp_ = self.env['operation.details'].create({'mrp_lines':mrp_lines,
+                                                                 'sale_lines':sale_lines,
+                                                                 'mrp_line':mrp_line,
+                                                                 'sale_order_line':sal_line,
                                                                  'oa_id':p[0],
                                                                  'product_template_id':p_q.product_template_id.id,
                                                                  'action_date':plan_start,
                                                                  'shade':p[1],
                                                                  'finish':p[2],
-                                                                 'slidercodesfg':p[3],
                                                                  'operation_of':'plan',
-                                                                 'work_center':plan_for,
+                                                                 'work_center':plan_for_id,
                                                                  'operation_by':'Planning',
                                                                  'based_on':m.machine_no,
-                                                                 'qty':qty,
-                                                                 'done_qty':0
+                                                                 'next_operation':next_operation,
+                                                                 'qty':qty
                                                                  })
+
+
+        else:
+            for p in plan:
+                qty = 0.0
+                mrp_lines = None
+                sale_lines = None
+                next_operation = None
+                mrp_line = sal_line = None
+                
+                if plan_for == 'Plating':
+                    next_operation = 'plating'
+                if plan_for == 'Slider assembly':
+                    next_operation = 'slasemb'
+                if plan_for == 'Painting':
+                    next_operation = 'paint'
+                slider = top = bottom = pinbox = None
+                if material == 'slider':
+                    p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.slidercodesfg == p[3])
+                    slider = p[3]
+                    mrp_lines = p_q.mapped('id')
+                    sale_lines = p_q.mapped('sale_order_line')
+                    if len(p_q) > 1:
+                        qty = m.material_qty
+                    else:
+                        mrp_line = p_q.id
+                        sal_line = p_q.sale_order_line
+                        if plan_for == 'Slider assembly':
+                            qty = sum(p_q.mapped('sass_rec_plan_qty'))
+                        else:
+                            qty = sum(p_q.mapped('pl_rec_plan_qty')) 
+                elif material == 'top': #ptopfinish pbotomfinish ppinboxfinish
+                    p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.ptopfinish == p[3])
+                    top = p[3]
+                    mrp_lines = p_q.mapped('id')
+                    sale_lines = p_q.mapped('sale_order_line')
+                    if len(p_q) > 1:
+                        qty = m.material_qty
+                    else:
+                        mrp_line = p_q.id
+                        sal_line = p_q.sale_order_line
+                        qty = sum(p_q.mapped('tpl_rec_plan_qty'))
+                elif material == 'bottom':
+                    p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.pbotomfinish == p[3])
+                    bottom = p[3]
+                    mrp_lines = p_q.mapped('id')
+                    sale_lines = p_q.mapped('sale_order_line')
+                    if len(p_q) > 1:
+                        qty = m.material_qty
+                    else:
+                        mrp_line = p_q.id
+                        sal_line = p_q.sale_order_line
+                        qty = sum(p_q.mapped('bpl_rec_plan_qty'))
+                elif material == 'pinbox':
+                    p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.ppinboxfinish == p[3])
+                    pinbox = p[3]
+                    mrp_lines = p_q.mapped('id')
+                    sale_lines = p_q.mapped('sale_order_line')
+                    if len(p_q) > 1:
+                        qty = m.material_qty
+                    else:
+                        mrp_line = p_q.id
+                        sal_line = p_q.sale_order_line
+                        qty = sum(p_q.mapped('ppl_rec_plan_qty'))
+                
+                mrp_line = sale_order_line = None
+                mrp_ = self.env['operation.details'].create({'mrp_lines':mrp_lines,
+                                                             'sale_lines':sale_lines,
+                                                             'mrp_line':mrp_line,
+                                                             'sale_order_line':sal_line,
+                                                             'oa_id':p[0],
+                                                             'product_template_id':p_q.product_template_id.id,
+                                                             'action_date':plan_start,
+                                                             'shade':p[1],
+                                                             'finish':p[2],
+                                                             'slidercodesfg':slider,
+                                                             'top':top,
+                                                             'bottom':bottom,
+                                                             'pinbox':pinbox,
+                                                             'operation_of':'plan',
+                                                             'work_center':plan_for_id,
+                                                             'operation_by':'Planning',
+                                                             'based_on':m.machine_no,
+                                                             'next_operation':next_operation,
+                                                             'qty':qty
+                                                             })
 
     def button_requisition(self):
         self._check_company()
@@ -306,19 +486,19 @@ class ManufacturingOrder(models.Model):
         action["domain"] = [('default_id','in',self.mapped('id'))]
         return action
     
-    def button_createlot(self):
-        self.ensure_one()
-        self._check_company()
-        if self.state in ("done", "to_close", "cancel"):
-            raise UserError(
-                _(
-                    "Cannot split a manufacturing order that is in '%s' state.",
-                    self._fields["state"].convert_to_export(self.state, self),
-                )
-            )
-        action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
-        action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
-        return action
+    # def button_createlot(self):
+    #     self.ensure_one()
+    #     self._check_company()
+    #     if self.state in ("done", "to_close", "cancel"):
+    #         raise UserError(
+    #             _(
+    #                 "Cannot split a manufacturing order that is in '%s' state.",
+    #                 self._fields["state"].convert_to_export(self.state, self),
+    #             )
+    #         )
+    #     action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
+    #     action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
+    #     return action
 
     def button_output(self):
         self.ensure_one()

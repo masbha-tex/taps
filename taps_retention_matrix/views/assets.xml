@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend_taps_retention_matrix" inherit_id="web.assets_backend" name="taps retention matrix assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/taps_retention_matrix/static/src/js/retention_dashboard.js"></script>
+            <link rel="stylesheet" type="text/scss" href="/taps_retention_matrix/static/src/scss/retention.scss"/>
+        </xpath>
+    </template>
+</odoo>

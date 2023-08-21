@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_round, date_utils
-from odoo.tools.misc import format_date
+from odoo.tools.misc import format_date, format_amount
 
 class RetentionMatrix(models.Model):
     _name = 'retention.matrix'
@@ -32,6 +32,8 @@ class RetentionMatrix(models.Model):
         ('q2', 'Q2'),
         ('q3', 'Q3'),
         ('q4', 'Q4'),], string="Quarter")
+    date_from = fields.Date('Date From', required=True, index=True,default=fields.Date.context_today)
+    date_to = fields.Date('Date To', required=True, index=True, default=fields.Date.context_today)
 
     @staticmethod
     def _get_year_list():
@@ -61,5 +63,91 @@ class RetentionMatrix(models.Model):
         if vals.get('name', 'RM') == 'RM':
             vals['name'] = self.env['ir.sequence'].next_by_code('retention.code')
         return super(RetentionMatrix, self).create(vals)
+
+    @api.model
+    def retrieve_dashboard(self):
+        """ This function returns the values to populate the custom dashboard in
+            the purchase order views.
+        """
+        # raise UserError(('efrrgrg'))
+        self.check_access_rights('read')
+        povalue = 0
+
+        result = {
+            'retention_low_low': [],
+            'retention_low_medium': [],
+            'retention_low_high': [],
+            'retention_medium_low': [],
+            'retention_medium_medium': [],
+            'retention_medium_high': [],
+            'retention_high_low': [],
+            'retention_high_medium': [],
+            'retention_high_high': []
+        }
+        retention_low_low = self.env['retention.matrix'].search([('impact', '=', '1'), ('risk', '=', '1')])
+        retention_low_medium = self.env['retention.matrix'].search([('impact', '=', '2'), ('risk', '=', '1')])
+        retention_low_high = self.env['retention.matrix'].search([('impact', '=', '3'), ('risk', '=', '1')])
+        retention_medium_low = self.env['retention.matrix'].search([('impact', '=', '1'), ('risk', '=', '2')])
+        retention_medium_medium = self.env['retention.matrix'].search([('impact', '=', '2'), ('risk', '=', '2')])
+        retention_medium_high = self.env['retention.matrix'].search([('impact', '=', '3'), ('risk', '=', '2')])
+        retention_high_low = self.env['retention.matrix'].search([('impact', '=', '1'), ('risk', '=', '3')])
+        retention_high_medium = self.env['retention.matrix'].search([('impact', '=', '2'), ('risk', '=', '3')])
+        retention_high_high = self.env['retention.matrix'].search([('impact', '=', '3'), ('risk', '=', '3')]) 
+        
+        retention_record=0
+        
+        for retention_record in retention_low_low:
+            result['retention_low_low'].append(retention_record.employee_id.display_name)
+        
+        result['retention_low_low'] = '<br/>'.join(result['retention_low_low'])
+        
+        for retention_record in retention_low_medium:
+            result['retention_low_medium'].append(retention_record.employee_id.display_name)
+        
+        result['retention_low_medium'] = '<br/>'.join(result['retention_low_medium'])
+
+        for retention_record in retention_low_high:
+            result['retention_low_high'].append(retention_record.employee_id.display_name)
+        
+        result['retention_low_high'] = '<br/>'.join(result['retention_low_high'])
+        
+        for retention_record in retention_medium_low:
+            result['retention_medium_low'].append(retention_record.employee_id.display_name)
+        
+        result['retention_medium_low'] = '<br/>'.join(result['retention_medium_low'])
+
+        for retention_record in retention_medium_medium:
+            result['retention_medium_medium'].append(retention_record.employee_id.display_name)
+        
+        result['retention_medium_medium'] = '<br/>'.join(result['retention_medium_medium'])
+        
+        for retention_record in retention_medium_high:
+            result['retention_medium_high'].append(retention_record.employee_id.display_name)
+        
+        result['retention_medium_high'] = '<br/>'.join(result['retention_medium_high'])
+
+        for retention_record in retention_high_low:
+            result['retention_high_low'].append(retention_record.employee_id.display_name)
+        
+        result['retention_high_low'] = '<br/>'.join(result['retention_high_low'])
+        
+        for retention_record in retention_high_medium:
+            result['retention_high_medium'].append(retention_record.employee_id.display_name)
+        
+        result['retention_high_medium'] = '<br/>'.join(result['retention_high_medium'])
+
+        for retention_record in retention_high_high:
+            result['retention_high_high'].append(retention_record.employee_id.display_name)
+        
+        result['retention_high_high'] = '<br/>'.join(result['retention_high_high'])
+        
+       
+
+        
+        
+
+
+
+        return result
 
 

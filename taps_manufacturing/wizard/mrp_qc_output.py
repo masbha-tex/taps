@@ -15,9 +15,9 @@ from typing import List, Union
 _logger = logging.getLogger(__name__)
 
 
-class ManufacturingOutput(models.TransientModel):
-    _name = 'mrp.output'
-    _description = 'Process Output'
+class ManufacturingQcOutput(models.TransientModel):
+    _name = 'mrp.qc.output'
+    _description = 'QC Output'
     _check_company_auto = True
     
     lot_code = fields.Char(string='Lot', readonly=False)

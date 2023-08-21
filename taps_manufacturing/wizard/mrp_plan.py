@@ -21,7 +21,8 @@ class ManufacturingPlan(models.TransientModel):
     _check_company_auto = True
 
     item = fields.Text(string='Item', readonly=True)
-    shade_finish = fields.Text(string='Shade / Finish', readonly=True)
+    shade = fields.Text(string='Shade', readonly=True)
+    finish = fields.Text(string='Finish', readonly=True)
     plan_for = fields.Many2one('mrp.workcenter', required=True, string='Plan For', help="Assign to")
     material = fields.Selection([
         ('tape', 'Tape'),
@@ -29,7 +30,7 @@ class ManufacturingPlan(models.TransientModel):
         ('top', 'Top'),
         ('bottom', 'Bottom'),
         ('pinbox', 'Pinbox')],
-        string='Material', default='tape', required=True)
+        string='Material', required=True)
     
     plan_start = fields.Datetime(string='Start Date', required=True)
     plan_end = fields.Datetime(string='End Date')
@@ -45,52 +46,19 @@ class ManufacturingPlan(models.TransientModel):
         res = super().default_get(fields_list)
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_ids")
-        #raise UserError((active_id))
-        
         # Auto-complete production_id from context
         #if "mo_id" in fields_list and active_model == "mrp.production":
         # res["item_qty"] = active_id
         production = self.env[""+active_model+""].browse(active_id)
         res["item"] = production[0].fg_categ_type
         res["item_qty"] = sum(production.mapped('balance_qty'))
-            #raise UserError((active_id))
-            #if production.product_tracking == "serial":
-                
-        # # Auto-complete split_qty from production_id
-        # if "split_qty" in fields_list and res.get("production_id"):
-        #     production = self.env["mrp.production"].browse(res["production_id"])
-        #     res["split_qty"] = production._get_quantity_to_backorder()
-        return res 
+        return res
     
     # @api.onchange('machine_line.material_qty')
     # def _onchange_qty(self):
     #     raise UserError((sum(self.machine_line.mapped('material_qty'))))
     #     self.plan_qty = sum(self.machine_line.mapped('material_qty'))
 
-        
-    # @api.onchange('plan_for')
-    # def _onchange_workcenter(self):
-    #     active_id = self.env.context.get("active_ids")
-    #     production = self.env["manufacturing.order"].browse(active_id)
-    #     raise UserError((self.plan_for))
-    #     if self.plan_for == 'Dyeing':
-    #         self.material_qty = sum(production.mapped('tape_con'))
-    #         self.shade_finish = production[0].shade
-    #     elif self.material == 'slider':
-    #         self.material_qty = sum(production.mapped('slider_con'))
-    #         self.shade_finish = production[0].finish
-    #     elif self.material == 'top':
-    #         self.material_qty = sum(production.mapped('topwire_con'))
-    #         self.shade_finish = production[0].finish
-    #     elif self.material == 'bottom':
-    #         self.material_qty = sum(production.mapped('botomwire_con'))
-    #         self.shade_finish = production[0].finish
-    #     elif self.material == 'pinbox':
-    #         self.material_qty = sum(production.mapped('pinbox_con'))
-    #         self.shade_finish = production[0].finish
-    #     elif self.plan_for == 'Slider assembly':
-    #         self.material_qty = sum(production.mapped('slider_con'))
-    #         self.shade_finish = production[0].finish
 
     @api.onchange('material')
     def _onchange_plan(self):
@@ -99,23 +67,23 @@ class ManufacturingPlan(models.TransientModel):
         #raise UserError((self.plan_for))
         if self.material == 'tape':
             self.material_qty = sum(production.mapped('tape_con'))
-            self.shade_finish = production[0].shade
+            self.shade = production[0].shade
         elif self.material == 'slider':
             self.material_qty = sum(production.mapped('slider_con'))
-            self.shade_finish = production[0].finish
+            self.finish = production[0].finish
         elif self.material == 'top':
             self.material_qty = sum(production.mapped('topwire_con'))
-            self.shade_finish = production[0].finish
+            self.finish = production[0].finish
         elif self.material == 'bottom':
             self.material_qty = sum(production.mapped('botomwire_con'))
-            self.shade_finish = production[0].finish
+            self.finish = production[0].finish
         elif self.material == 'pinbox':
             self.material_qty = sum(production.mapped('pinbox_con'))
-            self.shade_finish = production[0].finish
-        elif self.plan_for == 'Slider assembly':
+            self.finish = production[0].finish
+        elif self.plan_for.name == 'Slider assembly':
             self.material_qty = sum(production.mapped('slider_con'))
-            self.shade_finish = production[0].finish            
-            
+            self.finish = production[0].finish            
+         
     def done_mo_plan(self):
         # if  self.plan_qty > self.material_qty:
         #     raise UserError(('Split quantity should not greterthen the base quantity'))
@@ -123,7 +91,7 @@ class ManufacturingPlan(models.TransientModel):
         mo_ids = self.env.context.get("active_ids")
         production = self.env["manufacturing.order"].browse(mo_ids)
         
-        production.set_plan(mo_ids,self.plan_for.id,self.material,self.plan_start,
+        production.set_plan(mo_ids,self.plan_for.id,self.plan_for.name,self.material,self.plan_start,
                             self.plan_end,self.plan_qty,self.machine_line)
         #production.set_operation(mo_ids,self.plan_for,self.machine_line)
         return 

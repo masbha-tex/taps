@@ -766,7 +766,7 @@ class SaleOrder(models.Model):
 
     def generate_m_order(self):
         for products in self.order_line:
-            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap})
+            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks})
  
             
     # def manuf_values(self,seq,id,oa,company):
@@ -992,7 +992,7 @@ class SaleOrderLine(models.Model):
     c_part = fields.Text(string='C Part', store=True)
     d_part = fields.Text(string='D Part', store=True)
     finish_ref = fields.Text(string='Finish Ref', store=True)
-    product_code = fields.Text(string='Product Code', store=True)
+    product_code = fields.Text(string='Product Code', compute='_compute_product_code',store=True)
     shape = fields.Text(string='Shape', store=True)
     nailmat = fields.Text(string='Nail Material / Type / Shape / Size', store=True)
     nailcap = fields.Text(string='Nail Cap Logo', store=True)
@@ -1014,8 +1014,57 @@ class SaleOrderLine(models.Model):
     dimension = fields.Char(string='Dimension')
     line_code = fields.Char(string='Line Code', compute="_compute_line_code")
     mold_set = fields.Char(string='Mold Set')
-    #def write
+    # weight_per_gross = fields.Float(string='Weight/Gross',compute='_compute_weight_per_gross', inverse='_inverse_compute_weight_per_gross',store=True)
 
+    # def _inverse_compute_weight_per_gross(self):
+    #     pass
+        
+    # @api.depends('product_template_id','sizemm','dimension','product_uom_qty')
+    # def _compute_weight_per_gross(self):
+    #     for rec in self:
+    #         if rec.product_template_id:
+                
+    #             if 'SHANK' in rec.product_template_id.name :
+    #                 if rec.sizemm == '17':
+    #                     rec.weight_per_gross = (.24*rec.product_uom_qty)
+    #                 if rec.sizemm == '18':
+    #                     rec.weight_per_gross = (.27*rec.product_uom_qty)
+    #                 if rec.sizemm == '19':
+    #                     rec.weight_per_gross = (.30*rec.product_uom_qty)
+    #                 if rec.sizemm == '20':
+    #                     rec.weight_per_gross = (.32*rec.product_uom_qty)
+    #                 else:
+    #                     rec.weight_per_gross = 0.0
+                
+    
+    
+    @api.depends('product_template_id','back_part','sizemm','dimension')
+    def _compute_product_code(self):
+        for rec in self:
+            if rec.product_template_id:
+                rec.product_code =''.join([word[0] for word in rec.product_template_id.name.split()])
+            if rec.sizemm:
+                rec.product_code =rec.product_code+"-"+str(rec.sizemm)
+            if rec.back_part:
+                if rec.back_part == "2 PIN SHANK":
+                    rec.product_code =rec.product_code+"-"+''.join("2SB")
+                if rec.back_part == "N/A":
+                    rec.product_code =rec.product_code+"-"+''.join("XX")
+                if rec.back_part == "SS SHANK":
+                    rec.product_code =rec.product_code+"-"+''.join("SS")
+                if rec.back_part == "BRASS SHANK" or rec.back_part == "BRASS EYELET":
+                    rec.product_code =rec.product_code+"-"+''.join("BR")
+                if rec.back_part == "MOVING SHANK":
+                    rec.product_code =rec.product_code+"-"+''.join("MS")
+                if rec.back_part == "NYLON SHANK":
+                    rec.product_code =rec.product_code+"-"+''.join("NY")
+                if rec.back_part == "ALUMINIUM SHANK":
+                    rec.product_code =rec.product_code+"-"+''.join("AL")
+            if rec.dimension:
+                rec.product_code = rec.product_code+"-"+str(rec.dimension)
+                
+            
+        
 
     def _compute_line_code(self):
         count = 0
@@ -1122,6 +1171,10 @@ class SaleOrderLine(models.Model):
     def duplicate_line(self):
         max_seq = max(line.sequence for line in self.order_id.order_line)
         self.copy({'order_id': self.order_id.id, 'sequence': max_seq + 1})
+        
+
+    
+        
         
         
         
@@ -1273,9 +1326,9 @@ class SaleOrderLine(models.Model):
             if rec.attribute_id.name == 'Back Part':
                 self.back_part = rec.product_attribute_value_id.name
                 continue
-            if rec.attribute_id.name == 'Product Code':
-                self.product_code = rec.product_attribute_value_id.name
-                continue
+            # if rec.attribute_id.name == 'Product Code':
+            #     self.product_code = rec.product_attribute_value_id.name
+            #     continue
             if rec.attribute_id.name == 'Shape':
                 self.shape = rec.product_attribute_value_id.name
                 continue

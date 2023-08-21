@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
 
-    <report
-            id="action_lms_xlsx_report"
-            model="lms.pdf.report"
-            string="Generate XLSX Report"
-            report_type="xlsx"
-            name="taps_lms.lms_xlsx_report"
-            file="lms_xlsx_report"
-            attachment_use="False"
-    />
+    <record id="action_lms_xlsx_report" model="ir.actions.report">
+        <field name="name">Generate XLSX Report</field>
+        <field name="model">lms.pdf.report</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">taps_lms.lms_xlsx_report</field>
+        <field name="report_file">taps_lms.lms_xlsx_report</field>
+    </record>
 
 </odoo>

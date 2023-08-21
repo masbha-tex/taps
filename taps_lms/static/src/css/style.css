@@ -1,14 +1,14 @@
 .custom_class {
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    min-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-collapse: collapse !important;
+    margin: 25px 0 !important;
+    font-size: 0.9em !important;
+    font-family: sans-serif !important;
+    min-width: 400px !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15) !important;
 }
 
-.custom_class table thead tr {
-    background-color: #009879;
+.custom_class table thead tr th {
+    background-color: #009879 !important;
     color: #ffffff;
     text-align: left;
 }

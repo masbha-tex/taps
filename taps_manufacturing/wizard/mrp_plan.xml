@@ -8,7 +8,8 @@
                 <group>
                     <group>
                         <field name="item"/>
-                        <field name="shade_finish"/>
+                        <field name="shade"/>
+                        <field name="finish"/>
                         <field name="plan_for"/>
                         <field name="material"/>
                         <field name="plan_start"/>

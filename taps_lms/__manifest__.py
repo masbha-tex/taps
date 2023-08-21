@@ -21,7 +21,7 @@
         'security/res_groups.xml',
         'security/ir.model.access.csv',
         'views/lms.xml',
-        'views/res_partner.xml',
+        'views/hr_employee.xml',
         'reports/custom_header_footer.xml',
         'reports/paperformat.xml',
         'reports/reports.xml',

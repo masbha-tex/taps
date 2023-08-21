@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <!-- This template is for a table at the top of purchase views that shows some KPIs. -->
+    <t t-name="taps_retention_matrix.RetentionDashboard">
+        <div class="o_retention_dashboard container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-sm mb-4">
+                            <thead>
+                                <tr>
+                                    <th colspan="5" style="background-color: #31216B;color: white; text-align: center">IMPACT OF TURN OVER</th>
+                                </tr>
+                                <tr style="text-align: center">
+                                    <th colspan="2" style="background-color: #31216B"/>
+                                    <th colspan="1" style="background-color: #E9FAFF;color: #31216B">LOW</th>
+                                    <th colspan="1" style="background-color: #E9FAFF;color: #31216B">MEDIUM</th>
+                                    <th colspan="1" style="background-color: #E9FAFF;color: #31216B">HIGH</th>
+                                </tr>
+                                                      
+                            </thead>
+                            <tbody>
+                                                      
+                                                      
+                                <tr align="center">
+                                 
+                                    
+                                  <th rowspan="15" style="background-color: #E9FAFF;color: #31216B; vertical-align : middle">RISK OF TURN OVER</th>
+                                  <th style="background-color: #E9FAFF; color: #31216B; vertical-align : middle;">LOW</th>
+                                  
+                                  <td align="left" style="background-color: #8BD4DB">
+                                  
+                                    <!-- <t t-foreach="values['retention']" t-as="employee">
+                                    <t t-if="employee.impact == '1' and employee.risk == '1'">
+                                    <t t-esc="values['retention'].employee_id"/><br/>
+                                    </t>
+                                    </t> -->
+                                      <t t-esc="values['retention_low_low']"/>
+                                      
+                                    </td>
+                                  
+                                  <td align="left" style="background-color: #C5EDEC">
+                                    <!-- <t t-foreach="docs" t-as="employee">
+                                    <t t-if="employee.impact == '2' and employee.risk == '1'">
+                                    <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
+                                    </t>
+                                    </t> -->
+                                      <t t-esc="values['retention_low_medium']"/>
+                                  </td>
+                                  <td align="left" style="background-color: #FFEBED">
+                                    <!-- <t t-foreach="docs" t-as="employee">
+                                    <t t-if="employee.impact == '3' and employee.risk == '1'">
+                                    <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
+                                    </t>
+                                    </t> -->
+                                      <t t-esc="values['retention_low_high']"/>
+                                      <br/>
+                                  </td>
+                                  
+                                  </tr>
+                                <tr align="center">
+                                  <th style="background-color: #E9FAFF;color: #31216B; vertical-align : middle">MEDIUM</th>
+                                  <td align="left" style="background-color: #C5EDEC">
+                                    <!-- <t t-foreach="docs" t-as="employee">
+                                    <t t-if="employee.impact == '1' and employee.risk == '2'">
+                                    <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
+                                    </t>
+                                    </t> -->
+                                      <t t-esc="values['retention_medium_low']"/>
+                                  </td>
+                                  <td align="left" style="background-color: #FFEBED">
+                                    <!-- <t t-foreach="docs" t-as="employee">
+                                    <t t-if="employee.impact == '2' and employee.risk == '2'">
+                                    <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
+                                    </t>
+                                    </t> -->
+                                      <t t-esc="values['retention_medium_medium']"/>
+                                  </td>
+                                  <td align="left" style="background-color: #FFD0D4">
+                                    <!-- <t t-foreach="docs" t-as="employee">
+                                    <t t-if="employee.impact == '3' and employee.risk == '2'">
+                                    <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
+                                    </t>
+                                    </t> -->
+                                      <t t-esc="values['retention_medium_high']"/>
+                                  </td>
+                                </tr>
+                                <tr align="center">
+                                  <th style="vertical-align : middle; background-color: #E9FAFF;color: #31216B">HIGH</th>
+                                  <td align="left" style="background-color: #FFEBED">
+                                    <!-- <t t-foreach="docs" t-as="employee">
+                                    <t t-if="employee.impact == '1' and employee.risk == '3'">
+                                    <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
+                                    </t>
+                                    </t> -->
+                                      <t t-esc="values['retention_high_low']"/>
+                                  </td>
+                                  <td align="left" style="background-color: #FFD0D4">
+                                    <!-- <t t-foreach="docs" t-as="employee">
+                                    <t t-if="employee.impact == '2' and employee.risk == '3'">
+                                    <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
+                                    </t>
+                                    </t> -->
+                                      <t t-esc="values['retention_high_medium']"/>
+                                  </td>
+                                  <td align="left" style="background-color: #FFA1A1">
+                                    <!-- <t t-foreach="docs" t-as="employee">
+                                    <t t-if="employee.impact == '3' and employee.risk == '3'">
+                                    <t t-esc="employee.emp_id"/>-<t t-esc="employee.name"/><br/>
+                                    </t>
+                                    </t> -->
+                                      <t t-esc="values['retention_high_high']"/>
+                                  </td>
+                                </tr>
+                                                      
+                            </tbody>
+                        </table>
+				</div>										
+            </div>
+        </div>
+    </t>
+</templates>

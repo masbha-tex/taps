@@ -1,26 +1,21 @@
 odoo.define('taps_manufacturing.FieldChar', function (require) {
     "use strict";
-
     var rpc = require('web.rpc');
     var fieldRegistry = require('web.field_registry');
     var FieldChar = require('web.basic_fields').FieldChar;
 
     var LotCodeEnterField = FieldChar.extend({
-        // events: _.extend({}, CharField.prototype.events, {
-        //     'keyup.input': '_onEnterKey',
-        // }),
        _onKeydown: function (ev) {
            this._super.apply(this, arguments);
            if (ev.which === $.ui.keyCode.ENTER) {
              var self = this;
                 var value = this.$input.val();
-                // alert(self);
                 rpc.query({
                     model: 'mrp.output',
                     method: 'onevent_lot',
                     args: [value]
                 }).then(function (result) {
-                    // Handle the result if needed
+                    
                 });
             }
         },
@@ -30,6 +25,41 @@ odoo.define('taps_manufacturing.FieldChar', function (require) {
 
     return LotCodeEnterField;
 });
+
+
+
+
+// odoo.define('taps_manufacturing.FieldChar', function (require) {
+//     "use strict";
+
+//     var core = require('web.core');
+//     var FormController = require('web.FormController');
+//     var FormView = require('web.FormView');
+
+//     FormController.include({
+//         _onKeydown: function (ev) {
+//             if (ev.which === $.ui.keyCode.ENTER && $(ev.target).is('input[type="text"]')) {
+//                 ev.preventDefault();
+//                 var $currentField = $(ev.target);
+//                 var $nextField = $currentField.closest('.o_field_widget').next('.o_field_widget');
+//                 while ($nextField.length > 0 && !$nextField.find('input[type="text"]').length) {
+//                     $nextField = $nextField.next('.o_field_widget');
+//                 }
+//                 if ($nextField.length > 0) {
+//                     $nextField.find('input[type="text"]').focus();
+//                 }
+//             } else {
+//                 this._super.apply(this, arguments);
+//             }
+//         },
+//     });
+
+//     FormView.include({
+//         config: _.extend({}, FormView.prototype.config, {
+//             Controller: FormController,
+//         }),
+//     });
+// });
 
 
 

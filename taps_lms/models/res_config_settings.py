@@ -3,6 +3,7 @@ from odoo import models, fields, api
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
+    _description = 'Res Config Settings'
 
     session_allowed_seats = fields.Integer('Default allowed seats')
     session_duration = fields.Float('Default duration')

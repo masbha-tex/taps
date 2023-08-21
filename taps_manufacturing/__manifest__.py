@@ -24,12 +24,14 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'report/mrp_lot_barcode.xml',
         'wizard/mrp_split.xml',
         'wizard/bom_verification.xml',
         'wizard/mrp_plan.xml',
         'wizard/mrp_lot.xml',
         'wizard/requisition.xml',
         'wizard/mrp_output.xml',
+        'wizard/mrp_qc_output.xml',
         'views/assets.xml',
         'views/mrp_productivity.xml',
         'views/mrp_production.xml',
@@ -38,6 +40,8 @@
         'views/mrp_workcenter.xml',
         'views/operation_details.xml',
         'data/ir_lot_sequence.xml',
+        'report/report_action.xml',
+        'report/mrp_lot_barcode.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     # only loaded in demonstration mode

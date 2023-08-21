@@ -19,10 +19,14 @@
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence.xml',
-        # 'views/views.xml',
+        'views/assets.xml',
         # 'views/templates.xml',
         'views/retention_matrix.xml',
+        # 'views/reporting.xml',
     ],
+    'qweb': [
+        "static/src/xml/retention_dashboard.xml",
+    ],    
     'installable': True,
     'application': True,
 }

@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <record id="view_mrp_operatin_details_search" model="ir.ui.view">
+        <field name="name">operation.details.search</field>
+        <field name="model">operation.details</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="oa_id"/>
+                <field name="code"/>
+                <filter string="Ready" name="ready" domain="[('operation_of','=','plan')]"/>
+                <filter string="Pending" name="progress" domain="[('operation_of','=','lot')]"/>
+                <filter string="Done" name="quality" domain="[('operation_of','=','output')]"/>
+                <!-- <filter string="In Progress" name="progress" domain="[('state','=','progress')]"/> -->
+                <!-- <filter string="Done" name="quality" domain="[('operation_of','=', 'output'),('qty','!=', done_qty)]"/> -->
+                <!-- <filter string="Late" name="late" domain="[('date_planned_start','&lt;=',time.strftime('%%Y-%%m-%%d'))]"/> -->
+                <separator/>
+                <filter string="Start Date" name="action_date_filter" date="action_date"/>
+            </search>
+        </field>
+    </record>
+    
     <record id="view_operation_tree" model="ir.ui.view">
         <field name="name">operation.details.tree</field>
         <field name="model">operation.details</field>
@@ -12,7 +30,7 @@
                     <!-- <button name="button_createlot" type="object" string="Create Lot"/> -->
                     <!-- <button name="button_output" type="object" string="Output"/> -->
                 </header>
-                <field name="code" invisible="1"/>
+                <field name="code"/>
                 <field name="mrp_lines" invisible="1"/>
                 <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>

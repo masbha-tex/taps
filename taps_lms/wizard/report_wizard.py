@@ -3,6 +3,7 @@ from odoo import models, fields, api
 
 class LmsPDFReport(models.TransientModel):
     _name = 'lms.pdf.report'
+    _description = 'LMS pdf Report'
 
     date_from = fields.Date('Date from', required=True)
     date_to = fields.Date('Date to', required=True)
@@ -27,6 +28,7 @@ class LmsPDFReport(models.TransientModel):
 
 class LmsReportPDF(models.AbstractModel):
     _name = 'report.taps_lms.lms_pdf_template'
+    _description = 'LMS pdf'
 
     def _get_report_values(self, docids, data=None):
         domain = [('state', '!=', 'cancel')]
@@ -54,6 +56,7 @@ class LmsReportPDF(models.AbstractModel):
 class LmsXlsxReport(models.AbstractModel):
     _name = 'report.taps_lms.lms_xlsx_report'
     _inherit = 'report.report_xlsx.abstract'
+    _description = 'LMS xlsx'
 
     def generate_xlsx_report(self, workbook, data, partners):
         domain = [('state', '!=', 'cancel')]

@@ -242,19 +242,30 @@ class HRISReportPDF(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
             
         domain.append(('active', 'in',(False,True)))
         
@@ -296,19 +307,30 @@ class HRISReportPDF2(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
             
         domain.append(('active', 'in',(False,True)))       
         
@@ -353,19 +375,30 @@ class HRISReportPDF3(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
             
         domain.append(('active', 'in',(False,True)))
         
@@ -411,19 +444,30 @@ class HRISReportPDF4(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
             
         domain.append(('active', 'in',(False,True)))
         
@@ -473,19 +517,30 @@ class HRISReportPDF5(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
             
         domain.append(('active', 'in',(False,True)))
         
@@ -531,19 +586,30 @@ class HRISReportPDF6(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
             
         domain.append(('active', 'in',(False,True)))
         
@@ -589,19 +655,30 @@ class HRISReportPDF7(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
             
         domain.append(('active', 'in',(False,True)))
         
@@ -647,38 +724,35 @@ class HRISReportPDF8(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
-#         if data.get('bank_id'):
-#             #str = re.sub("[^0-9]","",data.get('employee_id'))
-#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))        
          
             
         domain.append(('active', 'in',(False,True)))
-        
-        
            
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
-#         domains=[]
-#         if data.get('bank_id'):
-#             domains.append(('id', '=', data.get('bank_id')))
-#         bank = self.env['res.bank'].search(domains)
-        
-        #raise UserError((domains))
-
-#         for details in docs:
-#             bank_name = False
-#             for de in docs:
-#                 otTotal = otTotal + de.total
-       
         
         common_data=[]    
         common_data = [
@@ -714,19 +788,30 @@ class ACopeningReportPDF(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
-#         if data.get('bank_id'):
-#             #str = re.sub("[^0-9]","",data.get('employee_id'))
-#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))        
          
             
         domain.append(('active', 'in',(False,True)))
@@ -740,12 +825,6 @@ class ACopeningReportPDF(models.AbstractModel):
         bank = self.env['res.bank'].search(domains)
         
         #raise UserError((domains))
-
-#         for details in docs:
-#             bank_name = False
-#             for de in docs:
-#                 otTotal = otTotal + de.total
-        
         
         common_data=[]    
         common_data = [
@@ -791,9 +870,20 @@ class BirthCalenderReportPDF(models.AbstractModel):
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
-#         if data.get('bank_id'):
-#             #str = re.sub("[^0-9]","",data.get('employee_id'))
-#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
          
             
         domain.append(('active', 'in',(False,True)))
@@ -810,43 +900,14 @@ class BirthCalenderReportPDF(models.AbstractModel):
         birth_month = data.get('date_from')
         birth_month = birth_month[5:7]
         b_m = int(birth_month)
-        
-        
-        #raise UserError((em_list))
+
         query = """ select emp_id, name, to_char(birthday,'DD Month YYYY') AS birth_date, cast((AGE(current_date,birthday)) as varchar) as age_, mobile_phone, work_email from hr_employee where id in (""" + em_list + """) and EXTRACT(MONTH FROM birthday)=%s and 1=%s order by birth_date ASC """
         cr = self._cr
         cursor = self.env.cr
         cr.execute(query, (b_m, 1))
         birthday = cursor.fetchall()
-#         raise UserError((birthday, emplist[0]))
-#         raise UserError((birthday[1][1]))#
-#         for r in birthday:
-#             raise UserError((r[1]))
-        
-        #birthday = docs.search([('EXTRACT(MONTH FROM birthday)', '=', b_m)]).sorted(key = 'birthday', reverse=False)[:1]
-        #raise UserError((birthday.id))
-        
-#         lst_days = docs.search([('birthday', '>=', data.get('date_from')),('birthday', '<=', data.get('date_to'))]).sorted(key = 'birthday', reverse=True)[:1]
-        
-    
-#         domains=[]
-#         if data.get('bank_id'):
-#             domains.append(('id', '=', data.get('bank_id')))
-#         bank = self.env['res.bank'].search(domains)
-        
-        #raise UserError((domains))
-
-#         for details in docs:
-#             bank_name = False
-#             for de in docs:
-#                 otTotal = otTotal + de.total
         allemp_data = []
-        for details in docs:
-#             otTotal = 0
-#             for de in docs:
-#                 if details.id == de.employee_id.id:
-#                     otTotal = otTotal + de.otHours
-            
+        for details in docs:            
             emp_data = []
             emp_data = [
                 data.get('date_from'),
@@ -864,10 +925,7 @@ class BirthCalenderReportPDF(models.AbstractModel):
         common_data=[]    
         common_data = [
             data.get('report_type'),
-#             data.get('bank_id'),
             datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%B-%Y'),
-#            data.get('date_to'),
-            
         ]
         common_data.append(common_data)
         
@@ -918,9 +976,20 @@ class AnniversaryCalenderReportPDF(models.AbstractModel):
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
-#         if data.get('bank_id'):
-#             #str = re.sub("[^0-9]","",data.get('employee_id'))
-#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))        
          
             
         domain.append(('active', 'in',(False,True)))
@@ -945,35 +1014,8 @@ class AnniversaryCalenderReportPDF(models.AbstractModel):
         cursor = self.env.cr
         cr.execute(query, (m_m, 1))
         marriageday = cursor.fetchall()
-#         raise UserError((marriageday))
-#         raise UserError((birthday[1][1]))#
-#         for r in birthday:
-#             raise UserError((r[1]))
-        
-        #birthday = docs.search([('EXTRACT(MONTH FROM birthday)', '=', b_m)]).sorted(key = 'birthday', reverse=False)[:1]
-        #raise UserError((birthday.id))
-        
-#         lst_days = docs.search([('birthday', '>=', data.get('date_from')),('birthday', '<=', data.get('date_to'))]).sorted(key = 'birthday', reverse=True)[:1]
-        
-    
-#         domains=[]
-#         if data.get('bank_id'):
-#             domains.append(('id', '=', data.get('bank_id')))
-#         bank = self.env['res.bank'].search(domains)
-        
-        #raise UserError((domains))
-
-#         for details in docs:
-#             bank_name = False
-#             for de in docs:
-#                 otTotal = otTotal + de.total
         allemp_data = []
-        for details in docs:
-#             otTotal = 0
-#             for de in docs:
-#                 if details.id == de.employee_id.id:
-#                     otTotal = otTotal + de.otHours
-            
+        for details in docs:           
             emp_data = []
             emp_data = [
                 data.get('date_from'),
@@ -991,9 +1033,7 @@ class AnniversaryCalenderReportPDF(models.AbstractModel):
         common_data=[]    
         common_data = [
             data.get('report_type'),
-#             data.get('bank_id'),
             datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%B-%Y'),
-#            data.get('date_to'),
             
         ]
         common_data.append(common_data)
@@ -1045,9 +1085,20 @@ class PfReportPDF(models.AbstractModel):
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
-#         if data.get('bank_id'):
-#             #str = re.sub("[^0-9]","",data.get('employee_id'))
-#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))        
          
             
         domain.append(('active', 'in',(False,True)))
@@ -1061,11 +1112,6 @@ class PfReportPDF(models.AbstractModel):
         em_list = '0'
         for e in emplist:
             em_list = em_list + ',' + str(e)
-        #dfsdfj = datetime.datetime.now()
-#         marriage_month = data.get('date_from')
-#         marriage_month = marriage_month[5:7]
-#         m_m = int(marriage_month)
-        
         
         #raise UserError((em_list))
         query = """ select employee_id, year, to_char(salary_month, 'Month') AS month_, pf_amount,0 as basic_wage,salary_month
@@ -1077,35 +1123,8 @@ from hr_payslip where  employee_id in (""" + em_list + """) and pf_empe_wage>0 o
         cursor = self.env.cr
         cr.execute(query)
         pf = cursor.fetchall()
-#         raise UserError((query))
-#         raise UserError((birthday[1][1]))#
-#         for r in birthday:
-#             raise UserError((r[1]))
-        
-        #birthday = docs.search([('EXTRACT(MONTH FROM birthday)', '=', b_m)]).sorted(key = 'birthday', reverse=False)[:1]
-        #raise UserError((birthday.id))
-        
-#         lst_days = docs.search([('birthday', '>=', data.get('date_from')),('birthday', '<=', data.get('date_to'))]).sorted(key = 'birthday', reverse=True)[:1]
-        
-    
-#         domains=[]
-#         if data.get('bank_id'):
-#             domains.append(('id', '=', data.get('bank_id')))
-#         bank = self.env['res.bank'].search(domains)
-        
-        #raise UserError((domains))
-
-#         for details in docs:
-#             bank_name = False
-#             for de in docs:
-#                 otTotal = otTotal + de.total
         allemp_data = []
-        for details in docs:
-#             otTotal = 0
-#             for de in docs:
-#                 if details.id == de.employee_id.id:
-#                     otTotal = otTotal + de.otHours
-            
+        for details in docs:            
             emp_data = []
             emp_data = [
                 data.get('date_from'),
@@ -1128,9 +1147,7 @@ from hr_payslip where  employee_id in (""" + em_list + """) and pf_empe_wage>0 o
         common_data=[]
         common_data = [
             data.get('report_type'),
-#             data.get('bank_id'),
             datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%B-%Y'),
-#            data.get('date_to'),
             
         ]
         common_data.append(common_data)
@@ -1172,19 +1189,30 @@ class HRISReportPDF9(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
             
         domain.append(('active', 'in',(False,True)))
         
@@ -1228,38 +1256,35 @@ class HRISReportPDF10(models.AbstractModel):
 #             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
             domain.append(('department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
-#         if data.get('bank_id'):
-#             #str = re.sub("[^0-9]","",data.get('employee_id'))
-#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))        
          
             
         domain.append(('active', 'in',(False,True)))
-        
-        
            
-        docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
-#         domains=[]
-#         if data.get('bank_id'):
-#             domains.append(('id', '=', data.get('bank_id')))
-#         bank = self.env['res.bank'].search(domains)
-        
-        #raise UserError((domains))
-
-#         for details in docs:
-#             bank_name = False
-#             for de in docs:
-#                 otTotal = otTotal + de.total
-       
+        docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)       
         
         common_data=[]    
         common_data = [
@@ -1304,9 +1329,9 @@ class HRISReportPDF11(models.AbstractModel):
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('id', '=', data.get('employee_id')))
-        # if data.get('bank_id'):
-        #     #str = re.sub("[^0-9]","",data.get('employee_id'))
-        #     domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
         if data.get('employee_type'):
             if data.get('employee_type')=='staff':
                 domain.append(('category_ids.id', 'in',(15,21,31)))
@@ -1318,23 +1343,13 @@ class HRISReportPDF11(models.AbstractModel):
                 domain.append(('category_ids.id', 'in',(26,44,47)))
             if data.get('employee_type')=='cworker':
                 domain.append(('category_ids.id', 'in',(25,42,43)))
-
-
-        
             
         domain.append(('active', 'in',(False,True)))
+        
         docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
-        
-        
-        
-        
-
-        
         common_data=[]    
         common_data = [
             data.get('report_type'),
-            
-#             otTotal,
             datetime.datetime.strptime(data.get('date_from'), '%Y-%m-%d').strftime('%d-%m-%Y'),
             data.get('date_to'),
         ]
@@ -1359,8 +1374,4 @@ class HRISReportPDF11(models.AbstractModel):
             'doc_model': 'hr.employee',
             'docs': docs,
             'category' : heading_type,
-            
-            
-            
-#             'alldays': all_datelist
         }

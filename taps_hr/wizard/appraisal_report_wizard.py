@@ -70,17 +70,17 @@ class HeadwisePDFReport(models.TransientModel):
         current_year = datetime.today().year
         year_options = []
         
-        for year in range(current_year - 1, current_year + 2):
+        for year in range(current_year - 1, current_year + 1):
             year_str = str(year)
             next_year = str(year+1)
             year_label = f'{year_str}-{next_year[2:]}'
-            year_options.append((year_str, year_label))
+            year_options.append((next_year, year_label))
         return year_options     
 
     @staticmethod
     def _get_default_year():
         current_year = datetime.today().year
-        return str(current_year)     
+        return str(current_year+1)     
     
     @api.depends('employee_id', 'holiday_type')
     def _compute_department_id(self):

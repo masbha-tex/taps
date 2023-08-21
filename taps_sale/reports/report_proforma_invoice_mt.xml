@@ -330,7 +330,7 @@
 							</t>
 							<t t-set="total_quantity" t-value="0"/>
 							<t t-foreach="o.order_line" t-as="line">
-								<t t-if="(line.product_template_id.generic_name != 'MOULD CHARGE') and (line.product_template_id.generic_name != 'DOCUMENTATION CHARGE')">
+								<t t-if="(line.product_template_id.generic_name != 'MOULD') and (line.product_template_id.generic_name != 'DOCUMENTATION CHARGE')">
 									<table class="table table-sm  o_main_table p-0 m-0" style="page-break-inside:avoid; table-layout:fixed">
 										<tbody>
 											<tr>
@@ -462,7 +462,7 @@
 										</tbody>
 									</table>
 								</t>
-								<t t-if="line.product_template_id.generic_name == 'MOULD CHARGE' or line.product_template_id.generic_name == 'DOCUMENTATION CHARGE'">
+								<t t-if="line.product_template_id.generic_name == 'MOULD' or line.product_template_id.generic_name == 'DOCUMENTATION CHARGE'">
 									<table class="table table-sm  o_main_table p-0 m-0" style="page-break-inside:avoid; table-layout:fixed">
 										<tr>
 											<td colspan="2">

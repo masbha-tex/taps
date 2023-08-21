@@ -20,13 +20,16 @@ from werkzeug.urls import url_encode
 SIZE_BACK_ORDER_NUMERING = 3
 
 
-
-class SaleOrder(models.Model):
-    _name = "operation.lot"
-    #_inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
-    _description = "Operation Lot"
-    #_order = 'date_order desc, id desc'
+class ProcessSequence(models.Model):
+    _name = "process.sequence"
+    _description = "Sequence of Manufacturing Process"
+    _order = 'id asc'
     _check_company_auto = True
+
+    item = fields.Char(string='Item', store=True, readonly=True)
+    sequence = fields.Integer(string='Sequence', store=True, readonly=True)
+    process = fields.Char(string='Process', store=True, readonly=True)
+    work_center = fields.Many2one('mrp.workcenter', string='Work Center', store=True, readonly=True)
 
     
 

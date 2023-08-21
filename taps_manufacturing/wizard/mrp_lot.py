@@ -37,7 +37,7 @@ class ManufacturingLot(models.TransientModel):
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_ids")
         
-        operation = self.env["operation.details"].browse(active_id)
+        operation = self.env[""+active_model+""].browse(active_id)
         res["item"] = operation[0].fg_categ_type
         
         res["shade_finish"] = operation[0].shade + operation[0].finish

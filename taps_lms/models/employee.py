@@ -3,8 +3,9 @@ from odoo import models, fields, api
 
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
+    _description = 'Hr Employee'
 
-    instructor = fields.Boolean('Facilitator', default=False)
+    # instructor = fields.Boolean('Facilitator', default=False)
     session_ids = fields.Many2many('lms.session', string="Attended Training Sessions", compute='_compute_session_ids', store=True)
 
     def _compute_session_ids(self):
@@ -14,5 +15,5 @@ class HrEmployee(models.Model):
 class HrEmployeePublic(models.Model):
     _inherit = 'hr.employee.public'
 
-    instructor = fields.Boolean(readonly=True)
-    session_ids = fields.Many2many(readonly=True)
+    # instructor = fields.Boolean(readonly=True)
+    session_ids = fields.Many2many( 'lms.session', readonly=True)
