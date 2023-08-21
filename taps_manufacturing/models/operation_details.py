@@ -45,7 +45,7 @@ class OperationDetails(models.Model):
     date_order = fields.Datetime(string='Order Date', related='oa_id.date_order', readonly=True)
     action_date = fields.Datetime(string='Action Date', readonly=True)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
-    #buyer_name = fields.Many2one('sale.buyer', related='oa_id.buyer_name', string='Buyer', readonly=True)
+    buyer_name = fields.Char(string='Buyer', readonly=True)
     
     slidercodesfg = fields.Char(string='Slider Code', store=True, readonly=True)
     finish = fields.Char(string='Finish', store=True, readonly=True)
@@ -149,6 +149,7 @@ class OperationDetails(models.Model):
                                         'sale_order_line':operation.sale_order_line,
                                         'parent_id':ope_id,
                                         'oa_id':operation.oa_id.id,
+                                        'buyer_name':operation.buyer_name,
                                         'product_template_id':operation.product_template_id.id,
                                         'action_date':datetime.now(),
                                         'shade':operation.shade,
@@ -197,11 +198,13 @@ class OperationDetails(models.Model):
         
         operation = self.env["operation.details"].browse(mo_ids)
         ope = operation.update({'action_date':manuf_date,'done_qty':operation.done_qty + qty})
+        
         if operation.parent_id:
             parent_id = operation.parent_id
             while (parent_id):
-                operation_p = self.env["operation.details"].browse(parent_id.id)
-                ope = operation_p.update({'done_qty':operation_p.done_qty + qty})
+                if mo_ids != parent_id.id:
+                    operation_p = self.env["operation.details"].browse(parent_id.id)
+                    ope = operation_p.update({'done_qty':operation_p.done_qty + qty})
                 parent_id = parent_id.parent_id
 
         if operation.next_operation == 'Assembly Qc':
@@ -249,31 +252,68 @@ class OperationDetails(models.Model):
                                 'done_qty':qty
                                 })
 
+    
     @api.onchange('uotput_qty')
     def _output(self):
         for out in self:
             done_qty = out.done_qty + out.uotput_qty
-            # raise UserError((done_qty))
-            opera = out.update({'action_date':datetime.now(),'done_qty':done_qty})
-            operation = self.env["operation.details"].browse(self.id)
-            ope = operation.create({'mrp_lines':out.mrp_lines,
+            out.done_qty = done_qty
+            
+            #operation = self.env["operation.details"].browse(mo_ids)
+            #ope = operation.update({'action_date':manuf_date,'done_qty':operation.done_qty + qty})
+            
+            if out.parent_id:
+                parent_id = out.parent_id
+                while (parent_id):
+                    if out.parent_id != parent_id.id:
+                        operation_p = self.env["operation.details"].browse(parent_id.id)
+                        ope = operation_p.update({'done_qty':operation_p.done_qty + qty})
+                    parent_id = parent_id.parent_id
+    
+            if out.next_operation == 'Assembly Qc':
+                mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
+                mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + qty})
+                mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
+                mrp_all_oa = mrp_oa_data.update({'oa_total_balance':mrp_oa_data.oa_total_balance - qty})
+                #oa_total_balance
+                
+            next = None
+            w_center = out.work_center.id
+            if out.next_operation in('Slider Assembly Output','Painting Output','Plating Output'):
+                next = 'Assembly'
+                
+            process_flow = self.env["process.sequence"].search([]) #('item','=',self.fg_categ_type.name)
+            cur_process = process_flow.filtered(lambda pr: pr.item == out.fg_categ_type.name and pr.process == out.next_operation)
+            if cur_process:
+                next_process = process_flow.filtered(lambda pr: pr.item == out.fg_categ_type.name and pr.sequence == cur_process.sequence + 1)
+                if next_process:
+                    next = next_process.process
+                    w_center = next_process.work_center.id
+                else:
+                    next = 'Done'
+
+            # operation = self.env["operation.details"].browse(self.id)
+            ope = out.create({'mrp_lines':out.mrp_lines,
                                     'sale_lines':out.sale_lines,
                                     'mrp_line':out.mrp_line,
                                     'sale_order_line':out.sale_order_line,
                                     'parent_id':out.id,
                                     'oa_id':out.oa_id.id,
+                                    'buyer_name':out.buyer_name,
                                     'product_template_id':out.product_template_id.id,
                                     'action_date':datetime.now(),
                                     'shade':out.shade,
                                     'finish':out.finish,
                                     'slidercodesfg':out.slidercodesfg,
+                                    'top':operation.top,
+                                    'bottom':operation.bottom,
+                                    'pinbox':operation.pinbox,
                                     'operation_of':'output',
-                                    'work_center':out.work_center.id,
+                                    'work_center':w_center,
                                     'operation_by':out.work_center.name,
                                     'based_on':'Lot Code',
-                                    'next_operation':'dyeqc',
-                                    'qty':out.uotput_qty,
-                                    'uotput_qty':0
+                                    'next_operation':next,
+                                    'qty':out.uotput_qty
                                     })
 
 

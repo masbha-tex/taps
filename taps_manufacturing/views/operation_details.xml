@@ -30,7 +30,7 @@
                     <!-- <button name="button_createlot" type="object" string="Create Lot"/> -->
                     <!-- <button name="button_output" type="object" string="Output"/> -->
                 </header>
-                <field name="code"/>
+                <field name="code" readonly="1"/>
                 <field name="mrp_lines" invisible="1"/>
                 <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>
@@ -50,7 +50,7 @@
                 <field name="based_on" readonly="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1"/>
-                <field name="done_qty" readonly="1"/>
+                <field name="done_qty" readonly="1" force_save="1"/>
                 <field name="balance_qty"/>
                 <field name="uotput_qty"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>

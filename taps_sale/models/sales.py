@@ -992,7 +992,7 @@ class SaleOrderLine(models.Model):
     c_part = fields.Text(string='C Part', store=True)
     d_part = fields.Text(string='D Part', store=True)
     finish_ref = fields.Text(string='Finish Ref', store=True)
-    product_code = fields.Text(string='Product Code', compute='_compute_product_code',store=True)
+    product_code = fields.Text(string='Product Code', compute='_compute_product_code',inverse='_inverse_compute_product_code',store=True)
     shape = fields.Text(string='Shape', store=True)
     nailmat = fields.Text(string='Nail Material / Type / Shape / Size', store=True)
     nailcap = fields.Text(string='Nail Cap Logo', store=True)
@@ -1016,8 +1016,8 @@ class SaleOrderLine(models.Model):
     mold_set = fields.Char(string='Mold Set')
     # weight_per_gross = fields.Float(string='Weight/Gross',compute='_compute_weight_per_gross', inverse='_inverse_compute_weight_per_gross',store=True)
 
-    # def _inverse_compute_weight_per_gross(self):
-    #     pass
+    def _inverse_compute_product_code(self):
+        pass
         
     # @api.depends('product_template_id','sizemm','dimension','product_uom_qty')
     # def _compute_weight_per_gross(self):

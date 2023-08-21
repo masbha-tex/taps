@@ -74,15 +74,15 @@ class RetentionMatrix(models.Model):
         povalue = 0
 
         result = {
-            'retention_low_low': [],
-            'retention_low_medium': [],
-            'retention_low_high': [],
-            'retention_medium_low': [],
-            'retention_medium_medium': [],
-            'retention_medium_high': [],
-            'retention_high_low': [],
-            'retention_high_medium': [],
-            'retention_high_high': []
+            'retention_low_low': '',
+            'retention_low_medium': '',
+            'retention_low_high': '',
+            'retention_medium_low': '',
+            'retention_medium_medium': '',
+            'retention_medium_high': '',
+            'retention_high_low': '',
+            'retention_high_medium': '',
+            'retention_high_high': ''
         }
         retention_low_low = self.env['retention.matrix'].search([('impact', '=', '1'), ('risk', '=', '1')])
         retention_low_medium = self.env['retention.matrix'].search([('impact', '=', '2'), ('risk', '=', '1')])
@@ -96,55 +96,25 @@ class RetentionMatrix(models.Model):
         
         retention_record=0
         
-        for retention_record in retention_low_low:
-            result['retention_low_low'].append(retention_record.employee_id.display_name)
+        result['retention_low_low'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_low_low])
         
-        result['retention_low_low'] = '<br/>'.join(result['retention_low_low'])
-        
-        for retention_record in retention_low_medium:
-            result['retention_low_medium'].append(retention_record.employee_id.display_name)
-        
-        result['retention_low_medium'] = '<br/>'.join(result['retention_low_medium'])
 
-        for retention_record in retention_low_high:
-            result['retention_low_high'].append(retention_record.employee_id.display_name)
-        
-        result['retention_low_high'] = '<br/>'.join(result['retention_low_high'])
-        
-        for retention_record in retention_medium_low:
-            result['retention_medium_low'].append(retention_record.employee_id.display_name)
-        
-        result['retention_medium_low'] = '<br/>'.join(result['retention_medium_low'])
+        result['retention_low_medium'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_low_medium])
 
-        for retention_record in retention_medium_medium:
-            result['retention_medium_medium'].append(retention_record.employee_id.display_name)
+        result['retention_low_high'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_low_high])
+        # raise UserError((result['retention_low_high']))
         
-        result['retention_medium_medium'] = '<br/>'.join(result['retention_medium_medium'])
+        result['retention_medium_low'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_medium_low])
         
-        for retention_record in retention_medium_high:
-            result['retention_medium_high'].append(retention_record.employee_id.display_name)
+        result['retention_medium_medium'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_medium_medium])
         
-        result['retention_medium_high'] = '<br/>'.join(result['retention_medium_high'])
-
-        for retention_record in retention_high_low:
-            result['retention_high_low'].append(retention_record.employee_id.display_name)
+        result['retention_medium_high'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_medium_high])
         
-        result['retention_high_low'] = '<br/>'.join(result['retention_high_low'])
+        result['retention_high_low'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_high_low])
         
-        for retention_record in retention_high_medium:
-            result['retention_high_medium'].append(retention_record.employee_id.display_name)
+        result['retention_high_medium'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_high_medium])
         
-        result['retention_high_medium'] = '<br/>'.join(result['retention_high_medium'])
-
-        for retention_record in retention_high_high:
-            result['retention_high_high'].append(retention_record.employee_id.display_name)
-        
-        result['retention_high_high'] = '<br/>'.join(result['retention_high_high'])
-        
-       
-
-        
-        
+        result['retention_high_high'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_high_high])
 
 
 
