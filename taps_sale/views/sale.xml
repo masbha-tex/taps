@@ -132,8 +132,8 @@
                     <field name="style" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
                     <field name="gmt" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
                     <field name="mold_set" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
-                    <!-- <field name="weight_per_gross" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" /> -->
-					<field name="shade"  attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}" options="{'color_field': 'color'}"/>
+                    <field name="weight_per_gross" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+					<field name="shade"  attrs="{'column_invisible':[('parent.company_id', 'in', (2,3,4))]}" options="{'color_field': 'color'}"/>
                     
                     <field name="color" attrs="{'column_invisible':[('parent.company_id', 'in',(2,3,4))]}" widget="color_picker"/>
                     

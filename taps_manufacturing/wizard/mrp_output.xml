@@ -14,7 +14,8 @@
                 <form string="Manufacturing Output">
                     <group>
                         <group>
-                            <field name="lot_code" widget="lot_code_enter"/>
+                            <field name="lot_code" class="o_field_char"/>
+                            <!-- widget="lot_code_enter"  -->
                             <field name="oa_id"/>
                             <field name="item"/>
                             <field name="shade"/>

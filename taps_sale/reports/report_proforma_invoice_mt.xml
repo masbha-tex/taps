@@ -309,6 +309,7 @@
 							<t t-set="d_part" t-value="0"/>
 							<t t-set="style" t-value="0"/>
 							<t t-set="gmt" t-value="0"/>
+							<t t-set="weight" t-value="0"/>
 							<t t-set="mm" t-value="0"/>
 							<t t-set="dis" t-value="0"/>
 							<t t-foreach="o.order_line" t-as="line">
@@ -320,6 +321,11 @@
 								<t t-if="gmt == 0">
 									<t t-if="line.gmt and line.gmt != 'N/A'">
 										<t t-set="gmt" t-value="1"/>
+									</t>
+								</t>
+								<t t-if="weight == 0">
+									<t t-if="line.weight_per_gross and line.weight_per_gross != 'N/A'">
+										<t t-set="weight" t-value="1"/>
 									</t>
 								</t>
 								<t t-if="dis == 0">
@@ -349,6 +355,9 @@
 												</t>
 												<t t-if="gmt == 1">
 													<th rowspan="1">GMT</th>
+												</t>
+												<t t-if="weight == 1">
+													<th rowspan="1">WEIGHT(KG)/GRS</th>
 												</t>
 											</tr>
 											<tr>
@@ -421,6 +430,13 @@
 													<td rowspan="3">
 														<strong>
 															<span t-esc="line.gmt"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="weight==1">
+													<td rowspan="3">
+														<strong>
+															<span t-esc="line.weight_per_gross"/>
 														</strong>
 													</td>
 												</t>
@@ -511,6 +527,18 @@
 													<td/>
 												</t>
 											</t>
+											<t t-if="weight == 1">
+												<t t-if="line.weight_per_gross">
+													<td style="text-align: right ! important">
+														<strong>
+															<span t-esc="line.weight_per_gross"/>
+														</strong>
+													</td>
+												</t>
+												<t t-if="not line.weight_per_gross">
+													<td/>
+												</t>
+											</t>
 										</tr>
 									</table>
 								</t>
@@ -537,6 +565,9 @@
 										<td style="border-right:hidden ! important;border-bottom:hidden ! important;"/>
 									</t>
 									<t t-if="gmt == 1">
+										<td style="border-right:hidden ! important;border-bottom:hidden ! important;"/>
+									</t>
+									<t t-if="weight == 1">
 										<td style="border-right:hidden ! important;border-bottom:hidden ! important;"/>
 									</t>
 								</tr>

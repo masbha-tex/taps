@@ -1014,27 +1014,95 @@ class SaleOrderLine(models.Model):
     dimension = fields.Char(string='Dimension')
     line_code = fields.Char(string='Line Code', compute="_compute_line_code")
     mold_set = fields.Char(string='Mold Set')
-    # weight_per_gross = fields.Float(string='Weight/Gross',compute='_compute_weight_per_gross', inverse='_inverse_compute_weight_per_gross',store=True)
+    weight_per_gross = fields.Float(string='Weight/Gross', compute='_compute_weight_per_gross', inverse='_inverse_compute_weight_per_gross', store=True)
 
     def _inverse_compute_product_code(self):
         pass
+
+    def _inverse_compute_weight_per_gross(self):
+        pass
         
-    # @api.depends('product_template_id','sizemm','dimension','product_uom_qty')
-    # def _compute_weight_per_gross(self):
-    #     for rec in self:
-    #         if rec.product_template_id:
+    @api.depends('product_template_id','sizemm','product_uom_qty')
+    def _compute_weight_per_gross(self):
+        for rec in self:
+            if rec.product_template_id:
+                if 'SHANK' in rec.product_template_id.name and 'HOLE SHANK' not in rec.product_template_id.name:
+                    if rec.sizemm == '17':
+                        rec.weight_per_gross = (.24*rec.product_uom_qty)
+                    elif rec.sizemm == '18':
+                        rec.weight_per_gross = (.27*rec.product_uom_qty)
+                    elif rec.sizemm == '19':
+                        rec.weight_per_gross = (.30*rec.product_uom_qty)
+                    elif rec.sizemm == '20':
+                        rec.weight_per_gross = (.32*rec.product_uom_qty)
+                    else:
+                        rec.weight_per_gross = 0.0
+                elif 'HOLE SHANK' in rec.product_template_id.name:
+                    if rec.sizemm == '17':
+                        rec.weight_per_gross = (.24*rec.product_uom_qty)
+                    elif rec.sizemm == '18':
+                        rec.weight_per_gross = (.26*rec.product_uom_qty)
+                    elif rec.sizemm == '19':
+                        rec.weight_per_gross = (.38*rec.product_uom_qty)
+                    elif rec.sizemm == '20':
+                        rec.weight_per_gross = (.30*rec.product_uom_qty)
+                    else:
+                        rec.weight_per_gross = 0.0
+
+                elif 'SNAP' in rec.product_template_id.name:
+                    if rec.sizemm == '10':
+                        rec.weight_per_gross = (.28*rec.product_uom_qty)
+                    elif rec.sizemm == '12' or rec.sizemm == '13':
+                        rec.weight_per_gross = (.33*rec.product_uom_qty)
+                    elif rec.sizemm == '14':
+                        rec.weight_per_gross = (.36*rec.product_uom_qty)
+                    elif rec.sizemm == '15':
+                        rec.weight_per_gross = (.37*rec.product_uom_qty)
+                    elif rec.sizemm == '17':
+                        rec.weight_per_gross = (.39*rec.product_uom_qty)
+                    elif rec.sizemm == '18':
+                        rec.weight_per_gross = (.430*rec.product_uom_qty)
+                    else:
+                        rec.weight_per_gross = 0.0
+
+                elif 'EYELET' in rec.product_template_id.name:
+                    if rec.sizemm == '9':
+                        rec.weight_per_gross = (.052*rec.product_uom_qty)
+                    elif rec.sizemm == '10':
+                        rec.weight_per_gross = (.054*rec.product_uom_qty)
+                    elif rec.sizemm == '11':
+                        rec.weight_per_gross = (.057*rec.product_uom_qty)
+                    elif rec.sizemm == '12':
+                        rec.weight_per_gross = (.062*rec.product_uom_qty)
+                    elif rec.sizemm == '13':
+                        rec.weight_per_gross = (.067*rec.product_uom_qty)
+                    elif rec.sizemm == '14':
+                        rec.weight_per_gross = (.090*rec.product_uom_qty)
+                    elif rec.sizemm == '15':
+                        rec.weight_per_gross = (.100*rec.product_uom_qty)
+                    elif rec.sizemm == '16':
+                        rec.weight_per_gross = (.110*rec.product_uom_qty)
+                    elif rec.sizemm == '20':
+                        rec.weight_per_gross = (.180*rec.product_uom_qty)
+                    else:
+                        rec.weight_per_gross = 0.0
+
+                elif 'RIVET' in rec.product_template_id.name:
+                    if rec.sizemm == '6':
+                        rec.weight_per_gross = (.065*rec.product_uom_qty)
+                    elif rec.sizemm == '7':
+                        rec.weight_per_gross = (.072*rec.product_uom_qty)
+                    elif rec.sizemm == '8':
+                        rec.weight_per_gross = (.080*rec.product_uom_qty)
+                    elif rec.sizemm == '9':
+                        rec.weight_per_gross = (.090*rec.product_uom_qty)
+                    elif rec.sizemm == '10':
+                        rec.weight_per_gross = (.095*rec.product_uom_qty)
+                    else:
+                        rec.weight_per_gross = 0.0
                 
-    #             if 'SHANK' in rec.product_template_id.name :
-    #                 if rec.sizemm == '17':
-    #                     rec.weight_per_gross = (.24*rec.product_uom_qty)
-    #                 if rec.sizemm == '18':
-    #                     rec.weight_per_gross = (.27*rec.product_uom_qty)
-    #                 if rec.sizemm == '19':
-    #                     rec.weight_per_gross = (.30*rec.product_uom_qty)
-    #                 if rec.sizemm == '20':
-    #                     rec.weight_per_gross = (.32*rec.product_uom_qty)
-    #                 else:
-    #                     rec.weight_per_gross = 0.0
+                else:
+                    rec.weight_per_gross = 0.0
                 
     
     

@@ -16,6 +16,11 @@ odoo.define('taps_manufacturing.FieldChar', function (require) {
                     args: [value]
                 }).then(function (result) {
                     
+                    // var currentDatetime = new Date();
+                    // var formattedDatetime = currentDatetime.toISOString();
+                    // $('#manuf_date').val(formattedDatetime);
+                    // this.$('#manuf_date').val(formattedDatetime);
+                    // alert(result[1]);
                 });
             }
         },
@@ -26,6 +31,45 @@ odoo.define('taps_manufacturing.FieldChar', function (require) {
     return LotCodeEnterField;
 });
 
+
+// odoo.define('taps_manufacturing.assets_backend', function (require) {
+//     "use strict";
+
+//     var FormController = require('web.FormController');
+
+//     FormController.include({
+//         on_attach_callback: function () {
+//             this._super.apply(this, arguments);
+//             var self = this;
+
+//             // Attach keydown event listener to the lot_code field
+//             this.$('.o_field_char').on('keydown', function (event) {
+//                 if (event.keyCode === 13) {  // Enter key
+//                     event.preventDefault();
+//                     var inputValue = $(this).val();
+//                     self._updateFields(inputValue);
+//                     self._simulateTabKey($(this));
+//                 }
+//             });
+//         },
+
+//         _updateFields: function (value) {
+//             // Update other fields based on the entered value
+//             this.$('.o_field_char[name="oa_id"]').val(value);
+//             this.$('.o_field_char[name="item"]').val(value);
+//             this.$('.o_field_char[name="shade"]').val(value);
+//             this.$('.o_field_char[name="finish"]').val(value);
+//             this.$('.o_field_char[name="output_of"]').val(value);
+//         },
+
+//         _simulateTabKey: function ($inputField) {
+//             var $nextField = $inputField.closest('.o_field_widget').next('.o_field_widget');
+//             if ($nextField.length) {
+//                 $nextField.find('input, textarea').focus();
+//             }
+//         },
+//     });
+// });
 
 
 

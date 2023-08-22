@@ -93,6 +93,7 @@ class OperationDetails(models.Model):
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     # lot_ids = fields.Many2one('operation.details', compute='get_lots', string='Lots', copy=False, store=True)
+    
     def get_balance(self):
         for s in self:
             s.balance_qty = s.qty - s.done_qty
@@ -221,19 +222,19 @@ class OperationDetails(models.Model):
             next = 'Assembly'
             
         process_flow = self.env["process.sequence"].search([]) #('item','=',self.fg_categ_type.name)
-        cur_process = process_flow.filtered(lambda pr: pr.item == operation.fg_categ_type.name and pr.process == operation.next_operation)
+        cur_process = process_flow.filtered(lambda pr: pr.item == operation.fg_categ_type and pr.process == operation.next_operation)
         if cur_process:
-            next_process = process_flow.filtered(lambda pr: pr.item == operation.fg_categ_type.name and pr.sequence == cur_process.sequence + 1)
+            next_process = process_flow.filtered(lambda pr: pr.item == operation.fg_categ_type and pr.sequence == cur_process.sequence + 1)
             if next_process:
                 next = next_process.process
                 w_center = next_process.work_center.id
             else:
                 next = 'Done'
 
-        ope = operation.create({'mrp_lines':ope.mrp_lines,
-                                'sale_lines':ope.sale_lines,
-                                'mrp_line':ope.mrp_line,
-                                'sale_order_line':ope.sale_order_line,
+        ope = operation.create({'mrp_lines':operation.mrp_lines,
+                                'sale_lines':operation.sale_lines,
+                                'mrp_line':operation.mrp_line,
+                                'sale_order_line':operation.sale_order_line,
                                 'parent_id':mo_ids,
                                 'oa_id':operation.oa_id.id,
                                 'product_template_id':operation.product_template_id.id,
@@ -249,14 +250,14 @@ class OperationDetails(models.Model):
                                 'operation_by':operation.work_center.name,
                                 'based_on':'Lot Code',
                                 'next_operation':next,
-                                'qty':qty,
-                                'done_qty':qty
+                                'qty':qty
                                 })
 
     
     @api.onchange('uotput_qty')
     def _output(self):
         for out in self:
+            
             done_qty = out.done_qty + out.uotput_qty
             out.done_qty = done_qty
             
@@ -268,14 +269,14 @@ class OperationDetails(models.Model):
                 while (parent_id):
                     if out.parent_id != parent_id.id:
                         operation_p = self.env["operation.details"].browse(parent_id.id)
-                        ope = operation_p.update({'done_qty':operation_p.done_qty + qty})
+                        ope = operation_p.update({'done_qty':operation_p.done_qty + out.uotput_qty})
                     parent_id = parent_id.parent_id
     
             if out.next_operation == 'Assembly Qc':
                 mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
-                mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + qty})
+                mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + out.uotput_qty})
                 mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
-                mrp_all_oa = mrp_oa_data.update({'oa_total_balance':mrp_oa_data.oa_total_balance - qty})
+                mrp_all_oa = mrp_oa_data.update({'oa_total_balance':mrp_oa_data.oa_total_balance - out.uotput_qty})
                 #oa_total_balance
                 
             next = None
@@ -284,15 +285,14 @@ class OperationDetails(models.Model):
                 next = 'Assembly'
                 
             process_flow = self.env["process.sequence"].search([]) #('item','=',self.fg_categ_type.name)
-            cur_process = process_flow.filtered(lambda pr: pr.item == out.fg_categ_type.name and pr.process == out.next_operation)
+            cur_process = process_flow.filtered(lambda pr: pr.item == out.fg_categ_type and pr.process == out.next_operation)
             if cur_process:
-                next_process = process_flow.filtered(lambda pr: pr.item == out.fg_categ_type.name and pr.sequence == cur_process.sequence + 1)
+                next_process = process_flow.filtered(lambda pr: pr.item == out.fg_categ_type and pr.sequence == cur_process.sequence + 1)
                 if next_process:
                     next = next_process.process
                     w_center = next_process.work_center.id
                 else:
                     next = 'Done'
-
             # operation = self.env["operation.details"].browse(self.id)
             ope = out.create({'mrp_lines':out.mrp_lines,
                                     'sale_lines':out.sale_lines,
@@ -306,9 +306,9 @@ class OperationDetails(models.Model):
                                     'shade':out.shade,
                                     'finish':out.finish,
                                     'slidercodesfg':out.slidercodesfg,
-                                    'top':operation.top,
-                                    'bottom':operation.bottom,
-                                    'pinbox':operation.pinbox,
+                                    'top':out.top,
+                                    'bottom':out.bottom,
+                                    'pinbox':out.pinbox,
                                     'operation_of':'output',
                                     'work_center':w_center,
                                     'operation_by':out.work_center.name,

@@ -113,18 +113,10 @@
                 <field name="employee_id"/>
                 <field name="impact"/>
                 <field name="risk"/>
-                
-                <!-- <searchpanel>
-                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" class="o_searchpanel_field" data-field="company_id"/>
-                    <field name="department_id" icon="fa-users" enable_counters="1" class="o_searchpanel_field" data-field="department_id"/>
-                </searchpanel> -->
+
                 <searchpanel>
-                    <group name="group_company" string="Company">
-                        <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" class="o_searchpanel_field" data-field="company_id"/>
-                    </group>
-                    <group name="group_department" string="Department">
-                        <field name="department_id" icon="fa-users" enable_counters="1" class="o_searchpanel_field" data-field="department_id"/>
-                    </group>
+                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" class="o_search_panel_field" context="{'default_company_id': company_id}"/>
+                    <field name="department_id" icon="fa-users" enable_counters="1" class="o_search_panel_field"/>
                 </searchpanel>                
             </search>
         </field>

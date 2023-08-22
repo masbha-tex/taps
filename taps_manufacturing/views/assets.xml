@@ -8,7 +8,7 @@
                 <link rel="stylesheet"
                       href="/taps_manufacturing/static/src/scss/list_view.scss"/>
                 <script src="/taps_manufacturing/static/src/js/list_renderer.js"/>
-                <script type="text/javascript" src="/taps_manufacturing/static/src/js/lont_code_enter.js"/>
+                <script type="text/javascript" src="/taps_manufacturing/static/src/js/lot_code_enter.js"/>
             </xpath>
         </template>
 

@@ -254,8 +254,15 @@ class ManufacturingOrder(models.Model):
         #action["context"] = {"default_item_qty": 20,"default_material_qty": 12}
         return action
     
-    def _ids2str(self):
-        return ','.join([str(i) for i in sorted(self.ids)])
+    def _ids2str(self,field_name):
+        field_data = getattr(self, field_name)
+        if field_name == "ids":
+            return ','.join([str(i) for i in sorted(field_data)])
+        else:
+            return ','.join([str(i.id) for i in sorted(field_data)])
+            
+
+      
     
     def set_plan(self,mo_ids,plan_for_id,plan_for,material,plan_start,plan_end,plan_qty,machine_line):
         production = self.env["manufacturing.order"].browse(mo_ids)
@@ -368,10 +375,10 @@ class ManufacturingOrder(models.Model):
                     next_operation = None
                     mrp_line = sal_line = None
                     if material == 'tape':
-                        next_operation = 'dye'
+                        next_operation = 'Dyeing'
                         p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.shade == p[1])
-                        mrp_lines = p_q._ids2str()
-                        sale_lines = p_q.mapped('sale_order_line')
+                        mrp_lines = p_q._ids2str('ids')
+                        sale_lines = p_q._ids2str('sale_order_line')
                         if len(p_q) > 1:
                             qty = m.material_qty
                         else:
@@ -407,18 +414,17 @@ class ManufacturingOrder(models.Model):
                 mrp_line = sal_line = None
                 
                 if plan_for == 'Plating':
-                    next_operation = 'plating'
+                    next_operation = 'Plating'
                 if plan_for == 'Slider assembly':
-                    next_operation = 'slasemb'
+                    next_operation = 'Slider Assembly'
                 if plan_for == 'Painting':
-                    next_operation = 'paint'
+                    next_operation = 'Painting'
                 slider = top = bottom = pinbox = None
                 if material == 'slider':
                     p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.slidercodesfg == p[3])
                     slider = p[3]
-                    mrp_lines = p_q._ids2str()
-                    sale_lines = p_q.mapped('sale_order_line')
-                    
+                    mrp_lines = p_q._ids2str('ids')
+                    sale_lines = p_q._ids2str('sale_order_line')#.mapped('sale_order_line')
                     if len(p_q) == 1:
                         mrp_line = p_q.id
                         sal_line = p_q.sale_order_line
@@ -431,8 +437,8 @@ class ManufacturingOrder(models.Model):
                 elif material == 'top': #ptopfinish pbotomfinish ppinboxfinish
                     p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.ptopfinish == p[3])
                     top = p[3]
-                    mrp_lines = p_q._ids2str()
-                    sale_lines = p_q.mapped('sale_order_line')
+                    mrp_lines = p_q._ids2str('ids')
+                    sale_lines = p_q._ids2str('sale_order_line')
                     
                     if len(p_q) == 1:
                         mrp_line = p_q.id
@@ -441,8 +447,8 @@ class ManufacturingOrder(models.Model):
                 elif material == 'bottom':
                     p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.pbotomfinish == p[3])
                     bottom = p[3]
-                    mrp_lines = p_q._ids2str()
-                    sale_lines = p_q.mapped('sale_order_line')
+                    mrp_lines = p_q._ids2str('ids')
+                    sale_lines = p_q._ids2str('sale_order_line')
                     if len(p_q) == 1:
                         mrp_line = p_q.id
                         sal_line = p_q.sale_order_line
@@ -450,8 +456,8 @@ class ManufacturingOrder(models.Model):
                 elif material == 'pinbox':
                     p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.ppinboxfinish == p[3])
                     pinbox = p[3]
-                    mrp_lines = p_q._ids2str()
-                    sale_lines = p_q.mapped('sale_order_line')
+                    mrp_lines = p_q._ids2str('ids')
+                    sale_lines = p_q._ids2str('sale_order_line')
                     if len(p_q) == 1:
                         mrp_line = p_q.id
                         sal_line = p_q.sale_order_line
@@ -463,8 +469,8 @@ class ManufacturingOrder(models.Model):
                                                              'mrp_line':mrp_line,
                                                              'sale_order_line':sal_line,
                                                              'oa_id':p[0],
-                                                             'buyer_name':p_q.buyer_name,
-                                                             'product_template_id':p_q.product_template_id.id,
+                                                             'buyer_name':p_q[0].buyer_name,
+                                                             'product_template_id':p_q[0].product_template_id.id,
                                                              'action_date':plan_start,
                                                              'shade':p[1],
                                                              'finish':p[2],

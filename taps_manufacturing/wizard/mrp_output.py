@@ -57,18 +57,36 @@ class ManufacturingOutput(models.TransientModel):
         #production.set_operation(mo_ids,self.plan_for,self.machine_line)
         return
     
-    # @api.model
+    @api.model
     def onevent_lot(self,code=None):
         production = self.env['operation.details'].search([('code', '=', code),('code', '!=', None)])
+        values = [production[0].oa_id.id,production[0].fg_categ_type,production[0].shade,production[0].finish,
+                  production[0].work_center.name]
+        return values
+
+        # if production:
+        #     self.lot_code = production[0].code
+        #     self.oa_id = production[0].oa_id.id
+        #     self.item = production[0].fg_categ_type
+        #     self.shade = production[0].shade
+        #     self.finish = production[0].finish
+        #     self.output_of = production[0].work_center.name    
+
+    @api.model
+    def get_production_details(self, code=None):
+        production = self.env['operation.details'].search([('code', '=', code), ('code', '!=', None)])
+        values = {}
         if production:
-            self.lot_code = production[0].code
-            self.oa_id = production[0].oa_id.id
-            self.item = production[0].fg_categ_type
-            self.shade = production[0].shade
-            self.finish = production[0].finish
-            self.output_of = production[0].work_center.name
-        return True
-    
+            values['lot_code'] = production[0].code
+            values['oa_id'] = production[0].oa_id.id
+            values['item'] = production[0].fg_categ_type
+            values['shade'] = production[0].shade
+            values['finish'] = production[0].finish
+            values['output_of'] = production[0].work_center.name
+        return values
+
+
+
     
     @api.onchange('lot_code')
     def on_lot_code_change(self):

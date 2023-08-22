@@ -50,7 +50,7 @@ class RetentionMatrix(models.Model):
     @staticmethod
     def _get_default_year():
         current_year = datetime.date.today().year
-        return str(current_year)
+        return str(current_year+1) 
 
     @api.depends('employee_id')
     def _compute_job_id(self):
@@ -65,11 +65,11 @@ class RetentionMatrix(models.Model):
         return super(RetentionMatrix, self).create(vals)
 
     @api.model
-    def retrieve_dashboard(self, companyId=None, departmentId=None):
+    def retrieve_dashboard(self, companyId, departmentId):
         """ This function returns the values to populate the custom dashboard in
             the purchase order views.
         """
-        raise UserError((self.env.context.get('active_ids'),companyId, departmentId))
+        # raise UserError((self.env.context.get('default_company_id'),companyId, departmentId))
         self.check_access_rights('read')
 
         result = {

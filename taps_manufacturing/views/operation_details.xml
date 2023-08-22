@@ -7,6 +7,7 @@
             <search>
                 <field name="oa_id"/>
                 <field name="code"/>
+                <!-- <field name="work_center"/> -->
                 <filter string="Ready" name="ready" domain="[('operation_of','=','plan')]"/>
                 <filter string="Pending" name="progress" domain="[('operation_of','=','lot')]"/>
                 <filter string="Done" name="quality" domain="[('operation_of','=','output')]"/>
