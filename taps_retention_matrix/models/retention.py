@@ -21,17 +21,17 @@ class RetentionMatrix(models.Model):
     risk = fields.Selection(selection=[
         ('1', 'Low-Risk'),
         ('2', 'Medium-Risk'),
-        ('3', 'High-Risk')], string="Risk",  help="How likely is it that this employee will leave?" )
+        ('3', 'High-Risk')], string="Risk", default='1',  help="How likely is it that this employee will leave?" )
     impact = fields.Selection(selection=[
         ('1', 'Low-Impact'),
         ('2', 'Medium-Impact'),
-        ('3', 'High-Impact')], string="Impact",  help="What would be the impact of this employee leaving?" ) 
+        ('3', 'High-Impact')], string="Impact", default='1', help="What would be the impact of this employee leaving?" ) 
     year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(),  store=True, required=True)
     quarter = fields.Selection(selection=[
         ('q1', 'Q1'),
         ('q2', 'Q2'),
         ('q3', 'Q3'),
-        ('q4', 'Q4'),], string="Quarter")
+        ('q4', 'Q4'),], string="Quarter", default='q1')
     date_from = fields.Date('Date From', required=True, index=True,default=fields.Date.context_today)
     date_to = fields.Date('Date To', required=True, index=True, default=fields.Date.context_today)
 
@@ -40,11 +40,11 @@ class RetentionMatrix(models.Model):
         current_year = datetime.date.today().year
         year_options = []
         
-        for year in range(current_year - 1, current_year + 2):
+        for year in range(current_year - 1, current_year + 1):
             year_str = str(year)
             next_year = str(year+1)
             year_label = f'{year_str}-{next_year[2:]}'
-            year_options.append((year_str, year_label))
+            year_options.append((next_year, year_label))
         return year_options
 
     @staticmethod
@@ -95,25 +95,23 @@ class RetentionMatrix(models.Model):
         
         retention_record=0
         
-        result['retention_low_low'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_low_low])
+        result['retention_low_low'] = len(retention_low_low)
         
+        result['retention_low_medium'] = len(retention_low_medium)
 
-        result['retention_low_medium'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_low_medium])
-
-        result['retention_low_high'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_low_high])
-        # raise UserError((result['retention_low_high']))
+        result['retention_low_high'] = len(retention_low_high)
         
-        result['retention_medium_low'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_medium_low])
+        result['retention_medium_low'] = len(retention_medium_low)
         
-        result['retention_medium_medium'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_medium_medium])
+        result['retention_medium_medium'] = len(retention_medium_medium)
         
-        result['retention_medium_high'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_medium_high])
+        result['retention_medium_high'] = len(retention_medium_high)
         
-        result['retention_high_low'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_high_low])
+        result['retention_high_low'] = len(retention_high_low)
         
-        result['retention_high_medium'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_high_medium])
+        result['retention_high_medium'] = len(retention_high_medium)
         
-        result['retention_high_high'] = "\n".join([retention_record.employee_id.display_name for retention_record in retention_high_high])
+        result['retention_high_high'] = len(retention_high_high)
 
 
 

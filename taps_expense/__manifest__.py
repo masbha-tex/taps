@@ -24,6 +24,7 @@
         'views/assets.xml',
         'security/ir.model.access.csv',
         'views/hr_emp_imprest.xml',
+        'views/expense_budget_dashboard.xml',
         'views/hr_expense.xml',
         'data/generate_expense_code.xml',
         'data/generate_imprest_code.xml',

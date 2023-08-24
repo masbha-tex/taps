@@ -4,7 +4,7 @@ from odoo.exceptions import UserError
 
 class SessionReport(models.AbstractModel):
     _name = 'report.taps_lms.report_session_view'
-    _description = 'Retention Matrix'
+    _description = 'Report Session View'
 
     @api.model
     def _get_report_values(self, docids, data=None):

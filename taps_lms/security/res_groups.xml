@@ -6,29 +6,18 @@
             <field name="sequence">100</field>
         </record>
         <record id="group_user_lms" model="res.groups">
-            <field name="name">User</field>
+            <field name="name">Users</field>
             <field name="category_id" ref="base.module_category_generic_modules_lms"/>
              <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>        
     
         <record id="group_manager_lms" model="res.groups">
-            <field name="name">Manager</field>
+            <field name="name">Adimistrators</field>
             <field name="category_id" ref="base.module_category_generic_modules_lms"/>
             <field name="implied_ids" eval="[(4, ref('taps_lms.group_user_lms'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>            
         </record>
-    
-        <record id="group_course_approval" model="res.groups">
-            <field name="name">Approval</field>
-            <field name="category_id" ref="base.module_category_generic_modules_lms"/>
-            <field name="implied_ids" eval="[(4, ref('taps_lms.group_manager_lms'))]"/>
-            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>   
-        </record>
-        <record id="group_stock_multi_lms" model="res.groups">
-            <field name="name">Manage Multiple</field>
-            <field name="category_id" ref="base.module_category_generic_modules_lms"/>
-            <field name="implied_ids" eval="[(4, ref('taps_lms.group_manager_lms'))]"/>
-        </record>        
+       
 
         <record id="only_responsible_can_modify" model="ir.rule">
             <field name="name">Only Responsible can modify Course</field>

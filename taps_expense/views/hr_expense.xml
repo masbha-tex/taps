@@ -287,7 +287,7 @@
     <record id="expense_action_dashboard_list" model="ir.actions.act_window">
         <field name="name">Expense</field>
         <field name="res_model">hr.expense.sheet</field>
-        <field name="view_mode">form,tree,kanban,pivot,graph,calendar,activity</field>
+        <field name="view_mode">form,tree,kanban,pivot,graph,activity</field>
         <field name="view_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
         <field name="search_view_id" ref="hr_expense.hr_expense_sheet_view_search"/>
         <field name="target">main</field>

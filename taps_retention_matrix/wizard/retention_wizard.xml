@@ -1,19 +1,20 @@
-<!-- <?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?> 
 <odoo>
 
-    <record model="ir.ui.view" id="hris_pdf_report_form_view">
-        <field name="name">hris.pdf.report.form.view</field>
-        <field name="model">hris.pdf.report</field>
+    <record model="ir.ui.view" id="retention_matrix_pdf_report_form_view">
+        <field name="name">retention.matrix.pdf.report.form.view</field>
+        <field name="model">retention.matrix.pdf.report</field>
         <field name="arch" type="xml">
-            <form string="HRIS Report">
+            <form string="Retention Report">
                 <group>
                     <group>
                         <field name="report_type" string="Report Type"/>
-                        <field name="date_from"/>
-                        <field name="date_to"/>                         
+                        <!-- <field name="date_from"/>
+                        <field name="date_to"/>                          -->
+                        <field name="year"/> 
                     </group>
                     <group>
-                        <field name="types"/>
+                        <field name="quarter"/>
                         <field name="mode_type" string="Mode"/>
                         <field name="employee_id" attrs="{
                         'required': [('mode_type', '=', 'employee')],
@@ -35,7 +36,7 @@
                         'required': [('mode_type', '=', 'emptype')],
                         'invisible': [('mode_type', '!=','emptype')]
                         }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="bank_id"/>                         
+                        <!-- <field name="bank_id"/>                          -->
                     </group>
                 </group>
                 <footer>
@@ -47,20 +48,19 @@
         </field>
     </record>
     
-    <record id="hris_pdf_report" model="ir.actions.act_window">
-        <field name="name">HRIS Report</field>
-        <field name="res_model">hris.pdf.report</field>
+    <record id="retention_matrix_pdf_report" model="ir.actions.act_window">
+        <field name="name">Retention Matrix Report</field>
+        <field name="res_model">retention.matrix.pdf.report</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
     
-    <menuitem id="taps_hr.menu_employee_hris_report"
-              name="HRIS Report"
-              sequence="1"
-              action="hris_pdf_report"
-              parent="hr.hr_menu_hr_reports"
-              groups="hr.group_hr_user"/>
+    <menuitem
+            id="reporting_menu"
+            name="Reporting"
+            action="retention_matrix_pdf_report"
+            parent="taps_retention_matrix.main_retention_menu"
+            groups="taps_retention_matrix.group_user_retention"
+            sequence="10"/>
     
-    
-    
-</odoo> -->
+</odoo>

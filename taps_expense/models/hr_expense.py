@@ -457,7 +457,7 @@ class taps_expense_sheet(models.Model):
         """ This function returns the values to populate the custom dashboard in
             the purchase order views.
         """
-        # raise UserError(('efrrgrg'))
+        
         self.check_access_rights('read')
         povalue = 0
 
@@ -476,7 +476,7 @@ class taps_expense_sheet(models.Model):
             'due_amount': 0,#all_sent_rfqs
             'company_currency_symbol': self.env.company.currency_id.symbol
         }
-
+        
         one_week_ago = fields.Datetime.to_string(fields.Datetime.now().replace(day=1))# - relativedelta(days=7)
         # This query is brittle since it depends on the label values of a selection field
         # not changing, but we don't have a direct time tracker of when a state changes
@@ -491,6 +491,7 @@ class taps_expense_sheet(models.Model):
         
         po = self.env['hr.expense.sheet']
         result['hr_approvals'] = po.search_count([('state', '=', 'draft')])
+        
         result['my_to_send'] = 0
         result['accounts_approvals'] = po.search_count([('state', '=', 'submit')])
         result['my_waiting'] = 0
@@ -507,8 +508,8 @@ class taps_expense_sheet(models.Model):
             due = budgetalue-exvalue
         result['budget_value'] = format_amount(self.env, budgetalue, currency)
         result['expense_value'] = format_amount(self.env, exvalue, currency)
-        #format_amount(self.env, res[1] or 0, currency)
         result['expense_percent'] = percent
         result['due_amount'] = format_amount(self.env, due, currency)
-
+        
+        # raise UserError((result['hr_approvals']))
         return result

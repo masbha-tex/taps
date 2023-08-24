@@ -137,17 +137,11 @@
 
     <menuitem 
         id="main_retention_menu" 
-        name="Retention Matrix" 
-
+        name="Retention Matrix"
+        action="retention_list_action"
+        groups="taps_retention_matrix.group_user_retention"
         web_icon="taps_retention_matrix,static/description/icon.png"/>
-        
-        
-        
 
-    <menuitem id="retention_menu" name="Retention" sequence="1" parent="main_retention_menu"/>
-
-    
-    <menuitem id="reporting_menu" name="Reporting" parent="main_retention_menu" action="retention_list_action"/>
     
   </data>
 </odoo>

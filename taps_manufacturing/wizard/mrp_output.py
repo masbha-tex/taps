@@ -21,6 +21,7 @@ class ManufacturingOutput(models.TransientModel):
     _check_company_auto = True
     
     lot_code = fields.Char(string='Lot', readonly=False)
+    # enter_pressed = fields.Boolean(string='Enter Pressed', default=False)
     oa_id = fields.Many2one('sale.order', string='OA', readonly=True)
     item = fields.Text(string='Item', readonly=True)
     shade = fields.Text(string='Shade', readonly=True)
@@ -28,7 +29,7 @@ class ManufacturingOutput(models.TransientModel):
     sizein = fields.Text(string='Size (Inc)', readonly=True)
     sizecm = fields.Text(string='Size (Cm)', readonly=True)
     output_of = fields.Text(string='Production Of', readonly=True)
-    manuf_date = fields.Datetime(string='Production Date', required=True)
+    manuf_date = fields.Datetime(string='Production Date', required=False)
     qty = fields.Float(string='Qty', default=0.0, digits='Product Unit of Measure')
     
     # @api.model
@@ -89,7 +90,7 @@ class ManufacturingOutput(models.TransientModel):
 
     
     @api.onchange('lot_code')
-    def on_lot_code_change(self):
+    def _on_lot_code_change(self):
         production = self.env['operation.details'].search([('code', '=', self.lot_code),('code', '!=', None)])
         if production:
             self.lot_code = production[0].code

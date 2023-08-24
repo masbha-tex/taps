@@ -9,7 +9,7 @@
                     <group>
                         <field name="item"/>
                         <field name="shade_finish"/>
-                        <field name="requisition_for"/>
+                        <field name="work_center"/>
                         <field name="material_qty"/>
                     </group>
                 </group>
@@ -31,7 +31,7 @@
                 </group>
                 
                 <footer>
-                    <button name="done_mo_plan" string="Done" type="object" default_focus="1" class="oe_highlight"/>
+                    <button name="done_mo_requisition" string="Done" type="object" default_focus="1" class="oe_highlight"/>
                     <button string="Cancel" class="btn btn-secondary" special="cancel" />
                 </footer>
             </form>

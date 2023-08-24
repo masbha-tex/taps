@@ -152,11 +152,23 @@ class ManufacturingOrder(models.Model):
     diping_done = fields.Float(string='Dipping Output', readonly=False)
     assembly_done = fields.Float(string='Assembly Output', readonly=False)
     packing_done = fields.Float(string='Packing Output', readonly=False)
+    
     oa_total_qty = fields.Float(string='OA Total Qty', readonly=True)
     oa_total_balance = fields.Float(string='OA Balance', readonly=True, store=True)#, compute='_oa_balance'
     remarks = fields.Text(string='Remarks')
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     
+    
+    
+    @api.onchange('packing_done')
+    def _packing_output(self):
+        for out in self:
+            done_qty = out.done_qty + out.packing_done
+            out.done_qty = done_qty
+            manufac_ids = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
+            oa_bal = out.oa_total_balance - out.packing_done
+            manu = manufac_ids.update({'oa_total_balance':oa_bal})
+            
     def button_createlot(self):
         self.ensure_one()
         self._check_company()
@@ -261,15 +273,18 @@ class ManufacturingOrder(models.Model):
         else:
             return ','.join([str(i.id) for i in sorted(field_data)])
             
-
+    def _get_field(self,field_name):
+        field_data = getattr(self, field_name)
+        #raise UserError((field_name))
+        return field_data
       
     
     def set_plan(self,mo_ids,plan_for_id,plan_for,material,plan_start,plan_end,plan_qty,machine_line):
         production = self.env["manufacturing.order"].browse(mo_ids)
         m_qty = 0.00
         rest_pl_q = plan_qty
-        p_len = len(production)
-        dist_qty = plan_qty / p_len
+        # p_len = len(production)
+        # dist_qty = plan_qty / p_len
         
         addition = 0.00
         for p in production:
@@ -481,7 +496,7 @@ class ManufacturingOrder(models.Model):
                                                              'operation_of':'plan',
                                                              'work_center':plan_for_id,
                                                              'operation_by':'Planning',
-                                                             'based_on':'Finish',
+                                                             'based_on':material,
                                                              'next_operation':next_operation,
                                                              'qty':qty
                                                              })

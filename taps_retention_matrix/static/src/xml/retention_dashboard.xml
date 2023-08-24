@@ -31,30 +31,33 @@
                                   
                                     
                                     <t t-if="values['retention_low_low']">
-                                        <t t-set="string_to_output" t-value="values['retention_low_low'].split('\n')"/>
+                                        <!-- <t t-set="string_to_output" t-value="values['retention_low_low'].split('\n')"/>
                                         <t t-foreach="string_to_output" t-as="string_line">
                                             <span style="font-size:12px;" t-esc="string_line"/>
                                             <br/>
-                                        </t>
+                                        </t> -->
+                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_low']"/>
                                     </t>
                                     </td>
                                   
                                   <td align="left" style="background-color: #C5EDEC">
                                     <t t-if="values['retention_low_medium']">
-                                        <t t-set="string_to_output" t-value="values['retention_low_medium'].split('\n')"/>
+                                        <!-- <t t-set="string_to_output" t-value="values['retention_low_medium'].split('\n')"/>
                                         <t t-foreach="string_to_output" t-as="string_line">
                                             <span style="font-size:12px;" t-esc="string_line"/>
                                             <br/>
-                                        </t>
+                                        </t> -->
+                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_medium']"/>
                                     </t> 
                                   </td>
                                   <td align="left" style="background-color: #FFEBED">
                                     <t t-if="values['retention_low_high']">
-                                        <t t-set="string_to_output" t-value="values['retention_low_high'].split('\n')"/>
+                                        <!-- <t t-set="string_to_output" t-value="values['retention_low_high'].split('\n')"/>
                                         <t t-foreach="string_to_output" t-as="string_line">
                                             <span style="font-size:12px;" t-esc="string_line"/>
                                             <br/>
-                                        </t>
+                                        </t> -->
+                                        <span style="font-weight: bold;font-size:14px;" t-esc="values['retention_low_high']"/>
                                     </t> 
                                   </td>
                                   
@@ -63,29 +66,32 @@
                                   <th style="background-color: #E9FAFF;color: #31216B; vertical-align : middle">MEDIUM</th>
                                   <td align="left" style="background-color: #C5EDEC">
                                     <t t-if="values['retention_medium_low']">
-                                        <t t-set="string_to_output" t-value="values['retention_medium_low'].split('\n')"/>
+                                        <!-- <t t-set="string_to_output" t-value="values['retention_medium_low'].split('\n')"/>
                                         <t t-foreach="string_to_output" t-as="string_line">
                                             <span style="font-size:12px;" t-esc="string_line"/>
                                             <br/>
-                                        </t>
+                                        </t> -->
+                                        <span style="font-weight: bold;font-size:14px;" t-esc="values['retention_medium_low']"/>
                                     </t>
                                   </td>
                                   <td align="left" style="background-color: #FFEBED">
                                     <t t-if="values['retention_medium_medium']">
-                                        <t t-set="string_to_output" t-value="values['retention_medium_medium'].split('\n')"/>
+                                        <!-- <t t-set="string_to_output" t-value="values['retention_medium_medium'].split('\n')"/>
                                         <t t-foreach="string_to_output" t-as="string_line">
                                             <span style="font-size:12px;" t-esc="string_line"/>
                                             <br/>
-                                        </t>
+                                        </t> -->
+                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_medium_medium']"/>
                                     </t>
                                   </td>
                                   <td align="left" style="background-color: #FFD0D4">
                                     <t t-if="values['retention_medium_high']">
-                                        <t t-set="string_to_output" t-value="values['retention_medium_high'].split('\n')"/>
+                                        <!-- <t t-set="string_to_output" t-value="values['retention_medium_high'].split('\n')"/>
                                         <t t-foreach="string_to_output" t-as="string_line">
                                             <span style="font-size:12px;" t-esc="string_line"/>
                                             <br/>
-                                        </t>
+                                        </t> -->
+                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_medium_high']"/>
                                     </t>
                                   </td>
                                 </tr>
@@ -93,29 +99,32 @@
                                   <th style="vertical-align : middle; background-color: #E9FAFF;color: #31216B">HIGH</th>
                                   <td align="left" style="background-color: #FFEBED">
                                     <t t-if="values['retention_high_low']">
-                                        <t t-set="string_to_output" t-value="values['retention_high_low'].split('\n')"/>
+                                        <!-- <t t-set="string_to_output" t-value="values['retention_high_low'].split('\n')"/>
                                         <t t-foreach="string_to_output" t-as="string_line">
                                             <span style="font-size:12px;" t-esc="string_line"/>
                                             <br/>
-                                        </t>
+                                        </t> -->
+                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_high_low']"/>
                                     </t>
                                   </td>
                                   <td align="left" style="background-color: #FFD0D4">
                                     <t t-if="values['retention_high_medium']">
-                                        <t t-set="string_to_output" t-value="values['retention_high_medium'].split('\n')"/>
+                                        <!-- <t t-set="string_to_output" t-value="values['retention_high_medium'].split('\n')"/>
                                         <t t-foreach="string_to_output" t-as="string_line">
                                             <span style="font-size:12px;" t-esc="string_line"/>
                                             <br/>
-                                        </t>
+                                        </t> -->
+                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_high_medium']"/>
                                     </t>
                                   </td>
                                   <td align="left" style="background-color: #FFA1A1">
                                     <t t-if="values['retention_high_high']">
-                                        <t t-set="string_to_output" t-value="values['retention_high_high'].split('\n')"/>
+                                        <!-- <t t-set="string_to_output" t-value="values['retention_high_high'].split('\n')"/>
                                         <t t-foreach="string_to_output" t-as="string_line">
                                             <span style="font-size:12px;" t-esc="string_line"/>
                                             <br/>
-                                        </t>
+                                        </t> -->
+                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_high_high']"/>
                                     </t>
                                   </td>
                                 </tr>

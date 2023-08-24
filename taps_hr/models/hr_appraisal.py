@@ -5,7 +5,7 @@ import datetime
 import logging
 
 from dateutil.relativedelta import relativedelta
-
+from odoo import tools
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
@@ -106,7 +106,7 @@ class MeetingEventWizard(models.TransientModel):
     reminder = fields.Many2many('calendar.alarm',string='Reminders')
     location = fields.Char(string='Location')
     duration = fields.Float(string='Duration')
-    note = fields.Html()
+    note = fields.Text()
     # Add more fields if needed for your wizard
 
     def create_event_and_appraisal(self):
@@ -134,9 +134,9 @@ class MeetingEventWizard(models.TransientModel):
             'alarm_ids': self.reminder,
             'duration': self.duration,
             'location': self.location,
-            'description': f'{self.note}',
+            'description': self.note and tools.plaintext2html(self.note),
             'user_id': user_id,
-            'partner_ids': [(6, 0, combined_ids)],
+            'partner_ids': [(6, 0, combined_ids)], 
         }
         meeting = self.env['calendar.event'].create(event_vals)
         # self.activity_unlink(['mail.mail_activity_data_meeting', 'mail.mail_activity_data_todo'])

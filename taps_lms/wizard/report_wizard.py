@@ -8,7 +8,7 @@ class LmsPDFReport(models.TransientModel):
     date_from = fields.Date('Date from', required=True)
     date_to = fields.Date('Date to', required=True)
     course_ids = fields.Many2many('lms.course', string='Course')
-    responsible_id = fields.Many2one('res.users', 'Responsible')
+    responsible_id = fields.Many2one('res.users', 'Facilitator')
 
     # generate PDF report
     def action_print_report(self):
@@ -44,7 +44,7 @@ class LmsReportPDF(models.AbstractModel):
         responsible = self.env['res.users'].browse(data.get('responsible_id'))
         course_ids = self.env['lms.course'].browse(data.get('course_ids'))
         data.update({'responsbile': responsible.name})
-        data.update({'courses': ",".join([course.course_name for course in course_ids])})
+        data.update({'courses': ",".join([course.display_name for course in course_ids])})
         return {
             'doc_ids': docs.ids,
             'doc_model': 'lms.course',
@@ -91,7 +91,7 @@ class LmsXlsxReport(models.AbstractModel):
         row += 2
         for course in courses:
             if course.session_ids:
-                sheet.merge_range(f"A{row}:F{row}", course.course_name, bold)
+                sheet.merge_range(f"A{row}:F{row}", course.display_name, bold)
             for session in course.session_ids:
                 sheet.write(row, col, session.name)
                 sheet.write(row, col+1, session.start_date)

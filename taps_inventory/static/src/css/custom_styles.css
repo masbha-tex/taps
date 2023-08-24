@@ -1,0 +1,7 @@
+.tree .custom_name_field {
+    color: black; /* Default color */
+}
+
+.tree .o_data_row[data-rejected=True] .custom_name_field {
+    color: red; /* Change to your desired color */
+}

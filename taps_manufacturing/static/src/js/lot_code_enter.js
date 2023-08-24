@@ -32,6 +32,28 @@ odoo.define('taps_manufacturing.FieldChar', function (require) {
 });
 
 
+
+// odoo.define('taps_manufacturing.manufacturing_output', function (require) {
+//     "use strict";
+
+//     var FormController = require('web.FormController');
+
+//     FormController.include({
+//         _onFieldKeydown: function (ev) {
+//             this._super.apply(this, arguments);
+//             if (ev.which === 13) {  // Enter key
+//                 alert('sfefefe')
+//                 this.renderer.state.enter_pressed = true;
+//             }
+//         },
+//     });
+
+// });
+
+
+
+
+
 // odoo.define('taps_manufacturing.assets_backend', function (require) {
 //     "use strict";
 

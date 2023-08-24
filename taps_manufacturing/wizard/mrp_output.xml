@@ -14,7 +14,8 @@
                 <form string="Manufacturing Output">
                     <group>
                         <group>
-                            <field name="lot_code" class="o_field_char"/>
+                            <field name="lot_code" widget="lot_code_enter"/>
+                            <!-- <field name="enter_pressed" invisible="1"/> -->
                             <!-- widget="lot_code_enter"  -->
                             <field name="oa_id"/>
                             <field name="item"/>
@@ -34,7 +35,6 @@
                 </form>
             </field>
         </record>
-    
         
         <record id="action_mrp_output" model="ir.actions.act_window">
             <field name="name">Manufacturing Output</field>

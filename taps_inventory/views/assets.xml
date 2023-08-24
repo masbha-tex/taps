@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="assets_backend_inv" name="Assets Backend Mrp" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/taps_inventory/static/src/css/custom_name_field.css"/>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>
+
+
+<!-- <?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" name="Assets Backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/static/src/js/list_view_search.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo> -->

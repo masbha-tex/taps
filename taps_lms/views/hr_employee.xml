@@ -9,7 +9,15 @@
             <xpath expr="//notebook/page[1]" position="after">
                 <page string="Training Sessions">
                     <group>
-                        <field name="session_ids"/>
+                        <field name="session_ids">
+                            <tree>
+                                <field name="course_id"/>
+                                <field name="start_date"/>
+                                <field name="duration" widget="float_time" sum="Sum of Duration"/>
+                                <field name="seats"/>
+                                <field name="instructor_id" options="{'no_create':true, 'no_open':true}"/>
+                            </tree>
+                        </field>                        
                     </group>
                 </page>
             </xpath>

@@ -56,7 +56,7 @@
                                 <tr>
                                     <td colspan="6">
                                         <center>
-                                            <span t-field="course.course_name"/>
+                                            <span t-field="course.display_name"/>
                                         </center>
                                     </td>
                                 </tr>

@@ -5,4 +5,7 @@ course_read_all,course all,model_lms_course,base.group_user,1,0,0,0
 session_read_all,session all,model_lms_session,base.group_user,1,0,0,0
 access_lms_report,access_lms_wizard_report,model_lms_pdf_report,base.group_user,1,1,1,1
 access_lms_session_attendance,lms_session_attendance,model_lms_session_attendance,base.group_user,1,1,1,1
-access_lms_wizard,lms_wizard,model_lms_wizard,,1,1,1,1
+access_lms_wizard,lms_wizard,model_lms_wizard,taps_lms.group_user_lms,1,1,1,1
+access_lms_criteria,access_lms_criteria,model_lms_criteria,taps_lms.group_user_lms,1,1,1,1
+access_lms_title,access_lms_title,model_lms_title,taps_lms.group_user_lms,1,1,1,1
+access_lms_session_venue,access_lms_session_venue,model_lms_session_venue,taps_lms.group_user_lms,1,1,1,1

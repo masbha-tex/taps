@@ -36,7 +36,51 @@
                     <field name="qty_onhand" string="On Hand"/>
                 </xpath>
             </field>
-        </record>        
+        </record>
+
+        <record id="view_production_lot_custom_tree" model="ir.ui.view">
+            <field name="name">stock.production.lot.tree</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+            <field name="arch" type="xml">
+               <xpath expr="//tree" position="inside">
+                   <field name="name" decoration-bf="1" class="custom_name_field"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- <record id="view_production_lot_tree" model="ir.ui.view">
+            <field name="name">stock.picking.custom.tree</field>
+            <field name="model">stock.production.lot</field>
+            <field name="arch" type="xml">
+                <tree string="Lots/Serial Numbers" multi_edit="1">
+                    <field name="name" decoration-bf="1"/>
+                    <field name="ref" optional="show"/>
+                    <field name="product_id" readonly="1"/>
+                    <field name="create_date" optional="show"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record> -->
+
+        
+    <!-- <record id="view_production_lot_tree" model="ir.ui.view">
+        <field name="name">stock.production.lot.tree</field>
+        <field name="model">stock.production.lot</field>
+        <field name="arch" type="xml">
+            <tree string="Lots/Serial Numbers" multi_edit="1">
+                <field name="name" decoration-bf="1"/>
+                <field name="ref" optional="show"/>
+                <field name="product_id" readonly="1"/>
+                <field name="create_date" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+ -->
+
+
+        
         
     </data>
 </odoo>

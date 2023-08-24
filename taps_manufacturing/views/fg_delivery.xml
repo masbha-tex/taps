@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_mrp_order_search" model="ir.ui.view">
-        <field name="name">manufacturing.order.search</field>
+    <record id="view_mrp_fg_order_search" model="ir.ui.view">
+        <field name="name">manufacturing.order.fg.search</field>
         <field name="model">manufacturing.order</field>
         <field name="arch" type="xml">
             <search>
                 <field name="oa_id"/>
-                <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;=',0.0)]"/>
+                <filter string="Running Orders" name="running" domain="[('done_qty','&gt;=',0.0)]"/>
                 <separator/>
                 <filter string="Order Date" name="action_date_filter" date="date_order"/>
-                <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>
-                <filter string="Plan Date" name="action_plandate_filter" date="dyeing_plan"/>
+                <!-- <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>
+                <filter string="Plan Date" name="action_plandate_filter" date="dyeing_plan"/> -->
             </search>
         </field>
     </record>
-    <record id="view_manufacturing_tree" model="ir.ui.view">
-        <field name="name">manufacturing.order.tree</field>
+    <record id="view_manufacturing_fg_tree" model="ir.ui.view">
+        <field name="name">manufacturing.order.fg.tree</field>
         <field name="model">manufacturing.order</field>
         <field name="arch" type="xml" >
             <tree string="Manufacturing Order" create="false" delete ="false" editable="top"> 
@@ -32,14 +32,10 @@
                 <field name="buyer_name"/>
                 <field name="payment_term"/>
                 <field name="date_order"/>
-                <field name="validity_date"/>
-                <field name="lead_time"/>
                 <field name="product_id" invisible="1"/>
                 <field name="product_template_id"/>
                 <field name="fg_categ_type"/>
                 <field name="product_uom"/>
-                <field name="topbottom"/>
-                <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
                 <field name="sizein"/>

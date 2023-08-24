@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "taps_retention_matrix",
+    'name': "Retention Matrix",
 
-    'summary': """Create new module for Retention Heat matrix""",
+    'summary': """Created a new module for Retention Heat matrix""",
 
     'description': """
         It's for the Retention Heat map.
@@ -17,12 +17,19 @@
 
     # always loaded
     'data': [
+        'security/res_groups.xml',
         'security/ir.model.access.csv',
+        
         'data/ir_sequence.xml',
         'views/assets.xml',
         # 'views/templates.xml',
         'views/retention_matrix.xml',
         # 'views/reporting.xml',
+        'wizard/retention_wizard.xml',
+
+        'reports/paperformat.xml',        
+        'reports/report_action_menu.xml',
+        'reports/retention_matrix_report.xml',
     ],
     'qweb': [
         "static/src/xml/retention_dashboard.xml",

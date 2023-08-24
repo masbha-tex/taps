@@ -9,8 +9,8 @@ class Wizard(models.TransientModel):
         return self.env['lms.session'].browse(self._context.get('active_ids'))
 
     session_ids = fields.Many2many('lms.session',
-                                   string="Sessions", required=True, default=_default_sessions)
-    attendee_ids = fields.Many2many('hr.employee', string="Attendees")
+                                   string="Training Sessions", required=True, default=_default_sessions)
+    attendee_ids = fields.Many2many('hr.employee', string="Particpants")
 
     def subscribe(self):
         for session in self.session_ids:

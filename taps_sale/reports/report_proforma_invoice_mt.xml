@@ -429,7 +429,7 @@
 												<t t-if="gmt==1">
 													<td rowspan="3">
 														<strong>
-															<span t-esc="line.gmt"/>
+															<span t-esc="line.gmt" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</strong>
 													</td>
 												</t>

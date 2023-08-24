@@ -22,21 +22,25 @@ class ManufacturingPlan(models.TransientModel):
     
     item = fields.Text(string='Item', readonly=True)
     shade_finish = fields.Text(string='Shade / Finish', readonly=True)
-    requisition_for = fields.Selection([
-        ('dyeing', 'Dyeing'),
-        ('sliderplating', 'Slider Plating'),
-        ('topplating', 'Top Plating'),
-        ('bottomplating', 'Bottom Plating'),
-        ('pinboxplating', 'Pinbox Plating'),
-        ('painting', 'Painting'),
-        ('sliassembly', 'Slider Assembly')],
-        string='Requisition For')
+    work_center = fields.Many2one('mrp.workcenter', string='Requisition For')
+    # requisition_for = fields.Selection([
+    #     ('dyeing', 'Dyeing'),
+    #     ('sliderplating', 'Slider Plating'),
+    #     ('topplating', 'Top Plating'),
+    #     ('bottomplating', 'Bottom Plating'),
+    #     ('pinboxplating', 'Pinbox Plating'),
+    #     ('painting', 'Painting'),
+    #     ('sliassembly', 'Slider Assembly')],
+    #     string='Requisition For')
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
+    # work_center = fields.Many2one('mrp.workcenter', string='Requisition For') self.work_center.id
+
+    
     company_id = fields.Many2one(
         'res.company', 'Company',
         default=lambda self: self.env.company,
         index=True, required=True)
-    requisition_line = fields.One2many('mrp.requisition.line', 'requisition_id', readonly=False, string='Requisition Line',copy=True, auto_join=True)    
+    requisition_line = fields.One2many('mrp.requisition.line', 'requisition_id', readonly=False, string='Requisition Line',copy=True, auto_join=True)
     
 
     @api.model
@@ -44,9 +48,26 @@ class ManufacturingPlan(models.TransientModel):
         res = super().default_get(fields_list)
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_ids")
-        production = self.env["manufacturing.order"].browse(active_id)
+        if active_model == 'operation.details':
+            operation = self.env["operation.details"].browse(active_id)
+            in_len = len(operation)
+            i = 0
+            all_mrp_lines = ''
+            for op in operation:
+                if i == in_len-1:
+                    all_mrp_lines = all_mrp_lines + op.mrp_lines
+                else:
+                    all_mrp_lines = all_mrp_lines + op.mrp_lines + ','
+                i += 1
+            
+        
+        # all_mrp_lines = ','.join(all_mrp_lines)
+        all_mrp_lines_st = str(all_mrp_lines)
+        # raise UserError((all_mrp_lines))
+        mrp_ids = [int(id_str) for id_str in all_mrp_lines_st.split(',')]
+        production = self.env["manufacturing.order"].browse(mrp_ids)
         res["item"] = production[0].fg_categ_type
-        res["item_qty"] = sum(production.mapped('balance_qty'))
+        # res["item_qty"] = sum(production.mapped('balance_qty'))
         res["shade_finish"] = production[0].shade
         return res 
     
@@ -70,14 +91,11 @@ class ManufacturingPlan(models.TransientModel):
     #         self.material_qty = sum(production.mapped('slider_con'))
     #         self.shade_finish = production[0].finish
             
-    def done_mo_plan(self):
-        if  self.plan_qty > self.material_qty:
-            raise UserError(('Split quantity should not greterthen the base quantity'))
-            return
-        mo_ids = self.env.context.get("active_ids")
-        production = self.env["manufacturing.order"].browse(mo_ids)
-        return production.set_plan(mo_ids,self.plan_for,self.plan_start,self.plan_end,self.plan_qty)
-
+    def done_mo_requisition(self):
+        active_model = self.env.context.get("active_model")
+        ope_id = self.env.context.get("active_ids")
+        operation = self.env['operation.details'].browse(1)
+        return operation.set_requisition(self.company_id.id, active_model,ope_id,self.work_center.id,self.requisition_line)
 
 class MachineLine(models.TransientModel):
     _name = 'mrp.requisition.line'

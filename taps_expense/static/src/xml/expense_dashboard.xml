@@ -13,13 +13,13 @@
                         <td class="o_text">
                             <div>All Approvals</div>
                         </td>
-                        <td style="background-color:#255D83" class="o_main o_dashboard_action" title="HR Approvals" name="hr_expense.expense_action_dashboard" context='{"search_default_draft": true}'>
+                        <td style="background-color:#255D83" class="o_main o_dashboard_action" title="HR Approvals" name="taps_expense.expense_action_dashboard" context='{"search_default_draft": true}'>
                             <a href="#"><t t-esc="values['hr_approvals']"/><br/>HR</a>
                         </td>
-                        <td style="background-color:#774373"  class="o_main o_dashboard_action" title="Accounts Approvals" name="hr_expense.expense_action_dashboard" context='{"search_default_submitted": true}'>
+                        <td style="background-color:#774373"  class="o_main o_dashboard_action" title="Accounts Approvals" name="taps_expense.expense_action_dashboard" context='{"search_default_submitted": true}'>
                             <a href="#"><t t-esc="values['accounts_approvals']"/><br/>Accounts</a>
                         </td>
-                        <td style="background-color:#422466"  class="o_main o_dashboard_action" title="CEO Approvals" name="hr_expense.expense_action_dashboard" context='{"search_default_checked": true}'>
+                        <td style="background-color:#422466"  class="o_main o_dashboard_action" title="CEO Approvals" name="taps_expense.expense_action_dashboard" context='{"search_default_checked": true}'>
                             <a href="#"><t t-esc="values['ceo_approvals']"/><br/>CEO</a>
                         </td>
                     </tr>
@@ -29,13 +29,13 @@
                         <td class="o_text">
                             <div>My RFQs</div>
                         </td>
-                        <td class="o_main o_dashboard_action" title="My Draft" name="hr_expense.expense_action_dashboard" context='{"search_default_draft_rfqs": true}'>
+                        <td class="o_main o_dashboard_action" title="My Draft" name="taps_expense.expense_action_dashboard" context='{"search_default_draft_rfqs": true}'>
                             <a href="#"><t t-esc="values['my_to_send']"/></a>
                         </td>
-                        <td class="o_main o_dashboard_action" title="My Waiting" name="hr_expense.expense_action_dashboard" context='{"search_default_waiting_rfqs": true}'>
+                        <td class="o_main o_dashboard_action" title="My Waiting" name="taps_expense.expense_action_dashboard" context='{"search_default_waiting_rfqs": true}'>
                             <a href="#"><t t-esc="values['my_waiting']"/></a>
                         </td>
-                        <td class="o_main o_dashboard_action" title="My Late" name="hr_expense.expense_action_dashboard" context='{"search_default_late_rfqs": true}'>
+                        <td class="o_main o_dashboard_action" title="My Late" name="taps_expense.expense_action_dashboard" context='{"search_default_late_rfqs": true}'>
                             <a href="#"><t t-esc="values['my_late']"/></a>
                         </td>
                     </tr>
@@ -51,7 +51,7 @@
                         <td class="o_text">Budget Value (<t t-esc="values['company_currency_symbol']"/>)</td>
                         <td class="o_main o_dashboard_action"><a href="#"><span><t t-esc="values['budget_value']"/></span></a></td>
                         <td class="o_text">Consumed Value (<t t-esc="values['company_currency_symbol']"/>)</td>
-                        <td class="o_main o_dashboard_action" name="hr_expense.expense_action_dashboard" context='{"search_default_to_post": true, "search_default_approved": true, "search_default_ex_date_approve": true}'><a href="#"><span><t t-esc="values['expense_value']"/></span></a></td>
+                        <td class="o_main o_dashboard_action" name="taps_expense.expense_action_dashboard" context='{"search_default_to_post": true, "search_default_approved": true, "search_default_ex_date_approve": true}'><a href="#"><span><t t-esc="values['expense_value']"/></span></a></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,7 +59,7 @@
                         <td class="o_text">Consumed Percent (%)</td>
                         <td class="o_main o_dashboard_action" style="background-color:#E54F6D"><a href="#"><span><t t-esc="values['expense_percent']"/></span></a></td>
                         <td class="o_text">Due Value (<t t-esc="values['company_currency_symbol']"/>)</td>
-                        <td class="o_main o_dashboard_action"  name="hr_expense.expense_action_dashboard"><a href="#"><span><t t-esc="values['due_amount']"/></span></a></td>
+                        <td class="o_main o_dashboard_action"  name="taps_expense.expense_action_dashboard"><a href="#"><span><t t-esc="values['due_amount']"/></span></a></td>
                     </tr>
                 </tbody>
             </table></div>

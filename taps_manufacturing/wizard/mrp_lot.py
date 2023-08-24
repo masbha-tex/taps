@@ -42,17 +42,22 @@ class ManufacturingLot(models.TransientModel):
         
         res["shade_finish"] = operation[0].shade + operation[0].finish
         #res["size"] = operation[0].size
-        res["work_center"] = operation[0].work_center.id
-        res["material_qty"] = operation[0].qty
+        if active_model == 'manufacturing.order':
+            res["work_center"] = 3
+            res["material_qty"] = operation[0].product_uom_qty
+        else:
+            res["work_center"] = operation[0].work_center.id
+            res["material_qty"] = operation[0].qty
         return res 
             
     def done_mo_lot(self):
         # if  self.plan_qty > self.material_qty:
         #     raise UserError(('Split quantity should not greterthen the base quantity'))
         #     return
+        active_model = self.env.context.get("active_model")
         ope_id = self.env.context.get("active_id")
-        operation = self.env["operation.details"].browse(ope_id)
-        return operation.set_lot(ope_id,self.lot_line)
+        operation = self.env['operation.details'].browse(1)
+        return operation.set_lot(active_model,ope_id,self.lot_line)
 
 
 class LotLine(models.TransientModel):

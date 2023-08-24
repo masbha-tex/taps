@@ -6,14 +6,11 @@
         <field name="arch" type="xml">
             <search>
                 <field name="oa_id"/>
-                <field name="code"/>
-                <!-- <field name="work_center"/> -->
+                <field name="work_center"/>
                 <filter string="Ready" name="ready" domain="[('operation_of','=','plan')]"/>
                 <filter string="Pending" name="progress" domain="[('operation_of','=','lot')]"/>
                 <filter string="Done" name="quality" domain="[('operation_of','=','output')]"/>
-                <!-- <filter string="In Progress" name="progress" domain="[('state','=','progress')]"/> -->
-                <!-- <filter string="Done" name="quality" domain="[('operation_of','=', 'output'),('qty','!=', done_qty)]"/> -->
-                <!-- <filter string="Late" name="late" domain="[('date_planned_start','&lt;=',time.strftime('%%Y-%%m-%%d'))]"/> -->
+                <filter string="Requisitions" name="requisitions" domain="[('mr_req','=',True)]"/>
                 <separator/>
                 <filter string="Start Date" name="action_date_filter" date="action_date"/>
             </search>
@@ -40,16 +37,19 @@
                 <field name="date_order"/>
                 <field name="action_date"/>
                 <field name="partner_id"/>
+                <field name="parent_ids" invisible="1"/>
                 <field name="buyer_name"/>
                 <field name="fg_categ_type"/>
                 <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
-                <field name="work_center" invisible="1"/>
+                <field name="work_center"/>
                 <field name="operation_of" readonly="1"/>
                 <field name="operation_by" readonly="1"/>
                 <field name="based_on" readonly="1"/>
                 <field name="next_operation" invisible="1"/>
+                <field name="mr_req" readonly="1"/>
+                <field name="product_id" readonly="1"/>
                 <field name="qty" readonly="1"/>
                 <field name="done_qty" readonly="1" force_save="1"/>
                 <field name="balance_qty"/>

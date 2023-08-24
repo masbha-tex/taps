@@ -22,27 +22,130 @@
             <field name="name">lms.session.attendance.tree</field>
             <field name="model">lms.session.attendance</field>
             <field name="arch" type="xml">
-                <tree string="Mark Attendance" edit="1" editable="top">
+                <tree string="Mark Attendance" edit="0" editable="top" create="0">
                     <!-- <header>
                         <button name="action_open_barcode_scanner" icon="fa-barcode" string="Scan your ID Card" type="object" class="oe_highlight"/>
                     </header>   -->
                     <field name="attendee_id" options="{'no_create':true, 'no_open':true}"/>
                     <field name="attendance_date"/>
                     <field name="is_present"/>
+                    <field name="criteria_id"/>
+                    <field name="title_id"/>
+                    <field name="description_id"/>
+                    <field name="instructor_id"/>
                     <field name="session_name"/>
+                    <field name="start_date"/>                    
+                    <field name="duration" widget="float_time" sum="Sum of Duration"/>                    
                 </tree>
             </field>
+        </record>
+        <record model="ir.ui.view" id="lms_session_attendance_search_view">
+            <field name="name">lms.session.attendance.search</field>
+            <field name="model">lms.session.attendance</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="attendee_id"/>
+                    <field name="criteria_id"/>
+                    <field name="title_id"/>
+                    <field name="description_id"/>
+                    <field name="instructor_id"/>
+                    <field name="session_name"/>
+                    <field name="start_date"/>
+                    <field name="department_id"/>
+                    <field name="company_id"/>
+                    <filter name="filter_start_date" date="start_date"/>
+                    
+                    <group string="Group By">
+                        <filter name="by_company" string="Company" context="{'group_by': 'company_id'}"/>
+                        <filter name="by_department_id" string="Department" context="{'group_by': 'department_id'}"/>
+                        <filter name="by_attendee_id" string="Employee" context="{'group_by': 'attendee_id'}"/>
+                        <filter name="by_start_date" string="Training Date" context="{'group_by': 'start_date'}"/>
+                        <filter name="by_responsible" string="Facilitator" context="{'group_by': 'instructor_id'}"/>
+                        <filter name="by_criteria_id" string="Criteria" context="{'group_by': 'criteria_id'}"/>
+                        <filter name="by_title_ids" string="Title" context="{'group_by': 'title_id'}"/>
+                    </group>
+                    <searchpanel>
+                        <field name="company_id" enable_counters="1"/>
+                        <field name="department_id" enable_counters="1"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record> 
+    
+        <record id="lms_session_attendance_view_dashboard" model="ir.ui.view">
+            <field name="name">lms.session.attendance.view.dashboard</field>
+            <field name="model">lms.session.attendance</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <dashboard sample="1">
+                    <view type="graph" ref="taps_lms.lms_session_attendance_graph_view"/>
+                    <group>
+                        <group col="4">
+                            <aggregate name="session_id" string="Total Training" field="session_id"/>
+                            <aggregate name="attendee_id" string="Total Particpants" field="attendee_id"/>
+                            <aggregate name="instructor_id" string="Total Facilitator" field="instructor_id"/>
+                            <aggregate name="criteria_id" string="Total Criteria" field="criteria_id"/>
+                            <aggregate name="duration" string="Total Duration" field="duration" value_label="hours" widget="float_time"/>
+                            <aggregate name="title_id" string="Total Title" field="title_id"/>
+                        </group>
+    
+                        <group col="1">
+                            <widget name="pie_chart" title="Training Session" attrs="{'groupby': 'start_date'}"/>
+                        </group>
+    
+                    </group>
+                    <view type="pivot" ref="taps_lms.lms_session_attendance_view_pivot"/>
+                </dashboard>
+            </field>
+        </record>
+    
+
+    
+        <record model="ir.ui.view" id="lms_session_attendance_graph_view">
+            <field name="name">lms.session.attendance.graph</field>
+            <field name="model">lms.session.attendance</field>
+            <field name="arch" type="xml">
+                <graph string="LMS Graph Analysis" stacked="False" type="bar" sample="1" disable_linking="1">
+                    <field name="start_date" type="row"/>
+                    <field name="duration" type="measure"/>
+                </graph>
+            </field>
         </record>        
+        <record id="lms_session_attendance_view_pivot" model="ir.ui.view">
+            <field name="name">lms.session.attendance.view.pivot</field>
+            <field name="model">lms.session.attendance</field>
+            <field name="arch" type="xml">
+                <pivot sample="1">
+                    <field name="department_id" type="row"/>
+                    <field name="attendee_id" type="measure"/>
+                    <field name="criteria_id" type="measure"/>
+                    <field name="title_id" type="measure"/>
+                    <field name="instructor_id" type="measure"/>
+                    <field name="session_name" type="measure"/>
+                    <field name="duration" type="measure"/>
+                </pivot>
+            </field>
+        </record>          
 
         <!-- Action Window to Open Attendance Form -->
         <record model="ir.actions.act_window" id="action_mark_attendance">
             <field name="name">Mark Attendance</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">lms.session.attendance</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,pivot</field>
             <field name="target">new</field>
             <field name="context">{'default_session_id': active_id}</field>
         </record>
+        <record model="ir.actions.act_window" id="lms_dashboard_action">
+            <field name="name">Dashboard</field>
+            <field name="res_model">lms.session.attendance</field>
+            <field name="view_mode">dashboard,tree,form,pivot,graph</field>
+            <field name="context" eval="{'search_default_by_start_date': 1}"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Create the first attendance for training course
+                </p>
+            </field>
+        </record>        
         <!-- <record model="ir.actions.client" id="action_open_barcode_scanner">
             <field name="name">Mark Attendance</field>
             <field name="tag">taps_lms.barcode_scanner</field>
@@ -50,7 +153,7 @@
         <menuitem id="menu_lms_session" name="Barcode" parent="lms_menu" action="action_open_barcode_scanner"/> -->
         
         
-        <!-- <menuitem id="menu_session_attendance" name="Session Attendance" parent="lms_menu" action="action_session_attendance_form"/> -->
+        <menuitem id="menu_session_attendance" name="Dashboard" sequence="1" parent="lms_menu" action="lms_dashboard_action"/>
         
     </data>
 </odoo>

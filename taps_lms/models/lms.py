@@ -13,11 +13,12 @@ class Course(models.Model):
     _name = 'lms.course'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Training Courses'
-    _rec_name = 'course_name'
+    _rec_name = 'title_ids'
 
     name = fields.Char(string="Course Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
-    course_name = fields.Char(string='Title', required=True, translate=True, tracking=True)
-    description = fields.Text('Content', help='Add content description here...')
+    criteria_id = fields.Many2one('lms.criteria', readonly=True, string='Criteria') 
+    title_ids = fields.Many2one('lms.title', string='Title', readonly=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")       
+    description = fields.Text('Content', related="title_ids.description",help='Add content description here...')
     responsible_id = fields.Many2one('res.users', ondelete='set null', string="Responsible", index=True, tracking=True)
     session_ids = fields.One2many('lms.session', 'course_id', string="Sessions")
     state = fields.Selection([('draft', 'Draft'), ('submitted', 'Submitted'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancel', 'Cancel')
@@ -33,7 +34,7 @@ class Course(models.Model):
     def name_get(self):
         result = []
         for record in self:
-            name = f"[{record.name}] {record.course_name}"
+            name = f"[{record.name}] {record.title_ids.name}"
             result.append((record.id, name))
         return result
 
@@ -44,7 +45,7 @@ class Course(models.Model):
         if name:
             course_ids = self._search([('name', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
             if not course_ids:
-                course_ids = self._search([('course_name', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
+                course_ids = self._search([('title_ids', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
         else:
             course_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
         return course_ids #models.lazy_name_get(self.browse(course_ids).with_user(name_get_uid))
@@ -58,7 +59,7 @@ class Course(models.Model):
 
     def action_validate(self):
         for record in self:
-            logger.info(f"Course {record.course_name} state moved to In progress by {self.env.user.name}")
+            logger.info(f"Course {record.title_ids} state moved to In progress by {self.env.user.name}")
             record.write({'state': 'in_progress'})
             activity_id = self.env['mail.activity'].search([('res_id', '=', self.id), ('user_id', '=', self.env.user.id),
                                                             ('activity_type_id', '=', self.env.ref('taps_lms.mail_act_course_approval').id)])
@@ -81,36 +82,34 @@ class Course(models.Model):
 
     def action_cancel(self):
         for record in self:
-            logger.error(f"Course {record.course_name} state moved to Cancelled by {self.env.user.name}")
+            logger.error(f"Course {record.title_ids} state moved to Cancelled by {self.env.user.name}")
             record.write({'state': 'cancel'})
 
     def copy(self, default=None):
         default = dict(default or {})
 
         copied_count = self.search_count(
-            [(_('course_name', '=like', u"Copy of {}%").format(self.course_name))])
+            [(_('title_ids', '=like', u"Copy of {}%").format(self.title_ids))])
         if not copied_count:
-            new_name = u"Copy of {}".format(self.course_name)
+            new_name = u"Copy of {}".format(self.title_ids)
         else:
-            new_name = u"Copy of {} ({})".format(self.course_name, copied_count)
+            new_name = u"Copy of {} ({})".format(self.title_ids, copied_count)
 
-        default['course_name'] = new_name
+        default['title_ids'] = new_name
         return super(Course, self).copy(default)
 
     _sql_constraints = [
-        ('name_description_check',
-         'check (course_name != description)',
-         'The course name and description can not be same.'),
-
-        ('course_name_unique',
-         'unique(course_name)',
-         'Course name should be unique'),
+        ('title_ids_unique',
+         'unique(criteria_id,title_ids)',
+         'Criteria and Title name should be unique'),
     ]
 
 
 class Session(models.Model):
     _name = 'lms.session'
     _description = "Training Sessions"
+    _inherit = ['mail.thread']
+    _rec_name = 'course_id'    
 
     def get_default_duration(self):
         ICP = self.env['ir.config_parameter'].sudo()
@@ -122,12 +121,12 @@ class Session(models.Model):
         default_seats = ICP.get_param('taps_lms.session_allowed_seats')
         return default_seats
 
-    @api.onchange('course_id', 'instructor_id')
-    def _get_instructor_domain(self):
-        # raise UserError((self.course_id.responsible_id.partner_id.id))
-        return {'domain': {'instructor_id': [('user_id', '=', self.course_id.responsible_id.id)]}}
-
-    name = fields.Char(string="Venue", required=True)
+    # @api.onchange('course_id', 'instructor_id')
+    # def _get_instructor_domain(self):
+    #     # raise UserError((self.course_id.responsible_id.partner_id.id))
+    #     return {'domain': {'instructor_id': [('user_id', '=', self.course_id.responsible_id.id)]}}
+    code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
+    name = fields.Many2one('lms.session.venue', string='Venue')
     start_date = fields.Datetime(string="Plan Date",default=fields.datetime.today())
     duration = fields.Float(digits=(6, 2), help="Duration in hours", default=get_default_duration)
     end_date = fields.Datetime(string="End Date", store=True, compute='_get_end_date', inverse='_set_end_date')
@@ -135,7 +134,7 @@ class Session(models.Model):
     instructor_id = fields.Many2one('hr.employee', string="Facilitator")    
     country_id = fields.Many2one('res.country', related='instructor_id.country_id')
     course_id = fields.Many2one('lms.course', ondelete='cascade', string="Course", required=True)
-    attendee_ids = fields.Many2many('hr.employee', string="Attendees")
+    attendee_ids = fields.Many2many('hr.employee', string="Particpants")
     taken_seats = fields.Float(string="Taken seats", compute='_taken_seats')
     active = fields.Boolean(string='Active', default=True)
     attendees_count = fields.Integer(
@@ -143,16 +142,88 @@ class Session(models.Model):
     color = fields.Integer()
     email_sent = fields.Boolean('Email Sent', default=False)
     image_1920 = fields.Image("Image")
-    attendance_ids = fields.One2many('lms.session.attendance', 'session_id', string="Attendance")
+    attendance_ids = fields.One2many('lms.session.attendance', 'session_id', string="Particpants Attendance")
+
+    # def _query(self, fields='', from_clause='', outer=''):
+    #     select_ = '''
+    #         c.id as id,
+    #         c.id as contract_id,
+    #         e.id as employee_id,
+    #         e.company_id as company_id,
+    #         e.departure_reason as departure_reason,
+    #         e.department_id as department_id,
+    #         c.wage AS wage,
+    #         CASE WHEN serie = start.contract_start THEN 1 ELSE 0 END as count_new_employee,
+    #         CASE WHEN date_part('month', exit.contract_end) = date_part('month', serie) AND date_part('year', exit.contract_end) = date_part('year', serie) THEN 1 ELSE 0 END as count_employee_exit,
+    #         c.date_start,
+    #         c.date_end,
+    #         exit.contract_end as date_end_contract,
+    #         start.contract_start,
+    #         CASE
+    #             WHEN date_part('month', c.date_start) = date_part('month', serie) AND date_part('year', c.date_start) = date_part('year', serie)
+    #                 THEN (31 - LEAST(date_part('day', c.date_start), 30)) / 30
+    #             WHEN c.date_end IS NULL THEN 1
+    #             WHEN date_part('month', c.date_end) = date_part('month', serie) AND date_part('year', c.date_end) = date_part('year', serie)
+    #                 THEN (LEAST(date_part('day', c.date_end), 30) / 30)
+    #             ELSE 1 END as age_sum,
+    #         serie::DATE as date,
+    #         EXTRACT(EPOCH FROM serie)/2628028.8 AS start_date_months, -- 2628028.8 = 3600 * 24 * 30.417 (30.417 is the mean number of days in a month)
+    #         CASE
+    #             WHEN c.date_end IS NOT NULL AND date_part('month', c.date_end) = date_part('month', serie) AND date_part('year', c.date_end) = date_part('year', serie) THEN
+    #                 EXTRACT(EPOCH FROM (c.date_end))/2628028.8
+    #             ELSE
+    #                 EXTRACT(EPOCH FROM (date_trunc('month', serie) + interval '1 month' - interval '1 day'))/2628028.8
+    #             END AS end_date_months
+
+    #         %s
+    #     ''' % fields
+
+    #     from_ = """
+    #             (SELECT age(COALESCE(date_end, current_date), date_start) as age, * FROM hr_contract WHERE state != 'cancel') c
+    #             LEFT JOIN hr_employee e ON (e.id = c.employee_id)
+    #             LEFT JOIN (
+    #                 SELECT employee_id, contract_end
+    #                 FROM (SELECT employee_id, MAX(COALESCE(date_end, current_date)) as contract_end FROM hr_contract WHERE state != 'cancel' GROUP BY employee_id) c_end
+    #                 WHERE c_end.contract_end < current_date) exit on (exit.employee_id = c.employee_id)
+    #             LEFT JOIN (
+    #                 SELECT employee_id, MIN(date_start) as contract_start
+    #                 FROM hr_contract WHERE state != 'cancel'
+    #                 GROUP BY employee_id) start on (start.employee_id = c.employee_id)
+    #              %s
+    #             CROSS JOIN generate_series(c.date_start, (CASE WHEN c.date_end IS NULL THEN current_date + interval '1 year' ELSE (CASE WHEN date_part('day', c.date_end) < date_part('day', c.date_start) THEN c.date_end + interval '1 month' ELSE c.date_end END) END), interval '1 month') serie
+    #     """ % from_clause
+
+    #     return '(SELECT * %s FROM (SELECT %s FROM %s) in_query)' % (outer, select_, from_)
+
+    # def init(self):
+    #     tools.drop_view_if_exists(self.env.cr, self._table)
+    #     self.env.cr.execute("""CREATE or REPLACE VIEW %s as (%s)""" % (self._table, self._query()))    
     
-    # def action_open_barcode_scanner(self):
-    #     action = self.env.ref('taps_lms.action_barcode_scanner').read()[0]
-    #     # action['context'] = {
-    #     #     'active_id': self.id,
-    #     # }
-    #     context = dict(self.env.context, active_id=self.id)
-    #     action['context'] = context
-    #     return action
+    def name_get(self):
+        result = []
+        for record in self:
+            name = f"[{record.code}] {record.name.name}"
+            result.append((record.id, name))
+        return result
+    @api.model
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        if not args:
+            args = []
+        if name:
+            session_ids = self._search([('code', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
+            if not session_ids:
+                session_ids = self._search([('name', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
+        else:
+            session_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+        return session_ids #models.lazy_name_get(self.browse(course_ids).with_user(name_get_uid))
+        
+    @api.model
+    def create(self, vals):
+        if vals.get('code', _('New')) == _('New'):
+            plan_date = vals.get('start_date')
+            vals['code'] = self.env['ir.sequence'].next_by_code('lms.session', sequence_date=plan_date)
+        return super(Session, self).create(vals)    
+        
     def action_open_barcode_scanner(self):
         action = self.env.ref('taps_lms.action_barcode_scanner').read()
         _logger.info("Action Data: %s", action)
@@ -337,11 +408,20 @@ class Session(models.Model):
 class SessionAttendance(models.Model):
     _name = 'lms.session.attendance'
     _description = "Training Session Attendance"
+    _rec_name = 'attendee_id'      
 
-    session_id = fields.Many2one('lms.session', string="Session", required=True, ondelete='cascade')
-    attendee_id = fields.Many2one('hr.employee', string="Attendee", required=True)
+    attendee_id = fields.Many2one('hr.employee', string="Employee", required=True)
+    company_id = fields.Many2one(related='attendee_id.company_id', store=True)
+    department_id = fields.Many2one(related='attendee_id.department_id', store=True)
     attendance_date = fields.Datetime(string="Attendance Date", default=fields.datetime.today(), required=True)
     is_present = fields.Boolean(string="Is Present", default=True)
-    session_name = fields.Char(related='session_id.name')
+    session_id = fields.Many2one('lms.session', string="Session", required=True, ondelete='cascade')
+    criteria_id = fields.Many2one(related='session_id.course_id.criteria_id', store=True)
+    title_id = fields.Many2one(related='session_id.course_id.title_ids', store=True)
+    description_id = fields.Text(related='session_id.course_id.description', store=True)
+    instructor_id = fields.Many2one(related='session_id.instructor_id', store=True)    
+    session_name = fields.Many2one(related='session_id.name', store=True)
+    start_date = fields.Datetime(related='session_id.start_date', string="Training Date", store=True)
+    duration = fields.Float(related='session_id.duration', store=True)   
             
 

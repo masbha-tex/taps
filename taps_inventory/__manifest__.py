@@ -20,7 +20,7 @@
     "license": "OEEL-1",
 
     # any module necessary for this one to work correctly
-    'depends': ['base_setup', 'stock', 'account', 'web_studio','base'],
+    'depends': ['base_setup', 'stock', 'account', 'web_studio','base', 'web'],
 
     # always loaded
     
@@ -30,6 +30,7 @@
         'data/create_update_qc.xml',
         'reports/sample_print_out_pdf.xml',
         'reports/report_action.xml',
+        # 'views/assets.xml',
         'views/stock_register_views.xml',
         'views/product_template.xml',
         'views/product_move.xml',
@@ -39,4 +40,5 @@
         #'wizard/stock_valuation_layer_revaluation_views.xml',
         #'report/report_stock_forecasted.xml',
     ],
+    'css': ['static/src/css/custom_styles.css'],
 }
