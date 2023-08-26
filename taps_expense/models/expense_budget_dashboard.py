@@ -12,6 +12,7 @@ class ExpenseBudgetDashboard(models.Model):
     default_code=fields.Char(string='Default Code')
     product_template= fields.Many2one('product.template', string='Sbd')
     name = fields.Char(string='Product Name')
+    x_studio_super_expense_category = fields.Char(string='Super Expense Category Name')
     budget_year = fields.Char(string='Budget Year')
     ytd = fields.Char(string='YTD')
     april = fields.Float(string='April')
@@ -42,11 +43,12 @@ class ExpenseBudgetDashboard(models.Model):
         
         query = """
         CREATE or REPLACE VIEW expense_budget_dashboard AS (
-        SELECT  id,current_date,default_code, name, budget_year, ytd, april,may,june,july,august,september,october,november,december,january,february,march
+        SELECT  id,current_date,default_code, name,x_studio_super_expense_category, budget_year, ytd, april,may,june,july,august,september,october,november,december,january,february,march
  FROM (
      SELECT a.name,
             b.id,
             b.default_code,
+            b.x_studio_super_expense_category,
             '0' as budget_year,
             '0' as ytd,
             --SUM() as april

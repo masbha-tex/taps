@@ -342,6 +342,7 @@ class SaleOrder(models.Model):
                     'b_part':lines.b_part,
                     'c_part':lines.c_part,
                     'd_part':lines.d_part,
+                    'back_part':lines.back_part,
                     'product_code':lines.product_code,
                     'shape':lines.shape,
                     'finish_ref':lines.finish_ref,
@@ -521,6 +522,7 @@ class SaleOrder(models.Model):
                     'b_part':re_lines.b_part,
                     'c_part':re_lines.c_part,
                     'd_part':re_lines.d_part,
+                    'back_part':re_lines.back_part,
                     'product_code':re_lines.product_code,
                     'shape':re_lines.shape,
                     'finish_ref':re_lines.finish_ref,
@@ -544,6 +546,8 @@ class SaleOrder(models.Model):
                     'botomwire_con':re_lines.botomwire_con,
                     'wire_con':re_lines.wire_con,
                     'pinbox_con':re_lines.pinbox_con,
+                    'dimension' : re_lines.dimension,
+        
                 }]
 
             
@@ -635,6 +639,7 @@ class SaleOrder(models.Model):
                     'b_part':lines.b_part,
                     'c_part':lines.c_part,
                     'd_part':lines.d_part,
+                    'back_part':lines.back_part,
                     'product_code':lines.product_code,
                     'shape':lines.shape,
                     'finish_ref':lines.finish_ref,
@@ -658,6 +663,7 @@ class SaleOrder(models.Model):
                     'botomwire_con':lines.botomwire_con,
                     'wire_con':lines.wire_con,
                     'pinbox_con':lines.pinbox_con,
+                    'dimension' : lines.dimension,
                 }]
             
             #saleorder.order_ref.order_line#

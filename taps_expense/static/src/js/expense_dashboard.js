@@ -23,6 +23,8 @@ var view_registry = require('web.view_registry');
 
 var QWeb = core.qweb;
 
+
+
 // Add mock of method 'retrieve_dashboard' in SampleServer, so that we can have
 // the sample data in empty purchase kanban and list view
 let dashboardValues;

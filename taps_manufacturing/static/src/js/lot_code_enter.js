@@ -7,6 +7,7 @@ odoo.define('taps_manufacturing.FieldChar', function (require) {
     var LotCodeEnterField = FieldChar.extend({
        _onKeydown: function (ev) {
            this._super.apply(this, arguments);
+           // this.$target_input = $('<input>');
            if (ev.which === $.ui.keyCode.ENTER) {
              var self = this;
                 var value = this.$input.val();
@@ -15,7 +16,9 @@ odoo.define('taps_manufacturing.FieldChar', function (require) {
                     method: 'onevent_lot',
                     args: [value]
                 }).then(function (result) {
-                    
+                    // $manuf_date.find('input, textarea').focus();
+                    // this.$target_input.focus();
+                    $('.o_datepicker_input').focus();
                     // var currentDatetime = new Date();
                     // var formattedDatetime = currentDatetime.toISOString();
                     // $('#manuf_date').val(formattedDatetime);

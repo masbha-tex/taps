@@ -101,6 +101,60 @@
                 
         </field>
     </record>
+      
+
+      <record id="view_retention_matrix_dashboard" model="ir.ui.view">
+        <field name="name">retention.matrix.dashboard</field>
+        <field name="model">retention.matrix</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard sample="1">
+                <view type="graph" ref="taps_retention_matrix.view_retention_matrix_graph"/>
+                <group>
+                    <group col="3">
+                        <!-- <aggregate name="employee_id" string="Total Employee" field="employee_id"/> -->
+                        <aggregate name="impact" string="Total Impact" field="impact" group_operator="count"/>
+                        <aggregate name="risk" string="Total Risk" field="risk" group_operator="count"/> 
+                        <aggregate name="quarter" string="Total Risk" field="quarter" group_operator="count"/> 
+                    </group>
+
+                    <group col="1">
+                        <widget name="pie_chart" title="Retention" attrs="{'groupby': 'quarter'}"/>
+                    </group>
+
+                </group>
+                <view type="pivot" ref="taps_retention_matrix.view_retention_matrix_pivot"/>
+            </dashboard>
+        </field>
+    </record>
+
+    <record id="view_retention_matrix_pivot" model="ir.ui.view">
+        <field name="name">retention.matrix.pivot</field>
+        <field name="model">retention.matrix</field>
+        <field name="arch" type="xml">
+            <pivot string="Retention Pivot Analysis" disable_linking="True" sample="1">
+                <field name="quarter" type="row"/>
+                <!-- <field name="employee_id" type="measure"/> -->
+                <field name="impact" type="count"/>
+                <field name="risk" type="count"/>
+                <!-- <field name="start_date" type="measure"/> -->
+                <!-- <field name="instructor_id" type="measure"/> -->
+                <!-- <field name="attendee_ids" type="measure"/> -->
+                <!-- <field name="attendance_ids" type="measure"/> -->
+            </pivot>
+        </field>
+    </record> 
+    <record model="ir.ui.view" id="view_retention_matrix_graph">
+        <field name="name">retention.matrix.graph</field>
+        <field name="model">retention.matrix</field>
+        <field name="arch" type="xml">
+            <graph string="Retention Graph Analysis" stacked="False" type="bar" sample="1" disable_linking="1">
+                <field name="quarter" type="row"/>
+                <field name="impact" type="count"/>
+                <field name="risk" type="count"/>
+            </graph>
+        </field>
+    </record>
 
 
       <record model="ir.ui.view" id="retention_search_view">
@@ -127,7 +181,7 @@
         <field name="name">Retention</field>
         <field name="res_model">retention.matrix</field>
         <field name="context" eval="{'search_default_my_retention': 1}"/>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">tree,kanban,form,dashboard,pivot,graph</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create the first Retention Heat Map
             </p>

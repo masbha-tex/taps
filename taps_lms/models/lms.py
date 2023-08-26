@@ -16,8 +16,8 @@ class Course(models.Model):
     _rec_name = 'title_ids'
 
     name = fields.Char(string="Course Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
-    criteria_id = fields.Many2one('lms.criteria', readonly=True, string='Criteria') 
-    title_ids = fields.Many2one('lms.title', string='Title', readonly=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")       
+    criteria_id = fields.Many2one('lms.criteria', required=True, string='Criteria') 
+    title_ids = fields.Many2one('lms.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")       
     description = fields.Text('Content', related="title_ids.description",help='Add content description here...')
     responsible_id = fields.Many2one('res.users', ondelete='set null', string="Responsible", index=True, tracking=True)
     session_ids = fields.One2many('lms.session', 'course_id', string="Sessions")

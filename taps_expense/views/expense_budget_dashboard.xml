@@ -12,6 +12,11 @@
             </search>
         </field>
     </record>
+    
+
+    
+        
+        
 
     <record id="view_expense_budget_dashboard_tree" model="ir.ui.view">
         <field name="name">expense.budget.dashboard.tree</field>
@@ -21,15 +26,15 @@
                 <field name="current_date" invisible="1"/>
                 <field name="id" invisible="1"/>
                 <field name="default_code"/>
-                <field name="name" width="200"/>
+                <field name="name"/>
+                <field name="x_studio_super_expense_category"/>
                 <field name="budget_year"/>
                 <field name="ytd"/>
                 <field name="april"/>
                 <field name="may"/>
                 <field name="june"/>
                 <field name="july"/>
-                
-                <field name="august" decoration-success="current_date == 'Aug'"/>
+                <field name="august" decoration-success="current_date == 'Aug'" decoration-bf="current_date == 'Aug'"/>
                 <field name="september"/>
                 <field name="october"/>
                 <field name="november"/>
@@ -50,14 +55,44 @@
     <record id="action_expense_budget_dashboard" model="ir.actions.act_window">
         <field name="name">Expense Budget Dashboard</field>
         <field name="res_model">expense.budget.dashboard</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">tree,graph</field>
+        
 <!--         <field name="context">{'search_default_saleorder_group':1, 'search_default_oa_group':1}</field> -->
         <!-- <field name="search_view_id" ref="view_expense_dashboard_search" /> -->
     </record>
+    <record id="view_expense_budget_dashboard_action_graph" model="ir.actions.act_window.view">
+            <field name="sequence" eval="6"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="taps_expense.view_expense_budget_dashboard_graph"/>
+            <field name="act_window_id" ref="action_expense_budget_dashboard"/>
+            
+    </record>
+    <record id="view_expense_budget_dashboard_action_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="taps_expense.view_expense_budget_dashboard_tree"/>
+            <field name="act_window_id" ref="action_expense_budget_dashboard"/>
+            
+    </record>
+    <record model="ir.ui.view" id="view_expense_budget_dashboard_graph">
+            <field name="name">expense.budget.dashboard.graph</field>
+            <field name="model">expense.budget.dashboard</field>
+            <field name="arch" type="xml">
+                <graph string="Budget Graph" sample="1">
+                    <!-- <field name="partner_id"/> -->
+                    <field name="august" type="measure"/>
+                </graph>
+            </field>
+    </record>
+    
 
     <menuitem id="menu_expense_budget_dashboard" 
               name="Expense Budget Dashboard" 
               action="action_expense_budget_dashboard" 
               parent="hr_expense.menu_hr_expense_report"
-              sequence="27"/>
+              sequence="1"/>
+    <menuitem id="menu_expense_budget"
+            action="action_expense_budget_dashboard"
+            parent="menu_expense_budget_dashboard"
+            sequence="2"/>
 </odoo>    

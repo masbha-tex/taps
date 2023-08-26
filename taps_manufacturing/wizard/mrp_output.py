@@ -29,7 +29,7 @@ class ManufacturingOutput(models.TransientModel):
     sizein = fields.Text(string='Size (Inc)', readonly=True)
     sizecm = fields.Text(string='Size (Cm)', readonly=True)
     output_of = fields.Text(string='Production Of', readonly=True)
-    manuf_date = fields.Datetime(string='Production Date', required=False)
+    manuf_date = fields.Datetime(string='Production Date', required=True)
     qty = fields.Float(string='Qty', default=0.0, digits='Product Unit of Measure')
     
     # @api.model
@@ -60,10 +60,13 @@ class ManufacturingOutput(models.TransientModel):
     
     @api.model
     def onevent_lot(self,code=None):
-        production = self.env['operation.details'].search([('code', '=', code),('code', '!=', None)])
-        values = [production[0].oa_id.id,production[0].fg_categ_type,production[0].shade,production[0].finish,
-                  production[0].work_center.name]
-        return values
+        self.lot_code = ''
+        self.lot_code = code
+        # production = self.env['operation.details'].search([('code', '=', code),('code', '!=', None)])
+        # #raise UserError((production[0].oa_id.id))
+        # values = [production[0].oa_id.id,production[0].fg_categ_type,production[0].shade,production[0].finish,
+        #           production[0].work_center.name]
+        return code
 
         # if production:
         #     self.lot_code = production[0].code
@@ -98,6 +101,8 @@ class ManufacturingOutput(models.TransientModel):
             self.item = production[0].fg_categ_type
             self.shade = production[0].shade
             self.finish = production[0].finish
+            self.sizein = production[0].sizein
+            self.sizecm = production[0].sizecm
             # res["sizein"] = production[0].size_in
             # res["sizecm"] = production[0].size_cm
             self.output_of = production[0].work_center.name        
