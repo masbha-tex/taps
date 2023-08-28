@@ -90,7 +90,7 @@
 			</html>
 		</body>
 	</template>
-	<template id="view_email_template_demo1">
+	<template id="view_email_template_oa">
 		<!-- because we can simply call the ci here, we don't need to
              repeat it /-->
 		<t t-call="taps_sale.view_email_template_corporate_identity">

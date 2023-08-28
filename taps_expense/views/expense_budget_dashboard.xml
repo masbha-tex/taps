@@ -92,8 +92,9 @@
               action="action_expense_budget_dashboard" 
               parent="hr_expense.menu_hr_expense_report"
               sequence="1"/>
-    <menuitem id="menu_expense_budget"
+    <!-- <menuitem id="menu_expense_budget"
+            name="Budget Graph"
             action="action_expense_budget_dashboard"
             parent="menu_expense_budget_dashboard"
-            sequence="2"/>
+            sequence="2"/> -->
 </odoo>    

@@ -9,7 +9,7 @@
     "summary": "Use the QWeb templating mechanism for emails",
     "website": "https://github.com/OCA/social",
     "depends": ["mail"],
-    # "demo": ["demo/ir_ui_view.xml", "demo/mail_template.xml"],
+    "demo": ["demo/ir_ui_view.xml", "demo/mail_template.xml"],
     "data": ["views/mail_template.xml"],
     "installable": True,
 }
