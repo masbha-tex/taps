@@ -52,6 +52,16 @@
             </tree>
         </field>
     </record>
+    <record model="ir.ui.view" id="view_expense_budget_dashboard_graph">
+            <field name="name">expense.budget.dashboard.graph</field>
+            <field name="model">expense.budget.dashboard</field>
+            <field name="arch" type="xml">
+                <graph string="Budget Graph" sample="1">
+                    <!-- <field name="partner_id"/> -->
+                    <field name="august" type="measure"/>
+                </graph>
+            </field>
+    </record>
 
     <record id="action_expense_budget_dashboard" model="ir.actions.act_window">
         <field name="name">Expense Budget Dashboard</field>

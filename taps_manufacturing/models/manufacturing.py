@@ -390,7 +390,7 @@ class ManufacturingOrder(models.Model):
                     next_operation = None
                     mrp_line = sal_line = None
                     if material == 'tape':
-                        next_operation = 'Dyeing'
+                        next_operation = 'Dyeing Output'
                         p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.shade == p[1])
                         mrp_lines = p_q._ids2str('ids')
                         sale_lines = p_q._ids2str('sale_order_line')
@@ -406,12 +406,12 @@ class ManufacturingOrder(models.Model):
                                                                  'mrp_line':mrp_line,
                                                                  'sale_order_line':sal_line,
                                                                  'oa_id':p[0],
-                                                                 'buyer_name':p_q.buyer_name,
-                                                                 'product_template_id':p_q.product_template_id.id,
+                                                                 'buyer_name':p_q[0].buyer_name,
+                                                                 'product_template_id':p_q[0].product_template_id.id,
                                                                  'action_date':plan_start,
                                                                  'shade':p[1],
                                                                  'finish':p[2],
-                                                                 'operation_of':'plan',
+                                                                 'operation_of':'lot',
                                                                  'work_center':plan_for_id,
                                                                  'operation_by':'Planning',
                                                                  'based_on':m.machine_no.name,

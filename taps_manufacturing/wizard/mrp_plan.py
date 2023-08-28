@@ -114,7 +114,7 @@ class MachineLine(models.TransientModel):
     sequence = fields.Integer(string='Sequence', default=10)
     plan_id = fields.Many2one('mrp.plan', string='Plan ID', ondelete='cascade', index=True, copy=False)
 
-    # machine_no = fields.Many2one('machine.list', string='Machine No', required=True)
+    machine_no = fields.Many2one('machine.list', string='Machine No', required=True)
     lots = fields.Integer(string='Lots', required=True)
     material_qty = fields.Float('Quantity',default=1.0, digits='Product Unit of Measure',required=True)
     
@@ -122,7 +122,7 @@ class MachineLine(models.TransientModel):
     @api.onchange('lots')
     def _get_qty_bylots(self):
         for l in self:
-            l_qty = 1#l.machine_no.capacity * l.lots
+            l_qty = l.machine_no.capacity * l.lots
             if l.plan_id.material_qty < l_qty:
                 l_qty = l.plan_id.material_qty
             l.material_qty = l_qty
