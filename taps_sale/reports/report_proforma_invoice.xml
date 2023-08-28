@@ -563,7 +563,10 @@
 												<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 													<span>
 														<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                        <t t-if="(line.product_template_id.name != 'ADJUSTED AMOUNT
+') and (line.product_template_id.name != 'DOCUMENTATION CHARGE') and (line.product_template_id.name != 'PAYMENT PENDING PI VALUE') and (line.product_template_id.name != 'OTHERS CHARGE')">
 														<t t-set="total_quantity" t-value="total_quantity+line.product_uom_qty"/>
+                                                        </t>
 													</span>
 												</td>
 												<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">

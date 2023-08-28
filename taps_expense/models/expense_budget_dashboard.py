@@ -14,6 +14,7 @@ class ExpenseBudgetDashboard(models.Model):
     name = fields.Char(string='Product Name')
     x_studio_super_expense_category = fields.Char(string='Super Expense Category Name')
     budget_year = fields.Char(string='Budget Year')
+    budget_value = fields.Float(string='Budget Value')
     ytd = fields.Char(string='YTD')
     april = fields.Float(string='April')
     may = fields.Float(string='May')
@@ -43,15 +44,15 @@ class ExpenseBudgetDashboard(models.Model):
         
         query = """
         CREATE or REPLACE VIEW expense_budget_dashboard AS (
-        SELECT  id,current_date,default_code, name,x_studio_super_expense_category, budget_year, ytd, april,may,june,july,august,september,october,november,december,january,february,march
+        SELECT  id,current_date,default_code, name,x_studio_super_expense_category,budget_value, budget_year, ytd, april,may,june,july,august,september,october,november,december,january,february,march
  FROM (
      SELECT a.name,
             b.id,
             b.default_code,
             b.x_studio_super_expense_category,
-            '0' as budget_year,
+            (select sum(planned_amount) from crossovered_budget_lines z where b.id=z.product_id and z.crossovered_budget_state='validate') as budget_value,
+            (select (DATE_PART('year',z.date_from)::TEXT) || '-' || (DATE_PART('year',z.date_to)::TEXT) as year from crossovered_budget_lines z where b.id=z.product_id and z.crossovered_budget_state='validate') as budget_year,
             '0' as ytd,
-            --SUM() as april
             (select sum(d.total_actual_amount) from hr_expense_sheet as d where d.product_id=b.id 
             and TO_CHAR(d.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-04-01'::TEXT
             and TO_CHAR(d.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-04-30'::TEXT) as april,
@@ -92,11 +93,11 @@ class ExpenseBudgetDashboard(models.Model):
             
      FROM product_template a
      INNER JOIN product_product b ON a.id = b.product_tmpl_id
-     --INNER JOIN hr_expense_sheet c ON b.id = c.product_id
+     
      WHERE b.id in(select distinct product_id from hr_expense_sheet)
-     --TO_CHAR(c.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-04-01'::TEXT
-     --AND TO_CHAR(c.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2024-04-28')) || '-03-31'::TEXT 
-     --AND b.default_code LIKE '%EX%' 
+     AND b.id in(select distinct product_id from crossovered_budget_lines)
+     
+      
      group by a.name,b.id) as budget)
         """
         self.env.cr.execute(query)

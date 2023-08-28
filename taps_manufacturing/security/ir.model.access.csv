@@ -15,3 +15,4 @@ access_lot_line,lot_line,model_lot_line,base.group_user,1,1,1,1
 access_mrp_output,mrp_output,model_mrp_output,base.group_user,1,1,1,1
 access_mrp_qc_output,mrp_qc_output,model_mrp_qc_output,base.group_user,1,1,1,1
 access_process_sequence,process_sequence,model_process_sequence,base.group_user,1,1,1,1
+access_machine_list,machine_list,model_machine_list,base.group_user,1,1,1,1

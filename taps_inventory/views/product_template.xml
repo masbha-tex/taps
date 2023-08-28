@@ -19,6 +19,7 @@
                         <field name="gap_inch" placeholder="Inch"/>
                     </div>
                     <field name="fg_categ_type" string="FG Category"/>
+                    <field name="pack_qty"/>
                </xpath>
             </field>
         </record>

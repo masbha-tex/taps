@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_mrp_fg_order_search" model="ir.ui.view">
-        <field name="name">manufacturing.order.fg.search</field>
+    <record id="view_mrp_delivery_order_search" model="ir.ui.view">
+        <field name="name">manufacturing.delivery.order.search</field>
         <field name="model">manufacturing.order</field>
         <field name="arch" type="xml">
             <search>
                 <field name="oa_id"/>
-                <filter string="Running Orders" name="running" domain="[('done_qty','&gt;=',0.0)]"/>
+                <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;=',0.0)]"/>
                 <separator/>
                 <filter string="Order Date" name="action_date_filter" date="date_order"/>
                 <!-- <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>
@@ -14,18 +14,18 @@
             </search>
         </field>
     </record>
-    <record id="view_manufacturing_fg_tree" model="ir.ui.view">
-        <field name="name">manufacturing.order.fg.tree</field>
+    <record id="view_manufacturing_delivery_tree" model="ir.ui.view">
+        <field name="name">manufacturing.delivery.order.tree</field>
         <field name="model">manufacturing.order</field>
         <field name="arch" type="xml" >
-            <tree string="Manufacturing Order" create="false" delete ="false" editable="top"> 
+            <tree string="Delivery Order" create="false" delete ="false" editable="top"> 
                 <!-- editable="top" -->
-                <header>
+                <!-- <header>
                     <button name="button_plan" type="object" string="Plan"/>
-                    <button name="button_requisition" type="object" string="Requisition"/>
+                    <button name="button_requisition" type="object" string="Requisition"/> -->
                     <!-- <button name="button_createlot" type="object" string="Create Lot"/>
                     <button name="button_output" type="object" string="Output"/> -->
-                </header>
+                <!-- </header> -->
                 <field name="oa_id"/>
                 <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="partner_id"/>
@@ -42,79 +42,36 @@
                 <field name="sizecm"/>
                 <field name="remarks" width="300"/>
                 <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>
+                
                 <field name="done_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
                 <field name="balance_qty" optional="show" sum="Balance" decoration-bf="True"/>
-                <field name="tape_con" optional="show" sum="Tape C." decoration-bf="True"/>
-                <field name="slider_con" optional="show" sum="Slider C." decoration-bf="True"/>
-                <field name="topwire_con" optional="show" sum="Topwire C." decoration-bf="True"/>
-                <field name="botomwire_con" optional="show" sum="Botomwire C." decoration-bf="True"/>
-                <field name="wire_con" optional="show" sum="Wire C." decoration-bf="True"/>
-                <field name="pinbox_con" optional="show" sum="Pinbox C." decoration-bf="True"/>
-                <field name="dyeing_plan"/>
-                <field name="dyeing_plan_end" invisible="1"/>
-                <field name="dyeing_plan_qty" optional="show" sum="Dye Plan Qty" decoration-bf="True"/>
-                <field name="dy_rec_plan_qty" optional="show" sum="Dye Last Plan" decoration-bf="True"/>
-                <field name="dyeing_plan_due" optional="show" sum="Dye Plan Due" decoration-bf="True"/>
-                <field name="dyeing_output" optional="show" sum="Dye Output" decoration-bf="True"/>
-                <field name="dyeing_qc_pass" optional="show" sum="Dye QC Pass" decoration-bf="True"/>
-
-				<field name="plating_plan"/>
-                <field name="plating_plan_end" invisible="1"/>
-                <field name="plating_plan_qty" optional="show" sum="Plat/Paint Plan Qty" decoration-bf="True"/>
-                <field name="pl_rec_plan_qty"  invisible="1"/>
-                <field name="plating_output" optional="show" sum="Plat/Paint Output" decoration-bf="True"/>
-				
-                <field name="top_plat_plan"/>
-                <field name="top_plat_plan_end" invisible="1"/>
-                <field name="top_plat_plan_qty" optional="show" sum="Top Plat/Paint Plan Qty" decoration-bf="True"/>
-                <field name="tpl_rec_plan_qty"  invisible="1"/>
-                <field name="top_plat_output" optional="show" sum="Top Plat/Paint Output" decoration-bf="True"/> 
-
-                <field name="bot_plat_plan"/>
-                <field name="bot_plat_plan_end" invisible="1"/>
-                <field name="bot_plat_plan_qty" optional="show" sum="Btm Plat/Paint Plan Qty" decoration-bf="True"/>
-                <field name="bpl_rec_plan_qty"  invisible="1"/>
-                <field name="bot_plat_output" optional="show" sum="Btm Plat/Paint Output" decoration-bf="True"/>      
- 
-                <field name="pin_plat_plan"/>
-                <field name="pin_plat_plan_end" invisible="1"/>
-                <field name="pin_plat_plan_qty" optional="show" sum="Pbox Plat/Paint Plan Qty" decoration-bf="True"/>
-                <field name="ppl_rec_plan_qty"  invisible="1"/>
-                <field name="pin_plat_output" optional="show" sum="Pbox Plat/Paint Output" decoration-bf="True"/>      
-
-                <field name="sli_asmbl_plan"/>
-                <field name="sli_asmbl_plan_end" invisible="1"/>
-                <field name="sli_asmbl_plan_qty" optional="show" sum="Slider Asmbl Plan Qty" decoration-bf="True"/>
-                <field name="sass_rec_plan_qty"  invisible="1"/>
-                <field name="sli_asmbl_output" optional="show" sum="Slider Asmbl Output" decoration-bf="True"/>
-				
-				<field name="chain_making_done" optional="show" sum="CM Output" decoration-bf="True"/>
-				<field name="diping_done" optional="show" sum="Dipping Output" decoration-bf="True"/>
-				<field name="assembly_done" optional="show" sum="Assembly Output" decoration-bf="True"/>
+                
 				<field name="packing_done" optional="show" sum="Packing Output" decoration-bf="True"/>
 				<field name="oa_total_qty" invisible="1"/>
 				<field name="oa_total_balance" invisible="1"/>
-                <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
-                    attrs="{'invisible': [('dyeing_plan', '=', False)]}"/>
+                
+                <!-- <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
+                    attrs="{'invisible': [('dyeing_plan', '=', False)]}"/> -->
                  <!-- attrs="{'invisible': [('operation_of', '!=', 'plan')]}" -->
-                <field name="num_of_lots"/>
-                <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
+                <!-- <field name="num_of_lots"/> -->
+                <!-- <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/> -->
 				 <!-- attrs="{'invisible': [('num_of_lots', '=', 0)]}" -->
+                
             </tree>
         </field>
     </record>
 
-    <record id="action_manufacturing_order" model="ir.actions.act_window">
-        <field name="name">Manufacturing Order</field>
+    <record id="action_manufacturing_delivery_order" model="ir.actions.act_window">
+        <field name="name">FG Delivery</field>
         <field name="res_model">manufacturing.order</field>
         <field name="view_mode">tree</field>
-        <field name="search_view_id" ref="view_mrp_order_search" />
+        <field name="search_view_id" ref="view_mrp_delivery_order_search" />
         <field name="context">{'search_default_running': 1}</field>
     </record>
 
-    <menuitem id="menu_manufacturing_order" 
-              name="Manufacturing Orders(New)" 
-              action="action_manufacturing_order" 
+    <menuitem id="menu_manufacturing_delivery_order" 
+              name="FG Delivery" 
+              action="action_manufacturing_delivery_order" 
               parent="mrp.menu_mrp_manufacturing"
-              sequence="5"/>
+              sequence="6"/>
 </odoo>

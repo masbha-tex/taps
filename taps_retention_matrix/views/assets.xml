@@ -4,6 +4,7 @@
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/taps_retention_matrix/static/src/js/retention_dashboard.js"></script>
             <link rel="stylesheet" type="text/scss" href="/taps_retention_matrix/static/src/scss/retention.scss"/>
+            <link rel="stylesheet" type="text/scss" href="/taps_retention_matrix/static/src/scss/hr_appraisal.scss"/>
         </xpath>
     </template>
 </odoo>

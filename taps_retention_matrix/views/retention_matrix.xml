@@ -64,11 +64,88 @@
                 <field name="risk"/>
                 <templates>
                     <t t-name="kanban-box">
-                    <ul>
-                        <li><field name="employee_id"/></li>
-                        <li><field name="impact"/></li>
-                        <li><field name="risk"/></li>
-                    </ul>
+                        <div class="oe_kanban_card oe_kanban_global_click o_kanban_record_has_image_fill o_kanban_card_appraisal">
+                            <field name="image_128" widget="image" class="o_kanban_image_fill_left" options="{'zoom': true, 'zoom_delay': 1000, 'background': true, 'preventClicks': false}"/>
+                            <div class="o_dropdown_kanban dropdown" groups="base.group_user">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <t t-if="widget.deletable"><a type="delete" class="dropdown-item" role="menuitem">Delete</a></t>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_details">
+                               <div class="o_kanban_record_top">
+                                   <div class="o_kanban_record_headings">
+                                       <strong class="o_kanban_record_title">
+                                            <field name="employee_id"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <field name="department_id"/>
+                                <div>
+                                    <table class="table table-sm p-0 m-0 left bg-dark" style="font-size:7.5pt; width:100%; table-layout:fixed;color: white">
+                                        <thead>
+                                            <tr align="left" >
+                                                <th style="background-color:#714B67; color: white; text-align: center">Quarter</th>
+                                                <th style="background-color:grey;color:white; text-align: center">Q1</th>
+                                                <th style="background-color:grey;color:white; text-align: center">Q2</th>
+                                                <th style="background-color:grey;color:white; text-align: center">Q3</th>
+                                                <th style="background-color:grey;color:white; text-align: center">Q4</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="p-0 m-0" align="left">
+                                                <td style="background-color:#714B67;color:white; text-align: center; font-weight: bold">Impact
+                                                    <!-- <field name="ytd_weightage_acvd"/> -->
+                                                </td>
+                                                <td style="background-color:grey;color:white; text-align: center">
+                                                    <!-- <field name="impact"/> -->
+                                                    <t t-esc="record.impact.q1"/>
+                                                </td>
+                                                <td style="background-color:grey;color:white; text-align: center">
+                                                    <!-- <field name="q_2_ytd"/> -->
+                                                    <t t-esc="record.impact.q2"/>
+                                                </td>
+                                                <td style="background-color:grey;color:white; text-align: center">
+                                                    <!-- <field name="q_3_ytd"/> --><t t-esc="record.impact.q3"/>
+                                                </td>
+                                                <td style="background-color:grey;color:white; text-align: center">
+                                                    <!-- <field name="q_4_ytd"/> -->
+                                                </td>
+                                                
+                                            </tr>
+                                            <tr class="p-0 m-0" align="left">
+                                                <td style="background-color:#714B67;color:white; text-align: center; font-weight: bold">Risk
+                                                    <!-- <field name="ytd_weightage_acvd"/> -->
+                                                </td>
+                                                <td style="background-color:grey;color:white; text-align: center">
+                                                    <!-- <field name="q_1_ytd"/> -->
+                                                </td>
+                                                <td style="background-color:grey;color:white; text-align: center">
+                                                    <!-- <field name="q_2_ytd"/> -->
+                                                </td>
+                                                <td style="background-color:grey;color:white; text-align: center">
+                                                    <!-- <field name="q_3_ytd"/> -->
+                                                </td>
+                                                <td style="background-color:grey;color:white; text-align: center">
+                                                    <!-- <field name="q_4_ytd"/> -->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>                                
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left"/>
+                                <div class="oe_kanban_bottom_right mt-auto d-flex justify-content-between align-items-end">
+                                    <!-- <t t-foreach="record.employee_id.parent_id.raw_value" t-as="employee">
+                                        <img class="oe_kanban_avatar o_appraisal_manager" t-att-src="kanban_image('hr.employee', 'image_128', employee)" t-att-title="employee.value" t-att-alt="employee.value" t-att-data-id="employee"/>
+                                    </t> -->
+                                </div>
+                            </div>
+                            <div class="oe_clear"></div>
+                        </div>
                     </t>
                 </templates>
             </kanban>
@@ -112,18 +189,21 @@
                 <view type="graph" ref="taps_retention_matrix.view_retention_matrix_graph"/>
                 <group>
                     <group col="3">
-                        <!-- <aggregate name="employee_id" string="Total Employee" field="employee_id"/> -->
+                        <!-- <aggregate name="employee_id" string="Total Employee" field="employee_id"/>
+                        <aggregate name="quarter" string="Quarter" field="quarter" group_operator="count" measure="__count__"/> 
                         <aggregate name="impact" string="Total Impact" field="impact" group_operator="count"/>
-                        <aggregate name="risk" string="Total Risk" field="risk" group_operator="count"/> 
-                        <aggregate name="quarter" string="Total Risk" field="quarter" group_operator="count"/> 
+                        <aggregate name="risk" string="Total Risk" field="risk" group_operator="count"/> -->
                     </group>
 
                     <group col="1">
-                        <widget name="pie_chart" title="Retention" attrs="{'groupby': 'quarter'}"/>
+                        <widget name="pie_chart" title="Quarter" attrs="{'groupby': 'quarter'}"/>
+                        <widget name="pie_chart" title="Risk" attrs="{'groupby': 'risk'}"/>
+                        <widget name="pie_chart" title="Impact" attrs="{'groupby': 'impact'}"/>
                     </group>
 
                 </group>
                 <view type="pivot" ref="taps_retention_matrix.view_retention_matrix_pivot"/>
+                
             </dashboard>
         </field>
     </record>
@@ -148,7 +228,8 @@
         <field name="name">retention.matrix.graph</field>
         <field name="model">retention.matrix</field>
         <field name="arch" type="xml">
-            <graph string="Retention Graph Analysis" stacked="False" type="bar" sample="1" disable_linking="1">
+            <graph string="Retention Graph Analysis" stacked="False" type="bar" sample="1">
+                
                 <field name="quarter" type="row"/>
                 <field name="impact" type="count"/>
                 <field name="risk" type="count"/>

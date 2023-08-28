@@ -23,20 +23,14 @@
             <field name="model">lms.session.attendance</field>
             <field name="arch" type="xml">
                 <tree string="Dashboard" edit="0" editable="top" create="0">
-                    <!-- <header>
-                        <button name="action_open_barcode_scanner" icon="fa-barcode" string="Scan your ID Card" type="object" class="oe_highlight"/>
-                    </header>   -->
-                    
-                    <!-- <field name="attendance_date"/>
-                    <field name="is_present"/> -->
                     <field name="criteria_id"/>
                     <field name="title_id"/>
                     <field name="description_id"/>
                     <field name="instructor_id"/>
                     <field name="session_name"/>
                     <field name="start_date"/>                    
-                    <field name="duration" widget="float_time" sum="Sum of Duration"/>
                     <field name="attendee_id" string="Particpants" options="{'no_create':true, 'no_open':true}"/>
+                    <field name="duration" widget="float_time" sum="Sum of Duration"/>
                 </tree>
             </field>
         </record>
@@ -44,7 +38,7 @@
             <field name="name">lms.session.attendance.tree</field>
             <field name="model">lms.session.attendance</field>
             <field name="arch" type="xml">
-                <tree string="Mark Attendance" edit="0" editable="top" create="1">
+                <tree string="Mark Attendance" edit="1" editable="top" create="1">
                     <!-- <header>
                         <button name="action_open_barcode_scanner" icon="fa-barcode" string="Scan your ID Card" type="object" class="oe_highlight"/>
                     </header>   -->
@@ -72,7 +66,7 @@
                     <field name="description_id"/>
                     <field name="instructor_id"/>
                     <field name="session_name"/>
-                    <field name="start_date"/>
+                    <!-- <field name="start_date" widget="datetime"/> -->
                     <field name="department_id"/>
                     <field name="company_id"/>
                     <filter name="filter_start_date" date="start_date"/>
@@ -89,6 +83,8 @@
                     <searchpanel>
                         <field name="company_id" enable_counters="1"/>
                         <field name="department_id" enable_counters="1"/>
+                        <field name="criteria_id" enable_counters="1"/>
+                        <field name="title_id" enable_counters="1"/>
                     </searchpanel>
                 </search>
             </field>
@@ -112,7 +108,11 @@
                         </group>
     
                         <group col="1">
-                            <widget name="pie_chart" title="Training Session" attrs="{'groupby': 'start_date'}"/>
+                            <!-- <widget name="pie_chart" title="Criteria" attrs="{'groupby': 'criteria_id'}"/> -->
+                            <!-- <widget name="pie_chart" title="Title" attrs="{'groupby': 'title_id'}"/> -->
+                            <widget name="pie_chart" title="Plan Date" attrs="{'groupby': 'start_date'}"/>
+                            <!-- <widget name="pie_chart" title="Session" attrs="{'groupby': 'session_id'}"/> -->
+                            <widget name="pie_chart" title="Particpants" attrs="{'groupby': 'attendee_id'}"/>
                         </group>
     
                     </group>
@@ -127,7 +127,7 @@
             <field name="name">lms.session.attendance.graph</field>
             <field name="model">lms.session.attendance</field>
             <field name="arch" type="xml">
-                <graph string="LMS Graph Analysis" stacked="False" type="bar" sample="1" disable_linking="1">
+                <graph string="Graph" stacked="False" type="bar" sample="1">
                     <field name="start_date" type="row"/>
                     <field name="duration" type="measure"/>
                 </graph>
@@ -162,7 +162,7 @@
         <record model="ir.actions.act_window" id="lms_dashboard_action">
             <field name="name">Dashboard</field>
             <field name="res_model">lms.session.attendance</field>
-            <field name="view_mode">dashboard,tree,form,pivot,graph</field>
+            <field name="view_mode">dashboard,tree,pivot,graph</field>
             <field name="search_view_id" ref="lms_session_attendance_search_view"/>
             <field name="context" eval="{'search_default_by_start_date': 1}"/>
             <field name="help" type="html">
@@ -177,7 +177,7 @@
         <menuitem id="menu_lms_session" name="Barcode" parent="lms_menu" action="action_open_barcode_scanner"/> -->
         
         
-        <menuitem id="menu_session_attendance" name="Dashboard" sequence="1" parent="lms_menu" action="lms_dashboard_action"/>
+        <menuitem id="menu_session_attendance" name="Dashboard" sequence="1" parent="main_lms_menu" action="lms_dashboard_action"/>
         
     </data>
 </odoo>

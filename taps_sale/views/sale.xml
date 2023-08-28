@@ -91,13 +91,14 @@
 				</xpath>
                 <xpath expr="//field[@name='incoterm']" position="attributes">
 					<attribute name="attrs">{'required': [('sales_type', '=', 'sale')]}</attribute>
+                    <attribute name="attrs">{'default': '1'}</attribute>
 				</xpath>
 				<xpath expr="//field[@name='payment_term_id']" position="after">
 					<field name="bank" string="Bank" options="{'no_create': True, 'no_create_edit':True}" attrs="{'required': [('sales_type', '=', 'sale')]}"/>
 				</xpath>
 				<xpath expr="//field[@name='sales_type']" position="after">
-					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]"/>
-					<field name="sample_ref" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','oa']]}" widget="many2many_tags"/>
+					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}"/>
+					<field name="sample_ref" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','oa']]}" widget="many2many_tags" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}"/>
 				</xpath>
                 <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_template_id']" position="attributes">
     <attribute name="domain">[('categ_id.complete_name', 'ilike', 'ALL / FG')]</attribute>

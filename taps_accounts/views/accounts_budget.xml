@@ -6,8 +6,15 @@
             <field name="model">crossovered.budget</field>
             <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='budget_lines']/field[@name='crossovered_budget_line']/tree[1]/field[@name='general_budget_id']" position="before">
+                   <button name="duplicate_line" title="Copy" type="object" class="fa fa-files-o"/>
+
+               </xpath> 
                 <xpath expr="//field[@name='percentage']" position="after">
                     <field name="itemtype" string="Item Type"/>
+                </xpath>
+                <xpath expr="//field[@name='itemtype']" position="after">
+                    <field name="product_id"/>
                 </xpath>
             </field>
         </record>        
@@ -18,8 +25,24 @@
             <field name="arch" type="xml">
                <xpath expr="//field[@name='percentage']" position="after">
                     <field name="itemtype" string="Item Type"/>
-               </xpath>
+                </xpath>
+                <xpath expr="//field[@name='itemtype']" position="after">
+                    <field name="product_id"/>
+                </xpath>
             </field>
-        </record>       
+        </record>
+        <!-- <record model="ir.ui.view" id="view_budget_post_form_inherit">
+        <field name="name">account.budget.post.form.inherit</field>
+        <field name="model">account.budget.post</field>
+        <field name="inherit_id" ref="account_budget.view_budget_post_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="product_id" string="Product Name" domain="[('default_code','ilike','EX_')]"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="attributes">
+					<attribute name="attrs">{'required': False}</attribute>
+			</xpath>
+        </field>
+    </record> -->
     </data>
 </odoo>

@@ -23,3 +23,8 @@ class SalesRepresentative(models.Model):
             ('leader', 'Team Leader'),
             ('member', 'Team Member'),],
             string='Position')
+    sales_representative_region = fields.Selection([
+            ('export', 'EXPORT'),
+            ('dhaka', 'DHAKA'),
+            ('chittagong', 'CHITTAGONG'),],
+            string='Region')

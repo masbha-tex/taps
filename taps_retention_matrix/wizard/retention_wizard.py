@@ -272,6 +272,7 @@ class RetentionReportPDF(models.AbstractModel):
             # raise UserError((heading_type))
         if data.get('department_id'):
             heading_type = emp.employee_id.department_id.name
+            heading = emp.quarter
         if data.get('category_id'):
             heading_type = emp.employee_id.category_ids.name
             heading = emp.quarter

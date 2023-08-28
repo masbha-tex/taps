@@ -1,8 +1,10 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 from odoo.tools.misc import get_lang
 import logging
+from odoo import tools
 from odoo.tools.profiler import profile
 
 logger = logging.getLogger("*___LMS___*")
@@ -27,7 +29,7 @@ class Course(models.Model):
 
     def action_submit(self):
         self.state = 'submitted'
-        users = self.env.ref('taps_lms.group_course_approval').users
+        users = self.env.ref('taps_lms.group_manager_lms').users
         for user in users:
             self.activity_schedule('taps_lms.mail_act_course_approval', user_id=user.id, note=f'Please Approve Training course {self.name}')
 
@@ -127,77 +129,28 @@ class Session(models.Model):
     #     return {'domain': {'instructor_id': [('user_id', '=', self.course_id.responsible_id.id)]}}
     code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
     name = fields.Many2one('lms.session.venue', string='Venue')
-    start_date = fields.Datetime(string="Plan Date",default=fields.datetime.today())
+    company_id = fields.Many2one('res.company', string='Company')
+    start_date = fields.Datetime(string="Plan Date", default=lambda self: fields.datetime.today().strftime('%Y-%m-%d %H:00:00'))
     duration = fields.Float(digits=(6, 2), help="Duration in hours", default=get_default_duration)
     end_date = fields.Datetime(string="End Date", store=True, compute='_get_end_date', inverse='_set_end_date')
     seats = fields.Integer(string="Number of seats", default=get_default_seats)
     instructor_id = fields.Many2one('hr.employee', string="Facilitator")    
     country_id = fields.Many2one('res.country', related='instructor_id.country_id')
     course_id = fields.Many2one('lms.course', ondelete='cascade', string="Course", required=True)
-    attendee_ids = fields.Many2many('hr.employee', string="Particpants")
+    attendee_ids = fields.Many2many('hr.employee', string="Participants")
     taken_seats = fields.Float(string="Taken seats", compute='_taken_seats')
     active = fields.Boolean(string='Active', default=True)
     attendees_count = fields.Integer(
         string="Attendees count", compute='_get_attendees_count', store=True)
+    is_presents = fields.Float(string="Presence", compute='_presents')
+    presents_count = fields.Integer(
+        string="Presents count", compute='_get_attendance_count', store=True)    
     color = fields.Integer()
     email_sent = fields.Boolean('Email Sent', default=False)
     image_1920 = fields.Image("Image")
-    attendance_ids = fields.One2many('lms.session.attendance', 'session_id', string="Particpants Attendance")
-
-    # def _query(self, fields='', from_clause='', outer=''):
-    #     select_ = '''
-    #         c.id as id,
-    #         c.id as contract_id,
-    #         e.id as employee_id,
-    #         e.company_id as company_id,
-    #         e.departure_reason as departure_reason,
-    #         e.department_id as department_id,
-    #         c.wage AS wage,
-    #         CASE WHEN serie = start.contract_start THEN 1 ELSE 0 END as count_new_employee,
-    #         CASE WHEN date_part('month', exit.contract_end) = date_part('month', serie) AND date_part('year', exit.contract_end) = date_part('year', serie) THEN 1 ELSE 0 END as count_employee_exit,
-    #         c.date_start,
-    #         c.date_end,
-    #         exit.contract_end as date_end_contract,
-    #         start.contract_start,
-    #         CASE
-    #             WHEN date_part('month', c.date_start) = date_part('month', serie) AND date_part('year', c.date_start) = date_part('year', serie)
-    #                 THEN (31 - LEAST(date_part('day', c.date_start), 30)) / 30
-    #             WHEN c.date_end IS NULL THEN 1
-    #             WHEN date_part('month', c.date_end) = date_part('month', serie) AND date_part('year', c.date_end) = date_part('year', serie)
-    #                 THEN (LEAST(date_part('day', c.date_end), 30) / 30)
-    #             ELSE 1 END as age_sum,
-    #         serie::DATE as date,
-    #         EXTRACT(EPOCH FROM serie)/2628028.8 AS start_date_months, -- 2628028.8 = 3600 * 24 * 30.417 (30.417 is the mean number of days in a month)
-    #         CASE
-    #             WHEN c.date_end IS NOT NULL AND date_part('month', c.date_end) = date_part('month', serie) AND date_part('year', c.date_end) = date_part('year', serie) THEN
-    #                 EXTRACT(EPOCH FROM (c.date_end))/2628028.8
-    #             ELSE
-    #                 EXTRACT(EPOCH FROM (date_trunc('month', serie) + interval '1 month' - interval '1 day'))/2628028.8
-    #             END AS end_date_months
-
-    #         %s
-    #     ''' % fields
-
-    #     from_ = """
-    #             (SELECT age(COALESCE(date_end, current_date), date_start) as age, * FROM hr_contract WHERE state != 'cancel') c
-    #             LEFT JOIN hr_employee e ON (e.id = c.employee_id)
-    #             LEFT JOIN (
-    #                 SELECT employee_id, contract_end
-    #                 FROM (SELECT employee_id, MAX(COALESCE(date_end, current_date)) as contract_end FROM hr_contract WHERE state != 'cancel' GROUP BY employee_id) c_end
-    #                 WHERE c_end.contract_end < current_date) exit on (exit.employee_id = c.employee_id)
-    #             LEFT JOIN (
-    #                 SELECT employee_id, MIN(date_start) as contract_start
-    #                 FROM hr_contract WHERE state != 'cancel'
-    #                 GROUP BY employee_id) start on (start.employee_id = c.employee_id)
-    #              %s
-    #             CROSS JOIN generate_series(c.date_start, (CASE WHEN c.date_end IS NULL THEN current_date + interval '1 year' ELSE (CASE WHEN date_part('day', c.date_end) < date_part('day', c.date_start) THEN c.date_end + interval '1 month' ELSE c.date_end END) END), interval '1 month') serie
-    #     """ % from_clause
-
-    #     return '(SELECT * %s FROM (SELECT %s FROM %s) in_query)' % (outer, select_, from_)
-
-    # def init(self):
-    #     tools.drop_view_if_exists(self.env.cr, self._table)
-    #     self.env.cr.execute("""CREATE or REPLACE VIEW %s as (%s)""" % (self._table, self._query()))    
+    attendance_ids = fields.One2many('lms.session.attendance', 'session_id', string="Participants Attendance")
+    meeting_id = fields.Many2one('calendar.event', string='Meeting')
+  
     
     def name_get(self):
         result = []
@@ -230,8 +183,8 @@ class Session(models.Model):
         action = action[0]
         context = dict(self.env.context, active_id=self.id)
         action['context'] = context
-        return action        
-    
+        return action  
+        
     @api.model
     def attendance_scan(self, barcode, activeId=None):        
         """ Receive a barcode scanned from the LMS Mode and change the attendances of corresponding employee.
@@ -315,7 +268,8 @@ class Session(models.Model):
     def mark_attendance(self):
          return {
             'name': "Mark Attendance",
-            'view_mode': 'tree,form',
+            'view_mode': 'tree',
+            'view_id': self.env.ref('taps_lms.view_session_attendance_tree').id,
             'res_model': 'lms.session.attendance',
             'type': 'ir.actions.act_window',
             'domain': [('session_id', '=', self.id)],
@@ -327,6 +281,29 @@ class Session(models.Model):
 
     def number_of_attendees(self):
         return len(self.attendee_ids)
+
+    def action_calendar_event(self):
+        self.ensure_one()
+        partners = self.attendee_ids.related_partner_id | self.env.user.partner_id
+        action = self.env["ir.actions.actions"]._for_xml_id("calendar.action_calendar_event")
+        action['context'] = {
+            'default_partner_ids': partners.ids,
+            'default_mode': "month"
+        }
+        return action           
+        
+    @profile()
+    def action_send_event(self):
+        view_id = self.env.ref('taps_lms.view_send_event_wizard_form').id
+        return {
+            'name': 'Send Event',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'event.wizard',
+            'views': [(view_id, 'form')],
+            'target': 'new',
+            'context': {'default_meeting_date': self.start_date, 'default_duration': self.duration},  # Pass the meeting_date to the wizard
+        }   
 
     def action_send_session_by_email_cron(self):
         session_ids = self.env['lms.session'].search([('email_sent', '=', False)])
@@ -352,6 +329,10 @@ class Session(models.Model):
     def _get_attendees_count(self):
         for r in self:
             r.attendees_count = len(r.attendee_ids)
+    @api.depends('attendance_ids')
+    def _get_attendance_count(self):
+        for r in self:
+            r.presents_count = len(r.attendance_ids)            
 
     @api.depends('start_date', 'duration')
     def _get_end_date(self):
@@ -387,6 +368,15 @@ class Session(models.Model):
                 r.taken_seats = 0.0
             else:
                 r.taken_seats = 100.0 * len(r.attendee_ids) / r.seats
+    @api.depends('seats', 'attendance_ids')
+    def _presents(self):
+        for r in self:
+            if not r.seats:
+                r.is_presents = 0.0
+            else:
+                r.is_presents = 100.0 * len(r.attendance_ids) / r.seats                
+                
+       
 
     @api.onchange('seats', 'attendee_ids')
     def _verify_valid_seats(self):
@@ -413,7 +403,7 @@ class SessionAttendance(models.Model):
     attendee_id = fields.Many2one('hr.employee', string="Employee", required=True)
     company_id = fields.Many2one(related='attendee_id.company_id', store=True)
     department_id = fields.Many2one(related='attendee_id.department_id', store=True)
-    attendance_date = fields.Datetime(string="Attendance Date", default=fields.datetime.today(), required=True)
+    attendance_date = fields.Datetime(string="Attendance Date", default=lambda self: fields.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), required=True)
     is_present = fields.Boolean(string="Is Present", default=True)
     session_id = fields.Many2one('lms.session', string="Session", required=True, ondelete='cascade')
     criteria_id = fields.Many2one(related='session_id.course_id.criteria_id', store=True)
@@ -423,5 +413,76 @@ class SessionAttendance(models.Model):
     session_name = fields.Many2one(related='session_id.name', store=True)
     start_date = fields.Datetime(related='session_id.start_date', string="Training Date", store=True)
     duration = fields.Float(related='session_id.duration', store=True)   
-            
+
+class EventWizard(models.TransientModel):
+    _name = 'event.wizard'
+    _description = 'Event Wizard'
+
+    meeting_date = fields.Datetime(string='Session Date', required=True)
+    meeting_subject = fields.Char(string='Subject', default="Training Session")
+    reminder = fields.Many2many('calendar.alarm',string='Reminders')
+    location = fields.Char(string='Location')
+    duration = fields.Float(string='Duration')
+    note = fields.Html()
+    # Add more fields if needed for your wizard
+
+    def create_event_send(self):
+        active_ids = self._context.get('active_ids', [])
+        if not active_ids:
+            return
+
+        meeting_date = self.meeting_date + relativedelta(hours=self.duration)  # Assuming you have a field 'meeting_date' in the wizard
+
+        # Call the action_create_meeting_event method for each hr.appraisal record
+        lms_session = self.env['lms.session'].browse(active_ids)
+        user_id = self.env.user.id
+        partner_id = [employee.address_home_id.id for employee in lms_session.attendee_ids]
+        user_partner_ids = self.env.user.partner_id.id 
+        combined_ids = partner_id + [user_partner_ids]
+        
+        # raise UserError((combined_ids))
+        # lms_session.mapped('meeting_id').unlink()
+        event_vals = {
+            'name': self.meeting_subject,
+            'start': self.meeting_date,
+            'stop': meeting_date,
+            'start_date': self.meeting_date,
+            'stop_date': meeting_date,
+            'alarm_ids': self.reminder,
+            'duration': self.duration,
+            'location': self.location,
+            'description': self.note and tools.html2plaintext(self.note),
+            'user_id': user_id,
+            'partner_ids': [(6, 0, combined_ids)], 
+        }
+        meeting = self.env['calendar.event'].create(event_vals)
+        lms_session.meeting_id = meeting.id
+        # self.activity_unlink(['mail.mail_activity_data_meeting', 'mail.mail_activity_data_todo'])
+        # raise UserError((self.employee_id))
+        # for session in lms_session:
+        #     session.meeting_id = meeting.id
+            # session.date_final_interview = self.meeting_date
+            # # meeting_activity_type = self.env['mail.activity.type'].search([('category', '=', 'meeting')], limit=1)
+            # session.activity_unlink(['mail.mail_activity_data_meeting', 'mail.mail_activity_data_todo'])
+    
+            # Create an activity note for each partner in partner_ids
+        # for appraisal in hr_appraisal:
+            # employee = session.employee_id
+            # managers = session.manager_ids
+            # if employee.user_id:
+            #     session.with_context(mail_activity_quick_update=True).activity_schedule(
+            #         'mail.mail_activity_data_meeting', 
+            #         self.meeting_date,
+            #         summary=_(self.meeting_subject),
+            #         note=_(self.note),
+            #         user_id=employee.user_id.id)
+            # for manager in managers.filtered(lambda m: m.user_id):
+            #     session.with_context(mail_activity_quick_update=True).activity_schedule(
+            #         'mail.mail_activity_data_meeting', 
+            #         self.meeting_date,
+            #         summary=_(self.meeting_subject),
+            #         note=_(self.note),
+            #         user_id=manager.user_id.id)
+
+        return {'type': 'ir.actions.act_window_close'}
 

@@ -22,12 +22,13 @@
         <field name="name">expense.budget.dashboard.tree</field>
         <field name="model">expense.budget.dashboard</field>
         <field name="arch" type="xml" >
-            <tree string="Expense Budget Dashboard" create="false" delete="false" >
+            <tree string="Expense Budget Dashboard" create="false" delete="false" class="custom_class_tree">
                 <field name="current_date" invisible="1"/>
                 <field name="id" invisible="1"/>
                 <field name="default_code"/>
                 <field name="name"/>
                 <field name="x_studio_super_expense_category"/>
+                <field name="budget_value"/>
                 <field name="budget_year"/>
                 <field name="ytd"/>
                 <field name="april"/>

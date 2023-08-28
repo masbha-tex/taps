@@ -8,6 +8,7 @@
                 <field name="name"/>
                 <field name="sales_representative_team"/>
                 <field name="sales_representative_position"/>
+                <field name="sales_representative_region"/>
             </tree>
         </field>
     </record>
@@ -29,6 +30,9 @@
                         </group>
                         <group>
                         <field name="sales_representative_position"/>
+                        </group>
+                        <group>
+                        <field name="sales_representative_region"/>
                         </group>
                     </group>
                 </sheet>

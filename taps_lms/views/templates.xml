@@ -20,7 +20,7 @@
                 <div class="container">
                     <t t-foreach="courses" t-as="course">
                         <p>
-                            <a t-attf-href="/lms/{{ slug(course) }}"> <t t-esc="course.course_name"/> </a>
+                            <a t-attf-href="/lms/{{ slug(course) }}"> <t t-esc="course.name"/> </a>
                         </p>
                     </t>
                 </div>
@@ -34,9 +34,10 @@
             <div class="oe_structure"/>
             <div class="oe_structure">
                 <div class="container">
-                    <h3 t-field="course.course_name"/>
+                    <h3 t-field="course.name"/>
                     <p t-field="course.description"/>
-                    <li><t t-esc="course.responsible_id.name"/></li>
+                    <li><t t-esc="course.criteria_id.name"/></li>
+                    <li><t t-esc="course.title_ids.name"/></li>
                     <li><t t-esc="course.course_date"/></li>
                     <li><t t-esc="course.state"/></li>
                 </div>

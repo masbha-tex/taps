@@ -100,6 +100,8 @@ class OperationDetails(models.Model):
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=True, compute='get_balance')
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
+    pack_qty = fields.Integer(string='Pack Qty', default=0, readonly=False)
+    fr_pcs_pack = fields.Integer(string='Remaining Qty', default=0, readonly=False, help='The remaining pcs to pack')
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     # lot_ids = fields.Many2one('operation.details', compute='get_lots', string='Lots', copy=False, store=True)
     
@@ -302,7 +304,9 @@ class OperationDetails(models.Model):
     
 
     def set_output(self,output_model,mo_ids,manuf_date,qty,output_of):
-        
+
+        pack_qty = 0
+        fraction_pc_of_pack = 0
         operation = self.env["operation.details"].browse(mo_ids)
         ope = operation.update({'action_date':manuf_date,'done_qty':operation.done_qty + qty})
         
@@ -320,7 +324,11 @@ class OperationDetails(models.Model):
                 mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + qty})
                 mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',operation.oa_id.id)])
                 mrp_all_oa = mrp_oa_data.update({'oa_total_balance':mrp_oa_data.oa_total_balance - qty})
-            #oa_total_balance
+                pr_pac_qty = mrp_data.product_template_id.pack_qty
+                if pr_pac_qty:
+                    pack_qty = math.ceil(qty/pr_pac_qty)
+                    fraction_pc_of_pack = ((qty/pr_pac_qty) % 1)*qty
+                    
             
         next = None
         w_center = operation.work_center.id
@@ -358,14 +366,17 @@ class OperationDetails(models.Model):
                                 'operation_by':operation.work_center.name,
                                 'based_on':'Lot Code',
                                 'next_operation':next,
-                                'qty':qty
+                                'qty':qty,
+                                'pack_qty':pack_qty,
+                                'fr_pcs_pack':fraction_pc_of_pack
                                 })
 
     
     @api.onchange('uotput_qty')
     def _output(self):
         for out in self:
-            
+            pack_qty = 0
+            fraction_pc_of_pack = 0
             done_qty = out.done_qty + out.uotput_qty
             out.done_qty = done_qty
             manufac_ids = self.env["manufacturing.order"].browse(out.mrp_lines)
@@ -503,6 +514,10 @@ class OperationDetails(models.Model):
                 mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + out.uotput_qty})
                 mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
                 mrp_all_oa = mrp_oa_data.update({'oa_total_balance':mrp_oa_data.oa_total_balance - out.uotput_qty})
+                pr_pac_qty = mrp_data.product_template_id.pack_qty
+                if pr_pac_qty:
+                    pack_qty = math.ceil(qty/pr_pac_qty)
+                    fraction_pc_of_pack = ((qty/pr_pac_qty) % 1)*qty
                 #oa_total_balance
                 
             next = None
@@ -542,7 +557,9 @@ class OperationDetails(models.Model):
                                     'operation_by':out.work_center.name,
                                     'based_on':'Lot Code',
                                     'next_operation':next,
-                                    'qty':out.uotput_qty
+                                    'qty':out.uotput_qty,
+                                    'pack_qty':pack_qty,
+                                    'fr_pcs_pack':fraction_pc_of_pack
                                     })
 
 

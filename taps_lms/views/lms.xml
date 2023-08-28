@@ -61,7 +61,7 @@
                                     <field name="seats"/>
                                     <field name="instructor_id" options="{'no_create':true, 'no_open':true}"/>
                                     <field name="attendee_ids" options="{'no_create':true, 'no_open':true}" widget="many2many_tags" />
-                                    <button name="action_send_session_by_email" type="object" class="oe_highlight" string="Send Email"/>
+                                    <button name="action_send_event" type="object" class="oe_highlight" string="Send Email"/>
                                 </tree>
                             </field>
                         </page>
@@ -144,7 +144,7 @@
         <field name="arch" type="xml">
             <form string="Session Form">
                 <header>
-                    <button name="action_send_session_by_email" type="object" class="oe_highlight" string="Send Email"/>
+                    <button name="action_send_event" type="object" class="oe_highlight" string="Send Email"/>
                     <button name="action_open_barcode_scanner" icon="fa-barcode" string="Scan your ID Card" type="object" class="oe_highlight"/>
                     <!-- <div class="o_lms_attendance_barcode_scanner" data-oe-id="record.id">
                         <t t-call="taps_lms.barcode_scanner" />
@@ -152,6 +152,7 @@
                 </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
+                          
                             <button name="mark_attendance" type="object" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the training session" context="{'default_session_id': active_id}">
                                 <div class="o_stat_info">
                                     <span class="o_stat_text">
@@ -159,6 +160,13 @@
                                     </span>
                                 </div>
                             </button>
+                            <button class="oe_stat_button" name="action_calendar_event" icon="fa-calendar" type="object">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value" attrs="{'invisible': [('meeting_id', '=', False)]}">1 Meeting</span>
+                                    <span class="o_stat_value" attrs="{'invisible': [('meeting_id', '!=', False)]}">No Meeting</span>
+                                    <span class="o_stat_text"><field name="start_date" readonly="1"/></span>
+                                </div>
+                            </button>                            
                         </div>
                         <!-- <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_1920', 'zoom': true, 'zoom_delay': 1000}"/> -->
                         <field name="code"/>
@@ -168,18 +176,20 @@
                                 <field name="name"/>
                                 <field name="instructor_id"/>
                                 <field name="country_id"/>
-                                <field name="active"/>
+                                <field name="company_id" options="{'no_create':true, 'no_open':true}"/>
+                                <field name="active" invisible="1"/>
                             </group>
                             <group string="Schedule">
                                 <field name="start_date"/>
                                 <field name="duration" widget="float_time"/>
                                 <field name="seats"/>
                                 <field name="taken_seats" widget="progressbar"/>
+                                <field name="is_presents" widget="progressbar"/>
                             </group>
                         </group>
                         <notebook>
                             <!-- Add a new page for the attendee list -->
-                            <page string="Particpants">
+                            <page string="Participants">
                                 <field name="attendee_ids" widget="one2many_list" mode="tree" readonly="True">
                                     <tree>
                                         <field name="display_name" string="Employee"/>
@@ -188,11 +198,22 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Particpants Attendance">
-                                <field name="attendance_ids" readonly="True"/>
+                            <page string="Participants Attendance">
+                                <field name="attendance_ids" widget="one2many_list" mode="tree" readonly="True">
+                                    <tree>
+                                        <field name="attendee_id" options="{'no_create':true, 'no_open':true}"/>
+                                        <field name="attendance_date"/>
+                                        <field name="is_present"/>
+                                        <!-- <field name="criteria_id"/> -->
+                                        <field name="title_id"/>
+                                        <!-- <field name="description_id"/> -->
+                                        <!-- <field name="instructor_id"/> -->
+                                        <field name="session_name"/>
+                                    </tree>
+                                </field>                                
                             </page>                             
                         </notebook>
-                            
+                        <field name="meeting_id" invisible="1"/>
                     </sheet>
                 </form>
         </field>
@@ -218,8 +239,10 @@
         <field name="name">session.calendar</field>
         <field name="model">lms.session</field>
         <field name="arch" type="xml">
-            <calendar string="Session Calendar" date_start="start_date" date_stop="end_date" color="instructor_id">
+            <calendar string="Session Calendar" mode="month" date_start="start_date" date_stop="end_date" color="attendee_ids">
+                <field name="course_id"/>
                 <field name="name"/>
+                
             </calendar>
         </field>
     </record>
@@ -432,7 +455,36 @@
     <menuitem id="atten_session_menu" name="Quick Registration"
         parent="main_lms_menu"
         sequence="10"
-        action="launch_session_wizard"/>        
+        action="launch_session_wizard"/>
+
+    <record id="view_send_event_wizard_form" model="ir.ui.view">
+        <field name="name">event.wizard.form</field>
+        <field name="model">event.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Send Event Wizard" create="false">
+                <group>
+                    <group>
+                        <field name="meeting_date"/>
+                        <field name="meeting_subject" placeholder="e.g. Discuss proposal"/>
+                        <field name="location" placeholder="Event Location..."/> 
+                    </group>
+                    <group>
+                        <field name="reminder" widget="many2many_tags"/>
+                        <field name="duration" widget="float_time"/> 
+                        
+                    </group>
+                       
+                </group>
+                <field name="note" placeholder="Log a note..."/>                
+                
+                <footer>
+                    <button string="Send" type="object" name="create_event_send" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
 
 
 </odoo>

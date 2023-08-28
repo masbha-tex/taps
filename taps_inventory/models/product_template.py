@@ -82,6 +82,8 @@ class IncludeCateTypeInPT(models.Model):
         ('Plastic #5 CE', 'Plastic #5 CE'),
         ('Plastic #5 OE', 'Plastic #5 OE')
     ],string='FG Category', store=True, readonly=False, copy=False)
+
+    pack_qty = fields.Float(string="Qty/Pack", copy=True, default=0.0)
     #description_purchase = fields.Text('Purchase Description', related='pur_description', translate=True)
     # fg_product_type = fields.Selection([
     #     ('Auto Taffeta', 'Auto Taffeta'),

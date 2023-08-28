@@ -1,7 +1,19 @@
-.my_class [data-id="x_studio_super_expense_category"]{
-    width: 1000px ! important;
+.custom_class_tree table tbody > tr > td:nth-child(5) {
+    background-color: #422466 ! important;
+    color: white ! important;
 }
-    
+.custom_class_tree table tbody > tr > td:nth-child(6) {
+    background-color: #00A09D ! important;
+    color: white ! important;
+}
+.custom_class_tree table thead > tr > th:nth-child(5) {
+    background-color: #422466 ! important;
+    color: white ! important;
+}
+.custom_class_tree table thead > tr > th:nth-child(6) {
+    background-color: #00A09D ! important;
+    color: white ! important;
+}
 
     
 

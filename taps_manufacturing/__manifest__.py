@@ -39,6 +39,8 @@
         'views/manufacturing.xml',
         'views/operation_details.xml',
         'views/mrp_workcenter.xml',
+        'views/machine_list.xml',
+        # 'views/fg_delivery.xml',
         'data/ir_lot_sequence.xml',
         'report/report_action.xml',
         'report/mrp_lot_barcode.xml',

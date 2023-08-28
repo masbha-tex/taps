@@ -367,6 +367,7 @@ class SaleOrder(models.Model):
                     'botomwire_con':lines.botomwire_con,
                     'wire_con':lines.wire_con,
                     'pinbox_con':lines.pinbox_con,
+                    'color' : lines.color,
                 }]            
             
             #saleorder.order_ref.order_line#
@@ -1115,27 +1116,73 @@ class SaleOrderLine(models.Model):
     @api.depends('product_template_id','back_part','sizemm','dimension')
     def _compute_product_code(self):
         for rec in self:
-            if rec.product_template_id:
-                rec.product_code =''.join([word[0] for word in rec.product_template_id.name.split()])
-            if rec.sizemm:
-                rec.product_code =rec.product_code+"-"+str(rec.sizemm)
-            if rec.back_part:
-                if rec.back_part == "2 PIN SHANK":
-                    rec.product_code =rec.product_code+"-"+''.join("2SB")
-                if rec.back_part == "N/A":
-                    rec.product_code =rec.product_code+"-"+''.join("XX")
-                if rec.back_part == "SS SHANK":
-                    rec.product_code =rec.product_code+"-"+''.join("SS")
-                if rec.back_part == "BRASS SHANK" or rec.back_part == "BRASS EYELET":
-                    rec.product_code =rec.product_code+"-"+''.join("BR")
-                if rec.back_part == "MOVING SHANK":
-                    rec.product_code =rec.product_code+"-"+''.join("MS")
-                if rec.back_part == "NYLON SHANK":
-                    rec.product_code =rec.product_code+"-"+''.join("NY")
-                if rec.back_part == "ALUMINIUM SHANK":
-                    rec.product_code =rec.product_code+"-"+''.join("AL")
-            if rec.dimension:
-                rec.product_code = rec.product_code+"-"+str(rec.dimension)
+            if rec.product_template_id and "EYELET" not in rec.product_template_id.name:
+                if rec.product_template_id:
+                    rec.product_code =''.join([word[0] for word in rec.product_template_id.name.split()])
+                if rec.sizemm:
+                    rec.product_code =rec.product_code+"-"+str(rec.sizemm)
+                if rec.back_part:
+                    if rec.back_part == "2 PIN SHANK":
+                        rec.product_code =rec.product_code+"-"+''.join("2SB")
+                    if rec.back_part == "N/A":
+                        rec.product_code =rec.product_code+"-"+''.join("XX")
+                    if rec.back_part == "SS SHANK":
+                        rec.product_code =rec.product_code+"-"+''.join("SS")
+                    if rec.back_part == "BRASS SHANK" or rec.back_part == "BRASS EYELET":
+                        rec.product_code =rec.product_code+"-"+''.join("BR")
+                    if rec.back_part == "MOVING SHANK":
+                        rec.product_code =rec.product_code+"-"+''.join("MS")
+                    if rec.back_part == "NYLON SHANK":
+                        rec.product_code =rec.product_code+"-"+''.join("NY")
+                    if rec.back_part == "ALUMINIUM SHANK":
+                        rec.product_code =rec.product_code+"-"+''.join("AL")
+                if rec.dimension:
+                    rec.product_code = rec.product_code+"-"+str(rec.dimension)
+
+            elif rec.product_template_id and "EYELET"  in rec.product_template_id.name:
+                if rec.sizemm == '8':
+                    rec.product_code = "E40-80"
+                elif rec.sizemm == '9':
+                    rec.product_code = "E50-90"
+                elif rec.sizemm == '9.5':
+                    rec.product_code = "E50-95"
+                elif rec.sizemm == '10':
+                    rec.product_code = "E50-100"
+                elif rec.sizemm == '11':
+                    rec.product_code = "E50-110/E60-110"
+                elif rec.sizemm == '11.5':
+                    rec.product_code = "E70-115"
+                elif rec.sizemm == '12':
+                    rec.product_code = "E60-120/E70/120"
+                elif rec.sizemm == '12.5':
+                    rec.product_code = "E70-125"
+                elif rec.sizemm == '13':
+                    rec.product_code = "E70-130"
+                elif rec.sizemm == '14':
+                    rec.product_code = "E80-140"
+                elif rec.sizemm == '15':
+                    rec.product_code = "E80-150"
+                elif rec.sizemm == '16':
+                    rec.product_code = "E10-160"
+                elif rec.sizemm == '17':
+                    rec.product_code = "E90-170"
+                elif rec.sizemm == '18':
+                    rec.product_code = "E120-180"
+                elif rec.sizemm == '19':
+                    rec.product_code = "E120-190"
+                elif rec.sizemm == '20':
+                    rec.product_code = "E120-200"
+                elif rec.sizemm == '21':
+                    rec.product_code = "E120-210"
+                elif rec.sizemm == '22':
+                    rec.product_code = "E140-220/E120-220"
+                elif rec.sizemm == '25':
+                    rec.product_code = "E140-250"
+                elif rec.sizemm == '33.5':
+                    rec.product_code = "E200-335"
+                else:
+                    rec.product_code = ""
+                
                 
             
         

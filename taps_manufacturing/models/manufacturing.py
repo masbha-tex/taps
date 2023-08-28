@@ -414,7 +414,7 @@ class ManufacturingOrder(models.Model):
                                                                  'operation_of':'plan',
                                                                  'work_center':plan_for_id,
                                                                  'operation_by':'Planning',
-                                                                 'based_on':m.machine_no,
+                                                                 'based_on':m.machine_no.name,
                                                                  'next_operation':next_operation,
                                                                  'qty':qty
                                                                  })

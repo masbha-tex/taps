@@ -13,6 +13,8 @@ class RetentionMatrix(models.Model):
 
     name = fields.Char(string="Code", store=True,readonly=True, index=True, default='New')
     employee_id = fields.Many2one('hr.employee', string='Employee', store=True)
+    image_128 = fields.Image(related='employee_id.image_128')
+    image_1920 = fields.Image(related='employee_id.image_1920')
     company_id = fields.Many2one(related='employee_id.company_id', store=True, required=False)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
     color = fields.Integer()

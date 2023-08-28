@@ -54,6 +54,9 @@
                 <field name="done_qty" readonly="1" force_save="1"/>
                 <field name="balance_qty"/>
                 <field name="uotput_qty"/>
+                <field name="pack_qty"/>
+                <field name="pack_qty"/>
+                <field name="fr_pcs_pack"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>
                 <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>

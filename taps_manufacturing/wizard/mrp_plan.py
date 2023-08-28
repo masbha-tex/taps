@@ -20,6 +20,7 @@ class ManufacturingPlan(models.TransientModel):
     _description = 'Manufacturing Plan'
     _check_company_auto = True
 
+
     item = fields.Text(string='Item', readonly=True)
     shade = fields.Text(string='Shade', readonly=True)
     finish = fields.Text(string='Finish', readonly=True)
@@ -36,7 +37,13 @@ class ManufacturingPlan(models.TransientModel):
     plan_end = fields.Datetime(string='End Date')
     item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
-    plan_qty = fields.Float(string='Qty', store=True, default=0.0, digits='Product Unit of Measure')
+
+    @api.depends('machine_line.material_qty')
+    def _compute_plan_qty(self):
+        for plan in self:
+            plan.plan_qty = sum(line.material_qty for line in plan.machine_line)
+    
+    plan_qty = fields.Float(string='Qty', store=True, default=0.0, digits='Product Unit of Measure', compute='_compute_plan_qty', readonly=False)
     
     machine_line = fields.One2many('machine.line', 'plan_id', string='Machines',copy=True, auto_join=True)
     
@@ -88,6 +95,7 @@ class ManufacturingPlan(models.TransientModel):
         # if  self.plan_qty > self.material_qty:
         #     raise UserError(('Split quantity should not greterthen the base quantity'))
         #     return
+        
         mo_ids = self.env.context.get("active_ids")
         production = self.env["manufacturing.order"].browse(mo_ids)
         
@@ -105,15 +113,29 @@ class MachineLine(models.TransientModel):
     
     sequence = fields.Integer(string='Sequence', default=10)
     plan_id = fields.Many2one('mrp.plan', string='Plan ID', ondelete='cascade', index=True, copy=False)
-    machine_no = fields.Selection([
-        ('m1', 'M/C 1'),
-        ('m2', 'M/C 2'),
-        ('m3', 'M/C 3'),
-        ('m4', 'M/C 4')],
-        string='Machine No')
+
+    machine_no = fields.Many2one('machine.list', string='Machine No', required=True)
+    # machine_no = fields.Selection([
+    #     ('m1', 'M/C 1'),
+    #     ('m2', 'M/C 2'),
+    #     ('m3', 'M/C 3'),
+    #     ('m4', 'M/C 4')],
+    #     string='Machine No')
+    lots = fields.Integer(string='Lots', required=True)
     material_qty = fields.Float('Quantity',default=1.0, digits='Product Unit of Measure',required=True)
     
-    
+
+    @api.onchange('lots')
+    def _get_qty_bylots(self):
+        for l in self:
+            l_qty = l.machine_no.capacity * l.lots
+            if l.plan_id.material_qty < l_qty:
+                l_qty = l.plan_id.material_qty
+            l.material_qty = l_qty
+
+            #l.plan_id.material_qty
+
+            
 
 #     @api.depends('product_qty')
 #     def _compute_qty(self):
