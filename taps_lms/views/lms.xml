@@ -127,15 +127,7 @@
     </record>
 
 
-    <menuitem 
-        id="main_lms_menu" 
-        name="LMS"
-        groups="taps_lms.group_user_lms"
-        web_icon="taps_lms,static/description/icon.png"/>
 
-    <menuitem id="lms_menu" name="Operation" sequence="2" parent="main_lms_menu"/>
-
-    <menuitem id="courses_menu" name="Courses" parent="lms_menu" sequence="2" action="course_list_action"/>
 
     <!-- session form view --> 
     <record model="ir.ui.view" id="session_form_view">
@@ -427,9 +419,15 @@
         <field name="tag">taps_lms_greeting_message</field>
     </record>    
 
+    <menuitem 
+        id="main_lms_menu" 
+        name="LMS"
+        groups="taps_lms.group_user_lms"
+        web_icon="taps_lms,static/description/icon.png"/>
+
     <menuitem id="session_menu" name="Sessions"
-              parent="lms_menu"
-              sequence="3"
+              parent="main_lms_menu"
+              sequence="2"
               action="session_list_action"/>
 
 
