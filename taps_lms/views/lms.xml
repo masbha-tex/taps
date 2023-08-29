@@ -10,7 +10,6 @@
                 <field name="criteria_id"/>
                 <field name="title_ids"/>
                 <field name="description"/>
-                <!-- <field name="responsible_id" options="{'no_create':true, 'no_open':true}" string="Facilitator"/> -->
             </tree>
         </field>
     </record>
