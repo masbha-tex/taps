@@ -85,13 +85,15 @@ class PurchaseOrder(models.Model):
                    FROM purchase_order po
                    JOIN res_company comp ON (po.company_id = comp.id)
                    WHERE po.state in ('purchase', 'done') AND po.itemtype='spares'
-                     AND po.company_id = %s
+                     AND po.company_id in %s
                      UNION
                      select 0 as RawPOvalue) as a
                 """
 
-        #self.env.cr.execute(query, (one_week_ago, self.env.company.id))
-        self._cr.execute(query, (one_week_ago, self.env.company.id))
+        companies_ids =  self._context.get('allowed_company_ids')
+        #self.env['res.company'].browse(self._context.get('allowed_company_ids')).ids
+        # companies = ','.join([str(i) for i in sorted(companies_ids.ids)])
+        self._cr.execute(query, [one_week_ago, tuple(companies_ids)] )
         res = self.env.cr.fetchone()
         currency = self.env.company.currency_id
         #result['all_sent_rfqs'] = res[0] or 0
@@ -118,12 +120,13 @@ class PurchaseOrder(models.Model):
                    FROM purchase_order po
                    JOIN res_company comp ON (po.company_id = comp.id)
                    WHERE po.state in ('purchase', 'done') AND po.itemtype='raw'
-                     AND po.company_id = %s group by po.company_id
+                     AND po.company_id in %s group by po.company_id
                      Union
                      select 0 as RawBudget,0 as SpareBudget,0 as RawPOvalue
                      ) as a
                 """
-        self._cr.execute(query, (one_week_ago, self.env.company.id))
+        
+        self._cr.execute(query, [one_week_ago, tuple(companies_ids)])
         res = self.env.cr.fetchone()
         currency = self.env.company.currency_id
         povalue = round(res[2] or 0, 2)

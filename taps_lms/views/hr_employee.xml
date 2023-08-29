@@ -11,7 +11,7 @@
                     <group>
                         <field name="session_ids">
                             <tree>
-                                <field name="course_id"/>
+                                <field name="name"/>
                                 <field name="start_date"/>
                                 <field name="duration" widget="float_time" sum="Sum of Duration"/>
                                 <field name="seats"/>

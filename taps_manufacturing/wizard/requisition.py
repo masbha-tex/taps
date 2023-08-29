@@ -32,7 +32,8 @@ class ManufacturingPlan(models.TransientModel):
     #     ('painting', 'Painting'),
     #     ('sliassembly', 'Slider Assembly')],
     #     string='Requisition For')
-    material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
+    material_qty = fields.Float('Material Qty', readonly=True)
+    materials_qty = fields.Char('Material Qty.', readonly=True)
     # work_center = fields.Many2one('mrp.workcenter', string='Requisition For') self.work_center.id
 
     
@@ -48,8 +49,13 @@ class ManufacturingPlan(models.TransientModel):
         res = super().default_get(fields_list)
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_ids")
+        material_qty = None
+        # f"{record.prefix} - {record.float_value}"
+        tape = slider = top = bottom = pinbox = wire = 0.0
         if active_model == 'operation.details':
             operation = self.env["operation.details"].browse(active_id)
+            
+            
             in_len = len(operation)
             i = 0
             all_mrp_lines = ''

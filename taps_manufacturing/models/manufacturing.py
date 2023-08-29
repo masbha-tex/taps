@@ -46,7 +46,7 @@ class ManufacturingOrder(models.Model):
     product_template_id = fields.Many2one(
         'product.template', string='Product',
         related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)])
-    fg_categ_type = fields.Selection(related='product_template_id.fg_categ_type', string='Item')
+    fg_categ_type = fields.Selection(related='product_template_id.fg_categ_type', string='Item', store=True)
     product_uom = fields.Many2one('uom.uom', string='Unit', related='product_template_id.uom_id')
     product_uom_qty = fields.Float(string='Quantity', related='sale_order_line.product_uom_qty', digits='Product Unit of Measure', readonly=True)
     done_qty = fields.Float(string='Done Qty', digits='Product Unit of Measure', readonly=False)
@@ -383,41 +383,48 @@ class ManufacturingOrder(models.Model):
         #raise UserError((plan))
         if machine_line:
             for m in machine_line:
-                for p in plan:
-                    qty = 0.0
-                    mrp_lines = None
-                    sale_lines = None
-                    next_operation = None
-                    mrp_line = sal_line = None
-                    if material == 'tape':
-                        next_operation = 'Dyeing Output'
-                        p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.shade == p[1])
-                        mrp_lines = p_q._ids2str('ids')
-                        sale_lines = p_q._ids2str('sale_order_line')
-                        if len(p_q) > 1:
-                            qty = m.material_qty
-                        else:
-                            mrp_line = p_q.id
-                            sal_line = p_q.sale_order_line
-                            qty = sum(p_q.mapped('dy_rec_plan_qty'))
+                # for p in plan:
+                qty = 0.0
+                mrp_lines = None
+                sale_lines = None
+                next_operation = None
+                mrp_line = sal_line = None
+                if material == 'tape':
+                    next_operation = 'Dyeing Output'
+                    p_q = production.filtered(lambda sol: sol.oa_id.id == plan[0][0] and sol.shade == plan[0][1])
+                    mrp_lines = p_q._ids2str('ids')
+                    sale_lines = p_q._ids2str('sale_order_line')
+                    if len(p_q) > 1:
+                        qty = m.material_qty
+                    else:
+                        mrp_line = p_q.id
+                        sal_line = p_q.sale_order_line
+                        qty = sum(p_q.mapped('dy_rec_plan_qty'))
+                rest_q = m.material_qty
+                for lots in range(m.lots):
+                    if rest_q > m.machine_no.capacity:
+                        qty = m.machine_no.capacity
+                    else:
+                        qty = rest_q
                     
                     mrp_ = self.env['operation.details'].create({'mrp_lines':mrp_lines,
-                                                                 'sale_lines':sale_lines,
-                                                                 'mrp_line':mrp_line,
-                                                                 'sale_order_line':sal_line,
-                                                                 'oa_id':p[0],
-                                                                 'buyer_name':p_q[0].buyer_name,
-                                                                 'product_template_id':p_q[0].product_template_id.id,
-                                                                 'action_date':plan_start,
-                                                                 'shade':p[1],
-                                                                 'finish':p[2],
-                                                                 'operation_of':'lot',
-                                                                 'work_center':plan_for_id,
-                                                                 'operation_by':'Planning',
-                                                                 'based_on':m.machine_no.name,
-                                                                 'next_operation':next_operation,
-                                                                 'qty':qty
-                                                                 })
+                                                             'sale_lines':sale_lines,
+                                                             'mrp_line':mrp_line,
+                                                             'sale_order_line':sal_line,
+                                                             'oa_id':plan[0][0],
+                                                             'buyer_name':p_q[0].buyer_name,
+                                                             'product_template_id':p_q[0].product_template_id.id,
+                                                             'action_date':plan_start,
+                                                             'shade':plan[0][1],
+                                                             'finish':plan[0][2],
+                                                             'operation_of':'lot',
+                                                             'work_center':plan_for_id,
+                                                             'operation_by':'Planning',
+                                                             'based_on':m.machine_no.name,
+                                                             'next_operation':next_operation,
+                                                             'qty':qty
+                                                             })
+                    rest_q = rest_q - m.machine_no.capacity
 
 
         else:

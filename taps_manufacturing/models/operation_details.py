@@ -43,7 +43,7 @@ class OperationDetails(models.Model):
     buyer_name = fields.Char(string='Buyer', readonly=True)
     product_id = fields.Many2one('product.product', 'Product', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", index=True)
     product_template_id = fields.Many2one('product.template', domain=[('sale_ok', '=', True)])
-    fg_categ_type = fields.Selection(string='Item', related='product_template_id.fg_categ_type')
+    fg_categ_type = fields.Selection(string='Item', related='product_template_id.fg_categ_type', store=True)
     
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', related='product_template_id.uom_id')
     

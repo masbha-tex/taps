@@ -64,3 +64,10 @@ $table-hover-bg: #f1f1f1;
     background-color: $table-hover-bg;
   }
 }
+.max_width_field {
+    width: 300px;
+}
+.custom_column [data-name="remarks"]{
+width: 300px !important;
+max-width: 300px !important;
+}

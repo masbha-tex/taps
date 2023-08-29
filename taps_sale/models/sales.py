@@ -123,8 +123,40 @@ class SaleOrder(models.Model):
     garments = fields.Char(string='Garments')
     corrosions_test = fields.Char(string='Corrosions Test Method')
     brand = fields.Char(string='Brand')
+
     
-    
+    def _action_daily_oa_release_email(self):
+        subject = 'Daily Released OA'
+        body = 'Hello'
+        mail_values = {
+            'email_from': self.env.user.email_formatted,
+            'author_id': self.env.user.partner_id.id,
+            'model': None,
+            'res_id': None,
+            'subject': subject,
+            'body_html': body,
+            'auto_delete': True,
+            'email_to': self.env.user.email_formatted
+        }
+        try:
+            template = self.env.ref('taps_sale.view_email_template_corporate_identity', raise_if_not_found=True)
+            
+        except ValueError:
+            _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')
+        else:
+            
+            template_ctx = {
+                'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA')),
+                'model_description': self.env['ir.model']._get('sale.order').display_name,
+                'company': self.env.company,
+            }
+            body = template._render(template_ctx, engine='ir.qweb')
+            mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+            
+        self.env['mail.mail'].sudo().create(mail_values)
+  
+
+        
     
     def _total_pi_quantity(self):
         for rec in self:

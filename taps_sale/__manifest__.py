@@ -41,7 +41,7 @@
         'data/daily_oa_release_email.xml',
         
         'data/oa_release.xml',
-        'data/mail_template_action.xml',
+        # 'data/mail_template_action.xml',
         #'views/fg_product.xml',
         # 'views/assets.xml',
         'views/variant_templates.xml',

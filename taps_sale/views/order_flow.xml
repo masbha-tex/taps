@@ -5,15 +5,17 @@
         <field name="model">order.flow</field>
         <field name="arch" type="xml" >
             <search string="Order Flow">
-<!--                 <filter string="RM" name="rm_stock" domain="[('product_id.default_code', 'like', 'R_')]" />
-                <filter string="Spare" name="spare_stock" domain="[('product_id.default_code', 'like', 'S_')]" /> -->
+                <field name="order_id"/>
+                <field name="product"/>
+                <filter string="OA Not Released" name="oa_not_released" domain="[('oa_qty', '=', 0.0)]" />
+                <!-- <filter string="Spare" name="spare_stock" domain="[('product_id.default_code', 'like', 'S_')]" /> -->
 <!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
                 <separator/>
-                <field name="order_id" string="Sale Order"/>
-<!--                 <group expand="0" string="Group By">
-                    <filter name="saleorder_group" string="Sale Order" domain="[]" context="{'group_by': 'order_ref'}"/>
-                    <filter name="oa_group" string="OA Number" domain="[]" context="{'group_by': 'order_id'}"/>
-                </group> -->
+                <filter string="Order Date" name="action_date_filter" date="date_order"/>
+                <group expand="0" string="Group By">
+                    <filter name="type_group" string="Type" domain="[]" context="{'group_by': 'pi_type'}"/>
+                    <filter name="state_group" string="Status" domain="[]" context="{'group_by': 'state'}"/>
+                </group>
             </search>
         </field>
     </record>
@@ -50,6 +52,7 @@
                 <field name="oa_value"/>
                 <field name="quantity_balance"/>
                 <field name="value_balance"/>
+                <field name="state"/>
 
             </tree>
         </field>

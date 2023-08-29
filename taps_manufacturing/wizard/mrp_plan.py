@@ -43,13 +43,17 @@ class ManufacturingPlan(models.TransientModel):
         for plan in self:
             plan.plan_qty = sum(line.material_qty for line in plan.machine_line)
     
-    plan_qty = fields.Float(string='Qty', store=True, default=0.0, digits='Product Unit of Measure', compute='_compute_plan_qty', readonly=False)
+    plan_qty = fields.Float(string='Plan Qty', readonly=False, store=True, default=0.0, digits='Product Unit of Measure', compute='_compute_plan_qty')
     
     machine_line = fields.One2many('machine.line', 'plan_id', string='Machines',copy=True, auto_join=True)
-    
+
+
+# , inverse='_inverse_plan_qty'
 
     @api.model
     def default_get(self, fields_list):
+        #selected_companies = self.env['res.company'].browse(self._context.get('allowed_company_ids'))
+        # raise UserError((self.env['res.company'].browse(self._context.get('allowed_company_ids')).ids))
         res = super().default_get(fields_list)
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_ids")
@@ -61,6 +65,8 @@ class ManufacturingPlan(models.TransientModel):
         res["item_qty"] = sum(production.mapped('balance_qty'))
         return res
     
+    def _inverse_plan_qty(self):
+        pass    
     # @api.onchange('machine_line.material_qty')
     # def _onchange_qty(self):
     #     raise UserError((sum(self.machine_line.mapped('material_qty'))))

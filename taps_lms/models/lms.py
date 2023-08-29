@@ -22,7 +22,7 @@ class Course(models.Model):
     title_ids = fields.Many2one('lms.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")       
     description = fields.Text('Content', related="title_ids.description",help='Add content description here...')
     responsible_id = fields.Many2one('res.users', ondelete='set null', string="Responsible", index=True, tracking=True)
-    session_ids = fields.One2many('lms.session', 'course_id', string="Sessions")
+    # session_ids = fields.One2many('lms.session', 'course_id', string="Sessions")
     state = fields.Selection([('draft', 'Draft'), ('submitted', 'Submitted'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancel', 'Cancel')
                               ], string='Status', readonly=False, tracking=True, default='draft', copy=False)
     course_date = fields.Date('Course date', required=True, default=fields.Date.today())
@@ -111,7 +111,7 @@ class Session(models.Model):
     _name = 'lms.session'
     _description = "Training Sessions"
     _inherit = ['mail.thread']
-    _rec_name = 'course_id'    
+    _rec_name = 'name'
 
     def get_default_duration(self):
         ICP = self.env['ir.config_parameter'].sudo()
@@ -128,15 +128,19 @@ class Session(models.Model):
     #     # raise UserError((self.course_id.responsible_id.partner_id.id))
     #     return {'domain': {'instructor_id': [('user_id', '=', self.course_id.responsible_id.id)]}}
     code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
-    name = fields.Many2one('lms.session.venue', string='Venue')
+    criteria_id = fields.Many2one('lms.criteria', required=True, string='Criteria') 
+    name = fields.Many2one('lms.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")       
+    description = fields.Text('Content', related="name.description",help='Add content description here...')    
+    venue = fields.Many2one('lms.session.venue', string='Venue')
     company_id = fields.Many2one('res.company', string='Company')
     start_date = fields.Datetime(string="Plan Date", default=lambda self: fields.datetime.today().strftime('%Y-%m-%d %H:00:00'))
     duration = fields.Float(digits=(6, 2), help="Duration in hours", default=get_default_duration)
+    plan_duration = fields.Float(digits=(6, 2), help="Plan Duration in hours", compute='number_of_plan_duration', store=True, string="Plan Duration" )
     end_date = fields.Datetime(string="End Date", store=True, compute='_get_end_date', inverse='_set_end_date')
     seats = fields.Integer(string="Number of seats", default=get_default_seats)
-    instructor_id = fields.Many2one('hr.employee', string="Facilitator")    
+    instructor_id = fields.Many2one('res.partner', string="Facilitator")    
     country_id = fields.Many2one('res.country', related='instructor_id.country_id')
-    course_id = fields.Many2one('lms.course', ondelete='cascade', string="Course", required=True)
+    # course_id = fields.Many2one('lms.course', ondelete='cascade', string="Course", required=True)
     attendee_ids = fields.Many2many('hr.employee', string="Participants")
     taken_seats = fields.Float(string="Taken seats", compute='_taken_seats')
     active = fields.Boolean(string='Active', default=True)
@@ -155,7 +159,7 @@ class Session(models.Model):
     def name_get(self):
         result = []
         for record in self:
-            name = f"[{record.code}] {record.name.name}"
+            name = f"{record.name.name}"
             result.append((record.id, name))
         return result
     @api.model
@@ -278,9 +282,10 @@ class Session(models.Model):
             },
         }        
 
-
-    def number_of_attendees(self):
-        return len(self.attendee_ids)
+    @api.depends('seats', 'duration')
+    def number_of_plan_duration(self):
+        for record in self:
+            record.plan_duration = record.seats * record.duration
 
     def action_calendar_event(self):
         self.ensure_one()
@@ -358,7 +363,7 @@ class Session(models.Model):
     @api.constrains('instructor_id', 'attendee_ids')
     def _check_instructor_not_in_attendees(self):
         for r in self:
-            if r.instructor_id and r.instructor_id in r.attendee_ids:
+            if r.instructor_id and r.instructor_id in r.attendee_ids.related_partner_id:
                 raise ValidationError("A session's instructor can't be an attendee")
 
     @api.depends('seats', 'attendee_ids')
@@ -406,11 +411,11 @@ class SessionAttendance(models.Model):
     attendance_date = fields.Datetime(string="Attendance Date", default=lambda self: fields.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), required=True)
     is_present = fields.Boolean(string="Is Present", default=True)
     session_id = fields.Many2one('lms.session', string="Session", required=True, ondelete='cascade')
-    criteria_id = fields.Many2one(related='session_id.course_id.criteria_id', store=True)
-    title_id = fields.Many2one(related='session_id.course_id.title_ids', store=True)
-    description_id = fields.Text(related='session_id.course_id.description', store=True)
+    criteria_id = fields.Many2one(related='session_id.criteria_id', store=True)
+    title_id = fields.Many2one(related='session_id.name', store=True)
+    description_id = fields.Text(related='session_id.description', store=True)
     instructor_id = fields.Many2one(related='session_id.instructor_id', store=True)    
-    session_name = fields.Many2one(related='session_id.name', store=True)
+    session_name = fields.Many2one(related='session_id.venue', store=True)
     start_date = fields.Datetime(related='session_id.start_date', string="Training Date", store=True)
     duration = fields.Float(related='session_id.duration', store=True)   
 

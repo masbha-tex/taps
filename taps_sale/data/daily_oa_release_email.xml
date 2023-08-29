@@ -6,81 +6,18 @@
             <field name="model_id" ref="model_sale_order"/>
             <field name="type">ir.actions.server</field>
             <field name="state">code</field>
-            <field name="code">model._action_daily_oa_release_email((757,758,3204,796,1754,810,777,2107))</field>
+            <field name="code">model._action_daily_oa_release_email()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="nextcall">2023-01-05 11:00:00</field>
         </record>
-        <record id="daily_oa_release_email_template" model="mail.template">
-            <field name="name">OA: Daily Released OA Send by email</field>
-            <field name="model_id" ref="taps_sale.model_sale_order"/>
-            <field name="email_from">${user.email_formatted | safe}</field>
-            <field name="email_to">	${(object.email)}</field>
-            <field name="subject">Attendance Report dated up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))} for ${object.name}</field>
-            <field name="body_html" type="html">
-                <div class="container" style="margin:0px;padding: 0px;">
-                <div>
-                    <p>Dear ${object.name},</p>
-                    <p>Please find below OA report for your direct reportings dated up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))}</p>
-                    <br/><br/>
-                </div>
-
-                <style type="text/css">  
-                    .tem_table{
-                        display:table;
-                        table-layout:fixed;
-                        font-size:10px;
-                        width:100%;     
-                    }
-                    .tem_table_1{
-                        display:table;
-                        table-layout:fixed;
-                        width: 60%;
-                        font-size:11px; 
-                    }
-                </style>
-
-
-                <table class="tem_table table-responsive" align="center" cellspacing="0" cellpadding="0" border="1">
-                    <thead>
-                            <tr style="color:white;background-color:rgb(113, 75, 98);">
-                            <th colspan="2" style="text-align:center;width:8%">Sales Person</th>
-                            <th colspan="2" style="text-align:center;width:5%">Date</th>
-                            <th colspan="3" style="text-align:left;width:15%">Customer</th>
-                            <th colspan="2" style="text-align:center;width:5%">Buyer</th>
-                            <th colspan="1" style="text-align:center;width:3%">IN</th>
-                            <th colspan="1" style="text-align:center;width:5%">Product</th>
-                            <th colspan="2" style="text-align:center;width:5%">Finish</th>
-                            <th colspan="1" style="text-align:center;width:5%">Slider</th>
-                            <th colspan="1" style="text-align:center;width:3%">PI No</th>
-                            <th colspan="2" style="text-align:center;width:5%">OA No</th>
-                            <th colspan="2" style="text-align:center;width:5%">CM</th>
-                            <th colspan="1" style="text-align:center;width:5%">INCH</th>
-                            <th colspan="1" style="text-align:center;width:5%">Qty/Pcs</th>
-                            <th colspan="1" style="text-align:center;width:5%">Payment Terms</th>
-                            <th colspan="1" style="text-align:center;width:5%">Pending Qty</th>
-                            <th colspan="1" style="text-align:center;width:3%">Tentative LC Date</th>
-                            <th colspan="1" style="text-align:center;width:3%">Total WT(Kg)</th>
-                            <th colspan="1" style="text-align:center;width:5%">CM</th>
-                            <th colspan="2" style="text-align:center;width:5%">INCH</th>
-
-                        </tr>
-                    </thead>
-                </table>
-
-
-                % set order= object.env['sale.order'].search([('sales_type', '=', 'sale'))])
-				% for line in order:
-                       <div>${line.name}</div>
-				% endfor
-
-               
-
-                <div style="text-align:center;">
-                <p>** This is an auto generated mail from Odoo. Please do not reply **</p>
-                </div></div>
-            </field>
-        </record>
+    <record id="email_template_oa" model="mail.template">
+        <field name="name">QWeb OA Daily Email</field>
+        <field name="body_type">qweb</field>
+        <field name="body_view_id" ref="view_email_template_oa" />
+        <field name="model_id" ref="model_sale_order" />
+        <field name="subject">QWeb demo email</field>
+    </record>
     </data>
 </odoo>
