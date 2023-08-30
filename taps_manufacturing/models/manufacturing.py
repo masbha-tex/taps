@@ -201,6 +201,7 @@ class ManufacturingOrder(models.Model):
 
     def get_leadtime(self):
         for s in self:
+            # raise UserError(((datetime.now() - s.date_order).days))
             s.lead_time = (datetime.now() - s.date_order).days
     
     def _balance_qty(self):

@@ -33,7 +33,7 @@ class ManufacturingPlan(models.TransientModel):
     #     ('sliassembly', 'Slider Assembly')],
     #     string='Requisition For')
     material_qty = fields.Float('Material Qty', readonly=True)
-    materials_qty = fields.Char('Material Qty.', readonly=True)
+    materials_qty = fields.Char('Materials Qty.', readonly=True)
     # work_center = fields.Many2one('mrp.workcenter', string='Requisition For') self.work_center.id
 
     
@@ -55,7 +55,7 @@ class ManufacturingPlan(models.TransientModel):
         if active_model == 'operation.details':
             operation = self.env["operation.details"].browse(active_id)
             
-            
+            res["material_qty"] = sum(production.mapped('qty'))
             in_len = len(operation)
             i = 0
             all_mrp_lines = ''
@@ -75,6 +75,16 @@ class ManufacturingPlan(models.TransientModel):
         res["item"] = production[0].fg_categ_type
         # res["item_qty"] = sum(production.mapped('balance_qty'))
         res["shade_finish"] = production[0].shade
+        
+        tape = sum(production.mapped('tape_con'))
+        slider = sum(production.mapped('slider_con'))
+        wire = sum(production.mapped('wire_con'))
+        top = sum(production.mapped('topwire_con'))
+        bottom = sum(production.mapped('botomwire_con'))
+        pinbox = sum(production.mapped('pinbox_con'))
+        all_materials = f"{'Tape'} : {tape} , {'Slider'} : {slider} , {'Wire'} : {wire} , {'Top'} : {top} , {'Bottom'} : {bottom} , {'Pinbox'} : {pinbox}"
+        res["materials_qty"] = all_materials
+        
         return res 
     
     # @api.onchange('requisition_for')

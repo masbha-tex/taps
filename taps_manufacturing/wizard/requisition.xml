@@ -10,7 +10,8 @@
                         <field name="item"/>
                         <field name="shade_finish"/>
                         <field name="work_center"/>
-                        <field name="material_qty"/>
+                        <field name="material_qty" invisible="context.get('active_model') == 'manufacturing.order'"/>
+                        <field name="materials_qty" invisible="context.get('active_model') == 'operation.details'"/> 
                     </group>
                 </group>
                 <group>

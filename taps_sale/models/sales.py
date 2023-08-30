@@ -86,6 +86,7 @@ class SaleOrder(models.Model):
     pi_type = fields.Selection([
             ('regular', 'Regular'),
             ('block', 'Block'),
+            ('sample_pi', 'Sample Pi'),
             ('replacement', 'Replacement'),],
             string='Type', default='regular')
     cause_of_revision = fields.Text(string='Cuase')
