@@ -41,7 +41,7 @@ class OrderFlow(models.Model):
     oa_value = fields.Monetary(string='OA Value')
     quantity_balance = fields.Monetary(string='Balance Qty', store=True)
     value_balance = fields.Monetary(string='Balance Value', store=True)
-    state = fields.Selection(related='order_id.state',string='Status', store=True)
+    state = fields.Selection(related='order_id.state',string='Status')
     
     def init(self):
         tools.drop_view_if_exists(self._cr, 'order_flow')
