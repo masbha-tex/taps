@@ -66,6 +66,8 @@ class OperationDetails(models.Model):
         ('plan', 'Planning'),
         ('lot', 'Create Lot'),
         ('output', 'Output'),
+        ('qc', 'Quality Check'),
+        ('input', 'Input'),
         ('req', 'Requisition')],
         string='Operation Of', help="What has done")
     work_center = fields.Many2one('mrp.workcenter', string='Assign To', store=True, readonly=True, help="Assign to")
@@ -75,13 +77,13 @@ class OperationDetails(models.Model):
         ('Planning', 'Planning'),
         ('Dyeing', 'Dyeing'),
         ('Dyeing Lot', 'Dyeing Lot'),
-        ('Dyeing Output', 'Dyeing Output'), 
+        ('Dyeing Output', 'Dyeing Output'),
         ('Dyeing Qc', 'Dyeing Qc'),
         ('Chain Making', 'Chain Making'),
         ('CM Lot', 'CM Lot'),
         ('CM Output', 'CM Output'),
-        ('Deeping Output', 'Deeping Output'),
-        ('Deeping Qc', 'Deeping Qc'),
+        ('Dipping Output', 'Dipping Output'),
+        ('Dipping Qc', 'Dipping Qc'),
         ('Assembly', 'Assembly'),
         ('Assembly Output', 'Assembly Output'),
         ('Assembly Qc', 'Assembly Qc'),
@@ -148,14 +150,43 @@ class OperationDetails(models.Model):
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_lot")
         #action["domain"] = [('default_id','=',self.mapped('id'))]
         return action
+    
+    def button_createmrplot(self):
+        # self.ensure_one()
+        self._check_company()
+
+        in_len = len(self)
+        i = 0
+        all_mrp_lines = ''
+        # raise UserError((in_len))
+        for op in self:
+            if i == in_len-1:
+                all_mrp_lines = all_mrp_lines + op.mrp_lines
+            else:
+                all_mrp_lines = all_mrp_lines + op.mrp_lines + ','
+            i += 1
+            
+        all_mrp_lines_st = str(all_mrp_lines)
+        mrp_ids = [int(id_str) for id_str in all_mrp_lines_st.split(',')]
         
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_manufacturing_process_order")
+        # raise UserError((self.oa_id.ids))
+        # action['search_default_oa_id'] = self.oa_id
+
+        # action = self.env["ir.actions.actions"]._for_xml_id("stock.view_manufacturing_process_tree")
+        action['views'] = [
+            (self.env.ref('taps_manufacturing.view_manufacturing_process_tree').id, 'tree'),
+        ]
+        # action['context'] = self.env.context
+        action['domain'] = [('id', 'in', mrp_ids),('oa_id', 'in', self.oa_id.ids)]
+        return action
+    
     def set_requisition(self,company_id,active_model,ope_id,work_center,product_line):
-        
         operation = self.env["operation.details"].search([])
         mrp_lines = sale_lines = parent_ids = oa_ids = None
         
         if active_model == 'manufacturing.order':
-            raise UserError(('sdfdfds'))
+            # raise UserError(('sdfdfds'))
             m_order = self.env["manufacturing.order"].browse(ope_id)
             mrp_lines = ope_id
             sale_lines = ','.join([str(i) for i in sorted(m_order.sale_order_line.ids)])
@@ -298,13 +329,62 @@ class OperationDetails(models.Model):
         if vals.get('operation_of') == "lot":
             ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
             vals['code'] = ref
-        
+        # raise UserError((vals))
         result = super(OperationDetails, self).create(vals)
         return result                
-    
+
+    def set_mrp_output(self,operation,mrplines,qty,material):
+        mrp_data = self.env["manufacturing.order"].browse(mrplines)
+        # 'Dyeing Qc','CM Output','Dipping Qc','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'
+
+        rest_qty = qty
+        for m in mrp_data:
+            if operation == 'Dyeing Qc':
+                if m.dyeing_plan_qty > 0:
+                    up_date = m.update({'dyeing_output': m.dyeing_output + rest_qty})
+                    break
+            if operation == 'CM Output':
+                up_date = m.update({'chain_making_done': m.chain_making_done + rest_qty})
+                break
+            if operation == 'Dipping Qc':
+                up_date = m.update({'diping_done': m.diping_done + rest_qty})
+                break
+            if operation == 'Assembly Qc':
+                up_date = m.update({'assembly_done': m.assembly_done + rest_qty})
+                break
+            if operation in ('Plating Output','Painting Output'):
+                
+                if material == 'slider':
+                    if m.plating_plan_qty > 0:
+                        up_date = m.update({'plating_output': m.plating_output + rest_qty})
+                    break
+                    
+                if material == 'top':
+                    if m.top_plat_plan_qty > 0:
+                        up_date = m.update({'top_plat_output': m.top_plat_output + rest_qty})
+                    break
+                    
+                if material == 'bottom':
+                    if m.bot_plat_plan_qty > 0:
+                        up_date = m.update({'bot_plat_output': m.bot_plat_output + rest_qty})
+                    break
+                    
+                if material == 'pinbox':
+                    if m.pin_plat_plan_qty > 0:
+                        up_date = m.update({'pin_plat_output': m.pin_plat_output + rest_qty})
+                    break
+                    
+            if operation == 'Slider Assembly Output':
+                if m.sli_asmbl_plan_qty > 0:
+                    up_date = m.update({'sli_asmbl_output': m.sli_asmbl_output + rest_qty})
+                    break
+            
+
+           # dyeing_output plating_output top_plat_output bot_plat_output pin_plat_output sli_asmbl_output chain_making_done diping_done assembly_done packing_done            
 
     def set_output(self,output_model,mo_ids,manuf_date,qty,output_of):
-
+        # raise UserError((self,output_model,mo_ids,manuf_date,qty,output_of))
+        
         pack_qty = 0
         fraction_pc_of_pack = 0
         operation = self.env["operation.details"].browse(mo_ids)
@@ -328,7 +408,8 @@ class OperationDetails(models.Model):
                 if pr_pac_qty:
                     pack_qty = math.ceil(qty/pr_pac_qty)
                     fraction_pc_of_pack = ((qty/pr_pac_qty) % 1)*qty
-                    
+        if operation.next_operation in('Dyeing Qc','CM Output','Dipping Qc','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'):
+           up = self.set_mrp_output(operation.next_operation,operation.mrp_lines,qty)
             
         next = None
         w_center = operation.work_center.id
@@ -345,31 +426,38 @@ class OperationDetails(models.Model):
             else:
                 next = 'Done'
 
-        ope = operation.create({'mrp_lines':operation.mrp_lines,
-                                'sale_lines':operation.sale_lines,
-                                'mrp_line':operation.mrp_line,
-                                'sale_order_line':operation.sale_order_line,
-                                'parent_id':mo_ids,
-                                'oa_id':operation.oa_id.id,
-                                'product_template_id':operation.product_template_id.id,
-                                'action_date':datetime.now(),
-                                'shade':operation.shade,
-                                'finish':operation.finish,
-                                'sizein':operation.sizein,
-                                'sizecm':operation.sizecm,
-                                'slidercodesfg':operation.slidercodesfg,
-                                'top':operation.top,
-                                'bottom':operation.bottom,
-                                'pinbox':operation.pinbox,
-                                'operation_of':'output',
-                                'work_center': w_center,
-                                'operation_by':operation.work_center.name,
-                                'based_on':'Lot Code',
-                                'next_operation':next,
-                                'qty':qty,
-                                'pack_qty':pack_qty,
-                                'fr_pcs_pack':fraction_pc_of_pack
-                                })
+        operation_of = 'output'
+        if operation.operation_of == 'qc':
+            operation_of = 'input'
+
+        # raise UserError((w_center,operation.work_center.name,pack_qty,fraction_pc_of_pack))
+        ope = self.env['operation.details'].create({'code':operation.code,
+                                                    'mrp_lines':operation.mrp_lines,
+                                                    'sale_lines':operation.sale_lines,
+                                                    'mrp_line':operation.mrp_line,
+                                                    'sale_order_line':operation.sale_order_line,
+                                                    'parent_id':operation.id,
+                                                    'oa_id':operation.oa_id.id,
+                                                    'buyer_name':operation.buyer_name,
+                                                    'product_template_id':operation.product_template_id.id,
+                                                    'action_date':datetime.now(),
+                                                    'shade':operation.shade,
+                                                    'finish':operation.finish,
+                                                    'sizein':operation.sizein,
+                                                    'sizecm':operation.sizecm,
+                                                    'slidercodesfg':operation.slidercodesfg,
+                                                    'top':operation.top,
+                                                    'bottom':operation.bottom,
+                                                    'pinbox':operation.pinbox,
+                                                    'operation_of':operation_of,
+                                                    'work_center': w_center,
+                                                    'operation_by':operation.work_center.name,
+                                                    'based_on':'Lot Code',
+                                                    'next_operation':next,
+                                                    'qty':qty,
+                                                    'pack_qty':pack_qty,
+                                                    'fr_pcs_pack':fraction_pc_of_pack
+                                                    })
 
     
     @api.onchange('uotput_qty')
@@ -511,13 +599,15 @@ class OperationDetails(models.Model):
     
             if out.next_operation == 'Assembly Qc':
                 mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
-                mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + out.uotput_qty})
-                mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
-                mrp_all_oa = mrp_oa_data.update({'oa_total_balance':mrp_oa_data.oa_total_balance - out.uotput_qty})
                 pr_pac_qty = mrp_data.product_template_id.pack_qty
                 if pr_pac_qty:
                     pack_qty = math.ceil(qty/pr_pac_qty)
                     fraction_pc_of_pack = ((qty/pr_pac_qty) % 1)*qty
+                    
+                mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + out.uotput_qty, 'packing_done':fraction_pc_of_pack})
+                mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
+                mrp_all_oa = mrp_oa_data.update({'oa_total_balance':mrp_oa_data.oa_total_balance - out.uotput_qty})
+                
                 #oa_total_balance
                 
             next = None
@@ -534,33 +624,38 @@ class OperationDetails(models.Model):
                     w_center = next_process.work_center.id
                 else:
                     next = 'Done'
+            
+            operation_of = 'output'
+            if out.operation_of == 'qc':
+                operation_of = 'input'
             # operation = self.env["operation.details"].browse(self.id)
-            ope = out.create({'mrp_lines':out.mrp_lines,
-                                    'sale_lines':out.sale_lines,
-                                    'mrp_line':out.mrp_line,
-                                    'sale_order_line':out.sale_order_line,
-                                    'parent_id':out.id,
-                                    'oa_id':out.oa_id.id,
-                                    'buyer_name':out.buyer_name,
-                                    'product_template_id':out.product_template_id.id,
-                                    'action_date':datetime.now(),
-                                    'shade':out.shade,
-                                    'finish':out.finish,
-                                    'sizein':out.sizein,
-                                    'sizecm':out.sizecm,
-                                    'slidercodesfg':out.slidercodesfg,
-                                    'top':out.top,
-                                    'bottom':out.bottom,
-                                    'pinbox':out.pinbox,
-                                    'operation_of':'output',
-                                    'work_center':w_center,
-                                    'operation_by':out.work_center.name,
-                                    'based_on':'Lot Code',
-                                    'next_operation':next,
-                                    'qty':out.uotput_qty,
-                                    'pack_qty':pack_qty,
-                                    'fr_pcs_pack':fraction_pc_of_pack
-                                    })
+            ope = self.env['operation.details'].create({'code':operation.code,
+                                                        'mrp_lines':out.mrp_lines,
+                                                        'sale_lines':out.sale_lines,
+                                                        'mrp_line':out.mrp_line,
+                                                        'sale_order_line':out.sale_order_line,
+                                                        'parent_id':out.id,
+                                                        'oa_id':out.oa_id.id,
+                                                        'buyer_name':out.buyer_name,
+                                                        'product_template_id':out.product_template_id.id,
+                                                        'action_date':datetime.now(),
+                                                        'shade':out.shade,
+                                                        'finish':out.finish,
+                                                        'sizein':out.sizein,
+                                                        'sizecm':out.sizecm,
+                                                        'slidercodesfg':out.slidercodesfg,
+                                                        'top':out.top,
+                                                        'bottom':out.bottom,
+                                                        'pinbox':out.pinbox,
+                                                        'operation_of':operation_of,
+                                                        'work_center':w_center,
+                                                        'operation_by':out.work_center.name,
+                                                        'based_on':'Lot Code',
+                                                        'next_operation':next,
+                                                        'qty':out.uotput_qty,
+                                                        'pack_qty':pack_qty,
+                                                        'fr_pcs_pack':fraction_pc_of_pack
+                                                        })
 
 
 

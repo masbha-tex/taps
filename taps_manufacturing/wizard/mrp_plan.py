@@ -131,6 +131,10 @@ class MachineLine(models.TransientModel):
             l_qty = l.machine_no.capacity * l.lots
             if l.plan_id.material_qty < l_qty:
                 l_qty = l.plan_id.material_qty
+            if (l.plan_id.plan_qty + l_qty) > l.plan_id.material_qty:
+                ext_qty = (l.plan_id.plan_qty + l_qty) - l.plan_id.material_qty
+                l_qty = l_qty-ext_qty
+                
             l.material_qty = l_qty
 
             #l.plan_id.material_qty

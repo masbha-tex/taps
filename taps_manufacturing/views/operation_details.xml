@@ -7,9 +7,9 @@
             <search>
                 <field name="oa_id"/>
                 <field name="work_center"/>
-                <filter string="Ready" name="ready" domain="[('operation_of','=','plan')]"/>
-                <filter string="Pending" name="progress" domain="[('operation_of','=','lot')]"/>
-                <filter string="Done" name="quality" domain="[('operation_of','=','output')]"/>
+                <filter string="Ready" name="ready" domain="[('operation_of','in',('plan','input')),('done_qty','=',0)]"/>
+                <filter string="Pending" name="progress" domain="[('operation_of','=','lot'),('done_qty','=',0)]"/>
+                <filter string="Done" name="quality" domain="[('operation_of','=','output'),('done_qty','=',0)]"/>
                 <filter string="Requisitions" name="requisitions" domain="[('mr_req','=',True)]"/>
                 <separator/>
                 <filter string="Start Date" name="action_date_filter" date="action_date"/>
@@ -25,7 +25,7 @@
                 <!-- editable="top" -->
                 <header>
                     <button name="button_requisition" type="object" string="Requisition"/>
-                    <!-- <button name="button_createlot" type="object" string="Create Lot"/> -->
+                    <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
                     <!-- <button name="button_output" type="object" string="Output"/> -->
                 </header>
                 <field name="code" readonly="1"/>
@@ -47,7 +47,7 @@
                 <field name="operation_of" readonly="1"/>
                 <field name="operation_by" readonly="1"/>
                 <field name="based_on" readonly="1"/>
-                <field name="next_operation" invisible="1"/>
+                <field name="next_operation"/>
                 <field name="mr_req" readonly="1"/>
                 <field name="product_id" readonly="1"/>
                 <field name="qty" readonly="1"/>

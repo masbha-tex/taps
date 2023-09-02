@@ -1456,7 +1456,7 @@ class PaySlipReportPDF(models.AbstractModel):
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
-            domain.append(('department_id.id', '=', data.get('department_id')))
+            domain.append(('employee_id.department_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             #str = re.sub("[^0-9]","",data.get('category_id'))
             domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
@@ -1481,35 +1481,61 @@ class PaySlipReportPDF(models.AbstractModel):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
         
-        att_obj = self.env['hr.attendance']
+        
         
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
-        #raise UserError((data.get('employee_id')))
+        emplist = docs.mapped('employee_id.id')
+        # friday_p = self.env['hr.attendance'].search([('employee_id', 'in', (emplist)),('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to')),('inFlag', 'in', ('FP','HP'))])
 
-#         for details in docs:
-#             otTotal = 0
-#             for de in docs:
-#                 otTotal = otTotal + de.total
+        friday_p = self.env['hr.attendance'].read_group(
+                    [('employee_id', 'in', (emplist)),('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to')),('inFlag', 'in', ('FP','HP'))],
+                    ['employee_id'],
+                    ['employee_id', 'id:count'],
+                    lazy=False
+                )
 
-        friday_precord = att_obj.search([('employee_id', 'in', (data.get('employee_id'))),('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to')),('inFlag', '=', 'FP')])
-        fp_days = len(friday_precord)
-        fp_hours = sum(friday_precord.mapped('worked_hours')) 
-        
-        holiday_precord = att_obj.search([('employee_id', '=', (data.get('employee_id'))),('attDate', '>=',data.get('date_from')),('attDate', '<=',data.get('date_to')),('inFlag', '=', 'HP')])
-        hp_days = len(holiday_precord)
-        hp_hours = sum(holiday_precord.mapped('worked_hours'))        
+        common_data = []
+        for res in friday_p:
+            employee_id = res['employee_id'][0] if res.get('employee_id') else None
+            employee_count = res['employee_id']
             
-        common_data = [
-            data.get('report_type'),
-            data.get('bank_id'),
-            data.get('date_from'),
-            data.get('date_to'),
-            fp_days,
-            fp_hours,
-            hp_days,
-            hp_hours,
-        ]
-        common_data.append(common_data)
+            common_data.append({
+                'employee_id': employee_id,
+                'count': employee_count
+            })
+            # raise UserError((employee_id,employee_count))
+        
+        # fp_days = len(friday_precord)
+        # fp_hours = sum(friday_precord.mapped('worked_hours'))         
+        # raise UserError((friday_p.employee_id.name))
+        # holiday_p = self.env['hr.attendance'].search([('employee_id', 'in', (docs.mapped('employee_id.id'))),('attDate', '>=',data.get('date_from')),('attDate', '<=',data.get('date_to')),('inFlag', '=', 'HP')])
+        # hp_days = len(holiday_precord)
+        # hp_hours = sum(holiday_precord.mapped('worked_hours'))                
+        # fp = 0
+        # hp = 0
+        # fphp = 0
+        # common_data = []
+        # for details in friday_p:
+        #     fphp = 0
+        # for de in docs:
+        #     if details.employee_id.id == de.employee_id.id:
+        #         fphp = fphp + len(details)
+                    # if details.employee_id.id == de.employee_id.id and details.inFlag == 'FP':
+                    #     fphp = fp + len(details)
+                    # if details.employee_id.id == de.employee_id.id and details.inFlag == 'HP':
+                    #     hp = hp + len(details)
+                        
+                # raise UserError((fphp,details.employee_id.name))
+            
+            # common_data = [
+            #     data.get('report_type'),
+            #     data.get('bank_id'),
+            #     data.get('date_from'),
+            #     data.get('date_to'),
+            #     details.employee_id.id,
+            #     fphp,
+            # ]
+            # common_data.append(common_data)
         #raise UserError((common_data[2]))
         return {
             'doc_ids': docs.ids,

@@ -152,14 +152,14 @@ class MeetingEventWizard(models.TransientModel):
             employee = appraisal.employee_id
             managers = appraisal.manager_ids
             if employee.user_id:
-                appraisal.with_context(mail_activity_quick_update=True).activity_schedule(
+                appraisal.activity_schedule(
                     'mail.mail_activity_data_meeting', 
                     self.meeting_date,
                     summary=_(self.meeting_subject),
                     note=_(self.note),
                     user_id=employee.user_id.id)
             for manager in managers.filtered(lambda m: m.user_id):
-                appraisal.with_context(mail_activity_quick_update=True).activity_schedule(
+                appraisal.activity_schedule(
                     'mail.mail_activity_data_meeting', 
                     self.meeting_date,
                     summary=_(self.meeting_subject),
@@ -187,24 +187,24 @@ class MeetingEventWizard(models.TransientModel):
         
 
 
-# class CalendarEvent(models.Model):
-#     """ Model for Calendar Event """
-#     _inherit = 'calendar.event'
+class CalendarEvent(models.Model):
+    """ Model for Calendar Event """
+    _inherit = 'calendar.event'
 
-#     # @api.model_create_multi
-#     # def create(self, vals_list):
-#     #     events = super().create(vals_list)
+    @api.model_create_multi
+    def create(self, vals_list):
+        events = super().create(vals_list)
         
-#     #     for event in events:
-#     #         if event.res_model == 'hr.appraisal':
-#     #             appraisal = self.env['hr.appraisal'].browse(event.res_id)
-#     #             # raise UserError((appraisal))
-#     #             if appraisal.exists():
-#     #                 appraisal.write({
-#     #                     'meeting_id': event.id,
-#     #                     'date_final_interview': event.start_date if event.allday else event.start
-#     #                 })
-#     #     return events
+        for event in events:
+            if event.res_model == 'hr.appraisal':
+                appraisal = self.env['hr.appraisal'].browse(event.res_id)
+                # raise UserError((appraisal))
+                # if appraisal.exists():
+                #     appraisal.write({
+                #         'meeting_id': event.id,
+                #         'date_final_interview': event.start_date if event.allday else event.start
+                #     })
+        return events
 #     @api.model_create_multi
 #     def create(self, vals_list):
 #         # Prevent sending update notification when _inverse_dates is called

@@ -43,6 +43,36 @@ class HrAttendance(models.Model):
             for at in att:
                 if at.id:
                     template.send_mail(at.id, force_send=False)
+
+    def _action_attendance_daily_email(self):
+        mail_values = {
+            'email_from': self.env.user.email_formatted,
+            'author_id': self.env.user.partner_id.id,
+            'model': None,
+            'res_id': None,
+            'subject': 'Daily Attendance',
+            'body_html': 'Hello',
+            'auto_delete': True,
+            'email_to': self.env.user.email_formatted
+        }
+        try:
+            template = self.env.ref('taps_hr.view_email_template_daily_attendance', raise_if_not_found=True)
+            
+        except ValueError:
+            _logger.warning('QWeb template mail.mail_notification_light not found when sending daily attendance mails. Sending without layouting.')
+        else:
+            
+            template_ctx = {
+                'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='daily_attendance')),
+                'model_description': self.env['ir.model']._get('hr.attendance').display_name,
+                'company': self.env.company,
+            }
+            body = template._render(template_ctx, engine='ir.qweb')
+            mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+            
+        self.env['mail.mail'].sudo().create(mail_values)
+		
+		
         
     @api.onchange('ad_in')
     def _calculate_in(self):

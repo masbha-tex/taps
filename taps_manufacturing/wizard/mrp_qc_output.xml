@@ -15,6 +15,10 @@
                     <group>
                         <group>
                             <field name="lot_code" widget="lot_code_enter"/>
+                            <!-- <field name="lot_code" widget="barcode" options="{'barcode_field': 'lot_code'}"/> -->
+                            <!-- <input id="input_lot"></input> -->
+                            <!-- <field name="enter_pressed" invisible="1"/> -->
+                            <!-- widget="lot_code_enter"  -->
                             <field name="oa_id"/>
                             <field name="item"/>
                             <field name="shade"/>
@@ -23,6 +27,7 @@
                             <field name="sizecm"/>
                             <field name="output_of"/>
                             <field name="manuf_date"/>
+                            <field name="planned_qty"/>
                             <field name="qty"/>
                         </group>
                     </group>
@@ -33,7 +38,6 @@
                 </form>
             </field>
         </record>
-    
         
         <record id="action_mrp_qc_output" model="ir.actions.act_window">
             <field name="name">QC Output</field>

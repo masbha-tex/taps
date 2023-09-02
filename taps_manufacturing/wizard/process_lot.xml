@@ -20,7 +20,7 @@
                             <field name="lot_line" required="True">
                                 <tree string="Machinewise Plan" editable="bottom">
                                     <field name="lot_id" invisible="1"/>
-                                    <field name="lot_code" invisible="1"/>
+                                    <field name="lot_code"/>
                                     <field name="material_qty" required="True" optional="show" sum="Quantity" decoration-bf="True"/>
                                 </tree>
                             </field>
@@ -42,7 +42,7 @@
         <field name="arch" type="xml">
             <tree string="Lot List" create="false">
                 <field name="lot_id" invisible="1"/>
-                <field name="lot_code" invisible="1"/>
+                <field name="lot_code" required="True"/>
                 <field name="material_qty" required="True"/>
             </tree>
         </field>

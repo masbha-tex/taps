@@ -30,6 +30,7 @@ class ManufacturingOutput(models.TransientModel):
     sizecm = fields.Text(string='Size (Cm)', readonly=True)
     output_of = fields.Text(string='Production Of', readonly=True)
     manuf_date = fields.Datetime(string='Production Date', required=True)
+    planned_qty = fields.Float(string='Planned Qty', digits='Product Unit of Measure', readonly=True)
     qty = fields.Float(string='Qty', default=0.0, digits='Product Unit of Measure')
     
     # @api.model
@@ -87,6 +88,7 @@ class ManufacturingOutput(models.TransientModel):
             values['shade'] = production[0].shade
             values['finish'] = production[0].finish
             values['output_of'] = production[0].work_center.name
+            values['planned_qty'] = production[0].qty
         return values
 
 
@@ -94,7 +96,7 @@ class ManufacturingOutput(models.TransientModel):
     
     @api.onchange('lot_code')
     def _on_lot_code_change(self):
-        production = self.env['operation.details'].search([('code', '=', self.lot_code),('code', '!=', None)])
+        production = self.env['operation.details'].search([('code', '=', self.lot_code),('code', '!=', None),('next_operation', 'like', 'Output')])
         if production:
             self.lot_code = production[0].code
             self.oa_id = production[0].oa_id.id
@@ -105,4 +107,8 @@ class ManufacturingOutput(models.TransientModel):
             self.sizecm = production[0].sizecm
             # res["sizein"] = production[0].size_in
             # res["sizecm"] = production[0].size_cm
-            self.output_of = production[0].work_center.name        
+            self.output_of = production[0].work_center.name
+            self.planned_qty = production[0].qty
+        else:
+            if self.lot_code:
+                return {'warning': {'title': 'Warning', 'message': 'This lot is not for output'}}

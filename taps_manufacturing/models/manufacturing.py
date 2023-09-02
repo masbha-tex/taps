@@ -14,7 +14,6 @@ from odoo.tools import float_compare, float_round, float_is_zero, format_datetim
 from odoo.tools.misc import format_date
 
 from odoo.addons.stock.models.stock_move import PROCUREMENT_PRIORITIES
-
 from werkzeug.urls import url_encode
 from datetime import datetime
 
@@ -31,7 +30,7 @@ class ManufacturingOrder(models.Model):
     #sequence = fields.Integer(string='Sequence')
     sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', readonly=True, store=True)
     oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', readonly=True, store=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", check_company=True)
-    company_id = fields.Many2one('res.company', string='Company', readonly=True, store=True, required=True, index=True, default=lambda self: self.env.company.id)
+    company_id = fields.Many2one('res.company', string='Company', readonly=True, store=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
     #buyer_name = fields.Many2one('sale.buyer', related='oa_id.buyer_name.id', string='Buyer', readonly=True)
     buyer_name = fields.Char(string='Buyer', readonly=True)
@@ -98,14 +97,14 @@ class ManufacturingOrder(models.Model):
     wire_con = fields.Float('Wire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
     pinbox_con = fields.Float('Pinbox C.', compute='_get_line_value', readonly=True, digits='Unit Price')
     shadewise_tape = fields.Float('Shadwise Tape', compute='_get_line_value', readonly=True, digits='Unit Price')
-
+    
     dyeing_plan = fields.Datetime(string='Dye Plan', readonly=False)
     dyeing_plan_end = fields.Datetime(string='Dye Plan End', readonly=False)
     dyeing_plan_qty = fields.Float(string='Dye Plan Qty', readonly=False)
     dy_rec_plan_qty = fields.Float(string='Dye Last Plan', readonly=False, default=0.0)
     dyeing_plan_due = fields.Float(string='Dye Plan Due', readonly=False, default=0.0, compute='_dy_plane_due')
     dyeing_output = fields.Float(string='Dye Output', readonly=False, default=0.0)
-    dyeing_qc_pass = fields.Float(string='Dye QC Pass', readonly=False, default=0.0)
+    # dyeing_qc_pass = fields.Float(string='Dye QC Pass', readonly=False, default=0.0)
 
     plating_plan = fields.Datetime(string='Plat/Paint Start', readonly=False)
     plating_plan_end = fields.Datetime(string='Plat/Paint End', readonly=False)
@@ -157,8 +156,6 @@ class ManufacturingOrder(models.Model):
     oa_total_balance = fields.Float(string='OA Balance', readonly=True, store=True)#, compute='_oa_balance'
     remarks = fields.Text(string='Remarks')
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
-    
-    
     
     @api.onchange('packing_done')
     def _packing_output(self):
@@ -286,7 +283,7 @@ class ManufacturingOrder(models.Model):
         rest_pl_q = plan_qty
         # p_len = len(production)
         # dist_qty = plan_qty / p_len
-        
+        # raise UserError((plan_for_id,plan_for,material))
         addition = 0.00
         for p in production:
             if material == 'tape':
@@ -310,7 +307,7 @@ class ManufacturingOrder(models.Model):
                     rest_pl_q = 0.00
                 re_pqty = m_qty
               
-                if plan_for == 'Slider assembly':
+                if plan_for == 'Slider Assembly':
                     m_qty += p.sli_asmbl_plan_qty
                     p.update({'sli_asmbl_plan':plan_start,'sli_asmbl_plan_qty':m_qty,'sass_rec_plan_qty':re_pqty})
                 else:
@@ -438,7 +435,7 @@ class ManufacturingOrder(models.Model):
                 
                 if plan_for == 'Plating':
                     next_operation = 'Plating'
-                if plan_for == 'Slider assembly':
+                if plan_for == 'Slider Assembly':
                     next_operation = 'Slider Assembly'
                 if plan_for == 'Painting':
                     next_operation = 'Painting'
@@ -452,7 +449,7 @@ class ManufacturingOrder(models.Model):
                         mrp_line = p_q.id
                         sal_line = p_q.sale_order_line
                         
-                    if plan_for == 'Slider assembly':
+                    if plan_for == 'Slider Assembly':
                         qty = sum(p_q.mapped('sass_rec_plan_qty'))
                     else:
                         qty = sum(p_q.mapped('pl_rec_plan_qty')) 

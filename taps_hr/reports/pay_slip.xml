@@ -2,10 +2,11 @@
 <odoo>
     <template id="pay_slip_pdf_template">
     <t t-call="web.html_container">
-        <t t-foreach="inside_foreach_docs or docs" t-as="o">
+        
+        <t t-foreach="docs" t-as="o">
             <t t-call="web.external_layout">
               <!--<t t-foreach="inside_foreach_docs or docs" t-as="o">-->
-                <t t-set="o" t-value="o.with_context(lang=o.employee_id.address_home_id.lang or o.env.lang)"/>
+                <!-- <t t-set="o" t-value="o.with_context(lang=o.employee_id.address_home_id.lang or o.env.lang)"/> -->
                 
                 <div class="page">
 					<t t-set="working_total" t-value="0.0"/>
@@ -32,12 +33,24 @@
 									<strong>Working Days</strong>
 								</td>
 								<td class="w-25" style="border: 1pt solid white;">: 
-                            <t t-if="is_com==False">
+                                    <t t-if="is_com==False">
 										<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/>
 									</t>
 									<t t-if="is_com==True">
-										<span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days-(datas[4]+datas[6])"/>
-										<t t-set="working_total" t-value="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days-(datas[4]+datas[6])"/>
+										<!-- <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days-(datas[4]+datas[6])"/> -->
+                                        
+                                        <t t-set="working_total" t-value="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/>
+                                        <t t-if="o.employee_id == datas[0]"> 
+                                        <t t-set="working_total" t-value="working_total-datas[1]"/>
+                                        </t>
+        								<span t-esc="working_total"/>
+                                        <!-- <t t-foreach="datas" t-as="dt">
+                                            <t t-foreach="o.filtered(lambda x: (x.employee_id.id == dt[4]))" t-as="att">
+        										<t t-set="working_total" t-value="att.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days-(dt[5])"/>
+        										<span t-esc="working_total"/>
+                                            </t>
+                                        </t> -->
+                                        
 									</t>
 								</td>
 								<td style="border: 1pt solid white;">

@@ -307,7 +307,7 @@ class Session(models.Model):
             'res_model': 'event.wizard',
             'views': [(view_id, 'form')],
             'target': 'new',
-            'context': {'default_meeting_date': self.start_date, 'default_duration': self.duration},  # Pass the meeting_date to the wizard
+            'context': {'default_meeting_date': self.start_date, 'default_duration': self.duration, 'default_meeting_subject': self.name.name,'default_location': self.venue.name},  # Pass the meeting_date to the wizard
         }   
 
     def action_send_session_by_email_cron(self):
@@ -363,8 +363,19 @@ class Session(models.Model):
     @api.constrains('instructor_id', 'attendee_ids')
     def _check_instructor_not_in_attendees(self):
         for r in self:
-            if r.instructor_id and r.instructor_id in r.attendee_ids.related_partner_id:
-                raise ValidationError("A session's instructor can't be an attendee")
+            if r.instructor_id and r.instructor_id in r.attendee_ids.address_home_id:
+                raise ValidationError("A session's Facilitator can't be an attendee or perticipents")
+                
+    @api.onchange('attendee_ids')
+    def _onchange_partners(self):
+        invalid_partners = self.attendee_ids.filtered(lambda partner: not partner.private_email)
+        if invalid_partners:
+            warning = {
+                'title': 'Invalid Perticipents Email',
+                'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
+            }
+            self.attendee_ids -= invalid_partners
+            return {'warning': warning}
 
     @api.depends('seats', 'attendee_ids')
     def _taken_seats(self):

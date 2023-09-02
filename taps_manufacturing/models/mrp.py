@@ -190,15 +190,15 @@ class MrpWoProductivity(models.Model):
         mrpWorkorder = self.env['operation.details'].search([])
         # mrpWorkorder
         for wc in self:
-            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'plan' and op.qty != op.done_qty)
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of in ('plan','input') and op.qty > op.done_qty)
             wc.order_toproduce_count = len(operation)
             
             operation = None
-            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'lot' and op.qty != op.done_qty)
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'lot' and op.qty > op.done_qty)
             wc.order_tooutput_count = len(operation)
             
             operation = None
-            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'output' and op.qty != op.done_qty)
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'output' and op.qty > op.done_qty)
             wc.order_toqc_count = len(operation)
 
     # def action_work_order(self):

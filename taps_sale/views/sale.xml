@@ -44,8 +44,10 @@
 					<field name="season"/>
 					
                     <field name="remarks"/>
-                    <field name="old_sa_num" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale']]}"/>
-                    <field name="sa_date" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale']]}"/>
+                    <field name="old_sa_num" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsale']],'required':[['sales_type','=','oldsa']]}"/>
+                    <field name="old_pi_num" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsa']],'required':[['sales_type','=','oldsale']]}"/>
+                    <field name="sa_date" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsale']]}"/>
+                    <field name="pi_date" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsa']]}"/>
 					<field name="applicant_bank" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','oldsa']]}"/>
 				</xpath>
 				<xpath expr="//field[@name='validity_date']" position="before">
@@ -97,8 +99,8 @@
 					<field name="bank" string="Bank" options="{'no_create': True, 'no_create_edit':True}" attrs="{'required': [('sales_type', '=', 'sale')]}"/>
 				</xpath>
 				<xpath expr="//field[@name='sales_type']" position="after">
-					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'readonly': [('sales_type','!=','oa')]}" domain="[('sales_type','=','sale'),('state','=','sale')]" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}"/>
-					<field name="sample_ref" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','oa']]}" widget="many2many_tags" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}"/>
+					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')], 'required': [['sales_type','=','oa']]}" domain="[('state','=','sale'),'|',('sales_type','=','oldsale'),('sales_type','=','sale')]" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}"/>
+					<field name="sample_ref" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','oa']],'required':['|',['sales_type','=','sale'],['sales_type','=','oldsale']]}" widget="many2many_tags" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}" domain="[('state','=','sale'),'|',('sales_type','=','oldsa'),('sales_type','=','sample')]"/>
 				</xpath>
                 <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_template_id']" position="attributes">
     <attribute name="domain">[('categ_id.complete_name', 'ilike', 'ALL / FG')]</attribute>

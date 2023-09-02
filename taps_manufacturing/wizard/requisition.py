@@ -55,7 +55,7 @@ class ManufacturingPlan(models.TransientModel):
         if active_model == 'operation.details':
             operation = self.env["operation.details"].browse(active_id)
             
-            res["material_qty"] = sum(production.mapped('qty'))
+            res["material_qty"] = sum(operation.mapped('qty'))
             in_len = len(operation)
             i = 0
             all_mrp_lines = ''
@@ -71,6 +71,7 @@ class ManufacturingPlan(models.TransientModel):
         all_mrp_lines_st = str(all_mrp_lines)
         # raise UserError((all_mrp_lines))
         mrp_ids = [int(id_str) for id_str in all_mrp_lines_st.split(',')]
+        
         production = self.env["manufacturing.order"].browse(mrp_ids)
         res["item"] = production[0].fg_categ_type
         # res["item_qty"] = sum(production.mapped('balance_qty'))

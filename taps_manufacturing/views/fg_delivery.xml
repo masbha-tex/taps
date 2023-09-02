@@ -69,9 +69,9 @@
         <field name="context">{'search_default_running': 1}</field>
     </record>
 
-    <menuitem id="menu_manufacturing_delivery_order" 
-              name="FG Delivery" 
-              action="action_manufacturing_delivery_order" 
+    <menuitem id="menu_manufacturing_delivery_order"
+              name="FG Delivery"
+              action="action_manufacturing_delivery_order"
               parent="mrp.menu_mrp_manufacturing"
-              sequence="6"/>
+              sequence="7"/>
 </odoo>

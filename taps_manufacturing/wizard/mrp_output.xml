@@ -27,6 +27,7 @@
                             <field name="sizecm"/>
                             <field name="output_of"/>
                             <field name="manuf_date"/>
+                            <field name="planned_qty"/>
                             <field name="qty"/>
                         </group>
                     </group>

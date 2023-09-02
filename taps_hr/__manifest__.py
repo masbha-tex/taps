@@ -29,6 +29,7 @@
         'data/marriage_anniversery_wish.xml',
         'data/birthday_wish_email.xml',
         'data/work_anniversery_wish.xml',
+        'data/attendance_daily_email.xml',
         'views/web_asset_backend_template.xml',        
         'views/attendance_views.xml',
         'views/employee_views.xml',

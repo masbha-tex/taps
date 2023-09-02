@@ -36,6 +36,7 @@ class SaleOrder(models.Model):
             ('oldsa', 'Old Sample'),
             ('sample', 'Sample Order'),
             ('sale', 'Sales Order'),
+            ('oldsale', 'OLD Sales Order'),
             ('oa', 'OA')],
             string='Sales Type')
     invoice_details = fields.Char(string='Invoice Details', related='partner_invoice_id.contact_address_complete')
@@ -53,7 +54,7 @@ class SaleOrder(models.Model):
     production_type = fields.Char(string='Production Type')
     production_group = fields.Char(string='Production Group')
     style_ref = fields.Char(string='Style Ref.')
-    order_ref = fields.Many2one('sale.order', string='Sales Order Ref.', readonly=True)
+    order_ref = fields.Many2one('sale.order', string='Sales Order Ref.')
     remarks = fields.Text(string='Remarks')
     # others_note = fields.Text('Others Terms and conditions')
     bank = fields.Many2one('res.bank', string='Bank')
@@ -86,7 +87,7 @@ class SaleOrder(models.Model):
     pi_type = fields.Selection([
             ('regular', 'Regular'),
             ('block', 'Block'),
-            ('sample_pi', 'Sample Pi'),
+            ('sample_pi', 'Sample PI'),
             ('replacement', 'Replacement'),],
             string='Type', default='regular')
     cause_of_revision = fields.Text(string='Cuase')
@@ -120,7 +121,9 @@ class SaleOrder(models.Model):
         ('ϕ 2.0 m', 'ϕ 2.0 m')],string='Metal Detection', default='ϕ 1.0 m')
     total_product_qty = fields.Float(string='Total PI Quantity' ,compute="_total_pi_quantity")
     sa_date = fields.Date(string='SA Date')
+    pi_date = fields.Date(string='PI Date')
     old_sa_num = fields.Char(string='Old Sa Number')
+    old_pi_num = fields.Char(string='Old PI Number')
     garments = fields.Char(string='Garments')
     corrosions_test = fields.Char(string='Corrosions Test Method')
     brand = fields.Char(string='Brand')
@@ -972,7 +975,11 @@ class SaleOrder(models.Model):
             if vals.get('sales_type') == "oldsa":
                 ref = self.env['ir.sequence'].next_by_code('', sequence_date=seq_date) or _(vals['old_sa_num'])
                 vals['name'] = ref
+                old_pi_num
                 # raise UserError((vals['name']))
+            if vals.get('sales_type') == "oldsale":
+                ref = self.env['ir.sequence'].next_by_code('', sequence_date=seq_date) or _(vals['old_pi_num'])
+                vals['name'] = ref
             if vals.get('sales_type') == "sale":
                 ref = self.env['ir.sequence'].next_by_code('sale.order', sequence_date=seq_date) or _('New')
                 vals['name'] = ref

@@ -41,16 +41,10 @@ class ManufacturingLot(models.TransientModel):
         res["item"] = operation[0].fg_categ_type
         
         res["shade_finish"] = operation[0].shade + operation[0].finish
-        
         #res["size"] = operation[0].size
         if active_model == 'manufacturing.order':
             res["work_center"] = 3
             res["material_qty"] = operation[0].product_uom_qty
-            size = operation[0].sizein + ' Inc'
-            if operation[0].sizein == 'N/A':
-                size = operation[0].sizecm + ' CM'
-                
-            res["size"] = size
         else:
             res["work_center"] = operation[0].work_center.id
             res["material_qty"] = operation[0].qty
