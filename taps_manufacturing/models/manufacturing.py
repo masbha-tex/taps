@@ -156,6 +156,11 @@ class ManufacturingOrder(models.Model):
     oa_total_balance = fields.Float(string='OA Balance', readonly=True, store=True)#, compute='_oa_balance'
     remarks = fields.Text(string='Remarks')
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
+    state = fields.Selection([
+        ('waiting', 'Waiting'),
+        ('partial', 'Partial'),
+        ('done', 'Done')],
+        string='State')
     
     @api.onchange('packing_done')
     def _packing_output(self):
@@ -420,7 +425,8 @@ class ManufacturingOrder(models.Model):
                                                              'operation_by':'Planning',
                                                              'based_on':m.machine_no.name,
                                                              'next_operation':next_operation,
-                                                             'qty':qty
+                                                             'qty':qty,
+                                                             'state':'waiting'
                                                              })
                     rest_q = rest_q - m.machine_no.capacity
 
@@ -434,11 +440,11 @@ class ManufacturingOrder(models.Model):
                 mrp_line = sal_line = None
                 
                 if plan_for == 'Plating':
-                    next_operation = 'Plating'
+                    next_operation = 'Plating Output'
                 if plan_for == 'Slider Assembly':
-                    next_operation = 'Slider Assembly'
+                    next_operation = 'Slider Assembly Output'
                 if plan_for == 'Painting':
-                    next_operation = 'Painting'
+                    next_operation = 'Painting Output'
                 slider = top = bottom = pinbox = None
                 if material == 'slider':
                     p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.slidercodesfg == p[3])
@@ -498,12 +504,13 @@ class ManufacturingOrder(models.Model):
                                                              'top':top,
                                                              'bottom':bottom,
                                                              'pinbox':pinbox,
-                                                             'operation_of':'plan',
+                                                             'operation_of':'output',
                                                              'work_center':plan_for_id,
                                                              'operation_by':'Planning',
                                                              'based_on':material,
                                                              'next_operation':next_operation,
-                                                             'qty':qty
+                                                             'qty':qty,
+                                                             'state':'waiting'
                                                              })
 
     def button_requisition(self):

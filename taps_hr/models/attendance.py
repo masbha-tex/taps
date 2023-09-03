@@ -35,42 +35,54 @@ class HrAttendance(models.Model):
             else:
                 attendance.com_worked_hour = False
     
-    def _action_daily_attendance_email(self, empl_id):
-        template_id = self.env.ref('taps_hr.daily_attendance_email_template', raise_if_not_found=False).id
-        template = self.env['mail.template'].browse(template_id)
-        att = self.env['hr.employee'].search([('id', 'in', (empl_id)), ('active', '=', True)])
-        if template:
-            for at in att:
-                if at.id:
-                    template.send_mail(at.id, force_send=False)
+    # def _action_daily_attendance_email(self, empl_id):
+    #     template_id = self.env.ref('taps_hr.daily_attendance_email_template', raise_if_not_found=False).id
+    #     template = self.env['mail.template'].browse(template_id)
+    #     att = self.env['hr.employee'].search([('id', 'in', (empl_id)), ('active', '=', True)])
+    #     if template:
+    #         for at in att:
+    #             if at.id:
+    #                 template.send_mail(at.id, force_send=False)
 
-    def _action_attendance_daily_email(self):
-        mail_values = {
-            'email_from': self.env.user.email_formatted,
-            'author_id': self.env.user.partner_id.id,
-            'model': None,
-            'res_id': None,
-            'subject': 'Daily Attendance',
-            'body_html': 'Hello',
-            'auto_delete': True,
-            'email_to': self.env.user.email_formatted
-        }
-        try:
-            template = self.env.ref('taps_hr.view_email_template_daily_attendance', raise_if_not_found=True)
-            
-        except ValueError:
-            _logger.warning('QWeb template mail.mail_notification_light not found when sending daily attendance mails. Sending without layouting.')
-        else:
-            
-            template_ctx = {
-                'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='daily_attendance')),
-                'model_description': self.env['ir.model']._get('hr.attendance').display_name,
-                'company': self.env.company,
+    def _action_daily_attendance_email(self, empl_id):
+        employee = self.env['hr.employee'].search([('id', 'in', (empl_id)), ('active', '=', True)])
+        for emp in employee:
+            date = ((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))
+            subject = "Attendance report dated up to %s for %s" % (date, emp.name)
+            mail_values = {
+                'email_from': self.env.user.email_formatted,
+                'author_id': self.env.user.partner_id.id,
+                'model': None,
+                'res_id': None,
+                'subject': subject,
+                'body_html': 'Hello',
+                'auto_delete': True,
+                'email_to': emp.private_email
             }
-            body = template._render(template_ctx, engine='ir.qweb')
-            mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            
-        self.env['mail.mail'].sudo().create(mail_values)
+            try:
+                template = self.env.ref('taps_hr.view_email_template_daily_attendance', raise_if_not_found=True)
+                
+            except ValueError:
+                _logger.warning('QWeb template taps_hr.view_email_template_daily_attendance not found when sending daily attendance mails. Sending without layouting.')
+            else:
+    
+                    
+                template_ctx = {
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='daily_attendance')),
+                    'model_description': self.env['ir.model']._get('hr.attendance').display_name,
+                    'company': self.env.company,
+                    'employee': emp.id,
+                    'employee_name': emp.name,
+                }
+                body = template._render(template_ctx, engine='ir.qweb')
+                mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)        
+                
+                # Create the mail
+                mail = self.env['mail.mail'].sudo().create(mail_values)
+                
+                # Send the mail with force_send=True
+                # mail.send(force_send=True) 
+                # self.env['mail.mail'].sudo().create(mail_values).send(force_send=True)
 		
 		
         

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="view_email_template_daily_attendance">
-		<body>
-			<html>
-                <div class="container" style="margin:0px;padding: 0px;">
-                    <div>
-                        <p>Dear ${object.name},</p>
-                        <p>Please find below Attendance report for your direct reportings dated up to ${((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))}</p>
-                        <br/><br/>
-                    </div>
-    
-                    <style type="text/css">  
+	<body>
+		<html>
+			<div class="container" style="margin:0px;padding: 0px;">
+				<div>
+					<p>Dear <t t-esc="employee_name"/>,</p>
+					<p>Please find below Attendance report for your direct reportings dated up to <t t-esc="((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))"/>
+					</p>
+					<br/>
+				</div>
+				<style type="text/css">  
                         .tem_table{
                             display:table;
                             table-layout:fixed;
@@ -24,154 +24,146 @@
                             font-size:11px; 
                         }
                     </style>
-    
-    
-                    <table class="tem_table table-responsive" align="center" cellspacing="0" cellpadding="0" border="1">
-                        <thead>
-                                <tr style="color:white;background-color:rgb(113, 75, 98);">
-                                <th colspan="2" style="text-align:center;width:8%">Date</th>
-                                <th colspan="2" style="text-align:center;width:5%">Emp ID</th>
-                                <th colspan="3" style="text-align:left;width:15%">Employee Name</th>
-                                <th colspan="2" style="text-align:center;width:5%">InTime</th>
-                                <th colspan="1" style="text-align:center;width:3%">IN</th>
-                                <th colspan="1" style="text-align:center;width:5%">Flag</th>
-                                <th colspan="2" style="text-align:center;width:5%">OutTime</th>
-                                <th colspan="1" style="text-align:center;width:3%">OUT</th>
-                                <th colspan="1" style="text-align:center;width:5%">Total</th>
-                                <th colspan="2" style="text-align:center;width:5%">Present</th>
-                                <th colspan="2" style="text-align:center;width:5%">Absent</th>
-                                <th colspan="1" style="text-align:center;width:3%">LV</th>
-                                <th colspan="1" style="text-align:center;width:3%">OD</th>
-                                <th colspan="1" style="text-align:center;width:3%">Fri</th>
-                                <th colspan="1" style="text-align:center;width:3%">Holi</th>
-                                <th colspan="1" style="text-align:center;width:3%">CO</th>
-                                <th colspan="1" style="text-align:center;width:3%">AJ</th>
-                                <th colspan="1" style="text-align:center;width:5%">Late</th>
-                                <th colspan="2" style="text-align:center;width:5%">EarlyOut</th>
-    
-                            </tr>
-                        </thead>
-                    </table>
-    
-    
-    
-    
-                    <!-- % set attendance = env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)),('attDate', '=', (datetime.datetime.today() - relativedelta(days=1))), '|','|','|', ('employee_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', object.id)])
-                    % set object = env['hr.employee'].search([])
-                            % for line in attendance:
-                            % set tt = object.total_attendance(line.employee_id)
-                            % set pp = object.total_present(line.employee_id)
-                            % set aa = object.total_absent(line.employee_id)
-                            % set ll = object.total_leave(line.employee_id)
-                            % set od = object.total_od(line.employee_id)
-                            % set fr = object.total_friday(line.employee_id)
-                            % set hh = object.total_holiday(line.employee_id)
-                            % set co = object.total_co(line.employee_id)
-                            % set aj = object.total_aj(line.employee_id)
-                            % set la = object.total_late(line.employee_id)
-                            % set eo = object.total_earlyout(line.employee_id)
-                                % if line.employee_id.emp_id != '01607': -->
-                    <t t-foreach=" env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)),('attDate', '=', (datetime.datetime.today() - relativedelta(days=1))), '|','|','|', ('employee_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', object.id)])" t-as="line">
-                                    <table class="tem_table table-responsive" align="center" cellspacing="0" cellpadding="0" border="1">	
-    
-    
-                                    <tbody><tr>
-    
-                                        <td colspan="2" style="width:8%;text-align:center"><t t-esc="line.attDate.strftime('%d/%m/%Y')"/></td>
-                                        <td colspan="2" style="width:5%;text-align:center"><t t-esc="line.employee_id.emp_id" /></td>
-                                        <td colspan="3" style="width:15%;text-align:left"><t t-esc="line.employee_id.name" /></td>
-                                        <td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">
-                                            <t t-esc="line.inTime"/></td>
-                                        <td colspan="1" style="width:3%;text-align:center">
-                                        % if line.inHour != 0:
-                                            ${('%d:%02d' % (line.inHour,(line.inHour*60)%60))}
-                                        % endif
-                                        % if line.inHour == 0:
-                                            <span></span>
-                                        % endif
-                                        </td>
-                                        <td colspan="1" style="width:5%;text-align:center">${line.inFlag}</td>
-                                        <td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">${('%d:%02d' % (line.outTime,(line.outTime*60)%60))}</td>
-                                        <td colspan="1" style="width:3%;text-align:center">
-                                        % if line.outHour != 0:
-                                            ${('%d:%02d' % (line.outHour,(line.outHour*60)%60))}
-                                        % endif
-                                        % if line.outHour == 0:
-                                            <span></span>
-                                        % endif
-                                        </td>
-                                        <td colspan="1" style="width:5%;text-align:center">${tt}</td>
-                                        <td colspan="2" style="width:5%;text-align:center">${pp}</td>
-                                        <td colspan="2" style="width:5%;text-align:center">${aa}</td>
-                                        <td colspan="1" style="width:3%;text-align:center">${ll}</td>
-                                        <td colspan="1" style="width:3%;text-align:center">${od}</td>
-                                        <td colspan="1" style="width:3%;text-align:center">${fr}</td>
-                                        <td colspan="1" style="width:3%;text-align:center">${hh}</td>
-                                        <td colspan="1" style="width:3%;text-align:center">${co}</td>
-                                        <td colspan="1" style="width:3%;text-align:center">${aj}</td>
-                                        <td colspan="1" style="width:5%;text-align:center">${la}</td>
-                                        <td colspan="2" style="width:5%;text-align:center">${eo}</td>
-    
-    
-    
-    
-                                    </tr>
-                                 </tbody></table>
-                              </t>
-    
-                    <br/>
-    
-                    <div style="text-align:center;">
-                    <h3 align="center">Today's Attendance status ${datetime.datetime.now().strftime('%d/%m/%Y')} till 11:00AM</h3>
-                    </div>
-    
-    
-                    <div align="center" style="margin:auto;width:100%">
-                    % set attendance = env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)), ('attDate', '=', (datetime.datetime.today())), '|','|','|', ('employee_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id', '=', object.id),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', object.id)])
-    
-                                <table class="tem_table_1 table-responsive" cellspacing="0" cellpadding="0" border="1">
-                                    <thead>
-                                        <tr style="color:white;background-color:rgb(113, 75, 98);">
-                                            <th style="text-align:center;width:5%">Date</th>
-                                            <th style="text-align:center;width:5%">Emp ID</th>
-                                            <th style="text-align:left;width:20%">Employee Name</th>
-                                            <th style="text-align:center;width:5%">InTime</th>
-                                            <th style="text-align:center;width:5%">IN</th>
-                                            <th style="width:5%;text-align:center">Flag</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                                % for line in attendance:
-                                    % if line.employee_id.emp_id != '01607':
-                                    <table class="tem_table_1 table-responsive" cellspacing="0" cellpadding="0" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td style="width:5%;text-align:center">${line.attDate.strftime('%d/%m/%Y')}</td>
-                                            <td style="width:5%;text-align:center">${line.employee_id.emp_id}</td>
-                                            <td style="width:20%">${line.employee_id.name}</td>
-                                            <td style="width:5%;color:white;background-color:rgb(113, 75, 98);text-align:center">${('%d:%02d' % (line.inTime,(line.inTime*60)%60))}</td>
-                                            <td style="width:5%;text-align:center">
-                                            % if line.inHour != 0:
-                                                ${('%d:%02d' % (line.inHour,(line.inHour*60)%60))}
-                                            % endif
-                                            % if line.inHour == 0:
-                                                <span></span>
-                                            % endif
-                                            </td>
-                                            <td style="width:5%;text-align:center">${line.inFlag}</td>
-                                        </tr>
-                                    </tbody>
-                                    </table>
-                                    % endif
-                                % endfor
-    
-                    </div>
-    
-                    <div style="text-align:center;">
-                    <p>** This is an auto generated mail from Odoo. Please do not reply **</p>
-                    </div></div>
-
-            </html>
-		</body>
+				<table class="tem_table" align="center" cellspacing="0" cellpadding="0" border="1">
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th colspan="2" style="text-align:center;width:8%">Date</th>
+							<th colspan="3" style="text-align:left;width:15%">Employee Name</th>
+							<th colspan="2" style="text-align:center;width:5%">InTime</th>
+							<th colspan="1" style="text-align:center;width:3%">IN</th>
+							<th colspan="1" style="text-align:center;width:5%">Flag</th>
+							<th colspan="2" style="text-align:center;width:5%">OutTime</th>
+							<th colspan="1" style="text-align:center;width:3%">OUT</th>
+							<th colspan="1" style="text-align:center;width:5%">Total</th>
+							<th colspan="2" style="text-align:center;width:5%">Present</th>
+							<th colspan="2" style="text-align:center;width:5%">Absent</th>
+							<th colspan="1" style="text-align:center;width:3%">LV</th>
+							<th colspan="1" style="text-align:center;width:3%">OD</th>
+							<th colspan="1" style="text-align:center;width:3%">Fri</th>
+							<th colspan="1" style="text-align:center;width:3%">Holi</th>
+							<th colspan="1" style="text-align:center;width:3%">CO</th>
+							<th colspan="1" style="text-align:center;width:3%">AJ</th>
+							<th colspan="1" style="text-align:center;width:5%">Late</th>
+							<th colspan="2" style="text-align:center;width:5%">EarlyOut</th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="emp" t-value="env['hr.employee']"/>
+						<t t-foreach=" env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)),('attDate', '=', (datetime.datetime.today() - relativedelta(days=1))), '|','|','|', ('employee_id.parent_id', '=', employee),('employee_id.parent_id.parent_id', '=', employee),('employee_id.parent_id.parent_id.parent_id', '=', employee),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', employee)])" t-as="line">
+							<t t-set="tt" t-value="emp.total_attendance(line.employee_id)"/>
+							<t t-set="pp" t-value="emp.total_present(line.employee_id)"/>
+							<t t-set="aa" t-value="emp.total_absent(line.employee_id)"/>
+							<t t-set="ll" t-value="emp.total_leave(line.employee_id)"/>
+							<t t-set="od" t-value="emp.total_od(line.employee_id)"/>
+							<t t-set="fr" t-value="emp.total_friday(line.employee_id)"/>
+							<t t-set="hh" t-value="emp.total_holiday(line.employee_id)"/>
+							<t t-set="co" t-value="emp.total_co(line.employee_id)"/>
+							<t t-set="aj" t-value="emp.total_aj(line.employee_id)"/>
+							<t t-set="la" t-value="emp.total_late(line.employee_id)"/>
+							<t t-set="eo" t-value="emp.total_earlyout(line.employee_id)"/>
+							<tr>
+								<td colspan="2" style="width:8%;text-align:center">
+									<t t-esc="line.attDate.strftime('%d/%m/%Y')"/>
+								</td>
+								<td colspan="3" style="width:15%;text-align:left">
+									<t t-esc="line.employee_id.display_name"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">
+									<t t-esc="line.inTime" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<t t-if="line.inHour !=0" t-esc="line.inHour" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+								</td>
+								<td colspan="1" style="width:5%;text-align:center">
+									<t t-esc="line.inFlag"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">
+									<t t-esc="line.outTime" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<t t-if="line.outHour !=0" t-esc="line.outHour" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+								</td>
+								<td colspan="1" style="width:5%;text-align:center">
+									<span t-esc="tt"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center">
+									<span t-esc="pp"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center">
+									<span t-esc="aa"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="ll"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="od"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="fr"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="hh"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="co"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="aj"/>
+								</td>
+								<td colspan="1" style="width:5%;text-align:center">
+									<span t-esc="la"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center">
+									<span t-esc="eo"/>
+								</td>
+							</tr>
+						</t>
+					</tbody>
+				</table>
+				<div style="text-align:center;">
+					<h3 align="center">Today's Attendance status <t t-esc="datetime.datetime.now().strftime('%d/%m/%Y')"/> till 11:00AM</h3>
+				</div>
+				<div align="center" style="margin:auto;width:100%">
+					<table class="tem_table_1" cellspacing="0" cellpadding="0" border="1">
+						<thead>
+							<tr style="color:white;background-color:rgb(113, 75, 98);">
+								<th style="text-align:center;width:5%">Date</th>
+								<th style="text-align:left;width:20%">Employee Name</th>
+								<th style="text-align:center;width:5%">InTime</th>
+								<th style="text-align:center;width:5%">IN</th>
+								<th style="width:5%;text-align:center">Flag</th>
+							</tr>
+						</thead>
+						<tbody>
+							<t t-foreach=" env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)),('attDate', '=', (datetime.datetime.today())), '|','|','|', ('employee_id.parent_id', '=', employee),('employee_id.parent_id.parent_id', '=', employee),('employee_id.parent_id.parent_id.parent_id', '=', employee),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', employee)])" t-as="line">
+								<tr>
+									<td style="width:8%;text-align:center">
+										<t t-esc="line.attDate.strftime('%d/%m/%Y')"/>
+									</td>
+									<td style="width:20%;text-align:left">
+										<t t-esc="line.employee_id.display_name"/>
+									</td>
+									<td style="width:5%;color:white;background-color:rgb(113, 75, 98);text-align:center">
+										<t t-esc="line.inTime" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+									</td>
+									<td style="width:5%;text-align:center">
+										<t t-if="line.inHour !=0" t-esc="line.inHour" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+									</td>
+									<td style="width:5%;text-align:center">
+										<span>
+											<t t-esc="line.inFlag"/>
+										</span>
+									</td>
+								</tr>
+							</t>
+						</tbody>
+					</table>
+					<div style="text-align:center;">
+						<p>** This is an auto generated mail from Odoo. Please do not reply **</p>
+					</div>
+				</div>
+			</div>
+		</html>
+	</body>
 	</template>
 </odoo>

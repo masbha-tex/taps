@@ -105,6 +105,14 @@ class OperationDetails(models.Model):
     pack_qty = fields.Integer(string='Pack Qty', default=0, readonly=False)
     fr_pcs_pack = fields.Integer(string='Remaining Qty', default=0, readonly=False, help='The remaining pcs to pack')
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
+
+    state = fields.Selection([
+        ('waiting', 'Waiting'),
+        ('partial', 'Partial'),
+        ('done', 'Done')],
+        string='State')
+
+    
     # lot_ids = fields.Many2one('operation.details', compute='get_lots', string='Lots', copy=False, store=True)
     
     def get_balance(self):
@@ -329,12 +337,15 @@ class OperationDetails(models.Model):
         if vals.get('operation_of') == "lot":
             ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
             vals['code'] = ref
-        # raise UserError((vals))
         result = super(OperationDetails, self).create(vals)
         return result                
 
     def set_mrp_output(self,operation,mrplines,qty,material):
-        mrp_data = self.env["manufacturing.order"].browse(mrplines)
+        # oa_ids = ','.join([str(i) for i in sorted(mrplines)])
+        mrp_ids = [int(id_str) for id_str in mrplines.split(',')]
+        
+        # raise UserError((mrp_ids))
+        mrp_data = self.env["manufacturing.order"].browse(mrp_ids)
         # 'Dyeing Qc','CM Output','Dipping Qc','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'
 
         rest_qty = qty
@@ -407,9 +418,10 @@ class OperationDetails(models.Model):
                 pr_pac_qty = mrp_data.product_template_id.pack_qty
                 if pr_pac_qty:
                     pack_qty = math.ceil(qty/pr_pac_qty)
-                    fraction_pc_of_pack = ((qty/pr_pac_qty) % 1)*qty
+                    fraction_pc_of_pack = round(((qty/pr_pac_qty) % 1)*pr_pac_qty)
+
         if operation.next_operation in('Dyeing Qc','CM Output','Dipping Qc','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'):
-           up = self.set_mrp_output(operation.next_operation,operation.mrp_lines,qty)
+           up = self.set_mrp_output(operation.next_operation,operation.mrp_lines,qty,operation.based_on)
             
         next = None
         w_center = operation.work_center.id
@@ -434,8 +446,8 @@ class OperationDetails(models.Model):
         ope = self.env['operation.details'].create({'code':operation.code,
                                                     'mrp_lines':operation.mrp_lines,
                                                     'sale_lines':operation.sale_lines,
-                                                    'mrp_line':operation.mrp_line,
-                                                    'sale_order_line':operation.sale_order_line,
+                                                    'mrp_line':operation.mrp_line.id,
+                                                    'sale_order_line':operation.sale_order_line.id,
                                                     'parent_id':operation.id,
                                                     'oa_id':operation.oa_id.id,
                                                     'buyer_name':operation.buyer_name,
@@ -459,7 +471,16 @@ class OperationDetails(models.Model):
                                                     'fr_pcs_pack':fraction_pc_of_pack
                                                     })
 
-    
+    @api.onchange('done_qty')
+    def _done_qty(self):
+        for s in self:
+            if s.qty <= s.done_qty:
+                s.state = 'done'
+            elif s.done_qty == 0:
+                s.state = 'waiting'
+            else:
+                s.state = 'partial'
+            
     @api.onchange('uotput_qty')
     def _output(self):
         for out in self:
@@ -475,119 +496,9 @@ class OperationDetails(models.Model):
             
 #'Assembly Output','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'
             #'Dyeing Output','Dyeing Qc','CM Output','Deeping Output','Deeping Qc'
-            out_qty = out.uotput_qty
-            for manu_o in manufac_ids:
-                if out.next_operation == 'Dyeing Output':
-                    if manu_o.dyeing_plan_qty <= out_qty:
-                        m_qty = manu_o.dyeing_plan_qty
-                        out_qty = out_qty - manu_o.dyeing_plan_qty
-                    else:
-                        m_qty = out_qty
-                        out_qty = 0.00
-                    m_qty += p.dyeing_output
-                    manu_o.update({'dyeing_output':m_qty})
-                    if out_qty == 0:
-                        break
-                elif out.next_operation == 'Dyeing Qc':
-                    if manu_o.dyeing_plan_qty <= out_qty:
-                        m_qty = manu_o.dyeing_plan_qty
-                        out_qty = out_qty - manu_o.dyeing_plan_qty
-                    else:
-                        m_qty = out_qty
-                        out_qty = 0.00
-                    m_qty += p.dyeing_qc_pass
-                    manu_o.update({'dyeing_qc_pass':m_qty})
-                    if out_qty == 0:
-                        break
-                elif out.next_operation in ('Plating Output','Painting Output'):
-                    if out.based_on == 'slider':
-                        if manu_o.plating_plan_qty <= out_qty:
-                            m_qty = manu_o.plating_plan_qty
-                            out_qty = out_qty - manu_o.plating_plan_qty
-                        else:
-                            m_qty = out_qty
-                            out_qty = 0.00
-                        m_qty += p.plating_output
-                        manu_o.update({'plating_output':m_qty})
-                        if out_qty == 0:
-                            break
-                    if out.based_on == 'top':
-                        if manu_o.top_plat_plan_qty <= out_qty:
-                            m_qty = manu_o.top_plat_plan_qty
-                            out_qty = out_qty - manu_o.top_plat_plan_qty
-                        else:
-                            m_qty = out_qty
-                            out_qty = 0.00
-                        m_qty += p.top_plat_output
-                        manu_o.update({'top_plat_output':m_qty})
-                        if out_qty == 0:
-                            break
-                    if out.based_on == 'bottom':
-                        if manu_o.bot_plat_plan_qty <= out_qty:
-                            m_qty = manu_o.bot_plat_plan_qty
-                            out_qty = out_qty - manu_o.bot_plat_plan_qty
-                        else:
-                            m_qty = out_qty
-                            out_qty = 0.00
-                        m_qty += p.bot_plat_output
-                        manu_o.update({'bot_plat_output':m_qty})
-                        if out_qty == 0:
-                            break
-                    if out.based_on == 'pinbox':
-                        if manu_o.pin_plat_plan_qty <= out_qty:
-                            m_qty = manu_o.pin_plat_plan_qty
-                            out_qty = out_qty - manu_o.pin_plat_plan_qty
-                        else:
-                            m_qty = out_qty
-                            out_qty = 0.00
-                        m_qty += p.pin_plat_output
-                        manu_o.update({'pin_plat_output':m_qty})
-                        if out_qty == 0:
-                            break
-                            
-                elif out.next_operation == 'Slider Assembly Output':
-                    if manu_o.sli_asmbl_plan_qty <= out_qty:
-                        m_qty = manu_o.sli_asmbl_plan_qty
-                        out_qty = out_qty - manu_o.sli_asmbl_plan_qty
-                    else:
-                        m_qty = out_qty
-                        out_qty = 0.00
-                    m_qty += p.sli_asmbl_output
-                    manu_o.update({'sli_asmbl_output':m_qty})
-                    if out_qty == 0:
-                        break
-                elif out.next_operation == 'Assembly Output':
-                    if manu_o.dyeing_plan_qty <= out_qty:
-                        m_qty = manu_o.dyeing_plan_qty
-                        out_qty = out_qty - manu_o.dyeing_plan_qty
-                    else:
-                        m_qty = out_qty
-                        out_qty = 0.00
-                    m_qty += p.dyeing_output
-                    manu_o.update({'dyeing_output':m_qty})
-                    if out_qty == 0:
-                        break
-                
-
-# 'CM Output','Deeping Output','Deeping Qc'
-                        
-#                 dyeing_output
-# dyeing_qc_pass
-            # if material == 'tape':
-            #     if p.tape_con <= rest_pl_q:
-            #         m_qty = p.tape_con
-            #         rest_pl_q = rest_pl_q - p.tape_con
-            #     else:
-            #         m_qty = rest_pl_q
-            #         rest_pl_q = 0.00
-            #     re_pqty = m_qty 
-            #     m_qty += p.dyeing_plan_qty
-            #     p.update({'dyeing_plan':plan_start,'dyeing_plan_qty':m_qty,
-            #              'dy_rec_plan_qty':re_pqty})
-                
-            
-            #raise UserError((operation_d.ids))
-            #ope = operation.update({'action_date':manuf_date,'done_qty':operation.done_qty + qty})
+            # out_qty = out.uotput_qty
+            if out.next_operation in('Dyeing Qc','CM Output','Dipping Qc','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'):
+                up = self.set_mrp_output(out.next_operation,out.mrp_lines,out.uotput_qty,out.based_on)
             
             if out.parent_id:
                 parent_id = out.parent_id
@@ -601,12 +512,15 @@ class OperationDetails(models.Model):
                 mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
                 pr_pac_qty = mrp_data.product_template_id.pack_qty
                 if pr_pac_qty:
-                    pack_qty = math.ceil(qty/pr_pac_qty)
-                    fraction_pc_of_pack = ((qty/pr_pac_qty) % 1)*qty
+                    pack_qty = math.ceil(out.uotput_qty/pr_pac_qty)
+                    fraction_pc_of_pack = round(((out.uotput_qty/pr_pac_qty) % 1)*pr_pac_qty)
                     
                 mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + out.uotput_qty, 'packing_done':fraction_pc_of_pack})
                 mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
-                mrp_all_oa = mrp_oa_data.update({'oa_total_balance':mrp_oa_data.oa_total_balance - out.uotput_qty})
+                tot_b =  sum(mrp_oa_data.mapped('oa_total_balance'))/ len(mrp_oa_data) # mrp_oa_data.oa_total_balance - out.uotput_qty
+                tot_b = tot_b - out.uotput_qty
+                
+                mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b})
                 
                 #oa_total_balance
                 
@@ -629,11 +543,12 @@ class OperationDetails(models.Model):
             if out.operation_of == 'qc':
                 operation_of = 'input'
             # operation = self.env["operation.details"].browse(self.id)
-            ope = self.env['operation.details'].create({'code':operation.code,
+            # raise UserError((out.code,out.mrp_lines,out.mrp_line.id,out.sale_lines,out.sale_order_line.id))
+            ope = self.env['operation.details'].create({'code':out.code,
                                                         'mrp_lines':out.mrp_lines,
                                                         'sale_lines':out.sale_lines,
-                                                        'mrp_line':out.mrp_line,
-                                                        'sale_order_line':out.sale_order_line,
+                                                        'mrp_line':out.mrp_line.id,
+                                                        'sale_order_line':out.sale_order_line.id,
                                                         'parent_id':out.id,
                                                         'oa_id':out.oa_id.id,
                                                         'buyer_name':out.buyer_name,

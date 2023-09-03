@@ -33,7 +33,7 @@ class ManufacturingPlan(models.TransientModel):
         ('pinbox', 'Pinbox')],
         string='Material', required=True)
     
-    plan_start = fields.Datetime(string='Start Date', required=True)
+    plan_start = fields.Datetime(string='Start Date', required=True, default=datetime.now())
     plan_end = fields.Datetime(string='End Date')
     item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)

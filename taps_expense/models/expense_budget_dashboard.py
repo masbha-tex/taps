@@ -53,7 +53,7 @@ class ExpenseBudgetDashboard(models.Model):
             (select sum(planned_amount) from crossovered_budget_lines z where b.id=z.product_id and z.crossovered_budget_state='validate') as budget_value,
             (select (DATE_PART('year',z.date_from)::TEXT) || '-' || (DATE_PART('year',z.date_to)::TEXT) as year from crossovered_budget_lines z where b.id=z.product_id and z.crossovered_budget_state='validate') as budget_year,
             
-            '0' as ytd,
+            ('0') as ytd,
             
             (select sum(d.total_actual_amount) from hr_expense_sheet as d where d.product_id=b.id 
             and TO_CHAR(d.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-04-01'::TEXT

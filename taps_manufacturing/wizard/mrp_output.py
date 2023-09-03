@@ -29,7 +29,7 @@ class ManufacturingOutput(models.TransientModel):
     sizein = fields.Text(string='Size (Inc)', readonly=True)
     sizecm = fields.Text(string='Size (Cm)', readonly=True)
     output_of = fields.Text(string='Production Of', readonly=True)
-    manuf_date = fields.Datetime(string='Production Date', required=True)
+    manuf_date = fields.Datetime(string='Production Date', required=True, default=datetime.now())
     planned_qty = fields.Float(string='Planned Qty', digits='Product Unit of Measure', readonly=True)
     qty = fields.Float(string='Qty', default=0.0, digits='Product Unit of Measure')
     
