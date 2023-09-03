@@ -975,7 +975,6 @@ class SaleOrder(models.Model):
             if vals.get('sales_type') == "oldsa":
                 ref = self.env['ir.sequence'].next_by_code('', sequence_date=seq_date) or _(vals['old_sa_num'])
                 vals['name'] = ref
-                old_pi_num
                 # raise UserError((vals['name']))
             if vals.get('sales_type') == "oldsale":
                 ref = self.env['ir.sequence'].next_by_code('', sequence_date=seq_date) or _(vals['old_pi_num'])
