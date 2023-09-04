@@ -5,7 +5,7 @@
 			<t t-foreach="docs" t-as="o">
 				<t t-call="web.external_layout">
 					<div class="page">
-						<style>
+					<style>
 					  td,th{
                 <!--border:1px solid black ! important;-->
                 text-align: center ! important;
@@ -349,6 +349,9 @@
 												<th rowspan="1">QTY(PCS)</th>
 												<th rowspan="1">QTY(GRS)</th>
 												<th rowspan="1">RATE/GRS</th>
+												<t t-if="dis ==1">
+												  <th>DISC.(%)</th>
+												</t>
 												<th rowspan="1">AMOUNT</th>
 												<t t-if="style == 1">
 													<th rowspan="1">STYLE</th>
@@ -414,6 +417,13 @@
 														<span t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 													</strong>
 												</td>
+												<t t-if="dis== 1">
+													<td rowspan="3">
+														<strong>
+															<span t-esc="line.discount"/>
+														</strong>
+													</td>
+												</t>
 												<td rowspan="3">
 													<strong>
 														<span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -429,7 +439,7 @@
 												<t t-if="gmt==1">
 													<td rowspan="3">
 														<strong>
-															<span t-esc="line.gmt" />
+															<span t-esc="line.gmt"/>
 														</strong>
 													</td>
 												</t>
@@ -498,6 +508,10 @@
 													<span t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</strong>
 											</td>
+											<t t-if="dis == 1">
+											  <td></td>
+											  
+											</t>
 											<td>
 												<strong>
 													<span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -556,6 +570,9 @@
 									<td>
 						      
 						    </td>
+						    <t t-if="dis == 1">
+										<td />
+									</t>
 									<td style="background-color: yellow">
 										<strong>
 											<span t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>

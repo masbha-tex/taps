@@ -337,8 +337,23 @@ class OperationDetails(models.Model):
         if vals.get('operation_of') == "lot":
             ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
             vals['code'] = ref
+        vals['state'] = 'waiting'
         result = super(OperationDetails, self).create(vals)
         return result                
+
+    # @api.model
+    def write(self, vals):
+        if 'done_qty' in vals:
+            if self.qty <= vals.get('done_qty'):
+                vals['state'] = 'done'
+            elif vals.get('done_qty') == 0:
+                vals['state'] = 'waiting'
+            else:
+                vals['state'] = 'partial'
+        # raise UserError((vals.get('state')))
+        result = super(OperationDetails, self).write(vals)
+        return result                
+
 
     def set_mrp_output(self,operation,mrplines,qty,material):
         # oa_ids = ','.join([str(i) for i in sorted(mrplines)])
@@ -357,10 +372,10 @@ class OperationDetails(models.Model):
             if operation == 'CM Output':
                 up_date = m.update({'chain_making_done': m.chain_making_done + rest_qty})
                 break
-            if operation == 'Dipping Qc':
+            if operation == 'Dipping Output':
                 up_date = m.update({'diping_done': m.diping_done + rest_qty})
                 break
-            if operation == 'Assembly Qc':
+            if operation == 'Assembly Output':
                 up_date = m.update({'assembly_done': m.assembly_done + rest_qty})
                 break
             if operation in ('Plating Output','Painting Output'):
@@ -399,17 +414,19 @@ class OperationDetails(models.Model):
         pack_qty = 0
         fraction_pc_of_pack = 0
         operation = self.env["operation.details"].browse(mo_ids)
-        ope = operation.update({'action_date':manuf_date,'done_qty':operation.done_qty + qty})
+        dqt = operation.done_qty + qty
+        ope = operation.write({'action_date':manuf_date,'done_qty':dqt})
         
         if operation.parent_id:
             parent_id = operation.parent_id
             while (parent_id):
                 if mo_ids != parent_id.id:
                     operation_p = self.env["operation.details"].browse(parent_id.id)
-                    ope = operation_p.update({'done_qty':operation_p.done_qty + qty})
+                    dqt = operation_p.done_qty + qty
+                    ope = operation_p.write({'done_qty':dqt})
                 parent_id = parent_id.parent_id
 
-        if operation.next_operation == 'Assembly Qc':
+        if operation.next_operation == 'Assembly Output':
             if operation.mrp_line:
                 mrp_data = self.env["manufacturing.order"].browse(operation.mrp_line.id)
                 mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + qty})
@@ -420,7 +437,7 @@ class OperationDetails(models.Model):
                     pack_qty = math.ceil(qty/pr_pac_qty)
                     fraction_pc_of_pack = round(((qty/pr_pac_qty) % 1)*pr_pac_qty)
 
-        if operation.next_operation in('Dyeing Qc','CM Output','Dipping Qc','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'):
+        if operation.next_operation in('Dyeing Qc','CM Output','Dipping Output','Assembly Output','Plating Output','Painting Output','Slider Assembly Output'):
            up = self.set_mrp_output(operation.next_operation,operation.mrp_lines,qty,operation.based_on)
             
         next = None
@@ -429,9 +446,13 @@ class OperationDetails(models.Model):
             next = 'Assembly'
             
         process_flow = self.env["process.sequence"].search([]) #('item','=',self.fg_categ_type.name)
+        # cur_process = process_flow.filtered(lambda pr: pr.item == operation.fg_categ_type and pr.process == operation.next_operation)
         cur_process = process_flow.filtered(lambda pr: pr.item == operation.fg_categ_type and pr.process == operation.next_operation)
+
+        
         if cur_process:
-            next_process = process_flow.filtered(lambda pr: pr.item == operation.fg_categ_type and pr.sequence == cur_process.sequence + 1)
+            next_process = process_flow.filtered(lambda pr: pr.item == operation.fg_categ_type and pr.sequence > cur_process.sequence).sorted(key=lambda pr: pr.sequence)[:1]
+            
             if next_process:
                 next = next_process.process
                 w_center = next_process.work_center.id
@@ -471,15 +492,16 @@ class OperationDetails(models.Model):
                                                     'fr_pcs_pack':fraction_pc_of_pack
                                                     })
 
-    @api.onchange('done_qty')
-    def _done_qty(self):
-        for s in self:
-            if s.qty <= s.done_qty:
-                s.state = 'done'
-            elif s.done_qty == 0:
-                s.state = 'waiting'
-            else:
-                s.state = 'partial'
+    # @api.onchange('done_qty')
+    # def _done_qty(self):
+    #     for s in self:
+    #         if s.qty <= s.done_qty:
+    #             s.state = 'done'
+    #         elif s.done_qty == 0:
+    #             s.state = 'waiting'
+    #         else:
+    #             s.state = 'partial'
+    #         raise UserError(('eefe'))
             
     @api.onchange('uotput_qty')
     def _output(self):
@@ -487,7 +509,7 @@ class OperationDetails(models.Model):
             pack_qty = 0
             fraction_pc_of_pack = 0
             done_qty = out.done_qty + out.uotput_qty
-            out.done_qty = done_qty
+            s = out.write({'done_qty':done_qty})#done_qty = done_qty
             manufac_ids = self.env["manufacturing.order"].browse(out.mrp_lines)
 
             # get_field = self.env["manufacturing.order"]._get_field('dyeing_plan_qty') #getattr(manufacturing_order, 'dyeing_plan_qty')
@@ -497,7 +519,7 @@ class OperationDetails(models.Model):
 #'Assembly Output','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'
             #'Dyeing Output','Dyeing Qc','CM Output','Deeping Output','Deeping Qc'
             # out_qty = out.uotput_qty
-            if out.next_operation in('Dyeing Qc','CM Output','Dipping Qc','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'):
+            if out.next_operation in('Dyeing Qc','CM Output','Dipping Output','Assembly Output','Plating Output','Painting Output','Slider Assembly Output'):
                 up = self.set_mrp_output(out.next_operation,out.mrp_lines,out.uotput_qty,out.based_on)
             
             if out.parent_id:
@@ -505,10 +527,11 @@ class OperationDetails(models.Model):
                 while (parent_id):
                     if out.parent_id != parent_id.id:
                         operation_p = self.env["operation.details"].browse(parent_id.id)
-                        ope = operation_p.update({'done_qty':operation_p.done_qty + out.uotput_qty})
+                        dqt = operation_p.done_qty + out.uotput_qty
+                        ope = operation_p.write({'done_qty':dqt})
                     parent_id = parent_id.parent_id
     
-            if out.next_operation == 'Assembly Qc':
+            if out.next_operation == 'Assembly Output':
                 mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
                 pr_pac_qty = mrp_data.product_template_id.pack_qty
                 if pr_pac_qty:
@@ -532,7 +555,7 @@ class OperationDetails(models.Model):
             process_flow = self.env["process.sequence"].search([]) #('item','=',self.fg_categ_type.name)
             cur_process = process_flow.filtered(lambda pr: pr.item == out.fg_categ_type and pr.process == out.next_operation)
             if cur_process:
-                next_process = process_flow.filtered(lambda pr: pr.item == out.fg_categ_type and pr.sequence == cur_process.sequence + 1)
+                next_process = process_flow.filtered(lambda pr: pr.item == out.fg_categ_type and pr.sequence > cur_process.sequence).sorted(key=lambda pr: pr.sequence)[:1]
                 if next_process:
                     next = next_process.process
                     w_center = next_process.work_center.id

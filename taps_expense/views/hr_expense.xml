@@ -22,6 +22,9 @@
         <field name="model">hr.expense</field>
         <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="attributes"> 
+                <attribute name="required">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='name']" position="attributes"> 
                 <attribute name="readonly">1</attribute>
             </xpath>

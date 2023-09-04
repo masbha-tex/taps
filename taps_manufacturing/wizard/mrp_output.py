@@ -31,7 +31,7 @@ class ManufacturingOutput(models.TransientModel):
     output_of = fields.Text(string='Production Of', readonly=True)
     manuf_date = fields.Datetime(string='Production Date', required=True, default=datetime.now())
     planned_qty = fields.Float(string='Planned Qty', digits='Product Unit of Measure', readonly=True)
-    qty = fields.Float(string='Qty', default=0.0, digits='Product Unit of Measure')
+    qty = fields.Float(string='Qty', default=0.0, digits='Product Unit of Measure',required=True)
     
     # @api.model
     # def default_get(self, fields_list):

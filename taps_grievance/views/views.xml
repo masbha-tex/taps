@@ -1,0 +1,96 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record model="ir.ui.view" id="view_hr_grievance_form">
+        <field name="name">hr_grievance.form</field>
+        <field name="model">hr.grievance</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Grievance">
+                <header>
+                    <button name="action_submit" confirm="Are you sure to submit HR Team?" type="object" class="oe_highlight" string="Submit to HR Team" states="draft"/>                    
+					<field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+				</header>
+				<sheet>
+                    <widget name="web_ribbon" title="Pending" bg_color="bg-danger"
+                            attrs="{'invisible': [('state', '!=', 'pending')]}"/>
+                    <widget name="web_ribbon" title="Closed" bg_color="bg-success"
+                            attrs="{'invisible': [('state', '!=', 'closed')]}"/>
+                    <div class="oe_button_box" name="button_box"/>                    
+                    <field name="name"/>
+                    <div class="oe_title">
+                        <label for="employee_id" class="oe_edit_only"/>
+                        <h1><field name="employee_id" placeholder="e.g. Employee Name" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create':true, 'no_open':true}"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="submit_by" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="complaint_date" class="oe_read_only"/>
+                            <field name="action_taken"/>
+                        </group>                       
+                    </group>
+                    <group colspan="2" col="2">
+                        <field name="details" placeholder="Details of Misconduct..." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    </group>                    
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" options="{'open_attachments': True}"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>                
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_hr_grievance_tree">
+        <field name="name">hr_grievance.tree</field>
+        <field name="model">hr.grievance</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Grievance">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="type"/>
+                <field name="details"/>
+                <field name="action_taken"/>
+                <field name="submit_by"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="hr_grievance_search_view">
+        <field name="name">hr_grievance.search</field>
+        <field name="model">hr.grievance</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="type"/>
+                <field name="submit_by"/>
+                <field name="action_taken"/>
+                <filter name="filter_complaint_date" date="complaint_date"/>
+                <group string="Group By">
+                    <filter name="submit_by" context="{'group_by': 'submit_by'}"/>
+                    <filter name="type" context="{'group_by': 'type'}"/>
+                    <filter name="employee_id" context="{'group_by': 'employee_id'}"/>
+                    <filter name="by_complaint_date" context="{'group_by': 'complaint_date'}"/>
+                </group>
+                <searchpanel>
+                    <field name="company_id" enable_counters="1"/>
+                    <field name="department_id" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>      
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="action_hr_grievance">
+        <field name="name">Grievance</field>
+        <field name="res_model">hr.grievance</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+	<menuitem name="Grievance" parent="hr.menu_hr_root" id="menu_hr_grievance" sequence="2" action="action_hr_grievance"/>      
+  </data>
+</odoo>

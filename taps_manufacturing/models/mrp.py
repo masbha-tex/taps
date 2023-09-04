@@ -190,17 +190,17 @@ class MrpWoProductivity(models.Model):
         mrpWorkorder = self.env['operation.details'].search([])
         # mrpWorkorder
         for wc in self:
-            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of in ('plan','input') and op.qty > op.done_qty)
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of in ('plan','input') and op.state != 'done')
             wc.order_toproduce_count = len(operation)
             
             operation = None
-            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'lot' and op.qty > op.done_qty)
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of in ('lot','output') and op.state != 'done' and 'Output' in op.next_operation)
             wc.order_tooutput_count = len(operation)
             
             operation = None
-            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'output' and op.qty > op.done_qty)
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'output' and op.state != 'done' and 'Qc' in op.next_operation)
             wc.order_toqc_count = len(operation)
-
+# op.qty > op.done_qt
     # def action_work_order(self):
     #     action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_operations")
     #     return action

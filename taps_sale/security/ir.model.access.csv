@@ -7,3 +7,5 @@ access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_representative,sales_t
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_wastage_percent,sales_team.group_sale_manager,1,1,1,1
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_order_flow,base.group_user,1,1,1,1
 access_sale_report,access_sale_pdf_report,model_sale_pdf_report,base.group_user,1,1,1,1
+access_sale_team,access_sale_team,model_sale_team,base.group_user,1,1,1,1
+access_sale_team_region,access_sale_team_region,model_team_region,base.group_user,1,1,1,1

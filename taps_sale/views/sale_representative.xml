@@ -6,9 +6,9 @@
         <field name="arch" type="xml">
             <tree string="Sales Representative List">
                 <field name="name"/>
-                <field name="sales_representative_team"/>
-                <field name="sales_representative_position"/>
-                <field name="sales_representative_region"/>
+                <field name="leader"/>
+                <field name="team"/>
+                <field name="region"/>
             </tree>
         </field>
     </record>
@@ -26,29 +26,78 @@
                     </group>
                     <group>
                         <group>
-                        <field name="sales_representative_team"/>
+                        <field name="leader"/>
                         </group>
                         <group>
-                        <field name="sales_representative_position"/>
+                        <field name="team"/>
                         </group>
                         <group>
-                        <field name="sales_representative_region"/>
+                        <field name="region"/>
+                        </group>
+                        <group>
+                        <field name="email"/>
                         </group>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
-    
+    <record id="sale_team_list" model="ir.ui.view">
+        <field name="name">sale.team.list</field>
+        <field name="model">sale.team</field>
+        <field name="arch" type="xml">
+            <tree string="Team List">
+                <field name="team_name"/>
+                
+            </tree>
+        </field>
+    </record>
+    <record id="team_region_list" model="ir.ui.view">
+        <field name="name">team.region.list</field>
+        <field name="model">team.region</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Region">
+                <field name="team_region"/>
+                
+            </tree>
+        </field>
+    </record>
     <record id="sale_representative_action_config" model="ir.actions.act_window">
         <field name="name">Sales Representative</field>
         <field name="res_model">sale.representative</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record id="sale_team_action_config" model="ir.actions.act_window">
+        <field name="name">Team</field>
+        <field name="res_model">sale.team</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="team_region_action_config" model="ir.actions.act_window">
+        <field name="name">Team Region</field>
+        <field name="res_model">team.region</field>
+        <field name="view_mode">tree,form</field>
+    </record>
     <menuitem
         id="menu_sale_representative"
+        name="Sales Team Info"
+        parent="sale.menu_sales_config"
+        sequence="17"/>
+    <menuitem
+        id="menu_sale_representative_name"
         name="Sales Representative"
         action="sale_representative_action_config"
-        parent="sale.menu_sales_config"
+        parent="taps_sale.menu_sale_representative"
         sequence="18"/>
+    <menuitem
+        id="menu_sale_team"
+        name="Sales Teams"
+        action="sale_team_action_config"
+        parent="taps_sale.menu_sale_representative"
+        sequence="19"/>
+    <menuitem
+        id="menu_sale_team_region"
+        name="Sales Region"
+        action="team_region_action_config"
+        parent="taps_sale.menu_sale_representative"
+        sequence="20"/>
 </odoo>    

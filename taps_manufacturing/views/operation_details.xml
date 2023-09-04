@@ -7,9 +7,9 @@
             <search>
                 <field name="oa_id"/>
                 <field name="work_center"/>
-                <filter string="Ready" name="ready" domain="[('operation_of','in',('plan','input')),('done_qty','=',0)]"/>
-                <filter string="Pending" name="progress" domain="[('operation_of','=','lot'),('done_qty','=',0)]"/>
-                <filter string="Done" name="quality" domain="[('operation_of','=','output'),('done_qty','=',0)]"/>
+                <filter string="Ready" name="ready" domain="[('operation_of','in',('plan','input')),('state','!=','done')]"/>
+                <filter string="Pending" name="progress" domain="[('operation_of','in',('lot','output')),('state','!=','done'),('next_operation','ilike','Output')]"/>
+                <filter string="Done" name="quality" domain="[('operation_of','=','output'),('state','!=','done'),('next_operation','ilike','Qc')]"/>
                 <filter string="Requisitions" name="requisitions" domain="[('mr_req','=',True)]"/>
                 <separator/>
                 <filter string="Start Date" name="action_date_filter" date="action_date"/>
@@ -53,10 +53,10 @@
                 <field name="qty" readonly="1"/>
                 <field name="done_qty" readonly="1" force_save="1"/>
                 <field name="balance_qty"/>
-                <field name="uotput_qty"/>
-                <field name="pack_qty"/>
+                <field name="uotput_qty" attrs="{'readonly': [('operation_of', 'not in', ('output','qc','lot'))]}"/>
                 <field name="pack_qty"/>
                 <field name="fr_pcs_pack"/>
+                <field name="state"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>
                 <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>

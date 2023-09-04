@@ -107,6 +107,7 @@
 				<field name="packing_done" optional="show" sum="Packing Output" decoration-bf="True"/>
 				<field name="oa_total_qty" invisible="1"/>
 				<field name="oa_total_balance" invisible="1"/>
+                <field name="state"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
                     attrs="{'invisible': [('dyeing_plan', '=', False)]}"/>
                  <!-- attrs="{'invisible': [('operation_of', '!=', 'plan')]}" -->
@@ -153,7 +154,8 @@
                 <field name="done_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
                 <field name="balance_qty" optional="show" sum="Balance" decoration-bf="True"/>
                 <field name="dyeing_plan"/>
-                <field name="dyeing_plan_end" invisible="1"/>
+                <!-- <field name="dyeing_plan_end" invisible="1"/> -->
+                <field name="dyeing_output" optional="show" sum="Dye Output" decoration-bf="True"/>
                 <!-- <field name="dyeing_qc_pass" optional="show" sum="Dye QC Pass" decoration-bf="True"/> -->
 				<field name="chain_making_done" optional="show" sum="CM Output" decoration-bf="True"/>
 				<field name="diping_done" optional="show" sum="Dipping Output" decoration-bf="True"/>
@@ -161,6 +163,7 @@
 				<field name="packing_done" optional="show" sum="Packing Output" decoration-bf="True"/>
 				<field name="oa_total_qty" invisible="1"/>
 				<field name="oa_total_balance" invisible="1"/>
+                <field name="state"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
                     attrs="{'invisible': [('dyeing_plan', '=', False)]}"/>
                  <!-- attrs="{'invisible': [('operation_of', '!=', 'plan')]}" -->

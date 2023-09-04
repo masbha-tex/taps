@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>	
+		<record id="report_hr_complaint" model="ir.actions.report">
+        <field name="name">Complaint</field>
+        <field name="model">hr_complaint.complaint</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_complaint.report_hr_complaint_template</field>
+        <field name="report_file">hr_complaint.report_hr_complaint_template</field>
+        <field name="binding_model_id" ref="model_hr_complaint_complaint"/>
+        <field name="binding_type">report</field>
+    </record>
+
+        <template id="report_hr_complaint_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                    <div class="page">
+                        <center><h2 style="font-size: 1.75rem!important;">Employee Complaint Record</h2></center>
+                        <h3 style="font-size: 1.5rem!important;">Details</h3>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Employee Name:
+							</div>
+							<div class="col-8">
+								<span t-field="o.employee_id" />
+							</div>
+						</div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Date of Complaint:
+							</div>
+							<div class="col-8">
+								<span t-field="o.complaint_date" />
+							</div>
+						</div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Status:
+							</div>
+							<div class="col-8">
+								<span t-field="o.state"/>
+							</div>
+						</div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Method of Complaint:
+							</div>
+							<div class="col-8">
+								<span t-field="o.complaint_mode" />
+							</div>
+						</div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Type of Complaint:
+							</div>
+							<div class="col-8">
+								<span t-field="o.complaint_type" />
+							</div>
+                        </div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Complaint Source:
+							</div>
+							<div class="col-8">
+								<span t-field="o.complaint_source" /> - <span t-field="o.complaint_source_text"/>
+							</div>
+                        </div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col">
+								Outline of Complaint
+							</div>
+						</div>
+						<div class="row" style="page-break-inside: avoid!important;">
+							<div class="col">
+								<span t-field="o.complaint_outline" />
+							</div>
+                        </div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Evidence:
+							</div>
+							<div class="col-8">
+								<span t-field="o.complaint_evidence" />
+							</div>
+                        </div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Witnesses:
+							</div>
+							<div class="col-8">
+								<span t-field="o.complaint_witnesses" />
+							</div>
+                        </div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Recorded By:
+							</div>
+							<div class="col-8">
+								<span t-field="o.recorded_by" />
+							</div>
+                        </div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col">
+								<h3 style="font-size: 1.5rem!important;">Assessment</h3>
+							</div>
+                        </div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Seriousness:
+							</div>
+							<div class="col-8">
+								<span t-field="o.complaint_assessment"/>
+							</div>
+                        </div>
+						<div style="page-break-inside: avoid!important;">
+                        <div class="row">
+							<div class="col">
+								Does the complaint contain allegations of:
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Stealing:
+							</div>
+							<div class="col-4">
+								<span t-if="o.stealing">&#9745;</span><span t-if="not o.stealing">&#9744;</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Fraud:
+							</div>
+							<div class="col-4">
+								<span t-if="o.fraud">&#9745;</span><span t-if="not o.fraud">&#9744;</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Threats and/or violence:
+							</div>
+							<div class="col-4">
+								<span t-if="o.violence">&#9745;</span><span t-if="not o.violence">&#9744;</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Safety breaches:
+							</div>
+							<div class="col-4">
+								<span t-if="o.safety">&#9745;</span><span t-if="not o.safety">&#9744;</span>
+							</div>
+						</div>
+                        <div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Discrimination:
+							</div>
+							<div class="col-4">
+								<span t-if="o.discrimination">&#9745;</span><span t-if="not o.discrimination">&#9744;</span>
+							</div>
+						</div>
+						</div>
+						<div style="page-break-inside: avoid!important;">
+						<div class="row">
+							<div class="col">
+								Does the complaint indicate:
+							</div>
+                        </div>
+						<div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Any breach of Contract/Policy:
+							</div>
+							<div class="col-4">
+								<span t-if="o.policy">&#9745;</span><span t-if="not o.policy">&#9744;</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Any breach of the company's contract with clients:
+							</div>
+							<div class="col-4">
+								<span t-if="o.client_contract">&#9745;</span><span t-if="not o.client_contract">&#9744;</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Refusal to follow reasonable directions:
+							</div>
+							<div class="col-4">
+								<span t-if="o.directions">&#9745;</span><span t-if="not o.directions">&#9744;</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Unsatisfactory performance:
+							</div>
+							<div class="col-4">
+								<span t-if="o.performance">&#9745;</span><span t-if="not o.performance">&#9744;</span>
+							</div>
+						</div>
+                        <div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Inappropriate behaviour:
+							</div>
+							<div class="col-4">
+								<span t-if="o.behaviour">&#9745;</span><span t-if="not o.behaviour">&#9744;</span>
+							</div>
+                        </div>
+                        <div class="row">
+							<div class="col-4"></div>
+							<div class="col-4">
+								Misuse of company property:
+							</div>
+							<div class="col-4">
+								<span t-if="o.property">&#9745;</span><span t-if="not o.property">&#9744;</span>
+							</div>
+                        </div>
+						</div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Is there sufficient evidence to investigate the complaint?
+							</div>
+							<div class="col-8">
+								<span t-if="o.evidence_sufficient">Yes</span><span t-if="not o.evidence_sufficient">No</span>
+							</div>
+						</div>
+						<div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Does the complaint require investigation?
+							</div>
+							<div class="col-8">
+								<span t-field="o.investigation_required"/>
+							</div>
+						</div>
+						<div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Does the complaint have to be referred to another organisation?
+							</div>
+							<div class="col-8">
+								<span t-if="o.complaint_refer">Yes</span><span t-if="not o.complaint_refer">No</span>
+							</div>
+						</div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Investigation Plan:
+							</div>
+							<div class="col-8">
+								<span t-field="o.investigation_plan"/>
+							</div>
+						</div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Assigned to:
+							</div>
+							<div class="col-8">
+								<span t-field="o.assigned_to"/>
+							</div>
+						</div>
+						<div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Assessed by:
+							</div>
+							<div class="col-8">
+								<span t-field="o.assessor"/>
+							</div>
+						</div>
+						<div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Date assessed:
+							</div>
+							<div class="col-8">
+								<span t-field="o.assess_date"/>
+							</div>
+						</div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col">
+								<h3 style="font-size: 1.5rem!important;">Action</h3>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4" style="page-break-inside: avoid!important;">
+								Has the complaint been substantiated?
+							</div>
+							<div class="col-8">
+								<span t-if="o.substantiated">Yes</span><span t-if="not o.substantiated">No</span>
+							</div>
+						</div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Details:
+							</div>
+							<div class="col-8">
+								<span t-field="o.action_detail"/>
+							</div>
+						</div>
+						<div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Issues discovered:
+							</div>
+							<div class="col-8">
+								<span t-field="o.issues"/>
+							</div>
+						</div>
+						<div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Action to be taken:
+							</div>
+							<div class="col-8">
+								<span t-field="o.action_taken"/>
+							</div>
+						</div>
+						<div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Record on Employee File:
+							</div>
+							<div class="col-8">
+								<span t-if="o.record_employee">Yes</span><span t-if="not o.record_employee">No</span>
+							</div>
+                        </div>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Completed by:
+							</div>
+							<div class="col-8">
+								<span t-field="o.completed_by"/>
+							</div>
+						</div>
+						<div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-4">
+								Date Closed:
+							</div>
+							<div class="col-8">
+								<div t-if="o.date_close"><span t-field="o.date_close"/></div><div t-if="not o.date_close">OPEN</div>
+							</div>
+						</div>
+                        <h3 style="font-size: 1.5rem!important;">Running Entries</h3>
+                        <table>
+							<t t-set="i" t-value="0"/>
+                            <t t-foreach="o.message_ids" t-as="msg">
+							<t t-set="i" t-value="i+1"/>
+								<t t-if="i > 1">
+								<tr><td colspan="2"><hr/></td></tr>
+							</t>	
+                                <tr>
+                                    <td style="padding-right: 1cm; font-weight:bold;">
+                                        <span t-field="msg.author_id"/><br/>
+                                        <div style="font-size:75%; padding-left: 3mm;">
+                                            (<span t-field="msg.date"/>)
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div t-if="msg.subject"><span t-field="msg.subject"/>: </div>
+                                        <div t-if="msg.message_type == 'notification'">
+                                            <span t-field="msg.subtype_id.name"/>
+                                            <t t-foreach='msg.sudo().tracking_value_ids' t-as='value'>
+                                                <li>
+                                                    <t t-esc="value.field_desc"/>:
+                                                    <span> <t t-esc="value.new_value_char"/> </span>
+                                                </li>
+                                            </t>
+                                        </div>
+                                        <span t-field="msg.body"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                        <br/><br/>
+                        <div class="row" style="page-break-inside: avoid!important;">
+							<div class="col-2">
+								Signature:
+							</div>
+							<div class="col-4" style="border-bottom: 1px solid black !important">
+							</div>
+							<div class="col-2">
+								Date:
+							</div>
+							<div class="col-4" style="border-bottom: 1px solid black !important">
+							</div>
+						</div>
+                    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

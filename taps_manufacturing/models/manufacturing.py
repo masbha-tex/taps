@@ -162,6 +162,16 @@ class ManufacturingOrder(models.Model):
         ('done', 'Done')],
         string='State')
     
+    @api.onchange('done_qty')
+    def _done_qty(self):
+        for s in self:
+            if s.product_uom_qty <= s.done_qty:
+                s.state = 'done'
+            elif s.done_qty == 0:
+                s.state = 'waiting'
+            else:
+                s.state = 'partial'
+                
     @api.onchange('packing_done')
     def _packing_output(self):
         for out in self:
