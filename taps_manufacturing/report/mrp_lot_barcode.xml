@@ -18,7 +18,7 @@
                 </t>
                 </div></td></tr>
                 <tr><td align="center"><div><span>Machine: </span><t t-esc="morder.based_on"/></div></td></tr>
-                <tr><td align="center"><div><img alt="barcode" t-if="morder.code" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', morder.code, 400, 100)" style="max-height:40pt;" align="center"/><br/><t t-esc="morder.code"/></div></td></tr>
+                <tr><td align="center"><div><img alt="barcode" t-if="morder.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', morder.name, 400, 100)" style="max-height:40pt;" align="center"/><br/><t t-esc="morder.name"/></div></td></tr>
             </table>
           </t>
         </div>

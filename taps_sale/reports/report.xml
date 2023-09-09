@@ -48,5 +48,6 @@
             <field name="print_report_name">"SA_Pending_"+(object.name)</field>
             
         </record>
+        
     </data>
 </odoo>

@@ -22,6 +22,7 @@
 
     # always loaded
     'data': [
+        'views/assets.xml',
         'security/ir.model.access.csv',
         'reports/paperformat.xml',
         'views/sale.xml',
@@ -39,8 +40,8 @@
         'reports/report_sa_invoice_mt.xml',
         'reports/report_sa_submission_mt.xml',
         'data/ir_oa_sequence.xml',
+        'data/send_oa_to_respective.xml',
         'data/daily_oa_release_email.xml',
-        
         'data/oa_release.xml',
         # 'data/mail_template_action.xml',
         #'views/fg_product.xml',
@@ -48,9 +49,12 @@
         'views/variant_templates.xml',
         'reports/report.xml',
         'views/order_flow.xml',
-        'wizard/sales_report_wizard.xml'
+        'wizard/sales_report_wizard.xml',
+        
+        
         
     ],
+    'qweb': ["static/src/xml/sale_dashboard.xml"],
     # only loaded in demonstration mode
     'installable': True,
     'auto_install': False,

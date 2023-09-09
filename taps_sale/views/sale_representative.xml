@@ -35,7 +35,7 @@
                         <field name="region"/>
                         </group>
                         <group>
-                        <field name="email"/>
+                        <field name="email" widget="email"/>
                         </group>
                     </group>
                 </sheet>

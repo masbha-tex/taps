@@ -207,10 +207,68 @@
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_tree"/>
 			<field name="arch" type="xml">
+                
 				<xpath expr="//field[@name='message_needaction']" position="before">
 					<field name="priority_sales" optional="show" widget="priority" nolabel="1"/>
 				</xpath>
 			</field>
 		</record>
+        <record model="ir.ui.view" id="view_quotation_tree_with_onboarding_inherit">
+            <field name="name">sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="js_class">sale_tree_dashboard_upload</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_sale_order_kanban_inherit">
+            <field name="name">sale.order.kanban.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sale_order_kanban"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="js_class">sale_kanban</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="sale_action_dashboard_list" model="ir.actions.act_window">
+        <field name="name">Sale</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">form,tree,kanban,pivot,graph,activity</field>
+        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        <field name="target">main</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No Order to display
+            </p>
+        </field>
+        </record>
+
+    <!-- Dashboard action buttons: End in Kanban view-->
+    <record id="sale_action_dashboard_kanban" model="ir.actions.act_window">
+        <field name="name">Sale</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="sale.view_sale_order_kanban"/>
+        <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        <field name="target">main</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No Order to display
+            </p>
+        </field>
+    </record>
+
+
+
+
+        
 	</data>
 </odoo>

@@ -36,7 +36,7 @@
                 <field name="june"/>
                 <field name="july"/>
                 <field name="august" decoration-success="current_date == 'Aug'" decoration-bf="current_date == 'Aug'"/>
-                <field name="september"/>
+                <field name="september" decoration-success="current_date == 'Sep'" decoration-bf="current_date == 'Sep'"/>
                 <field name="october"/>
                 <field name="november"/>
                 <field name="december"/>

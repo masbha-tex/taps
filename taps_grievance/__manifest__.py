@@ -17,6 +17,7 @@
         'data/ir_sequence.xml',
         'views/views.xml',
         'views/templates.xml',
+        'views/matrix_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

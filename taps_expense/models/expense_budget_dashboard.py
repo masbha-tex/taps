@@ -10,12 +10,12 @@ class ExpenseBudgetDashboard(models.Model):
 
     id = fields.Many2one('product.product',string='Code')
     default_code=fields.Char(string='Default Code')
-    product_template= fields.Many2one('product.template', string='Sbd')
+    # product_template= fields.Many2one('product.template', string='Sbd')
     name = fields.Char(string='Product Name')
     x_studio_super_expense_category = fields.Char(string='Super Expense Category Name')
     budget_year = fields.Char(string='Budget Year')
     budget_value = fields.Float(string='Budget Value')
-    ytd = fields.Char(string='YTD')
+    ytd = fields.Float(string='YTD')
     april = fields.Float(string='April')
     may = fields.Float(string='May')
     june = fields.Float(string='June')
@@ -41,65 +41,53 @@ class ExpenseBudgetDashboard(models.Model):
 
     def init(self):
         tools.drop_view_if_exists(self._cr, 'expense_budget_dashboard')
-        
+        fromdate = datetime.now().replace(month=4).replace(day=1).date()
+        todate = datetime.now().replace(month=3).replace(day=31).date()
+        fromyear = toyear = datetime.now().year
+        if datetime.now().month < 4:
+            fromyear = datetime.now().year - 1
+            fromdate = fromdate.replace(year=fromyear)
+        else:
+            toyear = datetime.now().year + 1
+            todate = todate.replace(year=toyear)
+
         query = """
         CREATE or REPLACE VIEW expense_budget_dashboard AS (
-        SELECT  id,current_date,default_code, name,x_studio_super_expense_category,budget_value, budget_year, ytd, april,may,june,july,august,september,october,november,december,january,february,march
+        SELECT  id, current_date,default_code, name,x_studio_super_expense_category,budget_value, budget_year, ((ytd*100)/budget_value) as ytd, april,may,june,july,august,september,october,november,december,january,february,march
  FROM (
-     SELECT a.name,
-            b.id,
-            b.default_code,
-            b.x_studio_super_expense_category,
-            (select sum(planned_amount) from crossovered_budget_lines z where b.id=z.product_id and z.crossovered_budget_state='validate') as budget_value,
-            (select (DATE_PART('year',z.date_from)::TEXT) || '-' || (DATE_PART('year',z.date_to)::TEXT) as year from crossovered_budget_lines z where b.id=z.product_id and z.crossovered_budget_state='validate') as budget_year,
-            
-            ('0') as ytd,
-            
-            (select sum(d.total_actual_amount) from hr_expense_sheet as d where d.product_id=b.id 
-            and TO_CHAR(d.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-04-01'::TEXT
-            and TO_CHAR(d.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-04-30'::TEXT) as april,
-            (select sum(e.total_actual_amount) from hr_expense_sheet as e where e.product_id=b.id 
-            and TO_CHAR(e.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-05-01'::TEXT
-            and TO_CHAR(e.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-05-31'::TEXT) as may,
-            (select sum(f.total_actual_amount) from hr_expense_sheet as f where f.product_id=b.id 
-            and TO_CHAR(f.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-06-01'::TEXT
-            and TO_CHAR(f.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-06-30'::TEXT) as june,
-            (select sum(g.total_actual_amount) from hr_expense_sheet as g where g.product_id=b.id 
-            and TO_CHAR(g.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-07-01'::TEXT
-            and TO_CHAR(g.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-07-31'::TEXT) as july,
-            (select sum(h.total_actual_amount) from hr_expense_sheet as h where h.product_id=b.id 
-            and TO_CHAR(h.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-08-01'::TEXT
-            and TO_CHAR(h.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-08-31'::TEXT) as august,
-            (select sum(i.total_actual_amount) from hr_expense_sheet as i where i.product_id=b.id 
-            and TO_CHAR(i.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-09-01'::TEXT
-            and TO_CHAR(i.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-09-30'::TEXT) as september,
-            (select sum(j.total_actual_amount) from hr_expense_sheet as j where j.product_id=b.id 
-            and TO_CHAR(j.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-10-01'::TEXT
-            and TO_CHAR(j.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-10-31'::TEXT) as october,
-            (select sum(k.total_actual_amount) from hr_expense_sheet as k where k.product_id=b.id 
-            and TO_CHAR(k.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-11-01'::TEXT
-            and TO_CHAR(k.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-11-30'::TEXT) as november,
-            (select sum(l.total_actual_amount) from hr_expense_sheet as l where l.product_id=b.id 
-            and TO_CHAR(l.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2023-04-28')) || '-12-01'::TEXT
-            and TO_CHAR(l.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2023-04-28')) || '-12-31'::TEXT) as december,
-            (select sum(m.total_actual_amount) from hr_expense_sheet as m where m.product_id=b.id 
-            and TO_CHAR(m.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2024-04-28')) || '-01-01'::TEXT
-            and TO_CHAR(m.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2024-04-28')) || '-01-31'::TEXT) as january,
-            (select sum(n.total_actual_amount) from hr_expense_sheet as n where n.product_id=b.id 
-            and TO_CHAR(n.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2024-04-28')) || '-02-01'::TEXT
-            and TO_CHAR(n.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2024-04-28')) || '-02-29'::TEXT) as february,
-            (select sum(o.total_actual_amount) from hr_expense_sheet as o where o.product_id=b.id 
-            and TO_CHAR(o.date_approve, 'YYYY-MM-DD') >= DATE_PART('year', date('2024-04-28')) || '-01-01'::TEXT
-            and TO_CHAR(o.date_approve, 'YYYY-MM-DD') <= DATE_PART('year', date('2024-04-28')) || '-01-31'::TEXT) as march
-            
-            
+     SELECT a.name,b.id,b.default_code,b.x_studio_super_expense_category,
+     (select sum(planned_amount) from crossovered_budget_lines z where b.id=z.product_id and z.crossovered_budget_state='validate') as budget_value,
+     concat(%s,'-',%s) as budget_year,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date(d.date_approve)>=date(%s) and date(d.date_approve)<=date(%s)) as ytd,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 4) as april,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 5) as may,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 6) as june,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 7) as july,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 8) as august,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 9) as september,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 10) as october,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 11) as november,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 12) as december,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 1) as january,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 2) as february,
+     (select sum(d.total_actual_amount*(select case when d.currency_id=1 then cr.rate else 1 end from res_currency_rate as cr where cr.currency_id=55 and cr.company_id=d.company_id and cr.name<=d.date_approve order by cr.id desc limit 1)) from hr_expense_sheet as d where d.product_id=b.id and
+     date_part('year',d.date_approve) = %s and date_part('month',d.date_approve) = 3) as march
      FROM product_template a
      INNER JOIN product_product b ON a.id = b.product_tmpl_id
-     
      WHERE b.id in(select distinct product_id from hr_expense_sheet)
      AND b.id in(select distinct product_id from crossovered_budget_lines)
-     
-      
      group by a.name,b.id) as budget)
         """
-        self.env.cr.execute(query)
+        self.env.cr.execute(query,(fromyear,toyear,fromdate,todate,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,toyear,toyear,toyear))

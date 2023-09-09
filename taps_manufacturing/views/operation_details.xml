@@ -28,7 +28,7 @@
                     <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
                     <!-- <button name="button_output" type="object" string="Output"/> -->
                 </header>
-                <field name="code" readonly="1"/>
+                <field name="name" readonly="1"/>
                 <field name="mrp_lines" invisible="1"/>
                 <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>
@@ -43,10 +43,14 @@
                 <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
+                <field name="sizein"/>
+                <field name="sizecm"/>
                 <field name="work_center"/>
                 <field name="operation_of" readonly="1"/>
                 <field name="operation_by" readonly="1"/>
                 <field name="based_on" readonly="1"/>
+                <field name="machine_no" readonly="1"/>
+                <field name="capacity" readonly="1" invisible="1"/>
                 <field name="next_operation" readonly="1" force_save="1"/>
                 <field name="mr_req" readonly="1"/>
                 <field name="product_id" readonly="1"/>
@@ -54,8 +58,12 @@
                 <field name="done_qty" readonly="1" force_save="1"/>
                 <field name="balance_qty"/>
                 <field name="uotput_qty" attrs="{'readonly': [('operation_of', 'not in', ('output','qc','lot'))]}"/>
-                <field name="pack_qty"/>
-                <field name="fr_pcs_pack"/>
+                <field name="pack_qty" readonly="1" force_save="1"/>
+                <field name="fr_pcs_pack" readonly="1" force_save="1"/>
+                <field name="fg_done_qty" readonly="1" force_save="1"/>
+                <field name="fg_balance" readonly="1"/>
+                <field name="fg_output" attrs="{'readonly': [('next_operation', '=', 'Delivery')]}"/>
+                <field name="cartoon_no"/>
                 <field name="state"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>
@@ -68,16 +76,129 @@
         </field>
     </record>
 
+    <record id="view_fg_packing_tree" model="ir.ui.view">
+        <field name="name">fg.packing.tree</field>
+        <field name="model">operation.details</field>
+        <field name="arch" type="xml" >
+            <tree string="FG Packing" create="false" delete ="false" editable="top"> 
+                <!-- editable="top" -->
+                <header>
+                    <button name="button_requisition" type="object" string="Requisition"/>
+                </header>
+                <field name="name" readonly="1"/>
+                <field name="mrp_lines" invisible="1"/>
+                <field name="sale_lines" invisible="1"/>
+                <field name="mrp_line" invisible="1"/>
+                <field name="sale_order_line" invisible="1"/>
+                <field name="oa_id"/>
+                <field name="date_order"/>
+                <field name="action_date"/>
+                <field name="partner_id"/>
+                <field name="parent_ids" invisible="1"/>
+                <field name="buyer_name"/>
+                <field name="fg_categ_type"/>
+                <field name="slidercodesfg"/>
+                <field name="finish"/>
+                <field name="shade"/>
+                <field name="sizein"/>
+                <field name="sizecm"/>
+                <field name="work_center"/>
+                <field name="next_operation" invisible="1"/>
+                <field name="product_id" readonly="1"/>
+                <field name="qty" readonly="1"/>
+                <field name="pack_qty" readonly="1" force_save="1"/>
+                <field name="fr_pcs_pack" readonly="1" force_save="1"/>
+                <field name="fg_done_qty" readonly="1" force_save="1"/>
+                <field name="fg_balance" readonly="1"/>
+                <field name="fg_output" attrs="{'readonly': [('next_operation', '=', 'Delivery')]}"/>
+                <field name="cartoon_no"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_fg_delivery_tree" model="ir.ui.view">
+        <field name="name">fg.delivery.tree</field>
+        <field name="model">operation.details</field>
+        <field name="arch" type="xml" >
+            <tree string="FG Packing" create="false" delete ="false" editable="top"> 
+                <!-- editable="top" -->
+                <header>
+                    <button name="button_delivery" type="object" string="Delivery"/>
+                </header>
+                <field name="name" readonly="1"/>
+                <field name="mrp_lines" invisible="1"/>
+                <field name="sale_lines" invisible="1"/>
+                <field name="mrp_line" invisible="1"/>
+                <field name="sale_order_line" invisible="1"/>
+                <field name="oa_id"/>
+                <field name="date_order"/>
+                <field name="action_date"/>
+                <field name="partner_id"/>
+                <field name="parent_ids" invisible="1"/>
+                <field name="buyer_name"/>
+                <field name="fg_categ_type"/>
+                <field name="slidercodesfg"/>
+                <field name="finish"/>
+                <field name="shade"/>
+                <field name="sizein"/>
+                <field name="sizecm"/>
+                <field name="work_center"/>
+                <field name="next_operation" invisible="1"/>
+                <field name="product_id" readonly="1"/>
+                <field name="qty" readonly="1"/>
+                <field name="pack_qty" readonly="1" force_save="1"/>
+                <field name="fr_pcs_pack" readonly="1" force_save="1"/>
+                <field name="fg_done_qty" readonly="1" force_save="1"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>    
+
     <record id="action_operation_details" model="ir.actions.act_window">
         <field name="name">Operation Details</field>
         <field name="res_model">operation.details</field>
         <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_operation_tree" />
         <!-- <field name="search_view_id" ref="view_sale_order_flow_search" /> -->
     </record>
+
+    
+    <record id="action_fg_packing" model="ir.actions.act_window">
+        <field name="name">FG Packing</field>
+        <field name="res_model">operation.details</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_fg_packing_tree" />
+        <field name="domain">[('next_operation','=','Packing')]</field>
+        <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
+        <!-- <field name="context">{'search_default_running': 1}</field> -->
+    </record>
+
+    <record id="action_fg_delivery" model="ir.actions.act_window">
+        <field name="name">FG Delivery</field>
+        <field name="res_model">operation.details</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_fg_delivery_tree"/>
+        <field name="domain">[('next_operation','=','Delivery')]</field>
+        <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
+        <!-- <field name="context">{'search_default_running': 1}</field> -->
+    </record>    
 
     <menuitem id="menu_operation_details" 
               name="Operation Details" 
               action="action_operation_details" 
               parent="mrp.menu_mrp_manufacturing"
               sequence="5"/>
+    
+    <menuitem id="menu_fg_packing" 
+              name="FG Packing" 
+              action="action_fg_packing" 
+              parent="mrp.menu_mrp_manufacturing"
+              sequence="7"/>
+
+    <menuitem id="menu_fg_delivery" 
+              name="FG Delivery" 
+              action="action_fg_delivery" 
+              parent="mrp.menu_mrp_manufacturing"
+              sequence="8"/>    
+    
 </odoo>

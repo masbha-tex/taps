@@ -28,7 +28,7 @@ class OperationDetails(models.Model):
     _description = "Operation Details"
     _check_company_auto = True
 
-    code = fields.Char(string='Lot Code', store=True)
+    name = fields.Char(string='Code', store=True)
     mrp_lines = fields.Char(string='Mrp lines', store=True)
     sale_lines = fields.Char(string='Sale lines', store=True)
     
@@ -94,6 +94,7 @@ class OperationDetails(models.Model):
         ('Slider Assembly', 'Slider Assembly'),
         ('Slider Assembly Output', 'Slider Assembly Output'),
         ('Packing', 'Packing'),
+        ('Delivery', 'Delivery'),
         ('Issue', 'Issue'),
         ('Done', 'Done')],
         string='Next Operation', help="Next Operation")
@@ -104,8 +105,15 @@ class OperationDetails(models.Model):
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
     pack_qty = fields.Integer(string='Pack Qty', default=0, readonly=False)
     fr_pcs_pack = fields.Integer(string='Remaining Qty', default=0, readonly=False, help='The remaining pcs to pack')
+    fg_done_qty = fields.Integer(string='FG Done', default=0, readonly=False)
+    fg_balance = fields.Integer(string='FG Balance', default=0, readonly=False, compute='get_balance')
+    fg_output = fields.Integer(string='FG Output', default=0, readonly=False)
+    cartoon_no = fields.Many2one('operation.details', string='Cartoon No', required=False, 
+                                 domain="[('next_operation', '=', 'Delivery')]")
+    
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
-
+    machine_no = fields.Many2one('machine.list', string='Machine No', required=False)
+    capacity = fields.Integer(related='machine_no.capacity', string='Capacity', store=True)
     state = fields.Selection([
         ('waiting', 'Waiting'),
         ('partial', 'Partial'),
@@ -118,6 +126,7 @@ class OperationDetails(models.Model):
     def get_balance(self):
         for s in self:
             s.balance_qty = s.qty - s.done_qty
+            s.fg_balance = s.pack_qty - s.fg_done_qty
     
     def _ids2str(self,field_name):
         field_data = getattr(self, field_name)
@@ -138,6 +147,13 @@ class OperationDetails(models.Model):
             #s.lot_ids = count_lots.mapped('id')
             
     def button_requisition(self):
+        self._check_company()
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_requisition")
+        action["domain"] = [('default_id','in',self.mapped('id'))]
+        a = 'a'
+        return action
+    
+    def button_delivery(self):
         self._check_company()
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_requisition")
         action["domain"] = [('default_id','in',self.mapped('id'))]
@@ -336,7 +352,10 @@ class OperationDetails(models.Model):
 
         if vals.get('operation_of') == "lot":
             ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
-            vals['code'] = ref
+            vals['name'] = ref
+        if vals.get('next_operation') == "Delivery":
+            ref = self.env['ir.sequence'].next_by_code('fg.cartoon', sequence_date=seq_date)
+            vals['name'] = ref
         vals['state'] = 'waiting'
         result = super(OperationDetails, self).create(vals)
         return result                
@@ -350,6 +369,39 @@ class OperationDetails(models.Model):
                 vals['state'] = 'waiting'
             else:
                 vals['state'] = 'partial'
+        if 'fg_output' in vals:
+            vals['fg_done_qty'] = self.fg_done_qty +  vals.get('fg_output')
+            if 'cartoon_no' in vals:
+                out = self.env['operation.details'].filtered(lambda op: op.cartoon_no.name == vals.get('cartoon_no') and (op.parent_id.id == self.id))
+                out.update({'qty': out.qty + vals.get('fg_output')})
+            else:
+                ope = self.env['operation.details'].create({'mrp_lines':self.mrp_lines,
+                                                            'sale_lines':self.sale_lines,
+                                                            'mrp_line':self.mrp_line.id,
+                                                            'sale_order_line':self.sale_order_line.id,
+                                                            'parent_id':self.id,
+                                                            'oa_id':self.oa_id.id,
+                                                            'buyer_name':self.buyer_name,
+                                                            'product_template_id':self.product_template_id.id,
+                                                            'action_date':datetime.now(),
+                                                            'shade':self.shade,
+                                                            'finish':self.finish,
+                                                            'sizein':self.sizein,
+                                                            'sizecm':self.sizecm,
+                                                            'slidercodesfg':self.slidercodesfg,
+                                                            'top':self.top,
+                                                            'bottom':self.bottom,
+                                                            'pinbox':self.pinbox,
+                                                            'operation_of':'output',
+                                                            # 'work_center':w_center,
+                                                            'operation_by':self.work_center.name,
+                                                            'based_on':'Packing',
+                                                            'next_operation':'Delivery',
+                                                            'qty':vals.get('fg_output'),
+                                                            'pack_qty':self.pack_qty,
+                                                            'fr_pcs_pack':self.fr_pcs_pack
+                                                            })
+                vals['cartoon_no'] = ope.id
         # raise UserError((vals.get('state')))
         result = super(OperationDetails, self).write(vals)
         return result                
@@ -462,9 +514,11 @@ class OperationDetails(models.Model):
         operation_of = 'output'
         if operation.operation_of == 'qc':
             operation_of = 'input'
+        if operation.next_operation == 'Dyeing Output':
+            operation_of = 'input'
 
         # raise UserError((w_center,operation.work_center.name,pack_qty,fraction_pc_of_pack))
-        ope = self.env['operation.details'].create({'code':operation.code,
+        ope = self.env['operation.details'].create({'name':operation.name,
                                                     'mrp_lines':operation.mrp_lines,
                                                     'sale_lines':operation.sale_lines,
                                                     'mrp_line':operation.mrp_line.id,
@@ -502,6 +556,52 @@ class OperationDetails(models.Model):
     #         else:
     #             s.state = 'partial'
     #         raise UserError(('eefe'))
+    
+    # @api.onchange('fg_output')
+    # def _done_qty(self):
+    #     for out in self:
+    #         out.fg_done_qty = out.fg_done_qty + out.fg_output
+            
+    #         ope = self.env['operation.details'].create({'mrp_lines':out.mrp_lines,
+    #                                                     'sale_lines':out.sale_lines,
+    #                                                     'mrp_line':out.mrp_line.id,
+    #                                                     'sale_order_line':out.sale_order_line.id,
+    #                                                     'parent_id':out.id,
+    #                                                     'oa_id':out.oa_id.id,
+    #                                                     'buyer_name':out.buyer_name,
+    #                                                     'product_template_id':out.product_template_id.id,
+    #                                                     'action_date':datetime.now(),
+    #                                                     'shade':out.shade,
+    #                                                     'finish':out.finish,
+    #                                                     'sizein':out.sizein,
+    #                                                     'sizecm':out.sizecm,
+    #                                                     'slidercodesfg':out.slidercodesfg,
+    #                                                     'top':out.top,
+    #                                                     'bottom':out.bottom,
+    #                                                     'pinbox':out.pinbox,
+    #                                                     'operation_of':'output',
+    #                                                     # 'work_center':w_center,
+    #                                                     'operation_by':out.work_center.name,
+    #                                                     'based_on':'Packing',
+    #                                                     'next_operation':'Delivery',
+    #                                                     'qty':out.fg_output,
+    #                                                     'pack_qty':out.pack_qty,
+    #                                                     'fr_pcs_pack':fr_pcs_pack.fr_pcs_pack
+    #                                                     })
+    #         s.cartoon_no = ope.id
+    #     return self
+
+    # fg_done_qty
+    # fg_output
+    # cartoon_no
+                
+    # if s.qty <= s.done_qty:
+    #     s.fg_done_qty = s.fg_done_qty + s.fg_output
+    # elif s.done_qty == 0:
+    #     s.state = 'waiting'
+    # else:
+    #     s.state = 'partial'
+    # raise UserError(('eefe'))
             
     @api.onchange('uotput_qty')
     def _output(self):
@@ -565,9 +665,11 @@ class OperationDetails(models.Model):
             operation_of = 'output'
             if out.operation_of == 'qc':
                 operation_of = 'input'
+            if out.next_operation == 'Dyeing Output':
+                operation_of = 'input'
             # operation = self.env["operation.details"].browse(self.id)
             # raise UserError((out.code,out.mrp_lines,out.mrp_line.id,out.sale_lines,out.sale_order_line.id))
-            ope = self.env['operation.details'].create({'code':out.code,
+            ope = self.env['operation.details'].create({'name':out.name,
                                                         'mrp_lines':out.mrp_lines,
                                                         'sale_lines':out.sale_lines,
                                                         'mrp_line':out.mrp_line.id,

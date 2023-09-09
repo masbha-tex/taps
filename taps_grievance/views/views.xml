@@ -8,15 +8,22 @@
         <field name="arch" type="xml">
             <form string="Grievance">
                 <header>
-                    <button name="action_submit" confirm="Are you sure to submit HR Team?" type="object" class="oe_highlight" string="Submit to HR Team" states="draft"/>                    
-					<field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                    <button name="action_submit" confirm="Are you sure to submit HR Team?" type="object" class="btn-success" string="Submit to HR Team" states="draft,Submit,Primary Invesigation,Letter Submit" attrs="{'invisible': [('next_user', '!=', 'user.id')]}"/>                    
+					<field name="state" widget="statusbar" options="{'clickable': '0'}"/>
 				</header>
 				<sheet>
-                    <widget name="web_ribbon" title="Pending" bg_color="bg-danger"
+                    <!-- <widget name="web_ribbon" title="Pending" bg_color="bg-danger"
                             attrs="{'invisible': [('state', '!=', 'pending')]}"/>
                     <widget name="web_ribbon" title="Closed" bg_color="bg-success"
-                            attrs="{'invisible': [('state', '!=', 'closed')]}"/>
-                    <div class="oe_button_box" name="button_box"/>                    
+                            attrs="{'invisible': [('state', '!=', 'closed')]}"/> -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_get_attachment_view"
+                            class="oe_stat_button"
+                            icon="fa-file-text-o"
+                            type="object">
+                            <field name="attachment_number" widget="statinfo" string="Documents" options="{'reload_on_button': true}"/>
+                        </button>                        
+                    </div>
                     <field name="name"/>
                     <div class="oe_title">
                         <label for="employee_id" class="oe_edit_only"/>
@@ -26,6 +33,7 @@
                         <group>
                             <field name="type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="submit_by" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="next_user"/>
                         </group>
                         <group>
                             <field name="complaint_date" class="oe_read_only"/>
@@ -56,7 +64,10 @@
                 <field name="details"/>
                 <field name="action_taken"/>
                 <field name="submit_by"/>
-                <field name="state"/>
+                <field name="state" readonly="1"/>
+                <field name="next_user"/>
+                <field name="attachment_number" invisible="True"/>
+                <button name="action_get_attachment_view" string="Attachments" type="object" icon="fa-paperclip" attrs="{'invisible': [('attachment_number', '=', 0)]}"/>                
             </tree>
         </field>
     </record>
@@ -77,6 +88,7 @@
                     <filter name="by_complaint_date" context="{'group_by': 'complaint_date'}"/>
                 </group>
                 <searchpanel>
+                    <!-- <field name="state" enable_counters="1"/> -->
                     <field name="company_id" enable_counters="1"/>
                     <field name="department_id" enable_counters="1"/>
                 </searchpanel>
@@ -91,6 +103,30 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-	<menuitem name="Grievance" parent="hr.menu_hr_root" id="menu_hr_grievance" sequence="2" action="action_hr_grievance"/>      
+	<menuitem name="Grievance" parent="hr.menu_hr_root" id="menu_hr_grievance" sequence="2" action="action_hr_grievance"/>
+
+<!-- Add Complaint Count to Employee Form-->
+     <record id="act_hr_employee_2_hr_grievance" model="ir.actions.act_window">
+		<field name="res_model">hr.grievance</field>
+		<field name="name">Grievance</field>
+		<field name="view_mode">tree,form</field>
+		<field name="context">{'search_default_employee_id': [active_id]}</field>
+     </record>
+	
+     <record id="hr_employee_grievance_view_form" model="ir.ui.view">
+		<field name="name">hr.employee.grievance.view.form</field>
+		<field name="model">hr.employee</field>
+		<field name="inherit_id" ref="hr.view_employee_form"/>
+		<field name="arch" type="xml">
+    		<xpath expr="//div[@name='button_box']" position="inside">
+    			<button name="%(act_hr_employee_2_hr_grievance)d"  
+    				class="oe_stat_button"
+    				icon="fa-frown-o"
+    				type="action">
+    				<field name="grievance_count" widget="statinfo" string="Grievance"/>
+    			</button>
+    		</xpath>
+		</field>
+	</record>      
   </data>
 </odoo>

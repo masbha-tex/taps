@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- <record id="view_hr_grievance_matrix_form" model="ir.ui.view">
+            <field name="name">hr.grievance.matrix.form</field>
+            <field name="model">hr.grievance.matrix</field>
+            <field name="arch" type="xml">
+                <form string="Matrix">
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        <field name="active" invisible="1"/>
+                        <div class="oe_button_box" name="button_box"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="e.g. Employee Induction"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="criteria_id" options="{'no_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                            </group>
+                            <separator string="Content" colspan="2" />
+                            <group colspan="2" col="2">
+                                <field name="description" placeholder="Training content here..."/>
+                            </group>                            
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'open_attachments': True}"/>
+                    </div>
+                </form>
+            </field>
+        </record> -->
+
+        <record id="view_hr_grievance_matrix_tree" model="ir.ui.view">
+            <field name="name">hr.grievance.matrix.tree</field>
+            <field name="model">hr.grievance.matrix</field>
+            <field name="arch" type="xml">
+                <tree string="Grievance Matrix" sample="1" edit="1" editable="top" create="1">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="next_user" widget="many2many_tags"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- <record id="hr_grievance_matrix_kanban" model="ir.ui.view">
+            <field name="name">hr.grievance.matrix.kanban</field>
+            <field name="model">hr.grievance.matrix</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" sample="1">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div>
+                                    <strong><field name="name"/></strong>
+                                </div>
+                                <div>
+                                    <span><field name="criteria_id"/>&amp;nbsp;</span>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record> -->
+
+        <record id="view_hr_grievance_matrix_filter" model="ir.ui.view">
+            <field name="name">hr.grievance.matrix.search</field>
+            <field name="model">hr.grievance.matrix</field>
+            <field name="arch" type="xml">
+                <search string="Grievance Matrix">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                    
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter name="next_user" domain="[]" context="{'group_by': 'next_user'}"/>
+                        <filter name="company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_hr_grievance_matrix" model="ir.actions.act_window">
+            <field name="name">Matrix</field>
+            <field name="res_model">hr.grievance.matrix</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="view_hr_grievance_matrix_filter"/>
+            <field name="context">{"search_default_Current":1}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Ready to grievance more Matrix?
+              </p><p>
+                Let's create a Grievance Matrix.
+              </p>
+            </field>
+        </record>
+      
+        <menuitem
+            id="menu_hr_grievance_matrix"
+            name="Grievance Matrix"
+            parent="hr.menu_human_resources_configuration"
+            groups="hr.group_hr_manager"
+            sequence="30"/>  
+            <menuitem
+                id="menu_hr_grievance_matrix_tree"
+                action="action_hr_grievance_matrix"
+                parent="menu_hr_grievance_matrix"
+                groups="hr.group_hr_manager"
+                sequence="31"/>        
+
+    </data>
+</odoo>

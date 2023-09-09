@@ -53,7 +53,7 @@ class ManufacturingQcOutput(models.TransientModel):
         # mo_ids = self.env.context.get("active_ids")
         # active_model = self.env.context.get("active_model")
         # production = self.env[""+active_model+""].browse(mo_ids)
-        production = self.env['operation.details'].search([('code', '=', self.lot_code),('code', '!=', None),('next_operation', 'like', 'Qc'),('done_qty', '=', 0)])
+        production = self.env['operation.details'].search([('name', '=', self.lot_code),('name', '!=', None),('next_operation', 'like', 'Qc'),('done_qty', '=', 0)])
         mo_ids = production.mapped('id')
         production.set_output(self._name,mo_ids,self.manuf_date,self.qty,self.output_of)
         #production.set_operation(mo_ids,self.plan_for,self.machine_line)
@@ -79,10 +79,10 @@ class ManufacturingQcOutput(models.TransientModel):
 
     @api.model
     def get_production_details(self, code=None):
-        production = self.env['operation.details'].search([('code', '=', code), ('code', '!=', None)])
+        production = self.env['operation.details'].search([('name', '=', code), ('name', '!=', None)])
         values = {}
         if production:
-            values['lot_code'] = production[0].code
+            values['lot_code'] = production[0].name
             values['oa_id'] = production[0].oa_id.id
             values['item'] = production[0].fg_categ_type
             values['shade'] = production[0].shade
@@ -94,9 +94,9 @@ class ManufacturingQcOutput(models.TransientModel):
     
     @api.onchange('lot_code')
     def _on_lot_code_change(self):
-        production = self.env['operation.details'].search([('code', '=', self.lot_code),('code', '!=', None),('next_operation', 'like', 'Qc'),('done_qty', '=', 0)])
+        production = self.env['operation.details'].search([('name', '=', self.lot_code),('name', '!=', None),('next_operation', 'like', 'Qc'),('done_qty', '=', 0)])
         if production:
-            self.lot_code = production[0].code
+            self.lot_code = production[0].name
             self.oa_id = production[0].oa_id.id
             self.item = production[0].fg_categ_type
             self.shade = production[0].shade

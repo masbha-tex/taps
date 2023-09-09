@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend_taps_sale" inherit_id="web.assets_backend" name="taps sale backend assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/taps_sale/static/src/js/sale_dashboard.js"></script>
+            <link rel="stylesheet" type="text/scss" href="/taps_sale/static/src/scss/sale.scss"/>
+        </xpath>
+    </template>
+</odoo>

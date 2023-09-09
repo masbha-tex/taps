@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+	<record id="mail_template_oa_confirmation" model="mail.template">
+		<field name="name">OA: Confirmation Email</field>
+		<field name="model_id" ref="sale.model_sale_order"/>
+		<field name="subject">${object.company_id.name} (Ref ${object.name or 'n/a' })</field>
+		<field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+		<field name="email_to">${object.sale_representative.email}</field>
+        <field name="report_template" ref="taps_sale.action_report_oa_invoice"/>
+        <field name="report_name">${(object.name or '').replace('/','_')}</field>
+        <field name="lang">${object.partner_id.lang}</field>
+        <field name="auto_delete" eval="True"/>
+		<field name="body_html" type="html">
+           <div style="margin:0px;padding: 0px;">
+	<p style="padding:0px;font-size: 12px;">
+        Dear MR.<strong style="color:blue">${object.sale_representative.name}</strong>,
+        <br/>
+        
+        Your order <strong style="font-size:14px;color:blue">${object.name}</strong> from  <strong style="font-size:14px;color:blue">${object.partner_id.name}</strong> amounting in <strong style="font-size:14px;color:blue">${format_amount(object.amount_total, object.currency_id)}</strong>
+        % if object.state == 'sale' and object.is_revised == False:
+            has been released to production.
+            <br/>
+        % endif
+         % if object.state == 'sale' and object.is_revised == True:
+            has been revised and released to production.
+            <br/>
+        % endif
+        Thank you for your trust!
+        <br/>
+        Do not hesitate to contact us if you have any questions.
+       
+    
+</p><br/>
+               
+									<div style="margin:0px;padding: 0px; font-size: 8px;">
+										<table class="table table-sm p-0 m-0" width="100%" style="color:red;font-size: 12px; border-collapse: collapse;">
+											<tbody>
+												<tr style="color:white;background-color:rgb(113, 75, 98);">
+													<td style="border:1px solid white" width="15%">
+														<strong>Products</strong>
+													</td>
+													<td style="border:1px solid white" width="7%" align="center">
+														<strong>PI Number</strong>
+													</td>
+													<td style="border:1px solid white" width="7%" align="center">
+														<strong>Finish</strong>
+													</td>
+													<td style="border:1px solid white" width="7%" align="center">
+														<strong>Slider</strong>
+													</td>
+													<td style="border:1px solid white" width="7%" align="center">
+														<strong>Avg_Size</strong>
+													</td>
+													<td style="border:1px solid white" width="7%" align="center">
+														<strong>Avg_Price</strong>
+													</td>
+													<td style="border:1px solid white" width="10%" align="center">
+														<strong>OA Quantity</strong>
+													</td>
+													<td style="border:1px solid white" width="10%" align="right">
+														<strong>OA Value</strong>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<table class="table table-sm p-0 m-0" width="100%" style="color:#454748;font-size: 12px; border-collapse: collapse;">
+											<tbody>
+												<tr style="border:1px solid black">
+													<td width="15%" style="border:1px solid black">
+														<strong>${object.order_line[0].product_template_id.name}</strong>
+													</td>
+													<td width="7%" align="center" style="border:1px solid black">
+														<strong>${object.order_ref.pi_number}</strong>
+													</td>
+													<td width="7%" align="center" style="border:1px solid black">
+														<strong> ${object.order_line[0].finish.splitlines()[0]}</strong>
+													</td>
+													<td width="7%" align="center" style="border:1px solid black">
+														<strong>TZP- ${object.order_line[0].slidercodesfg.split('TZP-')[1]}</strong>
+													</td>
+													<td width="7%" align="right" style="border:1px solid black">
+														<strong>${"%.2f"% object.avg_size}
+                        </strong>
+													</td>
+													<td width="7%" align="right" style="border:1px solid black">
+														<strong>${"%.2f"% object.avg_price}
+                        </strong>
+													</td>
+													<td width="10%" align="right" style="border:1px solid black">
+														<strong>${"%.2f"% object.total_product_qty}</strong>
+													</td>
+													<td width="10%" align="right" style="border:1px solid black">
+														<strong>${"%.2f"% object.amount_total}
+                    </strong>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+	
+		</field>
+	</record>
+</odoo>
