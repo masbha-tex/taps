@@ -153,6 +153,7 @@
                 <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>
                 <field name="done_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
                 <field name="balance_qty" optional="show" sum="Balance" decoration-bf="True"/>
+                <field name="tape_con" optional="show" sum="Tape C." decoration-bf="True"/>
                 <field name="dyeing_plan"/>
                 <!-- <field name="dyeing_plan_end" invisible="1"/> -->
                 <field name="dyeing_output" optional="show" sum="Dye Output" decoration-bf="True"/>

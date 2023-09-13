@@ -139,10 +139,12 @@ class Session(models.Model):
     plan_duration = fields.Float(digits=(6, 2), help="Plan Duration in hours", compute='number_of_plan_duration', store=True, string="Plan Duration" )
     end_date = fields.Datetime(string="End Date", store=True, compute='_get_end_date', inverse='_set_end_date')
     seats = fields.Integer(string="Number of seats", default=get_default_seats)
-    instructor_id = fields.Many2one('res.partner', string="Facilitator")    
+    instructor_id = fields.Many2many('res.partner', string="Facilitator")    
     country_id = fields.Many2one('res.country', related='instructor_id.country_id')
+    participation_group = fields.Many2one('lms.participation.group', string='Participation Group')
     # course_id = fields.Many2one('lms.course', ondelete='cascade', string="Course", required=True)
     attendee_ids = fields.Many2many('hr.employee', string="Participants")
+    # optional_attendee_ids = fields.Many2many('hr.employee', string="Optional Participants")
     taken_seats = fields.Float(string="Taken seats", compute='_taken_seats')
     active = fields.Boolean(string='Active', default=True)
     attendees_count = fields.Integer(
@@ -155,6 +157,13 @@ class Session(models.Model):
     image_1920 = fields.Image("Image")
     attendance_ids = fields.One2many('lms.session.attendance', 'session_id', string="Participants Attendance")
     meeting_id = fields.Many2one('calendar.event', string='Meeting')
+    attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments')
+
+    def _compute_attachment_number(self):
+        attachment_data = self.env['ir.attachment'].read_group([('res_model', '=', 'lms.session'), ('res_id', 'in', self.ids)], ['res_id'], ['res_id'])
+        attachment = dict((data['res_id'], data['res_id_count']) for data in attachment_data)
+        for session in self:
+            session.attachment_number = attachment.get(session.id, 0)          
   
     
     def name_get(self):
@@ -174,6 +183,15 @@ class Session(models.Model):
         else:
             session_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
         return session_ids #models.lazy_name_get(self.browse(course_ids).with_user(name_get_uid))
+
+    def action_get_attachment_view(self):
+        res = self.env['ir.actions.act_window']._for_xml_id('base.action_attachment')
+        res['domain'] = [('res_model', '=', 'lms.session'), ('res_id', 'in', self.ids)]
+        res['context'] = {
+            'default_res_model': 'lms.session',
+            'default_res_id': self.id,
+        }
+        return res        
         
     @api.model
     def create(self, vals):
@@ -426,7 +444,7 @@ class SessionAttendance(models.Model):
     criteria_id = fields.Many2one(related='session_id.criteria_id', store=True)
     title_id = fields.Many2one(related='session_id.name', store=True)
     description_id = fields.Text(related='session_id.description', store=True)
-    instructor_id = fields.Many2one(related='session_id.instructor_id', store=True)    
+    # instructor_id = fields.Many2many(related='session_id.instructor_id', store=True)    
     session_name = fields.Many2one(related='session_id.venue', store=True)
     start_date = fields.Datetime(related='session_id.start_date', string="Training Date", store=True)
     duration = fields.Float(related='session_id.duration', store=True)   

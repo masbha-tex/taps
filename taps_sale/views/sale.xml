@@ -213,6 +213,30 @@
 				</xpath>
 			</field>
 		</record>
+        <record id="view_sales_order_filter_taps_sale" model="ir.ui.view">
+            <field name="name">sale.order.list.select</field>
+            <field name="model">sale.order</field>
+            <field name="priority" eval="15"/>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <filter string="Sample" name="current_month_sa"
+                        domain="[('sales_type','=','sample'),('state','=','sale'),('date_order','&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d 00:00:00')),
+                 ('date_order','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d 23:59:59'))]"/>
+                    <filter string="Pi" name="current_month_pi"
+                        domain="[('sales_type','=','sale'),('state','=','sale'),('date_order','&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d 00:00:00')),
+                 ('date_order','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d 23:59:59'))]"/>
+                    <filter string="Oa" name="current_month_oa"
+                        domain="[('sales_type','=','oa'),('state','=','sale'),('date_order','&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d 00:00:00')),
+                 ('date_order','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d 23:59:59'))]"/>
+                    <filter string="Sample Pi" name="all_sample_pi" domain="[('pi_type','=','sample_pi'),('state','=','sale')]"/>
+                    <filter string="Block" name="all_block" domain="[('pi_type','=','block'),('state','=','sale')]"/>
+                    <filter string="Replacement" name="all_replacement" domain="[('pi_type','=','replacement'),('state','=','sale'),]"/>
+                    
+                   
+               </search>
+            </field>
+        </record>
         <record model="ir.ui.view" id="view_quotation_tree_with_onboarding_inherit">
             <field name="name">sale.order.tree</field>
             <field name="model">sale.order</field>

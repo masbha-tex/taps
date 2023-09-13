@@ -26,6 +26,7 @@
         'views/lms_title_views.xml',
         'views/hr_employee.xml',
         'views/lms_session_venue_views.xml',
+        'views/lms_participation_group_views.xml',
         'reports/custom_header_footer.xml',
         'reports/paperformat.xml',
         'reports/reports.xml',

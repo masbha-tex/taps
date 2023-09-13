@@ -19,12 +19,12 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','web','web_studio','product', 'stock', 'resource','sale','mrp', 'barcodes'],
+    'depends': ['base','web','web_studio','product', 'stock', 'resource','sale','mrp', 'barcodes','report_xlsx'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'report/mrp_lot_barcode.xml',
+        # 'report/mrp_lot_barcode.xml',
         'wizard/mrp_split.xml',
         'wizard/bom_verification.xml',
         'wizard/mrp_plan.xml',

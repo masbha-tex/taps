@@ -2269,7 +2269,6 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
         if data.get('date_to'):
             domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
-            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
             #str = re.sub("[^0-9]","",data.get('department_id'))
@@ -2298,14 +2297,16 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))   
                 struct_id.name
+        # raise UserError((domain))
         domain.append(('struct_id.name', '=','F&F'))  
         # domain.append(('employee_id.active', 'in',(False,True)))
         att_obj = self.env['hr.attendance']
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        
         # if len(docs) <=0:
         #     raise Warning(_("Full & Final Settlement not Found"))
             
-        #raise UserError((data.get('employee_id')))
+        # raise UserError((data.get('employee_id')))
 
 #         for details in docs:
 #             otTotal = 0

@@ -143,6 +143,12 @@
                 </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
+                            <button name="action_get_attachment_view"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o"
+                                type="object">
+                                <field name="attachment_number" widget="statinfo" string="Documents" options="{'reload_on_button': true}"/>
+                            </button>                            
                           
                             <button name="mark_attendance" type="object" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the training session" context="{'default_session_id': active_id}">
                                 <div class="o_stat_info">
@@ -172,8 +178,8 @@
                                 <field name="criteria_id" options="{'no_create':true, 'no_open':true}"/>
                                 <field name="name" options="{'no_create':true, 'no_open':true}"/>
                                 <field name="venue" options="{'no_create':true, 'no_open':true}"/>
-                                <field name="instructor_id"/>
-                                <field name="country_id"/>
+                                <field name="instructor_id" widget="many2many_tags"/>
+                                <field name="participation_group"/>
                                 <field name="active" invisible="1"/>
                                 <field name="company_id" options="{'no_create':true, 'no_open':true}"/>
                             </group>
@@ -199,7 +205,11 @@
                         <separator string="Participants" colspan="2" />
                         <group colspan="2" col="2">
                             <field name="attendee_ids" placeholder="Add Participants..." options="{'no_create':true, 'no_open':true}" widget="many2many_tags"/>
-                        </group>                        
+                        </group>
+                        <!-- <separator string="Optional Participants" colspan="2" />
+                        <group colspan="2" col="2">
+                            <field name="optional_attendee_ids" placeholder="Add Optional Participants..." options="{'no_create':true, 'no_open':true}" widget="many2many_tags"/>
+                        </group>                             -->
                         <notebook>
                             <!-- Add a new page for the attendee list -->
                             <!-- <page string="Participants">
@@ -228,6 +238,10 @@
                         </notebook>
                         <field name="meeting_id" invisible="1"/>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>                  
                 </form>
         </field>
     </record>

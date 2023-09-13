@@ -9,5 +9,6 @@ access_lms_wizard,lms_wizard,model_lms_wizard,taps_lms.group_user_lms,1,1,1,1
 access_lms_criteria,access_lms_criteria,model_lms_criteria,taps_lms.group_user_lms,1,1,1,1
 access_lms_title,access_lms_title,model_lms_title,taps_lms.group_user_lms,1,1,1,1
 access_lms_session_venue,access_lms_session_venue,model_lms_session_venue,taps_lms.group_user_lms,1,1,1,1
+access_lms_participation_group,access_lms_participation_group,model_lms_participation_group,taps_lms.group_user_lms,1,1,1,1
 access_event_wizard,access_event_wizard,model_event_wizard,base.group_user,1,1,1,1
 access_ir_actions_client_lms,access_ir_actions_client_lms,base.model_ir_actions_client,taps_lms.group_user_lms,1,0,0,0

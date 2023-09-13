@@ -6,6 +6,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">operation.details</field>
             <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_operation_tree"/>
             <field name="search_view_id" ref="view_mrp_operatin_details_search"/>
             <field name="domain">[('operation_of', 'in', ('plan','input','lot','output','req'))]</field>
             <field name="context">{'search_default_work_center': active_id}</field>

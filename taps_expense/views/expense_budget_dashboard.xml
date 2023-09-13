@@ -29,8 +29,11 @@
                 <field name="name"/>
                 <field name="x_studio_super_expense_category"/>
                 <field name="budget_value"/>
-                <field name="budget_year"/>
+                
+                <field name="budget_year" invisible="1"/>
                 <field name="ytd"/>
+                <field name="monthly_budget"/>
+                <field name="ytd_avg"/>
                 <field name="april"/>
                 <field name="may"/>
                 <field name="june"/>

@@ -47,8 +47,8 @@ class ManufacturingOrder(models.Model):
         related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)])
     fg_categ_type = fields.Selection(related='product_template_id.fg_categ_type', string='Item', store=True)
     product_uom = fields.Many2one('uom.uom', string='Unit', related='product_template_id.uom_id')
-    product_uom_qty = fields.Float(string='Quantity', related='sale_order_line.product_uom_qty', digits='Product Unit of Measure', readonly=True)
-    done_qty = fields.Float(string='Done Qty', digits='Product Unit of Measure', readonly=False)
+    product_uom_qty = fields.Float(string='Quantity', related='sale_order_line.product_uom_qty', digits='Product Unit of Measure', readonly=True, store=True)
+    done_qty = fields.Float(string='Done Qty', digits='Product Unit of Measure', readonly=False, store=True)
     balance_qty = fields.Float(string='Balance', compute='_balance_qty', digits='Product Unit of Measure', readonly=True)
     
     topbottom = fields.Char(string='Top/Bottom', store=True, readonly=True)
@@ -147,6 +147,7 @@ class ManufacturingOrder(models.Model):
     # sass_rec_plan_qty = fields.Float(string='Plating Replan Qty', readonly=False, default=0.0)
     # sli_asmbl_output = fields.Float(string='Plating Output', readonly=False)
     
+    # chain_making_plan = fields.Float(string='CM Plan', readonly=False)
     chain_making_done = fields.Float(string='CM Output', readonly=False)
     diping_done = fields.Float(string='Dipping Output', readonly=False)
     assembly_done = fields.Float(string='Assembly Output', readonly=False)
@@ -161,7 +162,12 @@ class ManufacturingOrder(models.Model):
         ('partial', 'Partial'),
         ('done', 'Done')],
         string='State')
-    
+
+
+    # _sql_constraints = [
+    #     ('name_company_uniq', 'unique(name, company_id)', 'The name of the Action Name must be unique per Action Name in company!'),]
+
+
     @api.onchange('done_qty')
     def _done_qty(self):
         for s in self:
@@ -214,7 +220,10 @@ class ManufacturingOrder(models.Model):
     def get_leadtime(self):
         for s in self:
             # raise UserError(((datetime.now() - s.date_order).days))
-            s.lead_time = (datetime.now() - s.date_order).days
+            if s.date_order:
+                s.lead_time = (datetime.now() - s.date_order).days
+            else:
+                s.lead_time = 0
     
     def _balance_qty(self):
         for s in self:
@@ -426,6 +435,7 @@ class ManufacturingOrder(models.Model):
                                                              'sale_order_line':sal_line,
                                                              'oa_id':plan[0][0],
                                                              'buyer_name':p_q[0].buyer_name,
+                                                             'product_id':p_q[0].product_id.id,
                                                              'product_template_id':p_q[0].product_template_id.id,
                                                              'action_date':plan_start,
                                                              'shade':plan[0][1],

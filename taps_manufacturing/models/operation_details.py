@@ -41,8 +41,15 @@ class OperationDetails(models.Model):
     oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=True)
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True, store=True)
     buyer_name = fields.Char(string='Buyer', readonly=True)
-    product_id = fields.Many2one('product.product', 'Product', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", index=True)
-    product_template_id = fields.Many2one('product.template', domain=[('sale_ok', '=', True)])
+    
+    # product_id = fields.Many2one('product.product', 'Product', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", index=True)
+    # product_template_id = fields.Many2one('product.template', domain=[('sale_ok', '=', True)])
+
+
+    product_id = fields.Many2one('product.product', check_company=True, string='Product Id')  # Unrequired company
+    product_template_id = fields.Many2one('product.template', string='Product', related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)], store=True)
+
+    
     fg_categ_type = fields.Selection(string='Item', related='product_template_id.fg_categ_type', store=True)
     
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', related='product_template_id.uom_id')
@@ -215,13 +222,15 @@ class OperationDetails(models.Model):
             mrp_lines = ope_id
             sale_lines = ','.join([str(i) for i in sorted(m_order.sale_order_line.ids)])
             oa_ids = ','.join([str(i) for i in sorted(m_order.oa_id.ids)])
+            oa_list = m_order.mapped('oa_id.name')
             #operation._ids2str('sale_order_line')
         else:
             operation = operation.browse(ope_id)
             parent_ids = operation._ids2str('ids')
             oa_ids = operation._ids2str('oa_id')
+            oa_list = operation.mapped('oa_id.name')
 
-        #raise UserError((self.env.company.id,))    
+        # raise UserError((oa_list))
         pick = self.env["stock.picking"].create({'move_type':'direct',
                                                  'state':'draft',
                                                  'scheduled_date':datetime.now(),
@@ -234,7 +243,8 @@ class OperationDetails(models.Model):
                                                  'immediate_transfer':False,
                                                  'operation_lines':parent_ids,
                                                  'mrp_lines':mrp_lines,
-                                                 'oa_ids': oa_ids
+                                                 'oa_ids': oa_ids,
+                                                 'x_studio_oa_no':oa_list
                                                  })
         
         for prod in product_line:
@@ -285,6 +295,7 @@ class OperationDetails(models.Model):
                                             'sale_order_line':m_order.sale_order_line.id,
                                             'oa_id':m_order.oa_id.id,
                                             'buyer_name':m_order.buyer_name,
+                                            'product_id':m_order.product_id.id,
                                             'product_template_id':m_order.product_template_id.id,
                                             'action_date':datetime.now(),
                                             'shade':m_order.shade,
@@ -312,6 +323,7 @@ class OperationDetails(models.Model):
                                             'parent_id':ope_id,
                                             'oa_id':operation.oa_id.id,
                                             'buyer_name':operation.buyer_name,
+                                            'product_id':operation.product_id.id,
                                             'product_template_id':operation.product_template_id.id,
                                             'action_date':datetime.now(),
                                             'shade':operation.shade,
@@ -371,37 +383,38 @@ class OperationDetails(models.Model):
                 vals['state'] = 'partial'
         if 'fg_output' in vals:
             vals['fg_done_qty'] = self.fg_done_qty +  vals.get('fg_output')
-            if 'cartoon_no' in vals:
-                out = self.env['operation.details'].filtered(lambda op: op.cartoon_no.name == vals.get('cartoon_no') and (op.parent_id.id == self.id))
-                out.update({'qty': out.qty + vals.get('fg_output')})
-            else:
-                ope = self.env['operation.details'].create({'mrp_lines':self.mrp_lines,
-                                                            'sale_lines':self.sale_lines,
-                                                            'mrp_line':self.mrp_line.id,
-                                                            'sale_order_line':self.sale_order_line.id,
-                                                            'parent_id':self.id,
-                                                            'oa_id':self.oa_id.id,
-                                                            'buyer_name':self.buyer_name,
-                                                            'product_template_id':self.product_template_id.id,
-                                                            'action_date':datetime.now(),
-                                                            'shade':self.shade,
-                                                            'finish':self.finish,
-                                                            'sizein':self.sizein,
-                                                            'sizecm':self.sizecm,
-                                                            'slidercodesfg':self.slidercodesfg,
-                                                            'top':self.top,
-                                                            'bottom':self.bottom,
-                                                            'pinbox':self.pinbox,
-                                                            'operation_of':'output',
-                                                            # 'work_center':w_center,
-                                                            'operation_by':self.work_center.name,
-                                                            'based_on':'Packing',
-                                                            'next_operation':'Delivery',
-                                                            'qty':vals.get('fg_output'),
-                                                            'pack_qty':self.pack_qty,
-                                                            'fr_pcs_pack':self.fr_pcs_pack
-                                                            })
-                vals['cartoon_no'] = ope.id
+            # if 'cartoon_no' in vals:
+            #     out = self.env['operation.details'].filtered(lambda op: op.cartoon_no.name == vals.get('cartoon_no') and (op.parent_id.id == self.id))
+            #     out.update({'qty': out.qty + vals.get('fg_output')})
+            # else:
+            ope = self.env['operation.details'].create({'mrp_lines':self.mrp_lines,
+                                                        'sale_lines':self.sale_lines,
+                                                        'mrp_line':self.mrp_line.id,
+                                                        'sale_order_line':self.sale_order_line.id,
+                                                        'parent_id':self.id,
+                                                        'oa_id':self.oa_id.id,
+                                                        'buyer_name':self.buyer_name,
+                                                        'product_id':self.product_id.id,
+                                                        'product_template_id':self.product_template_id.id,
+                                                        'action_date':datetime.now(),
+                                                        'shade':self.shade,
+                                                        'finish':self.finish,
+                                                        'sizein':self.sizein,
+                                                        'sizecm':self.sizecm,
+                                                        'slidercodesfg':self.slidercodesfg,
+                                                        'top':self.top,
+                                                        'bottom':self.bottom,
+                                                        'pinbox':self.pinbox,
+                                                        'operation_of':'output',
+                                                        # 'work_center':w_center,
+                                                        'operation_by':self.work_center.name,
+                                                        'based_on':'Packing',
+                                                        'next_operation':'Delivery',
+                                                        'qty':vals.get('fg_output'),
+                                                        'pack_qty':self.pack_qty,
+                                                        'fr_pcs_pack':self.fr_pcs_pack
+                                                        })
+            vals['cartoon_no'] = ope.id
         # raise UserError((vals.get('state')))
         result = super(OperationDetails, self).write(vals)
         return result                
@@ -417,7 +430,7 @@ class OperationDetails(models.Model):
 
         rest_qty = qty
         for m in mrp_data:
-            if operation == 'Dyeing Qc':
+            if operation == 'Dyeing Output':
                 if m.dyeing_plan_qty > 0:
                     up_date = m.update({'dyeing_output': m.dyeing_output + rest_qty})
                     break
@@ -489,7 +502,7 @@ class OperationDetails(models.Model):
                     pack_qty = math.ceil(qty/pr_pac_qty)
                     fraction_pc_of_pack = round(((qty/pr_pac_qty) % 1)*pr_pac_qty)
 
-        if operation.next_operation in('Dyeing Qc','CM Output','Dipping Output','Assembly Output','Plating Output','Painting Output','Slider Assembly Output'):
+        if operation.next_operation in('Dyeing Output','CM Output','Dipping Output','Assembly Output','Plating Output','Painting Output','Slider Assembly Output'):
            up = self.set_mrp_output(operation.next_operation,operation.mrp_lines,qty,operation.based_on)
             
         next = None
@@ -526,6 +539,7 @@ class OperationDetails(models.Model):
                                                     'parent_id':operation.id,
                                                     'oa_id':operation.oa_id.id,
                                                     'buyer_name':operation.buyer_name,
+                                                    'product_id':operation.product_id.id,
                                                     'product_template_id':operation.product_template_id.id,
                                                     'action_date':datetime.now(),
                                                     'shade':operation.shade,
@@ -619,7 +633,7 @@ class OperationDetails(models.Model):
 #'Assembly Output','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'
             #'Dyeing Output','Dyeing Qc','CM Output','Deeping Output','Deeping Qc'
             # out_qty = out.uotput_qty
-            if out.next_operation in('Dyeing Qc','CM Output','Dipping Output','Assembly Output','Plating Output','Painting Output','Slider Assembly Output'):
+            if out.next_operation in('Dyeing Output','CM Output','Dipping Output','Assembly Output','Plating Output','Painting Output','Slider Assembly Output'):
                 up = self.set_mrp_output(out.next_operation,out.mrp_lines,out.uotput_qty,out.based_on)
             
             if out.parent_id:
@@ -677,6 +691,7 @@ class OperationDetails(models.Model):
                                                         'parent_id':out.id,
                                                         'oa_id':out.oa_id.id,
                                                         'buyer_name':out.buyer_name,
+                                                        'product_id':out.product_id.id,
                                                         'product_template_id':out.product_template_id.id,
                                                         'action_date':datetime.now(),
                                                         'shade':out.shade,
@@ -696,6 +711,7 @@ class OperationDetails(models.Model):
                                                         'pack_qty':pack_qty,
                                                         'fr_pcs_pack':fraction_pc_of_pack
                                                         })
+            out.uotput_qty = 0
 
 
 
