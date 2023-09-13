@@ -366,8 +366,12 @@ class OperationDetails(models.Model):
             ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
             vals['name'] = ref
         if vals.get('next_operation') == "Delivery":
-            ref = self.env['ir.sequence'].next_by_code('fg.cartoon', sequence_date=seq_date)
-            vals['name'] = ref
+            if 'name' in vals:
+                if vals.get('name'):
+                    vals['name'] = vals.get('name')
+                else:
+                    ref = self.env['ir.sequence'].next_by_code('fg.cartoon', sequence_date=seq_date)
+                    vals['name'] = ref
         vals['state'] = 'waiting'
         result = super(OperationDetails, self).create(vals)
         return result                
@@ -383,11 +387,18 @@ class OperationDetails(models.Model):
                 vals['state'] = 'partial'
         if 'fg_output' in vals:
             vals['fg_done_qty'] = self.fg_done_qty +  vals.get('fg_output')
-            # if 'cartoon_no' in vals:
-            #     out = self.env['operation.details'].filtered(lambda op: op.cartoon_no.name == vals.get('cartoon_no') and (op.parent_id.id == self.id))
+            cartoon = None
+            if 'cartoon_no' in vals:
+                # cartoon = vals.get('cartoon_no')
+                out = self.env['operation.details'].search([('id', '=', vals.get('cartoon_no'))])
+                #self.env['operation.details'].filtered(lambda op: op.id == 120)
+                #.sorted(key=lambda pr: pr.id)[:1]
+                if out:
+                    name = out.name
             #     out.update({'qty': out.qty + vals.get('fg_output')})
             # else:
-            ope = self.env['operation.details'].create({'mrp_lines':self.mrp_lines,
+            ope = self.env['operation.details'].create({'name':name,
+                                                        'mrp_lines':self.mrp_lines,
                                                         'sale_lines':self.sale_lines,
                                                         'mrp_line':self.mrp_line.id,
                                                         'sale_order_line':self.sale_order_line.id,
@@ -414,7 +425,10 @@ class OperationDetails(models.Model):
                                                         'pack_qty':self.pack_qty,
                                                         'fr_pcs_pack':self.fr_pcs_pack
                                                         })
-            vals['cartoon_no'] = ope.id
+            if name:
+                a = ''
+            else:
+                vals['cartoon_no'] = ope.id
         # raise UserError((vals.get('state')))
         result = super(OperationDetails, self).write(vals)
         return result                

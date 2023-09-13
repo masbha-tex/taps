@@ -127,6 +127,7 @@ class Session(models.Model):
     # def _get_instructor_domain(self):
     #     # raise UserError((self.course_id.responsible_id.partner_id.id))
     #     return {'domain': {'instructor_id': [('user_id', '=', self.course_id.responsible_id.id)]}}
+    
     code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
     criteria_id = fields.Many2one('lms.criteria', required=True, string='Criteria') 
     name = fields.Many2one('lms.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")       
@@ -137,6 +138,7 @@ class Session(models.Model):
     start_date = fields.Datetime(string="Plan Date", default=lambda self: fields.datetime.today().strftime('%Y-%m-%d %H:00:00'))
     duration = fields.Float(digits=(6, 2), help="Duration in hours", default=get_default_duration)
     plan_duration = fields.Float(digits=(6, 2), help="Plan Duration in hours", compute='number_of_plan_duration', store=True, string="Plan Duration" )
+    actual_duration = fields.Float(digits=(6, 2), help="Actual Duration in hours", compute='number_of_actual_duration', store=True, string="Actual Duration" )    
     end_date = fields.Datetime(string="End Date", store=True, compute='_get_end_date', inverse='_set_end_date')
     seats = fields.Integer(string="Number of seats", default=get_default_seats)
     instructor_id = fields.Many2many('res.partner', string="Facilitator")    
@@ -144,14 +146,12 @@ class Session(models.Model):
     participation_group = fields.Many2one('lms.participation.group', string='Participation Group')
     # course_id = fields.Many2one('lms.course', ondelete='cascade', string="Course", required=True)
     attendee_ids = fields.Many2many('hr.employee', string="Participants")
-    # optional_attendee_ids = fields.Many2many('hr.employee', string="Optional Participants")
+    optional_attendee_ids = fields.Many2many('hr.employee', 'optional_attendee_rel', string="Optional Participants")
     taken_seats = fields.Float(string="Taken seats", compute='_taken_seats')
     active = fields.Boolean(string='Active', default=True)
-    attendees_count = fields.Integer(
-        string="Attendees count", compute='_get_attendees_count', store=True)
+    attendees_count = fields.Integer(string="Attendees count", compute='_get_attendees_count', store=True)
     is_presents = fields.Float(string="Presence", compute='_presents')
-    presents_count = fields.Integer(
-        string="Presents count", compute='_get_attendance_count', store=True)    
+    presents_count = fields.Integer(string="Actual Participants", compute='_get_attendance_count', store=True)    
     color = fields.Integer()
     email_sent = fields.Boolean('Email Sent', default=False)
     image_1920 = fields.Image("Image")
@@ -306,6 +306,12 @@ class Session(models.Model):
         for record in self:
             record.plan_duration = record.seats * record.duration
 
+    @api.depends('attendance_ids')
+    def number_of_actual_duration(self):
+        if self.attendance_ids:
+            for record in self:
+                record.actual_duration = sum(record.attendance_ids.mapped('duration'))
+
     def action_calendar_event(self):
         self.ensure_one()
         partners = self.attendee_ids.related_partner_id | self.env.user.partner_id
@@ -395,6 +401,17 @@ class Session(models.Model):
             }
             self.attendee_ids -= invalid_partners
             return {'warning': warning}
+            
+    @api.onchange('optional_attendee_ids')
+    def _onchange_op_partners(self):
+        invalid_partners = self.optional_attendee_ids.filtered(lambda partner: not partner.private_email)
+        if invalid_partners:
+            warning = {
+                'title': 'Invalid Perticipents Email',
+                'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
+            }
+            self.optional_attendee_ids -= invalid_partners
+            return {'warning': warning}            
 
     @api.depends('seats', 'attendee_ids')
     def _taken_seats(self):

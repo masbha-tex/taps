@@ -137,9 +137,6 @@
                 <header>
                     <button name="action_send_event" type="object" class="oe_highlight" string="Send Email"/>
                     <button name="action_open_barcode_scanner" icon="fa-barcode" string="Scan your ID Card" type="object" class="oe_highlight"/>
-                    <!-- <div class="o_lms_attendance_barcode_scanner" data-oe-id="record.id">
-                        <t t-call="taps_lms.barcode_scanner" />
-                    </div> -->
                 </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -147,7 +144,7 @@
                                 class="oe_stat_button"
                                 icon="fa-file-text-o"
                                 type="object">
-                                <field name="attachment_number" widget="statinfo" string="Documents" options="{'reload_on_button': true}"/>
+                                <field name="attachment_number" widget="statinfo" string="Attachments" options="{'reload_on_button': true}"/>
                             </button>                            
                           
                             <button name="mark_attendance" type="object" class="oe_stat_button" icon="fa-calendar-check-o" help="List of attendance records retrieved from the training session" context="{'default_session_id': active_id}">
@@ -190,6 +187,8 @@
                                 <field name="taken_seats" widget="progressbar"/>
                                 <field name="is_presents" widget="progressbar"/>
                                 <field name="plan_duration" widget="float_time" attrs="{'readonly': True}"/>
+                                <!-- <field name="presents_count"/>
+                                <field name="actual_duration" widget="float_time" attrs="{'readonly': True}"/> -->
                                 
                                 
                             </group>
@@ -206,10 +205,10 @@
                         <group colspan="2" col="2">
                             <field name="attendee_ids" placeholder="Add Participants..." options="{'no_create':true, 'no_open':true}" widget="many2many_tags"/>
                         </group>
-                        <!-- <separator string="Optional Participants" colspan="2" />
+                        <separator string="Optional Participants" colspan="2" />
                         <group colspan="2" col="2">
                             <field name="optional_attendee_ids" placeholder="Add Optional Participants..." options="{'no_create':true, 'no_open':true}" widget="many2many_tags"/>
-                        </group>                             -->
+                        </group>                            
                         <notebook>
                             <!-- Add a new page for the attendee list -->
                             <!-- <page string="Participants">
@@ -255,13 +254,19 @@
                 <field name="criteria_id" options="{'no_create':true, 'no_open':true}"/>
                 <field name="name" options="{'no_create':true, 'no_open':true}"/>
                 <field name="description"/>
-                <field name="venue" options="{'no_create':true, 'no_open':true}"/> 
+                <field name="note"/>
+                <field name="instructor_id"/>
+                <field name="venue" options="{'no_create':true, 'no_open':true}"/>
                 <field name="start_date"/>
+                <field name="participation_group"/>
+                <field name="seats"/>
                 <field name="duration" widget="float_time" sum="Sum of Duration"/>
                 <field name="plan_duration" widget="float_time" sum="Sum of Plan Duration"/>
-                <field name="end_date" invisible="1"/>
-                <field name="taken_seats" widget="progressbar"/>
-                <field name="is_presents" widget="progressbar"/>
+                <field name="presents_count"/>
+                <field name="actual_duration" widget="float_time" attrs="{'readonly': True}"/>
+                <!-- <field name="end_date" invisible="1"/> -->
+                <!-- <field name="taken_seats" widget="progressbar"/> -->
+                <!-- <field name="is_presents" widget="progressbar"/> -->
             </tree>
         </field>
     </record>
