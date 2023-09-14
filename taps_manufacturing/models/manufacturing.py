@@ -22,17 +22,13 @@ SIZE_BACK_ORDER_NUMERING = 3
 
 class ManufacturingOrder(models.Model):
     _name = "manufacturing.order"
-    #_inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
     _description = "Manufacturing Order"
-    #_order = 'date_order desc, id desc'
     _check_company_auto = True
 
-    #sequence = fields.Integer(string='Sequence')
-    sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', readonly=True, store=True)
+    sale_order_line = fields.Many2one('sale.order.line', string='Sale Order Line', readonly=True, store=True, check_company=True)
     oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', readonly=True, store=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", check_company=True)
-    company_id = fields.Many2one('res.company', string='Company', readonly=True, store=True, index=True, default=lambda self: self.env.company)
+    company_id = fields.Many2one('res.company', string='Company', readonly=True, store=True, index=True, default=lambda self: self.env.company.id, check_company=True)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
-    #buyer_name = fields.Many2one('sale.buyer', related='oa_id.buyer_name.id', string='Buyer', readonly=True)
     buyer_name = fields.Char(string='Buyer', readonly=True)
     payment_term = fields.Many2one('account.payment.term', related='oa_id.payment_term_id', string='Payment Term', readonly=True)
     date_order = fields.Datetime(string='Order Date', related='oa_id.date_order', readonly=True)
@@ -41,7 +37,7 @@ class ManufacturingOrder(models.Model):
     lead_time = fields.Integer(string='Lead Time', compute='get_leadtime', readonly=True)
     
     product_id = fields.Many2one(
-        'product.product', related='sale_order_line.product_id', string='Product Id',ondelete='restrict', check_company=True)  # Unrequired company
+        'product.product', related='sale_order_line.product_id', string='Product Id',ondelete='restrict', check_company=True)
     product_template_id = fields.Many2one(
         'product.template', string='Product',
         related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)])
@@ -163,11 +159,19 @@ class ManufacturingOrder(models.Model):
         ('done', 'Done')],
         string='State')
 
+    # @api.constrains('company_id')
+    # def _check_company_id(self):
+    #     for record in self:
+    #         if record.company_id != self.env.company:
+    #             raise models.ValidationError("Company ID must match the current user's company.")
+                
+    # # _sql_constraints = [
+    # #     ('name_company_uniq', 'unique(name, company_id)', 'The name of the Action Name must be unique per Action Name in company!'),]
 
     # _sql_constraints = [
-    #     ('name_company_uniq', 'unique(name, company_id)', 'The name of the Action Name must be unique per Action Name in company!'),]
+    #     ('unique_name_per_company', 'unique(company_id, company_id)', 'Name must be unique within the same company.'),]
 
-
+    
     @api.onchange('done_qty')
     def _done_qty(self):
         for s in self:
@@ -540,20 +544,6 @@ class ManufacturingOrder(models.Model):
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_requisition")
         action["domain"] = [('default_id','in',self.mapped('id'))]
         return action
-    
-    # def button_createlot(self):
-    #     self.ensure_one()
-    #     self._check_company()
-    #     if self.state in ("done", "to_close", "cancel"):
-    #         raise UserError(
-    #             _(
-    #                 "Cannot split a manufacturing order that is in '%s' state.",
-    #                 self._fields["state"].convert_to_export(self.state, self),
-    #             )
-    #         )
-    #     action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
-    #     action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
-    #     return action
 
     def button_output(self):
         self.ensure_one()
@@ -569,3 +559,17 @@ class ManufacturingOrder(models.Model):
         action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
         return action
 
+    
+    # def button_createlot(self):
+    #     self.ensure_one()
+    #     self._check_company()
+    #     if self.state in ("done", "to_close", "cancel"):
+    #         raise UserError(
+    #             _(
+    #                 "Cannot split a manufacturing order that is in '%s' state.",
+    #                 self._fields["state"].convert_to_export(self.state, self),
+    #             )
+    #         )
+    #     action = self.env["ir.actions.actions"]._for_xml_id("mrp.action_split_mrp")
+    #     action["context"] = {"default_mo_id": self.id,"default_product_id": self.product_id}
+    #     return action

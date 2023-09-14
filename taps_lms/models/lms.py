@@ -112,6 +112,7 @@ class Session(models.Model):
     _description = "Training Sessions"
     _inherit = ['mail.thread']
     _rec_name = 'name'
+    _order = "start_date desc"    
 
     def get_default_duration(self):
         ICP = self.env['ir.config_parameter'].sudo()
@@ -489,10 +490,12 @@ class EventWizard(models.TransientModel):
         lms_session = self.env['lms.session'].browse(active_ids)
         user_id = self.env.user.id
         partner_id = [employee.address_home_id.id for employee in lms_session.attendee_ids]
+        optional_partner_id = [employee.address_home_id.id for employee in lms_session.optional_attendee_ids]
+        facilitator_partner_id = [employee.id for employee in lms_session.instructor_id]
         user_partner_ids = self.env.user.partner_id.id 
-        combined_ids = partner_id + [user_partner_ids]
+        combined_ids = partner_id + optional_partner_id + facilitator_partner_id + [user_partner_ids]
         
-        # raise UserError((combined_ids))
+        # raise UserError((facilitator_partner_id,partner_id,optional_partner_id,user_partner_ids))
         # lms_session.mapped('meeting_id').unlink()
         event_vals = {
             'name': self.meeting_subject,
@@ -500,41 +503,15 @@ class EventWizard(models.TransientModel):
             'stop': meeting_date,
             'start_date': self.meeting_date,
             'stop_date': meeting_date,
-            'alarm_ids': self.reminder,
+            'alarm_ids': [(6, 0, self.reminder.ids)],
             'duration': self.duration,
             'location': self.location,
-            'description': self.note and tools.html2plaintext(self.note),
+            'description': self.note,# and tools.html2plaintext(self.note),
             'user_id': user_id,
             'partner_ids': [(6, 0, combined_ids)], 
         }
         meeting = self.env['calendar.event'].create(event_vals)
         lms_session.meeting_id = meeting.id
-        # self.activity_unlink(['mail.mail_activity_data_meeting', 'mail.mail_activity_data_todo'])
-        # raise UserError((self.employee_id))
-        # for session in lms_session:
-        #     session.meeting_id = meeting.id
-            # session.date_final_interview = self.meeting_date
-            # # meeting_activity_type = self.env['mail.activity.type'].search([('category', '=', 'meeting')], limit=1)
-            # session.activity_unlink(['mail.mail_activity_data_meeting', 'mail.mail_activity_data_todo'])
-    
-            # Create an activity note for each partner in partner_ids
-        # for appraisal in hr_appraisal:
-            # employee = session.employee_id
-            # managers = session.manager_ids
-            # if employee.user_id:
-            #     session.with_context(mail_activity_quick_update=True).activity_schedule(
-            #         'mail.mail_activity_data_meeting', 
-            #         self.meeting_date,
-            #         summary=_(self.meeting_subject),
-            #         note=_(self.note),
-            #         user_id=employee.user_id.id)
-            # for manager in managers.filtered(lambda m: m.user_id):
-            #     session.with_context(mail_activity_quick_update=True).activity_schedule(
-            #         'mail.mail_activity_data_meeting', 
-            #         self.meeting_date,
-            #         summary=_(self.meeting_subject),
-            #         note=_(self.note),
-            #         user_id=manager.user_id.id)
 
         return {'type': 'ir.actions.act_window_close'}
 

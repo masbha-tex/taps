@@ -125,8 +125,10 @@ class MrpRunningOrders(models.AbstractModel):
                     sizein = ''
                 if sizecm == 'N/A':
                     sizecm = ''
-                m_order = self.env['manufacturing.order'].filtered(lambda m: m.sale_order_line.id == o_data.id)
+                
+                m_order = self.env['manufacturing.order'].search([('sale_order_line','=',o_data.id)])
                 ready_qty = sum(m_order.mapped('done_qty'))
+                # raise UserError((o_data.id,ready_qty))
                 balance_qty = o_data.product_uom_qty-ready_qty
                 order_data = [
                     customer,
@@ -155,7 +157,8 @@ class MrpRunningOrders(models.AbstractModel):
                     orders.sale_representative.name,
                 ]
                 report_data.append(order_data)
-            
+            if _range > 0:
+                _range += 1
             _range += len(report_data)
             sheet.set_column(0, 0, 20)
             sheet.set_column(1, 1, 30)
@@ -186,10 +189,10 @@ class MrpRunningOrders(models.AbstractModel):
             col = 0
             row = row_rang
             inline_row = 1
-            row_p += row_p
-            row_sl += row_sl
-            row_f += row_f
-            row_sh += row_sh
+            row_p = 0
+            row_sl = 0
+            row_f = 0
+            row_sh = 0
             
             product_range += product_range
             slider_range += slider_range
@@ -294,8 +297,8 @@ class MrpRunningOrders(models.AbstractModel):
             sheet.write(row, 9, '')
             sheet.write(row, 10, '')
             sheet.write(row, 11, '')
-            sheet.write(row, 12, '=SUM(M{0}:M{1})'.format(2, row), row_style)
-            sheet.write(row, 13, '=SUM(N{0}:N{1})'.format(2, row), row_style)
+            sheet.write(row, 12, '=SUM(M{0}:M{1})'.format(row_rang+1, row), row_style)
+            sheet.write(row, 13, '=SUM(N{0}:N{1})'.format(row_rang+1, row), row_style)
             sheet.write(row, 14, '=M{1}-N{1}'.format(row+1, row+1), row_style)
             sheet.write(row, 15, '')
             sheet.write(row, 16, shade_total, row_style)

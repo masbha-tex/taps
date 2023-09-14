@@ -222,13 +222,15 @@ class OperationDetails(models.Model):
             mrp_lines = ope_id
             sale_lines = ','.join([str(i) for i in sorted(m_order.sale_order_line.ids)])
             oa_ids = ','.join([str(i) for i in sorted(m_order.oa_id.ids)])
-            oa_list = m_order.mapped('oa_id.name')
+            sale_order = self.env["sale.order"].browse(oa_ids)
+            oa_list = sale_order.mapped('name')
             #operation._ids2str('sale_order_line')
         else:
             operation = operation.browse(ope_id)
             parent_ids = operation._ids2str('ids')
             oa_ids = operation._ids2str('oa_id')
-            oa_list = operation.mapped('oa_id.name')
+            sale_order = self.env["sale.order"].search([('id', 'in', (oa_ids,0))])#(oa_ids)
+            oa_list = sale_order.mapped('name')
 
         # raise UserError((oa_list))
         pick = self.env["stock.picking"].create({'move_type':'direct',

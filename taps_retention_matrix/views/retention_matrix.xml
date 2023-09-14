@@ -44,6 +44,9 @@
             <tree string="Retention" multi_edit="1" sample="1" js_class="taps_retention_matrix_tree_dashboard_upload">         
                 <field name="employee_id" required="1"/>
                 <field name="company_id"/>
+                <field name="grade"/>
+                <field name="coach_id"/>
+                <field name="joining_date"/>
                 <field name="department_id"/>
                 <field name="year" widget="selection"/>
                 <field name="quarter"/>
