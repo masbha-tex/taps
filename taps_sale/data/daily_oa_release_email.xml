@@ -12,12 +12,6 @@
             <field name="numbercall">-1</field>
             <field name="nextcall">2023-01-05 11:00:00</field>
         </record>
-    <record id="email_template_oa" model="mail.template">
-        <field name="name">QWeb OA Daily Email</field>
-        <field name="body_type">qweb</field>
-        <field name="body_view_id" ref="view_email_template_oa" />
-        <field name="model_id" ref="model_sale_order" />
-        <field name="subject">QWeb demo email</field>
-    </record>
+    
     </data>
 </odoo>

@@ -1,4 +1,5 @@
 from . import res_config_settings
+from . import calendar
 from . import lms_criteria
 from . import lms_title
 from . import lms_session_venue

@@ -115,29 +115,11 @@
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.total_product_qty"/>
-										<t t-set="grand_total_qty" t-value="grand_total_qty+order.total_product_qty"/>
-										<t t-if="order.sale_representative.sales_representative_region == 'dhaka'">
-											<t t-set="dhaka_total_qty" t-value="dhaka_total_qty+order.total_product_qty"/>
-										</t>
-										<t t-if="order.sale_representative.sales_representative_region == 'chittagong'">
-											<t t-set="chittagong_total_qty" t-value="chittagong_total_qty+order.total_product_qty"/>
-										</t>
-										<t t-if="order.sale_representative.sales_representative_region == 'import'">
-											<t t-set="overseas_total_qty" t-value="overseas_total_qty+order.total_product_qty"/>
-										</t>
+										
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-										<t t-set="grand_total_value" t-value="grand_total_value+order.amount_total"/>
-										<t t-if="order.sale_representative.sales_representative_region == 'dhaka'">
-											<t t-set="dhaka_total_value" t-value="dhaka_total_value+order.amount_total"/>
-										</t>
-										<t t-if="order.sale_representative.sales_representative_region == 'chittagong'">
-											<t t-set="chittagong_total_value" t-value="chittagong_total_value+order.amount_total"/>
-										</t>
-										<t t-if="order.sale_representative.sales_representative_region == 'import'">
-											<t t-set="overseas_total_value" t-value="overseas_total_value+order.amount_total"/>
-										</t>
+										
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -146,29 +128,16 @@
 										<t t-esc="order.order_ref.payment_term_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="order.pi_type.upper()"/>
+										<t t-esc="order.pi_type"/>
 									</td>
 								</tr>
 							</t>
 						</t>
-						<tr>
-							<td style="border: 1px solid black" colspan="15"/>
-							<td style="border: 1px solid black">
-								<strong>
-									<t t-esc="grand_total_qty"/>
-								</strong>
-							</td>
-							<td style="border: 1px solid black">
-								<strong>
-									<t t-esc="grand_total_value" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-								</strong>
-							</td>
-							<td style="border: 1px solid black" colspan="3"/>
-						</tr>
+						
 					</tbody>
 				</table>
-				<br/>
-				<table class=" table table-sm p-0 m-0" style="border-collapse: collapse ! important;table-layout:fixed ! important;font-size:9px; border: 1px solid black;width:100%">
+			  <br/>
+			  <table class=" table table-sm p-0 m-0" style="border-collapse: collapse ! important;table-layout:fixed ! important;font-size:9px; border: 1px solid black;width:100%">
 					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">
 						<strong>OTHERS PRODUCTS</strong>
 					</caption>
@@ -240,20 +209,11 @@
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.total_product_qty"/>
-										<t t-set="grand_total_qty2" t-value="grand_total_qty2+order.total_product_qty"/>
-										<t t-if="order.sale_representative.sales_representative_region == 'dhaka'">
-											<t t-set="dhaka_total_qty" t-value="dhaka_total_qty+order.total_product_qty"/>
-										</t>
-										<t t-if="order.sale_representative.sales_representative_region == 'chittagong'">
-											<t t-set="chittagong_total_qty" t-value="chittagong_total_qty+order.total_product_qty"/>
-										</t>
-										<t t-if="order.sale_representative.sales_representative_region == 'import'">
-											<t t-set="overseas_total_qty" t-value="overseas_total_qty+order.total_product_qty"/>
-										</t>
+										
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-										<t t-set="grand_total_value2" t-value="grand_total_value2+order.amount_total"/>
+									
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -262,25 +222,13 @@
 										<t t-esc="order.order_ref.payment_term_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="order.pi_type.upper()"/>
+										<t t-esc="order.pi_type"/>
 									</td>
+									
 								</tr>
 							</t>
 						</t>
-						<tr>
-							<td style="border: 1px solid black" colspan="15"/>
-							<td style="border: 1px solid black">
-								<strong>
-									<t t-esc="grand_total_qty2"/>
-								</strong>
-							</td>
-							<td style="border: 1px solid black">
-								<strong>
-									<t t-esc="grand_total_value2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-								</strong>
-							</td>
-							<td style="border: 1px solid black" colspan="3"/>
-						</tr>
+						
 					</tbody>
 				</table>
 				<br/>
@@ -358,16 +306,5 @@
 		</html>
 	</body>
 	</template>
-	<template id="view_email_template_oa">
-		<!-- because we can simply call the ci here, we don't need to
-             repeat it /-->
-		<t t-call="taps_sale.view_email_template_corporate_identity">
-			<!-- the template we call uses this as title if we set it /-->
-			<t t-set="email_heading" t-value="email_template.subject"/>
-			<h2>Dear <t t-esc="object.name"/>,</h2>
-			<p>
-                This is an email template using qweb.
-            </p>
-		</t>
-	</template>
+	
 </odoo>

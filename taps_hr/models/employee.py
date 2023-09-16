@@ -60,7 +60,8 @@ class HrEmployeePrivate(models.Model):
     impact = fields.Selection(selection=[
         ('1', 'Low-Impact'),
         ('2', 'Medium-Impact'),
-        ('3', 'High-Impact')], string="Impact", tracking=True, help="What would be the impact of this employee leaving?" )    
+        ('3', 'High-Impact')], string="Impact", tracking=True, help="What would be the impact of this employee leaving?" )
+    employee_group = fields.Many2one('hr.employee.group', string="Group", help="What would be the group of this employee?")     
     
     def _sync_user(self, user, employee_has_image=False):
         vals = dict(
@@ -763,4 +764,5 @@ class HrEmployeePublic(models.Model):
     barcode = fields.Char(readonly=True)
     risk = fields.Char(readonly=True)
     impact = fields.Char(readonly=True)
+    employee_group = fields.Many2one('hr.employee.group', readonly=True)
     

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from num2words import num2words
-
+import base64
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from functools import partial
@@ -134,23 +134,71 @@ class SaleOrder(models.Model):
     
         
             
-    def action_send_card(self,id):
-        template= self.env.ref('taps_sale.mail_template_oa_confirmation').id
-        template = self.env['mail.template'].browse(template)
-        template.send_mail(id, force_send=False)
-    
-    def _action_daily_oa_release_email(self):
-        subject = 'Daily Released OA'
+    # def action_send_card(self,id):
+    #     template= self.env.ref('taps_sale.mail_template_oa_confirmation').id
+    #     template = self.env['mail.template'].browse(template)
+    #     template.send_mail(id, force_send=False)
+
+    def _action_send_card(self,record):
+        
+        subject = record.company_id.name+ "(Ref " +(record.name)+")" or 'n/a)'
         body = 'Hello'
+        # report = self.env.ref('taps_sale.action_report_oa_invoice')
+        report = self.env.ref('taps_sale.action_report_oa_invoice', False)
+        pdf_content, content_type = report.sudo()._render_qweb_pdf(record.id)
+        attachment = self.env['ir.attachment'].sudo().create({
+                    'name': 'OA',
+                    'type': 'binary',
+                    'datas': base64.encodebytes(pdf_content),
+                    'res_id': record.id
+                })
+        
         mail_values = {
-            'email_from': self.env.user.email_formatted,
+            'email_from':record.user_id.email_formatted or user.email_formatted,
             'author_id': self.env.user.partner_id.id,
             'model': None,
             'res_id': None,
             'subject': subject,
             'body_html': body,
             'auto_delete': True,
-            'email_to': self.env.user.email_formatted
+            'email_to': record.sale_representative.email,
+            'email_cc': ['asraful.haque@texzipperbd.com','shahid.hossain@texzipperbd.com',	'csd.zipper@texzipperbd.com',record.sale_representative.leader.email],
+            'attachment_ids': attachment,
+            
+        }
+        raise UserError((mail_values['email_cc']))
+        try:
+            template = self.env.ref('taps_sale.email_template_for_confirm_oa', raise_if_not_found=True)
+            
+        except ValueError:
+            _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')
+        else:
+            
+            template_ctx = {
+                'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA')),
+                'model_description': self.env['ir.model']._get('sale.order').display_name,
+                'company': self.env.company,
+                'record' : record,
+            }
+            # raise UserError((record.currency_id.symbol))
+            body = template._render(template_ctx, engine='ir.qweb')
+            mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+            
+        self.env['mail.mail'].sudo().create(mail_values)
+    
+    def _action_daily_oa_release_email(self):
+        subject = 'Daily Released OA(ZIPPER)'
+        body = 'Hello'
+        mail_values = {
+            'email_from': 'csd.zipper@texzipperbd.com',
+            'author_id': self.env.user.partner_id.id,
+            'model': None,
+            'res_id': None,
+            'subject': subject,
+            'body_html': body,
+            'auto_delete': True,
+            'email_to': self.env.user.email_formatted,
+            'email_cc': ['asraful.haque@texzipperbd.com','shahid.hossain@texzipperbd.com'],
         }
         try:
             template = self.env.ref('taps_sale.view_email_template_corporate_identity', raise_if_not_found=True)
@@ -166,7 +214,7 @@ class SaleOrder(models.Model):
             }
             body = template._render(template_ctx, engine='ir.qweb')
             mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            
+        # raise UserError((mail_values['body_html']))   
         self.env['mail.mail'].sudo().create(mail_values)
   
 

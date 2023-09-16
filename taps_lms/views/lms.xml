@@ -250,11 +250,11 @@
         <field name="model">lms.session</field>
         <field name="arch" type="xml">
             <tree string="Session Tree">
-                <field name="code" invisible="1"/>
+                <field name="code" optional="hide"/>
                 <field name="criteria_id" options="{'no_create':true, 'no_open':true}"/>
                 <field name="name" options="{'no_create':true, 'no_open':true}"/>
-                <field name="description"/>
-                <field name="note"/>
+                <field name="description" optional="hide"/>
+                <field name="note" optional="hide"/>
                 <field name="instructor_id"/>
                 <field name="venue" options="{'no_create':true, 'no_open':true}"/>
                 <field name="start_date"/>
@@ -294,7 +294,7 @@
                 <group>
                     <group col="4">
                         <aggregate name="name" string="Total Session" field="name"/>
-                        <aggregate name="instructor_id" string="Total Facilitator" field="instructor_id"/>
+                        <!-- <aggregate name="instructor_id" string="Total Facilitator" field="instructor_id"/> -->
                         <aggregate name="duration" string="Total Duration" field="duration" value_label="hours" widget="float_time"/>                        
                         <aggregate name="attendees_count" string="Attendee Count" field="attendees_count"/>
                         <aggregate name="presents_count" string="Presence Count" field="presents_count"/>
@@ -319,7 +319,7 @@
                 <field name="criteria_id" type="measure"/>
                 <field name="duration" type="measure"/>
                 <!-- <field name="start_date" type="measure"/> -->
-                <field name="instructor_id" type="measure"/>
+                <!-- <field name="instructor_id" type="measure"/> -->
                 <!-- <field name="attendee_ids" type="measure"/> -->
                 <!-- <field name="attendance_ids" type="measure"/> -->
             </pivot>

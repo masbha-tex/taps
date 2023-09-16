@@ -41,6 +41,7 @@
         'reports/report_sa_submission_mt.xml',
         'data/ir_oa_sequence.xml',
         'data/send_oa_to_respective.xml',
+        'data/send_oa_to_respective_persons.xml',
         'data/daily_oa_release_email.xml',
         'data/oa_release.xml',
         # 'data/mail_template_action.xml',
