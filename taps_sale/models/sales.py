@@ -166,7 +166,7 @@ class SaleOrder(models.Model):
             'attachment_ids': attachment,
             
         }
-        raise UserError((mail_values['email_cc']))
+        # raise UserError((mail_values['email_cc']))
         try:
             template = self.env.ref('taps_sale.email_template_for_confirm_oa', raise_if_not_found=True)
             

@@ -18,7 +18,7 @@ class ReportDyePlan(models.AbstractModel):
     def generate_xlsx_report(self, workbook, data, planids):
         # raise UserError (planids.default_search_id)
         # self.env['operation.details'].search([('id','in',planids)])
-        operations = self.env['operation.details'].search([('id','in',planids.ids)])
+        # operations = self.env['operation.details'].search([('id','in',planids.ids)])
         mc_name = str(planids[0].capacity) + 'kgs MC Plan'
         plan_date = 'Date: '+ str(planids[0].action_date.strftime("%d-%m-%Y"))
 
@@ -33,7 +33,7 @@ class ReportDyePlan(models.AbstractModel):
         sheet = workbook.add_worksheet(report_name[:41])
         column_style = workbook.add_format({'bold': True, 'font_size': 11})
         
-        _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        _row_style = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
         
         row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -44,8 +44,8 @@ class ReportDyePlan(models.AbstractModel):
         
         format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        merge_format = workbook.add_format({'align': 'top'})
-        merge_format_ = workbook.add_format({'align': 'bottom'})
+        merge_format = workbook.add_format({'align': 'top', 'bold': True, 'align': 'center'})
+        merge_format_ = workbook.add_format({'align': 'bottom', 'bold': True})
 
         sheet.merge_range(0, 0, 0, 6, mc_name, merge_format)
         sheet.merge_range(0, 13, 0, 17, 'Dyeing Production Plan Report', merge_format)
@@ -78,7 +78,7 @@ class ReportDyePlan(models.AbstractModel):
         # report_name = 'Machine Wise Plan'#orders.name
         row = 2
         for m in machines:
-            m_plan = operations.filtered(lambda pr: pr.machine_no.id == m.id)
+            m_plan = planids.filtered(lambda pr: pr.machine_no.id == m.id)
             sheet.merge_range(row, 0, row, 17, m.name, merge_format)
             row += 1
             sheet.write(row, 0, "OA NO", column_style)
@@ -117,7 +117,7 @@ class ReportDyePlan(models.AbstractModel):
             for line in report_data:
                 col = 0
                 for l in line:
-                    sheet.write(row, col, l, format_label_4)
+                    sheet.write(row, col, l, _row_style)
                     col += 1
                 row += 1
                 
