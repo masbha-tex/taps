@@ -15,36 +15,29 @@
             width: 100%;
         }
         th, td {
-            padding: 10px;
+            padding: 5px;
             text-align: left;
         }
        
-		    @media screen and (max-width: 600px) {
-            table {
-                display: block;
-            }
-            th, td {
-                display: block;
-                width: 100%;
-            }
-        }
+		    
 		  </style>
+		  <div class="container">
 			<div class="table-responsive">
 				<t t-set="grand_total_qty" t-value="0.0"/>
 				<t t-set="grand_total_value" t-value="0.0"/>
 				<t t-set="grand_total_qty2" t-value="0.0"/>
 				<t t-set="grand_total_value2" t-value="0.0"/>
 				<t t-set="dhaka_total_qty" t-value="0.0"/>
-				<t t-set="chittagong_total_qty" t-value="0.0"/>
+				<t t-set="chattogram_total_qty" t-value="0.0"/>
 				<t t-set="overseas_total_qty" t-value="0.0"/>
 				<t t-set="dhaka_total_value" t-value="0.0"/>
-				<t t-set="chittagong_total_value" t-value="0.0"/>
+				<t t-set="chattogram_total_value" t-value="0.0"/>
 				<t t-set="overseas_total_value" t-value="0.0"/>
-				<p>Dear Sir,<br/>
-          Today <t t-esc="(datetime.date.today() - relativedelta(days=3))"/> we have released total 29 orders. Please find the below chart for complete review. </p>
+				<p style="font-size:16px">Dear Sir,<br/>
+          Order Release Summary of  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> is given below:</p>
 				<br/>
-				<table class=" table table-sm table-hover p-0 m-0" style="border-collapse: collapse ! important;table-layout:fixed ! important;font-size:9px; border: 1px solid black;width:100%">
-					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">
+				<table class=" table table-sm  p-0 m-0" style="font-size:9px;table-layout: fixed ! important; ">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
 						<strong>METAL PRODUCTS</strong>
 					</caption>
 					<thead>
@@ -69,7 +62,7 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('state', '=', 'sale'),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine(datetime.date.today() - relativedelta(days=10), datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine(datetime.date.today() - relativedelta(days=10), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('state', '=', 'sale'),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine(datetime.date.today(), datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine(datetime.date.today(), datetime.time.max)))])" t-as="order">
 							<t t-if="'METAL' in order.order_line[0].product_template_id.name">
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
@@ -115,10 +108,36 @@
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.total_product_qty"/>
+										<t t-set="grand_total_qty" t-value="grand_total_qty+order.total_product_qty"/>
+										
+										<!--region wise quantity-->
+										<t t-if="order.sale_representative.region.team_region == 'DHAKA'">
+											<t t-set="dhaka_total_qty" t-value="dhaka_total_qty+order.total_product_qty"/>
+										</t>
+										<t t-if="order.sale_representative.region.team_region == 'CHATTOGRAM'">
+											<t t-set="chattogram_total_qty" t-value="chattogram_total_qty+order.total_product_qty"/>
+										</t>
+										<t t-if="order.sale_representative.region.team_region == 'OVERSEAS'">
+											<t t-set="overseas_total_qty" t-value="overseas_total_qty+order.total_product_qty"/>
+										</t>
+										<!--end region wise quantity-->
 										
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_value" t-value="grand_total_value+order.amount_total"/>
+										
+										<!--region wise value-->
+										<t t-if="order.sale_representative.region.team_region == 'DHAKA'">
+											<t t-set="dhaka_total_value" t-value="dhaka_total_value+order.amount_total"/>
+										</t>
+										<t t-if="order.sale_representative.region.team_region == 'CHATTOGRAM'">
+											<t t-set="chattogram_total_value" t-value="chattogram_total_value+order.amount_total"/>
+										</t>
+										<t t-if="order.sale_representative.region.team_region == 'OVERSEAS'">
+											<t t-set="overseas_total_value" t-value="overseas_total_value+order.amount_total"/>
+										</t>
+										<!--end region wise value-->
 										
 									</td>
 									<td style="border: 1px solid black">
@@ -133,12 +152,17 @@
 								</tr>
 							</t>
 						</t>
-						
+						<tr style="border: 1px solid black">
+						  <td class="text-right" style="border: 1px solid black;" colspan="15">TOTAL</td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_value" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black" colspan="3"></td>
+						</tr>
 					</tbody>
 				</table>
 			  <br/>
-			  <table class=" table table-sm p-0 m-0" style="border-collapse: collapse ! important;table-layout:fixed ! important;font-size:9px; border: 1px solid black;width:100%">
-					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">
+			  <table class=" table table-sm p-0 m-0" style="font-size:9px;table-layout: fixed ! important; ">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
 						<strong>OTHERS PRODUCTS</strong>
 					</caption>
 					<thead>
@@ -163,7 +187,7 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine(datetime.date.today() - relativedelta(days=10), datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine(datetime.date.today() - relativedelta(days=10), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine(datetime.date.today(), datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine(datetime.date.today(), datetime.time.max)))])" t-as="order">
 							<t t-if="not 'METAL' in order.order_line[0].product_template_id.name">
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
@@ -208,11 +232,38 @@
 										</t>
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="order.total_product_qty"/>
+										<t t-esc="order.total_product_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_qty2" t-value="grand_total_qty2+order.total_product_qty"/>
+										
+										<!--region wise quantity-->
+										<t t-if="order.sale_representative.region.team_region == 'DHAKA'">
+											<t t-set="dhaka_total_qty" t-value="dhaka_total_qty+order.total_product_qty"/>
+										</t>
+										<t t-if="order.sale_representative.region.team_region == 'CHATTOGRAM'">
+											<t t-set="chattogram_total_qty" t-value="chattogram_total_qty+order.total_product_qty"/>
+										</t>
+										<t t-if="order.sale_representative.region.team_region == 'OVERSEAS'">
+											<t t-set="overseas_total_qty" t-value="overseas_total_qty+order.total_product_qty"/>
+										</t>
+										<!--end region wise quantity-->
 										
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_value2" t-value="grand_total_value2+order.amount_total"/>
+										
+										
+										<!--region wise value-->
+										<t t-if="order.sale_representative.region.team_region == 'DHAKA'">
+											<t t-set="dhaka_total_value" t-value="dhaka_total_value+order.amount_total"/>
+										</t>
+										<t t-if="order.sale_representative.region.team_region == 'CHATTOGRAM'">
+											<t t-set="chattogram_total_value" t-value="chattogram_total_value+order.amount_total"/>
+										</t>
+										<t t-if="order.sale_representative.region.team_region == 'OVERSEAS'">
+											<t t-set="overseas_total_value" t-value="overseas_total_value+order.amount_total"/>
+										</t>
+										<!--end region wise value-->
 									
 									</td>
 									<td style="border: 1px solid black">
@@ -228,13 +279,18 @@
 								</tr>
 							</t>
 						</t>
-						
+						<tr style="border: 1px solid black">
+						  <td class="text-right" style="border: 1px solid black" colspan="15">TOTAL</td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_value2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black" colspan="3"></td>
+						</tr>
 					</tbody>
 				</table>
 				<br/>
 				<div>
 					<table class="table table-sm p-0 m-0" style="font-size:12px; border: 1px solid black;width:50%; margin:auto;">
-						<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">
+						<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
 							<strong>REGION WISE SUMMARY</strong>
 						</caption>
 						<thead>
@@ -265,16 +321,16 @@
 							</tr>
 							<tr>
 								<td style="border: 1px solid black">2</td>
-								<td style="border: 1px solid black">Chittagong</td>
+								<td style="border: 1px solid black">Chattogram</td>
 								<td style="border: 1px solid black">
-									<t t-esc="chittagong_total_qty"/>
+									<t t-esc="chattogram_total_qty"/>
 								</td>
 								<td style="border: 1px solid black">
-									<t t-esc="chittagong_total_value" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									<t t-esc="chattogram_total_value" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								<td style="border: 1px solid black">
-								  <t t-if="chittagong_total_value != 0 and chittagong_total_qty !=0">
-								    <t t-esc="(chittagong_total_value/chittagong_total_qty)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+								  <t t-if="chattogram_total_value != 0 and chattogram_total_qty !=0">
+								    <t t-esc="(chattogram_total_value/chattogram_total_qty)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								  </t>
 								  <t t-else="">
 								    <t t-esc="0.00"/>
@@ -302,6 +358,7 @@
 						</thead>
 					</table>
 				</div>
+			</div>
 			</div>
 		</html>
 	</body>

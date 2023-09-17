@@ -152,6 +152,14 @@ class SaleOrder(models.Model):
                     'datas': base64.encodebytes(pdf_content),
                     'res_id': record.id
                 })
+        email_cc_list = [
+            'asraful.haque@texzipperbd.com',
+            'shahid.hossain@texzipperbd.com',
+            'csd.zipper@texzipperbd.com',
+            record.sale_representative.leader.email
+            ]
+        
+        email_cc = ','.join(email_cc_list)
         
         mail_values = {
             'email_from':record.user_id.email_formatted or user.email_formatted,
@@ -162,8 +170,8 @@ class SaleOrder(models.Model):
             'body_html': body,
             'auto_delete': True,
             'email_to': record.sale_representative.email,
-            'email_cc': ['asraful.haque@texzipperbd.com','shahid.hossain@texzipperbd.com',	'csd.zipper@texzipperbd.com',record.sale_representative.leader.email],
             'attachment_ids': attachment,
+            'email_cc': email_cc,
             
         }
         # raise UserError((mail_values['email_cc']))
@@ -187,8 +195,16 @@ class SaleOrder(models.Model):
         self.env['mail.mail'].sudo().create(mail_values)
     
     def _action_daily_oa_release_email(self):
-        subject = 'Daily Released OA(ZIPPER)'
+        subject = 'Zipper Unit Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
+        
         body = 'Hello'
+        email_cc_list = [
+            'asraful.haque@texzipperbd.com',
+            'shahid.hossain@texzipperbd.com',
+            'csd.zipper@texzipperbd.com'
+            ]
+        
+        email_cc = ','.join(email_cc_list)
         mail_values = {
             'email_from': 'csd.zipper@texzipperbd.com',
             'author_id': self.env.user.partner_id.id,
@@ -198,8 +214,9 @@ class SaleOrder(models.Model):
             'body_html': body,
             'auto_delete': True,
             'email_to': self.env.user.email_formatted,
-            'email_cc': ['asraful.haque@texzipperbd.com','shahid.hossain@texzipperbd.com'],
+            'email_cc': email_cc,
         }
+        # raise UserError((mail_values['email_cc']))
         try:
             template = self.env.ref('taps_sale.view_email_template_corporate_identity', raise_if_not_found=True)
             

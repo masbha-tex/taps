@@ -19,15 +19,6 @@
             text-align: left;
         }
        
-		    @media screen and (max-width: 600px) {
-            table {
-                display: block;
-            }
-            th, td {
-                display: block;
-                width: 100%;
-            }
-        }
 		  </style>
 			<div class="page">
 			  <div class="container">
@@ -45,14 +36,26 @@
         
             has been revised and released to production.
             <br/>
+            <t t-if="record.cause_of_revision">
+            Cause of Revision is given below,<br/>
+            <t t-set="string_to_output" t-value="record.cause_of_revision.split('\n')"/>
+    				<t t-foreach="string_to_output" t-as="string_line">
+						<strong>
+    					<span t-esc="string_line"/>
+						</strong>
+						<br/>
+					</t>
+                <br/>
+				
+            </t>
         </t>
         Thank you for your trust!
         <br/>
         Do not hesitate to contact us if you have any questions.
        </p><br/>
        <div style="margin:0px;padding: 0px; font-size: 12px;">
-										<table class="table table-sm p-0 m-0" width="100%" style="color:red;font-size: 12px; border-collapse: collapse;">
-											<tbody>
+										<table class="table table-sm p-0 m-0" width="100%" style="font-size: 12px;">
+											<thead>
 												<tr style="color:white;background-color:rgb(113, 75, 98);">
 													<td style="border:1px solid white" width="15%">
 														<strong>Products</strong>
@@ -79,9 +82,7 @@
 														<strong>OA Value</strong>
 													</td>
 												</tr>
-											</tbody>
-										</table>
-										<table class="table table-sm p-0 m-0" width="100%" style="color:#454748;font-size: 12px; border-collapse: collapse;">
+											</thead>
 											<tbody>
 												<tr style="border:1px solid black">
 													<td width="15%" style="border:1px solid black">
@@ -111,6 +112,7 @@
 												</tr>
 											</tbody>
 										</table>
+										
 									</div>
         </div>      
 			</div>

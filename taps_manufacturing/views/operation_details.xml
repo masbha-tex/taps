@@ -21,7 +21,7 @@
                     <filter name="shade_group" string="Shade" domain="[]" context="{'group_by': 'shade'}"/>
                     <filter name="finish_group" string="Finish" domain="[]" context="{'group_by': 'finish'}"/>
                     <filter name="slider_group" string="Slider" domain="[]" context="{'group_by': 'slidercodesfg'}"/>
-                    <filter name="machine_group" string="Machine" domain="[]" context="{'group_by': 'machine_no'}"/>
+                    <filter name="machine_group" string="Machine" domain="[]" context="{'group_by': 'capacity'}"/>
                 </group>
             </search>
         </field>
@@ -67,7 +67,7 @@
                 <field name="operation_by" readonly="1"/>
                 <field name="based_on" readonly="1"/>
                 <field name="machine_no" readonly="1"/>
-                <field name="capacity" readonly="1" invisible="1"/>
+                <field name="capacity" readonly="1"/>
                 <field name="next_operation" readonly="1" force_save="1"/>
                 <field name="mr_req" readonly="1"/>
                 <field name="qty" readonly="1"/>
