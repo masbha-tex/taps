@@ -207,7 +207,8 @@
                                                 (o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+
                                                 o.line_ids.filtered(lambda line: line.code == 'LOAN').total+
                                                 o.line_ids.filtered(lambda line: line.code == 'NP').total+
-                                                o.line_ids.filtered(lambda line: line.code == 'AIT').total)" 
+                                                o.line_ids.filtered(lambda line: line.code == 'AIT').total+
+                                                o.line_ids.filtered(lambda line: line.code == 'UO').total)" 
                                          t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                </t>
                                <t t-if="is_com==True">
@@ -294,7 +295,22 @@
                         <th >Total Earnings (মোট অর্জিত) </th>
                        <th class="text-right">
                            <t t-if="is_com==False">
-                               <span t-esc="((o.line_ids.filtered(lambda line: line.code == 'NET').total)-(o.line_ids.filtered(lambda line: line.code == 'EL').total+o.line_ids.filtered(lambda line: line.code == 'CB').total+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+o.line_ids.filtered(lambda line: line.code == 'EID').total+o.line_ids.filtered(lambda line: line.code == 'OB').total)+(o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'NP').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total+o.line_ids.filtered(lambda line: line.code == 'UO').total))+(o.line_ids.filtered(lambda line: line.code == 'EL').total+o.line_ids.filtered(lambda line: line.code == 'CB').total+o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+o.line_ids.filtered(lambda line: line.code == 'EID').total+o.line_ids.filtered(lambda line: line.code == 'OB').total)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                               <span t-esc="((o.line_ids.filtered(lambda line: line.code == 'NET').total)-
+                                   (o.line_ids.filtered(lambda line: line.code == 'EL').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'CB').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'EID').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'OB').total)+
+                                   (o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'LOAN').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'NP').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'AIT').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'UO').total))+
+                                   (o.line_ids.filtered(lambda line: line.code == 'EL').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'CB').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'ARREAR').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'EID').total+
+                                   o.line_ids.filtered(lambda line: line.code == 'OB').total)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                            </t>
                            <t t-if="is_com==True">
                                <t t-set="working_total" t-value="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days-(datas[4]+datas[6])"/>
@@ -369,11 +385,18 @@
                          <th style="width:65%"> Total Deductions (মোট কর্তন)</th>
                          <th class="text-right">
                              <t t-if="is_com==False">
-                                 <span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'NP').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                 <span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+
+                                     o.line_ids.filtered(lambda line: line.code == 'LOAN').total+
+                                     o.line_ids.filtered(lambda line: line.code == 'NP').total+
+                                     o.line_ids.filtered(lambda line: line.code == 'AIT').total+
+                                     o.line_ids.filtered(lambda line: line.code == 'UO').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                             </t>
 
                              <t t-if="is_com==True">
-                                 <span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+o.line_ids.filtered(lambda line: line.code == 'LOAN').total+o.line_ids.filtered(lambda line: line.code == 'AIT').total+o.line_ids.filtered(lambda line: line.code == 'UO').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                 <span t-esc="o.line_ids.filtered(lambda line: line.code == 'ADV_SALARY').total+
+                                     o.line_ids.filtered(lambda line: line.code == 'LOAN').total+
+                                     o.line_ids.filtered(lambda line: line.code == 'AIT').total+
+                                     o.line_ids.filtered(lambda line: line.code == 'UO').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                             </t>
                         </th>
 

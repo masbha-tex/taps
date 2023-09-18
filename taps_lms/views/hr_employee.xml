@@ -23,5 +23,17 @@
             </xpath>
         </field>
     </record>
+    <record id="view_employee_tree_lms_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.tree.lms.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="taps_hr.view_employee_tree_inherit"/>
+        <field name="arch" type="xml">
+            <data>
+              <xpath expr="//tree[1]/field[@name='service_length']" position="before">
+                <field name="session_ids" string="Training Session"/>
+              </xpath>
+            </data>
+        </field>
+    </record>    
 
 </odoo>
