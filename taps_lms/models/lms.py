@@ -112,7 +112,7 @@ class Session(models.Model):
     _description = "Training Sessions"
     _inherit = ['mail.thread']
     _rec_name = 'name'
-    _order = "start_date desc"    
+    _order = "start_date"    
 
     def get_default_duration(self):
         ICP = self.env['ir.config_parameter'].sudo()
@@ -386,11 +386,13 @@ class Session(models.Model):
             # so add one day to get 5 days instead
             r.duration = (r.end_date - r.start_date).days + 1
 
-    # @api.constrains('instructor_id', 'attendee_ids')
-    # def _check_instructor_not_in_attendees(self):
-    #     for r in self:
-    #         if r.instructor_id and r.instructor_id in r.attendee_ids.address_home_id:
-    #             raise ValidationError("A session's Facilitator can't be an attendee or perticipents")
+    @api.constrains('instructor_id', 'attendee_ids', 'optional_attendee_ids')
+    def _check_instructor_not_in_attendees(self):
+        for r in self:
+            if r.instructor_id and r.instructor_id in r.attendee_ids.address_home_id:
+                raise ValidationError("A session's Facilitator can't be an attendee or perticipents")
+            if r.instructor_id and r.instructor_id in r.optional_attendee_ids.address_home_id:
+                raise ValidationError("A session's Facilitator can't be an attendee or perticipents")
                 
     @api.onchange('attendee_ids')
     def _onchange_partners(self):

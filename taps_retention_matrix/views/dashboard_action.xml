@@ -13,10 +13,10 @@
         parent="taps_retention_matrix.main_retention_menu" 
         action="custom_dashboard_action"/>
 	
-	<templates id="assets_dashboard" name="Dashboard assets" inherit_id="web.assets_backend">
+	<!-- <templates id="assets_dashboard" name="Dashboard assets" inherit_id="web.assets_backend">
 	<xpath expr="," position="inside">
 		<script type="text/javascript" src="/taps_retention_matrix/static/src/js/dash.js"/>
 	</xpath>
-	</templates>
+	</templates> -->
 	
 </odoo>

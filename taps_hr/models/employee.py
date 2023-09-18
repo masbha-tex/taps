@@ -61,7 +61,13 @@ class HrEmployeePrivate(models.Model):
         ('1', 'Low-Impact'),
         ('2', 'Medium-Impact'),
         ('3', 'High-Impact')], string="Impact", tracking=True, help="What would be the impact of this employee leaving?" )
-    employee_group = fields.Many2one('hr.employee.group', string="Group", help="What would be the group of this employee?")     
+    employee_group = fields.Many2one('hr.employee.group', string="Group", help="What would be the group of this employee?")
+    religion = fields.Selection(selection=[
+        ('Islam', 'Islam'),
+        ('Hinduism', 'Hinduism'),
+        ('Buddhism', 'Buddhism'),
+        ('Christian', 'Christian')], string="Religion", tracking=True, help="What would be the Religion of this employee?" )
+    tax_identification_number = fields.Char(string="TIN", help="What would be the Tax identification number of this employee?")    
     
     def _sync_user(self, user, employee_has_image=False):
         vals = dict(
@@ -765,4 +771,6 @@ class HrEmployeePublic(models.Model):
     risk = fields.Char(readonly=True)
     impact = fields.Char(readonly=True)
     employee_group = fields.Many2one('hr.employee.group', readonly=True)
+    religion = fields.Char(readonly=True)
+    tax_identification_number = fields.Char(readonly=True)
     

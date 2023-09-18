@@ -53,6 +53,9 @@
             </xpath>
             <field name="country_of_birth" position="after">
                 <field name="blood_group"/>
+                <field name="religion"/>
+                <field name="tax_identification_number"/>
+                
             </field>
             <field name="study_school" position="after">
                 <field name="passing_year"/>
@@ -100,6 +103,8 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_tree"/>
         <field name="arch" type="xml">
+                <xpath expr="//field[@name='work_phone']" position="replace"/>
+                <xpath expr="//field[@name='work_email']" position="replace"/>            
                 <xpath expr="//field[@name='department_id']" position="attributes">
                   <attribute name="options">{"no_create":true}</attribute>
                 </xpath>
@@ -125,44 +130,63 @@
                 <xpath expr="//field[@name='parent_id']" position="move"/>
                 <field name="coach_id"/>
                 <field name="service_length"/>
-                <field name="isovertime"/>
-                <field name="shift_group"/>
-                <field name="mobile_phone"/>
-                <xpath expr="//field[@name='work_phone']" position="move"/>
-                <xpath expr="//field[@name='work_email']" position="move"/>
-                <field name="address_id"/>
-                <field name="fathers_name"/>
-                <field name="mothers_name"/>
-                <field name="address_home_id"/>
-                <field name="bank_account_id"/>
-                <field name="km_home_work"/>
-                <field name="marital"/>
-                <field name="marriage_date"/>
-                <field name="spouse_complete_name"/>
-                <field name="spouse_birthdate"/>
-                <field name="emergency_contact"/>
-                <field name="emergency_phone"/>
-                <field name="certificate"/>
-                <field name="study_field"/>
-                <field name="study_school"/>
-                <field name="passing_year"/>
-                <field name="result"/>                
-                <field name="country_id"/>
-                <field name="identification_id"/>
-                <field name="passport_id"/>
-                <field name="gender"/>
-                <field name="birthday"/>
-                <field name="place_of_birth"/>
-                <field name="country_of_birth"/>
-                <field name="blood_group"/>
-                <field name="children"/>
-                <field name="visa_no"/>
-                <field name="permit_no"/>
-                <field name="visa_expire"/>
-                <field name="user_id"/>
-                <field name="registration_number"/>
-                <field name="pin"/>
-                <field name="barcode"/>
+                <field name="isovertime" optional="hide"/>
+                <field name="shift_group" optional="hide"/>
+                <field name="mobile_phone" optional="hide"/>
+                <field name="address_id" optional="hide"/>
+                <field name="resource_calendar_id" optional="hide"/>
+                <field name="fathers_name" optional="hide"/>
+                <field name="mothers_name" optional="hide"/>
+                <field name="address_home_id" optional="hide"/>
+                <field name="street" optional="hide"/>
+                <field name="street2" optional="hide"/>
+                <field name="zip" optional="hide"/>
+                <field name="city" optional="hide"/>
+                <field name="country_id" optional="hide"/>
+                <field name="state_id" optional="hide"/>
+                <field name="is_same_address" optional="hide"/>
+                <field name="p_street" optional="hide"/>
+                <field name="p_street2" optional="hide"/>
+                <field name="p_zip" optional="hide"/>
+                <field name="p_city" optional="hide"/>
+                <field name="p_country_id" optional="hide"/>
+                <field name="p_state_id" optional="hide"/>
+                <field name="phone" optional="hide"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="bank_id"/>
+                <field name="account_number"/>                
+                <field name="bank_account_id" optional="hide"/>
+                <field name="km_home_work" optional="hide"/>
+                <field name="marital" optional="hide"/>
+                <field name="marriage_date" optional="hide"/>
+                <field name="spouse_complete_name" optional="hide"/>
+                <field name="spouse_birthdate" optional="hide"/>
+                <field name="emergency_contact" optional="hide"/>
+                <field name="emergency_phone" optional="hide"/>
+                <field name="certificate" optional="hide"/>
+                <field name="study_field" optional="hide"/>
+                <field name="study_school" optional="hide"/>
+                <field name="passing_year" optional="hide"/>
+                <field name="result" optional="hide"/>                
+                <field name="country_id" optional="hide"/>
+                <field name="identification_id" optional="hide"/>
+                <field name="passport_id" optional="hide"/>
+                <field name="gender" optional="hide"/>
+                <field name="birthday" optional="hide"/>
+                <field name="place_of_birth" optional="hide"/>
+                <field name="country_of_birth" optional="hide"/>
+                <field name="blood_group" optional="hide"/>
+                <field name="religion" optional="hide"/>
+                <field name="tax_identification_number" optional="hide"/>
+                <field name="children" optional="hide"/>
+                <field name="visa_no" optional="hide"/>
+                <field name="permit_no" optional="hide"/>
+                <field name="visa_expire" optional="hide"/>
+                <field name="user_id" optional="hide"/>
+                <field name="registration_number" optional="hide"/>
+                <field name="pin" optional="hide"/>
+                <field name="barcode" optional="hide"/>
             
             </tree>
         </field>
