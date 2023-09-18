@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <templates id="template" xml:space="preserve">
+	<t t-name="oh_dashboards">
+		<div class="container-fluid o_pos_dashboard">
+		
+		</div>
+	</t>
+	<t t-name="DashboardOrders">
+		<div class="row main-section" style="margin-left: 14px;">
+			<div class="col-md-4 col-sm-6 pos_order_today oh-payslip">
+				<div class="oh-card" style="width: 288px;">
+					<div class="oh-card-body">
+						<div class="star-widget-one">
+							<div class="star-icon" style="background:#5bcbd0"><i class="fa fa-shopping-bag"/></div>
+							<div class="star-content">
+								<div class="stat-head">TODAY ORDERS</div>
+								<div class="stat_count"><p>0</p></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</t>
+</templates>
+ -->
+<templates id="template" xml:space="preserve">
+	<t t-name="Dashboard">
+		<div class="oh_dashboards">
+            <div class="container-fluid o_pos_dashboard">
+                <h1>hello world</h1>
+            </div>
+		</div>
+	</t>
+	
+</templates>

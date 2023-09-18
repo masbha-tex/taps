@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+	<record id="custom_dashboard_action" model="ir.actions.client">
+		<field name="name">Dashboard</field>
+        <field name="res_model">retention.matrix</field>
+		<field name="tag">custom_dashboard_tag</field>
+	</record>
+	
+	<menuitem 
+        name="Dashboard" 
+        id="custom_dashboard_menu" 
+        parent="taps_retention_matrix.main_retention_menu" 
+        action="custom_dashboard_action"/>
+	
+	<templates id="assets_dashboard" name="Dashboard assets" inherit_id="web.assets_backend">
+	<xpath expr="," position="inside">
+		<script type="text/javascript" src="/taps_retention_matrix/static/src/js/dash.js"/>
+	</xpath>
+	</templates>
+	
+</odoo>

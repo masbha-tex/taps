@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_mps_search_view" model="ir.ui.view" >
+        <field name="name">packing.report.search.view</field>
+        <field name="model">packing.report</field>
+        <field name="arch" type="xml">
+          <search>
+              <field name="date_from"/>
+          </search>
+        </field>
+    </record>
+
+    <record id="packing_production_report_form_view" model="ir.ui.view" >
+        <field name="name">packing.report.for.view</field>
+        <field name="model">packing.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <!-- <group>
+                        <label for="forecast_target_qty"/>
+                        <div class="o_row">
+                            <field name="forecast_target_qty"/>
+                            <field name="product_uom_id" groups="uom.group_uom" readonly="1"/>
+                        </div>
+                        <label for="min_to_replenish_qty"/>
+                        <div class="o_row">
+                            <field name="min_to_replenish_qty"/>
+                            <field name="product_uom_id" groups="uom.group_uom" readonly="1"/>
+                        </div>
+                        <label for="max_to_replenish_qty"/>
+                        <div class="o_row">
+                            <field name="max_to_replenish_qty"/>
+                            <field name="product_uom_id" groups="uom.group_uom" readonly="1"/>
+                        </div>
+                    </group> -->
+                    
+                </group>
+                <footer>
+                    <button special="save" type="object" string="Save" class="btn-primary"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_packing_production_report" model="ir.actions.client">
+        <field name="name">Packing Production Report</field>
+        <field name="res_model">packing.report</field>
+        <field name="tag">packing_mps_client_action</field>
+    </record>
+
+    <record id="action_packing_production_report_form_view" model="ir.actions.act_window">
+        <field name="name">Select Date</field>
+        <field name="res_model">packing.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="packing_production_report_form_view"/>
+    </record>
+
+    <menuitem
+        id="mrp_mps_report_menu"
+        name="Packing Production Report"
+        action="action_packing_production_report"
+        sequence="1"
+        parent="mrp.menu_mrp_reporting"/>
+</odoo>

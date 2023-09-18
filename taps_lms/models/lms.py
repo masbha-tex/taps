@@ -386,11 +386,11 @@ class Session(models.Model):
             # so add one day to get 5 days instead
             r.duration = (r.end_date - r.start_date).days + 1
 
-    @api.constrains('instructor_id', 'attendee_ids')
-    def _check_instructor_not_in_attendees(self):
-        for r in self:
-            if r.instructor_id and r.instructor_id in r.attendee_ids.address_home_id:
-                raise ValidationError("A session's Facilitator can't be an attendee or perticipents")
+    # @api.constrains('instructor_id', 'attendee_ids')
+    # def _check_instructor_not_in_attendees(self):
+    #     for r in self:
+    #         if r.instructor_id and r.instructor_id in r.attendee_ids.address_home_id:
+    #             raise ValidationError("A session's Facilitator can't be an attendee or perticipents")
                 
     @api.onchange('attendee_ids')
     def _onchange_partners(self):
@@ -476,54 +476,7 @@ class EventWizard(models.TransientModel):
     reminder = fields.Many2many('calendar.alarm',string='Reminders')
     location = fields.Char(string='Location')
     duration = fields.Float(string='Duration')
-    note = fields.Html(default="""<div>
-                        <p class="MsoNormal"><span style="font-size:12.0pt;font-family:&quot;Century Gothic&quot;,sans-serif">Dear
-                        All,</span><o:p></o:p></p><p class="MsoNormal"><span style="font-size:12.0pt;font-family:&quot;Century Gothic&quot;,sans-serif">&nbsp;</span><o:p></o:p></p><p class="MsoNormal"><span style="font-size:12.0pt;font-family:&quot;Century Gothic&quot;,sans-serif">Greetings
-                        from HR &amp; OD!</span><o:p></o:p></p><p class="MsoNormal"><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">&nbsp;</span><o:p></o:p></p><p class="MsoNormal"><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">As part of our continuous improvement on Health
-                        &amp; Safety Protocol, Safety Focus, and actions to guide on our day-to-day
-                        operations, we are going to organize daylong session for both manufacturing
-                        units <b><i>‘Health &amp; Safety Day (Awareness Session)- August 2023’</i></b>.
-                        This will be conducted on monthly scheduling, 1<sup>st</sup> week of every
-                        month. </span><o:p></o:p></p><p class="MsoNormal"><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">&nbsp;</span><o:p></o:p></p><p class="MsoNormal"><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">The Safety Day broadly cover on
-                        -&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        </span><o:p></o:p></p><ul style="margin-top:0in" type="disc">
-                         <li class="MsoListParagraph" style="margin-left:0in;mso-list:l2 level1 lfo1"><b><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">OHS
-                             Awareness</span></b><o:p></o:p></li>
-                         <li class="MsoListParagraph" style="margin-left:0in;mso-list:l2 level1 lfo1"><b><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">Fire
-                             Safety awareness &amp; mock drill, Emergency preparedness &amp; response
-                             plan</span></b><o:p></o:p></li>
-                         <li class="MsoListParagraph" style="margin-left:0in;mso-list:l2 level1 lfo1"><b><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">First
-                             Aid </span></b><o:p></o:p></li>
-                        </ul><ul style="margin-top:0in" type="disc">
-                         <li class="MsoListParagraph" style="color:black;margin-left:0in;mso-list:l0 level1 lfo2;
-                             tab-stops:list .5in"><b><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">Electrical
-                             Safety awareness</span></b><o:p></o:p></li>
-                         <li class="MsoListParagraph" style="color:black;margin-left:0in;mso-list:l0 level1 lfo2;
-                             tab-stops:list .5in"><b><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">Chemical
-                             Safety &amp; Wastage Management</span></b><o:p></o:p></li>
-                        </ul><p class="MsoListParagraph"><span style="font-size:12.0pt;font-family:&quot;Century Gothic&quot;,sans-serif">&nbsp;</span><o:p></o:p></p><p class="MsoNormal"><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">This can help to be responsive on the safety
-                        protocol for both manufacturing units and awareness on <b>Health &amp; Safety </b>guide.</span><o:p></o:p></p><p class="MsoNormal"><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">&nbsp;</span><o:p></o:p></p><p class="MsoNormal"><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">Please find below summary of this Campaign &amp;
-                        Schedule.</span><o:p></o:p></p><p class="MsoNormal"><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">&nbsp;</span><o:p></o:p></p><ol style="margin-top:0in" start="1" type="1">
-                         <li class="MsoListParagraph" style="margin-left:0in;mso-list:l1 level1 lfo3"><b><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">Zipper
-                             Manufacturing Unit</span></b><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">
-                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                             - 10:00 am to 12:30 pm</span><o:p></o:p></li>
-                         <li class="MsoListParagraph" style="margin-left:0in;mso-list:l1 level1 lfo3"><b><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">Metal
-                             Trims Manufacturing Unit</span></b><span style="font-size: 12pt; font-family: &quot;Century Gothic&quot;, sans-serif; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">
-                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; - 02:30 pm to
-                             05:00 pm</span><o:p></o:p></li>
-                        </ol><p class="MsoNormal">
-                        <br>Regards,</p><p></p><p></p><p class="MsoNormal"></p><p>&nbsp;</p><p></p><p class="MsoNormal"><span style="font-size:13.3333px;"><b>Mohammad Adnan</b><b><br></b></span><span class="text-black" style="font-family:Roboto, &quot;Odoo Unicode Support Noto&quot;, sans-serif;margin-bottom: 5px;">IT &amp; Software Development</span><font class="text-black" style="font-family:Roboto, &quot;Odoo Unicode Support Noto&quot;, sans-serif;">&nbsp;| Odoo ERP</font><span style="font-size:13.3333px;"><b><br></b></span></p><p class="MsoNormal"><span style="font-size:10.0pt;color:#1F497D;mso-ligatures:
-                        none"><!--[if !vml]--><img src="/web/image/29734-c2a26318/tex logo .jpg" style="height:.458in;width:.638in" border="0"><!--[endif]--></span><!--[if !vml]--><img width="43" height="22" src="/web/image/108454-1fc3a2ea/Flag.gif?access_token=dc2edceb-2cec-4507-81a3-4acb98408019"><!--[endif]--><span style="font-size:10.0pt;color:#1F497D"></span></p><p></p><p></p><p class="MsoNormal"><b><span style="font-size:10.0pt;color:black"><a href="http://www.texfasteners.com/">www.texfasteners.com</a></span></b><span style="font-size:10.0pt;color:black"></span></p><p></p><p></p><p class="MsoNormal"><span style="font-size:10.0pt;color:black">&nbsp;</span></p><p class="MsoNormal"><span style="font-size:10.0pt;color:black">Plot 180, 264
-                        &amp; 274, Adamjee EPZ, Adamjee Nagar,</span></p><p></p><p></p><p class="MsoNormal"><span style="font-size:10.0pt;color:black">Siddirgonj,
-                        Narayngonj - 1431, Bangladesh.</span></p><p></p><p></p><p class="MsoNormal"><span style="font-size:10.0pt;color:black">Office: +88 02
-                        997744454</span></p><p></p><p></p><p class="MsoNormal"><span style="font-size:10pt;color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">Cell: +88 01676 778656</span></p><p></p><p></p><p class="MsoNormal"><b><i><span lang="EN-GB" style="font-size:10.0pt;font-family:
-                        Wingdings;color:black;mso-ansi-language:EN-GB">*</span></i></b><b><i><span lang="EN-GB" style="font-size:10.0pt;color:black;mso-ansi-language:EN-GB">&nbsp;</span></i></b><b><span lang="EN-GB" style="font-size:10.0pt;color:black;mso-ansi-language:EN-GB"><a href="mailto:adnan.ahmed@texzipperbd.com">adnan.ahmed@texzipperbd.com</a></span></b><span lang="EN-GB" style="font-size:10.0pt;color:black;mso-ansi-language:EN-GB"> </span><span style="font-size:10.0pt;color:black"></span></p><p></p><p></p><p class="MsoNormal"><b><span style="font-size:10.0pt;color:black">&nbsp;</span></b></p><p>
-                        </p><p class="MsoNormal"><span lang="EN-IN" style="font-size:8.0pt;font-family:&quot;Courier New&quot;;
-                        color:black;mso-ansi-language:EN-IN"><a href="https://youtu.be/iVgAzSbYmDc"><b><span style="font-family:Arial, sans-serif;color: black;">Check Out Our Style Story for 2023-24</span></b></a></span></p><p></p><p></p>
-                  </div>""")
+    note = fields.Html()
     # Add more fields if needed for your wizard
 
     def create_event_send(self):
@@ -540,7 +493,7 @@ class EventWizard(models.TransientModel):
         optional_partner_id = [employee.address_home_id.id for employee in lms_session.optional_attendee_ids]
         facilitator_partner_id = [employee.id for employee in lms_session.instructor_id]
         user_partner_ids = self.env.user.partner_id.id 
-        combined_ids = partner_id + optional_partner_id + facilitator_partner_id + [user_partner_ids]
+        combined_ids = partner_id + facilitator_partner_id + [user_partner_ids]
         
         # raise UserError((facilitator_partner_id,partner_id,optional_partner_id,user_partner_ids))
         # lms_session.mapped('meeting_id').unlink()
@@ -555,7 +508,8 @@ class EventWizard(models.TransientModel):
             'location': self.location,
             'description': self.note, #and tools.html2plaintext(self.note),
             'user_id': user_id,
-            'partner_ids': [(6, 0, combined_ids)], 
+            'partner_ids': [(6, 0, combined_ids)],
+            'optional_attendee_ids': [(6, 0, optional_partner_id)],
         }
         meeting = self.env['calendar.event'].create(event_vals)
         lms_session.meeting_id = meeting.id

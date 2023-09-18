@@ -40,10 +40,14 @@
         'views/operation_details.xml',
         'views/mrp_workcenter.xml',
         'views/machine_list.xml',
+        'views/packing_report_view.xml',
         'data/ir_lot_sequence.xml',
         'report/report_action.xml',
         'report/mrp_lot_barcode.xml',
         # 'wizard/manufacturing_report_wizard.xml'
+    ],
+    'qweb': [
+        "static/src/xml/qweb_templates.xml",
     ],
     # only loaded in demonstration mode
     # 'demo': [

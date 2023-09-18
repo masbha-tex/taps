@@ -79,22 +79,22 @@ class ManufacturingPlan(models.TransientModel):
         production = self.env["manufacturing.order"].browse(active_id)
         #raise UserError((self.plan_for))
         if self.material == 'tape':
-            self.material_qty = sum(production.mapped('tape_con'))
+            self.material_qty = round(sum(production.mapped('tape_con')),2)
             self.shade = production[0].shade
         elif self.material == 'slider':
-            self.material_qty = sum(production.mapped('slider_con'))
+            self.material_qty = round(sum(production.mapped('slider_con')),2)
             self.finish = production[0].finish
         elif self.material == 'top':
-            self.material_qty = sum(production.mapped('topwire_con'))
+            self.material_qty = round(sum(production.mapped('topwire_con')),2)
             self.finish = production[0].finish
         elif self.material == 'bottom':
-            self.material_qty = sum(production.mapped('botomwire_con'))
+            self.material_qty = round(sum(production.mapped('botomwire_con')),2)
             self.finish = production[0].finish
         elif self.material == 'pinbox':
-            self.material_qty = sum(production.mapped('pinbox_con'))
+            self.material_qty = round(sum(production.mapped('pinbox_con')),2)
             self.finish = production[0].finish
         elif self.plan_for.name == 'Slider assembly':
-            self.material_qty = sum(production.mapped('slider_con'))
+            self.material_qty = round(sum(production.mapped('slider_con')),2)
             self.finish = production[0].finish            
          
     def done_mo_plan(self):
@@ -135,7 +135,7 @@ class MachineLine(models.TransientModel):
                 ext_qty = (l.plan_id.plan_qty + l_qty) - l.plan_id.material_qty
                 l_qty = l_qty-ext_qty
                 
-            l.material_qty = l_qty
+            l.material_qty = round(l_qty,2)
 
             #l.plan_id.material_qty
 

@@ -44,10 +44,12 @@
             <tree string="Retention" multi_edit="1" sample="1" js_class="taps_retention_matrix_tree_dashboard_upload">         
                 <field name="employee_id" required="1"/>
                 <field name="company_id"/>
-                <field name="grade"/>
-                <field name="coach_id"/>
+                <!-- <field name="grade"/> -->
                 <field name="joining_date"/>
                 <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="coach_id"/>
+                <field name="service"/>
                 <field name="year" widget="selection"/>
                 <field name="quarter"/>
                 <field name="impact"/>
@@ -192,10 +194,11 @@
                 <view type="graph" ref="taps_retention_matrix.view_retention_matrix_graph"/>
                 <group>
                     <group col="3">
-                        <!-- <aggregate name="employee_id" string="Total Employee" field="employee_id"/>
+                        <aggregate name="employee_id" string="Employee" field="employee_id"/>
+                        <!-- <aggregate name="employee_id" string="Total Employee" field="employee_id"/> -->
                         <aggregate name="quarter" string="Quarter" field="quarter" group_operator="count" measure="__count__"/> 
-                        <aggregate name="impact" string="Total Impact" field="impact" group_operator="count"/>
-                        <aggregate name="risk" string="Total Risk" field="risk" group_operator="count"/> -->
+                        <!-- <aggregate name="impact" string="Total Impact" field="impact" group_operator="count"/> -->
+                        <!-- <aggregate name="risk" string="Total Risk" field="risk" group_operator="count"/> -->
                     </group>
 
                     <group col="1">

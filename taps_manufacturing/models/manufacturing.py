@@ -451,7 +451,7 @@ class ManufacturingOrder(models.Model):
                                                              'next_operation':next_operation,
                                                              'machine_no':m.machine_no.id,
                                                              'capacity':m.machine_no.capacity,
-                                                             'qty':qty,
+                                                             'qty':round(qty,2),
                                                              'state':'waiting'
                                                              })
                     rest_q = rest_q - m.machine_no.capacity
@@ -535,7 +535,7 @@ class ManufacturingOrder(models.Model):
                                                              'operation_by':'Planning',
                                                              'based_on':material,
                                                              'next_operation':next_operation,
-                                                             'qty':qty,
+                                                             'qty':round(qty,2),
                                                              'state':'waiting'
                                                              })
 

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<odoo>
+
+
+    <record id="view_calendar_event_form" model="ir.ui.view">
+        <field name="name">calendar.event.form.inherit</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_ids']" position="after">
+                <div class="oe_title">
+                    <label for="optional_attendee_ids" string="Optional Attendees" class="oe_edit_only"/>
+                    <h2>
+                        <field name="optional_attendee_ids" widget="many2manyattendee"
+                            placeholder="Select optional attendees..."
+                            context="{'force_email':True}"
+                            class="oe_inline"/>
+                    </h2>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+
+
+</odoo>

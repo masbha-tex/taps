@@ -520,6 +520,7 @@ class OperationDetails(models.Model):
             if operation.mrp_line:
                 mrp_data = self.env["manufacturing.order"].browse(operation.mrp_line.id)
                 mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + qty})
+                
                 mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',operation.oa_id.id)])
                 mrp_all_oa = mrp_oa_data.update({'oa_total_balance':mrp_oa_data.oa_total_balance - qty})
                 pr_pac_qty = mrp_data.product_template_id.pack_qty

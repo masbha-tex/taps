@@ -215,6 +215,7 @@
               name="FG Delivery" 
               action="action_fg_delivery" 
               parent="mrp.menu_mrp_manufacturing"
-              sequence="8"/>    
+              sequence="8"/>
+    
     
 </odoo>

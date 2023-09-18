@@ -16,6 +16,8 @@ class Meeting(models.Model):
     _name = 'calendar.event'
     _inherit = ['calendar.event', 'microsoft.calendar.sync']
 
+    optional_attendee_ids = fields.Many2many('res.partner','lms_session_optional_attendee_rel','event_id', 'partner_id', string="Optional Participants")
+
     def _microsoft_values(self, fields_to_sync, initial_values={}):
         values = dict(initial_values)
         if not fields_to_sync:
@@ -63,12 +65,43 @@ class Meeting(models.Model):
             values['isOrganizer'] = self.user_id == self.env.user
 
         if 'attendee_ids' in fields_to_sync:
+            # attendees = self.attendee_ids.filtered(lambda att: att.partner_id not in self.user_id.partner_id)
+            # values['attendees'] = [
+            #     {
+            #         'emailAddress': {'address': attendee.email or '', 'name': attendee.display_name or ''},
+            #         'status': {'response': self._get_attendee_status_o2m(attendee)}
+            #     } for attendee in attendees]
             attendees = self.attendee_ids.filtered(lambda att: att.partner_id not in self.user_id.partner_id)
-            values['attendees'] = [
-                {
+            
+            # Initialize lists for "Required" and "Optional" attendees
+            required_attendees = []
+            for attendee in attendees:
+                role = "Required"
+                attendee_dict = {
                     'emailAddress': {'address': attendee.email or '', 'name': attendee.display_name or ''},
-                    'status': {'response': self._get_attendee_status_o2m(attendee)}
-                } for attendee in attendees]
+                    'status': {'response': self._get_attendee_status_o2m(attendee)},
+                    'type': role
+                }
+        
+                # Append the attendee to the appropriate list
+                if role == "Required":
+                    required_attendees.append(attendee_dict)
+                    
+
+            op_attendees = self.optional_attendee_ids.filtered(lambda att: att.email not in self.user_id.partner_id.mapped('email'))
+            optional_attendees = []
+            
+            for attendee in op_attendees:
+                role = "Optional"
+                attendee_dict = {
+                    'emailAddress': {'address': attendee.email or '', 'name': attendee.display_name or ''},
+                    'type': role
+                }
+                # Append the attendee to the appropriate list
+                if role == "Optional":
+                    optional_attendees.append(attendee_dict)                    
+            # Add both "Required" and "Optional" attendees to the values dictionary
+            values['attendees'] = required_attendees + optional_attendees
 
         if 'privacy' in fields_to_sync or 'show_as' in fields_to_sync:
             values['showAs'] = self.show_as
@@ -140,3 +173,4 @@ class Meeting(models.Model):
             }
 
         return values
+
