@@ -132,7 +132,7 @@ class OperationDetails(models.Model):
     
     def get_balance(self):
         for s in self:
-            s.balance_qty = s.qty - s.done_qty
+            s.balance_qty = round((s.qty - s.done_qty),2)
             s.fg_balance = s.pack_qty - s.fg_done_qty
     
     def _ids2str(self,field_name):
@@ -289,7 +289,8 @@ class OperationDetails(models.Model):
                 operation = self.env["operation.details"].browse(1)
                 m_order = self.env["manufacturing.order"].browse(ope_id)
 
-                 #numberoftop  
+                
+                #numberoftop  
                 for l in lot_line:
                     ope = operation.create({'mrp_lines':ope_id,
                                             'sale_lines':m_order.sale_order_line.id,
@@ -315,6 +316,7 @@ class OperationDetails(models.Model):
                                             'next_operation':'CM Output',
                                             'qty':l.material_qty
                                             })
+                    
             else:
                 operation = self.env["operation.details"].browse(ope_id)
                 for l in lot_line:
@@ -650,7 +652,7 @@ class OperationDetails(models.Model):
             fraction_pc_of_pack = 0
             done_qty = out.done_qty + out.uotput_qty
 
-            if out.balance_qty < done_qty:
+            if out.balance_qty < out.uotput_qty:
                 raise UserError(('You can not produce more then balance'))
             else:
                 s = out.write({'done_qty':done_qty})#done_qty = done_qty

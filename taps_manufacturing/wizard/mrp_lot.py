@@ -63,7 +63,11 @@ class ManufacturingLot(models.TransientModel):
         active_model = self.env.context.get("active_model")
         ope_id = self.env.context.get("active_id")
         operation = self.env['operation.details'].browse(1)
-        return operation.set_lot(active_model,ope_id,self.lot_line)
+        if self.material_qty < sum(self.lot_line.mapped('material_qty')):
+            raise UserError(('You can not create lot more order quantity'))
+            return self
+        else:
+            return operation.set_lot(active_model,ope_id,self.lot_line)
 
 
 class LotLine(models.TransientModel):
@@ -74,7 +78,7 @@ class LotLine(models.TransientModel):
 
     lot_id = fields.Many2one('mrp.lot', string='Lot ID', ondelete='cascade', index=True, copy=False)
     lot_code = fields.Char(string='Lot', store=True)
-    material_qty = fields.Float('Quantity', default=1.0, digits='Product Unit of Measure', required=True)
+    material_qty = fields.Float('Quantity', default=0.0, digits='Product Unit of Measure', required=True)
     
     
 #     @api.depends('product_qty')

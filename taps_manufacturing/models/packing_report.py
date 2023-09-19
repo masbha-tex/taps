@@ -25,8 +25,8 @@ class PackingReport(models.Model):
     _description = "Packing Production Report"
     _check_company_auto = True
 
-    date_from = fields.Date('Date from', required=True, default = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
-    date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))
+    date_from = fields.Date('Date from', required=True, default = (date.today().replace(day=1)).strftime('%Y-%m-%d'))
+    date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-%d'))
     
 
 

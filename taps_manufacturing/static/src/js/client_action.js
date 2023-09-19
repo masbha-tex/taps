@@ -91,6 +91,7 @@ var ClientAction = AbstractAction.extend({
     start: async function () {
         await this._super(...arguments);
         if (this.state.length == 0) {
+    
             this.$el.find('.o_mrp_mps').append($(QWeb.render('mrp_mps_nocontent_helper')));
         }
         await this.update_cp();
@@ -140,7 +141,7 @@ var ClientAction = AbstractAction.extend({
         this.$searchview_buttons = $(QWeb.render('mrp_mps_control_panel_option_buttons', {groups: self.groups}));
         this.$searchview_buttons.find('.o_mps_mps_show_line').on('click', self._onChangeCompany.bind(self));
         return this.updateControlPanel({
-            title: _t('Master Production Schedule'),
+            title: _t('Packing Production Report'),
             cp_content: {
                 $buttons: this.$buttons,
                 $searchview_buttons: this.$searchview_buttons,
@@ -524,7 +525,7 @@ var ClientAction = AbstractAction.extend({
     },
 
     _update_cp_buttons: function () {
-        var recodsLen = Object.keys(this.state).length;
+        var recodsLen = 1;
         var $addProductButton = this.$buttons.find('.o_mrp_mps_create');
         if (recodsLen) {
             $addProductButton.addClass('btn-secondary');
