@@ -27,6 +27,10 @@ class PackingReport(models.Model):
 
     date_from = fields.Date('Date from', required=True, default = (date.today().replace(day=1)).strftime('%Y-%m-%d'))
     date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-%d'))
+
+
+
+    
     
 
 

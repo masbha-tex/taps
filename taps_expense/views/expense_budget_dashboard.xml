@@ -33,19 +33,19 @@
                 <field name="budget_year" invisible="1"/>
                 <field name="ytd"/>
                 <field name="monthly_budget"/>
-                <field name="ytd_avg"/>
-                <field name="april"/>
-                <field name="may"/>
-                <field name="june"/>
-                <field name="july"/>
+                <field name="ytd_avg" />
+                <field name="april" decoration-success="current_date == 'Apr'" decoration-bf="current_date == 'Apr'"/>
+                <field name="may" decoration-success="current_date == 'May'" decoration-bf="current_date == 'May'"/>
+                <field name="june" decoration-success="current_date == 'Jun'" decoration-bf="current_date == 'Jun'"/>
+                <field name="july" decoration-success="current_date == 'Jul'" decoration-bf="current_date == 'Jul'"/>
                 <field name="august" decoration-success="current_date == 'Aug'" decoration-bf="current_date == 'Aug'"/>
                 <field name="september" decoration-success="current_date == 'Sep'" decoration-bf="current_date == 'Sep'"/>
-                <field name="october"/>
-                <field name="november"/>
-                <field name="december"/>
-                <field name="january"/>
-                <field name="february"/>
-                <field name="march"/>
+                <field name="october" decoration-success="current_date == 'Oct'" decoration-bf="current_date == 'Oct'"/>
+                <field name="november" decoration-success="current_date == 'Nov'" decoration-bf="current_date == 'Nov'"/>
+                <field name="december" decoration-success="current_date == 'Dec'" decoration-bf="current_date == 'Dec'"/>
+                <field name="january" decoration-success="current_date == 'Jan'" decoration-bf="current_date == 'Jan'"/>
+                <field name="february" decoration-success="current_date == 'Feb'" decoration-bf="current_date == 'Feb'"/>
+                <field name="march" decoration-success="current_date == 'Mar'" decoration-bf="current_date == 'Mar'"/>
                 
                 
                 <!-- <field name="product_tmpl_id"/> -->

@@ -47,18 +47,19 @@ class ExpenseBudgetDashboard(models.Model):
         fromdate = datetime.now().replace(month=4).replace(day=1).date()
         todate = datetime.now().replace(month=3).replace(day=31).date()
         fromyear = toyear = datetime.now().year
+        current_date = datetime.now().date()
         if datetime.now().month < 4:
             fromyear = datetime.now().year - 1
             fromdate = fromdate.replace(year=fromyear)
         else:
             toyear = datetime.now().year + 1
             todate = todate.replace(year=toyear)
-        
+        no_of_months = (current_date.year - fromdate.year) * 12 + (current_date.month - fromdate.month)+1
         
 
         query = """
         CREATE or REPLACE VIEW expense_budget_dashboard AS (
-        SELECT  id, current_date,default_code, name,x_studio_super_expense_category,budget_value,(budget_value/12) as monthly_budget, budget_year, ytd,(ytd/6) as ytd_avg, april,may,june,july,august,september,october,november,december,january,february,march
+        SELECT  id, current_date,default_code, name,x_studio_super_expense_category,budget_value,(budget_value/12) as monthly_budget, budget_year, ytd,(ytd/%s) as ytd_avg, april,may,june,july,august,september,october,november,december,january,february,march
  FROM (
      SELECT a.name,b.id,b.default_code,b.x_studio_super_expense_category,
      (select sum(planned_amount) from crossovered_budget_lines z where b.id=z.product_id and z.crossovered_budget_state='validate') as budget_value,
@@ -95,4 +96,4 @@ class ExpenseBudgetDashboard(models.Model):
      AND b.id in(select distinct product_id from crossovered_budget_lines)
      group by a.name,b.id) as budget)
         """
-        self.env.cr.execute(query,(fromyear,toyear,fromdate,todate,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,toyear,toyear,toyear))
+        self.env.cr.execute(query,(no_of_months,fromyear,toyear,fromdate,todate,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,fromyear,toyear,toyear,toyear))

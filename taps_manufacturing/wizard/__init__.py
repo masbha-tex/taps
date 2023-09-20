@@ -5,5 +5,6 @@ from . import bom_verification
 from . import mrp_plan
 from . import requisition
 from . import mrp_lot
+from . import mrp_sizewise_lot
 from . import mrp_output
 from . import mrp_qc_output

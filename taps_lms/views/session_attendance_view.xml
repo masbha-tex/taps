@@ -147,7 +147,18 @@
                     <field name="duration" type="measure"/>
                 </pivot>
             </field>
-        </record>          
+        </record>
+        <record id="lms_session_attendance_view_gantt" model="ir.ui.view">
+            <field name="name">lms.session.attendance.gantt</field>
+            <field name="model">lms.session.attendance</field>
+            <field name="arch" type="xml">
+                <gantt string="Training Hours Tracker" date_start="attendance_date" date_stop="attendance_date" color="duration" default_group_by="attendee_id" plan="0" sample="1">
+                    <!-- <field name="color" invisible="1"/> -->
+                    <field name="attendee_id"/>
+                    <field name="duration"/>
+                </gantt>
+            </field>
+        </record>        
 
         <!-- Action Window to Open Attendance Form -->
         <record model="ir.actions.act_window" id="action_mark_attendance">
@@ -162,7 +173,7 @@
         <record model="ir.actions.act_window" id="lms_dashboard_action">
             <field name="name">Dashboard</field>
             <field name="res_model">lms.session.attendance</field>
-            <field name="view_mode">dashboard,tree,pivot,graph</field>
+            <field name="view_mode">tree,gantt,dashboard,pivot,graph</field>
             <field name="search_view_id" ref="lms_session_attendance_search_view"/>
             <field name="context" eval="{'search_default_by_start_date': 1}"/>
             <field name="help" type="html">

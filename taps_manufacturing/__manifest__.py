@@ -29,6 +29,7 @@
         'wizard/bom_verification.xml',
         'wizard/mrp_plan.xml',
         'wizard/mrp_lot.xml',
+        'wizard/mrp_sizewise_lot.xml',
         'wizard/requisition.xml',
         'wizard/mrp_output.xml',
         'wizard/mrp_qc_output.xml',

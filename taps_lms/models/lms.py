@@ -453,7 +453,7 @@ class Session(models.Model):
 class SessionAttendance(models.Model):
     _name = 'lms.session.attendance'
     _description = "Training Session Attendance"
-    _rec_name = 'attendee_id'      
+    _rec_name = 'duration'      
 
     attendee_id = fields.Many2one('hr.employee', string="Employee", required=True)
     company_id = fields.Many2one(related='attendee_id.company_id', store=True)

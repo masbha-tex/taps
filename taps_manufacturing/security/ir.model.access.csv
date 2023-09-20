@@ -12,6 +12,8 @@ access_requisition_line,requisition_line,model_mrp_requisition_line,base.group_u
 access_operation_details,operation_details,model_operation_details,base.group_user,1,1,1,1
 access_mrp_lot,mrp_lot,model_mrp_lot,base.group_user,1,1,1,1
 access_lot_line,lot_line,model_lot_line,base.group_user,1,1,1,1
+access_mrp_sizewiselot,mrp_sizewiselot,model_mrp_sizewiselot,base.group_user,1,1,1,1
+access_sizewiselot_line,sizewiselot_line,model_sizewiselot_line,base.group_user,1,1,1,1
 access_mrp_output,mrp_output,model_mrp_output,base.group_user,1,1,1,1
 access_mrp_qc_output,mrp_qc_output,model_mrp_qc_output,base.group_user,1,1,1,1
 access_process_sequence,process_sequence,model_process_sequence,base.group_user,1,1,1,1

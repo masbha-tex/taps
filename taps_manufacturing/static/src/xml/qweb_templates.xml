@@ -3,11 +3,11 @@
 
     <t t-name="mrp_mps_copy">
         <div class="o_mrp_mps">
-            <t t-set="manufacturingPeriods" t-value="widget.manufacturingPeriods"/>
+            <!-- <t t-set="manufacturingPeriods" t-value="widget.manufacturingPeriods"/> -->
             <t t-set="month" t-value="25"/>
-            <t t-set="state" t-value="widget.state"/>
-            <t t-set="groups" t-value="widget.groups"/>
-            <t t-set="formatFloat" t-value="widget.formatFloat"/>
+            <!-- <t t-set="state" t-value="widget.state"/> -->
+            <!-- <t t-set="groups" t-value="widget.groups"/> -->
+            <!-- <t t-set="formatFloat" t-value="widget.formatFloat"/> -->
             <div class="text-nowrap mr0 ml0">
                 <table class="table o_mps_product_table">
                     <thead class="thead-light">
@@ -71,10 +71,10 @@
                     <tbody class="thead-light">
                         <tr>
                             <th class="text-right pr-4" scope="col" style="border: 1px solid black">
-                                <div>Sep-1</div>
+                                <div><t t-esc="context[0]"/></div>
                             </th>
                             <th class="text-right pr-4" scope="col" style="border: 1px solid black">
-                                <div></div>
+                                <div id="qweb_target"></div>
                             </th>
                             <th class="text-right pr-4" scope="col" style="border: 1px solid black">
                                 <div></div>
@@ -355,7 +355,7 @@
                             
                         </tr>
                     </tbody>
-                    <t t-call="mrp_mps_production_schedule"/>
+                    <!-- <t t-call="mrp_mps_production_schedule"/> -->
                 </table>
             </div>
         </div>

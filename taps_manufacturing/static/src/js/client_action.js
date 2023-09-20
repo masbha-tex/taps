@@ -10,12 +10,76 @@ var AbstractAction = require('web.AbstractAction');
 var Dialog = require('web.Dialog');
 var field_utils = require('web.field_utils');
 var session = require('web.session');
+var FormController = require('web.FormController');
 
 var QWeb = core.qweb;
 var _t = core._t;
 
 const defaultPagerSize = 20;
 
+var ExtendFormController = FormController.include({
+        saveRecord: function () {
+            // console.log('saveRecord')
+            var res = this._super.apply(this, arguments);
+
+            function parseURLParams(url) {
+                var queryStart = url.indexOf("?") + 1,
+                    queryEnd = url.indexOf("#") + 1 || url.length + 1,
+                    query = url.slice(queryStart, queryEnd - 1),
+                    pairs = query.replace(/\+/g, " ").split("&"),
+                    parms = {}, i, n, v, nv;
+
+                if (query === url || query === "") return;
+
+                for (i = 0; i < pairs.length; i++) {
+                    nv = pairs[i].split("=", 2);
+                    n = decodeURIComponent(nv[0]);
+                    v = decodeURIComponent(nv[1]);
+
+                    if (!parms.hasOwnProperty(n)) parms[n] = [];
+                    parms[n].push(nv.length === 2 ? v : null);
+                }
+                return parms;
+            }
+
+
+            if (this.modelName == 'packing.report') {
+                // this.do_notify('Success', 'Record Saved');
+                self = this;
+                var url = window.location.href;
+                var page_url = url.replace('#', '?');
+                var params = parseURLParams(page_url);
+                console.log(params)
+                self._rpc({
+                    model: 'packing.report',
+                    method: 'search_read',
+                    fields: ['date_from'],
+                    context: self.context,
+                }).then(function (result) {
+                    // alert(result)
+                    // var template = 'mrp_mps_copy';
+                //     var rendered = QWeb.render(template, {
+                //     date_from: result[0]['date_from']
+                // });
+                    // $('#qweb_target').html(result[0]['date_from']);
+                    var context = {
+                    date_from: result[0]['date_from']
+                    };
+                    self.trigger_up('change', {
+                    type: 'context',
+                    context: context
+                    });
+                
+                    self.do_notify('Warning', result[0]['date_from']);
+                    
+                });
+            }
+
+            return res;
+
+        }
+    });
+    
 var ClientAction = AbstractAction.extend({
     contentTemplate: 'mrp_mps_copy',
     hasControlPanel: true,

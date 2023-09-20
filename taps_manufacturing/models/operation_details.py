@@ -48,7 +48,6 @@ class OperationDetails(models.Model):
 
     product_id = fields.Many2one('product.product', check_company=True, string='Product Id')  # Unrequired company
     product_template_id = fields.Many2one('product.template', string='Product', related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)], store=True)
-
     
     fg_categ_type = fields.Selection(string='Item', related='product_template_id.fg_categ_type', store=True)
     
@@ -185,32 +184,35 @@ class OperationDetails(models.Model):
     def button_createmrplot(self):
         # self.ensure_one()
         self._check_company()
-
-        in_len = len(self)
-        i = 0
-        all_mrp_lines = ''
-        # raise UserError((in_len))
-        for op in self:
-            if i == in_len-1:
-                all_mrp_lines = all_mrp_lines + op.mrp_lines
-            else:
-                all_mrp_lines = all_mrp_lines + op.mrp_lines + ','
-            i += 1
-            
-        all_mrp_lines_st = str(all_mrp_lines)
-        mrp_ids = [int(id_str) for id_str in all_mrp_lines_st.split(',')]
-        
-        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_manufacturing_process_order")
-        # raise UserError((self.oa_id.ids))
-        # action['search_default_oa_id'] = self.oa_id
-
-        # action = self.env["ir.actions.actions"]._for_xml_id("stock.view_manufacturing_process_tree")
-        action['views'] = [
-            (self.env.ref('taps_manufacturing.view_manufacturing_process_tree').id, 'tree'),
-        ]
-        # action['context'] = self.env.context
-        action['domain'] = [('id', 'in', mrp_ids),('oa_id', 'in', self.oa_id.ids)]
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_sizewiselot")
+        #action["domain"] = [('default_id','=',self.mapped('id'))]
         return action
+
+        # in_len = len(self)
+        # i = 0
+        # all_mrp_lines = ''
+        # # raise UserError((in_len))
+        # for op in self:
+        #     if i == in_len-1:
+        #         all_mrp_lines = all_mrp_lines + op.mrp_lines
+        #     else:
+        #         all_mrp_lines = all_mrp_lines + op.mrp_lines + ','
+        #     i += 1
+            
+        # all_mrp_lines_st = str(all_mrp_lines)
+        # mrp_ids = [int(id_str) for id_str in all_mrp_lines_st.split(',')]
+        
+        # action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_manufacturing_process_order")
+        # # raise UserError((self.oa_id.ids))
+        # # action['search_default_oa_id'] = self.oa_id
+
+        # # action = self.env["ir.actions.actions"]._for_xml_id("stock.view_manufacturing_process_tree")
+        # action['views'] = [
+        #     (self.env.ref('taps_manufacturing.view_manufacturing_process_tree').id, 'tree'),
+        # ]
+        # # action['context'] = self.env.context
+        # action['domain'] = [('id', 'in', mrp_ids),('oa_id', 'in', self.oa_id.ids)]
+        # return action
     
     def set_requisition(self,company_id,active_model,ope_id,work_center,product_line):
         operation = self.env["operation.details"].search([])
@@ -288,8 +290,6 @@ class OperationDetails(models.Model):
             if active_model == 'manufacturing.order':
                 operation = self.env["operation.details"].browse(1)
                 m_order = self.env["manufacturing.order"].browse(ope_id)
-
-                
                 #numberoftop  
                 for l in lot_line:
                     ope = operation.create({'mrp_lines':ope_id,
@@ -345,6 +345,41 @@ class OperationDetails(models.Model):
                                             'next_operation':next,
                                             'qty':l.material_qty
                                             })
+
+    def set_sizewiselot(self,active_model,ope_id,lot_line):
+        operation = self.env["operation.details"].browse(ope_id)
+        operation.update({'state':'done'})
+        for l in lot_line:
+            if l.quantity_string:
+                # l = self.env["manufacturing.order"].browse(l.mrp_line)
+                quantity_strings = l.quantity_string.split('+')
+                for l_q in quantity_strings:
+                    # raise UserError((l.id))
+                    ope = operation.create({'mrp_lines':l.mrp_line.id,
+                                            'sale_lines':l.mrp_line.sale_order_line.id,
+                                            'mrp_line':l.mrp_line.id,
+                                            'sale_order_line':l.mrp_line.sale_order_line.id,
+                                            'oa_id':l.mrp_line.oa_id.id,
+                                            'buyer_name':l.mrp_line.buyer_name,
+                                            'product_id':l.mrp_line.product_id.id,
+                                            'product_template_id':l.mrp_line.product_template_id.id,
+                                            'action_date':datetime.now(),
+                                            'shade':l.mrp_line.shade,
+                                            'finish':l.mrp_line.finish,
+                                            'slidercodesfg':l.mrp_line.slidercodesfg,
+                                            'top':l.mrp_line.ptopfinish,
+                                            'bottom':l.mrp_line.pbotomfinish,
+                                            'pinbox':l.mrp_line.ppinboxfinish,
+                                            'sizein':l.mrp_line.sizein,
+                                            'sizecm':l.mrp_line.sizecm,
+                                            'operation_of':'lot',
+                                            'work_center':operation[0].work_center.id,
+                                            'operation_by':operation[0].work_center.name,
+                                            'based_on':operation[0].based_on,
+                                            'next_operation':'CM Output',
+                                            'qty':l_q
+                                            })
+                    
     def action_view_lots(self):
         """ This function returns an action that display existing picking orders of given purchase order ids. When only one found, show the picking immediately.
         """

@@ -116,8 +116,8 @@
 				<field name="oa_total_qty" invisible="1"/>
 				<field name="oa_total_balance" invisible="1"/>
                 <field name="state"/>
-                <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
-                    attrs="{'invisible': [('dyeing_plan', '=', False)]}"/>
+                <!-- <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
+                    attrs="{'invisible': [('dyeing_plan', '=', False)]}"/> -->
                  <!-- attrs="{'invisible': [('operation_of', '!=', 'plan')]}" -->
                 <field name="num_of_lots"/>
                 <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>

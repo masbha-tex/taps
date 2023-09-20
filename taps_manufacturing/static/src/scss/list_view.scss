@@ -67,7 +67,8 @@ $table-hover-bg: #f1f1f1;
 .max_width_field {
     width: 300px;
 }
-.custom_column [data-name="remarks"]{
+.custom_column [data-name="remarks"],
+.custom_column [data-name="quantity_string"]{
 width: 300px !important;
 max-width: 300px !important;
 }

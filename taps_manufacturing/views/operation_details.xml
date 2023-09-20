@@ -62,13 +62,13 @@
                 <field name="shade"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
-                <field name="work_center"/>
-                <field name="operation_of" readonly="1"/>
-                <field name="operation_by" readonly="1"/>
-                <field name="based_on" readonly="1"/>
+                <field name="work_center" invisible="1"/>
+                <field name="operation_of" readonly="1" invisible="1"/>
+                <field name="operation_by" readonly="1" invisible="1"/>
+                <field name="based_on" readonly="1" invisible="1"/>
                 <field name="machine_no" readonly="1"/>
                 <field name="capacity" readonly="1"/>
-                <field name="next_operation" readonly="1" force_save="1"/>
+                <field name="next_operation" readonly="1" force_save="1" invisible="1"/>
                 <field name="mr_req" readonly="1"/>
                 <field name="qty" readonly="1"/>
                 <field name="done_qty" readonly="1" force_save="1"/>
@@ -120,7 +120,7 @@
                 <field name="shade"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
-                <field name="work_center"/>
+                <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1"/>
                 <field name="pack_qty" readonly="1" force_save="1"/>
@@ -161,7 +161,7 @@
                 <field name="shade"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
-                <field name="work_center"/>
+                <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1"/>
                 <field name="pack_qty" readonly="1"/>
