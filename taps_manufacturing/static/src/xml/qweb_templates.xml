@@ -71,7 +71,7 @@
                     <tbody class="thead-light">
                         <tr>
                             <th class="text-right pr-4" scope="col" style="border: 1px solid black">
-                                <div><t t-esc="context[0]"/></div>
+                                <div></div>
                             </th>
                             <th class="text-right pr-4" scope="col" style="border: 1px solid black">
                                 <div id="qweb_target"></div>

@@ -127,7 +127,6 @@ class ProductTemplateAttributeLine(models.Model):
         - Clean up related values and related variants when archiving or when
             updating `value_ids`.
         """
-        
         if 'product_tmpl_id' in values:
             for ptal in self:
                 if ptal.product_tmpl_id.id != values['product_tmpl_id']:

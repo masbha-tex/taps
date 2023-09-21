@@ -49,11 +49,11 @@ var ExtendFormController = FormController.include({
                 var url = window.location.href;
                 var page_url = url.replace('#', '?');
                 var params = parseURLParams(page_url);
-                console.log(params)
+                // console.log(params)
                 self._rpc({
                     model: 'packing.report',
                     method: 'search_read',
-                    fields: ['date_from'],
+                    fields: ['date_from','date_to'],
                     context: self.context,
                 }).then(function (result) {
                     // alert(result)
@@ -62,15 +62,17 @@ var ExtendFormController = FormController.include({
                 //     date_from: result[0]['date_from']
                 // });
                     // $('#qweb_target').html(result[0]['date_from']);
-                    var context = {
-                    date_from: result[0]['date_from']
-                    };
-                    self.trigger_up('change', {
-                    type: 'context',
-                    context: context
-                    });
-                
-                    self.do_notify('Warning', result[0]['date_from']);
+                    // var context = {
+                    // date_from: result[0]['date_from']
+                    // };
+                    // self.trigger_up('change', {
+                    // type: 'context',
+                    // context: context
+                    // });
+                    // var renderedTemplate = QWeb.render('mrp_mps_copy', context);
+                    // $('#qweb_target').html(renderedTemplate);
+                    console.log(result[0]['date_from'])
+                    self.do_notify('Success', result[1]['date_to']);
                     
                 });
             }

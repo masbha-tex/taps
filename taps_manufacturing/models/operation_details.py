@@ -782,9 +782,3 @@ class OperationDetails(models.Model):
 
 
 
-
-
-
-
-
-
