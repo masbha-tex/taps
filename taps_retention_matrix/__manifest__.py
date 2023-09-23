@@ -19,15 +19,11 @@
     'data': [
         'security/res_groups.xml',
         'security/ir.model.access.csv',
-        
         'data/ir_sequence.xml',
         'views/assets.xml',
-        # 'views/templates.xml',
         'views/retention_matrix.xml',
         'views/dashboard_action.xml',
-        # 'views/reporting.xml',
         'wizard/retention_wizard.xml',
-
         'reports/paperformat.xml',        
         'reports/report_action_menu.xml',
         'reports/retention_matrix_report.xml',
