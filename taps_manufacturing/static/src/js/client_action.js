@@ -17,6 +17,7 @@ var _t = core._t;
 
 const defaultPagerSize = 20;
 
+
 var ExtendFormController = FormController.include({
         saveRecord: function () {
             // console.log('saveRecord')
@@ -56,25 +57,12 @@ var ExtendFormController = FormController.include({
                     fields: ['date_from','date_to'],
                     context: self.context,
                 }).then(function (result) {
-                    // alert(result)
-                    // var template = 'mrp_mps_copy';
-                //     var rendered = QWeb.render(template, {
-                //     date_from: result[0]['date_from']
-                // });
-                    // $('#qweb_target').html(result[0]['date_from']);
-                    // var context = {
-                    // date_from: result[0]['date_from']
-                    // };
-                    // self.trigger_up('change', {
-                    // type: 'context',
-                    // context: context
-                    // });
-                    // var renderedTemplate = QWeb.render('mrp_mps_copy', context);
-                    // $('#qweb_target').html(renderedTemplate);
-                    console.log(result[0]['date_from'])
-                    self.do_notify('Success', result[1]['date_to']);
+              
+                    self.do_notify('Success', result[0]['date_from']);
                     
                 });
+                
+                
             }
 
             return res;

@@ -43,6 +43,7 @@
         'data/send_oa_to_respective_persons.xml',
         'data/daily_oa_release_email.xml',
         'data/oa_release.xml',
+        'data/oa_release_body.xml',
         #'views/fg_product.xml',
         # 'views/assets.xml',
         'views/variant_templates.xml',

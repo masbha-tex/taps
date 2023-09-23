@@ -1,4 +1,5 @@
 from odoo import fields, models
+from odoo.exceptions import UserError, ValidationError
 
 
 class Product(models.Model):
@@ -78,7 +79,7 @@ class Product(models.Model):
             self = self.sudo()
             to_unlink = self._filter_to_unlink()
             to_archive = self - to_unlink
-            raise UserError(('b'))
+            # raise UserError(('b'))
             to_archive.write({'active': False})
             self = to_unlink
 

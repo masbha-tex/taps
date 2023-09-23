@@ -205,6 +205,14 @@ class SaleOrder(models.Model):
             ]
         
         email_cc = ','.join(email_cc_list)
+        report = self.env.ref('taps_sale.action_report_daily_oa_release', False)
+        pdf_content, content_type = report.sudo()._render_qweb_pdf()
+        # raise UserError((pdf_content))
+        attachment = self.env['ir.attachment'].sudo().create({
+                    'name': 'Daily OA Release',
+                    'type': 'binary',
+                    'datas': base64.encodebytes(pdf_content),
+                })
         mail_values = {
             'email_from': 'csd.zipper@texzipperbd.com',
             'author_id': self.env.user.partner_id.id,
@@ -215,10 +223,11 @@ class SaleOrder(models.Model):
             'auto_delete': True,
             'email_to': self.env.user.email_formatted,
             'email_cc': email_cc,
+            'attachment_ids': attachment,
         }
         # raise UserError((mail_values['email_cc']))
         try:
-            template = self.env.ref('taps_sale.view_email_template_corporate_identity', raise_if_not_found=True)
+            template = self.env.ref('taps_sale.view_oa_release_body', raise_if_not_found=True)
             
         except ValueError:
             _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')

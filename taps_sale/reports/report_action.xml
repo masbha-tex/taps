@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
 	<data noupdate="0">
+        <record id="action_report_daily_oa_release" model="ir.actions.report">
+			<field name="name">Daily Release Oa</field>
+			<field name="model">sale.order</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">taps_sale.view_email_template_corporate_identity</field>
+			<field name="report_file">taps_sale.view_email_template_corporate_identity</field>
+			<field name="binding_model_id" ref="model_sale_order"/>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="taps_sale.paperformat_sale_report_landscape"/>
+			<field name="default_print_option">print</field>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+			
+        </record>
+            
 		<record id="action_report_sa_invoice" model="ir.actions.report">
 			<field name="name">SA-Zipper</field>
 			<field name="model">sale.order</field>

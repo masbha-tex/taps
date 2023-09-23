@@ -17,8 +17,8 @@
             <form>
                 <group>
                     <group>
-                        <field name="date_from"/>
-                        <field name="date_to"/>
+                        <field name="date_from" id="date_from"/>
+                        <field name="date_to" id="date_to"/>
                     </group>
                     <!-- <group>
                         <label for="forecast_target_qty"/>
@@ -40,7 +40,7 @@
                     
                 </group>
                 <footer>
-                    <button special="save" type="object" string="Save" class="btn-primary"/>
+                    <button special="save" type="object" string="Save" class="btn-primary" id="test-button"/>
                     <button string="Cancel" class="btn btn-secondary" special="cancel" />
                 </footer>
             </form>

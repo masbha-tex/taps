@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_mrp_sizewiselot" model="ir.ui.view">
+        <field name="name">mrp.sizewiselot.form.view</field>
+        <field name="model">mrp.sizewiselot</field>
+        <field name="arch" type="xml">
+            <form string="Manufacturing Lot">
+                <group>
+                    <group>
+                        <field name="oa_id"/>
+                        <field name="item"/>
+                        <field name="shade"/>
+                        <field name="work_center"/>
+                        <field name="material_qty"/>
+                    </group>
+                </group>
+                <group>
+                    <notebook>
+                        <page name="lot_line" string="Lot List">
+                            <field name="lot_line" required="True">
+                                <tree string="Machinewise Plan" editable="bottom" class="custom_column">
+                                    <field name="lot_id" invisible="1"/>
+                                    <field name="mrp_line" invisible="1" readonly="1" force_save="1"/>
+                                    <field name="sizein" readonly="1" force_save="1"/>
+                                    <field name="sizecm" readonly="1" force_save="1"/>
+                                    <field name="gap" readonly="1" force_save="1"/>
+                                    <field name="tape_con" optional="show" sum="Tape C." decoration-bf="True"/>
+                                    <field name="balance_qty" optional="show" sum="Qty" decoration-bf="True"/>
+                                    <field name="quantity_string"/>
+                                    <field name="size_total"  readonly="1" force_save="1" optional="show" sum="Total" decoration-bf="True"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </group>
+                
+                <footer>
+                    <button name="done_mo_lot" string="Done" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_sizewiselot_line_tree" model="ir.ui.view">
+        <field name="name">sizewiselot.line.tree</field>
+        <field name="model">sizewiselot.line</field>
+        <field name="arch" type="xml">
+            <tree string="Lot List" create="false">
+                <field name="lot_id" invisible="1"/>
+                <field name="mrp_line"/>
+                <field name="sizein"/>
+                <field name="sizecm"/>
+                <field name="gap"/>
+                <field name="tape_con"/>
+                <field name="balance_qty"/>
+                <field name="quantity_string"/>
+                <field name="size_total"/>
+            </tree>
+        </field>
+    </record> 
+
+    
+    <record id="action_mrp_sizewiselot" model="ir.actions.act_window">
+        <field name="name">Sizewise Lot</field>
+        <field name="res_model">mrp.sizewiselot</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_form_mrp_sizewiselot"/>
+        <field name="target">new</field>
+    </record>
+</odoo>
