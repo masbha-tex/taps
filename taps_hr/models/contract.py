@@ -47,6 +47,7 @@ class HrContract(models.Model):
     isActivePF = fields.Boolean(string="PF Active", store=True, tracking=True, 
                                 help="Employee's monthly PF Contribution is Active.")
     pf_activationDate = fields.Date('PF Active Date', store=True, tracking=True, help="Activation Date of the PF Contribution.")
+    tax_identification_number = fields.Char(related = 'employee_id.tax_identification_number', related_sudo=False, string='TIN', store=True, help="What would be the Tax identification number of this employee?")    
 
     def create_att_atjoin(self, empid, joindate, leavdate, state):
         if state == 'open':

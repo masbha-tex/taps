@@ -7,11 +7,11 @@
 		<field name="tag">custom_dashboard_tag</field>
 	</record>
 	
-	<menuitem 
+	<!-- <menuitem 
         name="Dashboard" 
         id="custom_dashboard_menu" 
         parent="taps_retention_matrix.main_retention_menu" 
-        action="custom_dashboard_action"/>
+        action="custom_dashboard_action"/> -->
 	
 	<!-- <templates id="assets_dashboard" name="Dashboard assets" inherit_id="web.assets_backend">
 	<xpath expr="," position="inside">

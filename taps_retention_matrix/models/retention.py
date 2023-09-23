@@ -10,36 +10,40 @@ class RetentionMatrix(models.Model):
     _name = 'retention.matrix'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _description = 'Retention Matrix'
+    _order = 'emp_id'
+    _record = 'employee_id'
 
-    name = fields.Char(string="Code", store=True,readonly=True, index=True, default='New')
-    employee_id = fields.Many2one('hr.employee', string='Employee', store=True)
-    image_128 = fields.Image(related='employee_id.image_128')
-    image_1920 = fields.Image(related='employee_id.image_1920')
+    name = fields.Char(string="Code", store=True,readonly=True, index=True, default='RM')
+    active = fields.Boolean('Active', default=True)
+    employee_id = fields.Many2one('hr.employee', string='Employee', store=True, tracking=True)
+    emp_id = fields.Char(related = 'employee_id.emp_id', related_sudo=False, string="Emp ID", readonly=True, store=True)
+    image_128 = fields.Image(related='employee_id.image_128', related_sudo=False)
+    image_1920 = fields.Image(related='employee_id.image_1920', related_sudo=False)
     company_id = fields.Many2one(related='employee_id.company_id', store=True, required=False)
     resign_date = fields.Date(related = 'employee_id.contract_id.date_end', related_sudo=False, string='Resign Date', store=True, tracking=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
     service = fields.Char(related='employee_id.service_length', store=True, string="Service Length")
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
-    # job = fields.Char(related = 'employee_id.job_id', string='Job Position', store=True)
     coach_id = fields.Many2one(related = 'employee_id.parent_id', related_sudo=False, string='Manager', store=True, tracking=True)
     joining_date = fields.Date(related = 'employee_id.contract_id.date_start', related_sudo=False, string='Joining Date', store=True, tracking=True)
     color = fields.Integer()
-    job_id = fields.Many2one('hr.job', 'Position', store=True, readonly=True, compute='_compute_job_id')
-    grade = fields.Many2one('hr.payroll.structure.type', 'Grade', store=True, readonly=True, compute='_compute_job_id')
+    job_id = fields.Many2one(related = 'employee_id.job_id', related_sudo=False, string="Position", store=True, readonly=True)
+    employee_group = fields.Many2one('hr.employee.group', store=True, related = 'employee_id.employee_group', string="Group", related_sudo=False, help="What would be the group of this employee?")
+    category = fields.Selection(store=True, tracking=False, related = 'employee_id.contract_id.category', string="Category", related_sudo=False, help='Category of the Employee')        
     risk = fields.Selection(selection=[
         ('1', 'Low-Risk'),
         ('2', 'Medium-Risk'),
-        ('3', 'High-Risk')], string="Risk", default='1',  help="How likely is it that this employee will leave?" )
+        ('3', 'High-Risk')], string="Risk",  help="How likely is it that this employee will leave?" , tracking=True)
     impact = fields.Selection(selection=[
         ('1', 'Low-Impact'),
         ('2', 'Medium-Impact'),
-        ('3', 'High-Impact')], string="Impact", default='1', help="What would be the impact of this employee leaving?" ) 
-    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(),  store=True, required=True)
+        ('3', 'High-Impact')], string="Impact", help="What would be the impact of this employee leaving?" , tracking=True) 
+    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(),  store=True, required=True, tracking=True)
     quarter = fields.Selection(selection=[
         ('q1', 'Q1'),
         ('q2', 'Q2'),
         ('q3', 'Q3'),
-        ('q4', 'Q4'),], string="Quarter", default='q1')
+        ('q4', 'Q4'),], string="Quarter", tracking=True)
     date_from = fields.Date('Date From', required=True, index=True,default=fields.Date.context_today)
     date_to = fields.Date('Date To', required=True, index=True, default=fields.Date.context_today)
 

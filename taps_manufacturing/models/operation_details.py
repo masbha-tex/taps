@@ -120,6 +120,8 @@ class OperationDetails(models.Model):
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     machine_no = fields.Many2one('machine.list', string='Machine No', required=False)
     capacity = fields.Integer(related='machine_no.capacity', string='Capacity', store=True)
+    mrp_delivery = fields.Many2one('stock.picking', 'Delivery Order', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    total_weight = fields.Float(string='Total Weight', default=0.0, readonly=False)
     state = fields.Selection([
         ('waiting', 'Waiting'),
         ('partial', 'Partial'),
@@ -161,7 +163,7 @@ class OperationDetails(models.Model):
     
     def button_delivery(self):
         self._check_company()
-        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_requisition")
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_delivery")
         action["domain"] = [('default_id','in',self.mapped('id'))]
         a = 'a'
         return action
@@ -379,6 +381,40 @@ class OperationDetails(models.Model):
                                             'next_operation':'CM Output',
                                             'qty':l_q
                                             })
+
+    def set_delivery_order(self,active_model,ope_id,delivery,delivery_line):
+        operation = self.env["operation.details"].browse(ope_id)
+        operation.update({'state':'done','mrp_delivery':'done','total_weight':delivery.total_weight})
+
+        for l in delivery_line:
+            if l.quantity_string:
+                quantity_strings = l.quantity_string.split('+')
+                for l_q in quantity_strings:
+                    ope = operation.create({'mrp_lines':l.mrp_line.id,
+                                            'sale_lines':l.mrp_line.sale_order_line.id,
+                                            'mrp_line':l.mrp_line.id,
+                                            'sale_order_line':l.mrp_line.sale_order_line.id,
+                                            'oa_id':l.mrp_line.oa_id.id,
+                                            'buyer_name':l.mrp_line.buyer_name,
+                                            'product_id':l.mrp_line.product_id.id,
+                                            'product_template_id':l.mrp_line.product_template_id.id,
+                                            'action_date':datetime.now(),
+                                            'shade':l.mrp_line.shade,
+                                            'finish':l.mrp_line.finish,
+                                            'slidercodesfg':l.mrp_line.slidercodesfg,
+                                            'top':l.mrp_line.ptopfinish,
+                                            'bottom':l.mrp_line.pbotomfinish,
+                                            'pinbox':l.mrp_line.ppinboxfinish,
+                                            'sizein':l.mrp_line.sizein,
+                                            'sizecm':l.mrp_line.sizecm,
+                                            'operation_of':'lot',
+                                            'work_center':operation[0].work_center.id,
+                                            'operation_by':operation[0].work_center.name,
+                                            'based_on':operation[0].based_on,
+                                            'next_operation':'CM Output',
+                                            'qty':l_q
+                                            })
+                    
                     
     def action_view_lots(self):
         """ This function returns an action that display existing picking orders of given purchase order ids. When only one found, show the picking immediately.

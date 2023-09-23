@@ -17,6 +17,7 @@
               </xpath>
               <xpath expr="//field[@name='service_length']" position="after">
                   <field name="category"/>
+                  <field name="tax_identification_number"/>
               </xpath>
               <xpath expr="//field[@name='date_start']" position="attributes">
                   <attribute name="string">Joining Date</attribute>

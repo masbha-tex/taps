@@ -34,68 +34,43 @@ class Product(models.Model):
             product.total_unit_value = sum(quant.mapped('total_unit_value'))
             product.unit_value = sum(quant.mapped('unit_value'))
 
-    def unlink(self):
-        unlink_products = self.env['product.product']
-        unlink_templates = self.env['product.template']
-        for product in self:
-            # If there is an image set on the variant and no image set on the
-            # template, move the image to the template.
-            if product.image_variant_1920 and not product.product_tmpl_id.image_1920:
-                product.product_tmpl_id.image_1920 = product.image_variant_1920
-            # Check if product still exists, in case it has been unlinked by unlinking its template
-            if not product.exists():
-                continue
-            # Check if the product is last product of this template...
-            other_products = self.search([('product_tmpl_id', '=', product.product_tmpl_id.id), ('id', '!=', product.id)])
-            # ... and do not delete product template if it's configured to be created "on demand"
-            if not other_products and not product.product_tmpl_id.has_dynamic_attributes():
-                unlink_templates |= product.product_tmpl_id
-            unlink_products |= product
-        raise UserError(('c'))
-        res = super(ProductProduct, unlink_products).unlink()
-        # delete templates after calling super, as deleting template could lead to deleting
-        # products due to ondelete='cascade'
-        unlink_templates.unlink()
-        # `_get_variant_id_for_combination` depends on existing variants
-        self.clear_caches()
-        return res
+    def _unlink_or_archive(self, check_access=True):
+        """Unlink or archive products.
+        Try in batch as much as possible because it is much faster.
+        Use dichotomy when an exception occurs.
+        """
 
-    # def _unlink_or_archive(self, check_access=True):
-    #     """Unlink or archive products.
-    #     Try in batch as much as possible because it is much faster.
-    #     Use dichotomy when an exception occurs.
-    #     """
+        # Avoid access errors in case the products is shared amongst companies
+        # but the underlying objects are not. If unlink fails because of an
+        # AccessError (e.g. while recomputing fields), the 'write' call will
+        # fail as well for the same reason since the field has been set to
+        # recompute.
+        if check_access:
+            self.check_access_rights('unlink')
+            self.check_access_rule('unlink')
+            self.check_access_rights('write')
+            self.check_access_rule('write')
+            self = self.sudo()
+            to_unlink = self._filter_to_unlink()
+            to_archive = self - to_unlink
+            # raise UserError(('b'))
+            to_archive.write({'active': False})
+            self = to_unlink
 
-    #     # Avoid access errors in case the products is shared amongst companies
-    #     # but the underlying objects are not. If unlink fails because of an
-    #     # AccessError (e.g. while recomputing fields), the 'write' call will
-    #     # fail as well for the same reason since the field has been set to
-    #     # recompute.
-    #     if check_access:
-    #         self.check_access_rights('unlink')
-    #         self.check_access_rule('unlink')
-    #         self.check_access_rights('write')
-    #         self.check_access_rule('write')
-    #         self = self.sudo()
-    #         to_unlink = self._filter_to_unlink()
-    #         to_archive = self - to_unlink
-    #         # raise UserError(('b'))
-    #         to_archive.write({'active': False})
-    #         self = to_unlink
-
-    #     try:
-    #         with self.env.cr.savepoint(), tools.mute_logger('odoo.sql_db'):
-    #             self.unlink()
-    #     except Exception:
-    #         # We catch all kind of exceptions to be sure that the operation
-    #         # doesn't fail.
-    #         if len(self) > 1:
-    #             self[:len(self) // 2]._unlink_or_archive(check_access=False)
-    #             self[len(self) // 2:]._unlink_or_archive(check_access=False)
-    #         else:
-    #             if self.active:
-    #                 # Note: this can still fail if something is preventing
-    #                 # from archiving.
-    #                 # This is the case from existing stock reordering rules.
-    #                 # raise UserError(('a'))
-    #                 self.write({'active': False})
+        try:
+            with self.env.cr.savepoint(), tools.mute_logger('odoo.sql_db'):
+                self.unlink()
+        except Exception:
+            # We catch all kind of exceptions to be sure that the operation
+            # doesn't fail.
+            if len(self) > 1:
+                self[:len(self) // 2]._unlink_or_archive(check_access=False)
+                self[len(self) // 2:]._unlink_or_archive(check_access=False)
+            else:
+                if self.active:
+                    # Note: this can still fail if something is preventing
+                    # from archiving.
+                    # This is the case from existing stock reordering rules.
+                    self.write({'active': False})
+                    self.write({'active': True})
+                    

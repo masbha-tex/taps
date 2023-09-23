@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 
 class MrpDelivery(models.TransientModel):
     _name = 'mrp.delivery'
-    _description = 'Mrp Lot'
+    _description = 'Delivery Order'
     _check_company_auto = True
 
     oa_id = fields.Text(string='OA', readonly=True)
@@ -25,7 +25,8 @@ class MrpDelivery(models.TransientModel):
     
     total_qty_pcs = fields.Float('Qty in Pcs', digits='Product Unit of Measure', readonly=True)
     total_qty_pack = fields.Float('Qty in Pack', digits='Product Unit of Measure', readonly=True)
-    total_weight = fields.Float('Total Weight', digits='Product Unit of Measure', readonly=True)
+    total_weight = fields.Float('Total Weight', digits='Product Unit of Measure')
+    deliveri_date = fields.Datetime(string='Delivery Date', required=True, default=datetime.now())
     
     delivery_line = fields.One2many('mrp.delivery.line', 'delivery_id',  string='Delivery List',copy=True, auto_join=True)
 
@@ -35,80 +36,60 @@ class MrpDelivery(models.TransientModel):
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_ids")
         operation = self.env[""+active_model+""].browse(active_id)
-        orderline = self.env['manufacturing.order'].search([('oa_id', '=', operation[0].oa_id.id),('shade','=',operation[0].shade),('dyeing_plan','!=',None)])#.sorted(key = 'id')
+        
         orderline_values = []
 
-        for lines in orderline:
+        for lines in operation:
             orderline_values.append((0, 0, {
-                'mrp_line': lines.id,
+                'shade': lines.shade,
+                'finish': lines.finish,
+                'slider': lines.slidercodesfg,
                 'sizein': lines.sizein,
                 'sizecm': lines.sizecm,
-                'gap': lines.gap,
-                'tape_con': lines.tape_con,
-                'balance_qty': lines.balance_qty,
+                'qty_pcs': lines.qty,
+                'qty_pack': lines.pack_qty,
                 }))
             
         res.update({'oa_id': operation[0].oa_id.name,
                     'item': operation[0].fg_categ_type,
-                    'shade': operation[0].shade,
-                    'work_center': operation[0].work_center.id,
-                    'material_qty': sum(operation.mapped('qty')),
-                    'lot_line': orderline_values,#[(5, 0)] + [(0, 0, value) for value in orderline_values]
+                    'total_qty_pcs': sum(operation.mapped('qty')),
+                    'total_qty_pack': sum(operation.mapped('pack_qty')),
+                    'delivery_line': orderline_values,
                     })
-        return res 
+        return res
             
-    def done_mo_lot(self):
-        # raise UserError((self.lot_line[0].mrp_line))
+    def done_mr_delivery(self):
         active_model = self.env.context.get("active_model")
         ope_id = self.env.context.get("active_ids")
-        return self.env['operation.details'].set_sizewiselot(active_model,ope_id,self.lot_line)
-            
+        return self.env['operation.details'].set_delivery_order(active_model,ope_id,self,self.delivery_line)
 
 
-class SizewiseLotLine(models.TransientModel):
+class MrpDeliveryLine(models.TransientModel):
     _name = 'mrp.delivery.line'
     _description = 'Delivery Details'
     _check_company_auto = True
 
     delivery_id = fields.Many2one('mrp.delivery', string='Delivery ID', ondelete='cascade', index=True, copy=False)
-    shade = fields.Char(string='Size (Inch)', readonly=True)
-    finish = fields.Char(string='Size (Inch)', readonly=True)
-    slider = fields.Char(string='Size (Inch)', readonly=True)
-    sizein = fields.Char(string='Size (Inch)', readonly=True)
+    shade = fields.Char(string='Shade', readonly=True)
+    finish = fields.Char(string='Finish', readonly=True)
+    slider = fields.Char(string='Slider', readonly=True)
+    sizein = fields.Char(string='Size (Inc)', readonly=True)
     sizecm = fields.Char(string='Size (CM)', readonly=True)
 
     qty_pcs = fields.Float('Qty in Pcs', digits='Product Unit of Measure', readonly=True)
     qty_pack = fields.Float('Qty in Pack', digits='Product Unit of Measure', readonly=True)
     
-    gap = fields.Char(string='Gap', readonly=True)
-    tape_con = fields.Float('Tape C.', readonly=True, digits='Product Unit of Measure')
-    balance_qty = fields.Float(string='Qty', readonly=True)
-    quantity_string = fields.Char(string="Quantities", readonly=False)
-    size_total = fields.Float(string='Total', default = 0.0, readonly=False)
-    
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
-        
-        # Set default values for fields in SizewiseLotLine
         res.update({
+            'shade': '',
+            'finish': '',
+            'slider': '',
             'sizein': '',
             'sizecm': '',
-            'gap': '',
-            'tape_con': 0.0,  # Default Tape C. Value
-            'balance_qty': 0.0,  # Default Qty Value
-            'quantity_string': '',
+            'qty_pcs': 0.0,
+            'qty_pack': 0.0,
         })
 
         return res
-        
-    @api.onchange('quantity_string')
-    def _get_qty_bylots(self):
-        for l in self:
-            quantity_strings = l.quantity_string.split('+')
-            quantities = [int(qty) for qty in quantity_strings]
-            qty = sum(quantities)
-            if l.balance_qty < qty:
-                raise UserError(('You can not excede balance qty'))
-            else:
-                l.size_total = qty

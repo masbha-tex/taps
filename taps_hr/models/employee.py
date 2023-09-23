@@ -52,7 +52,7 @@ class HrEmployeePrivate(models.Model):
     'hr.employee.category', 'employee_category_rel',
     'emp_id', 'category_id', groups="hr.group_hr_user",
     string='Tags')
-    
+    category = fields.Selection(store=True, related = 'contract_id.category', string="Category", related_sudo=False, help='Category of the Employee')      
     risk = fields.Selection(selection=[
         ('1', 'Low-Risk'),
         ('2', 'Medium-Risk'),
@@ -768,6 +768,7 @@ class HrEmployeePublic(models.Model):
     contribution_sum = fields.Char(readonly=True)
     pin = fields.Char(readonly=True)
     barcode = fields.Char(readonly=True)
+    category = fields.Char(readonly=True)
     risk = fields.Char(readonly=True)
     impact = fields.Char(readonly=True)
     employee_group = fields.Many2one('hr.employee.group', readonly=True)

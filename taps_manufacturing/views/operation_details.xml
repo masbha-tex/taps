@@ -80,6 +80,8 @@
                 <field name="fg_balance" readonly="1"/>
                 <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}"/>
                 <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}"/>
+                <field name="mrp_delivery" readonly="1" force_save="1"/>
+                <field name="total_weight" readonly="1" force_save="1"/>
                 <field name="state" readonly="1" force_save="1"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>
@@ -167,6 +169,8 @@
                 <field name="pack_qty" readonly="1"/>
                 <field name="fr_pcs_pack" readonly="1" />
                 <field name="fg_done_qty" readonly="1"/>
+                <field name="mrp_delivery" readonly="1" force_save="1"/>
+                <field name="total_weight" readonly="1" force_save="1"/>
                 <field name="state" readonly="1" force_save="1"/>
             </tree>
         </field>
