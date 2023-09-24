@@ -386,6 +386,8 @@ class OperationDetails(models.Model):
         operation = self.env["operation.details"].browse(ope_id)
         operation.update({'state':'done','mrp_delivery':'done','total_weight':delivery.total_weight})
 
+        picking = self.env["stock.picking"].search([('origin','=',out.oa_id.name),('state','not in',('draft','done','cancel'))])
+        
         for l in delivery_line:
             if l.quantity_string:
                 quantity_strings = l.quantity_string.split('+')
@@ -466,10 +468,15 @@ class OperationDetails(models.Model):
             else:
                 fg_done = self.fg_done_qty +  vals.get('fg_output')
                 vals['fg_done_qty'] = fg_done
+                ret_qty = 0
+                qty = 0
                 if self.pack_qty == fg_done:
                     vals['state'] = 'done'
+                    ret_qty = self.fr_pcs_pack
+                    qty = ((vals.get('fg_output') * self.capacity) - self.capacity) + ret_qty
                 else:
                     vals['state'] = 'partial'
+                    qty = vals.get('fg_output') * self.capacity
                 name = None
                 if 'cartoon_no' in vals:
                     # cartoon = vals.get('cartoon_no')
@@ -504,9 +511,9 @@ class OperationDetails(models.Model):
                                                             'operation_by':self.work_center.name,
                                                             'based_on':'Packing',
                                                             'next_operation':'Delivery',
-                                                            'qty':vals.get('fg_output'),
-                                                            'pack_qty':self.pack_qty,
-                                                            'fr_pcs_pack':self.fr_pcs_pack
+                                                            'qty':qty,
+                                                            'pack_qty':vals.get('fg_output'),
+                                                            'fr_pcs_pack':ret_qty
                                                             })
                 vals['fg_output'] = 0
                 if name:
@@ -723,6 +730,7 @@ class OperationDetails(models.Model):
         for out in self:
             pack_qty = 0
             fraction_pc_of_pack = 0
+            pr_pac_qty = 0
             done_qty = out.done_qty + out.uotput_qty
 
             if out.balance_qty < out.uotput_qty:
@@ -861,7 +869,8 @@ class OperationDetails(models.Model):
                                                             'next_operation':next,
                                                             'qty':out.uotput_qty,
                                                             'pack_qty':pack_qty,
-                                                            'fr_pcs_pack':fraction_pc_of_pack
+                                                            'fr_pcs_pack':fraction_pc_of_pack,
+                                                            'capacity':pr_pac_qty
                                                             })
                 out.uotput_qty = 0
 
