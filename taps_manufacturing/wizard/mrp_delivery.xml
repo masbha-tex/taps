@@ -21,6 +21,7 @@
                             <field name="delivery_line" required="True">
                                 <tree string="Details" editable="bottom">
                                     <field name="delivery_id" invisible="1"/>
+                                    <field name="cartoon" string="Cartoon No"/>
                                     <field name="shade" readonly="1" force_save="1"/>
                                     <field name="finish" readonly="1" force_save="1"/>
                                     <field name="slider" readonly="1" force_save="1"/>
@@ -49,6 +50,7 @@
         <field name="arch" type="xml">
             <tree string="Lot List" create="false">
                 <field name="delivery_id" invisible="1"/>
+                <field name="cartoon" string="Cartoon No"/>
                 <field name="shade"/>
                 <field name="finish"/>
                 <field name="slider"/>

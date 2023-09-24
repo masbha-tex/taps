@@ -201,8 +201,14 @@ class SaleOrder(models.Model):
         email_cc_list = [
             'asraful.haque@texzipperbd.com',
             'shahid.hossain@texzipperbd.com',
-            'csd.zipper@texzipperbd.com'
+            'csd.zipper@texzipperbd.com',
             ]
+        # if self.env.company.name == 'Zipper':
+        #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
+        # if self.env.company.name == 'Metal Trims':
+        #     email_cc_list.append('kumar.abhishek@texzipperbd.com')
+        # raise UserError((self.env.company,email_cc_list))
+        
         
         email_cc = ','.join(email_cc_list)
         report = self.env.ref('taps_sale.action_report_daily_oa_release', False)

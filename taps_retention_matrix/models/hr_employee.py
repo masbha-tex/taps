@@ -13,17 +13,18 @@ class HrEmployeePrivate(models.Model):
     @api.model
     def create(self, vals):
         employee = super(HrEmployeePrivate, self).create(vals)
-        if employee.id:
-            retention = self.env['retention.matrix'].create({'employee_id': employee.id})
+        if not employee.company_id.id == 4:
+            retention = self.env['retention.matrix'].sudo().create({'employee_id': employee.id})
         return employee
 
     def write(self, vals):
         res = super(HrEmployeePrivate, self).write(vals)
-        for reten in self:
-            retention = self.env['retention.matrix'].search([('employee_id', '=', reten.id), ('active', 'in', (False,True))])
-            if retention:
-                if vals.get('active') is True:
-                    retention.update({'active': True})
-                if vals.get('active') is False:
-                    retention.update({'active': False})
+        if not self.company_id.id == 4:
+            for reten in self:
+                retention = self.env['retention.matrix'].sudo().search([('employee_id', '=', reten.id), ('active', 'in', (False,True))])
+                if retention:
+                    if vals.get('active') is True:
+                        retention.sudo().write({'active': True})
+                    if vals.get('active') is False:
+                        retention.sudo().write({'active': False})
         return res

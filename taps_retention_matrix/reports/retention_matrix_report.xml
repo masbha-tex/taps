@@ -25,17 +25,16 @@
                         
                         <br/>
                         <div class="container">
-            							<!--<div class="row">-->
-            							<div style="font-size: 12px;">
-            							  
-            								<!--<strong>Report Type:</strong>-->
-
-            								  <strong><span t-esc="category" style="color:#cc7000; font-size: 16px"/></strong> - <strong><span t-esc="qname" style="text-transform: uppercase;color:#cc7000; font-size: 16px"/></strong>
-
-            							</div>
-            							<!--</div>-->
-            				</div>
-                			<br/>
+                            <div style="font-size: 12px;">
+                                <t t-set="month_dict" t-value="{1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June', 7: 'July', 8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'}"/>
+                                <strong>
+                                    <span t-esc="category" style="color:#cc7000; font-size: 16px"/><br/>
+                                    Month: <span t-esc="month_dict.get(months)"/><br/>
+                                    Category: <span t-esc="type"/>
+                                </strong>
+                            </div>
+            			</div>
+                		<br/>
 											 
 											 
 						<div class="container" align="center">

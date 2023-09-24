@@ -9,6 +9,7 @@
                 <field name="leader"/>
                 <field name="team"/>
                 <field name="region"/>
+                <field name="related_employee" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
             </tree>
         </field>
     </record>
@@ -36,6 +37,9 @@
                         </group>
                         <group>
                         <field name="email" widget="email"/>
+                        </group>
+                        <group>
+                        <field name="related_employee" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
                         </group>
                     </group>
                 </sheet>

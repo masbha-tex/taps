@@ -122,6 +122,7 @@ class OperationDetails(models.Model):
     capacity = fields.Integer(related='machine_no.capacity', string='Capacity', store=True)
     mrp_delivery = fields.Many2one('stock.picking', 'Delivery Order', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     total_weight = fields.Float(string='Total Weight', default=0.0, readonly=False)
+    move_line = fields.Many2one('stock.move.line', 'Move Line Id', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     state = fields.Selection([
         ('waiting', 'Waiting'),
         ('partial', 'Partial'),
@@ -384,38 +385,21 @@ class OperationDetails(models.Model):
 
     def set_delivery_order(self,active_model,ope_id,delivery,delivery_line):
         operation = self.env["operation.details"].browse(ope_id)
-        operation.update({'state':'done','mrp_delivery':'done','total_weight':delivery.total_weight})
 
-        picking = self.env["stock.picking"].search([('origin','=',out.oa_id.name),('state','not in',('draft','done','cancel'))])
+        picking = self.env["stock.picking"].search([('origin','=',operation[0].oa_id.name),
+                                                    ('state','not in',('draft','done','cancel'))])
         
-        for l in delivery_line:
-            if l.quantity_string:
-                quantity_strings = l.quantity_string.split('+')
-                for l_q in quantity_strings:
-                    ope = operation.create({'mrp_lines':l.mrp_line.id,
-                                            'sale_lines':l.mrp_line.sale_order_line.id,
-                                            'mrp_line':l.mrp_line.id,
-                                            'sale_order_line':l.mrp_line.sale_order_line.id,
-                                            'oa_id':l.mrp_line.oa_id.id,
-                                            'buyer_name':l.mrp_line.buyer_name,
-                                            'product_id':l.mrp_line.product_id.id,
-                                            'product_template_id':l.mrp_line.product_template_id.id,
-                                            'action_date':datetime.now(),
-                                            'shade':l.mrp_line.shade,
-                                            'finish':l.mrp_line.finish,
-                                            'slidercodesfg':l.mrp_line.slidercodesfg,
-                                            'top':l.mrp_line.ptopfinish,
-                                            'bottom':l.mrp_line.pbotomfinish,
-                                            'pinbox':l.mrp_line.ppinboxfinish,
-                                            'sizein':l.mrp_line.sizein,
-                                            'sizecm':l.mrp_line.sizecm,
-                                            'operation_of':'lot',
-                                            'work_center':operation[0].work_center.id,
-                                            'operation_by':operation[0].work_center.name,
-                                            'based_on':operation[0].based_on,
-                                            'next_operation':'CM Output',
-                                            'qty':l_q
-                                            })
+        picking.update({'scheduled_date':delivery.deliveri_date})
+        
+        
+        
+        for l in operation:
+            stock_move_line = self.env["stock.move.line"].search([('product_id','=',l.product_id.id),('reference','=',picking.name),('lot_id','=',l.move_line.lot_id.id)])
+            stock_move_line.update({'qty_done':l.qty})
+
+        operation.update({'state':'done','mrp_delivery':picking.id,'total_weight':delivery.total_weight})
+
+        picking.button_validate()
                     
                     
     def action_view_lots(self):
@@ -470,13 +454,14 @@ class OperationDetails(models.Model):
                 vals['fg_done_qty'] = fg_done
                 ret_qty = 0
                 qty = 0
+                capacity = self.product_template_id.pack_qty
                 if self.pack_qty == fg_done:
                     vals['state'] = 'done'
                     ret_qty = self.fr_pcs_pack
-                    qty = ((vals.get('fg_output') * self.capacity) - self.capacity) + ret_qty
+                    qty = ((vals.get('fg_output') * capacity) - capacity) + ret_qty
                 else:
                     vals['state'] = 'partial'
-                    qty = vals.get('fg_output') * self.capacity
+                    qty = vals.get('fg_output') * capacity
                 name = None
                 if 'cartoon_no' in vals:
                     # cartoon = vals.get('cartoon_no')
@@ -487,6 +472,7 @@ class OperationDetails(models.Model):
                         name = out.name
                 #     out.update({'qty': out.qty + vals.get('fg_output')})
                 # else:
+                # raise UserError((qty,vals.get('fg_output')))
                 ope = self.env['operation.details'].create({'name':name,
                                                             'mrp_lines':self.mrp_lines,
                                                             'sale_lines':self.sale_lines,
@@ -758,6 +744,7 @@ class OperationDetails(models.Model):
                             ope = operation_p.write({'done_qty':dqt})
                         parent_id = parent_id.parent_id
         
+                move_line = None
                 if out.next_operation == 'Assembly Output':
                     mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
                     pr_pac_qty = mrp_data.product_template_id.pack_qty
@@ -816,6 +803,7 @@ class OperationDetails(models.Model):
                                                                          'state':'done',# 'reference':,
                                                                          'qty_onhand':out.uotput_qty
                                                                          })
+                    move_line = stockmove_line.id
 
                     picking = self.env["stock.picking"].search([('origin','=',out.oa_id.name),('state','not in',('draft','done','cancel'))])
                     picking.action_assign()
@@ -843,6 +831,7 @@ class OperationDetails(models.Model):
                     operation_of = 'input'
                 # operation = self.env["operation.details"].browse(self.id)
                 # raise UserError((out.code,out.mrp_lines,out.mrp_line.id,out.sale_lines,out.sale_order_line.id))
+                    
                 ope = self.env['operation.details'].create({'name':out.name,
                                                             'mrp_lines':out.mrp_lines,
                                                             'sale_lines':out.sale_lines,
@@ -870,7 +859,8 @@ class OperationDetails(models.Model):
                                                             'qty':out.uotput_qty,
                                                             'pack_qty':pack_qty,
                                                             'fr_pcs_pack':fraction_pc_of_pack,
-                                                            'capacity':pr_pac_qty
+                                                            'capacity':pr_pac_qty,
+                                                            'move_line':move_line
                                                             })
                 out.uotput_qty = 0
 

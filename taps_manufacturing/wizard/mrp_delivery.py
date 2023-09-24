@@ -41,6 +41,7 @@ class MrpDelivery(models.TransientModel):
 
         for lines in operation:
             orderline_values.append((0, 0, {
+                'cartoon': lines.name,
                 'shade': lines.shade,
                 'finish': lines.finish,
                 'slider': lines.slidercodesfg,
@@ -70,6 +71,7 @@ class MrpDeliveryLine(models.TransientModel):
     _check_company_auto = True
 
     delivery_id = fields.Many2one('mrp.delivery', string='Delivery ID', ondelete='cascade', index=True, copy=False)
+    cartoon = fields.Char(string='Cartoon', readonly=True)
     shade = fields.Char(string='Shade', readonly=True)
     finish = fields.Char(string='Finish', readonly=True)
     slider = fields.Char(string='Slider', readonly=True)
@@ -83,6 +85,7 @@ class MrpDeliveryLine(models.TransientModel):
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
         res.update({
+            'cartoon': '',
             'shade': '',
             'finish': '',
             'slider': '',

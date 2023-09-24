@@ -67,7 +67,7 @@
                 <field name="operation_by" readonly="1" invisible="1"/>
                 <field name="based_on" readonly="1" invisible="1"/>
                 <field name="machine_no" readonly="1"/>
-                <field name="capacity" readonly="1"/>
+                <field name="capacity" readonly="1" force_save="1"/>
                 <field name="next_operation" readonly="1" force_save="1" invisible="1"/>
                 <field name="mr_req" readonly="1"/>
                 <field name="qty" readonly="1"/>
@@ -82,6 +82,7 @@
                 <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}"/>
                 <field name="mrp_delivery" readonly="1" force_save="1"/>
                 <field name="total_weight" readonly="1" force_save="1"/>
+                <field name="move_line" readonly="1" invisible="1" force_save="1"/>
                 <field name="state" readonly="1" force_save="1"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>

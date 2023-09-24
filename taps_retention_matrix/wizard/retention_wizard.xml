@@ -9,12 +9,10 @@
                 <group>
                     <group>
                         <field name="report_type" string="Report Type"/>
-                        <!-- <field name="date_from"/>
-                        <field name="date_to"/>                          -->
-                        <field name="year"/> 
+                        <field name="year"/>
+                        <field name="month"/>
                     </group>
                     <group>
-                        <field name="quarter"/>
                         <field name="mode_type" string="Mode"/>
                         <field name="employee_id" attrs="{
                         'required': [('mode_type', '=', 'employee')],
@@ -32,11 +30,11 @@
                         'required': [('mode_type', '=', 'department')],
                         'invisible': [('mode_type', '!=','department')]
                         }" options="{'no_create': True, 'no_open': True}"/> 
-                        <field name="employee_type" attrs="{
-                        'required': [('mode_type', '=', 'emptype')],
-                        'invisible': [('mode_type', '!=','emptype')]
-                        }" options="{'no_create': True, 'no_open': True}"/>
-                        <!-- <field name="bank_id"/>                          -->
+                        <field name="employee_group" attrs="{
+                        'required': [('mode_type', '=', 'empgroup')],
+                        'invisible': [('mode_type', '!=','empgroup')]
+                        }" options="{'no_create': True, 'no_open': True}"/> 
+                        <field name="employee_type" options="{'no_create': True, 'no_open': True}"/>                        
                     </group>
                 </group>
                 <footer>

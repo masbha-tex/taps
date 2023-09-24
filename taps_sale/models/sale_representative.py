@@ -33,6 +33,8 @@ class SalesRepresentative(models.Model):
     team = fields.Many2one('sale.team', string="Team")
     region = fields.Many2one('team.region', string="Region")
     email = fields.Char(string='Email', help='Email address')
+    related_employee = fields.Many2one('hr.employee', string="Related Employee")
+    
     
     
     
