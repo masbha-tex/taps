@@ -49,6 +49,7 @@
         <field name="model">retention.matrix</field>
         <field name="priority" eval="1"/>
         <field name="arch" type="xml">
+            <!-- <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute> -->
             <!-- <tree string="Retention" multi_edit="1" sample="1" js_class="taps_retention_matrix_tree_dashboard_upload"> -->
             <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0"> 
                 <field name="employee_id" required="1" options="{'no_open': True}"/>
@@ -144,6 +145,7 @@
                         <widget name="pie_chart" title="month" attrs="{'groupby': 'month'}"/>
                         <widget name="pie_chart" title="Risk" attrs="{'groupby': 'risk'}"/>
                         <widget name="pie_chart" title="Impact" attrs="{'groupby': 'impact'}"/>
+                        <!-- <widget name="pie_chart" title="Department" attrs="{'groupby': 'department_id'}"/> -->
                     </group>
 
                 </group>

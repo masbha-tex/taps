@@ -358,6 +358,10 @@ class OperationDetails(models.Model):
                 quantity_strings = l.quantity_string.split('+')
                 for l_q in quantity_strings:
                     # raise UserError((l.id))
+                    next = 'Assembly Output'
+                    if 'Metal' in l.item:
+                        next = 'CM Output'
+                    
                     ope = operation.create({'mrp_lines':l.mrp_line.id,
                                             'sale_lines':l.mrp_line.sale_order_line.id,
                                             'mrp_line':l.mrp_line.id,
@@ -379,7 +383,7 @@ class OperationDetails(models.Model):
                                             'work_center':operation[0].work_center.id,
                                             'operation_by':operation[0].work_center.name,
                                             'based_on':operation[0].based_on,
-                                            'next_operation':'CM Output',
+                                            'next_operation':next,
                                             'qty':l_q
                                             })
 
@@ -388,18 +392,14 @@ class OperationDetails(models.Model):
 
         picking = self.env["stock.picking"].search([('origin','=',operation[0].oa_id.name),
                                                     ('state','not in',('draft','done','cancel'))])
-        
         picking.update({'scheduled_date':delivery.deliveri_date})
-        
-        
         
         for l in operation:
             stock_move_line = self.env["stock.move.line"].search([('product_id','=',l.product_id.id),('reference','=',picking.name),('lot_id','=',l.move_line.lot_id.id)])
             stock_move_line.update({'qty_done':l.qty})
 
         operation.update({'state':'done','mrp_delivery':picking.id,'total_weight':delivery.total_weight})
-
-        picking.button_validate()
+        picking.sudo().button_validate()
                     
                     
     def action_view_lots(self):
@@ -499,7 +499,8 @@ class OperationDetails(models.Model):
                                                             'next_operation':'Delivery',
                                                             'qty':qty,
                                                             'pack_qty':vals.get('fg_output'),
-                                                            'fr_pcs_pack':ret_qty
+                                                            'fr_pcs_pack':ret_qty,
+                                                            'move_line':self.move_line.id
                                                             })
                 vals['fg_output'] = 0
                 if name:

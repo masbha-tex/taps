@@ -153,11 +153,20 @@ class SaleOrder(models.Model):
                     'res_id': record.id
                 })
         email_cc_list = [
+            'alamgir@texzipperbd.com',
+            'nitish.bassi@texzipperbd.com',
+            'mirtunjoy.chatterjee@texzipperbd.com',
             'asraful.haque@texzipperbd.com',
-            'shahid.hossain@texzipperbd.com',
             'csd.zipper@texzipperbd.com',
             record.sale_representative.leader.email
             ]
+        if self.env.company.name == 'Zipper':
+            email_cc_list.append('ranjeet.singh@texzipperbd.com')
+        if self.env.company.name == 'Metal Trims':
+            email_cc_list.append('kumar.abhishek@texzipperbd.com')
+        if record.sale_representative.related_employee:
+            email_cc_list.append(record.sale_representative.related_employee.parent_id.email)
+        # raise UserError((email_cc_list))
         
         email_cc = ','.join(email_cc_list)
         
@@ -194,62 +203,73 @@ class SaleOrder(models.Model):
             
         self.env['mail.mail'].sudo().create(mail_values)
     
-    def _action_daily_oa_release_email(self):
-        subject = 'Zipper Unit Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
+    def _action_daily_oa_release_email(self, com_id):
         
-        body = 'Hello'
-        email_cc_list = [
-            'asraful.haque@texzipperbd.com',
-            'shahid.hossain@texzipperbd.com',
-            'csd.zipper@texzipperbd.com',
-            ]
-        # if self.env.company.name == 'Zipper':
-        #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
-        # if self.env.company.name == 'Metal Trims':
-        #     email_cc_list.append('kumar.abhishek@texzipperbd.com')
-        # raise UserError((self.env.company,email_cc_list))
-        
-        
-        email_cc = ','.join(email_cc_list)
-        report = self.env.ref('taps_sale.action_report_daily_oa_release', False)
-        pdf_content, content_type = report.sudo()._render_qweb_pdf()
-        # raise UserError((pdf_content))
-        attachment = self.env['ir.attachment'].sudo().create({
-                    'name': 'Daily OA Release',
-                    'type': 'binary',
-                    'datas': base64.encodebytes(pdf_content),
-                })
-        mail_values = {
-            'email_from': 'csd.zipper@texzipperbd.com',
-            'author_id': self.env.user.partner_id.id,
-            'model': None,
-            'res_id': None,
-            'subject': subject,
-            'body_html': body,
-            'auto_delete': True,
-            'email_to': self.env.user.email_formatted,
-            'email_cc': email_cc,
-            'attachment_ids': attachment,
-        }
-        # raise UserError((mail_values['email_cc']))
-        try:
-            template = self.env.ref('taps_sale.view_oa_release_body', raise_if_not_found=True)
+        com = self.env['res.company'].search([('id', 'in', (com_id))])
+        for rec in com: 
+            subject = (rec.name)+' Unit Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
             
-        except ValueError:
-            _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')
-        else:
+            body = 'Hello'
+            email_cc_list = [
+                'asraful.haque@texzipperbd.com',
+                'shahid.hossain@texzipperbd.com',
+                'csd.zipper@texzipperbd.com',
+                ]
+            # if self.env.company.name == 'Zipper':
+            #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
+            # if self.env.company.name == 'Metal Trims':
+            #     email_cc_list.append('kumar.abhishek@texzipperbd.com')
+            # raise UserError((self.env.company,email_cc_list))
             
-            template_ctx = {
-                'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA')),
-                'model_description': self.env['ir.model']._get('sale.order').display_name,
-                'company': self.env.company,
+            
+            email_cc = ','.join(email_cc_list)
+            if rec.id == 1:
+                report = self.env.ref('taps_sale.action_report_daily_oa_release', False)
+            if rec.id == 3:
+                report = self.env.ref('taps_sale.action_report_daily_oa_release_mt', False)
+            pdf_content, content_type = report.sudo()._render_qweb_pdf()
+            # raise UserError((pdf_content))
+            attachment = self.env['ir.attachment'].sudo().create({
+                        'name': rec.name+' Daily OA Release',
+                        'type': 'binary',
+                        'datas': base64.encodebytes(pdf_content),
+                        'company_id' : rec.id,
+                    })
+            mail_values = {
+                'email_from': 'csd.zipper@texzipperbd.com',
+                'author_id': self.env.user.partner_id.id,
+                'model': None,
+                'res_id': None,
+                'subject': subject,
+                'body_html': body,
+                'auto_delete': True,
+                'email_to': self.env.user.email_formatted,
+                'email_cc': email_cc,
+                'attachment_ids': attachment,
+                
             }
-            body = template._render(template_ctx, engine='ir.qweb')
-            mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-        # raise UserError((mail_values['body_html']))   
-        self.env['mail.mail'].sudo().create(mail_values)
-  
-
+            # raise UserError((rec))
+            try:
+                
+                template = self.env.ref('taps_sale.view_oa_release_body', raise_if_not_found=True)
+                
+            except ValueError:
+                _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')
+            else:
+                
+                template_ctx = {
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA')),
+                    'model_description': self.env['ir.model']._get('sale.order').display_name,
+                    'company': self.env.company,
+                    'com' : rec,
+                }
+                body = template._render(template_ctx, engine='ir.qweb')
+                mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+            # raise UserError((mail_values['body_html']))
+            self.env['mail.mail'].sudo().create(mail_values)
+    
+    
+    
 
     @api.model
     def retrieve_dashboard(self):
@@ -360,6 +380,9 @@ class SaleOrder(models.Model):
                 if line.sizecm:
                     if line.sizecm != 'N/A':
                         total_size += float(line.sizecm)
+                if line.sizemm:
+                    if line.sizemm != 'N/A':
+                        total_size += float(line.sizemm)
             rec.avg_size =(total_size/line_count)
     
     @api.onchange('order_ref')

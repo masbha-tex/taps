@@ -22,6 +22,7 @@
                     <filter name="finish_group" string="Finish" domain="[]" context="{'group_by': 'finish'}"/>
                     <filter name="slider_group" string="Slider" domain="[]" context="{'group_by': 'slidercodesfg'}"/>
                     <filter name="machine_group" string="Machine" domain="[]" context="{'group_by': 'capacity'}"/>
+                    <filter name="delivery_code" string="Delivery Code" domain="[]" context="{'group_by': 'mrp_delivery'}"/>
                 </group>
             </search>
         </field>
@@ -175,6 +176,42 @@
                 <field name="state" readonly="1" force_save="1"/>
             </tree>
         </field>
+    </record>
+    <record id="view_fg_delivered_tree" model="ir.ui.view">
+        <field name="name">fg.delivered.tree</field>
+        <field name="model">operation.details</field>
+        <field name="arch" type="xml" >
+            <tree string="Order Delivered" create="false" delete ="false">
+                <field name="name" readonly="1"/>
+                <field name="mrp_lines" invisible="1"/>
+                <field name="sale_lines" invisible="1"/>
+                <field name="mrp_line" invisible="1"/>
+                <field name="sale_order_line" invisible="1"/>
+                <field name="oa_id"/>
+                <field name="date_order"/>
+                <field name="action_date"/>
+                <field name="partner_id"/>
+                <field name="parent_ids" invisible="1"/>
+                <field name="buyer_name"/>
+                <field name="product_id" readonly="1" invisible="1"/>
+                <field name="product_template_id" readonly="1"/>
+                <field name="fg_categ_type"/>
+                <field name="slidercodesfg"/>
+                <field name="finish"/>
+                <field name="shade"/>
+                <field name="sizein"/>
+                <field name="sizecm"/>
+                <field name="work_center" invisible="1"/>
+                <field name="next_operation" invisible="1"/>
+                <field name="qty" readonly="1"/>
+                <field name="pack_qty" readonly="1"/>
+                <field name="fr_pcs_pack" readonly="1" />
+                <field name="fg_done_qty" readonly="1"/>
+                <field name="mrp_delivery" readonly="1" force_save="1"/>
+                <field name="total_weight" readonly="1" force_save="1"/>
+                <field name="state" readonly="1" force_save="1"/>
+            </tree>
+        </field>
     </record>    
 
     <record id="action_operation_details" model="ir.actions.act_window">
@@ -202,6 +239,15 @@
         <field name="view_id" ref="view_fg_delivery_tree"/>
         <field name="domain">[('next_operation','=','Delivery')]</field>
         <field name="context">{'search_default_delivery': 1}</field>
+    </record>
+
+    <record id="action_fg_delivered" model="ir.actions.act_window">
+        <field name="name">Order Delivered</field>
+        <field name="res_model">operation.details</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_fg_delivered_tree"/>
+        <field name="domain">[('next_operation','=','Delivery'),('state','=','done')]</field>
+        <!-- <field name="context">{'search_default_delivery': 1}</field> -->
     </record>    
 
     <menuitem id="menu_operation_details" 
@@ -221,6 +267,12 @@
               action="action_fg_delivery" 
               parent="mrp.menu_mrp_manufacturing"
               sequence="8"/>
+
+    <menuitem id="menu_fg_delivered" 
+              name="Order Delivered" 
+              action="action_fg_delivered" 
+              parent="mrp.menu_mrp_manufacturing"
+              sequence="9"/>
     
     
 </odoo>

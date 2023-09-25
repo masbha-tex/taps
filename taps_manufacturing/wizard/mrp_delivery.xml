@@ -21,12 +21,12 @@
                             <field name="delivery_line" required="True">
                                 <tree string="Details" editable="bottom">
                                     <field name="delivery_id" invisible="1"/>
-                                    <field name="cartoon" string="Cartoon No"/>
-                                    <field name="shade" readonly="1" force_save="1"/>
-                                    <field name="finish" readonly="1" force_save="1"/>
-                                    <field name="slider" readonly="1" force_save="1"/>
-                                    <field name="sizein" readonly="1" force_save="1"/>
-                                    <field name="sizecm" readonly="1" force_save="1"/>
+                                    <field name="cartoon" force_save="1"/>
+                                    <field name="shade" force_save="1"/>
+                                    <field name="finish" force_save="1"/>
+                                    <field name="slider" force_save="1"/>
+                                    <field name="sizein" force_save="1"/>
+                                    <field name="sizecm" force_save="1"/>
                                     <field name="qty_pcs" optional="show" sum="Qty in Pcs" decoration-bf="True"/>
                                     <field name="qty_pack" optional="show" sum="Qty in Pack" decoration-bf="True"/>
                                     <!-- <field name="size_total"  readonly="1" force_save="1" optional="show" sum="Total" decoration-bf="True"/> -->
@@ -50,7 +50,7 @@
         <field name="arch" type="xml">
             <tree string="Lot List" create="false">
                 <field name="delivery_id" invisible="1"/>
-                <field name="cartoon" string="Cartoon No"/>
+                <field name="cartoon"/>
                 <field name="shade"/>
                 <field name="finish"/>
                 <field name="slider"/>

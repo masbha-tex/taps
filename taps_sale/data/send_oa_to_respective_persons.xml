@@ -10,111 +10,177 @@
             padding: 0;
             font-family: Arial, sans-serif;
         }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-       
-		  </style>
-			<div class="page">
-			  <div class="container">
-				  <p style="padding:0px;font-size: 12px;">
-        Dear MR.<strong style="color:blue"><t t-esc="record.sale_representative.name"/></strong>,
-        <br/>
         
-        Your order <strong style="font-size:14px;color:blue"><t t-esc="record.name"/></strong> from  <strong style="font-size:14px;color:blue"><t t-esc="record.partner_id.name"/></strong> amounting in <strong style="font-size:14px;color:blue"><t t-esc="record.currency_id.symbol"/><t t-esc="record.amount_total"/></strong>
-        <t t-if="record.state == 'sale' and record.is_revised == False">
+       
+			</style>
+			<div class="page">
+				<div class="container">
+					<p style="padding:0px;font-size: 12px;">
+        Dear MR.						<strong style="color:blue">
+							<t t-esc="record.sale_representative.name"/>
+						</strong>,
+						<br/>
+        
+        Your order						<strong style="font-size:14px;color:blue">
+							<t t-esc="record.name"/>
+						</strong>from<strong style="font-size:14px;color:blue">
+							<t t-esc="record.partner_id.name"/>
+						</strong>
+        amounting in						<strong style="font-size:14px;color:blue">
+							<t t-esc="record.currency_id.symbol"/>
+							<t t-esc="record.amount_total"/>
+						</strong>
+						<t t-if="record.state == 'sale' and record.is_revised == False">
         
             has been released to production.
-            <br/>
-        </t>
-        <t t-if="record.state == 'sale' and record.is_revised == True">
+							<br/>
+						</t>
+						<t t-if="record.state == 'sale' and record.is_revised == True">
         
             has been revised and released to production.
-            <br/>
-            <t t-if="record.cause_of_revision">
-            Cause of Revision is given below,<br/>
-            <t t-set="string_to_output" t-value="record.cause_of_revision.split('\n')"/>
-    				<t t-foreach="string_to_output" t-as="string_line">
-						<strong>
-    					<span t-esc="string_line"/>
-						</strong>
-						<br/>
-					</t>
-                <br/>
-				
-            </t>
-        </t>
-        Thank you for your trust!
-        <br/>
-        Do not hesitate to contact us if you have any questions.
-       </p><br/>
-       <div style="margin:0px;padding: 0px; font-size: 12px;">
-										<table class="table table-sm p-0 m-0" width="100%" style="font-size: 12px;">
-											<thead>
-												<tr style="color:white;background-color:rgb(113, 75, 98);">
-													<td style="border:1px solid white" width="15%">
-														<strong>Products</strong>
-													</td>
-													<td style="border:1px solid white" width="7%" align="center">
-														<strong>PI Number</strong>
-													</td>
-													<td style="border:1px solid white" width="7%" align="center">
-														<strong>Finish</strong>
-													</td>
-													<td style="border:1px solid white" width="7%" align="center">
-														<strong>Slider</strong>
-													</td>
-													<td style="border:1px solid white" width="7%" align="center">
-														<strong>Avg_Size</strong>
-													</td>
-													<td style="border:1px solid white" width="7%" align="center">
-														<strong>Avg_Price</strong>
-													</td>
-													<td style="border:1px solid white" width="10%" align="center">
-														<strong>OA Quantity</strong>
-													</td>
-													<td style="border:1px solid white" width="10%" align="right">
-														<strong>OA Value</strong>
-													</td>
-												</tr>
-											</thead>
-											<tbody>
-												<tr style="border:1px solid black">
-													<td width="15%" style="border:1px solid black">
-														<strong><t t-esc="record.order_line[0].product_template_id.name"/></strong>
-													</td>
-													<td width="7%" align="center" style="border:1px solid black">
-														<strong><t t-esc="record.order_ref.pi_number"/></strong>
-													</td>
-													<td width="7%" align="center" style="border:1px solid black">
-														<strong><t t-esc="record.order_line[0].finish.splitlines()[0]"/></strong>
-													</td>
-													<td width="7%" align="center" style="border:1px solid black">
-														<strong>TZP-<t t-esc="record.order_line[0].slidercodesfg.split('TZP-')[1]"/></strong>
-													</td>
-													<td width="7%" align="right" style="border:1px solid black">
-														<strong><t t-esc="record.avg_size" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong>
-													</td>
-													<td width="7%" align="right" style="border:1px solid black">
-														<strong><t t-esc="record.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong>
-													</td>
-													<td width="10%" align="right" style="border:1px solid black">
-														<strong><t t-esc="record.total_product_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong>
-													</td>
-													<td width="10%" align="right" style="border:1px solid black">
-														<strong><t t-esc="record.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-										
-									</div>
-        </div>      
+							<br/>
+							<t t-if="record.cause_of_revision">
+            Cause of Revision is given below,								<br/>
+								<t t-set="string_to_output" t-value="record.cause_of_revision.split('\n')"/>
+								<t t-foreach="string_to_output" t-as="string_line">
+									<strong>
+										<span t-esc="string_line"/>
+									</strong>
+									<br/>
+								</t>
+								<br/>
+							</t>
+						</t>
+        
+        Please keep updated with CS/PPC team for further follow-up and OTD of this order! Kindly feel free to contact for further any query.. 
+					</p>
+					<br/>
+					<div style="margin:0px;padding: 0px; font-size: 10px;">
+						<table class="table table-sm p-0 m-0" width="100%" style="font-size: 12px;">
+							<thead>
+								<tr style="color:white;background-color:rgb(113, 75, 98);">
+									<td align="center" style="border:1px solid white">
+										<strong>Buyer</strong>
+									</td>
+									<td align="center" style="border:1px solid white">
+										<strong>Products</strong>
+									</td>
+									<td align="center" style="border:1px solid white">
+										<strong>Finish</strong>
+									</td>
+									<t t-if="record.company_id.name == 'Zipper'">
+										<td align="center" style="border:1px solid white">
+											<strong>Slider</strong>
+										</td>
+									</t>
+									<td align="center" style="border:1px solid white">
+										<strong>PI</strong>
+									</td>
+									<td align="center" style="border:1px solid white">
+										<strong>OA</strong>
+									</td>
+									<td align="center" style="border:1px solid white">
+										<strong>Avg_Size
+											<t t-if="record.company_id.name == 'Zipper'">
+														  (Pcs)
+											</t>
+											<t t-if="record.company_id.name == 'Metal Trims'">
+														  (Gross)
+											</t>
+										</strong>
+									</td>
+									<td align="center" style="border:1px solid white">
+										<strong>QTY
+											<t t-if="record.company_id.name == 'Zipper'">
+														  (Pcs)
+											</t>
+											<t t-if="record.company_id.name == 'Metal Trims'">
+														  (Gross)
+											</t>
+										</strong>
+									</td>
+									<td align="center" style="border:1px solid white">
+										<strong>Value($)</strong>
+									</td>
+									<td align="center" style="border:1px solid white">
+										<strong>Avg_Price
+											<t t-if="record.company_id.name == 'Zipper'">
+														  (Pcs)
+											</t>
+											<t t-if="record.company_id.name == 'Metal Trims'">
+														  (Gross)
+											</t>
+										</strong>
+									</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr style="border:1px solid black">
+									<td align="center" style="border:1px solid black">
+										<strong>
+										  <t t-if="record.buyer_name.name">
+											<t t-esc="record.buyer_name.name"/>
+											</t>
+										</strong>
+									</td>
+									<td align="center" style="border:1px solid black">
+										<strong>
+										  <t t-if="record.order_line[0].product_template_id.name">
+											<t t-esc="record.order_line[0].product_template_id.name"/>
+											</t>
+										</strong>
+									</td>
+									<td align="center" style="border:1px solid black">
+										<strong>
+										  <t t-if="record.order_line[0].finish">
+											<t t-esc="record.order_line[0].finish.splitlines()[0]"/>
+											</t>
+										</strong>
+									</td>
+									<t t-if="record.company_id.name == 'Zipper'">
+										<td align="center" style="border:1px solid black">
+										  <t t-if="record.order_line[0].slidercodesfg">
+											<strong>TZP-<t t-esc="record.order_line[0].slidercodesfg.split('TZP-')[1]"/>
+											</strong>
+											</t>
+										</td>
+									</t>
+									<td align="center" style="border:1px solid black">
+									  
+										<strong>
+											<t t-esc="record.order_ref.pi_number"/>
+										</strong>
+									</td>
+									<td align="center" style="border:1px solid black">
+										<strong>
+											<t t-esc="record.name"/>
+										</strong>
+									</td>
+									<td align="center" style="border:1px solid black">
+										<strong>
+											<t t-esc="record.avg_size" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										</strong>
+									</td>
+									<td align="center" style="border:1px solid black">
+										<strong>
+											<t t-esc="record.total_product_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										</strong>
+									</td>
+									<td align="center" style="border:1px solid black">
+										<strong>
+											<t t-esc="record.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										</strong>
+									</td>
+									<td align="center" style="border:1px solid black">
+										<strong>
+											<t t-esc="record.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										</strong>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</html>
 	</body>

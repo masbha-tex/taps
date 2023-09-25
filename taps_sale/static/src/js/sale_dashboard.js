@@ -40,6 +40,8 @@ SampleServer.mockRegistry.add('sale.order/retrieve_dashboard', () => {
 var SaleListDashboardRenderer = ListRenderer.extend({
     events:_.extend({}, ListRenderer.prototype.events, {
         'click .o_dashboard_action': '_onDashboardActionClicked',
+        'click .o_search_panel_field[name="company_id"]': '_onCompanyClick',
+        'click .o_search_panel_field[name="department_id"]': '_onDepartmentClick',
     }),
     /**
      * @override
