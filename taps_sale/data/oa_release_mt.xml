@@ -2,7 +2,7 @@
 <odoo>
 	<template id="view_email_template_corporate_identity_mt">
         <t t-call="web.html_container">
-            <t t-call="web.internal_layout">
+            <t t-call="web.basic_layout">
                
 			<!--<style>-->
 		 <!--    /* Basic reset styles */-->
@@ -24,7 +24,613 @@
 		 <!-- </style>-->
 		  <div class="page">
 		  <div class="container">
-			<h2>HI</h2>
+			<div class="ml-16">
+				<t t-set="grand_total_qty" t-value="0.0"/>
+				<t t-set="grand_total_value" t-value="0.0"/>
+				<t t-set="grand_total_qty2" t-value="0.0"/>
+				<t t-set="grand_total_value2" t-value="0.0"/>
+				<t t-set="grand_total_qty3" t-value="0.0"/>
+				<t t-set="grand_total_value3" t-value="0.0"/>
+				<t t-set="grand_total_qty4" t-value="0.0"/>
+				<t t-set="grand_total_value4" t-value="0.0"/>
+				<t t-set="dhaka_total_qty" t-value="0.0"/>
+				<t t-set="chattogram_total_qty" t-value="0.0"/>
+				<t t-set="overseas_total_qty" t-value="0.0"/>
+				<t t-set="dhaka_total_value" t-value="0.0"/>
+				<t t-set="chattogram_total_value" t-value="0.0"/>
+				<t t-set="overseas_total_value" t-value="0.0"/>
+				<p style="font-size:16px">Dear Sir,<br/>
+          Daily Order Release of  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> in details is given below:</p>
+				<br/>
+				<table class=" table table-sm  o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: avoid ! important;">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">
+						<strong>SHANK BUTTON</strong>
+					</caption>
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th style="border: 1px solid white" colspan="2">Sales Person</th>
+							<th style="border: 1px solid white">Date</th>
+							<th style="border: 1px solid white" colspan="2">Customer</th>
+							<th style="border: 1px solid white">Buyer</th>
+							<th style="border: 1px solid white">SL</th>
+							<th style="border: 1px solid white" colspan="3">Product</th>
+							<th style="border: 1px solid white">Finish</th>
+							<th style="border: 1px solid white">PI No</th>
+							<th style="border: 1px solid white">OA No</th>
+							<th style="border: 1px solid white">Avg_Size</th>
+							<th style="border: 1px solid white">Qty/Pcs</th>
+							<th style="border: 1px solid white">Value</th>
+							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">P_Terms</th>
+							<th style="border: 1px solid white">Type</th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="sl" t-value="0"/>
+						<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+							<t t-if="'SHANK BUTTON' in order.order_line[0].product_template_id.name and not 'ALLOY' in order.order_line[0].product_template_id.name">
+								<tr style="border: 1px solid black">
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.sale_representative.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
+									</td>
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.partner_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.buyer_name.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-set="sl" t-value="sl+1"/>
+										<t t-esc="sl"/>
+									</td>
+									<td colspan="3" style="border: 1px solid black">
+										<t t-esc="order.order_line[0].product_template_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_line[0].finish.splitlines()[0]"/>
+									</td>
+									
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.pi_number"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_size" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+										<t t-if="order.order_line[0].sizein != 'N/A'">
+											<span> Inch</span>
+										</t>
+										<t t-if="order.order_line[0].sizecm != 'N/A'">
+											<span> Cm</span>
+										</t>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.total_product_qty"/>
+										<t t-set="grand_total_qty" t-value="grand_total_qty+order.total_product_qty"/>
+										
+										
+										
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_value" t-value="grand_total_value+order.amount_total"/>
+										
+										
+										
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.payment_term_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.pi_type"/>
+									</td>
+								</tr>
+							</t>
+						</t>
+						<tr style="border: 1px solid black">
+						  <td class="text-right" style="border: 1px solid black;" colspan="14">TOTAL</td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_value" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black" colspan="3"/>
+						</tr>
+					</tbody>
+				</table>
+			  <br/>
+			  <div style="page-break-inside: avoid ! important;">
+			  <table class=" table table-sm o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">
+						<strong>SNAP BUTTON</strong>
+					</caption>
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th style="border: 1px solid white" colspan="2">Sales Person</th>
+							<th style="border: 1px solid white">Date</th>
+							<th style="border: 1px solid white" colspan="2">Customer</th>
+							<th style="border: 1px solid white">Buyer</th>
+							<th style="border: 1px solid white">SL</th>
+							<th style="border: 1px solid white" colspan="3">Product</th>
+							<th style="border: 1px solid white">Finish</th>
+							<th style="border: 1px solid white">PI No</th>
+							<th style="border: 1px solid white">OA No</th>
+							<th style="border: 1px solid white">Avg_Size</th>
+							<th style="border: 1px solid white">Qty/Pcs</th>
+							<th style="border: 1px solid white">Value</th>
+							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">P_Terms</th>
+							<th style="border: 1px solid white">Type</th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="sl" t-value="0"/>
+						<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('state', '=', 'sale'), (['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+							<t t-if=" 'SNAP BUTTON' in order.order_line[0].product_template_id.name and not 'ALLOY' in order.order_line[0].product_template_id.name">
+								<tr style="border: 1px solid black">
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.sale_representative.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
+									</td>
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.partner_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.buyer_name.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-set="sl" t-value="sl+1"/>
+										<t t-esc="sl"/>
+									</td>
+									<td colspan="3" style="border: 1px solid black">
+										<t t-esc="order.order_line[0].product_template_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_line[0].finish.splitlines()[0]"/>
+									</td>
+									
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.pi_number"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_size" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+										<t t-if="order.order_line[0].sizein != 'N/A'">
+											<span> Inch</span>
+										</t>
+										<t t-if="order.order_line[0].sizecm != 'N/A'">
+											<span> Cm</span>
+										</t>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.total_product_qty"/>
+										<t t-set="grand_total_qty2" t-value="grand_total_qty2+order.total_product_qty"/>
+										
+										
+										
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_value2" t-value="grand_total_value2+order.amount_total"/>
+										
+										
+										
+									
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.payment_term_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.pi_type"/>
+									</td>
+									
+								</tr>
+							</t>
+						</t>
+						<tr style="border: 1px solid black">
+						  <td class="text-right" style="border: 1px solid black" colspan="14">TOTAL</td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty2"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_value2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black" colspan="3"/>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+				<br/>
+				
+				<table class=" table table-sm o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: auto ! important;">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">
+						<strong>EYELET</strong>
+					</caption>
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th style="border: 1px solid white" colspan="2">Sales Person</th>
+							<th style="border: 1px solid white">Date</th>
+							<th style="border: 1px solid white" colspan="2">Customer</th>
+							<th style="border: 1px solid white">Buyer</th>
+							<th style="border: 1px solid white">SL</th>
+							<th style="border: 1px solid white" colspan="3">Product</th>
+							<th style="border: 1px solid white">Finish</th>
+							<th style="border: 1px solid white">PI No</th>
+							<th style="border: 1px solid white">OA No</th>
+							<th style="border: 1px solid white">Avg_Size</th>
+							<th style="border: 1px solid white">Qty/Pcs</th>
+							<th style="border: 1px solid white">Value</th>
+							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">P_Terms</th>
+							<th style="border: 1px solid white">Type</th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="sl" t-value="0"/>
+						<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+							<t t-if="'EYELET' in order.order_line[0].product_template_id.name and not 'ALLOY' in order.order_line[0].product_template_id.name">
+								<tr style="border: 1px solid black">
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.sale_representative.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
+									</td>
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.partner_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.buyer_name.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-set="sl" t-value="sl+1"/>
+										<t t-esc="sl"/>
+									</td>
+									<td colspan="3" style="border: 1px solid black">
+										<t t-esc="order.order_line[0].product_template_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_line[0].finish.splitlines()[0]"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.pi_number"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_size" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+										<t t-if="order.order_line[0].sizein != 'N/A'">
+											<span> Inch</span>
+										</t>
+										<t t-if="order.order_line[0].sizecm != 'N/A'">
+											<span> Cm</span>
+										</t>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.total_product_qty"/>
+										<t t-set="grand_total_qty3" t-value="grand_total_qty3+order.total_product_qty"/>
+										
+									
+										
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_value3" t-value="grand_total_value3+order.amount_total"/>
+										
+										
+										
+									
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.payment_term_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.pi_type"/>
+									</td>
+									
+								</tr>
+							</t>
+						</t>
+						<tr style="border: 1px solid black">
+						  <td class="text-right" style="border: 1px solid black" colspan="14">TOTAL</td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty3"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_value3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black" colspan="3"/>
+						</tr>
+					</tbody>
+				</table>
+				
+				<br/>
+			<table class=" table table-sm o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: auto ! important;">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">
+						<strong>RIVET</strong>
+					</caption>
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th style="border: 1px solid white" colspan="2">Sales Person</th>
+							<th style="border: 1px solid white">Date</th>
+							<th style="border: 1px solid white" colspan="2">Customer</th>
+							<th style="border: 1px solid white">Buyer</th>
+							<th style="border: 1px solid white">SL</th>
+							<th style="border: 1px solid white" colspan="3">Product</th>
+							<th style="border: 1px solid white">Finish</th>
+							<th style="border: 1px solid white">PI No</th>
+							<th style="border: 1px solid white">OA No</th>
+							<th style="border: 1px solid white">Avg_Size</th>
+							<th style="border: 1px solid white">Qty/Pcs</th>
+							<th style="border: 1px solid white">Value</th>
+							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">P_Terms</th>
+							<th style="border: 1px solid white">Type</th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="sl" t-value="0"/>
+						<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.max)))])" t-as="order">
+							<t t-if="'RIVET' in order.order_line[0].product_template_id.name and not 'ALLOY' in order.order_line[0].product_template_id.name">
+								<tr style="border: 1px solid black">
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.sale_representative.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
+									</td>
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.partner_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.buyer_name.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-set="sl" t-value="sl+1"/>
+										<t t-esc="sl"/>
+									</td>
+									<td colspan="3" style="border: 1px solid black">
+										<t t-esc="order.order_line[0].product_template_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_line[0].finish.splitlines()[0]"/>
+									</td>
+									
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.pi_number"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_size" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+										<t t-if="order.order_line[0].sizein != 'N/A'">
+											<span> Inch</span>
+										</t>
+										<t t-if="order.order_line[0].sizecm != 'N/A'">
+											<span> Cm</span>
+										</t>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.total_product_qty"/>
+										<t t-set="grand_total_qty4" t-value="grand_total_qty4+order.total_product_qty"/>
+										
+										
+										
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_value4" t-value="grand_total_value4+order.amount_total"/>
+										
+										
+										
+									
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.payment_term_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.pi_type"/>
+									</td>
+									
+								</tr>
+						  </t>
+						</t>
+						<tr style="border: 1px solid black">
+						  <td class="text-right" style="border: 1px solid black" colspan="14">TOTAL</td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty4"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_value4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black" colspan="3"/>
+						</tr>
+					</tbody>
+				</table>
+				<br/>
+					<table class=" table table-sm o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: auto ! important;">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">
+						<strong>ALLOY</strong>
+					</caption>
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th style="border: 1px solid white" colspan="2">Sales Person</th>
+							<th style="border: 1px solid white">Date</th>
+							<th style="border: 1px solid white" colspan="2">Customer</th>
+							<th style="border: 1px solid white">Buyer</th>
+							<th style="border: 1px solid white">SL</th>
+							<th style="border: 1px solid white" colspan="3">Product</th>
+							<th style="border: 1px solid white">Finish</th>
+							<th style="border: 1px solid white">PI No</th>
+							<th style="border: 1px solid white">OA No</th>
+							<th style="border: 1px solid white">Avg_Size</th>
+							<th style="border: 1px solid white">Qty/Pcs</th>
+							<th style="border: 1px solid white">Value</th>
+							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">P_Terms</th>
+							<th style="border: 1px solid white">Type</th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="sl" t-value="0"/>
+						<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.max)))])" t-as="order">
+							<t t-if="'ALLOY' in order.order_line[0].product_template_id.name">
+								<tr style="border: 1px solid black">
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.sale_representative.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
+									</td>
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.partner_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.buyer_name.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-set="sl" t-value="sl+1"/>
+										<t t-esc="sl"/>
+									</td>
+									<td colspan="3" style="border: 1px solid black">
+										<t t-esc="order.order_line[0].product_template_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_line[0].finish.splitlines()[0]"/>
+									</td>
+									
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.pi_number"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_size" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 1}"/>
+										<t t-if="order.order_line[0].sizein != 'N/A'">
+											<span> Inch</span>
+										</t>
+										<t t-if="order.order_line[0].sizecm != 'N/A'">
+											<span> Cm</span>
+										</t>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.total_product_qty"/>
+										<t t-set="grand_total_qty4" t-value="grand_total_qty4+order.total_product_qty"/>
+										
+										
+										
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_value4" t-value="grand_total_value4+order.amount_total"/>
+										
+										
+										
+									
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.payment_term_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.pi_type"/>
+									</td>
+									
+								</tr>
+						  </t>
+						</t>
+						<tr style="border: 1px solid black">
+						  <td class="text-right" style="border: 1px solid black" colspan="14">TOTAL</td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty4"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_value4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black" colspan="3"/>
+						</tr>
+					</tbody>
+				</table>
+				<br/>
+			  <div>
+					<table class="table table-sm o_main_table p-0 m-0" style="font-size:14px; border: 1px solid black;width:50%; margin:auto;page-break-inside:avoid ! important;">
+						<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
+							<strong>PRODUCT WISE SUMMARY</strong>
+						</caption>
+						<thead>
+							<tr style="color:white;background-color:rgb(113, 75, 98);">
+								<th style="border: 1px solid white">SL</th>
+								<th style="border: 1px solid white">PRODUCT</th>
+								<th style="border: 1px solid white" class="text-right font-weight-bold">TOTAL QUANTITY(Pcs)</th>
+								<th style="border: 1px solid white" class="text-right font-weight-bold">TOTAL VALUE($)</th>
+								
+							</tr>
+							<tr>
+								<td style="border: 1px solid black" class="font-weight-bold">1</td>
+								<td style="border: 1px solid black" class="font-weight-bold">METAL PRODUCTS</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_qty"/>
+								</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_value" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+								</td>
+								
+							</tr>
+							<tr>
+								<td style="border: 1px solid black" class="font-weight-bold">2</td>
+								<td style="border: 1px solid black" class="font-weight-bold">COIL &amp; INVISIBLE PRODUCTS</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_qty2"/>
+								</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_value2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+								</td>
+								
+							</tr>
+							<tr>
+								<td style="border: 1px solid black" class="font-weight-bold">3</td>
+								<td style="border: 1px solid black" class="font-weight-bold">PLASTIC PRODUCTS</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_qty3"/>
+								</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_value3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+								</td>
+								
+							</tr>
+							<tr>
+								<td style="border: 1px solid black" class="font-weight-bold">4</td>
+								<td style="border: 1px solid black" class="font-weight-bold">REVISED OA</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_qty4"/>
+								</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_value4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+								</td>
+								
+							</tr>
+							<tr>
+								<td style="border: 1px solid black" colspan="2" class="text-center font-weight-bold">GRAND TOTAL</td>
+								
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_qty+grand_total_qty2+grand_total_qty3+grand_total_qty4"/>
+								</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_value+grand_total_value2+grand_total_value3+grand_total_value4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+								</td>
+								
+							</tr>
+						</thead>
+					</table>
+				</div>	
+			  
+			</div>
 			</div>
 			</div>
 		

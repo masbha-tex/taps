@@ -22,6 +22,7 @@
 		    
 		  </style>
 			<div class="container">
+			  <h2><t t-esc="com.name"/></h2>
                 <p style="font-size:16px">Dear Sir/All,<br/>
           Please find attached details of order released on  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> .Also Summary of order released given below:</p>
 				<br/>
@@ -36,12 +37,25 @@
 							<th style="border: 1px solid white;" colspan="3" class="text-center">MTD</th>
 						</tr>
 						<tr style="color:white;background-color:rgb(113, 75, 98);">
-							<th style="border: 1px solid white;" class="text-right">QTY(Pcs)</th>
+							<th style="border: 1px solid white;" class="text-right">QTY
+                                <t t-if="com.id == 1">(Pcs)</t>
+                                <t t-if="com.id == 3">(Gross)</t>
+                            </th>
 							<th style="border: 1px solid white;" class="text-right">VALUE($)</th>
-							<th style="border: 1px solid white;" class="text-right">AVG PRICE/Pcs($)</th>
-							<th style="border: 1px solid white;" class="text-right">QTY(Pcs)</th>
+							<th style="border: 1px solid white;" class="text-right">AVG PRICE($)/
+                                <t t-if="com.id == 1">(Pcs)</t>
+                                <t t-if="com.id == 3">(Gross)</t>
+                            </th>
+							<th style="border: 1px solid white;" class="text-right">
+                                QTY
+                                <t t-if="com.id == 1">(Pcs)</t>
+                                <t t-if="com.id == 3">(Gross)</t>
+                            </th>
 							<th style="border: 1px solid white;" class="text-right">VALUE($)</th>
-							<th style="border: 1px solid white;" class="text-right">AVG PRICE/Pcs($)</th>
+							<th style="border: 1px solid white;" class="text-right">AVG PRICE($)/
+                                <t t-if="com.id == 1">(Pcs)</t>
+                                <t t-if="com.id == 3">(Gross)</t>
+                            </th>
 						</tr>
 					</thead>
 					<tbody>
@@ -49,21 +63,16 @@
 					  <t t-set="grand_month_wise_qty" t-value="0"/>
 					  <t t-set="grand_day_wise_val" t-value="0"/>
 					  <t t-set="grand_month_wise_val" t-value="0"/>
-						<t t-foreach="env['sale.team'].search([])" t-as="team">
+						<t t-foreach="com.env['sale.team'].search([])" t-as="team">
 							<t t-set="day_wise_qty" t-value="0"/>
 							<t t-set="day_wise_val" t-value="0"/>
 							<t t-set="month_wise_qty" t-value="0"/>
 							<t t-set="month_wise_val" t-value="0"/>
-							<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),
-					     ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),
-					     ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),
-					     ('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),           ('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 								<t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>
 								<t t-set="day_wise_val" t-value="day_wise_val+order.amount_total"/>
 							</t>
-							<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),
-					     ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),
-					     ('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
+							<t t-foreach="env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
 								<t t-set="month_wise_qty" t-value="month_wise_qty+order_mtd.total_product_qty"/>
 								<t t-set="month_wise_val" t-value="month_wise_val+order_mtd.amount_total"/>
 							</t>
@@ -91,6 +100,9 @@
 									    <t t-if="day_wise_qty !=0 and day_wise_val !=0">
 									      <t t-esc="day_wise_val/day_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									    </t>
+									    <t t-else="">
+									      <t t-esc="0.00" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									    </t>
 									  
 									</strong>
 								</td>
@@ -112,6 +124,9 @@
 									    <t t-if="month_wise_qty !=0 and month_wise_val !=0">
 									      <t t-esc="month_wise_val/month_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									    </t>
+									    <t t-else="">
+									      <t t-esc="0.00" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									    </t>
 									  
 									</strong>
 								</td>
@@ -121,10 +136,10 @@
 						  <td style="border: 1px solid black" class="text-left"><strong>GRAND TOTAL</strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_qty"/></strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
-						  <td style="border: 1px solid black" class="text-right"><strong></strong></td>
+						  <td style="border: 1px solid black" class="text-right"><strong/></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_qty"/></strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
-						  <td style="border: 1px solid black" class="text-right"><strong></strong></td>
+						  <td style="border: 1px solid black" class="text-right"><strong/></td>
 						</tr>
 					</tbody>
 				</table>
@@ -141,12 +156,25 @@
 							<th style="border: 1px solid white" colspan="3" class="text-center">MTD</th>
 						</tr>
 						<tr style="color:white;background-color:rgb(113, 75, 98);">
-							<th style="border: 1px solid white" class="text-right">QTY(Pcs)</th>
-							<th style="border: 1px solid white" class="text-right">VALUE($)</th>
-							<th style="border: 1px solid white" class="text-right">AVG PRICE/Pcs($)</th>
-							<th style="border: 1px solid white" class="text-right">QTY(Pcs)</th>
-							<th style="border: 1px solid white" class="text-right">VALUE($)</th>
-							<th style="border: 1px solid white" class="text-right">AVG PRICE/Pcs($)</th>
+							<th style="border: 1px solid white;" class="text-right">QTY
+                                <t t-if="com.id == 1">(Pcs)</t>
+                                <t t-if="com.id == 3">(Gross)</t>
+                            </th>
+							<th style="border: 1px solid white;" class="text-right">VALUE($)</th>
+							<th style="border: 1px solid white;" class="text-right">AVG PRICE($)/
+                                <t t-if="com.id == 1">(Pcs)</t>
+                                <t t-if="com.id == 3">(Gross)</t>
+                            </th>
+							<th style="border: 1px solid white;" class="text-right">
+                                QTY
+                                <t t-if="com.id == 1">(Pcs)</t>
+                                <t t-if="com.id == 3">(Gross)</t>
+                            </th>
+							<th style="border: 1px solid white;" class="text-right">VALUE($)</th>
+							<th style="border: 1px solid white;" class="text-right">AVG PRICE($)/
+                                <t t-if="com.id == 1">(Pcs)</t>
+                                <t t-if="com.id == 3">(Gross)</t>
+                            </th>
 						</tr>
 					</thead>
 					<tbody>
@@ -159,16 +187,11 @@
 							<t t-set="day_wise_val" t-value="0"/>
 							<t t-set="month_wise_qty" t-value="0"/>
 							<t t-set="month_wise_val" t-value="0"/>
-							<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('sale_representative.region', '=', region.id),
-					     ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),
-					     ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),
-					     ('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.region', '=', region.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),        ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),           ('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 								<t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>
 								<t t-set="day_wise_val" t-value="day_wise_val+order.amount_total"/>
 							</t>
-							<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('sale_representative.region', '=', region.id),
-					     ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),
-					     ('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
+							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.region', '=', region.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),         ('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
 								<t t-set="month_wise_qty" t-value="month_wise_qty+order_mtd.total_product_qty"/>
 								<t t-set="month_wise_val" t-value="month_wise_val+order_mtd.amount_total"/>
 							</t>
@@ -196,6 +219,9 @@
 									    <t t-if="day_wise_qty !=0 and day_wise_val !=0">
 									      <t t-esc="day_wise_val/day_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									    </t>
+									    <t t-else="">
+									      <t t-esc="0.00" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									    </t>
 									  
 									</strong>
 								</td>
@@ -217,6 +243,9 @@
 									    <t t-if="month_wise_qty !=0 and month_wise_val !=0">
 									      <t t-esc="month_wise_val/month_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									    </t>
+									    <t t-else="">
+									      <t t-esc="0.00" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									    </t>
 									  
 									</strong>
 								</td>
@@ -226,10 +255,10 @@
 						  <td style="border: 1px solid black" class="text-left"><strong>GRAND TOTAL</strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_qty"/></strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
-						  <td style="border: 1px solid black" class="text-right"><strong></strong></td>
+						  <td style="border: 1px solid black" class="text-right"><strong/></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_qty"/></strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
-						  <td style="border: 1px solid black"><strong></strong></td>
+						  <td style="border: 1px solid black"><strong/></td>
 						</tr>
 					</tbody>
 				</table>

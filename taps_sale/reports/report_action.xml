@@ -2,7 +2,7 @@
 <odoo>
 	<data noupdate="0">
         <record id="action_report_daily_oa_release" model="ir.actions.report">
-			<field name="name">Daily Release Oa</field>
+			<field name="name">Zipper Daily Release Oa</field>
 			<field name="model">sale.order</field>
 			<field name="report_type">qweb-pdf</field>
 			<field name="report_name">taps_sale.view_email_template_corporate_identity</field>
@@ -15,7 +15,7 @@
 			
         </record>
         <record id="action_report_daily_oa_release_mt" model="ir.actions.report">
-			<field name="name">Daily Release Oa</field>
+			<field name="name">Metal Trims Daily Release Oa</field>
 			<field name="model">sale.order</field>
 			<field name="report_type">qweb-pdf</field>
 			<field name="report_name">taps_sale.view_email_template_corporate_identity_mt</field>

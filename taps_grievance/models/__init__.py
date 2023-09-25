@@ -2,3 +2,4 @@
 
 from . import models
 from . import matrix
+from . import type_misconduct

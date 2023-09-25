@@ -8,14 +8,20 @@
         <field name="arch" type="xml">
             <form string="Grievance">
                 <header>
-                    <button name="action_submit" confirm="Are you sure to submit HR Team?" type="object" class="btn-success" string="Submit to HR Team" states="draft,Submit,Primary Invesigation,Letter Submit" attrs="{'invisible': [('next_user', '!=', 'user.id')]}"/>                    
-					<field name="state" widget="statusbar" options="{'clickable': '0'}"/>
+                    <button name="action_submit" confirm="Are you sure to submit HR Team?" type="object" class="btn-success" string="Submit to HR Team" states="draft"/>  
+                    <button name="action_investigation" confirm="Are you sure to Primary Investigation?" type="object" class="btn-success" string="Primary Investigation" states="Submit" groups="hr.group_hr_user"/>  
+                    <button name="action_issue" confirm="Are you sure to Letter Issue?" type="object" class="btn-success" string="Letter Issue" states="Primary Investigation" groups="hr.group_hr_user"/>  
+                    <button name="action_answard" confirm="Are you sure to Return Answard?" type="object" class="btn-success" string="Return Answard" states="Letter Issue" groups="hr.group_hr_user"/>  
+                    <button name="action_satisfy" confirm="Are you sure to Satisfactory?" type="object" class="btn-success" string="Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>  
+                    <button name="action_nonsatisfy" confirm="Are you sure to Non-Satisfactory?" type="object" class="btn-success" string="Non-Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>
+                    <button name="action_closed" confirm="Are you sure to Closed?" type="object" class="btn-success" string="Closed" states="Satisfactory,Non-Satisfactory" groups="hr.group_hr_user"/>                    
+					<field name="state" widget="statusbar" options="{'clickable': '1'}"/>
 				</header>
 				<sheet>
                     <!-- <widget name="web_ribbon" title="Pending" bg_color="bg-danger"
-                            attrs="{'invisible': [('state', '!=', 'pending')]}"/>
+                            attrs="{'invisible': [('state', '!=', 'pending')]}"/> -->
                     <widget name="web_ribbon" title="Closed" bg_color="bg-success"
-                            attrs="{'invisible': [('state', '!=', 'closed')]}"/> -->
+                            attrs="{'invisible': [('state', '!=', 'Closed')]}"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_get_attachment_view"
                             class="oe_stat_button"
@@ -31,13 +37,12 @@
                     </div>
                     <group>
                         <group>
-                            <field name="type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                            <field name="submit_by" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                            <field name="next_user"/>
+                            <field name="type" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         </group>
                         <group>
                             <field name="complaint_date" class="oe_read_only"/>
-                            <field name="action_taken"/>
+                            <field name="action_taken" groups="hr.group_hr_user"/>
                         </group>                       
                     </group>
                     <group colspan="2" col="2">
@@ -52,6 +57,12 @@
             </form>
         </field>
     </record>
+    <record model="ir.rule" id="hr_grievance_record_not_shared_multi_company_rule">
+        <field name="name">Non Shared Records:model</field>
+        <field name="model_id" ref="model_hr_grievance"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>          
     <record model="ir.ui.view" id="view_hr_grievance_tree">
         <field name="name">hr_grievance.tree</field>
         <field name="model">hr.grievance</field>
@@ -60,12 +71,12 @@
             <tree string="Grievance">
                 <field name="name"/>
                 <field name="employee_id"/>
-                <field name="type"/>
-                <field name="details"/>
-                <field name="action_taken"/>
-                <field name="submit_by"/>
-                <field name="state" readonly="1"/>
-                <field name="next_user"/>
+                <field name="type" options="{'no_create':true, 'no_open':true}"/>
+                <field name="details" optional="hide"/>
+                <field name="action_taken" groups="hr.group_hr_user"/>
+                <field name="submit_by" options="{'no_create':true, 'no_open':true}"/>
+                <field name="complaint_date"/>
+                <field name="state" widget="badge"/>
                 <field name="attachment_number" invisible="True"/>
                 <button name="action_get_attachment_view" string="Attachments" type="object" icon="fa-paperclip" attrs="{'invisible': [('attachment_number', '=', 0)]}"/>                
             </tree>
@@ -90,6 +101,7 @@
                 <searchpanel>
                     <!-- <field name="state" enable_counters="1"/> -->
                     <field name="company_id" enable_counters="1"/>
+                    <field name="state" enable_counters="1"/>
                     <field name="department_id" enable_counters="1"/>
                 </searchpanel>
             </search>

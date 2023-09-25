@@ -2,7 +2,7 @@
 <odoo>
 	<template id="view_email_template_corporate_identity">
         <t t-call="web.html_container">
-            <t t-call="web.internal_layout">
+            <t t-call="web.basic_layout">
                
 			<!--<style>-->
 		 <!--    /* Basic reset styles */-->
@@ -511,7 +511,7 @@
 								<td style="border: 1px solid black" class="font-weight-bold">3</td>
 								<td style="border: 1px solid black" class="font-weight-bold">PLASTIC PRODUCTS</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_qty2"/>
+									<t t-esc="grand_total_qty3"/>
 								</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
 									<t t-esc="grand_total_value3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>

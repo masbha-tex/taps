@@ -40,7 +40,7 @@ class OperationDetails(models.Model):
     
     oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=True)
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True, store=True)
-    buyer_name = fields.Char(string='Buyer', readonly=True)
+    # buyer_name = fields.Char(string='Buyer', readonly=True)
     
     # product_id = fields.Many2one('product.product', 'Product', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", index=True)
     # product_template_id = fields.Many2one('product.template', domain=[('sale_ok', '=', True)])
@@ -357,9 +357,9 @@ class OperationDetails(models.Model):
                 # l = self.env["manufacturing.order"].browse(l.mrp_line)
                 quantity_strings = l.quantity_string.split('+')
                 for l_q in quantity_strings:
-                    # raise UserError((l.id))
                     next = 'Assembly Output'
-                    if 'Metal' in l.item:
+                    
+                    if 'Metal' in l.mrp_line.fg_categ_type or 'AL' in l.mrp_line.fg_categ_type:
                         next = 'CM Output'
                     
                     ope = operation.create({'mrp_lines':l.mrp_line.id,

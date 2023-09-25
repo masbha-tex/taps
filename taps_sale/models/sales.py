@@ -204,7 +204,7 @@ class SaleOrder(models.Model):
         self.env['mail.mail'].sudo().create(mail_values)
     
     def _action_daily_oa_release_email(self, com_id):
-        
+        # raise UserError((com_id.company_id))
         com = self.env['res.company'].search([('id', 'in', (com_id))])
         for rec in com: 
             subject = (rec.name)+' Unit Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
@@ -215,6 +215,7 @@ class SaleOrder(models.Model):
                 'shahid.hossain@texzipperbd.com',
                 'csd.zipper@texzipperbd.com',
                 ]
+            author_id=0
             # if self.env.company.name == 'Zipper':
             #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
             # if self.env.company.name == 'Metal Trims':
@@ -224,17 +225,22 @@ class SaleOrder(models.Model):
             
             email_cc = ','.join(email_cc_list)
             if rec.id == 1:
-                report = self.env.ref('taps_sale.action_report_daily_oa_release', False)
+                report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
+                
             if rec.id == 3:
-                report = self.env.ref('taps_sale.action_report_daily_oa_release_mt', False)
+                report = rec.env.ref('taps_sale.action_report_daily_oa_release_mt', False)
+                
             pdf_content, content_type = report.sudo()._render_qweb_pdf()
+            # author_list = ','.join(author_id)
             # raise UserError((pdf_content))
-            attachment = self.env['ir.attachment'].sudo().create({
+            attachment = rec.env['ir.attachment'].sudo().create({
                         'name': rec.name+' Daily OA Release',
                         'type': 'binary',
                         'datas': base64.encodebytes(pdf_content),
                         'company_id' : rec.id,
-                    })
+                        
+              
+            })
             mail_values = {
                 'email_from': 'csd.zipper@texzipperbd.com',
                 'author_id': self.env.user.partner_id.id,
@@ -243,30 +249,32 @@ class SaleOrder(models.Model):
                 'subject': subject,
                 'body_html': body,
                 'auto_delete': True,
-                'email_to': self.env.user.email_formatted,
+                'email_to': rec.env.user.email_formatted,
                 'email_cc': email_cc,
                 'attachment_ids': attachment,
                 
             }
-            # raise UserError((rec))
+            # raise UserError((mail_values['author_id'],self.env.user.partner_id.id))
             try:
                 
-                template = self.env.ref('taps_sale.view_oa_release_body', raise_if_not_found=True)
+                template = rec.env.ref('taps_sale.view_oa_release_body', raise_if_not_found=True)
                 
             except ValueError:
                 _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')
             else:
                 
                 template_ctx = {
-                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA')),
-                    'model_description': self.env['ir.model']._get('sale.order').display_name,
-                    'company': self.env.company,
+                    'message': rec.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA')),
+                    'model_description': rec.env['ir.model']._get('sale.order').display_name,
+                    'company': rec,
                     'com' : rec,
                 }
+                
+                    
                 body = template._render(template_ctx, engine='ir.qweb')
-                mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+                mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
             # raise UserError((mail_values['body_html']))
-            self.env['mail.mail'].sudo().create(mail_values)
+            rec.env['mail.mail'].sudo().create(mail_values)
     
     
     

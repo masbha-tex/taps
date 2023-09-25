@@ -18,8 +18,10 @@
         'views/views.xml',
         'views/templates.xml',
         'views/matrix_views.xml',
+        'views/type_views.xml',
     ],
     # only loaded in demonstration mode
+    'images': ['static/img/success.png'],
     'demo': [
         'demo/demo.xml',
     ],
