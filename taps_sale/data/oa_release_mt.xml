@@ -39,7 +39,7 @@
 				<t t-set="dhaka_total_value" t-value="0.0"/>
 				<t t-set="chattogram_total_value" t-value="0.0"/>
 				<t t-set="overseas_total_value" t-value="0.0"/>
-				<p style="font-size:16px">Dear Sir,<br/>
+				<p style="font-size:16px">
           Daily Order Release of  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> in details is given below:</p>
 				<br/>
 				<table class=" table table-sm  o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: avoid ! important;">

@@ -403,7 +403,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s-%s TRANSFER LIST' % (categname,bankname))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('TRANSFER LIST')),
             'target': 'self',
         }    
 

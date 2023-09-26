@@ -22,7 +22,7 @@
 		    
 		  </style>
 			<div class="container">
-			  <h2><t t-esc="com.name"/></h2>
+			  
                 <p style="font-size:16px">Dear Sir/All,<br/>
           Please find attached details of order released on  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> .Also Summary of order released given below:</p>
 				<br/>

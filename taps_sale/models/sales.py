@@ -143,8 +143,12 @@ class SaleOrder(models.Model):
         
         subject = record.company_id.name+ "(Ref " +(record.name)+")" or 'n/a)'
         body = 'Hello'
+        # raise UserError((record.company_id.id))
         # report = self.env.ref('taps_sale.action_report_oa_invoice')
-        report = self.env.ref('taps_sale.action_report_oa_invoice', False)
+        if record.company_id.id == 1:
+            report = self.env.ref('taps_sale.action_report_oa_invoice', False)
+        if record.company_id.id == 3:
+            report = self.env.ref('taps_sale.action_report_oa_invoice_mt', False)
         pdf_content, content_type = report.sudo()._render_qweb_pdf(record.id)
         attachment = self.env['ir.attachment'].sudo().create({
                     'name': record.name,

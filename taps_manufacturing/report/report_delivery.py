@@ -19,7 +19,6 @@ class ReportDyePlan(models.AbstractModel):
         # raise UserError (del_ids.default_search_id)
         # self.env['operation.details'].search([('id','in',del_ids)])
         # operations = self.env['operation.details'].search([('id','in',del_ids.ids)])
-        mc_name = str(del_ids[0].capacity) + 'kgs MC Plan'
         title_text = del_ids[0].company_id.partner_id.street
         title_text = "\n".join([title_text,'CARTON WISE PACKING DETAILS'])
         title_text = "\n".join([title_text,'DELIVERY DATE : '+ str(del_ids[0].action_date.strftime("%d-%m-%Y"))])
@@ -89,7 +88,7 @@ class ReportDyePlan(models.AbstractModel):
         sheet.write(5, 8, "NET WEIGHT (kgs)", column_style)
 
 
-        row = 6
+        row = 5
         
         order_data = []
         report_data = []
@@ -119,21 +118,20 @@ class ReportDyePlan(models.AbstractModel):
                             qty_pack += sq.qty
                     if full_pack>0:
                         order_data = []
-                        order_data = [c,sh,size,
+                        order_data = [c,sh,si,
                             size_details[0].product_template_id.pack_qty,full_pack,qty_pack,cr_pcs,0,0]
                         report_data.append(order_data)
                     if partial_p:
                         for p in partial_p:
                             order_data = []
-                            order_data = [c,sh,size,p,1,p,cr_pcs,0,0]
+                            order_data = [c,sh,si,p,1,p,cr_pcs,0,0]
                             report_data.append(order_data)
                             
-                    
-
             
         # sheet.merge_range(row, 0, row, 17, m.name, merge_format)
+        # raise UserError((report_data))
+        row += 1
         for line in report_data:
-            # raise UserError((line))
             col = 0
             for l in line:
                 sheet.write(row, col, l, _row_style)
