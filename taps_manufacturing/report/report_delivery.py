@@ -34,9 +34,9 @@ class ReportDyePlan(models.AbstractModel):
         oa_no = 'OA NO: '+del_ids[0].oa_id.name
         po_no = 'PO NO: '+del_ids[0].oa_id.po_no
         pi_no = 'PI NO: '+del_ids[0].oa_id.pi_number
-        item_name = del_ids[0].item + del_ids[0].finish + del_ids[0].slidercodesfg
+        item_name = del_ids[0].fg_categ_type + del_ids[0].finish + del_ids[0].slidercodesfg
         
-        machines = del_ids.mapped('machine_no')
+        carton = del_ids.mapped('name')
         report_name = 'Delivery Report'#orders.name
         # for m in machines:
         #     raise UserError((m.name))
@@ -89,31 +89,55 @@ class ReportDyePlan(models.AbstractModel):
         sheet.write(5, 8, "NET WEIGHT (kgs)", column_style)
 
 
-        row = 2
-        for m in machines:
-            m_plan = del_ids.filtered(lambda pr: pr.machine_no.id == m.id)
-            sheet.merge_range(row, 0, row, 17, m.name, merge_format)
+        row = 6
+        
+        order_data = []
+        report_data = []
+        for c in carton:
+            cartoon_details = del_ids.filtered(lambda pr: pr.name == c)
+            shade = cartoon_details.mapped('shade')
+            cr_pcs = sum(cartoon_details.mapped('qty'))
+            for sh in shade:
+                shade_details = cartoon_details.filtered(lambda pr: pr.shade == sh)
+                size = None
+                size = shade_details.mapped('sizein')
+                if 'N/A' in size:
+                    size = shade_details.mapped('sizecm')
+                # raise UserError((size))
+                for si in size:
+                    size_details = shade_details.filtered(lambda pr: pr.sizein == si or pr.sizecm == si)
+                    full_pack = 0
+                    qty_pack = 0
+                    partial_p = []
+                    for sq in size_details:
+                        if sq.fr_pcs_pack>0:
+                            full_pack += sq.pack_qty - 1
+                            qty_pack += sq.qty - sq.fr_pcs_pack
+                            partial_p.append([sq.fr_pcs_pack])
+                        else:
+                            full_pack += sq.pack_qty
+                            qty_pack += sq.qty
+                    if full_pack>0:
+                        order_data = []
+                        order_data = [c,sh,size,
+                            size_details[0].product_template_id.pack_qty,full_pack,qty_pack,cr_pcs,0,0]
+                        report_data.append(order_data)
+                    if partial_p:
+                        for p in partial_p:
+                            order_data = []
+                            order_data = [c,sh,size,p,1,p,cr_pcs,0,0]
+                            report_data.append(order_data)
+                            
+                    
+
+            
+        # sheet.merge_range(row, 0, row, 17, m.name, merge_format)
+        for line in report_data:
+            # raise UserError((line))
+            col = 0
+            for l in line:
+                sheet.write(row, col, l, _row_style)
+                col += 1
             row += 1
-            row += 1
-            order_data = []
-            report_data = []
-            for pl in m_plan:
-                order_data = []
-                order_data = [
-                    pl.oa_id.name,
-                    pl.action_date,
-                    pl.date_order,
-                    pl.partner_id.name,
-                    pl.buyer_name,
-                    pl.fg_categ_type,
-                    pl.shade,'',pl.qty,'','','','','','','','',''
-                    ]
-                report_data.append(order_data)
-            for line in report_data:
-                col = 0
-                for l in line:
-                    sheet.write(row, col, l, _row_style)
-                    col += 1
-                row += 1
 
 

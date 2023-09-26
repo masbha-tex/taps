@@ -147,23 +147,25 @@ class SaleOrder(models.Model):
         report = self.env.ref('taps_sale.action_report_oa_invoice', False)
         pdf_content, content_type = report.sudo()._render_qweb_pdf(record.id)
         attachment = self.env['ir.attachment'].sudo().create({
-                    'name': 'OA',
+                    'name': record.name,
                     'type': 'binary',
                     'datas': base64.encodebytes(pdf_content),
                     'res_id': record.id
                 })
         email_cc_list = [
-            'alamgir@texzipperbd.com',
-            'nitish.bassi@texzipperbd.com',
-            'mirtunjoy.chatterjee@texzipperbd.com',
+            # 'alamgir@texzipperbd.com',
+            # 'nitish.bassi@texzipperbd.com',
+            # 'mirtunjoy.chatterjee@texzipperbd.com',
             'asraful.haque@texzipperbd.com',
-            'csd.zipper@texzipperbd.com',
+            'shahid.hossain@texzipperbd.com',
             record.sale_representative.leader.email
             ]
         if self.env.company.name == 'Zipper':
-            email_cc_list.append('ranjeet.singh@texzipperbd.com')
+            # email_cc_list.append('ranjeet.singh@texzipperbd.com')
+            email_cc_list.append('csd.zipper@texzipperbd.com')
         if self.env.company.name == 'Metal Trims':
-            email_cc_list.append('kumar.abhishek@texzipperbd.com')
+            # email_cc_list.append('kumar.abhishek@texzipperbd.com')
+            email_cc_list.append('nasir.csd@texzipperbd.com')
         if record.sale_representative.related_employee:
             email_cc_list.append(record.sale_representative.related_employee.parent_id.email)
         # raise UserError((email_cc_list))
@@ -202,6 +204,8 @@ class SaleOrder(models.Model):
             mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
             
         self.env['mail.mail'].sudo().create(mail_values)
+
+        
     
     def _action_daily_oa_release_email(self, com_id):
         # raise UserError((com_id.company_id))
@@ -210,39 +214,43 @@ class SaleOrder(models.Model):
             subject = (rec.name)+' Unit Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
             
             body = 'Hello'
+            email_from_list = [] 
             email_cc_list = [
+                # 'mudit.tandon@texfasteners.com',
+                # 'deepak.shah@bd.texfasteners.com',
                 'asraful.haque@texzipperbd.com',
                 'shahid.hossain@texzipperbd.com',
-                'csd.zipper@texzipperbd.com',
                 ]
             author_id=0
-            # if self.env.company.name == 'Zipper':
-            #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
-            # if self.env.company.name == 'Metal Trims':
-            #     email_cc_list.append('kumar.abhishek@texzipperbd.com')
-            # raise UserError((self.env.company,email_cc_list))
             
             
-            email_cc = ','.join(email_cc_list)
+            
+           
             if rec.id == 1:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
-                
+                # email_cc_list.append('ranjeet.singh@texzipperbd.com')
+                email_cc_list.append('csd.zipper@texzipperbd.com')
+                email_from_list.append('csd.zipper@texzipperbd.com')
             if rec.id == 3:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release_mt', False)
-                
+                # email_cc_list.append('kumar.abhishek@texzipperbd.com')
+                email_cc_list.append('nasir.csd@texzipperbd.com')
+                email_from_list.append('nasir.csd@texzipperbd.com')
             pdf_content, content_type = report.sudo()._render_qweb_pdf()
             # author_list = ','.join(author_id)
             # raise UserError((pdf_content))
             attachment = rec.env['ir.attachment'].sudo().create({
-                        'name': rec.name+' Daily OA Release',
+                        'name': rec.name+' Daily OA Release('+(datetime.now().strftime('%d %b, %Y'))+')',
                         'type': 'binary',
                         'datas': base64.encodebytes(pdf_content),
                         'company_id' : rec.id,
                         
               
             })
+            email_cc = ','.join(email_cc_list)
+            email_from = ','.join(email_from_list)
             mail_values = {
-                'email_from': 'csd.zipper@texzipperbd.com',
+                'email_from': email_from,
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,

@@ -68,13 +68,33 @@
 							<t t-set="day_wise_val" t-value="0"/>
 							<t t-set="month_wise_qty" t-value="0"/>
 							<t t-set="month_wise_val" t-value="0"/>
-							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),           ('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
-								<t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>
-								<t t-set="day_wise_val" t-value="day_wise_val+order.amount_total"/>
+							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+								
+								<t t-if="com.id == 1">
+								  <t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>
+								  <t t-set="day_wise_val" t-value="day_wise_val+order.amount_total"/>
+								</t>
+								<t t-if="com.id == 3">
+								  <t t-foreach="com.env['sale.order.line'].search([('order_id','=',order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
+								  <t t-set="day_wise_qty" t-value="day_wise_qty+line.product_uom_qty"/>
+								  <t t-set="day_wise_val" t-value="day_wise_val+line.price_subtotal"/>
+								  </t>
+								</t>
+								
 							</t>
 							<t t-foreach="env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
+								<t t-if="com.id == 1">
 								<t t-set="month_wise_qty" t-value="month_wise_qty+order_mtd.total_product_qty"/>
 								<t t-set="month_wise_val" t-value="month_wise_val+order_mtd.amount_total"/>
+								</t>
+								<t t-if="com.id == 3">
+								  <t t-foreach="com.env['sale.order.line'].search([('order_id','=',order_mtd.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
+								  <t t-set="month_wise_qty" t-value="month_wise_qty+line.product_uom_qty"/>
+								  <t t-set="month_wise_val" t-value="month_wise_val+line.price_subtotal"/>
+								  </t>
+								</t>
+								
+								
 							</t>
 							<tr>
 								<td style="border: 1px solid black" class="text-left">
@@ -188,12 +208,33 @@
 							<t t-set="month_wise_qty" t-value="0"/>
 							<t t-set="month_wise_val" t-value="0"/>
 							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.region', '=', region.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),        ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),           ('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
-								<t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>
-								<t t-set="day_wise_val" t-value="day_wise_val+order.amount_total"/>
+								
+								<t t-if="com.id == 1">
+								  <t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>
+								  <t t-set="day_wise_val" t-value="day_wise_val+order.amount_total"/>
+								</t>
+								<t t-if="com.id == 3">
+								  <t t-foreach="com.env['sale.order.line'].search([('order_id','=',order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
+								  <t t-set="day_wise_qty" t-value="day_wise_qty+line.product_uom_qty"/>
+								  <t t-set="day_wise_val" t-value="day_wise_val+line.price_subtotal"/>
+								  </t>
+								</t>
+								
+								
 							</t>
 							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.region', '=', region.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),         ('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
+								
+								<t t-if="com.id == 1">
 								<t t-set="month_wise_qty" t-value="month_wise_qty+order_mtd.total_product_qty"/>
 								<t t-set="month_wise_val" t-value="month_wise_val+order_mtd.amount_total"/>
+								</t>
+								<t t-if="com.id == 3">
+								  <t t-foreach="com.env['sale.order.line'].search([('order_id','=',order_mtd.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
+								  <t t-set="month_wise_qty" t-value="month_wise_qty+line.product_uom_qty"/>
+								  <t t-set="month_wise_val" t-value="month_wise_val+line.price_subtotal"/>
+								  </t>
+								</t>
+								
 							</t>
 							<tr>
 								<td style="border: 1px solid black" class="text-left">
