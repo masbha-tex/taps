@@ -15,7 +15,7 @@
                     <button name="action_satisfy" confirm="Are you sure to Satisfactory?" type="object" class="btn-success" string="Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>  
                     <button name="action_nonsatisfy" confirm="Are you sure to Non-Satisfactory?" type="object" class="btn-success" string="Non-Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>
                     <button name="action_closed" confirm="Are you sure to Closed?" type="object" class="btn-success" string="Closed" states="Satisfactory,Non-Satisfactory" groups="hr.group_hr_user"/>                    
-					<field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+					<field name="state" widget="statusbar"/>
 				</header>
 				<sheet>
                     <!-- <widget name="web_ribbon" title="Pending" bg_color="bg-danger"
@@ -42,7 +42,8 @@
                         </group>
                         <group>
                             <field name="complaint_date" class="oe_read_only"/>
-                            <field name="action_taken" groups="hr.group_hr_user"/>
+                            <field name="action_taken" groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
+                            <field name="final_action_taken" groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
                         </group>                       
                     </group>
                     <group colspan="2" col="2">
@@ -62,7 +63,7 @@
         <field name="model_id" ref="model_hr_grievance"/>
         <field name="global" eval="True"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-    </record>          
+    </record>   
     <record model="ir.ui.view" id="view_hr_grievance_tree">
         <field name="name">hr_grievance.tree</field>
         <field name="model">hr.grievance</field>
@@ -74,6 +75,7 @@
                 <field name="type" options="{'no_create':true, 'no_open':true}"/>
                 <field name="details" optional="hide"/>
                 <field name="action_taken" groups="hr.group_hr_user"/>
+                <field name="final_action_taken" groups="hr.group_hr_user"/>
                 <field name="submit_by" options="{'no_create':true, 'no_open':true}"/>
                 <field name="complaint_date"/>
                 <field name="state" widget="badge"/>
@@ -102,6 +104,7 @@
                     <!-- <field name="state" enable_counters="1"/> -->
                     <field name="company_id" enable_counters="1"/>
                     <field name="state" enable_counters="1"/>
+                    <field name="type" enable_counters="1"/>
                     <field name="department_id" enable_counters="1"/>
                 </searchpanel>
             </search>
@@ -115,7 +118,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-	<menuitem name="Grievance" parent="hr.menu_hr_root" id="menu_hr_grievance" sequence="2" action="action_hr_grievance"/>
+	<menuitem name="Grievance" parent="hr.menu_hr_root" id="menu_hr_grievance" sequence="5" action="action_hr_grievance"/>
 
 <!-- Add Complaint Count to Employee Form-->
      <record id="act_hr_employee_2_hr_grievance" model="ir.actions.act_window">

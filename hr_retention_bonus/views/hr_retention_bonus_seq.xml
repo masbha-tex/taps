@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data noupdate='1'>
+		<record id="ir_seq_hr_retention_bonus" model="ir.sequence">
+			<field name="name">Retention Bonus</field>
+			<field name="code">hr.retention.bonus.seq</field>
+            <field name="prefix">RBS/%(range_year)s/%(month)s/</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="True" name="use_date_range"/>
+            <field eval="False" name="company_id"/>
+            <field name="padding">4</field>
+		</record>
+	</data>
+</odoo>

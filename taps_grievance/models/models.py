@@ -9,11 +9,13 @@ class HrGrievance(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     
     name = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
-    employee_id = fields.Many2one('hr.employee', "Employee", required=True)
+    employee_id = fields.Many2one('hr.employee', "Employee", tracking=True, required=True)
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)    
-    type = fields.Many2one('hr.grievance.type', "Type of Misconduct", help="This is the type by which the complaint was received.", store=True)
-    details = fields.Html('Details of Misconduct', default="""
+    type = fields.Many2one('hr.grievance.type', "Type of Misconduct", help="This is the type by which the complaint was received.", tracking=True, store=True)
+    action_taken = fields.Many2one('hr.grievance.action.taken', "Action to be Taken", tracking=True, help="This is the type by which the Action to be Taken was received.", store=True)
+    final_action_taken = fields.Many2one('hr.grievance.final.action.taken', "Final Action", tracking=True,help="This is the type by which the Final Action was received.", store=True)
+    details = fields.Html('Details of Misconduct', tracking=True, default="""
                         <br><br><br>
                         <p style="margin:16px 0px 16px 0px;">
                             <a href="${ctx['url']}" style="background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
@@ -21,16 +23,8 @@ class HrGrievance(models.Model):
                             </a>
                         </p>
                         """)
-    action_taken = fields.Selection([
-        ('1', 'Verbal Warning'),
-        ('2', 'Advise'),
-        ('3', 'Formal Warning'),
-        ('4', 'Show Cause'),
-        ('5', 'Show Cause of Suspension'),
-        ('6', 'Dismissal'),
-        ('7', 'Termination')], 'Action to be taken', tracking=True)    
     
-    submit_by = fields.Many2one('hr.employee',"Complaint By",required=True)
+    submit_by = fields.Many2one('hr.employee',"Complaint By", required=True, tracking=True)
     state = fields.Selection([
             ('draft', 'Draft'),
             ('Submit', 'Submit'),
@@ -41,7 +35,7 @@ class HrGrievance(models.Model):
             ('Non-Satisfactory', 'Non-Satisfactory'),
             ('Closed', 'Closed')], 'Status', required=True, tracking=True, default='draft')
     complaint_date = fields.Date('Complaint date', required=True, default=fields.Date.today())
-    attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments')
+    attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
 
     def action_submit(self):

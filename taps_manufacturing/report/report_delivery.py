@@ -28,22 +28,24 @@ class ReportDyePlan(models.AbstractModel):
 
         buyer = 'BUYER: '+del_ids[0].buyer_name
         customer = 'CUSTOMER: '+del_ids[0].partner_id.name
-        style_ref = ''
+        style_ref = 'STYLE REF: '+del_ids[0].oa_id.style_ref
         invoice_no = 'INVOICE NO: '+del_ids[0].mrp_delivery.name
         oa_no = 'OA NO: '+del_ids[0].oa_id.name
         po_no = 'PO NO: '+del_ids[0].oa_id.po_no
         pi_no = 'PI NO: '+del_ids[0].oa_id.pi_number
         item_name = del_ids[0].fg_categ_type + del_ids[0].finish + del_ids[0].slidercodesfg
-        
+        del_ids = del_ids.sorted(key = 'name')
         carton = del_ids.mapped('name')
+        carton = list(set(carton))
         report_name = 'Delivery Report'#orders.name
         # for m in machines:
         #     raise UserError((m.name))
 
         sheet = workbook.add_worksheet(report_name[:41])
-        column_style = workbook.add_format({'bold': True, 'font_size': 11})
+        column_style = workbook.add_format({'bold': True, 'font_size': 11, 'text_wrap':True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'middle'})
         
-        _row_style = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        _row_style = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        _row_style_m = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True,'right': True, 'text_wrap':True})
         
         row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -54,7 +56,7 @@ class ReportDyePlan(models.AbstractModel):
         
         format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        merge_format = workbook.add_format({'align': 'top', 'bold': True, 'align': 'center'})
+        merge_format = workbook.add_format({'align': 'top', 'bold': True, 'align': 'center', 'text_wrap':True, 'left': True, 'top': True, 'right': True, 'bottom': True})
         merge_format_ = workbook.add_format({'align': 'bottom', 'bold': True})
 
 # buyer
@@ -93,17 +95,23 @@ class ReportDyePlan(models.AbstractModel):
         order_data = []
         report_data = []
         for c in carton:
-            cartoon_details = del_ids.filtered(lambda pr: pr.name == c)
+            cr_no = c
+            cartoon_details = del_ids.filtered(lambda pr: pr.name == c).sorted(key=lambda pr: pr.shade)
             shade = cartoon_details.mapped('shade')
+            shade = list(set(shade))
             cr_pcs = sum(cartoon_details.mapped('qty'))
             for sh in shade:
-                shade_details = cartoon_details.filtered(lambda pr: pr.shade == sh)
+                lines = sh.splitlines()
+                shade_ = lines[0]
+                # raise UserError((lines[0]))
+                shade_details = cartoon_details.filtered(lambda pr: pr.shade == sh).sorted(key=lambda pr: pr.sizein and pr.sizecm)
                 size = None
                 size = shade_details.mapped('sizein')
                 if 'N/A' in size:
                     size = shade_details.mapped('sizecm')
-                # raise UserError((size))
+                size = list(set(size))
                 for si in size:
+                    size_ = si
                     size_details = shade_details.filtered(lambda pr: pr.sizein == si or pr.sizecm == si)
                     full_pack = 0
                     qty_pack = 0
@@ -112,30 +120,39 @@ class ReportDyePlan(models.AbstractModel):
                         if sq.fr_pcs_pack>0:
                             full_pack += sq.pack_qty - 1
                             qty_pack += sq.qty - sq.fr_pcs_pack
-                            partial_p.append([sq.fr_pcs_pack])
+                            partial_p.append([(sq.fr_pcs_pack)])
                         else:
                             full_pack += sq.pack_qty
                             qty_pack += sq.qty
                     if full_pack>0:
                         order_data = []
-                        order_data = [c,sh,si,
+                        order_data = [cr_no,shade_,size_,
                             size_details[0].product_template_id.pack_qty,full_pack,qty_pack,cr_pcs,0,0]
                         report_data.append(order_data)
+                        cr_no = ''
+                        shade_ = ''
+                        size_ = ''
                     if partial_p:
                         for p in partial_p:
                             order_data = []
-                            order_data = [c,sh,si,p,1,p,cr_pcs,0,0]
+                            order_data = [cr_no,shade_,si,int(p[0]),1,int(p[0]),cr_pcs,0,0]
                             report_data.append(order_data)
-                            
+                            cr_no = ''
+                            shade_ = ''
+                            size_ = ''
+
             
-        # sheet.merge_range(row, 0, row, 17, m.name, merge_format)
-        # raise UserError((report_data))
         row += 1
         for line in report_data:
             col = 0
             for l in line:
-                sheet.write(row, col, l, _row_style)
+                if col == 0 and l == '':
+                    sheet.write(row, col, l, _row_style_m)
+                else:
+                    sheet.write(row, col, l, _row_style)
                 col += 1
             row += 1
+            # if row == 8:
+            #     break
 
 
