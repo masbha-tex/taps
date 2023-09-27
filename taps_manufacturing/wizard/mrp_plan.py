@@ -67,10 +67,12 @@ class ManufacturingPlan(models.TransientModel):
     
     def _inverse_plan_qty(self):
         pass    
-    # @api.onchange('machine_line.material_qty')
-    # def _onchange_qty(self):
-    #     raise UserError((sum(self.machine_line.mapped('material_qty'))))
-    #     self.plan_qty = sum(self.machine_line.mapped('material_qty'))
+    
+    @api.onchange('plan_for')
+    def _onchange_qty(self):
+        # raise UserError((self.plan_for.name))
+        if self.plan_for.name == 'Dyeing':
+            self.material = 'tape'
 
 
     @api.onchange('material')
@@ -120,7 +122,10 @@ class MachineLine(models.TransientModel):
     sequence = fields.Integer(string='Sequence', default=10)
     plan_id = fields.Many2one('mrp.plan', string='Plan ID', ondelete='cascade', index=True, copy=False)
 
+    # oa_id = fields.Many2one('sale.order', string='OA', store=True)
+    # qty_balance = fields.Float('Balance',default=1.0, digits='Product Unit of Measure')
     machine_no = fields.Many2one('machine.list', string='Machine No', required=True)
+    # reserved = fields.Float('Reserved',default=1.0, digits='Product Unit of Measure')
     lots = fields.Integer(string='Lots', required=True)
     material_qty = fields.Float('Quantity',default=1.0, digits='Product Unit of Measure',required=True)
     

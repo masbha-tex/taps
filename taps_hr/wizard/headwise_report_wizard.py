@@ -344,92 +344,88 @@ class HeadwisePDFReport(models.TransientModel):
         slnumber=0
         for payslip in docs:
             slnumber = slnumber+1
-            emp_data = [
-                slnumber,
-                payslip.employee_id.display_name,
-                payslip.employee_id.department_id.name,
-                payslip.employee_id.tax_identification_number,
-                payslip._get_salary_line_total('BASIC'),
-                '',
-                payslip._get_salary_line_total('HRA'),
-                payslip._get_salary_line_total('MEDICAL'),
-                payslip._get_salary_line_total('CONVENCE'),
-                payslip._get_salary_line_total('OTHERS_ALW'),
-                '',
-                '',
-                '',
-                payslip._get_salary_line_total('RPF'),
-                (payslip._get_salary_line_total('BASIC') + 
-                 payslip._get_salary_line_total('HRA') + 
-                 payslip._get_salary_line_total('MEDICAL')+
-                 payslip._get_salary_line_total('CONVENCE')+
-                 payslip._get_salary_line_total('OTHERS_ALW')+
-                 payslip._get_salary_line_total('RPF')),
-                payslip._get_salary_line_total('AIT'),
-            
-            ]
+            if payslip._get_salary_line_total('AIT'):
+                emp_data = [
+                    slnumber,
+                    payslip.employee_id.display_name,
+                    payslip.employee_id.department_id.name,
+                    payslip.employee_id.tax_identification_number,
+                    payslip._get_salary_line_total('BASIC'),
+                    '',
+                    payslip._get_salary_line_total('HRA'),
+                    payslip._get_salary_line_total('MEDICAL'),
+                    payslip._get_salary_line_total('CONVENCE'),
+                    payslip._get_salary_line_total('OTHERS_ALW'),
+                    '',
+                    '',
+                    '',
+                    payslip._get_salary_line_total('RPF'),
+                    (payslip._get_salary_line_total('BASIC') + 
+                     payslip._get_salary_line_total('HRA') + 
+                     payslip._get_salary_line_total('MEDICAL')+
+                     payslip._get_salary_line_total('CONVENCE')+
+                     payslip._get_salary_line_total('OTHERS_ALW')+
+                     payslip._get_salary_line_total('RPF')),
+                    payslip._get_salary_line_total('AIT'),
+                
+                ]
             report_data.append(emp_data)     
         
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        worksheet = workbook.add_worksheet()
+        worksheet = workbook.add_worksheet(('Schedule C'))
 
-        report_title_style1 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 12})
+        #column_style
+
+        report_title_style1 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 12,'valign': 'top'})
         report_small_title_style = workbook.add_format({'align': 'center','bold': True,'font_size': 12,'left': True, 'top': True, 'right': True, 'bottom': True})
         worksheet.merge_range('A1:P1', 'Sehedule C', report_title_style1)
         worksheet.merge_range('A2:P2', 'Particulars of tax deducted at source from salarie', report_title_style1)
         worksheet.merge_range('B3:M3', 'Particulars of the employee from whom the deduction of tax is made', report_small_title_style)
 
-        
-#         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
         # worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
         # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
-#         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        # worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
         
         column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-        column_issued_style = workbook.add_format({'text_wrap':True,'align': 'center', 'bold': True, 'font_size': 12,'left': True, 'top': True, 'right': True, 'bottom': True})
-        format_label = workbook.add_format({'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True})
+        column_issued_style = workbook.add_format({'text_wrap':True,'align': 'center', 'bold': True, 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter'})
+        format_label = workbook.add_format({'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         # set the width od the column
         
-        worksheet.set_column(0, 0, 3)
+        worksheet.set_column(0, 0, 6)
         worksheet.set_column(1, 1, 32)
         worksheet.set_column(2, 2, 26)
         worksheet.set_column(3, 3, 21)
         worksheet.set_column(4, 15, 12)
-        # worksheet.set_column(6, 6, 6)
-        # worksheet.set_column(7, 10, 12)
-        # worksheet.set_column(11, 13, 9)
-        # worksheet.set_column(14, 14, 12)
-        # worksheet.set_column(15, 15, 8)
-        # worksheet.set_column(16, 16, 10)
-        # worksheet.set_column(17, 21, 4)
-        # worksheet.set_column(22, 26, 13)
-        # worksheet.set_column(27, 28, 10)
-        # worksheet.set_column(29, 39, 11)
-        # worksheet.set_column(40, 40, 14)
-        # worksheet.set_column(41, 47, 14)
-        # worksheet.set_column(48, 48, 16)
-        worksheet.set_row(0, 30)
+
+        # set the width od the row (row_num, width)
+        
+        worksheet.set_row(0, 17)
         worksheet.set_row(1, 30)
         worksheet.set_row(2, 30)
-        worksheet.set_row(3, 30)
-        
+        worksheet.set_row(3, 80)
+
+        # set the width od the merge_range (row_num, col_num, row_num, col_num, '', column_style)
+
+        worksheet.merge_range(2, 0, 3,0, 'SL.',column_issued_style)
+        worksheet.merge_range(2, 13, 3,13, 'Rpf',column_issued_style)
+        worksheet.merge_range(2, 14, 3,14, 'Total',column_issued_style)
+        worksheet.merge_range(2, 15, 3,15, 'Amount of tax Deducted',column_issued_style)
 
         merge_format = workbook.add_format({'align': 'center','valign': 'top'})
         #worksheet.merge_range(4, 0, 9, 0, '', merge_format)
-        # worksheet.set_column(9, 18, 20)
         merge_format = workbook.add_format({'align': 'center','valign': 'top'})
         # worksheet.set_column(19, 52, 20)
         merge_format = workbook.add_format({'align': 'center','valign': 'top'})
-
         
+        # title 
         
         worksheet.write(3, 0, 'SL.', column_issued_style)  
         worksheet.write(3, 1, 'Name', column_issued_style)  
         worksheet.write(3, 2, 'Designation', column_issued_style) 
-        worksheet.write(3, 3, 'TIN', column_issued_style) 
+        worksheet.write(3, 3, 'TIN', column_issued_style)
         worksheet.write(3, 4, 'Basic Pay', column_issued_style) 
         worksheet.write(3, 5, 'Bonus, Arrear, Advance, Leave, overtime ', column_issued_style) 
         worksheet.write(3, 6, 'House Rent', column_issued_style) 
@@ -445,17 +441,6 @@ class HeadwisePDFReport(models.TransientModel):
 
         col = 0
         row=4
-        
-        grandtotal = 0
-        
-        # for line in report_data:
-        #     col=0
-        #     for l in line:
-        #         if col>4:
-        #             grandtotal = grandtotal+l
-        #         worksheet.write(row, col, l)
-        #         col+=1
-        #     row+=1
 
         for line in report_data:
             col=0
@@ -463,12 +448,10 @@ class HeadwisePDFReport(models.TransientModel):
                 worksheet.write(row, col, l, format_label)
                 col+=1
             row+=1
+            
+        worksheet.write(row, 3, 'Total', column_issued_style)
+        # worksheet.write(row, 4, 'Total', column_issued_style)
         
-        #worksheet.write(4, 0, 'SL.', column_product_style)
-        #raise UserError((row+1))
-        # worksheet.write(row, 4, 'Grand Total', report_small_title_style)
-        # worksheet.write(row, 5, round(grandtotal), report_small_title_style)
-        #raise UserError((datefrom,dateto,bankname,categname))
         workbook.close()
         xlsx_data = output.getvalue()
         #raise UserError(('sfrgr'))

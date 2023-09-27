@@ -23,7 +23,7 @@
         </field>
     </record>
 
-    <record model="ir.rule" id="record_not_shared_multi_company_rule">
+    <record model="ir.rule" id="record_not_shared_mrp_multi_company_rule">
         <field name="name">Non Shared Records:model</field>
         <field name="model_id" ref="model_manufacturing_order"/>
         <field name="global" eval="True"/>
@@ -34,7 +34,7 @@
         <field name="name">manufacturing.order.tree</field>
         <field name="model">manufacturing.order</field>
         <field name="arch" type="xml" >
-            <tree string="Manufacturing Order" create="false" delete ="false" editable="top" class="custom_column"> 
+            <tree string="Manufacturing Order" create="true" delete ="false" editable="top" class="custom_column"> 
                 <!-- editable="top" -->
                 <header>
                     <button name="button_plan" type="object" string="Plan"/>
@@ -65,11 +65,11 @@
                 <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>
                 <field name="done_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
                 <field name="balance_qty" optional="show" sum="Balance" decoration-bf="True"/>
-                <field name="tape_con" optional="show" sum="Tape C." decoration-bf="True"/>
-                <field name="slider_con" optional="show" sum="Slider C." decoration-bf="True"/>
-                <field name="topwire_con" optional="show" sum="Topwire C." decoration-bf="True"/>
-                <field name="botomwire_con" optional="show" sum="Botomwire C." decoration-bf="True"/>
-                <field name="wire_con" optional="show" sum="Wire C." decoration-bf="True"/>
+                <field name="tape_con" readonly="1" force_save="1" optional="show" sum="Tape C." decoration-bf="True"/>
+                <field name="slider_con" readonly="1" force_save="1" optional="show" sum="Slider C." decoration-bf="True"/>
+                <field name="topwire_con" invisible="1" optional="show" sum="Topwire C." decoration-bf="True"/>
+                <field name="botomwire_con" invisible="1" optional="show" sum="Botomwire C." decoration-bf="True"/>
+                <field name="wire_con" invisible="1" optional="show" sum="Wire C." decoration-bf="True"/>
                 <field name="pinbox_con" optional="show" sum="Pinbox C." decoration-bf="True"/>
                 <field name="dyeing_plan"/>
                 <field name="dyeing_plan_end" invisible="1"/>
@@ -91,23 +91,23 @@
                 <field name="tpl_rec_plan_qty"  invisible="1"/>
                 <field name="top_plat_output" optional="show" sum="Top Plat/Paint Output" decoration-bf="True"/> 
 
-                <field name="bot_plat_plan"/>
+                <field name="bot_plat_plan" invisible="1" />
                 <field name="bot_plat_plan_end" invisible="1"/>
-                <field name="bot_plat_plan_qty" optional="show" sum="Btm Plat/Paint Plan Qty" decoration-bf="True"/>
+                <field name="bot_plat_plan_qty" invisible="1"  optional="show" sum="Btm Plat/Paint Plan Qty" decoration-bf="True"/>
                 <field name="bpl_rec_plan_qty"  invisible="1"/>
-                <field name="bot_plat_output" optional="show" sum="Btm Plat/Paint Output" decoration-bf="True"/>      
+                <field name="bot_plat_output" invisible="1"  optional="show" sum="Btm Plat/Paint Output" decoration-bf="True"/>      
  
-                <field name="pin_plat_plan"/>
+                <field name="pin_plat_plan" invisible="1" />
                 <field name="pin_plat_plan_end" invisible="1"/>
-                <field name="pin_plat_plan_qty" optional="show" sum="Pbox Plat/Paint Plan Qty" decoration-bf="True"/>
+                <field name="pin_plat_plan_qty" invisible="1"  optional="show" sum="Pbox Plat/Paint Plan Qty" decoration-bf="True"/>
                 <field name="ppl_rec_plan_qty"  invisible="1"/>
-                <field name="pin_plat_output" optional="show" sum="Pbox Plat/Paint Output" decoration-bf="True"/>      
+                <field name="pin_plat_output" invisible="1"  optional="show" sum="Pbox Plat/Paint Output" decoration-bf="True"/>      
 
-                <field name="sli_asmbl_plan"/>
+                <field name="sli_asmbl_plan" invisible="1" />
                 <field name="sli_asmbl_plan_end" invisible="1"/>
-                <field name="sli_asmbl_plan_qty" optional="show" sum="Slider Asmbl Plan Qty" decoration-bf="True"/>
+                <field name="sli_asmbl_plan_qty" invisible="1"  optional="show" sum="Slider Asmbl Plan Qty" decoration-bf="True"/>
                 <field name="sass_rec_plan_qty"  invisible="1"/>
-                <field name="sli_asmbl_output" optional="show" sum="Slider Asmbl Output" decoration-bf="True"/>
+                <field name="sli_asmbl_output" invisible="1"  optional="show" sum="Slider Asmbl Output" decoration-bf="True"/>
 				
 				<field name="chain_making_done" optional="show" sum="CM Output" decoration-bf="True"/>
 				<field name="diping_done" optional="show" sum="Dipping Output" decoration-bf="True"/>

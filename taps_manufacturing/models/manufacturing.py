@@ -45,7 +45,12 @@ class ManufacturingOrder(models.Model):
     product_uom = fields.Many2one('uom.uom', string='Unit', related='product_template_id.uom_id')
     product_uom_qty = fields.Float(string='Quantity', related='sale_order_line.product_uom_qty', digits='Product Unit of Measure', readonly=True, store=True)
     done_qty = fields.Float(string='Done Qty', digits='Product Unit of Measure', readonly=False, store=True)
-    balance_qty = fields.Float(string='Balance', compute='_balance_qty', digits='Product Unit of Measure', readonly=True)
+    balance_qty = fields.Float(string='Balance', compute='_balance_qty', digits='Product Unit of Measure', readonly=True, group_operator="sum", store=True)
+
+    @api.depends('product_uom_qty', 'done_qty')
+    def _balance_qty(self):
+        for s in self:
+            s.balance_qty = s.product_uom_qty - s.done_qty
     
     topbottom = fields.Char(string='Top/Bottom', store=True, readonly=True)
     slidercodesfg = fields.Char(string='Slider', store=True, readonly=True)
@@ -84,9 +89,9 @@ class ManufacturingOrder(models.Model):
     nu1washer = fields.Text(string='1 NO. Washer Material & Size', store=True)
     nu2washer = fields.Text(string='2 NO. Washer Material & Size', store=True)
     back_part = fields.Text(string='Back Part', store=True)
+    tape_con = fields.Float('Tape C.', readonly=False, digits='Unit Price', store=True)
+    slider_con = fields.Float('Slider C.', readonly=False, digits='Unit Price', store=True)
     
-    tape_con = fields.Float('Tape C.', compute='_get_line_value', readonly=True, digits='Unit Price')
-    slider_con = fields.Float('Slider C.', compute='_get_line_value', readonly=True, digits='Unit Price')
     topwire_con = fields.Float('Topwire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
     botomwire_con = fields.Float('Botomwire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
     tbwire_con = fields.Float('TBwire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
@@ -98,7 +103,13 @@ class ManufacturingOrder(models.Model):
     dyeing_plan_end = fields.Datetime(string='Dye Plan End', readonly=False)
     dyeing_plan_qty = fields.Float(string='Dye Plan Qty', readonly=False)
     dy_rec_plan_qty = fields.Float(string='Dye Last Plan', readonly=False, default=0.0)
-    dyeing_plan_due = fields.Float(string='Dye Plan Due', readonly=False, default=0.0, compute='_dy_plane_due')
+    dyeing_plan_due = fields.Float(string='Dye Plan Due', readonly=False, default=0.0, compute='_dy_plane_due', group_operator="sum", store=True)
+    
+    @api.depends('tape_con','dyeing_plan_qty')
+    def _dy_plane_due(self):
+        for s in self:
+            s.dyeing_plan_due = s.tape_con - s.dyeing_plan_qty
+    
     dyeing_output = fields.Float(string='Dye Output', readonly=False, default=0.0)
     # dyeing_qc_pass = fields.Float(string='Dye QC Pass', readonly=False, default=0.0)
 
@@ -228,19 +239,12 @@ class ManufacturingOrder(models.Model):
                 s.lead_time = (datetime.now() - s.date_order).days
             else:
                 s.lead_time = 0
-    
-    def _balance_qty(self):
-        for s in self:
-            s.balance_qty = s.product_uom_qty - s.done_qty
-    
-    def _dy_plane_due(self):
-        for s in self:
-            s.dyeing_plan_due = s.tape_con - s.dyeing_plan_qty
+
+            
+
     
     def _get_line_value(self):
         for s in self:
-            s.tape_con = s.sale_order_line.tape_con
-            s.slider_con = s.sale_order_line.slider_con
             s.topwire_con = s.sale_order_line.topwire_con
             s.botomwire_con = s.sale_order_line.botomwire_con
             s.tbwire_con = s.sale_order_line.tbwire_con
