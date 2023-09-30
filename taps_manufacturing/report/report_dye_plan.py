@@ -94,6 +94,9 @@ class ReportDyePlan(models.AbstractModel):
                 report_data = []
                 for pl in m_plan:
                     order_data = []
+                    status_ = None
+                    if pl.done_qty>0:
+                        status_ = 'Ok'
                     order_data = [
                         pl.oa_id.name,
                         pl.action_date,
@@ -101,7 +104,7 @@ class ReportDyePlan(models.AbstractModel):
                         pl.partner_id.name,
                         pl.buyer_name,
                         pl.fg_categ_type,
-                        pl.shade,'',pl.qty,'','','','','','','','',''
+                        pl.shade,pl.shade_ref,pl.qty,pl.done_qty,'',status_,'','','','','',''
                         ]
                     report_data.append(order_data)
                 for line in report_data:

@@ -17,6 +17,8 @@
                         <field name="item_qty"/>
                         <field name="material_qty"/>
                         <field name="plan_qty"/>
+                        <field name="common_machine"/>
+                        <field name="full_qty"/>
                     </group>
                 </group>
                 <group>
@@ -28,9 +30,9 @@
                                     <field name="plan_id" invisible="1"/>
                                     <field name="oa_id"/>
                                     <field name="qty_balance"/>
-                                    <field name="machine_no" required="True"/>
+                                    <field name="machine_no"/>
                                     <field name="reserved"/>
-                                    <field name="lots" required="True"/>
+                                    <field name="lots"/>
                                     <field name="material_qty" required="True" optional="show" sum="Quantity" decoration-bf="True"/>
                                 </tree>
                             </field>
@@ -55,9 +57,9 @@
                 <field name="plan_id" invisible="1"/>
                 <field name="oa_id"/>
                 <field name="qty_balance"/>
-                <field name="machine_no" required="True"/>
+                <field name="machine_no"/>
                 <field name="reserved"/>
-                <field name="lots" required="True"/>
+                <field name="lots"/>
                 <field name="material_qty" required="True"/>
             </tree>
         </field>

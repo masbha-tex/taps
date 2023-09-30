@@ -37,6 +37,8 @@ class ManufacturingPlan(models.TransientModel):
     plan_end = fields.Datetime(string='End Date')
     item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
+    common_machine = fields.Boolean(readonly=False, string='Common Machine', default=False)
+    full_qty = fields.Boolean(readonly=False, string='Full Qty', default=False)
 
     @api.depends('machine_line.material_qty')
     def _compute_plan_qty(self):
@@ -62,7 +64,20 @@ class ManufacturingPlan(models.TransientModel):
     
     def _inverse_plan_qty(self):
         pass    
+  
     
+    @api.onchange('common_machine')
+    def _onchange_selection(self):
+        if self.common_machine:
+            m_no = self.mapped('machine_line.machine_no.id')
+            self.machine_line.update({'machine_no':m_no[0]})
+
+    @api.onchange('full_qty')
+    def _onchange_qty_selection(self):
+        if self.full_qty:
+            for ml in self.machine_line:
+                ml.update({'material_qty':ml.qty_balance})
+                
     @api.onchange('plan_for')
     def _onchange_qty(self):
         # raise UserError((self.plan_for.name))

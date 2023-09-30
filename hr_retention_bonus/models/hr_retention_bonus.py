@@ -31,28 +31,42 @@ class HrRetentionBonus(models.Model):
             bonus.total_amount = bonus.bonus_amount
             bonus.balance_amount = balance_amount
             bonus.total_paid_amount = total_paid
+            
+         
 
-    name = fields.Char(string="Name", default="/", readonly=True, help="Name of the Retention Bonus Scheme")
-    date = fields.Date(string="Date", default=fields.Date.today(), readonly=True, help="Date")
-    employee_id = fields.Many2one('hr.employee', string="Employee", required=True, help="Employee")
-    department_id = fields.Many2one('hr.department', related="employee_id.department_id", readonly=True, store=True,
+    name = fields.Char(string="Number", default="/", readonly=True, help="Name of the Retention Bonus Scheme")
+    date = fields.Date(string="Effective Date", default=fields.Date.today(), tracking=True, help="Effective Date")
+    duration = fields.Integer(default=1, string="Duration in Month", tracking=True, help="Duration in Month")
+    
+    @api.depends('date', 'duration')
+    def _get_default_entitlement_date(self):
+        for record in self:
+            if record.date and record.duration:
+                record.entitlement_date = record.date + relativedelta(months=record.duration)
+            else:
+                record.entitlement_date = fields.Date.today() 
+
+        
+    entitlement_date = fields.Date(string="Entitlement Date", compute=_get_default_entitlement_date, store=True, help="Date of the Entitlement")   
+    employee_id = fields.Many2one('hr.employee', string="Employee", tracking=True, required=True, help="Employee")
+    department_id = fields.Many2one('hr.department', related="employee_id.department_id", tracking=True, readonly=True, store=True,
                                     string="Department", help="Employee")
     installment = fields.Integer(string="No Of Installments", default=1, help="Number of installments")
-    payment_date = fields.Date(string="Payment Start Date", required=True, default=fields.Date.today(), help="Date of "
+    payment_date = fields.Date(string="Payment Start Date", required=True, tracking=True, default=fields.Date.today(), help="Date of "
                                                                                                              "the "
                                                                                                              "paymemt")
     bonus_lines = fields.One2many('hr.retention.bonus.line', 'bonus_id', string="Bonus Line", index=True)
     company_id = fields.Many2one('res.company', 'Company', related="employee_id.company_id", store=True, readonly=True, help="Company",
                                  states={'draft': [('readonly', False)]})
-    currency_id = fields.Many2one('res.currency', string='Currency', required=True, help="Currency",
-                                  default=lambda self: self.env.user.company_id.currency_id)
+    currency_id = fields.Many2one('res.currency', string='Currency', tracking=True, required=True, help="Currency",
+                                  default=lambda self: self.env.user.company_id.currency_id.browse(55))
     job_position = fields.Many2one('hr.job', related="employee_id.job_id", store=True, readonly=True, string="Job Position",
                                    help="Job position")
-    bonus_amount = fields.Float(string="Bonus Amount", required=True, help="Bonus amount")
+    bonus_amount = fields.Float(string="Bonus Amount",  tracking=True, required=True, help="Bonus amount")
     total_amount = fields.Float(string="Total Amount", store=True, readonly=True, compute='_compute_retention_bonus_amount',
                                 help="Total Retention Bonus Scheme amount")
     balance_amount = fields.Float(string="Balance Amount", store=True, compute='_compute_retention_bonus_amount', help="Balance amount")
-    total_paid_amount = fields.Float(string="Total Paid Amount", store=True, compute='_compute_retention_bonus_amount',
+    total_paid_amount = fields.Float(string="Total Paid Amount", tracking=True, store=True, compute='_compute_retention_bonus_amount',
                                      help="Total paid amount")
     criteria = fields.Selection([
         ('Appointment Terms', 'Appointment Terms'),
@@ -67,6 +81,8 @@ class HrRetentionBonus(models.Model):
         ('refuse', 'Refused'),
         ('cancel', 'Canceled'),
     ], string="State", default='draft', tracking=True, copy=False, )
+
+
 
     @api.model
     def create(self, values):

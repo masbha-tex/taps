@@ -41,9 +41,9 @@
                             <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         </group>
                         <group>
-                            <field name="complaint_date" class="oe_read_only"/>
-                            <field name="action_taken" groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
-                            <field name="final_action_taken" groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
+                            <field name="complaint_date"/>
+                            <field name="action_taken" options="{'no_create':true, 'no_open':true}"  groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
+                            <field name="final_action_taken" options="{'no_create':true, 'no_open':true}" groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
                         </group>                       
                     </group>
                     <group colspan="2" col="2">

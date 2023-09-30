@@ -10,8 +10,11 @@
                 <field name="name"/>
                 <field name="employee_id"/>
                 <field name="criteria"/>
-                <field name="bonus_amount"/>
+                <field name="bonus_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="date"/>
+                <field name="duration"/>
+                <field name="entitlement_date"/>
+                <field name="payment_date"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -35,29 +38,32 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                     </div>
+                    <field name="name" readonly="1"/>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" readonly="1"/>
+                            <field name="criteria" placeholder="Criteria's Name" attrs="{'readonly':[('state','=','approve')]}"/>
                         </h1>
                     </div>
                     <group col="4">
                         <field name="employee_id"  attrs="{'readonly':[('state','=','approve')]}"/>
                         <field name="date"/>
                         <field name="department_id"/>
+                        <field name="duration" attrs="{'readonly':[('state','=','approve')]}"/>
                         <field name="job_position"/>
-                        <field name="bonus_amount" attrs="{'readonly':[('state','=','approve')]}"/>
-                        <field name="installment" attrs="{'readonly':[('state','=','approve')]}"/>
-                        <field name="payment_date" attrs="{'readonly':[('state','=','approve')]}"/>
-                        <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                        <field name="entitlement_date" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company" readonly="1"/>
+                        <field name="bonus_amount" widget="monetary" options="{'currency_field': 'currency_id'}" attrs="{'readonly':[('state','=','approve')]}"/>
                         <field name="currency_id" options="{'no_create': True}" groups="base.group_multi_company"/>
-                        <field name="criteria" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="payment_date" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="criteria" readonly="1"/>
+                        <field name="installment" attrs="{'readonly':[('state','=','approve')]}"/>
                     </group>
                     <notebook>
                         <page string="Installments">
                             <field name="bonus_lines">
                                 <tree string="Installments" editable="bottom">
                                     <field name="date"/>
-									<field name="adjustment_type"/>
+									<field name="adjustment_type" invisible="1"/>
                                     <field name="amount"/>
                                     <field name="paid" readonly="1" invisible="1"/>
                                 </tree>

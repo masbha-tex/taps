@@ -24,7 +24,7 @@ class HrGrievance(models.Model):
                         </p>
                         """)
     
-    submit_by = fields.Many2one('hr.employee',"Complaint By", required=True, tracking=True)
+    submit_by = fields.Many2one('hr.employee',"Complaint By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
     state = fields.Selection([
             ('draft', 'Draft'),
             ('Submit', 'Submit'),
