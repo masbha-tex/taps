@@ -43,8 +43,10 @@ class HrRetentionBonus(models.Model):
         for record in self:
             if record.date and record.duration:
                 record.entitlement_date = record.date + relativedelta(months=record.duration)
+                record.payment_date = record.date + relativedelta(months=record.duration)
             else:
                 record.entitlement_date = fields.Date.today()
+                record.payment_date = fields.Date.today()
 
     @api.depends('instant_payment')
     def _get_default_installment_date(self):
@@ -104,7 +106,7 @@ class HrRetentionBonus(models.Model):
         
     @api.model
     def create(self, values):
-        loan_count = self.env['hr.retention.bonus'].search_count(
+        loan_count = self.env['hr.retention.bonus'].sudo().search_count(
             [('employee_id', '=', values['employee_id']), ('state', '=', 'approve'),
              ('balance_amount', '!=', 0)])
         if loan_count:

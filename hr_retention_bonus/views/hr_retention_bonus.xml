@@ -6,7 +6,7 @@
         <field name="name">hr.retention.bonus.tree</field>
         <field name="model">hr.retention.bonus</field>
         <field name="arch" type="xml">
-            <tree string="Retention Requests">
+            <tree string="Retention Requests" sample="1">
                 <field name="name"/>
                 <field name="employee_id"/>
                 <field name="criteria"/>
@@ -32,7 +32,7 @@
                     <button name="action_cancel" type="object" string="Cancel" states="draft" />
                     <button name="action_approve" type="object" string="Approve" states="waiting_approval_1" class="oe_highlight" groups="hr.group_hr_manager"/>
                     <button name="action_refuse" type="object" string="Refuse" states="draft,waiting_approval_1" class="oe_highlight" groups="hr.group_hr_manager"/>
-                    <button name="action_draft" type="object" string="Set To Draft" states="approve,waiting_approval_1" class="oe_highlight" groups="hr.group_hr_manager"/>                    
+                    <button name="action_draft" type="object" string="Set To Draft" states="approve,waiting_approval_1" class="oe_highlight"/>                    
                     <field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval_1,approve" />
                 </header>
 
@@ -118,7 +118,7 @@
         <field name="name">Request for Retention Bonus Scheme</field>
         <field name="res_model">hr.retention.bonus</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_myrequest': 1}</field>
+        <field name="context">{}</field>
         <field name="search_view_id" ref="view_retention_bonus_request_search_form"/>
          <field name="help" type="html">
             <p class="oe_view_nocontent_create">

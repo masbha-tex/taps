@@ -69,7 +69,7 @@
         <field name="model">hr.grievance</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Grievance">
+            <tree string="Grievance" sample="1">
                 <field name="name"/>
                 <field name="employee_id"/>
                 <field name="type" options="{'no_create':true, 'no_open':true}"/>
