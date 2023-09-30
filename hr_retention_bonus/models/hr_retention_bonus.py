@@ -35,8 +35,8 @@ class HrRetentionBonus(models.Model):
          
 
     name = fields.Char(string="Number", default="/", readonly=True, help="Name of the Retention Bonus Scheme")
-    date = fields.Date(string="Effective Date", default=fields.Date.today(), tracking=True, help="Effective Date")
-    duration = fields.Integer(default=1, string="Duration in Month", tracking=True, help="Duration in Month")
+    date = fields.Date(string="Effective Date", default=fields.Date.today(), required=True, tracking=True, help="Effective Date")
+    duration = fields.Integer(default=1, string="Duration in Month", required=True, tracking=True, help="Duration in Month")
     
     @api.depends('date', 'duration')
     def _get_default_entitlement_date(self):
@@ -44,14 +44,26 @@ class HrRetentionBonus(models.Model):
             if record.date and record.duration:
                 record.entitlement_date = record.date + relativedelta(months=record.duration)
             else:
-                record.entitlement_date = fields.Date.today() 
+                record.entitlement_date = fields.Date.today()
+
+    @api.depends('instant_payment')
+    def _get_default_installment_date(self):
+        for record in self:
+            if record.instant_payment == '3':
+                record.installment = 3
+            elif record.instant_payment == '6':
+                record.installment = 6
+            elif record.instant_payment == '12':
+                record.installment = 12
+            else:
+                record.installment = 1  
 
         
     entitlement_date = fields.Date(string="Entitlement Date", compute=_get_default_entitlement_date, store=True, help="Date of the Entitlement")   
     employee_id = fields.Many2one('hr.employee', string="Employee", tracking=True, required=True, help="Employee")
     department_id = fields.Many2one('hr.department', related="employee_id.department_id", tracking=True, readonly=True, store=True,
                                     string="Department", help="Employee")
-    installment = fields.Integer(string="No Of Installments", default=1, help="Number of installments")
+    installment = fields.Integer(string="No Of Installments", compute=_get_default_installment_date, help="Number of installments")
     payment_date = fields.Date(string="Payment Start Date", required=True, tracking=True, default=fields.Date.today(), help="Date of "
                                                                                                              "the "
                                                                                                              "paymemt")
@@ -72,7 +84,12 @@ class HrRetentionBonus(models.Model):
         ('Appointment Terms', 'Appointment Terms'),
         ('As per Policy', 'As per Policy'),
         ('Special Retention Bonus', 'Special Retention Bonus'),
-    ], string="Criteria", tracking=True, copy=False, )    
+    ], string="Criteria", tracking=True, copy=True, store=True)
+    instant_payment = fields.Selection([
+        ('3', 'Payment by next 3 months'),
+        ('6', 'Payment by next 6 months'),
+        ('12', 'Payment by next 12 months'),
+    ], string="Instant Payment", tracking=True, copy=True, store=True)        
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -80,10 +97,11 @@ class HrRetentionBonus(models.Model):
         ('approve', 'Approved'),
         ('refuse', 'Refused'),
         ('cancel', 'Canceled'),
-    ], string="State", default='draft', tracking=True, copy=False, )
+    ], string="State", default='draft', tracking=True, store=True, required=True)
 
 
 
+        
     @api.model
     def create(self, values):
         loan_count = self.env['hr.retention.bonus'].search_count(
@@ -96,7 +114,7 @@ class HrRetentionBonus(models.Model):
             values['name'] = self.env['ir.sequence'].next_by_code('hr.retention.bonus.seq', sequence_date=retention_date)
             res = super(HrRetentionBonus, self).create(values)
             return res
-
+            
     def compute_installment(self):
         """This automatically create the installment the employee need to pay to
         company based on payment start date and the no of installments.
@@ -114,7 +132,10 @@ class HrRetentionBonus(models.Model):
                 date_start = date_start + relativedelta(months=1)
             bonus._compute_retention_bonus_amount()
         return True
-
+        
+    def action_draft(self):
+        return self.write({'state': 'draft'})
+        
     def action_refuse(self):
         return self.write({'state': 'refuse'})
 

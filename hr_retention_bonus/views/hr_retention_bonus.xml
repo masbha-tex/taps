@@ -32,6 +32,7 @@
                     <button name="action_cancel" type="object" string="Cancel" states="draft" />
                     <button name="action_approve" type="object" string="Approve" states="waiting_approval_1" class="oe_highlight" groups="hr.group_hr_manager"/>
                     <button name="action_refuse" type="object" string="Refuse" states="draft,waiting_approval_1" class="oe_highlight" groups="hr.group_hr_manager"/>
+                    <button name="action_draft" type="object" string="Set To Draft" states="approve,waiting_approval_1" class="oe_highlight" groups="hr.group_hr_manager"/>                    
                     <field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval_1,approve" />
                 </header>
 
@@ -40,6 +41,7 @@
                     </div>
                     <field name="name" readonly="1"/>
                     <div class="oe_title">
+                         <label for="criteria" class="oe_edit_only"/>
                         <h1>
                             <field name="criteria" placeholder="Criteria's Name" attrs="{'readonly':[('state','=','approve')]}"/>
                         </h1>
@@ -55,8 +57,8 @@
                         <field name="bonus_amount" widget="monetary" options="{'currency_field': 'currency_id'}" attrs="{'readonly':[('state','=','approve')]}"/>
                         <field name="currency_id" options="{'no_create': True}" groups="base.group_multi_company"/>
                         <field name="payment_date" attrs="{'readonly':[('state','=','approve')]}"/>
-                        <field name="criteria" readonly="1"/>
-                        <field name="installment" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="instant_payment" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="installment" class="oe_readonly"/>
                     </group>
                     <notebook>
                         <page string="Installments">
