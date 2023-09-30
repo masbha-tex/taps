@@ -17,7 +17,7 @@ class QualityCheck(models.Model):
         #('pass', 'Passed'),
         #('fail', 'Failed')], string='Status', tracking=True,
         #default='none', copy=False)
-    quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('confirm', 'Unit Head Approval'),('refuse', 'Refuse'),('fail',)])
+    quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('confirm', 'Quality Head Approval'),('refuse', 'Refuse'),('fail',)])
 
     po_qty = fields.Float(compute='_compute_poqty', string='PO Qty', readonly=True)
     receive_qty = fields.Float(compute='_compute_reqty', string='Receive Qty', readonly=True)

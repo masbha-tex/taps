@@ -16,6 +16,7 @@
                     <filter name="oa_group" string="OA" domain="[]" context="{'group_by': 'oa_id'}"/>
                     <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'fg_categ_type'}"/>
                     <filter name="shade_group" string="Shade" domain="[]" context="{'group_by': 'shade'}"/>
+                    <filter name="shaderef_group" string="Shade Ref" domain="[]" context="{'group_by': 'shade_ref'}"/>
                     <filter name="finish_group" string="Finish" domain="[]" context="{'group_by': 'finish'}"/>
                     <filter name="slider_group" string="Slider" domain="[]" context="{'group_by': 'slidercodesfg'}"/>
                 </group>
@@ -58,6 +59,7 @@
                 <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
+                <field name="shade_ref"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="remarks"/>
@@ -154,6 +156,7 @@
                 <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
+                <field name="shade_ref"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="remarks"/>

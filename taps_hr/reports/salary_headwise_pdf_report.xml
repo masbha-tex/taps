@@ -24,7 +24,8 @@
                           <th>SL</th>
                           <th>ID</th>
                           <th>Employee Name</th>
-                          <th>Section</th>                                
+                          <th>Section</th> 
+                          <th>TIN</th>
                           <th>Amount</th>
 
                       </tr>
@@ -42,6 +43,9 @@
                           </td>
                           <td style="border: 1pt solid black;border-collapse:separate;">
                             <span t-esc="line.employee_id.department_id.name" class="text-nowrap"/>
+                          </td>
+                          <td style="border: 1pt solid black;border-collapse:separate;">
+                            <span t-esc="line.employee_id.tax_identification_number" class="text-nowrap"/>
                           </td>
                           <td class="text-right" style="border: 1pt solid black;border-collapse:separate;">
                               <span t-esc="line.total" class="text-nowrap"/>

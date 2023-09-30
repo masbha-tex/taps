@@ -61,6 +61,7 @@ class OperationDetails(models.Model):
     slidercodesfg = fields.Char(string='Slider Code', store=True, readonly=True)
     finish = fields.Char(string='Finish', store=True, readonly=True)
     shade = fields.Char(string='Shade', store=True, readonly=True)
+    shade_ref = fields.Char(string='Shade Ref.', store=True, readonly=True)
     sizein = fields.Char(string='Size (Inch)', store=True, readonly=True)
     sizecm = fields.Char(string='Size (CM)', store=True, readonly=True)
     
@@ -305,6 +306,7 @@ class OperationDetails(models.Model):
                                             'product_template_id':m_order.product_template_id.id,
                                             'action_date':datetime.now(),
                                             'shade':m_order.shade,
+                                            'shade_ref':m_order.shade_ref,
                                             'finish':m_order.finish,
                                             'slidercodesfg':m_order.slidercodesfg,
                                             'top':m_order.ptopfinish,
@@ -334,6 +336,7 @@ class OperationDetails(models.Model):
                                             'product_template_id':operation.product_template_id.id,
                                             'action_date':datetime.now(),
                                             'shade':operation.shade,
+                                            'shade_ref':operation.shade_ref,
                                             'finish':operation.finish,
                                             'slidercodesfg':operation.slidercodesfg,
                                             'top':operation.top,
@@ -372,6 +375,7 @@ class OperationDetails(models.Model):
                                             'product_template_id':l.mrp_line.product_template_id.id,
                                             'action_date':datetime.now(),
                                             'shade':l.mrp_line.shade,
+                                            'shade_ref':l.mrp_line.shade_ref,
                                             'finish':l.mrp_line.finish,
                                             'slidercodesfg':l.mrp_line.slidercodesfg,
                                             'top':l.mrp_line.ptopfinish,
@@ -485,6 +489,7 @@ class OperationDetails(models.Model):
                                                             'product_template_id':self.product_template_id.id,
                                                             'action_date':datetime.now(),
                                                             'shade':self.shade,
+                                                            'shade_ref':self.shade_ref,
                                                             'finish':self.finish,
                                                             'sizein':self.sizein,
                                                             'sizecm':self.sizecm,
@@ -638,6 +643,7 @@ class OperationDetails(models.Model):
                                                     'product_template_id':operation.product_template_id.id,
                                                     'action_date':datetime.now(),
                                                     'shade':operation.shade,
+                                                    'shade_ref':operation.shade_ref,
                                                     'finish':operation.finish,
                                                     'sizein':operation.sizein,
                                                     'sizecm':operation.sizecm,
@@ -845,6 +851,7 @@ class OperationDetails(models.Model):
                                                             'product_template_id':out.product_template_id.id,
                                                             'action_date':datetime.now(),
                                                             'shade':out.shade,
+                                                            'shade_ref':out.shade_ref,
                                                             'finish':out.finish,
                                                             'sizein':out.sizein,
                                                             'sizecm':out.sizecm,

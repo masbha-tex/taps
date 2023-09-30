@@ -197,7 +197,7 @@ class HrEmployeePrivate(models.Model):
             
     def total_attendance(self, emp_id):
         dat = self.env['hr.attendance'].search([('employee_id', '=', emp_id.id),('attDate', '>=', (datetime.today().replace(day=1) - relativedelta(days=1)).strftime('%Y-%m-26')),
-                                                  ('attDate', '<=', datetime.today())])
+                                                  ('attDate', '<=', datetime.today().strftime('%Y-%m-25'))])
         total = dat
         tt = len(total)
         return tt
@@ -557,7 +557,7 @@ class HrEmployeeBase(models.AbstractModel):
 
         fromdate = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
         todate = fields.Date.today().strftime('%Y-%m-25')
-#         raise UserError((fromdate,todate,data.get('empID')))  
+#         raise UserError((from date,todate,data.get('empID')))  
         att = self.env['hr.attendance'].search([('attDate', '>=', fromdate),('attDate', '<=', todate),('empID', 'like', employee.emp_id)]).sorted(key = 'attDate')
 #         raise UserError((employee.emp_id))
         emplist = att.mapped('employee_id.id')

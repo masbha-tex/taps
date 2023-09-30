@@ -6,6 +6,7 @@ from datetime import datetime, date, timedelta, time
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.misc import xlsxwriter
 from odoo.tools import format_date
+from dateutil.relativedelta import relativedelta
 import re
 import math
 from dateutil.relativedelta import relativedelta
@@ -16,8 +17,8 @@ class AttendancePDFReport(models.TransientModel):
     _description = 'Attendace Report'     
 
     is_company = fields.Boolean(readonly=False, default=False)
-    date_from = fields.Date('Date from', required=True, default=(date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
-    date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))
+    date_from = fields.Date('Date from', required=True, readonly=False, default=lambda self: self._compute_from_date())
+    date_to = fields.Date('Date to', required=True, readonly=False, default=lambda self: self._compute_to_date())
     report_type = fields.Selection([
         ('job_card',	'Employee Job Card'),
         ('dailyatten',	'Daily Attendance'),        
@@ -80,7 +81,23 @@ class AttendancePDFReport(models.TransientModel):
         'res.company',  string='Company Mode', readonly=False)
     department_id = fields.Many2one(
         'hr.department',  string='Department', readonly=False)
-    
+
+    @api.depends('date_from')
+    def _compute_from_date(self):
+        if date.today().day>25:
+            dt_from = fields.Date.today().strftime('%Y-%m-26')
+        else:
+            dt_from = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
+        return dt_from
+
+    @api.depends('date_to')
+    def _compute_to_date(self):
+        if date.today().day>25:
+            to_date = fields.Date.today() + relativedelta(months=1)
+            dt_to = to_date.strftime('%Y-%m-25')
+        else:
+            dt_to = fields.Date.today().strftime('%Y-%m-25')
+        return dt_to
     
     @api.depends('employee_id', 'mode_type')
     def _compute_department_id(self):

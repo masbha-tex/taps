@@ -6,6 +6,7 @@ from datetime import datetime, date, timedelta, time
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.misc import xlsxwriter
 from odoo.tools import format_date
+from dateutil.relativedelta import relativedelta
 import re
 import math
 _logger = logging.getLogger(__name__)
@@ -15,8 +16,28 @@ class HeadwisePDFReport(models.TransientModel):
     _description = 'Salary Headwise Report'    
 
     is_company = fields.Boolean(readonly=False, default=False)
-    date_from = fields.Date('Date from', required=True, default = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26'))
-    date_to = fields.Date('Date to', required=True, default = fields.Date.today().strftime('%Y-%m-25'))
+    date_from = fields.Date('Date from', required=True, readonly=False, default=lambda self: self._compute_from_date())
+    date_to = fields.Date('Date to', required=True, readonly=False, default=lambda self: self._compute_to_date())
+
+
+    @api.depends('date_from')
+    def _compute_from_date(self):
+        if date.today().day>25:
+            dt_from = fields.Date.today().strftime('%Y-%m-26')
+        else:
+            dt_from = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
+        return dt_from
+
+    @api.depends('date_to')
+    def _compute_to_date(self):
+        if date.today().day>25:
+            to_date = fields.Date.today() + relativedelta(months=1)
+            dt_to = to_date.strftime('%Y-%m-25')
+        else:
+            dt_to = fields.Date.today().strftime('%Y-%m-25')
+        return dt_to
+    
+    
     report_type = fields.Selection([
         ('TAX_DEDUCTION',	'Tax Deduction (Sehedule C)'),
         ('BASIC',	'Basic'),
@@ -81,7 +102,8 @@ class HeadwisePDFReport(models.TransientModel):
         ('allcompany', 'TEX ZIPPERS (BD) LIMITED')],
         string='All Company', required=False)   
     
-    file_data = fields.Binary(readonly=True, attachment=False)    
+    file_data = fields.Binary(readonly=True, attachment=False) 
+
     
     @api.depends('employee_id', 'holiday_type')
     def _compute_department_id(self):
@@ -317,14 +339,15 @@ class HeadwisePDFReport(models.TransientModel):
         if data.get('company_all'):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
-
+        # raise UserError((domain)) 
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
             #raise UserError((docs.id)) 
-        emplist = docs.mapped('employee_id.id')
-        employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+        # emplist = docs.mapped('employee_id.id')
+        # employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
         
-        catlist = employee.mapped('category_ids.id')
-        category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
+        # catlist = employee.mapped('category_ids.id')
+        # category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
+        
         categname=[]
         if self.employee_type =='staff':
             categname='Staffs'
@@ -338,13 +361,14 @@ class HeadwisePDFReport(models.TransientModel):
             categname='C-Workers'
             
         
-        #raise UserError((datefrom,dateto,bankname,categname))
+        
         report_data = []
         emp_data = []
         slnumber=0
         for payslip in docs:
-            slnumber = slnumber+1
+            emp_data = []
             if payslip._get_salary_line_total('AIT'):
+                slnumber = slnumber+1
                 emp_data = [
                     slnumber,
                     payslip.employee_id.display_name,
@@ -369,7 +393,7 @@ class HeadwisePDFReport(models.TransientModel):
                     payslip._get_salary_line_total('AIT'),
                 
                 ]
-            report_data.append(emp_data)     
+                report_data.append(emp_data)     
         
         
         output = io.BytesIO()
@@ -390,7 +414,7 @@ class HeadwisePDFReport(models.TransientModel):
         
         column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-        column_issued_style = workbook.add_format({'text_wrap':True,'align': 'center', 'bold': True, 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter'})
+        column_issued_style = workbook.add_format({'text_wrap':True,'align': 'center', 'bold': True, 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         format_label = workbook.add_format({'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         # set the width od the column
         
@@ -443,14 +467,26 @@ class HeadwisePDFReport(models.TransientModel):
         row=4
 
         for line in report_data:
-            col=0
+            col = 0
             for l in line:
                 worksheet.write(row, col, l, format_label)
                 col+=1
             row+=1
             
         worksheet.write(row, 3, 'Total', column_issued_style)
-        # worksheet.write(row, 4, 'Total', column_issued_style)
+        worksheet.write(row, 4, '=SUM(E{0}:E{1})'.format(4, row), column_issued_style)
+        worksheet.write(row, 5, '', column_issued_style)
+        worksheet.write(row, 6, '=SUM(G{0}:G{1})'.format(4, row), column_issued_style)
+        worksheet.write(row, 7, '=SUM(H{0}:H{1})'.format(4, row), column_issued_style)
+        worksheet.write(row, 8, '=SUM(I{0}:I{1})'.format(4, row), column_issued_style)
+        worksheet.write(row, 9, '=SUM(J{0}:J{1})'.format(4, row), column_issued_style)
+        worksheet.write(row, 10, '', column_issued_style)
+        worksheet.write(row, 11, '', column_issued_style)
+        worksheet.write(row, 12, '', column_issued_style)
+        worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(4, row), column_issued_style)
+        worksheet.write(row, 14, '=SUM(O{0}:O{1})'.format(4, row), column_issued_style)
+        worksheet.write(row, 15, '=SUM(P{0}:P{1})'.format(4, row), column_issued_style)
+        
         
         workbook.close()
         xlsx_data = output.getvalue()

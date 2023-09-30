@@ -19,6 +19,7 @@
                     <filter name="oa_group" string="OA" domain="[]" context="{'group_by': 'oa_id'}"/>
                     <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'fg_categ_type'}"/>
                     <filter name="shade_group" string="Shade" domain="[]" context="{'group_by': 'shade'}"/>
+                    <filter name="shaderef_group" string="Shade Ref" domain="[]" context="{'group_by': 'shade_ref'}"/>
                     <filter name="finish_group" string="Finish" domain="[]" context="{'group_by': 'finish'}"/>
                     <filter name="slider_group" string="Slider" domain="[]" context="{'group_by': 'slidercodesfg'}"/>
                     <filter name="machine_group" string="Machine" domain="[]" context="{'group_by': 'capacity'}"/>
@@ -61,6 +62,7 @@
                 <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
+                <field name="shade_ref"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="work_center" invisible="1"/>
@@ -122,6 +124,7 @@
                 <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
+                <field name="shade_ref"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="work_center" invisible="1"/>
@@ -163,6 +166,7 @@
                 <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
+                <field name="shade_ref"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="work_center" invisible="1"/>
@@ -199,6 +203,7 @@
                 <field name="slidercodesfg"/>
                 <field name="finish"/>
                 <field name="shade"/>
+                <field name="shade_ref"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="work_center" invisible="1"/>

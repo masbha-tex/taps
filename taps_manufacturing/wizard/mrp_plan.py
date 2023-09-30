@@ -52,14 +52,9 @@ class ManufacturingPlan(models.TransientModel):
 
     @api.model
     def default_get(self, fields_list):
-        #selected_companies = self.env['res.company'].browse(self._context.get('allowed_company_ids'))
-        # raise UserError((self.env['res.company'].browse(self._context.get('allowed_company_ids')).ids))
         res = super().default_get(fields_list)
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_ids")
-        # Auto-complete production_id from context
-        #if "mo_id" in fields_list and active_model == "mrp.production":
-        # res["item_qty"] = active_id
         production = self.env[""+active_model+""].browse(active_id)
         res["item"] = production[0].fg_categ_type
         res["item_qty"] = sum(production.mapped('balance_qty'))
@@ -73,7 +68,34 @@ class ManufacturingPlan(models.TransientModel):
         # raise UserError((self.plan_for.name))
         if self.plan_for.name == 'Dyeing':
             self.material = 'tape'
-
+            
+            active_model = self.env.context.get("active_model")
+            active_id = self.env.context.get("active_ids")
+            production = self.env[""+active_model+""].browse(active_id)
+            
+            oa_ids = production.mapped('oa_id')
+            oa_ids = list(set(oa_ids))
+            
+            planline_values = []
+    
+            for oa in oa_ids:
+                oa_det = production.filtered(lambda op: op.oa_id.id == int(oa[0]))
+                oa_total = sum(oa_det.mapped('dyeing_plan_due'))
+                planline_values.append((0, 0, {
+                    'sequence': 10,
+                    'oa_id': int(oa[0]),
+                    'qty_balance': oa_total,
+                    'machine_no': None,
+                    'reserved': None,
+                    'lots': None,
+                    'material_qty': None,
+                    }))
+                
+            self.update({'machine_line': planline_values,})
+        else:
+            self.material = None
+            self.machine_line.unlink()
+            
 
     @api.onchange('material')
     def _onchange_plan(self):
@@ -122,12 +144,12 @@ class MachineLine(models.TransientModel):
     sequence = fields.Integer(string='Sequence', default=10)
     plan_id = fields.Many2one('mrp.plan', string='Plan ID', ondelete='cascade', index=True, copy=False)
 
-    # oa_id = fields.Many2one('sale.order', string='OA', store=True)
-    # qty_balance = fields.Float('Balance',default=1.0, digits='Product Unit of Measure')
-    machine_no = fields.Many2one('machine.list', string='Machine No', required=True)
-    # reserved = fields.Float('Reserved',default=1.0, digits='Product Unit of Measure')
-    lots = fields.Integer(string='Lots', required=True)
-    material_qty = fields.Float('Quantity',default=1.0, digits='Product Unit of Measure',required=True)
+    oa_id = fields.Many2one('sale.order', string='OA', store=True)
+    qty_balance = fields.Float('Balance',default=1.0, digits='Product Unit of Measure')
+    machine_no = fields.Many2one('machine.list', string='Machine No')
+    reserved = fields.Float('Reserved',default=1.0, digits='Product Unit of Measure')
+    lots = fields.Integer(string='Lots')
+    material_qty = fields.Float('Quantity',default=1.0, digits='Product Unit of Measure')
     
 
     @api.onchange('lots')
@@ -142,6 +164,18 @@ class MachineLine(models.TransientModel):
                 
             l.material_qty = round(l_qty,2)
 
+    @api.onchange('machine_no')
+    def _get_reserved_qty(self):
+        for l in self:
+            production = self.env["operation.details"].search([('machine_no','=',l.machine_no.id),('operation_of','in',('lot','output')),('state','!=','done')])
+
+            operation = production.filtered(lambda op: op.action_date.date() == self.plan_id.plan_start.date() and 'Output' in op.next_operation)
+            l.reserved = sum(operation.mapped('balance_qty'))
+
+            
+            
+
+            
             #l.plan_id.material_qty
 
             

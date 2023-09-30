@@ -56,6 +56,7 @@ class ManufacturingOrder(models.Model):
     slidercodesfg = fields.Char(string='Slider', store=True, readonly=True)
     finish = fields.Char(string='Finish', store=True, readonly=True)
     shade = fields.Char(string='Shade', store=True, readonly=True)
+    shade_ref = fields.Char(string='Shade Ref.', store=True, readonly=True)
     sizein = fields.Char(string='Size (Inch)', store=True, readonly=True)
     sizecm = fields.Char(string='Size (CM)', store=True, readonly=True)
     sizemm = fields.Char(string='Size (MM)', store=True, readonly=True)

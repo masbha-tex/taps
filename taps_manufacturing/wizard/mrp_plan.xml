@@ -26,7 +26,10 @@
                                 <tree string="Machinewise Plan" editable="bottom">
                                     <field name="sequence" widget="handle" />
                                     <field name="plan_id" invisible="1"/>
+                                    <field name="oa_id"/>
+                                    <field name="qty_balance"/>
                                     <field name="machine_no" required="True"/>
+                                    <field name="reserved"/>
                                     <field name="lots" required="True"/>
                                     <field name="material_qty" required="True" optional="show" sum="Quantity" decoration-bf="True"/>
                                 </tree>
@@ -50,7 +53,10 @@
             <tree string="Machinewise Plan" create="false">
                 <field name="sequence" widget="handle" />
                 <field name="plan_id" invisible="1"/>
+                <field name="oa_id"/>
+                <field name="qty_balance"/>
                 <field name="machine_no" required="True"/>
+                <field name="reserved"/>
                 <field name="lots" required="True"/>
                 <field name="material_qty" required="True"/>
             </tree>
