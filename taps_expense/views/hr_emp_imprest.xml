@@ -26,11 +26,12 @@
             <form string="Employee Imprest"  class="o_expense_form">
                 <header>
                     <button name="button_approve" type="object" states='checked' string="Approve" groups="hr_expense.group_hr_expense_team_approver" class="oe_highlight"/>
-                    <button name="button_confirm" type="object" states="draft" string="HR Approval" class="oe_highlight"/>
-                    <button name="button_check" type="object" states="submit" string="Accounts Approval" class="oe_highlight"/>
-                    <button name="button_draft" states="refused" string="Set to Draft" type="object" class="oe_highlight" />
-                    <button name="button_cancel" states="draft,submit,checked,approved" string="Cancel" type="object" class="oe_highlight" />
-                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,checked,approved,refused" readonly="1"/>
+                    <button name="button_confirm" type="object" states="draft" string="HR Head Approval" class="oe_highlight"/>
+                    <button name="button_check" type="object" states="submit" string="Accounts Head Approval" class="oe_highlight"/>
+                    <button name="button_draft" states="refused" string="Set to Precheck" type="object" class="oe_highlight" />
+                    <button name="button_prechecked" states="prechecked" string="HR Approval" type="object" class="oe_highlight" />
+                    <button name="button_cancel" states="prechecked,draft,submit,checked,approved" string="Cancel" type="object" class="oe_highlight" />
+                    <field name="state" widget="statusbar" statusbar_visible="prechecked,draft,submit,checked,approved,refused" readonly="1"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

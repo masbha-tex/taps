@@ -19,7 +19,7 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','web','web_studio','product', 'stock', 'resource','sale','mrp', 'barcodes','report_xlsx'],
+    'depends': ['base','web','web_studio','product', 'stock', 'resource','sale','mrp', 'barcodes','report_xlsx','taps_sale'],
 
     # always loaded
     'data': [

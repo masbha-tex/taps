@@ -17,7 +17,7 @@ class QualityCheck(models.Model):
         #('pass', 'Passed'),
         #('fail', 'Failed')], string='Status', tracking=True,
         #default='none', copy=False)
-    quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('confirm', 'Quality Head Approval'),('refuse', 'Refuse'),('fail',)])
+    quality_state = fields.Selection(selection_add=[('deviation', 'Deviation'),('check', 'Checked by SC'),('informed', 'HOD Confirmation'),('qfail', 'Quality Fail'),('refuse', 'Refuse'),('fail',)])
 
     po_qty = fields.Float(compute='_compute_poqty', string='PO Qty', readonly=True)
     receive_qty = fields.Float(compute='_compute_reqty', string='Receive Qty', readonly=True)
@@ -102,7 +102,7 @@ class QualityCheck(models.Model):
         return self.redirect_after_pass_fail()      
 
     def confirm_deviation(self):
-        self.write({'quality_state': 'confirm',
+        self.write({'quality_state': 'qfail',
                     'user_id': self.env.user.id,
                     'control_date': datetime.now()})
         if self.env.context.get('no_redirect'):

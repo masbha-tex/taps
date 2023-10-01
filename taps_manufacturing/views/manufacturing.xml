@@ -11,6 +11,7 @@
                 <filter string="Order Date" name="action_date_filter" date="date_order"/>
                 <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>
                 <filter string="Plan Date" name="action_plandate_filter" date="dyeing_plan"/>
+                <filter string="Item" name="action_item_filter" date="fg_categ_type"/>
                 <!-- <field name="product_id" string="Product"/> -->
                 <group expand="0" string="Group By">
                     <filter name="oa_group" string="OA" domain="[]" context="{'group_by': 'oa_id'}"/>
@@ -35,7 +36,7 @@
         <field name="name">manufacturing.order.tree</field>
         <field name="model">manufacturing.order</field>
         <field name="arch" type="xml" >
-            <tree string="Manufacturing Order" create="true" delete ="false" editable="top" class="custom_column"> 
+            <tree string="Manufacturing Order" create="false" delete ="false" editable="top" class="custom_column"> 
                 <!-- editable="top" -->
                 <header>
                     <button name="button_plan" type="object" string="Plan"/>
@@ -43,55 +44,55 @@
                     <!-- <button name="button_createlot" type="object" string="Create Lot"/>
                     <button name="button_output" type="object" string="Output"/> -->
                 </header>
-                <field name="oa_id"/>
-                <field name="company_id"/>
-                <field name="partner_id"/>
-                <field name="buyer_name"/>
-                <field name="payment_term"/>
-                <field name="date_order"/>
-                <field name="validity_date"/>
-                <field name="lead_time"/>
+                <field name="oa_id" optional="show"/>
+                <field name="company_id" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="buyer_name" optional="show"/>
+                <field name="payment_term" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="validity_date" optional="show"/>
+                <field name="lead_time" optional="show"/>
                 <field name="product_id" invisible="1"/>
-                <field name="product_template_id"/>
-                <field name="fg_categ_type"/>
-                <field name="product_uom"/>
-                <field name="topbottom"/>
-                <field name="slidercodesfg"/>
-                <field name="finish"/>
-                <field name="shade"/>
-                <field name="shade_ref"/>
-                <field name="sizein"/>
-                <field name="sizecm"/>
-                <field name="remarks"/>
+                <field name="product_template_id" optional="show"/>
+                <field name="fg_categ_type" optional="show"/>
+                <field name="product_uom" optional="show"/>
+                <field name="topbottom" optional="show"/>
+                <field name="slidercodesfg" optional="show"/>
+                <field name="finish" optional="show"/>
+                <field name="shade" optional="show"/>
+                <field name="shade_ref" optional="show"/>
+                <field name="sizein" optional="show"/>
+                <field name="sizecm" optional="show"/>
+                <field name="remarks" optional="show"/>
                 <!-- widget -->
                 <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>
-                <field name="done_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
+                <field name="done_qty" readonly="1" force_save="1" optional="show" sum="Done Qty" decoration-bf="True"/>
                 <field name="balance_qty" optional="show" sum="Balance" decoration-bf="True"/>
-                <field name="tape_con" readonly="1" force_save="1" optional="show" sum="Tape C." decoration-bf="True"/>
+                <field name="tape_con" force_save="1" optional="show" sum="Tape C." decoration-bf="True"/>
                 <field name="slider_con" readonly="1" force_save="1" optional="show" sum="Slider C." decoration-bf="True"/>
                 <field name="topwire_con" invisible="1" optional="show" sum="Topwire C." decoration-bf="True"/>
                 <field name="botomwire_con" invisible="1" optional="show" sum="Botomwire C." decoration-bf="True"/>
                 <field name="wire_con" invisible="1" optional="show" sum="Wire C." decoration-bf="True"/>
                 <field name="pinbox_con" optional="show" sum="Pinbox C." decoration-bf="True"/>
-                <field name="dyeing_plan"/>
+                <field name="dyeing_plan" readonly="1" force_save="1"/>
                 <field name="dyeing_plan_end" invisible="1"/>
-                <field name="dyeing_plan_qty" optional="show" sum="Dye Plan Qty" decoration-bf="True"/>
-                <field name="dy_rec_plan_qty" optional="show" sum="Dye Last Plan" decoration-bf="True"/>
-                <field name="dyeing_plan_due" optional="show" sum="Dye Plan Due" decoration-bf="True"/>
-                <field name="dyeing_output" optional="show" sum="Dye Output" decoration-bf="True"/>
+                <field name="dyeing_plan_qty" force_save="1" optional="show" sum="Dye Plan Qty" decoration-bf="True"/>
+                <field name="dy_rec_plan_qty" readonly="1" force_save="1" optional="show" sum="Dye Last Plan" decoration-bf="True"/>
+                <field name="dyeing_plan_due" readonly="1" force_save="1" optional="show" sum="Dye Plan Due" decoration-bf="True"/>
+                <field name="dyeing_output" readonly="1" force_save="1" optional="show" sum="Dye Output" decoration-bf="True"/>
                 <!-- <field name="dyeing_qc_pass" optional="show" sum="Dye QC Pass" decoration-bf="True"/> -->
 
-				<field name="plating_plan"/>
+				<field name="plating_plan" readonly="1" force_save="1"/>
                 <field name="plating_plan_end" invisible="1"/>
-                <field name="plating_plan_qty" optional="show" sum="Plat/Paint Plan Qty" decoration-bf="True"/>
+                <field name="plating_plan_qty" readonly="1" force_save="1" optional="show" sum="Plat/Paint Plan Qty" decoration-bf="True"/>
                 <field name="pl_rec_plan_qty"  invisible="1"/>
-                <field name="plating_output" optional="show" sum="Plat/Paint Output" decoration-bf="True"/>
+                <field name="plating_output" readonly="1" force_save="1" optional="show" sum="Plat/Paint Output" decoration-bf="True"/>
 				
-                <field name="top_plat_plan"/>
+                <field name="top_plat_plan" readonly="1" force_save="1"/>
                 <field name="top_plat_plan_end" invisible="1"/>
-                <field name="top_plat_plan_qty" optional="show" sum="Top Plat/Paint Plan Qty" decoration-bf="True"/>
+                <field name="top_plat_plan_qty" readonly="1" force_save="1" optional="show" sum="Top Plat/Paint Plan Qty" decoration-bf="True"/>
                 <field name="tpl_rec_plan_qty"  invisible="1"/>
-                <field name="top_plat_output" optional="show" sum="Top Plat/Paint Output" decoration-bf="True"/> 
+                <field name="top_plat_output" readonly="1" force_save="1" optional="show" sum="Top Plat/Paint Output" decoration-bf="True"/> 
 
                 <field name="bot_plat_plan" invisible="1" />
                 <field name="bot_plat_plan_end" invisible="1"/>
@@ -111,13 +112,13 @@
                 <field name="sass_rec_plan_qty"  invisible="1"/>
                 <field name="sli_asmbl_output" invisible="1"  optional="show" sum="Slider Asmbl Output" decoration-bf="True"/>
 				
-				<field name="chain_making_done" optional="show" sum="CM Output" decoration-bf="True"/>
-				<field name="diping_done" optional="show" sum="Dipping Output" decoration-bf="True"/>
-				<field name="assembly_done" optional="show" sum="Assembly Output" decoration-bf="True"/>
-				<field name="packing_done" optional="show" sum="Packing Output" decoration-bf="True"/>
-				<field name="oa_total_qty" invisible="1"/>
-				<field name="oa_total_balance" invisible="1"/>
-                <field name="state"/>
+				<field name="chain_making_done" readonly="1" force_save="1" optional="show" sum="CM Output" decoration-bf="True"/>
+				<field name="diping_done" readonly="1" force_save="1" optional="show" sum="Dipping Output" decoration-bf="True"/>
+				<field name="assembly_done" readonly="1" force_save="1" optional="show" sum="Assembly Output" decoration-bf="True"/>
+				<field name="packing_done" readonly="1" force_save="1" optional="show" sum="Packing Output" decoration-bf="True"/>
+				<field name="oa_total_qty" readonly="1" force_save="1" invisible="1"/>
+				<field name="oa_total_balance" readonly="1" force_save="1" invisible="1"/>
+                <field name="state" readonly="1" force_save="1"/>
                 <!-- <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
                     attrs="{'invisible': [('dyeing_plan', '=', False)]}"/> -->
                  <!-- attrs="{'invisible': [('operation_of', '!=', 'plan')]}" -->
@@ -140,26 +141,26 @@
                     <!-- <button name="button_createlot" type="object" string="Create Lot"/>
                     <button name="button_output" type="object" string="Output"/> -->
                 <!-- </header> -->
-                <field name="oa_id"/>
-                <field name="company_id"/>
-                <field name="partner_id"/>
-                <field name="buyer_name"/>
-                <field name="payment_term"/>
-                <field name="date_order"/>
-                <field name="validity_date"/>
-                <field name="lead_time"/>
+                <field name="oa_id" optional="show"/>
+                <field name="company_id" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="buyer_name" optional="show"/>
+                <field name="payment_term" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="validity_date" optional="show"/>
+                <field name="lead_time" optional="show"/>
                 <field name="product_id" invisible="1"/>
-                <field name="product_template_id"/>
-                <field name="fg_categ_type"/>
-                <field name="product_uom"/>
-                <field name="topbottom"/>
-                <field name="slidercodesfg"/>
-                <field name="finish"/>
-                <field name="shade"/>
-                <field name="shade_ref"/>
-                <field name="sizein"/>
-                <field name="sizecm"/>
-                <field name="remarks"/>
+                <field name="product_template_id" optional="show"/>
+                <field name="fg_categ_type" optional="show"/>
+                <field name="product_uom" optional="show"/>
+                <field name="topbottom" optional="show"/>
+                <field name="slidercodesfg" optional="show"/>
+                <field name="finish" optional="show"/>
+                <field name="shade" optional="show"/>
+                <field name="shade_ref" optional="show"/>
+                <field name="sizein" optional="show"/>
+                <field name="sizecm" optional="show"/>
+                <field name="remarks" optional="show"/>
                 <!-- widget -->
                 <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>
                 <field name="done_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
@@ -175,7 +176,7 @@
 				<field name="packing_done" optional="show" sum="Packing Output" decoration-bf="True"/>
 				<field name="oa_total_qty" invisible="1"/>
 				<field name="oa_total_balance" invisible="1"/>
-                <field name="state"/>
+                <field name="state" optional="show"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
                     attrs="{'invisible': [('dyeing_plan', '=', False)]}"/>
                  <!-- attrs="{'invisible': [('operation_of', '!=', 'plan')]}" -->

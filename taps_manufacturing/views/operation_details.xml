@@ -15,6 +15,7 @@
                 <filter string="Delivery" name="delivery" domain="[('next_operation','=','Delivery'),('state','!=','done')]"/>
                 <separator/>
                 <filter string="Start Date" name="action_date_filter" date="action_date"/>
+                <filter string="Item" name="action_item_filter" date="fg_categ_type"/>
                 <group expand="0" string="Group By">
                     <filter name="oa_group" string="OA" domain="[]" context="{'group_by': 'oa_id'}"/>
                     <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'fg_categ_type'}"/>
@@ -50,43 +51,43 @@
                 <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>
                 <field name="sale_order_line" invisible="1"/>
-                <field name="oa_id"/>
-                <field name="date_order"/>
-                <field name="action_date"/>
-                <field name="partner_id"/>
+                <field name="oa_id" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="action_date" optional="show"/>
+                <field name="partner_id" optional="show"/>
                 <field name="parent_ids" invisible="1"/>
-                <field name="buyer_name"/>
+                <field name="buyer_name" optional="show"/>
                 <field name="product_id" readonly="1" invisible="1"/>
                 <field name="product_template_id" readonly="1"/>
-                <field name="fg_categ_type"/>
-                <field name="slidercodesfg"/>
-                <field name="finish"/>
-                <field name="shade"/>
-                <field name="shade_ref"/>
-                <field name="sizein"/>
-                <field name="sizecm"/>
+                <field name="fg_categ_type" optional="show"/>
+                <field name="slidercodesfg" optional="show"/>
+                <field name="finish" optional="show"/>
+                <field name="shade" optional="show"/>
+                <field name="shade_ref" optional="show"/>
+                <field name="sizein" optional="show"/>
+                <field name="sizecm" optional="show"/>
                 <field name="work_center" invisible="1"/>
                 <field name="operation_of" readonly="1" invisible="1"/>
                 <field name="operation_by" readonly="1" invisible="1"/>
                 <field name="based_on" readonly="1" invisible="1"/>
-                <field name="machine_no" readonly="1"/>
-                <field name="capacity" readonly="1" force_save="1"/>
+                <field name="machine_no" readonly="1" optional="show"/>
+                <field name="capacity" readonly="1" force_save="1" optional="show"/>
                 <field name="next_operation" readonly="1" force_save="1" invisible="1"/>
-                <field name="mr_req" readonly="1"/>
-                <field name="qty" readonly="1"/>
-                <field name="done_qty" readonly="1" force_save="1"/>
-                <field name="balance_qty"/>
-                <field name="uotput_qty" attrs="{'readonly': [('operation_of', 'not in', ('output','qc','lot'))]}"/>
-                <field name="pack_qty" readonly="1" force_save="1"/>
-                <field name="fr_pcs_pack" readonly="1" force_save="1"/>
-                <field name="fg_done_qty" readonly="1" force_save="1"/>
-                <field name="fg_balance" readonly="1"/>
-                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}"/>
-                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}"/>
-                <field name="mrp_delivery" readonly="1" force_save="1"/>
-                <field name="total_weight" readonly="1" force_save="1"/>
+                <field name="mr_req" readonly="1" optional="show"/>
+                <field name="qty" readonly="1" optional="show"/>
+                <field name="done_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="balance_qty" optional="show"/>
+                <field name="uotput_qty" attrs="{'readonly': [('operation_of', 'not in', ('output','qc','lot'))]}" optional="show"/>
+                <field name="pack_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="fr_pcs_pack" readonly="1" force_save="1" optional="show"/>
+                <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="fg_balance" readonly="1" optional="show"/>
+                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}" optional="show"/>
+                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}" optional="show"/>
+                <field name="mrp_delivery" readonly="1" force_save="1" optional="show"/>
+                <field name="total_weight" readonly="1" force_save="1" optional="show"/>
                 <field name="move_line" readonly="1" invisible="1" force_save="1"/>
-                <field name="state" readonly="1" force_save="1"/>
+                <field name="state" readonly="1" force_save="1" optional="show"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>
                 <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
@@ -112,31 +113,31 @@
                 <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>
                 <field name="sale_order_line" invisible="1"/>
-                <field name="oa_id"/>
-                <field name="date_order"/>
-                <field name="action_date"/>
-                <field name="partner_id"/>
+                <field name="oa_id" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="action_date" optional="show"/>
+                <field name="partner_id" optional="show"/>
                 <field name="parent_ids" invisible="1"/>
-                <field name="buyer_name"/>
+                <field name="buyer_name" optional="show"/>
                 <field name="product_id" readonly="1" invisible="1"/>
-                <field name="product_template_id" readonly="1"/>
-                <field name="fg_categ_type"/>
-                <field name="slidercodesfg"/>
-                <field name="finish"/>
-                <field name="shade"/>
-                <field name="shade_ref"/>
-                <field name="sizein"/>
-                <field name="sizecm"/>
+                <field name="product_template_id" readonly="1" optional="show"/>
+                <field name="fg_categ_type" optional="show"/>
+                <field name="slidercodesfg" optional="show"/>
+                <field name="finish" optional="show"/>
+                <field name="shade" optional="show"/>
+                <field name="shade_ref" optional="show"/>
+                <field name="sizein" optional="show"/>
+                <field name="sizecm" optional="show"/>
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
-                <field name="qty" readonly="1"/>
-                <field name="pack_qty" readonly="1" force_save="1"/>
-                <field name="fr_pcs_pack" readonly="1" force_save="1"/>
-                <field name="fg_done_qty" readonly="1" force_save="1"/>
-                <field name="fg_balance" readonly="1"/>
-                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}"/>
-                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}"/>
-                <field name="state" readonly="1" force_save="1"/>
+                <field name="qty" readonly="1" optional="show"/>
+                <field name="pack_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="fr_pcs_pack" readonly="1" force_save="1" optional="show"/>
+                <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="fg_balance" readonly="1" optional="show"/>
+                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}" optional="show"/>
+                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}" optional="show"/>
+                <field name="state" readonly="1" force_save="1" optional="show"/>
             </tree>
         </field>
     </record>
@@ -154,30 +155,30 @@
                 <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>
                 <field name="sale_order_line" invisible="1"/>
-                <field name="oa_id"/>
-                <field name="date_order"/>
-                <field name="action_date"/>
-                <field name="partner_id"/>
+                <field name="oa_id" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="action_date" optional="show"/>
+                <field name="partner_id" optional="show"/>
                 <field name="parent_ids" invisible="1"/>
-                <field name="buyer_name"/>
+                <field name="buyer_name" optional="show"/>
                 <field name="product_id" readonly="1" invisible="1"/>
-                <field name="product_template_id" readonly="1"/>
-                <field name="fg_categ_type"/>
-                <field name="slidercodesfg"/>
-                <field name="finish"/>
-                <field name="shade"/>
-                <field name="shade_ref"/>
-                <field name="sizein"/>
-                <field name="sizecm"/>
+                <field name="product_template_id" readonly="1" optional="show"/>
+                <field name="fg_categ_type" optional="show"/>
+                <field name="slidercodesfg" optional="show"/>
+                <field name="finish" optional="show"/>
+                <field name="shade" optional="show"/>
+                <field name="shade_ref" optional="show"/>
+                <field name="sizein" optional="show"/>
+                <field name="sizecm" optional="show"/>
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
-                <field name="qty" readonly="1"/>
-                <field name="pack_qty" readonly="1"/>
-                <field name="fr_pcs_pack" readonly="1" />
-                <field name="fg_done_qty" readonly="1"/>
-                <field name="mrp_delivery" readonly="1" force_save="1"/>
-                <field name="total_weight" readonly="1" force_save="1"/>
-                <field name="state" readonly="1" force_save="1"/>
+                <field name="qty" readonly="1" optional="show"/>
+                <field name="pack_qty" readonly="1" optional="show"/>
+                <field name="fr_pcs_pack" readonly="1" optional="show"/>
+                <field name="fg_done_qty" readonly="1" optional="show"/>
+                <field name="mrp_delivery" readonly="1" force_save="1" optional="show"/>
+                <field name="total_weight" readonly="1" force_save="1" optional="show"/>
+                <field name="state" readonly="1" force_save="1" optional="show"/>
             </tree>
         </field>
     </record>
@@ -191,30 +192,30 @@
                 <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>
                 <field name="sale_order_line" invisible="1"/>
-                <field name="oa_id"/>
-                <field name="date_order"/>
-                <field name="action_date"/>
-                <field name="partner_id"/>
+                <field name="oa_id" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="action_date" optional="show"/>
+                <field name="partner_id" optional="show"/>
                 <field name="parent_ids" invisible="1"/>
-                <field name="buyer_name"/>
+                <field name="buyer_name" optional="show"/>
                 <field name="product_id" readonly="1" invisible="1"/>
-                <field name="product_template_id" readonly="1"/>
-                <field name="fg_categ_type"/>
-                <field name="slidercodesfg"/>
-                <field name="finish"/>
-                <field name="shade"/>
-                <field name="shade_ref"/>
-                <field name="sizein"/>
-                <field name="sizecm"/>
+                <field name="product_template_id" readonly="1" optional="show"/>
+                <field name="fg_categ_type" optional="show"/>
+                <field name="slidercodesfg" optional="show"/>
+                <field name="finish" optional="show"/>
+                <field name="shade" optional="show"/>
+                <field name="shade_ref" optional="show"/>
+                <field name="sizein" optional="show"/>
+                <field name="sizecm" optional="show"/>
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
-                <field name="qty" readonly="1"/>
-                <field name="pack_qty" readonly="1"/>
-                <field name="fr_pcs_pack" readonly="1" />
-                <field name="fg_done_qty" readonly="1"/>
-                <field name="mrp_delivery" readonly="1" force_save="1"/>
-                <field name="total_weight" readonly="1" force_save="1"/>
-                <field name="state" readonly="1" force_save="1"/>
+                <field name="qty" readonly="1" optional="show"/>
+                <field name="pack_qty" readonly="1" optional="show"/>
+                <field name="fr_pcs_pack" readonly="1" optional="show"/>
+                <field name="fg_done_qty" readonly="1" optional="show"/>
+                <field name="mrp_delivery" readonly="1" force_save="1" optional="show"/>
+                <field name="total_weight" readonly="1" force_save="1" optional="show"/>
+                <field name="state" readonly="1" force_save="1" optional="show"/>
             </tree>
         </field>
     </record>    

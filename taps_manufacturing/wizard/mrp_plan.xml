@@ -29,6 +29,8 @@
                                     <field name="sequence" widget="handle" />
                                     <field name="plan_id" invisible="1"/>
                                     <field name="oa_id"/>
+                                    <field name="sa_oa_ref" force_save="1"/>
+                                    <field name="actual_qty"/>
                                     <field name="qty_balance"/>
                                     <field name="machine_no"/>
                                     <field name="reserved"/>
@@ -56,6 +58,8 @@
                 <field name="sequence" widget="handle" />
                 <field name="plan_id" invisible="1"/>
                 <field name="oa_id"/>
+                <field name="sa_oa_ref" force_save="1"/>
+                <field name="actual_qty"/>
                 <field name="qty_balance"/>
                 <field name="machine_no"/>
                 <field name="reserved"/>

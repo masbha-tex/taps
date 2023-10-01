@@ -20,6 +20,19 @@
                <xpath expr="//field[@name='name']" position="before">
                     <field name="priority" widget="priority" class="mr-3"/>
                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="attrs">{'invisible': [['request_status','in',['cancel','pending','approved',]]]}</attribute>
+               </xpath>
+                <xpath expr="//button[@name='action_draft']" position="attributes">
+                    <attribute name="attrs">{'invisible': [['request_status','in',['pending','approved','refused','new','draft']]]}</attribute>
+               </xpath>
+                <!-- <xpath expr="//button[@name='action_approve']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('user_status','!=','hop')]}</attribute>
+               </xpath> -->
+                <xpath expr="//button[@name='action_confirm']" position="after">
+                    <button name="action_hop" string="Send for Approval" attrs="{'invisible': [['request_status','!=','draft']]}" class="btn-primary" type="object"/>
+               </xpath>
+                
             </field>
         </record>
         

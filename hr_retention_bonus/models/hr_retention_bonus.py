@@ -112,7 +112,7 @@ class HrRetentionBonus(models.Model):
         if loan_count:
             raise ValidationError(_("The employee has already a pending installment"))
         else:
-            retention_date = values.get('date')
+            retention_date = values.get('entitlement_date')
             values['name'] = self.env['ir.sequence'].next_by_code('hr.retention.bonus.seq', sequence_date=retention_date)
             res = super(HrRetentionBonus, self).create(values)
             return res

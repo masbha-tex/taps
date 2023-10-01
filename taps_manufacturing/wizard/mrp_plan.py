@@ -75,8 +75,13 @@ class ManufacturingPlan(models.TransientModel):
     @api.onchange('full_qty')
     def _onchange_qty_selection(self):
         if self.full_qty:
-            for ml in self.machine_line:
-                ml.update({'material_qty':ml.qty_balance})
+            if self.machine_line:
+                for ml in self.machine_line:
+                    
+                    l_lots = math.ceil(ml.qty_balance/ml.machine_no.capacity)
+                    ml.update({'material_qty':ml.qty_balance,'lots':l_lots})
+            else:
+                self.plan_qty = self.material_qty
                 
     @api.onchange('plan_for')
     def _onchange_qty(self):
@@ -95,11 +100,14 @@ class ManufacturingPlan(models.TransientModel):
     
             for oa in oa_ids:
                 oa_det = production.filtered(lambda op: op.oa_id.id == int(oa[0]))
-                oa_total = sum(oa_det.mapped('dyeing_plan_due'))
+                oa_total = sum(oa_det.mapped('tape_con'))
+                balance_total = sum(oa_det.mapped('dyeing_plan_due'))
                 planline_values.append((0, 0, {
                     'sequence': 10,
                     'oa_id': int(oa[0]),
-                    'qty_balance': oa_total,
+                    'sa_oa_ref': oa_det[0].shade_ref,
+                    'actual_qty': oa_total,
+                    'qty_balance': balance_total,
                     'machine_no': None,
                     'reserved': None,
                     'lots': None,
@@ -156,28 +164,56 @@ class MachineLine(models.TransientModel):
     #_order = 'order_id, sequence, id'
     _check_company_auto = True
     
-    sequence = fields.Integer(string='Sequence', default=10)
+    sequence = fields.Integer(string='Sequence')
     plan_id = fields.Many2one('mrp.plan', string='Plan ID', ondelete='cascade', index=True, copy=False)
-
     oa_id = fields.Many2one('sale.order', string='OA', store=True)
-    qty_balance = fields.Float('Balance',default=1.0, digits='Product Unit of Measure')
+    sa_oa_ref = fields.Text(string='OA/SA Ref.', readonly=False, store=True)
+    actual_qty = fields.Float('Actual Qty',digits='Product Unit of Measure')
+    qty_balance = fields.Float('Balance',digits='Product Unit of Measure')
     machine_no = fields.Many2one('machine.list', string='Machine No')
-    reserved = fields.Float('Reserved',default=1.0, digits='Product Unit of Measure')
+    reserved = fields.Float('Reserved',digits='Product Unit of Measure')
     lots = fields.Integer(string='Lots')
-    material_qty = fields.Float('Quantity',default=1.0, digits='Product Unit of Measure')
-    
+    material_qty = fields.Float('Quantity',digits='Product Unit of Measure')
+    remarks = fields.Text(string='Remarks', readonly=True)
 
-    @api.onchange('lots')
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        
+        # Set default values for fields in SizewiseLotLine
+        res.update({
+            'sequence': None,
+            'oa_id': None,
+            'sa_oa_ref': None,
+            'actual_qty': None,  # Default Tape C. Value
+            'qty_balance': None,  # Default Qty Value
+            'machine_no':None,
+            'reserved':None,
+            'lots':None,
+            'material_qty':None
+        })
+
+        return res
+
+    # @api.onchange('lots')
+    # def _get_qty_bylots(self):
+    #     for l in self:
+    #         l_qty = l.machine_no.capacity * l.lots
+    #         if l.plan_id.material_qty < l_qty:
+    #             l_qty = l.plan_id.material_qty
+    #         if (l.plan_id.plan_qty + l_qty) > l.plan_id.material_qty:
+    #             ext_qty = (l.plan_id.plan_qty + l_qty) - l.plan_id.material_qty
+    #             l_qty = l_qty-ext_qty
+                
+    #         l.material_qty = round(l_qty,2)
+    
+    @api.onchange('material_qty')
     def _get_qty_bylots(self):
         for l in self:
-            l_qty = l.machine_no.capacity * l.lots
-            if l.plan_id.material_qty < l_qty:
-                l_qty = l.plan_id.material_qty
-            if (l.plan_id.plan_qty + l_qty) > l.plan_id.material_qty:
-                ext_qty = (l.plan_id.plan_qty + l_qty) - l.plan_id.material_qty
-                l_qty = l_qty-ext_qty
-                
-            l.material_qty = round(l_qty,2)
+            if l.machine_no.capacity > 0:
+                l_lots = math.ceil(l.material_qty/l.machine_no.capacity)
+                l.lots = l_lots
+            
 
     @api.onchange('machine_no')
     def _get_reserved_qty(self):

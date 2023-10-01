@@ -26,7 +26,9 @@
                                     <field name="gap" readonly="1" force_save="1"/>
                                     <field name="tape_con" optional="show" sum="Tape C." decoration-bf="True"/>
                                     <field name="balance_qty" optional="show" sum="Qty" decoration-bf="True"/>
-                                    <field name="quantity_string"/>
+                                    <field name="lot_capacity"/>
+                                    <field name="lots"/>
+                                    <!-- <field name="quantity_string"/> -->
                                     <field name="size_total"  readonly="1" force_save="1" optional="show" sum="Total" decoration-bf="True"/>
                                 </tree>
                             </field>
@@ -54,7 +56,9 @@
                 <field name="gap"/>
                 <field name="tape_con"/>
                 <field name="balance_qty"/>
-                <field name="quantity_string"/>
+                <field name="lot_capacity"/>
+                <field name="lots"/>
+                <!-- <field name="quantity_string"/> -->
                 <field name="size_total"/>
             </tree>
         </field>

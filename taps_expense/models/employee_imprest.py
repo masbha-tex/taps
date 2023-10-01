@@ -32,12 +32,13 @@ class HrImprest(models.Model):
     imprest_work_mail = fields.Char('Work Mail',related='imprest_employee.work_email', readonly=True)
     imprest_work_phone =  fields.Char('Work Phone',related='imprest_employee.mobile_phone', readonly=True)
     state = fields.Selection([
+        ('prechecked', 'Pre Checked'),
         ('draft', 'To Submit'),
         ('submit', 'Submitted'),
         ('checked', 'Checked'),
         ('approved', 'Approved'),
         ('refused', 'Refused')
-    ], string='Status', copy=False, index=True, readonly=True, store=True, default='draft', help="Status of the imprest.", tracking=True)
+    ], string='Status', copy=False, index=True, readonly=True, store=True, default='prechecked', help="Status of the imprest.", tracking=True)
     
     #["|",["x_studio_currency","=","USD"],["x_studio_currency","=",False]]
     #["|",["imprest_currency","=","USD"],["imprest_currency","=",False]
@@ -62,8 +63,13 @@ class HrImprest(models.Model):
         return True 
     
     def button_draft(self):
-        self.write({'state': 'draft'})
-        return {}    
+        self.write({'state': 'prechecked'})
+        return {}
+    def button_prechecked(self):
+        for order in self:
+            if order.state not in ['prechecked','draft', 'submit', 'checked']:
+                continue
+            order.write({'state': 'draft'})
     
     def button_cancel(self):
         self.write({'state': 'refused'})    

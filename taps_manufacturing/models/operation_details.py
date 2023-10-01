@@ -356,15 +356,17 @@ class OperationDetails(models.Model):
         operation = self.env["operation.details"].browse(ope_id)
         operation.update({'state':'done'})
         for l in lot_line:
-            if l.quantity_string:
+            if l.size_total>0:
                 # l = self.env["manufacturing.order"].browse(l.mrp_line)
-                quantity_strings = l.quantity_string.split('+')
-                for l_q in quantity_strings:
+                # quantity_strings = l.quantity_string.split('+')
+                lots = 1
+                if l.lots>0:
+                    lots = l.lots
+                for l_q in range(lots):
+                    raise UserError((l_q))
                     next = 'Assembly Output'
-                    
                     if 'Metal' in l.mrp_line.fg_categ_type or 'AL' in l.mrp_line.fg_categ_type:
                         next = 'CM Output'
-                    
                     ope = operation.create({'mrp_lines':l.mrp_line.id,
                                             'sale_lines':l.mrp_line.sale_order_line.id,
                                             'mrp_line':l.mrp_line.id,

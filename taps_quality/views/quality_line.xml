@@ -21,14 +21,14 @@
                 </xpath>                
 
                 <xpath expr="//button[@name='do_pass']" position="before">
-                    <button name="raise_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('pass', 'check', 'deviation', 'informed', 'refuse', 'confirm', 'fail'))]}" context="{'no_redirect': True}" string="Deviation"/>
-                    <button name="check_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'informed', 'check', 'confirm', 'refuse', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="Checked by SC"/>
-                    <button name="informed_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'deviation', 'informed', 'confirm', 'refuse', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="HOD Confirmation"/>
-                    <button name="confirm_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'deviation', 'check', 'confirm', 'refuse', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="Quality Head Approval"/>
-                    <button name="refuse_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'confirm', 'refuse', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="Refuse"/>
+                    <button name="raise_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('pass', 'check', 'deviation', 'informed', 'refuse', 'qfail', 'fail'))]}" context="{'no_redirect': True}" string="Deviation"/>
+                    <button name="check_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'informed', 'check', 'qfail', 'refuse', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="Checked by SC"/>
+                    <button name="informed_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'deviation', 'informed', 'qfail', 'refuse', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="HOD Confirmation"/>
+                    <button name="confirm_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'deviation', 'check', 'qfail', 'refuse', 'pass', 'fail'))]}" context="{'no_redirect': True}" string="Quality Fail"/>
+                    <button name="refuse_deviation" class="btn-primary" type="object" attrs="{'invisible': [('quality_state', 'in', ('none', 'informed', 'refuse', 'pass', 'fail','qfail'))]}" context="{'no_redirect': True}" string="Refuse"/>
                 </xpath>
                 <xpath expr="//field[@name='quality_state']" position="attributes"> 
-                    <attribute name="statusbar_visible">none,deviation,check,informed,confirm,refuse,pass,fail</attribute>
+                    <attribute name="statusbar_visible">none,deviation,check,informed,qfail,refuse,pass,fail</attribute>
                 </xpath>
                 
                 

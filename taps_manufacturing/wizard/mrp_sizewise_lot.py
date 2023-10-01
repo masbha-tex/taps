@@ -26,6 +26,7 @@ class MrpSizewiseLot(models.TransientModel):
     work_center = fields.Many2one('mrp.workcenter', string='Create From', readonly=True)
     material_qty = fields.Float('Tape Qty',digits='Product Unit of Measure', readonly=True)
     lot_line = fields.One2many('sizewiselot.line', 'lot_id',  string='Lot List',copy=True, auto_join=True)
+    full_qty = fields.Boolean(readonly=False, string='Full Qty', default=False)
 
     @api.model
     def default_get(self, fields_list):
@@ -75,7 +76,9 @@ class SizewiseLotLine(models.TransientModel):
     gap = fields.Char(string='Gap', readonly=True)
     tape_con = fields.Float('Tape C.', readonly=True, digits='Product Unit of Measure')
     balance_qty = fields.Float(string='Qty', readonly=True)
-    quantity_string = fields.Char(string="Quantities", readonly=False)
+    lot_capacity = fields.Float(string='Qty/Lot', readonly=True)
+    lots = fields.Integer(string='Lots')
+    # quantity_string = fields.Char(string="Quantities", readonly=False)
     size_total = fields.Float(string='Total', default = 0.0, readonly=False)
     
     @api.model
@@ -89,18 +92,27 @@ class SizewiseLotLine(models.TransientModel):
             'gap': '',
             'tape_con': 0.0,  # Default Tape C. Value
             'balance_qty': 0.0,  # Default Qty Value
-            'quantity_string': '',
+            'lot_capacity':0.0,
+            'lots':0.0
+            # 'quantity_string': '',
         })
 
         return res
-        
-    @api.onchange('quantity_string')
+
+    @api.onchange('lot_capacity')
     def _get_qty_bylots(self):
         for l in self:
-            quantity_strings = l.quantity_string.split('+')
-            quantities = [int(qty) for qty in quantity_strings]
-            qty = sum(quantities)
-            if l.balance_qty < qty:
-                raise UserError(('You can not excede balance qty'))
-            else:
-                l.size_total = qty
+            if l.lot_capacity>0:
+                l_num = math.ceil(balance_qty/l.lot_capacity)
+                l.lots = l_num
+        
+    # @api.onchange('quantity_string')
+    # def _get_qty_bylots(self):
+    #     for l in self:
+    #         quantity_strings = l.quantity_string.split('+')
+    #         quantities = [int(qty) for qty in quantity_strings]
+    #         qty = sum(quantities)
+    #         if l.balance_qty < qty:
+    #             raise UserError(('You can not excede balance qty'))
+    #         else:
+    #             l.size_total = qty

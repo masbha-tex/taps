@@ -51,6 +51,11 @@ class ManufacturingOrder(models.Model):
     def _balance_qty(self):
         for s in self:
             s.balance_qty = s.product_uom_qty - s.done_qty
+
+    @api.depends('tape_con', 'dyeing_plan_qty')
+    def _dy_plane_due(self):
+        for s in self:
+            s.dyeing_plan_due = s.tape_con - s.dyeing_plan_qty
     
     topbottom = fields.Char(string='Top/Bottom', store=True, readonly=True)
     slidercodesfg = fields.Char(string='Slider', store=True, readonly=True)
@@ -90,26 +95,33 @@ class ManufacturingOrder(models.Model):
     nu1washer = fields.Text(string='1 NO. Washer Material & Size', store=True)
     nu2washer = fields.Text(string='2 NO. Washer Material & Size', store=True)
     back_part = fields.Text(string='Back Part', store=True)
-    tape_con = fields.Float('Tape C.', readonly=False, digits='Unit Price', store=True)
-    slider_con = fields.Float('Slider C.', readonly=False, digits='Unit Price', store=True)
+    tape_con = fields.Float('Tape C.', related='sale_order_line.tape_con', readonly=True, digits='Unit Price', store=True)
+    slider_con = fields.Float('Slider C.', related='sale_order_line.slider_con', readonly=True, digits='Unit Price', store=True)
     
-    topwire_con = fields.Float('Topwire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
-    botomwire_con = fields.Float('Botomwire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
-    tbwire_con = fields.Float('TBwire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
-    wire_con = fields.Float('Wire C.', compute='_get_line_value', readonly=True, digits='Unit Price')
-    pinbox_con = fields.Float('Pinbox C.', compute='_get_line_value', readonly=True, digits='Unit Price')
-    shadewise_tape = fields.Float('Shadwise Tape', compute='_get_line_value', readonly=True, digits='Unit Price')
+    topwire_con = fields.Float('Topwire C.', related='sale_order_line.topwire_con', readonly=True, digits='Unit Price')
+    botomwire_con = fields.Float('Botomwire C.', related='sale_order_line.botomwire_con', readonly=True, digits='Unit Price')
+    tbwire_con = fields.Float('TBwire C.', related='sale_order_line.tbwire_con', readonly=True, digits='Unit Price')
+    wire_con = fields.Float('Wire C.', related='sale_order_line.wire_con', readonly=True, digits='Unit Price')
+    pinbox_con = fields.Float('Pinbox C.', related='sale_order_line.pinbox_con', readonly=True, digits='Unit Price')
+    shadewise_tape = fields.Float('Shadwise Tape', related='sale_order_line.shadewise_tape', readonly=True, digits='Unit Price')
+
+
+    # def _get_line_value(self):
+    #     for s in self:
+    #         s.topwire_con = s.sale_order_line.topwire_con
+    #         s.botomwire_con = s.sale_order_line.botomwire_con
+    #         s.tbwire_con = s.sale_order_line.tbwire_con
+    #         s.wire_con = s.sale_order_line.wire_con
+    #         s.pinbox_con = s.sale_order_line.pinbox_con
+    #         s.shadewise_tape = s.sale_order_line.shadewise_tape
+
     
     dyeing_plan = fields.Datetime(string='Dye Plan', readonly=False)
     dyeing_plan_end = fields.Datetime(string='Dye Plan End', readonly=False)
-    dyeing_plan_qty = fields.Float(string='Dye Plan Qty', readonly=False)
+    dyeing_plan_qty = fields.Float(string='Dye Plan Qty', readonly=False, store=True)
     dy_rec_plan_qty = fields.Float(string='Dye Last Plan', readonly=False, default=0.0)
-    dyeing_plan_due = fields.Float(string='Dye Plan Due', readonly=False, default=0.0, compute='_dy_plane_due', group_operator="sum", store=True)
-    
-    @api.depends('tape_con','dyeing_plan_qty')
-    def _dy_plane_due(self):
-        for s in self:
-            s.dyeing_plan_due = s.tape_con - s.dyeing_plan_qty
+            
+    dyeing_plan_due = fields.Float(string='Dye Plan Due', compute='_dy_plane_due', digits='Product Unit of Measure', readonly=True, group_operator="sum", store=True)
     
     dyeing_output = fields.Float(string='Dye Output', readonly=False, default=0.0)
     # dyeing_qc_pass = fields.Float(string='Dye QC Pass', readonly=False, default=0.0)
@@ -163,7 +175,7 @@ class ManufacturingOrder(models.Model):
     
     oa_total_qty = fields.Float(string='OA Total Qty', readonly=True)
     oa_total_balance = fields.Float(string='OA Balance', readonly=True, store=True)#, compute='_oa_balance'
-    remarks = fields.Text(string='Remarks')
+    remarks = fields.Text(string='Remarks', readonly=True, store=True)
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     state = fields.Selection([
         ('waiting', 'Waiting'),
@@ -244,14 +256,14 @@ class ManufacturingOrder(models.Model):
             
 
     
-    def _get_line_value(self):
-        for s in self:
-            s.topwire_con = s.sale_order_line.topwire_con
-            s.botomwire_con = s.sale_order_line.botomwire_con
-            s.tbwire_con = s.sale_order_line.tbwire_con
-            s.wire_con = s.sale_order_line.wire_con
-            s.pinbox_con = s.sale_order_line.pinbox_con
-            s.shadewise_tape = s.sale_order_line.shadewise_tape
+    # def _get_line_value(self):
+    #     for s in self:
+    #         s.topwire_con = s.sale_order_line.topwire_con
+    #         s.botomwire_con = s.sale_order_line.botomwire_con
+    #         s.tbwire_con = s.sale_order_line.tbwire_con
+    #         s.wire_con = s.sale_order_line.wire_con
+    #         s.pinbox_con = s.sale_order_line.pinbox_con
+    #         s.shadewise_tape = s.sale_order_line.shadewise_tape
             
     #         s.sizecm = s.sale_order_line.sizecm
     #         s.sizemm = s.sale_order_line.sizemm
@@ -318,20 +330,27 @@ class ManufacturingOrder(models.Model):
         # dist_qty = plan_qty / p_len
         # raise UserError((plan_for_id,plan_for,material))
         addition = 0.00
-        for p in production:
-            if material == 'tape':
-                if p.tape_con <= rest_pl_q:
-                    m_qty = p.tape_con
-                    rest_pl_q = rest_pl_q - p.tape_con
-                else:
-                    m_qty = rest_pl_q
-                    rest_pl_q = 0.00
-                re_pqty = m_qty 
-                m_qty += p.dyeing_plan_qty
-                p.update({'dyeing_plan':plan_start,'dyeing_plan_qty':m_qty,
-                         'dy_rec_plan_qty':re_pqty})
+        machine_line = machine_line.filtered(lambda p: p.material_qty > 0)
 
-            elif material == 'slider':
+        if material == 'tape':
+            for mc in machine_line:
+                rest_pl_q = mc.material_qty
+                # raise UserError((mc.sa_oa_ref))
+                pro = production.filtered(lambda p: p.oa_id.id == mc.oa_id.id)
+                for p in pro:
+                    if p.tape_con <= rest_pl_q:
+                        m_qty = p.tape_con
+                        rest_pl_q = rest_pl_q - p.tape_con
+                    else:
+                        m_qty = rest_pl_q
+                        rest_pl_q = 0.00
+                    re_pqty = m_qty 
+                    m_qty += p.dyeing_plan_qty
+                    p.update({'dyeing_plan':plan_start,'dyeing_plan_qty':m_qty,'dy_rec_plan_qty':re_pqty})
+
+        
+        for p in production:
+            if material == 'slider':
                 if p.slider_con <= rest_pl_q:
                     m_qty = p.slider_con
                     rest_pl_q = rest_pl_q - p.slider_con
