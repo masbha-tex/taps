@@ -163,7 +163,8 @@ class PurchaseOrderLineInherit(models.Model):
             line.last_purchase_price = str("{:.2f}".format(docs.price_unit))+" "
             if docs.order_id.currency_id.name:
                 line.last_purchase_price += str(docs.order_id.currency_id.name)
-            line.last_purchase_price += " ," +str(docs.order_id.name)
+            if docs.order_id.name:
+                line.last_purchase_price += " ," +str(docs.order_id.name)
             # raise UserError((docs.id))
     
     

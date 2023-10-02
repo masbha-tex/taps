@@ -14,7 +14,7 @@
                     <field name="receipt_date"/>
                 </xpath>
                 <xpath expr="//button[@name='do_pass']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('quality_state', 'in', ('pass', 'deviation', 'check', 'informed', 'fail'))]}</attribute>
+                    <attribute name="attrs">{'invisible': [('quality_state', 'in', ('pass', 'deviation', 'check','fail'))]}</attribute>
                 </xpath>
                 <xpath expr="//button[@name='do_fail']" position="attributes">
                     <attribute name="attrs">{'invisible': [('quality_state', 'in', ('pass', 'deviation', 'check', 'informed', 'fail'))]}</attribute>
