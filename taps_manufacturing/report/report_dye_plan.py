@@ -104,7 +104,7 @@ class ReportDyePlan(models.AbstractModel):
                         pl.partner_id.name,
                         pl.buyer_name,
                         pl.fg_categ_type,
-                        pl.shade,pl.shade_ref,pl.qty,pl.done_qty,'',status_,'','','','','',''
+                        pl.shade,pl.shade_ref,pl.qty,pl.done_qty,'',status_,'','','','','',pl.plan_remarks
                         ]
                     report_data.append(order_data)
                 for line in report_data:

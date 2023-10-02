@@ -124,6 +124,8 @@ class OperationDetails(models.Model):
     mrp_delivery = fields.Many2one('stock.picking', 'Delivery Order', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     total_weight = fields.Float(string='Total Weight', default=0.0, readonly=False)
     move_line = fields.Many2one('stock.move.line', 'Move Line Id', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    plan_id = fields.Integer(string='Plan Id', store=True)
+    plan_remarks = fields.Char(string='Plan Remarks', store=True)
     state = fields.Selection([
         ('waiting', 'Waiting'),
         ('partial', 'Partial'),

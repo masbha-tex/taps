@@ -112,6 +112,7 @@ class ManufacturingPlan(models.TransientModel):
                     'reserved': None,
                     'lots': None,
                     'material_qty': None,
+                    'remarks': None
                     }))
                 
             self.update({'machine_line': planline_values,})
@@ -171,10 +172,10 @@ class MachineLine(models.TransientModel):
     actual_qty = fields.Float('Actual Qty',digits='Product Unit of Measure')
     qty_balance = fields.Float('Balance',digits='Product Unit of Measure')
     machine_no = fields.Many2one('machine.list', string='Machine No')
-    reserved = fields.Float('Reserved',digits='Product Unit of Measure')
+    reserved = fields.Integer('Reserved Lots')
     lots = fields.Integer(string='Lots')
     material_qty = fields.Float('Quantity',digits='Product Unit of Measure')
-    remarks = fields.Text(string='Remarks', readonly=True)
+    remarks = fields.Text(string='Remarks')
 
     @api.model
     def default_get(self, fields_list):
@@ -190,7 +191,8 @@ class MachineLine(models.TransientModel):
             'machine_no':None,
             'reserved':None,
             'lots':None,
-            'material_qty':None
+            'material_qty':None,
+            'remarks': None
         })
 
         return res
@@ -221,7 +223,7 @@ class MachineLine(models.TransientModel):
             production = self.env["operation.details"].search([('machine_no','=',l.machine_no.id),('operation_of','in',('lot','output')),('state','!=','done')])
 
             operation = production.filtered(lambda op: op.action_date.date() == self.plan_id.plan_start.date() and 'Output' in op.next_operation)
-            l.reserved = sum(operation.mapped('balance_qty'))
+            l.reserved = math.ceil(sum(operation.mapped('balance_qty'))/l.machine_no.capacity)
 
             
             

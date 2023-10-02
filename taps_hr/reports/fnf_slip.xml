@@ -276,7 +276,7 @@
                         </t>
                         <t t-if="is_com==False"> 
                             <tr>
-                                <td>অন্যান্য সুবিধা (Others Benefit / Mutual Termination Benefit )</td>
+                                <td>অন্যান্য সুবিধা (Others Benefit / Service Benefit )</td>
                                 <td class="text-right">
                                 <span t-esc="o.line_ids.filtered(lambda line: line.code == 'OB').total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                 </td>

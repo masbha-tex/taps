@@ -33,9 +33,10 @@
                                     <field name="actual_qty"/>
                                     <field name="qty_balance"/>
                                     <field name="machine_no"/>
-                                    <field name="reserved"/>
+                                    <field name="reserved" readonly="1" force_save="1"/>
                                     <field name="lots"/>
                                     <field name="material_qty" required="True" optional="show" sum="Quantity" decoration-bf="True"/>
+                                    <field name="remarks"/>
                                 </tree>
                             </field>
                         </page>
@@ -65,6 +66,7 @@
                 <field name="reserved"/>
                 <field name="lots"/>
                 <field name="material_qty" required="True"/>
+                <field name="remarks"/>
             </tree>
         </field>
     </record> 

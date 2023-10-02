@@ -405,7 +405,7 @@ class HeadwisePDFReport(models.TransientModel):
             report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
             report_column_style_2.set_text_wrap()
             report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '0.00%'})
-            worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+            worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
     
             report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
     #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)

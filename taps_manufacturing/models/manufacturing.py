@@ -166,6 +166,7 @@ class ManufacturingOrder(models.Model):
     oa_total_balance = fields.Float(string='OA Balance', readonly=True, store=True)#, compute='_oa_balance'
     remarks = fields.Text(string='Remarks', readonly=True, store=True)
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
+    plan_ids = fields.Char(string='Plan Ids', store=True)
     state = fields.Selection([
         ('waiting', 'Waiting'),
         ('partial', 'Partial'),
@@ -320,6 +321,10 @@ class ManufacturingOrder(models.Model):
         # raise UserError((plan_for_id,plan_for,material))
         addition = 0.00
         machine_line = machine_line.filtered(lambda p: p.material_qty > 0)
+        
+        max_plan_id = self.env['operation.details'].search([('plan_id','!=',False)]).sorted(key=lambda pr: pr.plan_id, reverse=True)[:1].mapped('plan_id')
+        max_plan_id = sum(max_plan_id)
+        max_plan_id += 1
 
         if material == 'tape':
             for mc in machine_line:
@@ -335,10 +340,16 @@ class ManufacturingOrder(models.Model):
                         rest_pl_q = 0.00
                     re_pqty = m_qty 
                     m_qty += p.dyeing_plan_qty
-                    p.update({'dyeing_plan':plan_start,'dyeing_plan_qty':m_qty,'dy_rec_plan_qty':re_pqty})
+                    p_ids = max_plan_id
+                    if p.plan_ids:
+                        p_ids = p.plan_ids + ',' + str(max_plan_id)
+                    p.update({'dyeing_plan':plan_start,'dyeing_plan_qty':m_qty,'dy_rec_plan_qty':re_pqty,'plan_ids':p_ids})
 
         
         for p in production:
+            p_ids = max_plan_id
+            if p.plan_ids:
+                p_ids = p.plan_ids + ',' + str(max_plan_id)
             if material == 'slider':
                 if p.slider_con <= rest_pl_q:
                     m_qty = p.slider_con
@@ -350,10 +361,10 @@ class ManufacturingOrder(models.Model):
               
                 if plan_for == 'Slider Assembly':
                     m_qty += p.sli_asmbl_plan_qty
-                    p.update({'sli_asmbl_plan':plan_start,'sli_asmbl_plan_qty':m_qty,'sass_rec_plan_qty':re_pqty})
+                    p.update({'sli_asmbl_plan':plan_start,'sli_asmbl_plan_qty':m_qty,'sass_rec_plan_qty':re_pqty,'plan_ids':p_ids})
                 else:
                     m_qty += p.plating_plan_qty
-                    p.update({'plating_plan':plan_start,'plating_plan_qty':m_qty,'pl_rec_plan_qty':re_pqty})
+                    p.update({'plating_plan':plan_start,'plating_plan_qty':m_qty,'pl_rec_plan_qty':re_pqty,'plan_ids':p_ids})
             
             elif material == 'top':
                 if p.topwire_con <= rest_pl_q:
@@ -365,7 +376,7 @@ class ManufacturingOrder(models.Model):
                 re_pqty = m_qty 
                 m_qty += p.top_plat_plan_qty
                 p.update({'top_plat_plan':plan_start,'top_plat_plan_qty':m_qty,
-                         'tpl_rec_plan_qty':re_pqty})
+                         'tpl_rec_plan_qty':re_pqty,'plan_ids':p_ids})
 
             elif material == 'bottom':
                 if p.botomwire_con <= rest_pl_q:
@@ -377,7 +388,7 @@ class ManufacturingOrder(models.Model):
                 re_pqty = m_qty 
                 m_qty += p.bot_plat_plan_qty
                 p.update({'bot_plat_plan':plan_start,'bot_plat_plan_qty':m_qty,
-                         'bpl_rec_plan_qty':re_pqty})
+                         'bpl_rec_plan_qty':re_pqty,'plan_ids':p_ids})
 
             elif material == 'pinbox':
                 if p.pinbox_con <= rest_pl_q:
@@ -389,7 +400,7 @@ class ManufacturingOrder(models.Model):
                 re_pqty = m_qty 
                 m_qty += p.bot_plat_plan_qty
                 p.update({'pin_plat_plan':plan_start,'pin_plat_plan_qty':m_qty,
-                         'ppl_rec_plan_qty':re_pqty})            
+                         'ppl_rec_plan_qty':re_pqty,'plan_ids':p_ids})            
             # if plan_for == 'dyeing':
             #     if p.tape_con < dist_qty + addition:
             #         m_qty = p.tape_con
@@ -421,6 +432,8 @@ class ManufacturingOrder(models.Model):
         plan = cursor.fetchall()
         #raise UserError((plan))
         if machine_line:
+            # plan_ids
+            
             for m in machine_line:
                 # for p in plan:
                 qty = 0.0
@@ -467,7 +480,9 @@ class ManufacturingOrder(models.Model):
                                                              'machine_no':m.machine_no.id,
                                                              'capacity':m.machine_no.capacity,
                                                              'qty':round(qty,2),
-                                                             'state':'waiting'
+                                                             'state':'waiting',
+                                                             'plan_id': max_plan_id,
+                                                             'plan_remarks': m.remarks
                                                              })
                     rest_q = rest_q - m.machine_no.capacity
 
@@ -551,7 +566,8 @@ class ManufacturingOrder(models.Model):
                                                              'based_on':material,
                                                              'next_operation':next_operation,
                                                              'qty':round(qty,2),
-                                                             'state':'waiting'
+                                                             'state':'waiting',
+                                                             'plan_id': max_plan_id
                                                              })
 
     def button_requisition(self):

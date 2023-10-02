@@ -87,6 +87,8 @@
                 <field name="total_weight" readonly="1" force_save="1" optional="show"/>
                 <field name="move_line" readonly="1" invisible="1" force_save="1"/>
                 <field name="state" readonly="1" force_save="1" optional="show"/>
+                <field name="plan_id" readonly="1" invisible="1" force_save="1"/>
+                <field name="plan_remarks" readonly="1" force_save="1" optional="show"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>
                 <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
