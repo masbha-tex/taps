@@ -235,8 +235,9 @@ class HeadwisePDFReport(models.TransientModel):
     
     
     def action_generate_xlsx_report(self):
-        if self.report_type == 'plan':
-            start_time = fields.datetime.now()
+        if self.report_type:
+        # if self.report_type == 'plan':
+        #     start_time = fields.datetime.now()
             if self.holiday_type == "employee":#employee  company department category
                 #raise UserError(('sfefefegegegeeg'))
                 data = {'date_from': self.date_from, 
@@ -248,7 +249,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': False,
                         'year': self.year}
-
+                
             if self.holiday_type == "company":
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -260,7 +261,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': False,
                         'year': self.year}
-
+                
             if self.holiday_type == "department":
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -271,7 +272,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': False,
                         'year': self.year}
-
+                
             if self.holiday_type == "category":
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -282,7 +283,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': False,
                         'year': self.year}
-
+                
             if self.holiday_type == "emptype":
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -294,6 +295,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'employee_type': self.employee_type,
                         'company_all': False,
                         'year': self.year}
+                
             if self.holiday_type == "companyall":
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -304,9 +306,224 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': self.company_all,
                         'year': self.year}
+        if self.report_type == 'kpi':
+            return self.kpi_xls_template(self, data=data)
+        if self.report_type == 'plan':
+            return self.plan_xls_template(self, data=data)         
         else:
             raise UserError(('This Report are not XLSX Format'))
+
+
+    def kpi_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
+        domain = []
+#         if data.get('date_from'):
+#             domain.append(('date_from', '=', data.get('date_from')))
+#         if data.get('date_to'):
+#             domain.append(('date_to', '=', data.get('date_to')))
+        if data.get('year'):
+            deadlines = str(data.get('year') + '-03-31')
+            domain.append(('deadline', '=', deadlines))   
+        if data.get('mode_company_id'):
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            domain.append(('employee_id.department_id.parent_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+#         if data.get('bank_id'):
+#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
+#         domain.append(('code', '=', 'NET'))
         
+        # raise UserError((domain))
+        docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
+        # if docs1.employee_id.company_id.id == 1:
+        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
+        # elif docs1.employee_id.company_id.id == 3:
+        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
+        # else:
+        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
+        
+        docs = docs1
+        #raise UserError((docs.id))
+        datefrom = data.get('date_from')
+        dateto = data.get('date_to')
+#         bankname = self.bank_id.name
+#         categname=[]
+#         if self.employee_type =='staff':
+#             categname='Staffs'
+#         if self.employee_type =='expatriate':
+#             categname='Expatriates'
+#         if self.employee_type =='worker':
+#             categname='Workers'
+#         if self.employee_type =='cstaff':
+#             categname='C-Staffs'
+#         if self.employee_type =='cworker':
+#             categname='C-Workers'
+            
+        
+        #raise UserError((datefrom,dateto,bankname,categname))
+        report_data = []
+        emp_data = []
+        slnumber=0
+        for edata in docs:
+            slnumber = slnumber+1
+            emp_data = [
+                slnumber,
+                edata.name,
+                edata.description,
+                round(edata.baseline,2),
+                round(edata.target,2),
+                (edata.weight/100),
+                edata.employee_id.id,
+            ]
+            report_data.append(emp_data)     
+        emply = docs.mapped('employee_id')
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        # raise UserError((emply))
+        for emp in emply:
+            
+            worksheet = workbook.add_worksheet(('%s - %s' % (emp.pin,emp.name)))
+            report_title_style = workbook.add_format({'bold': True, 'font_size': 16, 'bg_color': '#9C5789','right': True, 'border': True, 'font_color':'#FFFFFF'})
+            report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
+            report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
+            report_column_style_2.set_text_wrap()
+            report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '0.00%'})
+            worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+    
+            report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
+    #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+            worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+            worksheet.merge_range('A3:F3', ('KPI objective'), report_small_title_style)
+            worksheet.merge_range('A4:F4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
+            worksheet.merge_range('F4:F4', "",report_title_style)
+            # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
+    #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+            
+            column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#00A09D', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
+            column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
+            column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
+            row_categ_style = workbook.add_format({'border': True})
+    
+            # set the width od the column
+            
+            percent_format = workbook.add_format({"num_format": "0%"})
+    
+            
+            worksheet.set_column(0,0,3)
+            worksheet.set_column(1,1,50)
+            worksheet.set_column(2,2,20)
+            worksheet.set_column(3,4,8)
+            worksheet.set_column(5,5,9.44)
+            
+            
+            
+            worksheet.write(4, 0, 'SL.', column_product_style)
+            worksheet.write(4, 1, 'Objectives', column_product_style)
+            worksheet.write(4, 2, 'Description', column_product_style)
+            worksheet.write(4, 3, 'Baseline', column_product_style)
+            worksheet.write(4, 4, 'Target', column_product_style)
+            worksheet.write(4, 5, 'Weight', column_product_style)
+            col = 0
+            row=5
+            
+            grandtotal = 0
+    #         grandtotal2 = 0
+    #         grandtotal3 = 0
+            
+            slnumber = 0
+            for line in report_data:
+                # raise UserError((line[8],emp.id))
+                # slnumber=0
+                
+                
+                
+                if line[6] == emp.id:
+                    slnumber += 1
+                    col=0
+                    for l in line:
+                        if col == 1:
+                            etype = l[:1]
+                        if col == 0:
+                            worksheet.write(row, col, slnumber, report_column_style_2) 
+                        if col == 1:
+                            worksheet.write(row, col, l, report_column_style_2) 
+                        if col == 2:
+                            worksheet.write(row, col, l, report_column_style_2) 
+                        elif col == 3:
+                            
+                            if etype == '%':
+                                # raise UserError((etype))
+                                ld = l/100
+                                worksheet.write(row, col, ld, report_column_style_3)
+                            else:
+                                # raise UserError((etype))
+                                worksheet.write(row, col, l, report_column_style_2)                    
+                        elif col == 4:
+                            
+                            if etype == '%':
+                                # raise UserError((etype))
+                                ld = l/100
+                                worksheet.write(row, col, ld, report_column_style_3)
+                            else:
+                                # raise UserError((etype))
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col==5:
+                            grandtotal = grandtotal+l
+                            # format = workbook.add_format({'num_format': num_formats})
+                            worksheet.write(row, col, l, report_column_style_3)
+                        # elif col==8:
+                        #     break
+                        # else:
+                        #     worksheet.write(row, col, l, report_column_style_2)
+                        col+=1
+                    row+=1
+                    
+            
+                    #worksheet.write(4, 0, 'SL.', column_product_style)
+                    #raise UserError((row+1))
+                    worksheet.write(row, 0, '', report_small_title_style)
+                    worksheet.write(row, 1, 'Grand Total', report_small_title_style)
+                    worksheet.write(row, 2, '', report_small_title_style)
+                    worksheet.write(row, 3, '', report_small_title_style)
+                    worksheet.write(row, 4, '', report_small_title_style)
+                    worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
+                    #raise UserError((datefrom,dateto,bankname,categname))
+            
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s - KPI objective'% (emp.department_id.parent_id.name))),
+            'target': 'self',
+        }
+
+            
+    def plan_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()        
         domain = []
 #         if data.get('date_from'):
 #             domain.append(('date_from', '=', data.get('date_from')))

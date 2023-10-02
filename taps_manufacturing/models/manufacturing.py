@@ -430,6 +430,8 @@ class ManufacturingOrder(models.Model):
                 mrp_line = sal_line = None
                 if material == 'tape':
                     next_operation = 'Dyeing Output'
+                    # raise UserError((plan[0][1].replace('\n', ''),production[0].shade.replace('\n', '')))
+                    
                     p_q = production.filtered(lambda sol: sol.oa_id.id == plan[0][0] and sol.shade == plan[0][1])
                     mrp_lines = p_q._ids2str('ids')
                     sale_lines = p_q._ids2str('sale_order_line')
@@ -437,7 +439,7 @@ class ManufacturingOrder(models.Model):
                         qty = m.material_qty
                     else:
                         mrp_line = p_q.id
-                        sal_line = p_q.sale_order_line
+                        sal_line = p_q.sale_order_line.id
                         qty = sum(p_q.mapped('dy_rec_plan_qty'))
                 rest_q = m.material_qty
                 for lots in range(m.lots):
@@ -492,7 +494,7 @@ class ManufacturingOrder(models.Model):
                     sale_lines = p_q._ids2str('sale_order_line')#.mapped('sale_order_line')
                     if len(p_q) == 1:
                         mrp_line = p_q.id
-                        sal_line = p_q.sale_order_line
+                        sal_line = p_q.sale_order_line.id
                         
                     if plan_for == 'Slider Assembly':
                         qty = sum(p_q.mapped('sass_rec_plan_qty'))
@@ -507,7 +509,7 @@ class ManufacturingOrder(models.Model):
                     
                     if len(p_q) == 1:
                         mrp_line = p_q.id
-                        sal_line = p_q.sale_order_line
+                        sal_line = p_q.sale_order_line.id
                     qty = sum(p_q.mapped('tpl_rec_plan_qty'))
                 elif material == 'bottom':
                     p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.pbotomfinish == p[3])
@@ -516,7 +518,7 @@ class ManufacturingOrder(models.Model):
                     sale_lines = p_q._ids2str('sale_order_line')
                     if len(p_q) == 1:
                         mrp_line = p_q.id
-                        sal_line = p_q.sale_order_line
+                        sal_line = p_q.sale_order_line.id
                     qty = sum(p_q.mapped('bpl_rec_plan_qty'))
                 elif material == 'pinbox':
                     p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.ppinboxfinish == p[3])
@@ -525,7 +527,7 @@ class ManufacturingOrder(models.Model):
                     sale_lines = p_q._ids2str('sale_order_line')
                     if len(p_q) == 1:
                         mrp_line = p_q.id
-                        sal_line = p_q.sale_order_line
+                        sal_line = p_q.sale_order_line.id
                     qty = sum(p_q.mapped('ppl_rec_plan_qty'))
                 
                 mrp_line = sale_order_line = None

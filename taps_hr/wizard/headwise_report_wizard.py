@@ -372,13 +372,13 @@ class HeadwisePDFReport(models.TransientModel):
                 emp_data = [
                     slnumber,
                     payslip.employee_id.display_name,
-                    payslip.employee_id.department_id.name,
+                    payslip.employee_id.job_id.name,
                     payslip.employee_id.tax_identification_number,
                     payslip._get_salary_line_total('BASIC'),
                     '',
                     payslip._get_salary_line_total('HRA'),
-                    payslip._get_salary_line_total('MEDICAL'),
                     payslip._get_salary_line_total('CONVENCE'),
+                    payslip._get_salary_line_total('MEDICAL'),
                     payslip._get_salary_line_total('OTHERS_ALW'),
                     '',
                     '',
@@ -420,7 +420,7 @@ class HeadwisePDFReport(models.TransientModel):
         
         worksheet.set_column(0, 0, 6)
         worksheet.set_column(1, 1, 32)
-        worksheet.set_column(2, 2, 26)
+        worksheet.set_column(2, 2, 30)
         worksheet.set_column(3, 3, 21)
         worksheet.set_column(4, 15, 12)
 
