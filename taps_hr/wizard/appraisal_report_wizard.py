@@ -235,8 +235,8 @@ class HeadwisePDFReport(models.TransientModel):
     
     
     def action_generate_xlsx_report(self):
-        if self.report_type == 'plan':
-            start_time = fields.datetime.now()
+        # if self.report_type == 'plan':
+        #     start_time = fields.datetime.now()
             if self.holiday_type == "employee":#employee  company department category
                 #raise UserError(('sfefefegegegeeg'))
                 data = {'date_from': self.date_from, 
@@ -304,9 +304,13 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': self.company_all,
                         'year': self.year}
-        else:
-            raise UserError(('This Report are not XLSX Format'))
-        
+            if self.report_type == 'plan':
+                return self.plan_xls_template(self, data=data) 
+            else:
+                raise UserError(('This Report are not XLSX Format'))
+            
+    def plan_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
         domain = []
 #         if data.get('date_from'):
 #             domain.append(('date_from', '=', data.get('date_from')))

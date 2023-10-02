@@ -362,7 +362,13 @@ class OperationDetails(models.Model):
                 lots = 1
                 if l.lots>0:
                     lots = l.lots
+                rest_q = l.size_total
                 for l_q in range(lots):
+                    if rest_q > l.lot_capacity:
+                        qty = l.lot_capacity
+                    else:
+                        qty = rest_q
+                    
                     raise UserError((l_q))
                     next = 'Assembly Output'
                     if 'Metal' in l.mrp_line.fg_categ_type or 'AL' in l.mrp_line.fg_categ_type:
@@ -390,8 +396,9 @@ class OperationDetails(models.Model):
                                             'operation_by':operation[0].work_center.name,
                                             'based_on':operation[0].based_on,
                                             'next_operation':next,
-                                            'qty':l_q
+                                            'qty':qty
                                             })
+                    rest_q = rest_q - l.lot_capacity
 
     def set_delivery_order(self,active_model,ope_id,delivery,delivery_line):
         operation = self.env["operation.details"].browse(ope_id)

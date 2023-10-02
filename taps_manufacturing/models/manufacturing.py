@@ -104,17 +104,6 @@ class ManufacturingOrder(models.Model):
     wire_con = fields.Float('Wire C.', related='sale_order_line.wire_con', readonly=True, digits='Unit Price')
     pinbox_con = fields.Float('Pinbox C.', related='sale_order_line.pinbox_con', readonly=True, digits='Unit Price')
     shadewise_tape = fields.Float('Shadwise Tape', related='sale_order_line.shadewise_tape', readonly=True, digits='Unit Price')
-
-
-    # def _get_line_value(self):
-    #     for s in self:
-    #         s.topwire_con = s.sale_order_line.topwire_con
-    #         s.botomwire_con = s.sale_order_line.botomwire_con
-    #         s.tbwire_con = s.sale_order_line.tbwire_con
-    #         s.wire_con = s.sale_order_line.wire_con
-    #         s.pinbox_con = s.sale_order_line.pinbox_con
-    #         s.shadewise_tape = s.sale_order_line.shadewise_tape
-
     
     dyeing_plan = fields.Datetime(string='Dye Plan', readonly=False)
     dyeing_plan_end = fields.Datetime(string='Dye Plan End', readonly=False)

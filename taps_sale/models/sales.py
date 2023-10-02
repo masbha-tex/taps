@@ -995,9 +995,9 @@ class SaleOrder(models.Model):
 
     def generate_m_order(self):
         for products in self.order_line:
-            text = products.shade
-            shade = text.splitlines()
-            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':shade[0],'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting'})
+            # text = products.shade
+            # shade = text.splitlines()
+            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting'})
             
 
  
@@ -1204,6 +1204,7 @@ class SaleOrderLine(models.Model):
     slidercodesfg = fields.Text(string='Slider Code (SFG)', store=True)
     finish = fields.Text(string='Finish', store=True)
     shade = fields.Text(string='Shade', store=True)
+    # shade_ref = fields.Text(string='Shade Ref', store=True)
     sizein = fields.Text(string='Size (Inch)', store=True)
     sizecm = fields.Text(string='Size (CM)', store=True)
     sizemm = fields.Text(string='Size (MM)', store=True)

@@ -15,7 +15,6 @@
                 <filter string="Delivery" name="delivery" domain="[('next_operation','=','Delivery'),('state','!=','done')]"/>
                 <separator/>
                 <filter string="Start Date" name="action_date_filter" date="action_date"/>
-                <filter string="Item" name="action_item_filter" date="fg_categ_type"/>
                 <group expand="0" string="Group By">
                     <filter name="oa_group" string="OA" domain="[]" context="{'group_by': 'oa_id'}"/>
                     <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'fg_categ_type'}"/>

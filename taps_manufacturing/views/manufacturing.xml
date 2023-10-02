@@ -11,8 +11,6 @@
                 <filter string="Order Date" name="action_date_filter" date="date_order"/>
                 <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>
                 <filter string="Plan Date" name="action_plandate_filter" date="dyeing_plan"/>
-                <filter string="Item" name="action_item_filter" date="fg_categ_type"/>
-                <!-- <field name="product_id" string="Product"/> -->
                 <group expand="0" string="Group By">
                     <filter name="oa_group" string="OA" domain="[]" context="{'group_by': 'oa_id'}"/>
                     <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'fg_categ_type'}"/>
@@ -76,7 +74,7 @@
                 <field name="pinbox_con" optional="show" sum="Pinbox C." decoration-bf="True"/>
                 <field name="dyeing_plan" readonly="1" force_save="1"/>
                 <field name="dyeing_plan_end" invisible="1"/>
-                <field name="dyeing_plan_qty" force_save="1" optional="show" sum="Dye Plan Qty" decoration-bf="True"/>
+                <field name="dyeing_plan_qty" readonly="1" force_save="1" optional="show" sum="Dye Plan Qty" decoration-bf="True"/>
                 <field name="dy_rec_plan_qty" readonly="1" force_save="1" optional="show" sum="Dye Last Plan" decoration-bf="True"/>
                 <field name="dyeing_plan_due" readonly="1" force_save="1" optional="show" sum="Dye Plan Due" decoration-bf="True"/>
                 <field name="dyeing_output" readonly="1" force_save="1" optional="show" sum="Dye Output" decoration-bf="True"/>
