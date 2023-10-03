@@ -71,6 +71,7 @@ class Product(models.Model):
                     # Note: this can still fail if something is preventing
                     # from archiving.
                     # This is the case from existing stock reordering rules.
-                    self.write({'active': False})
-                    self.write({'active': True})
+                    a = ''
+                    # self.write({'active': False})
+                    # self.write({'active': True})
                     

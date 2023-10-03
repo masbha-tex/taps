@@ -18,7 +18,10 @@ class HeadwisePDFReport(models.TransientModel):
     is_company = fields.Boolean(readonly=False, default=False)
     date_from = fields.Date('Date from', required=True, readonly=False, default=lambda self: self._compute_from_date())
     date_to = fields.Date('Date to', required=True, readonly=False, default=lambda self: self._compute_to_date())
-
+    export = fields.Selection([
+        ('single', 'Single Sheet'),
+        ('multiple', 'Multiple Sheet')],
+        string='Export Mode')
 
     @api.depends('date_from')
     def _compute_from_date(self):
@@ -245,7 +248,8 @@ class HeadwisePDFReport(models.TransientModel):
                     'employee_id': self.employee_id.id, 
                     'report_type': False,
                     'bank_id': self.bank_id.id,
-                    'company_all': False}
+                    'company_all': False,
+                    'export': self.export}
 
         if self.holiday_type == "company":
             data = {'date_from': self.date_from, 
@@ -256,7 +260,8 @@ class HeadwisePDFReport(models.TransientModel):
                     'employee_id': False, 
                     'report_type': False,
                     'bank_id': self.bank_id.id,
-                    'company_all': False}
+                    'company_all': False,
+                    'export': self.export}
 
         if self.holiday_type == "department":
             data = {'date_from': self.date_from, 
@@ -267,7 +272,8 @@ class HeadwisePDFReport(models.TransientModel):
                     'employee_id': False, 
                     'report_type': False,
                     'bank_id': self.bank_id.id,
-                    'company_all': False}
+                    'company_all': False,
+                    'export': self.export}
 
         if self.holiday_type == "category":
             data = {'date_from': self.date_from, 
@@ -278,7 +284,8 @@ class HeadwisePDFReport(models.TransientModel):
                     'employee_id': False, 
                     'report_type': False,
                     'bank_id': self.bank_id.id,
-                    'company_all': False}
+                    'company_all': False,
+                    'export': self.export}
 
         if self.holiday_type == "emptype":
             data = {'date_from': self.date_from, 
@@ -290,7 +297,8 @@ class HeadwisePDFReport(models.TransientModel):
                     'report_type': False,
                     'bank_id': self.bank_id.id,
                     'employee_type': self.employee_type,
-                    'company_all': False}
+                    'company_all': False,
+                    'export': self.export}
         if self.holiday_type == "companyall":
             data = {'date_from': self.date_from, 
                     'date_to': self.date_to, 
@@ -300,21 +308,25 @@ class HeadwisePDFReport(models.TransientModel):
                     'employee_id': False, 
                     'report_type': False,
                     'bank_id': self.bank_id.id,
-                    'company_all': self.company_all}
+                    'company_all': self.company_all,
+                    'export': self.export}
         if self.bank_id and self.report_type == False:
             return self.bank_transfer_xls_template(self, data=data)
         if self.report_type == 'TAX_DEDUCTION':
-            return self.tax_xls_template(self, data=data) 
+            if self.export == 'multiple':
+                return self.tax_xls_template(self, data=data)
+            else:
+                return self.single_tax_xls_template(self, data=data)
         else:
             raise UserError(('This Report are not XLSX Format')) 
 
-    def tax_xls_template(self, docids, data=None):
+    def single_tax_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
         domain = []
         if data.get('date_from'):
-            domain.append(('date_from', '=', data.get('date_from')))
+            domain.append(('date_from', '>=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('date_to', '=', data.get('date_to')))
+            domain.append(('date_to', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             domain.append(('employee_id.company_id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
@@ -340,7 +352,11 @@ class HeadwisePDFReport(models.TransientModel):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
         # raise UserError((domain)) 
+        domain.append(('payslip_run_id.is_bonus', '=',False))
+        domain.append(('payslip_run_id.is_final', '=',False))
+        # raise UserError((domain)) 
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        # docs = docs.mapped('employee_id')
             #raise UserError((docs.id)) 
         # emplist = docs.mapped('employee_id.id')
         # employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
@@ -360,13 +376,19 @@ class HeadwisePDFReport(models.TransientModel):
         if self.employee_type =='cworker':
             categname='C-Workers'
             
+        # all_months = docs.mapped('date_to')
         
+        # all_months = sorted(list(set(all_months)))
         
+        # for mon in all_months:
+        #     month_doc = docs.filtered(lambda pr: pr.date_from == mon)
+
         report_data = []
         emp_data = []
         slnumber=0
         for payslip in docs:
             emp_data = []
+            slnumber=0
             if payslip._get_salary_line_total('AIT'):
                 slnumber = slnumber+1
                 emp_data = [
@@ -374,27 +396,27 @@ class HeadwisePDFReport(models.TransientModel):
                     payslip.employee_id.display_name,
                     payslip.employee_id.job_id.name,
                     payslip.employee_id.tax_identification_number,
-                    payslip._get_salary_line_total('BASIC'),
+                    sum(payslip.mapped(_get_salary_line_total('BASIC'))),
                     '',
-                    payslip._get_salary_line_total('HRA'),
-                    payslip._get_salary_line_total('CONVENCE'),
-                    payslip._get_salary_line_total('MEDICAL'),
-                    payslip._get_salary_line_total('OTHERS_ALW'),
+                    sum(payslip.mapped(_get_salary_line_total('HRA'))),
+                    sum(payslip.mapped(_get_salary_line_total('CONVENCE'))),
+                    sum(payslip.mapped(_get_salary_line_total('MEDICAL'))),
+                    sum(payslip.mapped(_get_salary_line_total('OTHERS_ALW'))),
                     '',
                     '',
                     '',
-                    payslip._get_salary_line_total('RPF'),
-                    (payslip._get_salary_line_total('BASIC') + 
-                     payslip._get_salary_line_total('HRA') + 
-                     payslip._get_salary_line_total('MEDICAL')+
-                     payslip._get_salary_line_total('CONVENCE')+
-                     payslip._get_salary_line_total('OTHERS_ALW')+
-                     payslip._get_salary_line_total('RPF')),
-                    payslip._get_salary_line_total('AIT'),
+                    sum(payslip.mapped(_get_salary_line_total('RPF'))),
+                    sum((payslip.mapped(_get_salary_line_total('BASIC'))) + 
+                    sum(payslip.mapped(_get_salary_line_total('HRA'))) + 
+                    sum(payslip.mapped(_get_salary_line_total('MEDICAL')))+
+                    sum(payslip.mapped(_get_salary_line_total('CONVENCE')))+
+                    sum(payslip.mapped(_get_salary_line_total('OTHERS_ALW')))+
+                    sum(payslip.mapped(_get_salary_line_total('RPF')))),
+                    sum(payslip.mapped(_get_salary_line_total('AIT'))),
                 
                 ]
                 report_data.append(emp_data)     
-        # emply = docs.mapped('employee_id')
+        
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -487,6 +509,208 @@ class HeadwisePDFReport(models.TransientModel):
         worksheet.write(row, 14, '=SUM(O{0}:O{1})'.format(4, row), column_issued_style)
         worksheet.write(row, 15, '=SUM(P{0}:P{1})'.format(4, row), column_issued_style)
         
+        
+        workbook.close()
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s- Tax Deduction' % (categname))),
+            'target': 'self',
+        }
+
+    def tax_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
+        domain = []
+        if data.get('date_from'):
+            domain.append(('date_from', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            domain.append(('employee_id.company_id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
+        
+        domain.append(('payslip_run_id.is_bonus', '=',False))
+        domain.append(('payslip_run_id.is_final', '=',False))
+        # raise UserError((domain)) 
+        docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
+        docs = docs.sorted(key = 'date_to', reverse=False)
+            #raise UserError((docs.id)) 
+        # emplist = docs.mapped('employee_id.id')
+        # employee = self.env['hr.employee'].search([('id', 'in', (emplist))])
+        
+        # catlist = employee.mapped('category_ids.id')
+        # category = self.env['hr.employee.category'].search([('id', 'in', (catlist))]).sorted(key = 'id', reverse=True)
+        # docs1 = docs
+        categname=[]
+        if self.employee_type =='staff':
+            categname='Staffs'
+        if self.employee_type =='expatriate':
+            categname='Expatriates'
+        if self.employee_type =='worker':
+            categname='Workers'
+        if self.employee_type =='cstaff':
+            categname='C-Staffs'
+        if self.employee_type =='cworker':
+            categname='C-Workers'
+            
+        all_months = docs.mapped('date_to')
+        # all_months = all_months.sorted(key = 'date_from', reverse=False)
+        
+        all_months = sorted(list(set(all_months)))
+        # raise UserError((all_months))
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})            
+        for mon in all_months:
+            month_doc = docs.filtered(lambda pr: pr.date_to == mon)
+
+            report_data = []
+            emp_data = []
+            slnumber=0
+            for payslip in month_doc:
+                emp_data = []
+                if payslip._get_salary_line_total('AIT'):
+                    slnumber = slnumber+1
+                    emp_data = [
+                        slnumber,
+                        payslip.employee_id.display_name,
+                        payslip.employee_id.job_id.name,
+                        payslip.employee_id.tax_identification_number,
+                        payslip._get_salary_line_total('BASIC'),
+                        '',
+                        payslip._get_salary_line_total('HRA'),
+                        payslip._get_salary_line_total('CONVENCE'),
+                        payslip._get_salary_line_total('MEDICAL'),
+                        payslip._get_salary_line_total('OTHERS_ALW'),
+                        '',
+                        '',
+                        '',
+                        payslip._get_salary_line_total('RPF'),
+                        (payslip._get_salary_line_total('BASIC') + 
+                         payslip._get_salary_line_total('HRA') + 
+                         payslip._get_salary_line_total('MEDICAL')+
+                         payslip._get_salary_line_total('CONVENCE')+
+                         payslip._get_salary_line_total('OTHERS_ALW')+
+                         payslip._get_salary_line_total('RPF')),
+                        payslip._get_salary_line_total('AIT'),
+                    
+                    ]
+                    report_data.append(emp_data)     
+
+            sheet_name = mon.strftime("%B-%y")
+            
+            worksheet = workbook.add_worksheet((sheet_name))
+            report_title_style1 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 12,'valign': 'top'})
+            report_small_title_style = workbook.add_format({'align': 'center','bold': True,'font_size': 12,'left': True, 'top': True, 'right': True, 'bottom': True})
+            worksheet.merge_range('A1:P1', 'Sehedule C', report_title_style1)
+            worksheet.merge_range('A2:P2', 'Particulars of tax deducted at source from salarie', report_title_style1)
+            worksheet.merge_range('B3:M3', 'Particulars of the employee from whom the deduction of tax is made', report_small_title_style)
+    
+            # worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+            # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+            # worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+            
+            column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
+            column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
+            column_issued_style = workbook.add_format({'text_wrap':True,'align': 'center', 'bold': True, 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+            format_label = workbook.add_format({'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+            # set the width od the column
+            
+            worksheet.set_column(0, 0, 6)
+            worksheet.set_column(1, 1, 32)
+            worksheet.set_column(2, 2, 30)
+            worksheet.set_column(3, 3, 21)
+            worksheet.set_column(4, 15, 12)
+    
+            # set the width od the row (row_num, width)
+            
+            worksheet.set_row(0, 17)
+            worksheet.set_row(1, 30)
+            worksheet.set_row(2, 30)
+            worksheet.set_row(3, 80)
+    
+            # set the width od the merge_range (row_num, col_num, row_num, col_num, '', column_style)
+    
+            worksheet.merge_range(2, 0, 3,0, 'SL.',column_issued_style)
+            worksheet.merge_range(2, 13, 3,13, 'Rpf',column_issued_style)
+            worksheet.merge_range(2, 14, 3,14, 'Total',column_issued_style)
+            worksheet.merge_range(2, 15, 3,15, 'Amount of tax Deducted',column_issued_style)
+    
+            merge_format = workbook.add_format({'align': 'center','valign': 'top'})
+            #worksheet.merge_range(4, 0, 9, 0, '', merge_format)
+            merge_format = workbook.add_format({'align': 'center','valign': 'top'})
+            # worksheet.set_column(19, 52, 20)
+            merge_format = workbook.add_format({'align': 'center','valign': 'top'})
+            
+            # title 
+            
+            worksheet.write(3, 0, 'SL.', column_issued_style)  
+            worksheet.write(3, 1, 'Name', column_issued_style)  
+            worksheet.write(3, 2, 'Designation', column_issued_style) 
+            worksheet.write(3, 3, 'TIN', column_issued_style)
+            worksheet.write(3, 4, 'Basic Pay', column_issued_style) 
+            worksheet.write(3, 5, 'Bonus, Arrear, Advance, Leave, overtime ', column_issued_style) 
+            worksheet.write(3, 6, 'House Rent', column_issued_style) 
+            worksheet.write(3, 7, 'Conveyance Allowance', column_issued_style) 
+            worksheet.write(3, 8, 'Medical Allowance', column_issued_style)
+            worksheet.write(3, 9, 'Other Allowances', column_issued_style)
+            worksheet.write(3, 10, 'Value of Non-cash Benefits: Accommodation', column_issued_style)
+            worksheet.write(3, 11, 'Value of Non-cash Benefits: Conveyance', column_issued_style)
+            worksheet.write(3, 12, 'Value of Non-cash Benefits: Other', column_issued_style)
+            worksheet.write(3, 13, 'Rpf', column_issued_style)
+            worksheet.write(3, 14, 'Total', column_issued_style)
+            worksheet.write(3, 15, 'Amount of tax Deducted', column_issued_style)
+    
+            col = 0
+            row=4
+    
+            for line in report_data:
+                col = 0
+                for l in line:
+                    worksheet.write(row, col, l, format_label)
+                    col+=1
+                row+=1
+                
+            worksheet.write(row, 3, 'Total', column_issued_style)
+            worksheet.write(row, 4, '=SUM(E{0}:E{1})'.format(4, row), column_issued_style)
+            worksheet.write(row, 5, '', column_issued_style)
+            worksheet.write(row, 6, '=SUM(G{0}:G{1})'.format(4, row), column_issued_style)
+            worksheet.write(row, 7, '=SUM(H{0}:H{1})'.format(4, row), column_issued_style)
+            worksheet.write(row, 8, '=SUM(I{0}:I{1})'.format(4, row), column_issued_style)
+            worksheet.write(row, 9, '=SUM(J{0}:J{1})'.format(4, row), column_issued_style)
+            worksheet.write(row, 10, '', column_issued_style)
+            worksheet.write(row, 11, '', column_issued_style)
+            worksheet.write(row, 12, '', column_issued_style)
+            worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(4, row), column_issued_style)
+            worksheet.write(row, 14, '=SUM(O{0}:O{1})'.format(4, row), column_issued_style)
+            worksheet.write(row, 15, '=SUM(P{0}:P{1})'.format(4, row), column_issued_style)
+            
         
         workbook.close()
         xlsx_data = output.getvalue()

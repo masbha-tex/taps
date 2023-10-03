@@ -22,7 +22,4 @@
     ],
     # only loaded in demonstration mode
     'images': ['static/img/success.png'],
-    'demo': [
-        'demo/demo.xml',
-    ],
 }

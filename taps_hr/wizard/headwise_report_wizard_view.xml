@@ -14,6 +14,9 @@
                         <field name="is_company" string="" widget="boolean_toggle"/>
                     </group>
                     <group>
+                        <field name="export" attrs="{
+                        'invisible': [('report_type', '!=', 'TAX_DEDUCTION')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
                         <field name="holiday_type" string="Mode" groups="hr_holidays.group_hr_holidays_user"/>
                         <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
                         'required': [('holiday_type', '=', 'employee')],

@@ -100,7 +100,9 @@ class ReportDyePlan(models.AbstractModel):
                     plq = sum(single_plan.mapped('qty'))
                     dnq = sum(single_plan.mapped('done_qty'))
                     plan_lots = math.ceil(plq/m_capa)
-                    oa_names = [record.oa_id.name for record in single_plan]
+                    oa_ = single_plan.mapped('oa_id.name')
+                    
+                    oa_names = [record for record in oa_]
                     oa_names_str = ', '.join(oa_names)
                     rest_plq = plq
                     rest_dnq = dnq
@@ -126,11 +128,12 @@ class ReportDyePlan(models.AbstractModel):
                             shade_ref = single_plan[0].shade_ref
                         if single_plan[0].plan_remarks:
                             remarks = single_plan[0].plan_remarks
-                            
+                        action_date = single_plan[0].action_date.strftime("%d-%m-%Y")
+                        oa_date = single_plan[0].date_order.strftime("%d-%m-%Y")
                         order_data = [
                             oa_names_str,
-                            single_plan[0].action_date,
-                            single_plan[0].date_order,
+                            action_date,
+                            oa_date,
                             single_plan[0].partner_id.name,
                             single_plan[0].buyer_name,
                             single_plan[0].fg_categ_type,
