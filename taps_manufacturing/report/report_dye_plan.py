@@ -37,8 +37,8 @@ class ReportDyePlan(models.AbstractModel):
         merge_format_ = workbook.add_format({'align': 'bottom', 'bold': True})
         
         for m_capa in capacities:
-            mc_name = str(m_capa) +'kgs MC Plan'
             fl_planids = planids.filtered(lambda pr: pr.capacity == m_capa)
+            mc_name = str(fl_planids[0].machine_no.display_capacity) +'kgs MC Plan'
             sheet = workbook.add_worksheet(mc_name[:41])
             sheet.merge_range(0, 0, 0, 6, mc_name, merge_format)
             sheet.merge_range(0, 13, 0, 17, 'Dyeing Production Plan Report', merge_format)
@@ -92,21 +92,54 @@ class ReportDyePlan(models.AbstractModel):
                 row += 1
                 order_data = []
                 report_data = []
-                for pl in m_plan:
-                    order_data = []
-                    status_ = None
-                    if pl.done_qty>0:
-                        status_ = 'Ok'
-                    order_data = [
-                        pl.oa_id.name,
-                        pl.action_date,
-                        pl.date_order,
-                        pl.partner_id.name,
-                        pl.buyer_name,
-                        pl.fg_categ_type,
-                        pl.shade,pl.shade_ref,pl.qty,pl.done_qty,'',status_,'','','','','',pl.plan_remarks
-                        ]
-                    report_data.append(order_data)
+                plan_ids = m_plan.mapped('plan_id')
+                plan_ids = list(set(plan_ids))
+
+                for pid in plan_ids:
+                    single_plan = m_plan.filtered(lambda pr: pr.plan_id == pid)
+                    plq = sum(single_plan.mapped('qty'))
+                    dnq = sum(single_plan.mapped('done_qty'))
+                    plan_lots = math.ceil(plq/m_capa)
+                    oa_names = [record.oa_id.name for record in single_plan]
+                    oa_names_str = ', '.join(oa_names)
+                    rest_plq = plq
+                    rest_dnq = dnq
+                    for lot in range(plan_lots):
+                        # for pl in m_plan:
+                        if rest_plq > m_capa:
+                            qty = m_capa
+                        else:
+                            qty = rest_plq
+                        if rest_dnq > m_capa:
+                            dnqty = m_capa
+                        else:
+                            dnqty = rest_dnq
+                        
+                        balance = qty-dnqty
+                        order_data = []
+                        status_ = None
+                        if dnqty>0:
+                            status_ = 'Ok'
+                        shade_ref = ''
+                        remarks = ''
+                        if single_plan[0].shade_ref:
+                            shade_ref = single_plan[0].shade_ref
+                        if single_plan[0].plan_remarks:
+                            remarks = single_plan[0].plan_remarks
+                            
+                        order_data = [
+                            oa_names_str,
+                            single_plan[0].action_date,
+                            single_plan[0].date_order,
+                            single_plan[0].partner_id.name,
+                            single_plan[0].buyer_name,
+                            single_plan[0].fg_categ_type,
+                            single_plan[0].shade,shade_ref,
+                            qty,dnqty,'',status_,'','','','',balance,remarks
+                            ]
+                        report_data.append(order_data)
+                        rest_plq = rest_plq - m_capa
+                        rest_dnq = rest_dnq - m_capa
                 for line in report_data:
                     col = 0
                     for l in line:

@@ -8,6 +8,7 @@
             <tree string="Machine List" create="true" delete ="false" editable="top"> 
                 <field name="name"/>
                 <field name="capacity"/>
+                <field name="display_capacity"/>
                 <field name="max_lots"/>
             </tree>
         </field>

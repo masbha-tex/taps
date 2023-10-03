@@ -394,7 +394,7 @@ class HeadwisePDFReport(models.TransientModel):
                 
                 ]
                 report_data.append(emp_data)     
-        
+        # emply = docs.mapped('employee_id')
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})

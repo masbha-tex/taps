@@ -17,6 +17,15 @@ class HrGrievance(models.Model):
     final_action_taken = fields.Many2one('hr.grievance.final.action.taken', "Final Action", tracking=True,help="This is the type by which the Final Action was received.", store=True)
     details = fields.Html('Details of Misconduct', tracking=True, default="""
                     <div style="margin:0px;padding: 0px;">
+                    <br>
+                    <br>
+                    <br>
+                    ${(object.submit_template or '')| safe}
+                    
+                    </div>
+                        """)
+    submit_template = fields.Html('Submit Template', default="""
+                    <div style="margin:0px;padding: 0px;">
                     <strong>Type of Misconduct: ${(object.type.name or '')| safe}</strong>
                     <br>
                     	<br>
@@ -148,7 +157,7 @@ class HrGrievance(models.Model):
                     						<p/>
                     						<p/>
                     </div>
-                        """)
+                        """)    
     
     submit_by = fields.Many2one('hr.employee',"Complaint By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
     state = fields.Selection([

@@ -416,7 +416,7 @@ class HeadwisePDFReport(models.TransientModel):
             # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
     #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
             
-            column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#00A09D', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
+            column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
             column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
             column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
             row_categ_style = workbook.add_format({'border': True})
@@ -452,58 +452,106 @@ class HeadwisePDFReport(models.TransientModel):
                 # raise UserError((line[8],emp.id))
                 # slnumber=0
                 
+                # raise UserError((line[2],emp.id))
+                if line[2] != 'Strategic Projects' and line[2]:
+                    if line[6] == emp.id:
+                        slnumber += 1
+                        col=0
+                        for l in line:
+                            if col == 1:
+                                etype = l[:1]
+                            if col == 0:
+                                worksheet.write(row, col, slnumber, report_column_style_2) 
+                            if col == 1:
+                                worksheet.write(row, col, l, report_column_style_2) 
+                            if col == 2:
+                                worksheet.write(row, col, l, report_column_style_2) 
+                            elif col == 3:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)                    
+                            elif col == 4:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)
+                            elif col==5:
+                                grandtotal = grandtotal+l
+                                # format = workbook.add_format({'num_format': num_formats})
+                                worksheet.write(row, col, l, report_column_style_3)
+                            # elif col==8:
+                            #     break
+                            # else:
+                            #     worksheet.write(row, col, l, report_column_style_2)
+                            col+=1
+                        row+=1
+                       
+            for line in report_data:       
+                if line[2] == 'Strategic Projects':
+                    # raise UserError(("hi"))
+                    if line[6] == emp.id:
+                        slnumber += 1
+                        col=0
+                        for l in line:
+                            if col == 1:
+                                etype = l[:1]
+                            if col == 0:
+                                worksheet.write(row, col, slnumber, report_column_style_2) 
+                            if col == 1:
+                                worksheet.write(row, col, l, report_column_style_2) 
+                            if col == 2:
+                                worksheet.write(row, col, l, report_column_style_2) 
+                            elif col == 3:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)                    
+                            elif col == 4:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)
+                            elif col==5:
+                                grandtotal = grandtotal+l
+                                # format = workbook.add_format({'num_format': num_formats})
+                                worksheet.write(row, col, l, report_column_style_3)
+                            # elif col==8:
+                            #     break
+                            # else:
+                            #     worksheet.write(row, col, l, report_column_style_2)
+                            col+=1
+                        row+=1
+                                        
                 
-                
-                if line[6] == emp.id:
-                    slnumber += 1
-                    col=0
-                    for l in line:
-                        if col == 1:
-                            etype = l[:1]
-                        if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style_2) 
-                        if col == 1:
-                            worksheet.write(row, col, l, report_column_style_2) 
-                        if col == 2:
-                            worksheet.write(row, col, l, report_column_style_2) 
-                        elif col == 3:
-                            
-                            if etype == '%':
-                                # raise UserError((etype))
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                # raise UserError((etype))
-                                worksheet.write(row, col, l, report_column_style_2)                    
-                        elif col == 4:
-                            
-                            if etype == '%':
-                                # raise UserError((etype))
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                # raise UserError((etype))
-                                worksheet.write(row, col, l, report_column_style_2)
-                        elif col==5:
-                            grandtotal = grandtotal+l
-                            # format = workbook.add_format({'num_format': num_formats})
-                            worksheet.write(row, col, l, report_column_style_3)
-                        # elif col==8:
-                        #     break
-                        # else:
-                        #     worksheet.write(row, col, l, report_column_style_2)
-                        col+=1
-                    row+=1
-                    
+                        
             
                     #worksheet.write(4, 0, 'SL.', column_product_style)
-                    #raise UserError((row+1))
+                    
                     worksheet.write(row, 0, '', report_small_title_style)
                     worksheet.write(row, 1, 'Grand Total', report_small_title_style)
                     worksheet.write(row, 2, '', report_small_title_style)
                     worksheet.write(row, 3, '', report_small_title_style)
                     worksheet.write(row, 4, '', report_small_title_style)
                     worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
+
+                    
                     #raise UserError((datefrom,dateto,bankname,categname))
             
         workbook.close()
@@ -626,7 +674,7 @@ class HeadwisePDFReport(models.TransientModel):
             # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
     #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
             
-            column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#00A09D', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
+            column_product_style = workbook.add_format({'align': 'center','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
             column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
             column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
             row_categ_style = workbook.add_format({'border': True})

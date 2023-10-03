@@ -8,6 +8,7 @@ class MachineList(models.Model):
     _check_company_auto = True
 
     name = fields.Char(string='Machine Name', store=True, required=True)
-    capacity = fields.Integer(string='Capacity', store=True, default=0, required=True)
+    capacity = fields.Integer(string='Actual Capacity', store=True, default=0, required=True)
+    display_capacity = fields.Integer(string='Display Capacity', store=True, default=0, required=True)
     max_lots = fields.Integer(string='Max Lots', store=True, default=0, required=True)
 

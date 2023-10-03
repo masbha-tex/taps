@@ -371,7 +371,7 @@ class OperationDetails(models.Model):
                     else:
                         qty = rest_q
                     
-                    raise UserError((l_q))
+                    # raise UserError((l_q))
                     next = 'Assembly Output'
                     if 'Metal' in l.mrp_line.fg_categ_type or 'AL' in l.mrp_line.fg_categ_type:
                         next = 'CM Output'
