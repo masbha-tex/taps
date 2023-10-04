@@ -20,15 +20,13 @@ from datetime import datetime
 # from user.taps_manufacturing import manufacturing_order
      
 
-SIZE_BACK_ORDER_NUMERING = 3
-
 
 class OperationDetails(models.Model):
     _name = "operation.details"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Operation Details"
     _check_company_auto = True
 
+    
     name = fields.Char(string='Code', store=True)
     mrp_lines = fields.Char(string='Mrp lines', store=True)
     sale_lines = fields.Char(string='Sale lines', store=True)
@@ -132,7 +130,11 @@ class OperationDetails(models.Model):
         ('partial', 'Partial'),
         ('done', 'Done')],
         string='State')
-
+    
+    
+    def action_unplan(self):
+        if self.state == 'waiting':
+            self.state = 'waiting'
     
     # lot_ids = fields.Many2one('operation.details', compute='get_lots', string='Lots', copy=False, store=True)
     
@@ -162,18 +164,7 @@ class OperationDetails(models.Model):
 
             
     # @api.multi
-    def action_unplan(self):
-        if self.state == 'waiting':
-            self.state = 'waiting'
-        self.ensure_one()
-        _logger.info("Action Example executed on record with ID: %s", self.id)
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'operation.details',
-            'view_mode': 'form',
-            'res_id': self.id,
-            'target': 'current',
-        }
+    
             
         
     def button_requisition(self):

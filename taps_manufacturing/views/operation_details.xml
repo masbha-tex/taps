@@ -42,7 +42,7 @@
             <tree string="Operation Details" create="false" delete ="false" editable="top" sample="1"> 
                 <!-- editable="top" -->
                 <header>
-                    <button name="button_requisition" type="object" string="Requisition"/>
+                    <button name="button_requisition" type="object" string="Requisition" confirm="Are you sure to Unplan?"/>
                     <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
                     <button name="action_unplan" confirm="Are you sure to Unplan?" type="object" string="Un-Plan"/>  
                     <!-- <button name="button_output" type="object" string="Output"/> -->

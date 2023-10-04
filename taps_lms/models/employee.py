@@ -10,7 +10,7 @@ class HrEmployee(models.Model):
 
     def _compute_session_ids(self):
         for employee in self:
-            employee.session_ids = self.env['lms.session'].search([('attendance_ids.attendee_id', '=', employee.id)])
+            employee.session_ids = self.env['lms.session'].sudo().search([('attendance_ids.attendee_id', '=', employee.id)])
 
 class HrEmployeePublic(models.Model):
     _inherit = 'hr.employee.public'
