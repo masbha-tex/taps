@@ -25,6 +25,7 @@ SIZE_BACK_ORDER_NUMERING = 3
 
 class OperationDetails(models.Model):
     _name = "operation.details"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Operation Details"
     _check_company_auto = True
 
@@ -157,7 +158,24 @@ class OperationDetails(models.Model):
             count_lots = self.env['operation.details'].search_count([('parent_id', '=', s.id),('operation_of', '=', 'lot')])
             s.num_of_lots = count_lots
             #s.lot_ids = count_lots.mapped('id')
+
+
             
+    # @api.multi
+    def action_unplan(self):
+        if self.state == 'waiting':
+            self.state = 'waiting'
+        self.ensure_one()
+        _logger.info("Action Example executed on record with ID: %s", self.id)
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'operation.details',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'current',
+        }
+            
+        
     def button_requisition(self):
         self._check_company()
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_requisition")
@@ -193,32 +211,6 @@ class OperationDetails(models.Model):
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_sizewiselot")
         #action["domain"] = [('default_id','=',self.mapped('id'))]
         return action
-
-        # in_len = len(self)
-        # i = 0
-        # all_mrp_lines = ''
-        # # raise UserError((in_len))
-        # for op in self:
-        #     if i == in_len-1:
-        #         all_mrp_lines = all_mrp_lines + op.mrp_lines
-        #     else:
-        #         all_mrp_lines = all_mrp_lines + op.mrp_lines + ','
-        #     i += 1
-            
-        # all_mrp_lines_st = str(all_mrp_lines)
-        # mrp_ids = [int(id_str) for id_str in all_mrp_lines_st.split(',')]
-        
-        # action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_manufacturing_process_order")
-        # # raise UserError((self.oa_id.ids))
-        # # action['search_default_oa_id'] = self.oa_id
-
-        # # action = self.env["ir.actions.actions"]._for_xml_id("stock.view_manufacturing_process_tree")
-        # action['views'] = [
-        #     (self.env.ref('taps_manufacturing.view_manufacturing_process_tree').id, 'tree'),
-        # ]
-        # # action['context'] = self.env.context
-        # action['domain'] = [('id', 'in', mrp_ids),('oa_id', 'in', self.oa_id.ids)]
-        # return action
     
     def set_requisition(self,company_id,active_model,ope_id,work_center,product_line):
         operation = self.env["operation.details"].search([])

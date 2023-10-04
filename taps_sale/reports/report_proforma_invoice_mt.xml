@@ -482,6 +482,9 @@
 												<td rowspan="1">
 													<strong>
 														<span t-esc="line.sizemm"/>
+                                                        <t t-if="line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213086' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213083' or line.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100212195' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194'">
+                                                            <span>L</span>
+                                                        </t>
 													</strong>
 												</td>
 											</tr>
@@ -750,6 +753,8 @@
 									<br/>
 									<span>19) Our product is not made to be used in dyeing process or over dyeing process and also not applicable heavy Enzym wash / Enzym wash ( above 60 degrees celsius )
     we do not entertain any claim this regarding.</span>
+									<br/>
+                                    <span>20) If you do not use our mould, we are not liable for any attachment issues.</span>
 									<br/>
 								</diV>
 							</div>

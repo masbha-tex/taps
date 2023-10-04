@@ -1199,6 +1199,28 @@ class SaleOrder(models.Model):
     
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
+
+    # @api.depends('product_id')
+    # def _set_default_val(self):
+    #     raise UserError(("hi"))
+    #     for rec in self:
+            
+    #         rec.logoref='WAVY POLO R.LAUREN'
+    #         rec.finish_ref='TG-4117'
+        
+        
+            # elif rec.product_template_id.name == 'BRASS SHANK BUTTON WITH DOUBLE PRONG [100213083]':
+            #     rec.logo='WAVY POLO R.LAUREN'
+            #     rec.finish_ref='TG-411703'
+            # elif rec.product_template_id.name == 'BRASS HOLE SHANK BUTTON WITH DOUBLE PRONG [100212195]':
+            #     rec.logo='WREATH'
+            #     rec.finish_ref='TG-4117'
+            # elif rec.product_template_id.name == 'BRASS HOLE SHANK BUTTON WITH DOUBLE PRONG [100212194]':
+            #     rec.logo='WORK WEAR'
+            #     rec.finish_ref='TG-4117'
+
+    
+    
     topbottom = fields.Text(string='Top/Bottom', store=True)
     slidercode = fields.Text(string='Slider Code', store=True)
     slidercodesfg = fields.Text(string='Slider Code (SFG)', store=True)
@@ -1253,6 +1275,8 @@ class SaleOrderLine(models.Model):
     mold_set = fields.Char(string='Mold Set')
     weight_per_gross = fields.Float(string='Weight/Gross', compute='_compute_weight_per_gross', inverse='_inverse_compute_weight_per_gross', store=True)
 
+    
+    
     def _inverse_compute_product_code(self):
         pass
 
@@ -1531,6 +1555,7 @@ class SaleOrderLine(models.Model):
         
     @api.onchange('product_id')
     def product_id_change(self):
+        # raise UserError((self))
         if not self.product_id:
             return
         valid_values = self.product_id.product_tmpl_id.valid_product_template_attribute_line_ids.product_template_value_ids
@@ -1698,6 +1723,19 @@ class SaleOrderLine(models.Model):
             if rec.attribute_id.name == '2 NO. Washer Material & Size':
                 self.nu2washer = rec.product_attribute_value_id.name
                 continue
+        if self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213086':
+            self.logo='WAVY POLO R.LAUREN'
+            self.finish_ref='TG-4117'
+        elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213083':
+            self.logo='WAVY POLO R.LAUREN'
+            self.finish_ref='TG-411703'
+        elif self.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100212195':
+            self.logo='WREATH'
+            self.finish_ref='TG-4117'
+        elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194':
+            self.logo='WORK WEAR'
+            self.finish_ref='TG-4117'
+        
                 
         self._compute_tax_id()
         self.update(vals)

@@ -33,16 +33,18 @@
         <field name="model_id" ref="model_operation_details"/>
         <field name="global" eval="True"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-    </record>    
+    </record>
+    
     <record id="view_operation_tree" model="ir.ui.view">
         <field name="name">operation.details.tree</field>
         <field name="model">operation.details</field>
         <field name="arch" type="xml" >
-            <tree string="Operation Details" create="false" delete ="false" editable="top"> 
+            <tree string="Operation Details" create="false" delete ="false" editable="top" sample="1"> 
                 <!-- editable="top" -->
                 <header>
                     <button name="button_requisition" type="object" string="Requisition"/>
                     <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
+                    <button name="action_unplan" confirm="Are you sure to Unplan?" type="object" string="Un-Plan"/>  
                     <!-- <button name="button_output" type="object" string="Output"/> -->
                 </header>
                 <field name="name" readonly="1"/>

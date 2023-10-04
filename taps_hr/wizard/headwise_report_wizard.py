@@ -376,48 +376,49 @@ class HeadwisePDFReport(models.TransientModel):
         if self.employee_type =='cworker':
             categname='C-Workers'
             
-        # all_months = docs.mapped('date_to')
+        all_emp_id = docs.mapped('employee_id.pin')
+        # all_months = all_months.sorted(key = 'date_from', reverse=False)
         
-        # all_months = sorted(list(set(all_months)))
-        
-        # for mon in all_months:
-        #     month_doc = docs.filtered(lambda pr: pr.date_from == mon)
-
+        all_emp_id = sorted(list(set(all_emp_id)))
         report_data = []
-        emp_data = []
         slnumber=0
-        for payslip in docs:
+        for em in all_emp_id:
+            emp_doc = docs.filtered(lambda pr: pr.employee_id.pin == em)
             emp_data = []
-            slnumber=0
-            if payslip._get_salary_line_total('AIT'):
+            
+            cur_rate = 1
+            if emp_doc[0].employee_id.category == 'expatriate':
+                cur_rate = 100
+            
+            if emp_doc._get_salary_line_total('AIT'):
                 slnumber = slnumber+1
                 emp_data = [
                     slnumber,
-                    payslip.employee_id.display_name,
-                    payslip.employee_id.job_id.name,
-                    payslip.employee_id.tax_identification_number,
-                    sum(payslip.mapped(_get_salary_line_total('BASIC'))),
+                    emp_doc[0].employee_id.display_name,
+                    emp_doc[0].employee_id.job_id.name,
+                    emp_doc[0].employee_id.tax_identification_number,
+                    emp_doc._get_salary_line_total('BASIC')*cur_rate,
                     '',
-                    sum(payslip.mapped(_get_salary_line_total('HRA'))),
-                    sum(payslip.mapped(_get_salary_line_total('CONVENCE'))),
-                    sum(payslip.mapped(_get_salary_line_total('MEDICAL'))),
-                    sum(payslip.mapped(_get_salary_line_total('OTHERS_ALW'))),
+                    emp_doc._get_salary_line_total('HRA')*cur_rate,
+                    emp_doc._get_salary_line_total('CONVENCE')*cur_rate,
+                    emp_doc._get_salary_line_total('MEDICAL')*cur_rate,
+                    emp_doc._get_salary_line_total('OTHERS_ALW')*cur_rate,
                     '',
                     '',
                     '',
-                    sum(payslip.mapped(_get_salary_line_total('RPF'))),
-                    sum((payslip.mapped(_get_salary_line_total('BASIC'))) + 
-                    sum(payslip.mapped(_get_salary_line_total('HRA'))) + 
-                    sum(payslip.mapped(_get_salary_line_total('MEDICAL')))+
-                    sum(payslip.mapped(_get_salary_line_total('CONVENCE')))+
-                    sum(payslip.mapped(_get_salary_line_total('OTHERS_ALW')))+
-                    sum(payslip.mapped(_get_salary_line_total('RPF')))),
-                    sum(payslip.mapped(_get_salary_line_total('AIT'))),
-                
+                    emp_doc._get_salary_line_total('RPF')*cur_rate,
+                    (emp_doc._get_salary_line_total('BASIC') + 
+                     emp_doc._get_salary_line_total('HRA') + 
+                     emp_doc._get_salary_line_total('MEDICAL')+
+                     emp_doc._get_salary_line_total('CONVENCE')+
+                     emp_doc._get_salary_line_total('OTHERS_ALW')+
+                     emp_doc._get_salary_line_total('RPF'))*cur_rate,
+                    emp_doc._get_salary_line_total('AIT')*cur_rate,
                 ]
-                report_data.append(emp_data)     
-        
-        
+                report_data.append(emp_data) 
+               
+            
+            
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet(('Schedule C'))
@@ -520,7 +521,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s- Tax Deduction' % (categname))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Tax Deduction')),
             'target': 'self',
         }
 
@@ -594,6 +595,9 @@ class HeadwisePDFReport(models.TransientModel):
             emp_data = []
             slnumber=0
             for payslip in month_doc:
+                cur_rate = 1
+                if payslip.employee_id.category == 'expatriate':
+                    cur_rate = 100                
                 emp_data = []
                 if payslip._get_salary_line_total('AIT'):
                     slnumber = slnumber+1
@@ -602,23 +606,23 @@ class HeadwisePDFReport(models.TransientModel):
                         payslip.employee_id.display_name,
                         payslip.employee_id.job_id.name,
                         payslip.employee_id.tax_identification_number,
-                        payslip._get_salary_line_total('BASIC'),
+                        payslip._get_salary_line_total('BASIC')*cur_rate,
                         '',
-                        payslip._get_salary_line_total('HRA'),
-                        payslip._get_salary_line_total('CONVENCE'),
-                        payslip._get_salary_line_total('MEDICAL'),
-                        payslip._get_salary_line_total('OTHERS_ALW'),
+                        payslip._get_salary_line_total('HRA')*cur_rate,
+                        payslip._get_salary_line_total('CONVENCE')*cur_rate,
+                        payslip._get_salary_line_total('MEDICAL')*cur_rate,
+                        payslip._get_salary_line_total('OTHERS_ALW')*cur_rate,
                         '',
                         '',
                         '',
-                        payslip._get_salary_line_total('RPF'),
+                        payslip._get_salary_line_total('RPF')*cur_rate,
                         (payslip._get_salary_line_total('BASIC') + 
                          payslip._get_salary_line_total('HRA') + 
                          payslip._get_salary_line_total('MEDICAL')+
                          payslip._get_salary_line_total('CONVENCE')+
                          payslip._get_salary_line_total('OTHERS_ALW')+
-                         payslip._get_salary_line_total('RPF')),
-                        payslip._get_salary_line_total('AIT'),
+                         payslip._get_salary_line_total('RPF'))*cur_rate,
+                        payslip._get_salary_line_total('AIT')*cur_rate,
                     
                     ]
                     report_data.append(emp_data)     
@@ -722,7 +726,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s- Tax Deduction' % (categname))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Tax Deduction')),
             'target': 'self',
         }  
     

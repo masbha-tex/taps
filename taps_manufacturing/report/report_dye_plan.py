@@ -138,7 +138,7 @@ class ReportDyePlan(models.AbstractModel):
                             single_plan[0].buyer_name,
                             single_plan[0].fg_categ_type,
                             single_plan[0].shade,shade_ref,
-                            qty,dnqty,'',status_,'','','','',balance,remarks
+                            qty,'','','','','','','','',remarks
                             ]
                         report_data.append(order_data)
                         rest_plq = rest_plq - m_capa
