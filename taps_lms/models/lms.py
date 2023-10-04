@@ -488,31 +488,24 @@ class EventWizard(models.TransientModel):
     # Add more fields if needed for your wizard
 
     def create_event_send(self):
-        active_ids = self._context.get('active_ids', [])
-        if not active_ids:
-            return
-        lms_session = self.env['lms.session'].browse(active_ids)
-        
-        RenderMixin = self.env['mail.render.mixin']
-        note = RenderMixin._render_template(self.note, 'lms.session', lms_session.ids, post_process=True)[lms_session.id]
-        
+      
         sig = """
         <div style="margin:0px;padding: 0px;">
-        	<p class="MsoNormal">Regards,
+        	<p class="MsoNormal">Regards,<o:p/>
         	</p>
         	<br>
-        		<p class="MsoNormal">
+        		<p class="MsoNormal" style="margin:0px;padding: 0px;line-height: 1.2;">
         			<b>
-        				<span>${(object.employee_id.name or '')| safe}
+        				<span style="margin:0px;padding: 0px;line-height: 1.2;">${(object.employee_id.name or '')| safe}<o:p/>
         				</span>
         			</b>
         		</p>
         		<p class="MsoNormal">
-        			<span>${(object.employee_id.job_id.name or '')| safe}
+        			<span style="margin:0px;padding: 0px;line-height: 1.2;">${(object.employee_id.job_id.name or '')| safe}<o:p/>
         			</span>
         		</p>
         		<p class="MsoNormal">
-        			<span style="margin: 0; line-height: 1.2;font-size:10.0pt;color:#1F497D;mso-ligatures:
+        			<span style="margin: 0;padding: 0px; line-height: 1.2;font-size:10.0pt;color:#1F497D;mso-ligatures:
         none">
         				<!--[if gte vml 1]><v:shapetype id="_x0000_t75" coordsize="21600,21600"
          o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe" filled="f"
@@ -616,6 +609,13 @@ class EventWizard(models.TransientModel):
         					<p/>
         				</div>        
         """
+        active_ids = self._context.get('active_ids', [])
+        if not active_ids:
+            return
+        lms_session = self.env['lms.session'].browse(active_ids)
+        
+        RenderMixin = self.env['mail.render.mixin']
+        note = RenderMixin._render_template(self.note, 'lms.session', lms_session.ids, post_process=True)[lms_session.id]        
         body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
         body = f"{note}<br/>{body_sig}"
 
@@ -648,6 +648,8 @@ class EventWizard(models.TransientModel):
         }
         try:
             template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+            # template = self.env.ref('calendar.calendar_template_meeting_invitation', raise_if_not_found=True)
+            
         except ValueError:
             _logger.warning('QWeb template mail.mail_notification_light not found when sending LMS event mails. Sending without layouting.')
         else:

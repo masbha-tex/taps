@@ -17,6 +17,7 @@ class Meeting(models.Model):
     _inherit = ['calendar.event', 'microsoft.calendar.sync']
 
     optional_attendee_ids = fields.Many2many('res.partner','lms_session_optional_attendee_rel','event_id', 'partner_id', string="Optional Participants")
+    description = fields.Html('Description')
 
     def _microsoft_values(self, fields_to_sync, initial_values={}):
         values = dict(initial_values)
