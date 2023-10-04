@@ -52,13 +52,14 @@ class ManufacturingPlan(models.TransientModel):
         material_qty = None
         # f"{record.prefix} - {record.float_value}"
         tape = slider = top = bottom = pinbox = wire = 0.0
+        all_mrp_lines = ''
         if active_model == 'operation.details':
             operation = self.env["operation.details"].browse(active_id)
             
             res["material_qty"] = sum(operation.mapped('qty'))
             in_len = len(operation)
             i = 0
-            all_mrp_lines = ''
+            
             for op in operation:
                 if i == in_len-1:
                     all_mrp_lines = all_mrp_lines + op.mrp_lines

@@ -131,7 +131,7 @@ class OperationDetails(models.Model):
         ('done', 'Done')],
         string='State')
     
-    
+    @api.model
     def action_unplan(self):
         if self.state == 'waiting':
             self.state = 'waiting'
