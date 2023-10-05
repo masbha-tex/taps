@@ -107,12 +107,12 @@ class OperationDetails(models.Model):
     mr_req = fields.Many2one('stock.picking', 'Requisitions', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     qty = fields.Float(string='Qty', readonly=False)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
-    balance_qty = fields.Float(string='Balance', readonly=True, compute='get_balance')
+    balance_qty = fields.Float(string='Balance', readonly=True, store=True, compute='get_balance')
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
     pack_qty = fields.Integer(string='Pack Qty', default=0, readonly=False)
     fr_pcs_pack = fields.Integer(string='Remaining Qty', default=0, readonly=False, help='The remaining pcs to pack')
     fg_done_qty = fields.Integer(string='FG Done', default=0, readonly=False)
-    fg_balance = fields.Integer(string='FG Balance', default=0, readonly=False, compute='get_balance')
+    fg_balance = fields.Integer(string='FG Balance', default=0, readonly=False, store=True, compute='get_balance')
     fg_output = fields.Integer(string='FG Output', default=0, readonly=False)
     cartoon_no = fields.Many2one('operation.details', string='Cartoon No', required=False, 
                                  domain="[('next_operation', '=', 'Delivery')]")
@@ -158,9 +158,12 @@ class OperationDetails(models.Model):
                         else:
                             qty = p.dyeing_plan_qty - p.dyeing_plan_qty
                             dn_qty = p.dyeing_plan_qty
-                        
+                        if p.tape_con > 0.01 and qty <= 0.01:
+                            qty = 0
+                            
                         p.update({'dyeing_plan':None,'dyeing_plan_qty':qty,
                                        'dy_rec_plan_qty':None})
+                        
                         res_qty = res_qty - dn_qty
                         mrp_id.append(p.id)
                 else:

@@ -95,54 +95,47 @@ class ReportDyePlan(models.AbstractModel):
                 plan_ids = m_plan.mapped('plan_id')
                 plan_ids = list(set(plan_ids))
 
-                for pid in plan_ids:
+                for pid in plan_ids: 
                     single_plan = m_plan.filtered(lambda pr: pr.plan_id == pid)
                     plq = sum(single_plan.mapped('qty'))
                     dnq = sum(single_plan.mapped('done_qty'))
                     plan_lots = math.ceil(plq/m_capa)
                     oa_ = single_plan.mapped('oa_id.name')
-                    
                     oa_names = [record for record in oa_]
                     oa_names_str = ', '.join(oa_names)
-                    rest_plq = plq
+                    
+                    rest_plq = plq/plan_lots
                     rest_dnq = dnq
-                    for lot in range(plan_lots):
-                        # for pl in m_plan:
-                        if rest_plq > m_capa:
-                            qty = m_capa
-                        else:
-                            qty = rest_plq
-                        if rest_dnq > m_capa:
-                            dnqty = m_capa
-                        else:
-                            dnqty = rest_dnq
-                        
-                        balance = qty-dnqty
+                    all_lots = plan_lots
+                    if plan_lots < 7:
+                        all_lots = 7 
+                    for lot in range(all_lots):
+                        qty = rest_plq
                         order_data = []
-                        status_ = None
-                        if dnqty>0:
-                            status_ = 'Ok'
                         shade_ref = ''
                         remarks = ''
-                        if single_plan[0].shade_ref:
-                            shade_ref = single_plan[0].shade_ref
-                        if single_plan[0].plan_remarks:
-                            remarks = single_plan[0].plan_remarks
-                        action_date = single_plan[0].action_date.strftime("%d-%m-%Y")
-                        oa_date = single_plan[0].date_order.strftime("%d-%m-%Y")
-                        order_data = [
-                            oa_names_str,
-                            action_date,
-                            oa_date,
-                            single_plan[0].partner_id.name,
-                            single_plan[0].buyer_name,
-                            single_plan[0].fg_categ_type,
-                            single_plan[0].shade,shade_ref,
-                            qty,'','','','','','','','',remarks
-                            ]
+                        if lot >= plan_lots:
+                            order_data = ['','','','','','','','','','','','','','','','','','']
+                        else:
+                            if single_plan[0].shade_ref:
+                                shade_ref = single_plan[0].shade_ref
+                            if single_plan[0].plan_remarks:
+                                remarks = single_plan[0].plan_remarks
+                            action_date = single_plan[0].action_date.strftime("%d-%m-%Y")
+                            oa_date = single_plan[0].date_order.strftime("%d-%m-%Y")
+                            order_data = [
+                                oa_names_str,
+                                action_date,
+                                oa_date,
+                                single_plan[0].partner_id.name,
+                                single_plan[0].buyer_name,
+                                single_plan[0].fg_categ_type,
+                                single_plan[0].shade,shade_ref,
+                                qty,'','','','','','','','',remarks
+                                ]
                         report_data.append(order_data)
-                        rest_plq = rest_plq - m_capa
-                        rest_dnq = rest_dnq - m_capa
+                        # rest_plq = rest_plq - m_capa
+                        # rest_dnq = rest_dnq - m_capa
                 for line in report_data:
                     col = 0
                     for l in line:

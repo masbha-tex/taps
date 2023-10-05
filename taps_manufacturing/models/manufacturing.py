@@ -435,54 +435,54 @@ class ManufacturingOrder(models.Model):
         if machine_line:
             for m in machine_line:
                 rest_q = m.material_qty
-                for pl in plan:
-                    qty = 0.0
-                    mrp_lines = None
-                    sale_lines = None
-                    next_operation = None
-                    mrp_line = sal_line = None
-                    if material == 'tape':
-                        next_operation = 'Dyeing Output'
-                        p_q = production.filtered(lambda sol: sol.oa_id.id == pl[0] and sol.shade == pl[1])
-                        mrp_lines = p_q._ids2str('ids')
-                        sale_lines = p_q._ids2str('sale_order_line')
-                        if len(p_q) > 1:
-                            qty = m.material_qty
-                        else:
-                            mrp_line = p_q.id
-                            sal_line = p_q.sale_order_line.id
-                            qty = sum(p_q.mapped('dy_rec_plan_qty'))
+                # for pl in plan:
+                qty = 0.0
+                mrp_lines = None
+                sale_lines = None
+                next_operation = None
+                mrp_line = sal_line = None
+                if material == 'tape':
+                    next_operation = 'Dyeing Output'
+                    p_q = production.filtered(lambda sol: sol.oa_id.id == m.oa_id.id)# and sol.shade == pl[1]
+                    mrp_lines = p_q._ids2str('ids')
+                    sale_lines = p_q._ids2str('sale_order_line')
+                    if len(p_q) > 1:
+                        qty = m.material_qty
+                    else:
+                        mrp_line = p_q.id
+                        sal_line = p_q.sale_order_line.id
+                        qty = sum(p_q.mapped('dy_rec_plan_qty'))
+                
+                for lots in range(m.lots):
+                    if rest_q > m.machine_no.capacity:
+                        qty = m.machine_no.capacity
+                    else:
+                        qty = rest_q
                     
-                    for lots in range(m.lots):
-                        if rest_q > m.machine_no.capacity:
-                            qty = m.machine_no.capacity
-                        else:
-                            qty = rest_q
-                        
-                        mrp_ = self.env['operation.details'].create({'mrp_lines':mrp_lines,
-                                                                 'sale_lines':sale_lines,
-                                                                 'mrp_line':mrp_line,
-                                                                 'sale_order_line':sal_line,
-                                                                 'oa_id':pl[0],
-                                                                 'buyer_name':p_q[0].buyer_name,
-                                                                 'product_id':p_q[0].product_id.id,
-                                                                 'product_template_id':p_q[0].product_template_id.id,
-                                                                 'action_date':plan_start,
-                                                                 'shade':pl[1],
-                                                                 'finish':pl[2],
-                                                                 'operation_of':'lot',
-                                                                 'work_center':plan_for_id,
-                                                                 'operation_by':'Planning',
-                                                                 'based_on':m.machine_no.name,
-                                                                 'next_operation':next_operation,
-                                                                 'machine_no':m.machine_no.id,
-                                                                 'capacity':m.machine_no.capacity,
-                                                                 'qty':round(qty,2),
-                                                                 'state':'waiting',
-                                                                 'plan_id': max_plan_id,
-                                                                 'plan_remarks': m.remarks
-                                                                 })
-                        rest_q = rest_q - m.machine_no.capacity
+                    mrp_ = self.env['operation.details'].create({'mrp_lines':mrp_lines,
+                                                             'sale_lines':sale_lines,
+                                                             'mrp_line':mrp_line,
+                                                             'sale_order_line':sal_line,
+                                                             'oa_id':m.oa_id.id,#pl[0],
+                                                             'buyer_name':p_q[0].buyer_name,
+                                                             'product_id':p_q[0].product_id.id,
+                                                             'product_template_id':p_q[0].product_template_id.id,
+                                                             'action_date':plan_start,
+                                                             'shade':p_q[1].shade,
+                                                             'finish':None,
+                                                             'operation_of':'lot',
+                                                             'work_center':plan_for_id,
+                                                             'operation_by':'Planning',
+                                                             'based_on':m.machine_no.name,
+                                                             'next_operation':next_operation,
+                                                             'machine_no':m.machine_no.id,
+                                                             'capacity':m.machine_no.capacity,
+                                                             'qty':round(qty,2),
+                                                             'state':'waiting',
+                                                             'plan_id': max_plan_id,
+                                                             'plan_remarks': m.remarks
+                                                             })
+                    rest_q = rest_q - m.machine_no.capacity
 
 
         else:

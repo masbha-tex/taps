@@ -37,7 +37,7 @@ class ManufacturingPlan(models.TransientModel):
     plan_end = fields.Datetime(string='End Date')
     item_qty = fields.Float('Item Qty',digits='Product Unit of Measure', readonly=True)
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
-    common_machine = fields.Boolean(readonly=False, string='Common Machine', default=False)
+    common_machine = fields.Boolean(readonly=False, string='Same Machine', default=False)
     full_qty = fields.Boolean(readonly=False, string='Full Qty', default=False)
 
     @api.depends('machine_line.material_qty')
@@ -69,17 +69,29 @@ class ManufacturingPlan(models.TransientModel):
     @api.onchange('common_machine')
     def _onchange_selection(self):
         if self.common_machine:
-            m_no = self.mapped('machine_line.machine_no.id')
-            self.machine_line.update({'machine_no':m_no[0]})
+            if self.machine_line:
+                m_no = self.mapped('machine_line.machine_no.id')
+                if m_no:
+                    self.machine_line.update({'machine_no':m_no[0]})
+                else:
+                    self.common_machine = False
+                    raise UserError(('Select atleast one machine'))
+            else:
+                self.common_machine = False
+                raise UserError(('Machine Required'))
+                
 
     @api.onchange('full_qty')
     def _onchange_qty_selection(self):
         if self.full_qty:
             if self.machine_line:
                 for ml in self.machine_line:
+                    if ml.qty_balance>0 and ml.machine_no:
+                        l_lots = math.ceil(ml.qty_balance/ml.machine_no.capacity)
+                        ml.update({'material_qty':ml.qty_balance,'lots':l_lots})
+                    else:
+                        raise UserError(('Machine and Quantity Required'))
                     
-                    l_lots = math.ceil(ml.qty_balance/ml.machine_no.capacity)
-                    ml.update({'material_qty':ml.qty_balance,'lots':l_lots})
             else:
                 self.plan_qty = self.material_qty
                 
