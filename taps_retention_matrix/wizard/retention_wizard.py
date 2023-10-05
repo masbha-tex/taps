@@ -97,7 +97,7 @@ class RetentionPDFReport(models.TransientModel):
                         'employee_id': self.employee_id.id,
                         'report_type': self.report_type,
                         'year': self.year,
-                        'month': self.month,
+                        # 'month': self.month,
                         'employee_type': self.employee_type,
                         'employee_group': False}
 
@@ -108,7 +108,7 @@ class RetentionPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'report_type': self.report_type,
                         'year': self.year,
-                        'month': self.month,
+                        # 'month': self.month,
                         'employee_type': self.employee_type,
                         'employee_group': False}
 
@@ -119,7 +119,7 @@ class RetentionPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'report_type': self.report_type,
                         'year': self.year,
-                        'month': self.month,
+                        # 'month': self.month,
                         'employee_type': self.employee_type,
                         'employee_group': False}
 
@@ -130,7 +130,7 @@ class RetentionPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'report_type': self.report_type,
                         'year': self.year,
-                        'month': self.month,
+                        # 'month': self.month,
                         'employee_type': self.employee_type,
                         'employee_group': False}
             # if self.mode_type == "emptype":
@@ -150,7 +150,7 @@ class RetentionPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'report_type': self.report_type,
                         'year': self.year,
-                        'month': self.month,
+                        # 'month': self.month,
                         'employee_type': self.employee_type,
                         'employee_group': self.employee_group}                 
         if self.report_type == 'retentionmatrix':
@@ -178,8 +178,8 @@ class RetentionReportPDF(models.AbstractModel):
             domain.append(('employee_group', '=', data.get('employee_group')))            
         if data.get('year'):
             domain.append(('year', '=', data.get('year')))
-        if data.get('month'):
-            domain.append(('month', '=', data.get('month')))            
+        # if data.get('month'):
+        #     domain.append(('month', '=', data.get('month')))            
             
                         
         # domain.append(('active', 'in',(False,True)))

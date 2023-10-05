@@ -131,13 +131,49 @@ class OperationDetails(models.Model):
         ('done', 'Done')],
         string='State')
     
-    @api.model
-    def action_unplan(self):
-        if self.state == 'waiting':
-            self.state = 'waiting'
+    # @api.model
+    # def action_unplan(self):
+    #     if self.state == 'waiting':
+    #         self.state = 'waiting'
     
     # lot_ids = fields.Many2one('operation.details', compute='get_lots', string='Lots', copy=False, store=True)
     
+    def unlink(self):
+        mrp_ids = None
+        mrp_id = []
+        for order in self:
+            production = None
+            if (order.state == 'waiting') and (order.operation_by == 'Planning'):
+                production = self.env["manufacturing.order"].search([('oa_id','=',order.oa_id.id),('shade','=',order.shade)])
+                # if order.id not in(207,0):
+                #     raise UserError((order.id,str(order.plan_id),str(production[0].plan_ids),order.oa_id.id,order.shade))
+                production = production.filtered(lambda op: str(order.plan_id) in op.plan_ids)
+                if production:
+                    res_qty = order.qty
+                    for p in production:
+                        dn_qty = 0
+                        if p.dyeing_plan_qty >= res_qty:
+                            qty = p.dyeing_plan_qty - res_qty
+                            dn_qty = res_qty
+                        else:
+                            qty = p.dyeing_plan_qty - p.dyeing_plan_qty
+                            dn_qty = p.dyeing_plan_qty
+                        
+                        p.update({'dyeing_plan':None,'dyeing_plan_qty':qty,
+                                       'dy_rec_plan_qty':None})
+                        res_qty = res_qty - dn_qty
+                        mrp_id.append(p.id)
+                else:
+                    raise UserError(('Something error, contact with admin'))
+            else:
+                raise UserError(('You can not delete this operation'))
+        mrp_ids = ','.join([str(i) for i in sorted(mrp_id)])
+        mrp_ids = [int(i) for i in sorted(mrp_ids.split(','))]
+        mrp = self.env["manufacturing.order"].browse(mrp_ids)
+        if mrp:
+            mrp.update({'plan_ids':None})
+        return super(OperationDetails, self).unlink()
+        
     def get_balance(self):
         for s in self:
             s.balance_qty = round((s.qty - s.done_qty),2)

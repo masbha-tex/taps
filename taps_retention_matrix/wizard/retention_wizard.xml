@@ -10,7 +10,7 @@
                     <group>
                         <field name="report_type" string="Report Type"/>
                         <field name="year"/>
-                        <field name="month"/>
+                        <field name="month" invisible="1"/>
                     </group>
                     <group>
                         <field name="mode_type" string="Mode"/>

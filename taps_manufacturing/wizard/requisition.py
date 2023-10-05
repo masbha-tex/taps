@@ -43,7 +43,7 @@ class ManufacturingPlan(models.TransientModel):
         index=True, required=True)
     requisition_line = fields.One2many('mrp.requisition.line', 'requisition_id', readonly=False, string='Requisition Line',copy=True, auto_join=True)
     
-
+            
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)

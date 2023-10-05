@@ -42,7 +42,7 @@
 				<p style="font-size:16px">
           Daily Order Release of  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> in details is given below:</p>
 				<br/>
-				<table class=" table table-sm  o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: avoid ! important;">
+				<table class=" table table-sm  o_main_table p-0 m-0" style="font-size:11px;table-layout: fixed ! important;page-break-inside: avoid ! important;">
 					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">
 						<strong>METAL PRODUCTS</strong>
 					</caption>
@@ -148,7 +148,7 @@
 				</table>
 			  <br/>
 			  <div style="page-break-inside: avoid ! important;">
-			  <table class=" table table-sm o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;">
+			  <table class=" table table-sm o_main_table p-0 m-0" style="font-size:11px;table-layout: fixed ! important;">
 					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">
 						<strong>COIL &amp; INVISIBLE PRODUCTS</strong>
 					</caption>
@@ -257,7 +257,7 @@
 				</div>
 				<br/>
 				
-				<table class=" table table-sm o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: auto ! important;">
+				<table class=" table table-sm o_main_table p-0 m-0" style="font-size:11px;table-layout: fixed ! important;page-break-inside: auto ! important;">
 					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">
 						<strong>PLASTIC PRODUCTS</strong>
 					</caption>
@@ -365,7 +365,7 @@
 				</table>
 				
 				<br/>
-			<table class=" table table-sm o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: auto ! important;">
+			<table class=" table table-sm o_main_table p-0 m-0" style="font-size:11px;table-layout: fixed ! important;page-break-inside: auto ! important;">
 					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">
 						<strong>Revised OA</strong>
 					</caption>

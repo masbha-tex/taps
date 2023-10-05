@@ -223,7 +223,8 @@ class MachineLine(models.TransientModel):
             production = self.env["operation.details"].search([('machine_no','=',l.machine_no.id),('operation_of','in',('lot','output')),('state','!=','done')])
 
             operation = production.filtered(lambda op: op.action_date.date() == self.plan_id.plan_start.date() and 'Output' in op.next_operation)
-            l.reserved = math.ceil(sum(operation.mapped('balance_qty'))/l.machine_no.capacity)
+            if l.machine_no.capacity:
+                l.reserved = math.ceil(sum(operation.mapped('balance_qty'))/l.machine_no.capacity)
 
             
             

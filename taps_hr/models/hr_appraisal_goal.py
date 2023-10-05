@@ -8,6 +8,7 @@ import math
 
 class HrAppraisalGoal(models.Model):
     _inherit = 'hr.appraisal.goal'
+    _order = 'sequence'
     
     condition = fields.Selection(selection=[
         ('less', 'Less than'),
@@ -28,6 +29,7 @@ class HrAppraisalGoal(models.Model):
         ('jan', 'January'),
         ('feb', 'February'),
         ('mar', 'March'),], string="Calculate YTD")
+    sequence = fields.Integer()    
     employee_id = fields.Many2one('hr.employee', string="Owner",
         default=lambda self: self.env.user.employee_id, required=False, tracking=True)
     manager_id = fields.Many2one('hr.employee', string="Challenged By", required=False, tracking=True)
