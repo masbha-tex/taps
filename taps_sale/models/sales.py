@@ -130,7 +130,31 @@ class SaleOrder(models.Model):
     brand = fields.Char(string='Brand')
     
         
-    
+    def action_copy(self):
+        # return {
+        #     'type': 'ir.actions',
+        #     'res_model': 'sale.order.line',
+        #     'view_mode': 'form',
+        #     # 'res_id': new_record.id,
+        #     'target': 'current',
+        # # }
+        docs=self.env['sale.order.line'].search([('order_id','=', self.id),('is_selected', '=',True)])
+        # raise UserError((docs))
+        # max_seq = max(line.sequence for line in self.order_id.order_line)
+        for record in docs:
+            record.is_selected = False
+            record.copy({'order_id': record.order_id.id})
+            # return {'type': 'ir.actions.act_window_close'}
+
+    def action_del(self):
+        docs=self.env['sale.order.line'].search([('order_id','=', self.id),('is_selected', '=',True)])
+        # raise UserError((docs))
+        # max_seq = max(line.sequence for line in self.order_id.order_line)
+        for record in docs:
+            # record.is_selected = False
+            record.unlink()
+            
+            
     
         
             
@@ -550,6 +574,8 @@ class SaleOrder(models.Model):
                     'slidercode':lines.slidercode,
                     'finish':lines.finish,
                     'shade':lines.shade,
+                    'shade_name':lines.shade_name,
+                    'shade_ref':lines.shade_ref,
                     'sizein':lines.sizein,
                     'sizecm':lines.sizecm,
                     'sizemm':lines.sizemm,
@@ -997,7 +1023,7 @@ class SaleOrder(models.Model):
         for products in self.order_line:
             # text = products.shade
             # shade = text.splitlines()
-            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting'})
+            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade_name,'shade_ref':products.shade_ref,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting'})
             
 
  
@@ -1200,24 +1226,7 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    # @api.depends('product_id')
-    # def _set_default_val(self):
-    #     raise UserError(("hi"))
-    #     for rec in self:
-            
-    #         rec.logoref='WAVY POLO R.LAUREN'
-    #         rec.finish_ref='TG-4117'
-        
-        
-            # elif rec.product_template_id.name == 'BRASS SHANK BUTTON WITH DOUBLE PRONG [100213083]':
-            #     rec.logo='WAVY POLO R.LAUREN'
-            #     rec.finish_ref='TG-411703'
-            # elif rec.product_template_id.name == 'BRASS HOLE SHANK BUTTON WITH DOUBLE PRONG [100212195]':
-            #     rec.logo='WREATH'
-            #     rec.finish_ref='TG-4117'
-            # elif rec.product_template_id.name == 'BRASS HOLE SHANK BUTTON WITH DOUBLE PRONG [100212194]':
-            #     rec.logo='WORK WEAR'
-            #     rec.finish_ref='TG-4117'
+    
 
     
     
@@ -1226,7 +1235,8 @@ class SaleOrderLine(models.Model):
     slidercodesfg = fields.Text(string='Slider Code (SFG)', store=True)
     finish = fields.Text(string='Finish', store=True)
     shade = fields.Text(string='Shade', store=True)
-    # shade_ref = fields.Text(string='Shade Ref', store=True)
+    shade_name = fields.Text(string='Full Shade', store=True)
+    shade_ref = fields.Text(string='Shade Ref', store=True)
     sizein = fields.Text(string='Size (Inch)', store=True)
     sizecm = fields.Text(string='Size (CM)', store=True)
     sizemm = fields.Text(string='Size (MM)', store=True)
@@ -1274,6 +1284,7 @@ class SaleOrderLine(models.Model):
     line_code = fields.Char(string='Line Code', compute="_compute_line_code")
     mold_set = fields.Char(string='Mold Set')
     weight_per_gross = fields.Float(string='Weight/Gross', compute='_compute_weight_per_gross', inverse='_inverse_compute_weight_per_gross', store=True)
+    is_selected = fields.Boolean('Select',default=False)
 
     
     
@@ -1849,6 +1860,22 @@ class SaleOrderLine(models.Model):
                         all_tape = all_line.filtered(lambda sol: sol.id in all_id)
                         all_tape.update({'shadewise_tape':s_total})
                         break
+
+    @api.onchange('shade_name', 'shade_ref')
+    def shade_change(self):
+        for re in self:
+            if re.shade_ref:
+                if re.shade_name:
+                    re.shade = re.shade_name + '\n' + re.shade_ref
+                else:
+                    re.shade = re.shade_ref
+            elif re.shade_name:
+                if re.shade_ref:
+                    re.shade = re.shade_name + '\n' + re.shade_ref
+                else:
+                    re.shade = re.shade_name
+                
+
         
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):

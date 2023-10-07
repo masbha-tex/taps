@@ -89,7 +89,7 @@ class HrGrievance(models.Model):
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.grievance', grievance.id),
                 }
                 sig = """
-                <div style="margin:0px;padding: 0px;">
+                <div style="margin:0px;padding: 0px;line-height: 1.2;">
                 	<p class="MsoNormals">Regards,<o:p/>
                 	</p>
                 	<br>
@@ -169,7 +169,7 @@ class HrGrievance(models.Model):
                 				</p>
                 				<p class="MsoNormal">
                 					<span style="margin: 0; line-height: 1.2;font-size: 10pt; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">Cell:
-                ${(object.employee_id.mobile or '')| safe} <o:p/>
+                ${(object.employee_id.mobile or '')| safe}<o:p/>
                 					</span>
                 				</p>
                 				<p class="MsoNormal" style="margin: 0; line-height: 1.2;">
@@ -187,7 +187,7 @@ class HrGrievance(models.Model):
                 					<b>
                 						<span lang="EN-GB" style="margin: 0; line-height: 1.2;font-size:10.0pt;color:black;mso-ansi-language:EN-GB">
                 							<a href="mailto:${(object.employee_id.email or '')| safe}">
-                								<span style="margin: 0; line-height: 1.2;color:black">${(object.employee_id.email or '')| safe}</span>
+                								<span style="margin: 0; line-height: 1.2;color:black">${(object.employee_id.email or '')| safe}<o:p/></span>
                 							</a>
                 						</span>
                 					</b>
@@ -212,7 +212,8 @@ class HrGrievance(models.Model):
                 subject = RenderMixin._render_template(self.type.name, 'hr.grievance', grievance.ids, post_process=True)[grievance.id]
                 body = RenderMixin._render_template(self.details, 'hr.grievance', grievance.ids, post_process=True)[grievance.id]
                 body_submit = RenderMixin._render_template(self.submit_template, 'hr.grievance', grievance.ids, post_process=True)[grievance.id]
-                body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
+                # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
+                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
                 body = f"{body}<br/>{body_submit}<br/>{body_sig}"
                 # post the message
                 matrix = self.env['hr.grievance.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
