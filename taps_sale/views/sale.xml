@@ -246,8 +246,29 @@
                 <xpath expr="//tree" position="attributes">
                     <attribute name="js_class">sale_tree_dashboard_upload</attribute>
                 </xpath>
+                
+                    <!-- <header>
+                        <button name="action_copy" string="Copy" object="action"/>
+                    </header> -->
+               
             </field>
         </record>
+        <!-- <record model="ir.ui.view" id="view_order_line_tree_inherit">
+            <field name="name">sale.order.line.tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_order_line_tree"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="inside">
+                    <header>
+                        <button name="action_copy" string="Copy" object="action"/>
+                    </header>
+                </xpath>
+                
+                    
+               
+            </field>
+        </record> -->
 
         <record model="ir.ui.view" id="view_sale_order_kanban_inherit">
             <field name="name">sale.order.kanban.inherit</field>

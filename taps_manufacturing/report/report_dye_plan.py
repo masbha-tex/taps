@@ -107,35 +107,35 @@ class ReportDyePlan(models.AbstractModel):
                     rest_plq = plq/plan_lots
                     rest_dnq = dnq
                     all_lots = plan_lots
-                    if plan_lots < 7:
-                        all_lots = 7 
+                        
                     for lot in range(all_lots):
                         qty = rest_plq
                         order_data = []
                         shade_ref = ''
                         remarks = ''
-                        if lot >= plan_lots:
-                            order_data = ['','','','','','','','','','','','','','','','','','']
-                        else:
-                            if single_plan[0].shade_ref:
-                                shade_ref = single_plan[0].shade_ref
-                            if single_plan[0].plan_remarks:
-                                remarks = single_plan[0].plan_remarks
-                            action_date = single_plan[0].action_date.strftime("%d-%m-%Y")
-                            oa_date = single_plan[0].date_order.strftime("%d-%m-%Y")
-                            order_data = [
-                                oa_names_str,
-                                action_date,
-                                oa_date,
-                                single_plan[0].partner_id.name,
-                                single_plan[0].buyer_name,
-                                single_plan[0].fg_categ_type,
-                                single_plan[0].shade,shade_ref,
-                                qty,'','','','','','','','',remarks
-                                ]
+                        if single_plan[0].shade_ref:
+                            shade_ref = single_plan[0].shade_ref
+                        if single_plan[0].plan_remarks:
+                            remarks = single_plan[0].plan_remarks
+                        action_date = single_plan[0].action_date.strftime("%d-%m-%Y")
+                        oa_date = single_plan[0].date_order.strftime("%d-%m-%Y")
+                        order_data = [
+                            oa_names_str,
+                            action_date,
+                            oa_date,
+                            single_plan[0].partner_id.name,
+                            single_plan[0].buyer_name,
+                            single_plan[0].fg_categ_type,
+                            single_plan[0].shade,shade_ref,
+                            qty,'','','','','','','','',remarks
+                            ]
                         report_data.append(order_data)
-                        # rest_plq = rest_plq - m_capa
-                        # rest_dnq = rest_dnq - m_capa
+                        
+                    if len(report_data) < 7:
+                        row_sl = len(report_data)
+                        for l in range(row_sl,7):
+                            order_data = ['','','','','','','','','','','','','','','','','','']
+                            report_data.append(order_data)
                 for line in report_data:
                     col = 0
                     for l in line:

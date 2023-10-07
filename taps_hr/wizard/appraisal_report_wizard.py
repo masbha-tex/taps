@@ -420,6 +420,20 @@ class HeadwisePDFReport(models.TransientModel):
                 edata.a_feb,
                 edata.a_mar,
                 edata.y_a_ytd,
+                'Weightage',
+                edata.apr,
+                edata.may,
+                edata.jun,
+                edata.jul,
+                edata.aug,
+                edata.sep,
+                edata.oct,
+                edata.nov,
+                edata.dec,
+                edata.jan,
+                edata.feb,
+                edata.mar,
+                edata.y_ytd,
                 edata.employee_id.id,
             ]
             report_data.append(emp_data)
@@ -536,7 +550,7 @@ class HeadwisePDFReport(models.TransientModel):
                 
                 # raise UserError((line[2],emp.id))
                 if line[2] != 'Strategic Projects' and line[2]:
-                    if line[34] == emp.id:
+                    if line[48] == emp.id:
                         slnumber += 1
                         col=0
                         for l in line:
@@ -568,7 +582,7 @@ class HeadwisePDFReport(models.TransientModel):
                                     worksheet.write(row, col, l, report_column_style_2)
                             elif col == 6:
                                     worksheet.write(row, col, l, report_column_style_2)
-                                    
+                                   
                             elif col == 7:
                                     worksheet.write(row, col, l, report_column_style_2)
                                     # worksheet.write(row, col, l, report_column_style_2)
@@ -631,7 +645,7 @@ class HeadwisePDFReport(models.TransientModel):
             for line in report_data:       
                 if line[2] == 'Strategic Projects':
                     
-                    if line[34] == emp.id:
+                    if line[48] == emp.id:
                         slnumber += 1
                         col=0
                         for l in line:
@@ -697,6 +711,9 @@ class HeadwisePDFReport(models.TransientModel):
                             #     break
                             # else:
                             #     worksheet.write(row, col, l, report_column_style_2)
+                            elif col == 20:
+                                row+=1
+                                col=6
                             col+=1
                         row+=1
                                         
