@@ -883,8 +883,8 @@ class OperationDetails(models.Model):
             operation_of = 'output'
             if out.operation_of == 'qc':
                 operation_of = 'input'
-            # if out.next_operation == 'Dyeing Output':
-            #     operation_of = 'input'
+            if out.next_operation == 'Dyeing Output':
+                operation_of = 'qc'
             # operation = self.env["operation.details"].browse(self.id)
             # raise UserError((out.code,out.mrp_lines,out.mrp_line.id,out.sale_lines,out.sale_order_line.id))
             # raise UserError((operation_of,next,out.uotput_qty))    

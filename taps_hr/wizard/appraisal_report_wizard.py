@@ -533,7 +533,13 @@ class HeadwisePDFReport(models.TransientModel):
             report_column_style_2.set_text_wrap()
             report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '0.00%'})
             worksheet.merge_range('A1:C1',('%s' % (emp.name)), report_title_style)
-            worksheet.insert_image("F1", ('%s' % (emp.image_1920)))
+            img = io.BytesIO(base64.b64decode(emp.image_1920))
+            # worksheet.insert_image("F1", ('%s' % (emp.image_1920)))
+            worksheet.insert_image(0, 1, '', {'image_data': img, "x_scale": 0.06, "y_scale": 0.06,'align': 'center','valign': 'vcenter' })
+            
+            img_ = io.BytesIO(base64.b64decode(emp.parent_id.image_1920))
+            worksheet.insert_image(0, 11, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 50})
+            
             worksheet.merge_range('D1:K1', 'KPI Scorecard [Challenged By]', report_title_style)
             worksheet.merge_range('L1:T1', ('%s' % (emp.parent_id.name)), report_title_style)
     
@@ -549,6 +555,8 @@ class HeadwisePDFReport(models.TransientModel):
     #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
             merge_format = workbook.add_format({'align': 'center','valign': 'vcenter'})
             merge_format.set_text_wrap()
+            merge_format_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF'})
+            merge_format_.set_text_wrap()
             
             column_product_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
             column_product_style2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
@@ -559,21 +567,22 @@ class HeadwisePDFReport(models.TransientModel):
             # set the width od the column
             
             percent_format = workbook.add_format({"num_format": "0%"})
+            worksheet.freeze_panes(6, 0)
 
 
             worksheet.write(2, 2, 'WEIGHT', column_product_style2)
-            worksheet.write(2, 3, 'Apr', column_product_style2)
-            worksheet.write(2, 4, 'May', column_product_style2)
-            worksheet.write(2, 5, 'Jun', column_product_style2)
-            worksheet.write(2, 6, 'Jul', column_product_style2)
-            worksheet.write(2, 7, 'Aug', column_product_style2)
-            worksheet.write(2, 8, 'Sep', column_product_style2)
-            worksheet.write(2, 9, 'Oct', column_product_style2)
-            worksheet.write(2, 10, 'Nov', column_product_style2)
-            worksheet.write(2, 11, 'Dec', column_product_style2)
-            worksheet.write(2, 12, 'Jan', column_product_style2)
-            worksheet.write(2, 13, 'Feb', column_product_style2)
-            worksheet.write(2, 14, 'Mar', column_product_style2)
+            worksheet.write(2, 3, 'APR', column_product_style2)
+            worksheet.write(2, 4, 'MAY', column_product_style2)
+            worksheet.write(2, 5, 'JUN', column_product_style2)
+            worksheet.write(2, 6, 'JUL', column_product_style2)
+            worksheet.write(2, 7, 'AUG', column_product_style2)
+            worksheet.write(2, 8, 'SEP', column_product_style2)
+            worksheet.write(2, 9, 'OCT', column_product_style2)
+            worksheet.write(2, 10, 'NOV', column_product_style2)
+            worksheet.write(2, 11, 'DEC', column_product_style2)
+            worksheet.write(2, 12, 'JAN', column_product_style2)
+            worksheet.write(2, 13, 'FEB', column_product_style2)
+            worksheet.write(2, 14, 'MAR', column_product_style2)
             worksheet.write(2, 15, 'YTD', column_product_style2)
 
              
@@ -710,45 +719,20 @@ class HeadwisePDFReport(models.TransientModel):
                                 grandtotal = grandtotal+l
                                 # format = workbook.add_format({'num_format': num_formats})
                                 worksheet.write(row, col, l, report_column_style_3)
-                            # elif col==8:
-                            #     break
-                            # else:
-                            #     worksheet.write(row, col, l, report_column_style_2)
-                            
-                            # elif col == 20:
-                                
-                                
-                                
-                                    
-                                    
-                                # worksheet.write(row, col_, l, report_column_style_2)
-                                # col_=7
-                                # worksheet.write(row, col_, l, report_column_style_2)
-                            
-                                    
-                                    # worksheet.write(row, col, l, report_column_style_2)
-                            
-                                
-                                # worksheet.write(row, col_, l, report_column_style_2)
-                                # col_ +=1
-                            
                             col+=1
                             # raise UserError((row,col))
                         row+=1
                         # if col==5:
                         #     title = tite
-                        # worksheet.write(row, col, 'Strategic Projects', column_product_style)
-                                
                         
-                        
-                        
-                      
+            worksheet.merge_range(row, 0, row, 20, 'Strategic Projects', merge_format_)
+            row+=1
+       
             # raise UserError((row,col))
-            for line in report_data:       
+            for line in report_data:
                 if line[2] == 'Strategic Projects':
-                    # worksheet.merge_range(row, 0, row, 20, 'Strategic Projects', merge_format)
-                    # row+=1
                     if line[48] == emp.id:
+                        
                         slnumber += 1
                         col=0
                         line.pop(48)
@@ -823,9 +807,7 @@ class HeadwisePDFReport(models.TransientModel):
                             col+=1
                         row+=1
                                         
-                
-                        
-            
+  
                     #worksheet.write(4, 0, 'SL.', column_product_style)
                     
                     worksheet.write(row, 0, '', report_small_title_style)
@@ -835,9 +817,6 @@ class HeadwisePDFReport(models.TransientModel):
                     worksheet.write(row, 4, '', report_small_title_style)
                     worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
 
-
-                    
-                    
                     #raise UserError((datefrom,dateto,bankname,categname))
             
         workbook.close()
