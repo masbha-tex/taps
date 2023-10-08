@@ -11,7 +11,7 @@
                 <filter string="Pending" name="progress" domain="[('operation_of','in',('lot','output')),('state','!=','done'),('next_operation','ilike','Output')]"/>
                 <filter string="Done" name="quality" domain="[('operation_of','=','output'),('state','!=','done'),('next_operation','ilike','Qc')]"/>
                 <filter string="Requisitions" name="requisitions" domain="[('mr_req','=',True)]"/>
-                <filter string="Packing" name="packing" domain="[('next_operation','=','Packing'),('state','!=','done')]"/>
+                <filter string="Packing" name="packing" domain="[('next_operation','=','FG Packing'),('state','!=','done')]"/>
                 <filter string="Delivery" name="delivery" domain="[('next_operation','=','Delivery'),('state','!=','done')]"/>
                 <separator/>
                 <filter string="Start Date" name="action_date_filter" date="action_date"/>
@@ -77,14 +77,14 @@
                 <field name="mr_req" readonly="1" optional="show"/>
                 <field name="qty" readonly="1" optional="show"/>
                 <field name="done_qty" readonly="1" force_save="1" optional="show"/>
-                <field name="balance_qty" optional="show"/>
+                <field name="balance_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="uotput_qty" attrs="{'readonly': [('operation_of', 'not in', ('output','qc','lot'))]}" optional="show"/>
                 <field name="pack_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="fr_pcs_pack" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_balance" readonly="1" optional="show"/>
-                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}" optional="show"/>
-                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}" optional="show"/>
+                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
+                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
                 <field name="mrp_delivery" readonly="1" force_save="1" optional="show"/>
                 <field name="total_weight" readonly="1" force_save="1" optional="show"/>
                 <field name="move_line" readonly="1" invisible="1" force_save="1"/>
@@ -138,8 +138,8 @@
                 <field name="fr_pcs_pack" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_balance" readonly="1" optional="show"/>
-                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}" optional="show"/>
-                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'Packing')]}" optional="show"/>
+                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
+                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
                 <field name="state" readonly="1" force_save="1" optional="show"/>
             </tree>
         </field>
@@ -236,7 +236,7 @@
         <field name="res_model">operation.details</field>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="view_fg_packing_tree" />
-        <field name="domain">[('next_operation','=','Packing')]</field>
+        <field name="domain">[('next_operation','=','FG Packing')]</field>
         <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
         <field name="context">{'search_default_packing': 1}</field>
     </record>

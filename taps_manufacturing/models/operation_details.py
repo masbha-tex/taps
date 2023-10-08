@@ -91,6 +91,7 @@ class OperationDetails(models.Model):
         ('Dipping Output', 'Dipping Output'),
         ('Dipping Qc', 'Dipping Qc'),
         ('Assembly', 'Assembly'),
+        ('Gapping', 'Gapping'),
         ('Assembly Output', 'Assembly Output'),
         ('Assembly Qc', 'Assembly Qc'),
         ('Plating', 'Plating'),
@@ -99,21 +100,33 @@ class OperationDetails(models.Model):
         ('Painting Output', 'Painting Output'),
         ('Slider Assembly', 'Slider Assembly'),
         ('Slider Assembly Output', 'Slider Assembly Output'),
-        ('Packing', 'Packing'),
+        ('Packing Output', 'Packing Output'),
+        ('FG Packing', 'FG Packing'),
         ('Delivery', 'Delivery'),
         ('Issue', 'Issue'),
         ('Done', 'Done')],
         string='Next Operation', help="Next Operation")
     mr_req = fields.Many2one('stock.picking', 'Requisitions', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    
+    @api.depends('qty', 'done_qty')
+    def get_balance(self):
+        for s in self:
+            s.balance_qty = round((s.qty - s.done_qty),2)
+    
+    @api.depends('pack_qty', 'fg_done_qty')        
+    def get_fg_balance(self):
+        for s in self:
+            s.fg_balance = s.pack_qty - s.fg_done_qty
+            
     qty = fields.Float(string='Qty', readonly=False)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
-    balance_qty = fields.Float(string='Balance', readonly=True, store=True, compute='get_balance')
+    balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
     pack_qty = fields.Integer(string='Pack Qty', default=0, readonly=False)
     fr_pcs_pack = fields.Integer(string='Remaining Qty', default=0, readonly=False, help='The remaining pcs to pack')
     fg_done_qty = fields.Integer(string='FG Done', default=0, readonly=False)
-    fg_balance = fields.Integer(string='FG Balance', default=0, readonly=False, store=True, compute='get_balance')
-    fg_output = fields.Integer(string='FG Output', default=0, readonly=False)
+    fg_balance = fields.Integer(string='FG Balance', default=0, readonly=False, store=True, compute='get_fg_balance')
+    fg_output = fields.Integer(string='FG Output', default=0, readonly=False, group_operator="sum")
     cartoon_no = fields.Many2one('operation.details', string='Cartoon No', required=False, 
                                  domain="[('next_operation', '=', 'Delivery')]")
     
@@ -144,7 +157,7 @@ class OperationDetails(models.Model):
         for order in self:
             production = None
             if (order.state == 'waiting') and (order.operation_by == 'Planning'):
-                production = self.env["manufacturing.order"].search([('oa_id','=',order.oa_id.id),('shade','=',order.shade)])
+                production = self.env["manufacturing.order"].search([('oa_id','=',order.oa_id.id),('shade','=',order.shade),('plan_ids','!=',False)])
                 # if order.id not in(207,0):
                 #     raise UserError((order.id,str(order.plan_id),str(production[0].plan_ids),order.oa_id.id,order.shade))
                 production = production.filtered(lambda op: str(order.plan_id) in op.plan_ids)
@@ -177,10 +190,6 @@ class OperationDetails(models.Model):
             mrp.update({'plan_ids':None})
         return super(OperationDetails, self).unlink()
         
-    def get_balance(self):
-        for s in self:
-            s.balance_qty = round((s.qty - s.done_qty),2)
-            s.fg_balance = s.pack_qty - s.fg_done_qty
     
     def _ids2str(self,field_name):
         field_data = getattr(self, field_name)
@@ -564,6 +573,10 @@ class OperationDetails(models.Model):
                 if m.dyeing_plan_qty > 0:
                     up_date = m.update({'dyeing_output': m.dyeing_output + rest_qty})
                     break
+            if operation == 'Dyeing Qc':
+                if m.dyeing_plan_qty > 0:
+                    up_date = m.update({'dyeing_qc_pass': m.dyeing_qc_pass + rest_qty})
+                    break
             if operation == 'CM Output':
                 up_date = m.update({'chain_making_done': m.chain_making_done + rest_qty})
                 break
@@ -572,6 +585,9 @@ class OperationDetails(models.Model):
                 break
             if operation == 'Assembly Output':
                 up_date = m.update({'assembly_done': m.assembly_done + rest_qty})
+                break
+            if operation == 'Packing Output':
+                up_date = m.update({'packing_done': m.packing_done + rest_qty})
                 break
             if operation in ('Plating Output','Painting Output'):
                 
@@ -621,7 +637,7 @@ class OperationDetails(models.Model):
                     ope = operation_p.write({'done_qty':dqt})
                 parent_id = parent_id.parent_id
 
-        if operation.next_operation == 'Assembly Output':
+        if operation.next_operation == 'Packing Output':
             if operation.mrp_line:
                 mrp_data = self.env["manufacturing.order"].browse(operation.mrp_line.id)
                 mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + qty})
@@ -635,7 +651,7 @@ class OperationDetails(models.Model):
 
     
 
-        if operation.next_operation in('Dyeing Output','CM Output','Dipping Output','Assembly Output','Plating Output','Painting Output','Slider Assembly Output'):
+        if operation.next_operation in('Dyeing Output','Dyeing Qc','CM Output','Dipping Output','Assembly Output','Packing Output','Plating Output','Painting Output','Slider Assembly Output'):
            up = self.set_mrp_output(operation.next_operation,operation.mrp_lines,qty,operation.based_on)
             
         next = None
@@ -660,8 +676,8 @@ class OperationDetails(models.Model):
         operation_of = 'output'
         if operation.operation_of == 'qc':
             operation_of = 'input'
-        if operation.next_operation == 'Dyeing Output':
-            operation_of = 'input'
+        # if operation.next_operation == 'Dyeing Output':
+        #     operation_of = 'input'
 
         # raise UserError((w_center,operation.work_center.name,pack_qty,fraction_pc_of_pack))
         ope = self.env['operation.details'].create({'name':operation.name,
@@ -772,7 +788,7 @@ class OperationDetails(models.Model):
     #'Assembly Output','Assembly Qc','Plating Output','Painting Output','Slider Assembly Output'
                 #'Dyeing Output','Dyeing Qc','CM Output','Deeping Output','Deeping Qc'
                 # out_qty = out.uotput_qty
-                if out.next_operation in('Dyeing Output','CM Output','Dipping Output','Assembly Output','Plating Output','Painting Output','Slider Assembly Output'):
+                if out.next_operation in('Dyeing Output','Dyeing Qc','CM Output','Dipping Output','Assembly Output','Packing Output','Plating Output','Painting Output','Slider Assembly Output'):
                     up = self.set_mrp_output(out.next_operation,out.mrp_lines,out.uotput_qty,out.based_on)
                 
                 if out.parent_id:
@@ -785,7 +801,7 @@ class OperationDetails(models.Model):
                         parent_id = parent_id.parent_id
         
                 move_line = None
-                if out.next_operation == 'Assembly Output':
+                if out.next_operation == 'Packing Output':
                     mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
                     pr_pac_qty = mrp_data.product_template_id.pack_qty
                     if pr_pac_qty:
@@ -867,8 +883,8 @@ class OperationDetails(models.Model):
                 operation_of = 'output'
                 if out.operation_of == 'qc':
                     operation_of = 'input'
-                if out.next_operation == 'Dyeing Output':
-                    operation_of = 'input'
+                # if out.next_operation == 'Dyeing Output':
+                #     operation_of = 'input'
                 # operation = self.env["operation.details"].browse(self.id)
                 # raise UserError((out.code,out.mrp_lines,out.mrp_line.id,out.sale_lines,out.sale_order_line.id))
                     

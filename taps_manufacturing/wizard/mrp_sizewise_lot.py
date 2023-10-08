@@ -76,7 +76,7 @@ class SizewiseLotLine(models.TransientModel):
     gap = fields.Char(string='Gap', readonly=True)
     tape_con = fields.Float('Tape C.', readonly=True, digits='Product Unit of Measure')
     balance_qty = fields.Float(string='Qty', readonly=True)
-    lot_capacity = fields.Float(string='Qty/Lot', readonly=True)
+    lot_capacity = fields.Float(string='Qty/Lot')
     lots = fields.Integer(string='Lots')
     # quantity_string = fields.Char(string="Quantities", readonly=False)
     size_total = fields.Float(string='Total', default = 0.0, readonly=False)
@@ -103,8 +103,12 @@ class SizewiseLotLine(models.TransientModel):
     def _get_qty_bylots(self):
         for l in self:
             if l.lot_capacity>0:
-                l_num = math.ceil(balance_qty/l.lot_capacity)
+                l_num = math.ceil(l.balance_qty/l.lot_capacity)
                 l.lots = l_num
+                if (l.lot_capacity*l_num)>l.balance_qty:
+                    l.size_total = l.balance_qty
+                else:
+                    l.size_total = (l.lot_capacity*l_num)
         
     # @api.onchange('quantity_string')
     # def _get_qty_bylots(self):

@@ -29,7 +29,7 @@
                                     <field name="lot_capacity"/>
                                     <field name="lots"/>
                                     <!-- <field name="quantity_string"/> -->
-                                    <field name="size_total"  readonly="1" force_save="1" optional="show" sum="Total" decoration-bf="True"/>
+                                    <field name="size_total" optional="show" sum="Total" decoration-bf="True"/>
                                 </tree>
                             </field>
                         </page>

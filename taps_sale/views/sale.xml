@@ -166,6 +166,7 @@
 				</xpath>
                 <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_template_id']" position="before">
                     <field name="is_selected"/>
+                    <field name="is_copied" invisible="1"/>
                     <field name="line_code" attrs="{'column_invisible':['|','|',('parent.company_id', 'in',(2,1,4)),('parent.sales_type', 'in', 'sale'),('parent.sales_type', 'in', 'oa')]}"/>
                 </xpath>
 				<!--               <xpath expr="//form/sheet/div/div/label[@string='Is a Company?']" position="attributes">
@@ -262,22 +263,25 @@
                     
             </field>
         </record>
-        <!-- <record model="ir.ui.view" id="view_order_line_tree_inherit">
+        <record model="ir.ui.view" id="view_order_line_tree_inherit">
             <field name="name">sale.order.line.tree</field>
             <field name="model">sale.order.line</field>
             <field name="inherit_id" ref="sale.view_order_line_tree"/>
             <field name="mode">primary</field>
             <field name="arch" type="xml">
-                <xpath expr="//tree" position="inside">
+                <xpath expr="//tree/field[@name='order_id']" position="before">
                 
-                        <button name="action_copy" string="Copy" object="action"/>
+                        <field name="is_selected" invisible="1"/>
                     
+                </xpath>
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="decoration-bf">{'is_copied': 'newly-copied'}</attribute>
                 </xpath>
                 
                     
                
             </field>
-        </record> -->
+        </record>
 
         <record model="ir.ui.view" id="view_sale_order_kanban_inherit">
             <field name="name">sale.order.kanban.inherit</field>

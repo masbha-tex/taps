@@ -140,10 +140,12 @@ class SaleOrder(models.Model):
         # # }
         docs=self.env['sale.order.line'].search([('order_id','=', self.id),('is_selected', '=',True)])
         # raise UserError((docs))
-        # max_seq = max(line.sequence for line in self.order_id.order_line)
+        
         for record in docs:
             record.is_selected = False
-            record.copy({'order_id': record.order_id.id})
+            max_seq = max(line.sequence for line in record.order_id.order_line)
+            record.copy({'order_id': record.order_id.id, 'sequence': max_seq + 1})
+            record.is_copied = True
             # return {'type': 'ir.actions.act_window_close'}
 
     def action_del(self):
@@ -1023,7 +1025,7 @@ class SaleOrder(models.Model):
         for products in self.order_line:
             # text = products.shade
             # shade = text.splitlines()
-            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade_name,'shade_ref':products.shade_ref,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting'})
+            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting'})
             
 
  
@@ -1285,6 +1287,7 @@ class SaleOrderLine(models.Model):
     mold_set = fields.Char(string='Mold Set')
     weight_per_gross = fields.Float(string='Weight/Gross', compute='_compute_weight_per_gross', inverse='_inverse_compute_weight_per_gross', store=True)
     is_selected = fields.Boolean('Select',default=False)
+    is_copied = fields.Boolean('Copied',default=False)
 
     
     

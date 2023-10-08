@@ -78,7 +78,7 @@
                 <field name="dy_rec_plan_qty" readonly="1" force_save="1" optional="show" sum="Dye Last Plan" decoration-bf="True"/>
                 <field name="dyeing_plan_due" readonly="1" force_save="1" optional="show" sum="Dye Plan Due" decoration-bf="True"/>
                 <field name="dyeing_output" readonly="1" force_save="1" optional="show" sum="Dye Output" decoration-bf="True"/>
-                <!-- <field name="dyeing_qc_pass" optional="show" sum="Dye QC Pass" decoration-bf="True"/> -->
+                <field name="dyeing_qc_pass" invisible="1" readonly="1" force_save="1" optional="show" sum="Dye QC Pass" decoration-bf="True"/>
 
 				<field name="plating_plan" readonly="1" force_save="1" optional="show"/>
                 <field name="plating_plan_end" invisible="1"/>

@@ -113,7 +113,7 @@ class ManufacturingOrder(models.Model):
     dyeing_plan_due = fields.Float(string='Dye Plan Due', compute='_dy_plane_due', digits='Product Unit of Measure', readonly=True, group_operator="sum", store=True)
     
     dyeing_output = fields.Float(string='Dye Output', readonly=False, default=0.0)
-    # dyeing_qc_pass = fields.Float(string='Dye QC Pass', readonly=False, default=0.0)
+    dyeing_qc_pass = fields.Float(string='Dye QC Pass', readonly=False, default=0.0)
 
     plating_plan = fields.Datetime(string='Plat/Paint Start', readonly=False)
     plating_plan_end = fields.Datetime(string='Plat/Paint End', readonly=False)
@@ -444,6 +444,8 @@ class ManufacturingOrder(models.Model):
                 if material == 'tape':
                     next_operation = 'Dyeing Output'
                     p_q = production.filtered(lambda sol: sol.oa_id.id == m.oa_id.id)# and sol.shade == pl[1]
+                    # if p_q:
+                    #     raise UserError((p_q[0].buyer_name))
                     mrp_lines = p_q._ids2str('ids')
                     sale_lines = p_q._ids2str('sale_order_line')
                     if len(p_q) > 1:
