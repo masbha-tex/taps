@@ -746,7 +746,8 @@ class HeadwisePDFReport(models.TransientModel):
             # raise UserError((row,col))
             for line in report_data:       
                 if line[2] == 'Strategic Projects':
-                    
+                    # worksheet.merge_range(row, 0, row, 20, 'Strategic Projects', merge_format)
+                    # row+=1
                     if line[48] == emp.id:
                         slnumber += 1
                         col=0
