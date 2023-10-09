@@ -65,7 +65,7 @@
                             <field name="bonus_lines">
                                 <tree string="Installments" editable="bottom">
                                     <field name="date"/>
-									<field name="adjustment_type" invisible="1"/>
+									<!-- <field name="adjustment_type" invisible="1"/> -->
                                     <field name="amount"/>
                                     <field name="paid" readonly="1" invisible="1"/>
                                 </tree>

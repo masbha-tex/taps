@@ -229,7 +229,13 @@ class OperationDetails(models.Model):
         action["domain"] = [('default_id','in',self.mapped('id'))]
         a = 'a'
         return action
-  
+    
+    def button_group_output(self):
+        self._check_company()
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_group_output")
+        action["domain"] = [('default_id','in',self.mapped('id'))]
+        return action
+        
     def button_output(self):
         self.ensure_one()
         self._check_company()
@@ -618,8 +624,16 @@ class OperationDetails(models.Model):
                     break
             
 
-           # dyeing_output plating_output top_plat_output bot_plat_output pin_plat_output sli_asmbl_output chain_making_done diping_done assembly_done packing_done            
+           # dyeing_output plating_output top_plat_output bot_plat_output pin_plat_output sli_asmbl_output chain_making_done diping_done assembly_done packing_done         
+    def set_group_output(self,mo_ids,qty):
+        raise UserError(('Under Construction'))
+        operation = self.env["operation.details"].browse(mo_ids)
+        qty = round((qty/len(operation)),2)
+        for op in operation:
+            op.update({'uotput_qty':qty})
 
+
+    
     def set_output(self,output_model,mo_ids,manuf_date,qty,output_of):
         # raise UserError((self,output_model,mo_ids,manuf_date,qty,output_of))
         

@@ -14,7 +14,7 @@
     'live_test_url': 'https://youtu.be/LdUvXDMkd4Q',
     'website': "https://taps.odoo.com",
     'depends': [
-        'base', 'hr_payroll', 'hr',
+        'base', 'hr',
     ],
     'data': [
         'security/ir.model.access.csv',

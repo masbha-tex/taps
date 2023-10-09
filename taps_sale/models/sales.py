@@ -128,7 +128,19 @@ class SaleOrder(models.Model):
     garments = fields.Char(string='Garments')
     corrosions_test = fields.Char(string='Corrosions Test Method')
     brand = fields.Char(string='Brand')
-    
+
+
+    @api.onchange('buyer_name')
+    def buyer_name_change(self):
+        if self.company_id.id == 3:
+            self.hs_code= "9606.22.00"
+            if self.buyer_name.name == "RALPH LAUREN":
+                self.brand = "POLO"
+        
+            
+        # raise UserError((self.company_id.id))
+            
+        
         
     def action_copy(self):
         # return {
@@ -1742,7 +1754,7 @@ class SaleOrderLine(models.Model):
             self.finish_ref='TG-4117'
         elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213083':
             self.logo='WAVY POLO R.LAUREN'
-            self.finish_ref='TG-411703'
+            self.finish_ref='TS-411703'
         elif self.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100212195':
             self.logo='WREATH'
             self.finish_ref='TG-4117'

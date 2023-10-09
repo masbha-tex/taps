@@ -10,6 +10,7 @@
                         <field name="item"/>
                         <field name="shade"/>
                         <field name="finish"/>
+                        <field name="material_name"/>
                         <field name="plan_for"/>
                         <field name="material"/>
                         <field name="plan_start"/>

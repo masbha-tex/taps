@@ -28,12 +28,14 @@
 						<div>
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
-									<span>PI # TZBD- <t t-esc="o.pi_number"/>
+									<span>PI # TZBD-
+                                        <t t-if="o.buyer_name.name == 'RALPH LAUREN'">
+                                          <span><t t-esc="o.order_line[0].product_template_id.default_code"/>-</span>  
+                                        </t>
+                                        <t t-esc="o.pi_number"/>
                                         
 									</span>
-                                    <t t-if="o.buyer_name.name == 'RALPH LAUREN'">
-                                          <span>-<t t-esc="o.order_line[0].product_template_id.default_code"/>-BD</span>  
-                                    </t>
+                                    
 								</h2>
 							</div>
 							<div class="float-right">
@@ -125,13 +127,7 @@
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
-								<div class="col-auto col-2 mw-100 mb-2">
-									<strong>DPI</strong>
-									<br/>
-									<p>
-										<t t-esc="o.dpi"/>
-									</p>
-								</div>
+								
 							</div>
 						</div>
 						<div class="row mt32 mb32" style="font-size:11px">
@@ -179,18 +175,20 @@
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>DPI</strong>
+									<br/>
+									<p>
+										<t t-esc="o.dpi"/>
+									</p>
+							</div>
+						</div>
+                        <t t-if="o.buyer_name.name != 'RALPH LAUREN'">
+						<div class="row mt32 mb32" style="font-size:10px">
+							<div class="col-auto col-2 mw-50 mb-2">
 								<strong>ASSORTMENT</strong>
 								<br/>
 								<p>
 									<t t-esc="o.assortment"/>
-								</p>
-							</div>
-						</div>
-						<div class="row mt32 mb32" style="font-size:10px">
-							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>STYLE REF</strong>
-								<p>
-									<t t-esc="o.style_ref"/>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
@@ -212,9 +210,9 @@
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>SALESPERSON</strong>
+								<strong>DIVISION</strong>
 								<p>
-									<t t-esc="o.sale_representative.name"/>
+									<t t-esc="o.division"/>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
@@ -224,9 +222,11 @@
 								</p>
 							</div>
 						</div>
+                        </t>
 						<div class="row mt32 mb32" style="font-size:10px">
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>SEASON</strong>
+                                <strong>SEASON</strong>
+								<br/>
 								<p>
 									<t t-esc="o.season"/>
 								</p>
@@ -238,9 +238,9 @@
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>DIVISION</strong>
+                                <strong>SALESPERSON</strong>
 								<p>
-									<t t-esc="o.division"/>
+									<t t-esc="o.sale_representative.name"/>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
@@ -263,6 +263,12 @@
 							</div>
 						</div>
 						<div class="row mt32 mb32" style="font-size:10px">
+                            <div class="col-auto col-2 mw-50 mb-2">
+								<strong>STYLE REF</strong>
+								<p>
+									<t t-esc="o.style_ref"/>
+								</p>
+							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
 								<strong>CUSTOMER REF</strong>
 								<p>
@@ -275,12 +281,7 @@
 									<span>USD</span>
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
-								<!--<strong>DIVISION</strong>-->
-								<!--<p>-->
-								<!--	<t t-esc="o.division"/>-->
-								<!--</p>-->
-							</div>
+							
 							<div class="col-auto col-2 mw-50 mb-2">
 								<!--<strong>BUYER NAME</strong>-->
 								<!--<p>-->
@@ -469,6 +470,9 @@
 														<t t-if="line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213086' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213083' or line.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100212195' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194'">
                                                             <span>L</span>
                                                         </t>
+                                                        <t t-else="">
+                                                            <span>MM</span>
+                                                        </t>
 													</strong>
 												</td>
 												<td rowspan="1">
@@ -633,12 +637,12 @@
 							<br/>
 							<div class="clearfix" style="font-size:11px">
 								<span>
-									<strong>Amount In WordS(USD): <span style="background-color:yellow" t-esc="o.amount_in_word"/>
+									<strong>Amount In Word<span> (USD): </span> <span style="background-color:yellow" t-esc="o.amount_in_word"/>
 									</strong>
 								</span>
 								<br/>
 								<span>
-									<strong>Approximate Weight(KG): <span t-esc="o.appr_weight"/>
+									<strong>Approximate Weight<span> (KG): </span> <span t-esc="o.appr_weight"/>
 									</strong>
 								</span>
 							</div>

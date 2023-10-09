@@ -21,3 +21,4 @@ access_mrp_qc_output,mrp_qc_output,model_mrp_qc_output,base.group_user,1,1,1,1
 access_process_sequence,process_sequence,model_process_sequence,base.group_user,1,1,1,1
 access_machine_list,machine_list,model_machine_list,base.group_user,1,1,1,1
 access_packing_report,access_packing_report,model_packing_report,base.group_user,1,1,1,1
+access_mrp_group_output,mrp_group_output,model_mrp_group_output,base.group_user,1,1,1,1

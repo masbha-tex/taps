@@ -657,6 +657,7 @@ class HrPayslipsss(models.Model):
         return res    
     
     def _input_compute_sheet(self, payslip_id, contract_id, employee_id, date_start, date_stop):
+        
         others_adjust = self.env['hr.payslip.input']
         payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
         
@@ -692,6 +693,7 @@ class HrPayslipsss(models.Model):
         self.compute_sheet()
         
     def compute_sheet(self):
+        
         # Refresh the whole payslip in case the HR has entry some adjustment entries
         # after the payslip generation
         payslips = self.filtered(lambda slip: slip.state in ['draft', 'verify'])

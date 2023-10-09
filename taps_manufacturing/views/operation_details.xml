@@ -6,6 +6,14 @@
         <field name="arch" type="xml">
             <search>
                 <field name="oa_id"/>
+                <field name="fg_categ_type"/>
+                <field name="partner_id"/>
+                <field name="buyer_name"/>
+                <field name="slidercodesfg"/>
+                <field name="finish"/>
+                <field name="shade"/>
+                <field name="sizein"/>
+                <field name="sizecm"/>
                 <field name="work_center"/>
                 <filter string="Ready" name="ready" domain="[('operation_of','in',('plan','input')),('state','!=','done')]"/>
                 <filter string="Pending" name="progress" domain="[('operation_of','in',('lot','output')),('state','!=','done'),('next_operation','ilike','Output')]"/>
@@ -44,6 +52,8 @@
                 <header>
                     <button name="button_requisition" type="object" string="Requisition"/>
                     <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
+                    <button name="button_group_output" type="object" string="Group Output"/>
+                     <!-- attrs="{'invisible': [('next_operation', 'not in', ('Dyeing Output','Dyeing Qc'))]}" -->
                     <!-- <button name="action_unplan" confirm="Are you sure to Unplan?" type="object" string="Un-Plan"/>   -->
                     <!-- <button name="button_output" type="object" string="Output"/> -->
                 </header>

@@ -24,6 +24,7 @@ class ManufacturingPlan(models.TransientModel):
     item = fields.Text(string='Item', readonly=True)
     shade = fields.Text(string='Shade', readonly=True)
     finish = fields.Text(string='Finish', readonly=True)
+    material_name = fields.Text(string='Material', readonly=True)
     plan_for = fields.Many2one('mrp.workcenter', required=True, string='Plan For', help="Assign to")
     material = fields.Selection([
         ('tape', 'Tape'),
@@ -31,7 +32,7 @@ class ManufacturingPlan(models.TransientModel):
         ('top', 'Top'),
         ('bottom', 'Bottom'),
         ('pinbox', 'Pinbox')],
-        string='Material', required=True)
+        string='Material Type', required=True)
     
     plan_start = fields.Datetime(string='Start Date', required=True, default=datetime.now())
     plan_end = fields.Datetime(string='End Date')
@@ -49,9 +50,6 @@ class ManufacturingPlan(models.TransientModel):
     
     machine_line = fields.One2many('machine.line', 'plan_id', string='Machines',copy=True, auto_join=True)
 
-
-# , inverse='_inverse_plan_qty'
-
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
@@ -61,10 +59,6 @@ class ManufacturingPlan(models.TransientModel):
         res["item"] = production[0].fg_categ_type
         res["item_qty"] = sum(production.mapped('balance_qty'))
         return res
-    
-    def _inverse_plan_qty(self):
-        pass    
-  
     
     @api.onchange('common_machine')
     def _onchange_selection(self):
@@ -128,6 +122,10 @@ class ManufacturingPlan(models.TransientModel):
                     }))
                 
             self.update({'machine_line': planline_values,})
+        elif self.plan_for.name == 'Plating':
+            self.material = 'slider'
+            # self.material = None
+            self.machine_line.unlink()
         else:
             self.material = None
             self.machine_line.unlink()
@@ -141,21 +139,27 @@ class ManufacturingPlan(models.TransientModel):
         if self.material == 'tape':
             self.material_qty = round(sum(production.mapped('tape_con')),2)
             self.shade = production[0].shade
+            self.material_name = production[0].dyedtape
         elif self.material == 'slider':
             self.material_qty = round(sum(production.mapped('slider_con')),2)
             self.finish = production[0].finish
+            self.material_name = production[0].slidercodesfg
         elif self.material == 'top':
             self.material_qty = round(sum(production.mapped('topwire_con')),2)
             self.finish = production[0].finish
+            self.material_name = production[0].ptopfinish
         elif self.material == 'bottom':
             self.material_qty = round(sum(production.mapped('botomwire_con')),2)
             self.finish = production[0].finish
+            self.material_name = production[0].pbotomfinish
         elif self.material == 'pinbox':
             self.material_qty = round(sum(production.mapped('pinbox_con')),2)
             self.finish = production[0].finish
+            self.material_name = production[0].ppinboxfinish
         elif self.plan_for.name == 'Slider assembly':
             self.material_qty = round(sum(production.mapped('slider_con')),2)
-            self.finish = production[0].finish            
+            self.finish = production[0].finish
+            self.material_name = production[0].slidercodesfg
          
     def done_mo_plan(self):
         # if  self.plan_qty > self.material_qty:

@@ -171,7 +171,7 @@ class InstallmentLine(models.Model):
     amount = fields.Float(string="Amount", required=True, help="Amount")
     paid = fields.Boolean(string="Paid", help="Paid")
     bonus_id = fields.Many2one('hr.retention.bonus', string="Retention Bonus Ref.", help="Retention Bonus Scheme")
-    adjustment_type = fields.Many2one('hr.payslip.input.type', string='Type',required=True,store=True, domain="[('code', '=', 'INCENTIVE')]", default=44)
+    # adjustment_type = fields.Many2one('hr.payslip.input.type', string='Type',required=True,store=True, domain="[('code', '=', 'INCENTIVE')]", default=44)
 
 
 class HrEmployee(models.Model):

@@ -34,6 +34,7 @@
         'wizard/mrp_output.xml',
         'wizard/mrp_qc_output.xml',
         'wizard/mrp_delivery.xml',
+        'wizard/mrp_group_output.xml',
         'views/assets.xml',
         'views/mrp_productivity.xml',
         'views/mrp_production.xml',
