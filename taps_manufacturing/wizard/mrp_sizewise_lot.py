@@ -37,6 +37,10 @@ class MrpSizewiseLot(models.TransientModel):
         orderline = self.env['manufacturing.order'].search([('oa_id', '=', operation[0].oa_id.id),('shade','=',operation[0].shade),('dyeing_plan','!=',None)])#.sorted(key = 'id')
         orderline_values = []
 
+        # grouped_orderline = orderline.groupby(['size', 'shade'])
+        # for key, group in grouped_orderline.items():
+        #     size, shade = key
+
         for lines in orderline:
             orderline_values.append((0, 0, {
                 'mrp_line': lines.id,

@@ -52,6 +52,11 @@
                    <field  name="po_type" />
                    
                </xpath>
+                <!-- <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/tree[1]/control[1]/create[@name='add_product_control']" position="attributes">
+                    <attribute name="invisible">1</attribute> -->
+                    <!-- <attribute name="attrs">{'invisible': [['state','in',['purchase','done']]]}</attribute> -->
+                    <!-- <attribute name="attrs">{'invisible': [('parent.state', '=', 'purchase')]}</attribute> -->
+               <!-- </xpath> -->
                 <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/tree[1]/field[@name='product_qty']" position="before">
                    <field  name="quality_standard" />
                    

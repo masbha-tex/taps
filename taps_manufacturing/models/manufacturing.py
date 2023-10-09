@@ -170,7 +170,8 @@ class ManufacturingOrder(models.Model):
     state = fields.Selection([
         ('waiting', 'Waiting'),
         ('partial', 'Partial'),
-        ('done', 'Done')],
+        ('done', 'Done'),
+        ('hold', 'Hold')],
         string='State')
 
     # @api.constrains('company_id')
@@ -433,6 +434,8 @@ class ManufacturingOrder(models.Model):
         plan = cursor.fetchall()
         #raise UserError((plan))
         if machine_line:
+            # machines = machine_line.mapped('machine_no.id')
+            # for mc in machines:
             for m in machine_line:
                 rest_q = m.material_qty
                 # for pl in plan:

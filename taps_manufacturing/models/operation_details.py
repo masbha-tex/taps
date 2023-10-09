@@ -141,7 +141,8 @@ class OperationDetails(models.Model):
     state = fields.Selection([
         ('waiting', 'Waiting'),
         ('partial', 'Partial'),
-        ('done', 'Done')],
+        ('done', 'Done'),
+        ('hold', 'Hold')],
         string='State')
     
     # @api.model

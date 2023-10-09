@@ -354,14 +354,14 @@ class HeadwisePDFReport(models.TransientModel):
         
         # raise UserError((domain))
         docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
-        # if docs1.employee_id.company_id.id == 1:
-        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
-        # elif docs1.employee_id.company_id.id == 3:
-        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
-        # else:
-        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
+        if docs1.employee_id.company_id.id == 1:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27))]).sorted(key = 'id', reverse=False)
+        elif docs1.employee_id.company_id.id == 3:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28))]).sorted(key = 'id', reverse=False)
+        else:
+            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28))]).sorted(key = 'id', reverse=False)
         
-        docs = docs1
+        docs = docs2 | docs1
         #raise UserError((docs.id))
         datefrom = data.get('date_from')
         dateto = data.get('date_to')
@@ -526,19 +526,21 @@ class HeadwisePDFReport(models.TransientModel):
         for emp in emply:
             
             worksheet = workbook.add_worksheet(('%s - %s' % (emp.pin,emp.name)))
+            worksheet.set_zoom(75)
             report_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 16, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_title_style1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'font_size': 13, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
             report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
+           
             report_column_style_2.set_text_wrap()
             report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '0.00%'})
             worksheet.merge_range('A1:C1',('%s' % (emp.name)), report_title_style)
+            
             img = io.BytesIO(base64.b64decode(emp.image_1920))
-            # worksheet.insert_image("F1", ('%s' % (emp.image_1920)))
             worksheet.insert_image(0, 1, '', {'image_data': img, "x_scale": 0.06, "y_scale": 0.06,'align': 'center','valign': 'vcenter' })
             
             img_ = io.BytesIO(base64.b64decode(emp.parent_id.image_1920))
-            worksheet.insert_image(0, 11, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 50})
+            worksheet.insert_image(0, 19, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 1})
             
             worksheet.merge_range('D1:K1', 'KPI Scorecard [Challenged By]', report_title_style)
             worksheet.merge_range('L1:T1', ('%s' % (emp.parent_id.name)), report_title_style)
@@ -555,7 +557,7 @@ class HeadwisePDFReport(models.TransientModel):
     #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
             merge_format = workbook.add_format({'align': 'center','valign': 'vcenter'})
             merge_format.set_text_wrap()
-            merge_format_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF'})
+            merge_format_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF'})
             merge_format_.set_text_wrap()
             
             column_product_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
@@ -565,7 +567,7 @@ class HeadwisePDFReport(models.TransientModel):
             row_categ_style = workbook.add_format({'border': True})
     
             # set the width od the column
-            
+            _range = len(report_data)
             percent_format = workbook.add_format({"num_format": "0%"})
             worksheet.freeze_panes(6, 0)
 
@@ -634,12 +636,106 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.write(5, 19, 'YTD', column_product_style)
             col = 0
             row=6
-            
+            row_p = 7
+            product_range = 7
             grandtotal = 0
-            title = 'Strategic Projects'
-    #         grandtotal3 = 0
-            
             slnumber = 0
+            
+            worksheet.merge_range(row, 0, row, 19, 'Revenue & PAT', merge_format_)
+            row=7
+            # mer = worksheet.merge_range('A8:A10','',report_column_style_2)
+            for line in report_data:
+                for x in report_data[row_p:]:
+                    p_last_one = row
+                    if (x[0] == line[0]):
+                        product_range += 1
+                        row_p += 1
+                    else:
+                        # raise UserError(('ms'))
+                        worksheet.merge_range(row, 0, product_range, 0, slnumber, merge_format)
+                        product_range = row + 1
+                        break
+                    # if slnumber > 0:
+                    #     worksheet.merge_range(p_last_one, 0, product_range, 0, slnumber, merge_format)
+                    #     product_range = row + 1
+                    
+                    
+                if not line[2]:
+                    slnumber += 1
+                    col=0
+                    line.pop(48)
+                    for l in line:
+                        # len (line)
+                        if col == 1:
+                            etype = l[:1]
+                        if col == 0:
+                            worksheet.write(row, col, slnumber, report_column_style_2)
+                        if col == 1:
+                            worksheet.write(row, col, l, report_column_style_2)
+                        if col == 2:
+                            worksheet.write(row, col, '', report_column_style_2)
+                        elif col == 3:
+                            
+                            if etype == '%':
+                                ld = l/100
+                                worksheet.write(row, col, ld, report_column_style_3)
+                            else:
+                                worksheet.write(row, col, l, report_column_style_2)                    
+                        elif col == 4:
+                            
+                            if etype == '%':
+                                ld = l/100
+                                worksheet.write(row, col, ld, report_column_style_3)
+                            else:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 6:
+                                
+                                worksheet.write(row, col, l, column_product_style)
+                               
+                        elif col == 7:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 8:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 9:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 10:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 11:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 12:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 13:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 14:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 15:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 16:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 17:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 18:
+                                worksheet.write(row, col, l, report_column_style_2)
+                        elif col == 19:
+                                worksheet.write(row, col, l, column_product_style)
+                                row+=1
+                                col=5
+                        elif col==5:
+                            # grandtotal = grandtotal+l
+                            worksheet.write(row, col, l, report_column_style_3)
+                            
+                        col+=1
+                    
+
+                    row = row-1
+                    row+=1
+                    row_p = row
+                    
+                    
+                    
+            worksheet.merge_range(row, 0, row, 19, 'Objective / Score', merge_format_)
+            row+=1
+            
             for line in report_data:
                 # raise UserError((line[8],emp.id))
                 # slnumber=0
@@ -711,7 +807,7 @@ class HeadwisePDFReport(models.TransientModel):
                             elif col == 18:
                                     worksheet.write(row, col, l, report_column_style_2)
                             elif col == 19:
-                                    worksheet.write(row, col, l, report_column_style_2)
+                                    worksheet.write(row, col, l, column_product_style)
                                     # raise UserError((len(line)))
                                     row+=1
                                     col=5
@@ -722,10 +818,11 @@ class HeadwisePDFReport(models.TransientModel):
                             col+=1
                             # raise UserError((row,col))
                         row+=1
+                        row = row-1
                         # if col==5:
                         #     title = tite
                         
-            worksheet.merge_range(row, 0, row, 20, 'Strategic Projects', merge_format_)
+            worksheet.merge_range(row, 0, row, 19, 'Strategic Projects', merge_format_)
             row+=1
        
             # raise UserError((row,col))
@@ -790,7 +887,7 @@ class HeadwisePDFReport(models.TransientModel):
                             elif col == 18:
                                     worksheet.write(row, col, l, report_column_style_2)
                             elif col == 19:
-                                    worksheet.write(row, col, l, report_column_style_2)
+                                    worksheet.write(row, col, l, column_product_style)
                                     row+=1
                                     col=5
                             elif col==5:
@@ -806,6 +903,7 @@ class HeadwisePDFReport(models.TransientModel):
                             #     col=6
                             col+=1
                         row+=1
+                        row = row-1
                                         
   
                     #worksheet.write(4, 0, 'SL.', column_product_style)

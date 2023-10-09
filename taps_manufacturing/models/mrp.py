@@ -198,7 +198,7 @@ class MrpWoProductivity(models.Model):
             wc.order_tooutput_count = len(operation)
             
             operation = None
-            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'output' and op.state != 'done' and 'Qc' in op.next_operation)
+            operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'qc' and op.state != 'done' and 'Qc' in op.next_operation)
             wc.order_toqc_count = len(operation)
 # op.qty > op.done_qt
     # def action_work_order(self):
