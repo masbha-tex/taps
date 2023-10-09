@@ -434,8 +434,18 @@ class ManufacturingOrder(models.Model):
         plan = cursor.fetchall()
         #raise UserError((plan))
         if machine_line:
-            # machines = machine_line.mapped('machine_no.id')
+            # machines = machine_line.mapped('machine_no')
             # for mc in machines:
+            #     mc_oa_ids = machine_line.filtered(lambda sol: sol.machine_no.id == mc.id)
+            #     oa_ids = mc_oa_ids.mapped('oa_id')
+            #     mq = sum(mc_oa_ids.mapped('material_qty'))
+            #     lots = math.ceil(mq/mc.capacity)
+            #     rest_plq = mq/lots
+            #     for oa in oa_ids:
+            #         oa_plan = mc_oa_ids.filtered(lambda sol: sol.oa.id == oa.id)
+            #         oa_sum = sum(oa_plan.mapped('material_qty'))
+            #         if rest_plq > oa_sum
+            #     # for oa in oa_ids:
             for m in machine_line:
                 rest_q = m.material_qty
                 # for pl in plan:

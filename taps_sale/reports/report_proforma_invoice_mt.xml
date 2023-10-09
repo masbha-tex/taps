@@ -29,7 +29,11 @@
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
 									<span>PI # TZBD- <t t-esc="o.pi_number"/>
+                                        
 									</span>
+                                    <t t-if="o.buyer_name.name == 'RALPH LAUREN'">
+                                          <span>-<t t-esc="o.order_line[0].product_template_id.default_code"/>-BD</span>  
+                                    </t>
 								</h2>
 							</div>
 							<div class="float-right">
@@ -414,19 +418,19 @@
 												</td>
 												<td rowspan="3">
 													<strong>
-														<span t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														<span t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}" /><span> $</span>
 													</strong>
 												</td>
 												<t t-if="dis== 1">
 													<td rowspan="3">
 														<strong>
-															<span t-esc="line.discount"/>
+															<span t-esc="line.discount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span> $</span>
 														</strong>
 													</td>
 												</t>
 												<td rowspan="3">
 													<strong>
-														<span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														<span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span> $</span>
 													</strong>
 												</td>
 												<t t-if="style== 1">
@@ -452,16 +456,19 @@
 												</t>
 											</tr>
 											<tr>
-												<th rowspan="1">Finish Ref</th>
+												<th rowspan="1">Size</th>
 												<th rowspan="1">B Part</th>
 												<th rowspan="1">C Part</th>
 												<th rowspan="1">D Part</th>
-												<th rowspan="1">Size</th>
+												<th rowspan="1">Finish Ref</th>
 											</tr>
 											<tr>
 												<td rowspan="1">
 													<strong>
-														<span t-esc="line.finish_ref"/>
+														<span t-esc="line.sizemm"/>
+														<t t-if="line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213086' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213083' or line.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100212195' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194'">
+                                                            <span>L</span>
+                                                        </t>
 													</strong>
 												</td>
 												<td rowspan="1">
@@ -481,10 +488,8 @@
 												</td>
 												<td rowspan="1">
 													<strong>
-														<span t-esc="line.sizemm"/>
-                                                        <t t-if="line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213086' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213083' or line.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100212195' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194'">
-                                                            <span>L</span>
-                                                        </t>
+														<span t-esc="line.finish_ref"/>
+                                                        
 													</strong>
 												</td>
 											</tr>
@@ -508,16 +513,16 @@
 											<td/>
 											<td>
 												<strong>
-													<span t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+													<span t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span> $</span>
 												</strong>
 											</td>
 											<t t-if="dis == 1">
-											  <td></td>
+											  <td/>
 											  
 											</t>
 											<td>
 												<strong>
-													<span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+													<span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}" /> <span> $</span>
 												</strong>
 											</td>
 											<t t-if="style == 1">
@@ -574,11 +579,11 @@
 						      
 						    </td>
 						    <t t-if="dis == 1">
-										<td />
+										<td/>
 									</t>
 									<td style="background-color: yellow">
 										<strong>
-											<span t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+											<span t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}" /><span> $</span>
 										</strong>
 									</td>
 									<t t-if="style == 1">
@@ -773,7 +778,7 @@
 								</div>
 							</div>
 						</div>
-					</div>
+                    </div>
 				</t>
 			</t>
 		</t>
