@@ -154,6 +154,8 @@ class HrRetentionBonus(models.Model):
             else:
                 self.write({'state': 'approve'})
 
+                
+
     # def unlink(self):
     #     for bonus in self:
     #         if bonus.state not in ('draft', 'cancel'):
@@ -180,7 +182,6 @@ class HrEmployee(models.Model):
     def _compute_retention_bonus_scheme(self):
         """This compute the bonus amount and total retention scheme count of an employee.
             """
-        self.retention_bonus_scheme_count = self.env['hr.retention.bonus'].search_count([('employee_id', '=', self.id)])
+        self.retention_bonus_scheme_count = self.env['hr.retention.bonus'].sudo().search_count([('employee_id', '=', self.id)])
 
-    retention_bonus_scheme_count = fields.Integer(string="Retention Bonus Scheme Count", compute='_compute_retention_bonus_scheme')
-
+    retention_bonus_scheme_count = fields.Integer(string="Retention Bonus Scheme Count", compute='_compute_retention_bonus_scheme', groups="hr_retention_bonus.group_manager_retention_bonus,hr_retention_bonus.group_user_retention_bonus")

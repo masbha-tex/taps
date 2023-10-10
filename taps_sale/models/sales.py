@@ -634,6 +634,9 @@ class SaleOrder(models.Model):
             #saleorder.order_ref.order_line#
             saleorder.order_line = [(5, 0)] + [(0, 0, value) for value in orderline_values]
 
+            
+
+    
     def _create_pi(self):
         for saleorder in self:
             # for saleorder in rec:
@@ -1572,12 +1575,173 @@ class SaleOrderLine(models.Model):
     def duplicate_line(self):
         max_seq = max(line.sequence for line in self.order_id.order_line)
         self.copy({'order_id': self.order_id.id, 'sequence': max_seq + 1})
-        
-
     
-        
-        
-        
+    # def duplicate_line(self):
+    #     max_seq = max(line.sequence for line in self.order_id.order_line)
+    #     # self.copy({'order_id': self.order_id.id, 'sequence': max_seq + 1})
+    #     orderline_values = []
+    #     # for lines in self.order_id.order_line:
+    #     #     orderline_values.append((0, 0, {
+    #     #         'name':lines.name,
+    #     #         'sequence':lines.sequence,
+    #     #         'invoice_lines':lines.invoice_lines,
+    #     #         'invoice_status':lines.invoice_status,
+    #     #         'price_unit':lines.price_unit,
+    #     #         'price_subtotal':lines.price_subtotal,
+    #     #         'price_tax':lines.price_tax,
+    #     #         'price_total':lines.price_total,
+    #     #         'price_reduce':lines.price_reduce,
+    #     #         'tax_id':lines.tax_id,
+    #     #         'price_reduce_taxinc':lines.price_reduce_taxinc,
+    #     #         'price_reduce_taxexcl':lines.price_reduce_taxexcl,
+    #     #         'discount':lines.discount,
+    #     #         'product_id':lines.product_id,
+    #     #         'product_template_id':lines.product_template_id,
+    #     #         'product_updatable':lines.product_updatable,
+    #     #         'product_uom_qty':lines.product_uom_qty,
+    #     #         'product_uom':lines.product_uom,
+    #     #         'product_uom_category_id':lines.product_uom_category_id,
+    #     #         'product_uom_readonly':lines.product_uom_readonly,
+    #     #         'product_custom_attribute_value_ids':lines.product_custom_attribute_value_ids,
+    #     #         'product_no_variant_attribute_value_ids':lines.product_no_variant_attribute_value_ids,
+    #     #         'qty_delivered_method':lines.qty_delivered_method,
+    #     #         'qty_delivered':lines.qty_delivered,
+    #     #         'qty_delivered_manual':lines.qty_delivered_manual,
+    #     #         'qty_to_invoice':lines.qty_to_invoice,
+    #     #         'qty_invoiced':lines.qty_invoiced,
+    #     #         'untaxed_amount_invoiced':lines.untaxed_amount_invoiced,
+    #     #         'untaxed_amount_to_invoice':lines.untaxed_amount_to_invoice,
+    #     #         'salesman_id':lines.salesman_id,
+    #     #         'currency_id':lines.currency_id,
+    #     #         'company_id':lines.company_id,
+    #     #         'order_partner_id':lines.order_partner_id,
+    #     #         'analytic_tag_ids':lines.analytic_tag_ids,
+    #     #         'analytic_line_ids':lines.analytic_line_ids,
+    #     #         'is_expense':lines.is_expense,
+    #     #         'is_downpayment':lines.is_downpayment,
+    #     #         'state':lines.state,
+    #     #         'customer_lead':lines.customer_lead,
+    #     #         'display_type':lines.display_type,
+    #     #         'id':lines.id,
+    #     #         'display_name':lines.display_name,
+    #     #         'create_uid':lines.create_uid,
+    #     #         'create_date':lines.create_date,
+    #     #         'write_uid':lines.write_uid,
+    #     #         'write_date':lines.write_date,
+    #     #         'sale_order_option_ids':lines.sale_order_option_ids,
+    #     #         'product_packaging':lines.product_packaging,
+    #     #         'route_id':lines.route_id,
+    #     #         'move_ids':lines.move_ids,
+    #     #         'product_type':lines.product_type,
+    #     #         'virtual_available_at_date':lines.virtual_available_at_date,
+    #     #         'scheduled_date':lines.scheduled_date,
+    #     #         'forecast_expected_date':lines.forecast_expected_date,
+    #     #         'free_qty_today':lines.free_qty_today,
+    #     #         'qty_available_today':lines.qty_available_today,
+    #     #         'warehouse_id':lines.warehouse_id,
+    #     #         'qty_to_deliver':lines.qty_to_deliver,
+    #     #         'is_mto':lines.is_mto,
+    #     #         'display_qty_widget':lines.display_qty_widget,
+    #     #         'purchase_line_ids':lines.purchase_line_ids,
+    #     #         'purchase_line_count':lines.purchase_line_count,
+    #     #         'is_delivery':lines.is_delivery,
+    #     #         'product_qty':lines.product_qty,
+    #     #         'recompute_delivery_price':lines.recompute_delivery_price,
+    #     #         'is_configurable_product':lines.is_configurable_product,
+    #     #         'product_template_attribute_value_ids':lines.product_template_attribute_value_ids,
+    #     #         'topbottom':lines.topbottom,
+    #     #         'slidercode':lines.slidercode,
+    #     #         'finish':lines.finish,
+    #     #         'shade':lines.shade,
+    #     #         'shade_name':lines.shade_name,
+    #     #         'shade_ref':lines.shade_ref,
+    #     #         'sizein':lines.sizein,
+    #     #         'sizecm':lines.sizecm,
+    #     #         'sizemm':lines.sizemm,
+    #     #         'logoref':lines.logoref,
+    #     #         'logo':lines.logo,
+    #     #         'logo_type':lines.logo_type,
+    #     #         'style':lines.style,
+    #     #         'gmt':lines.gmt,
+    #     #         'shapefin':lines.shapefin,
+    #     #         'bcdpart':lines.bcdpart,
+    #     #         'b_part':lines.b_part,
+    #     #         'c_part':lines.c_part,
+    #     #         'd_part':lines.d_part,
+    #     #         'back_part':lines.back_part,
+    #     #         'product_code':lines.product_code,
+    #     #         'shape':lines.shape,
+    #     #         'finish_ref':lines.finish_ref,
+    #     #         'dimension':lines.dimension,
+    #     #         'nailmat':lines.nailmat,
+    #     #         'nailcap':lines.nailcap,
+    #     #         'fnamebcd':lines.fnamebcd,
+    #     #         'nu1washer':lines.nu1washer,
+    #     #         'nu2washer':lines.nu2washer,
+    #     #         'slidercodesfg':lines.slidercodesfg,
+    #     #         'dyedtape':lines.dyedtape,
+    #     #         'ptopfinish':lines.ptopfinish,
+    #     #         'numberoftop':lines.numberoftop,
+    #     #         'pbotomfinish':lines.pbotomfinish,
+    #     #         'ppinboxfinish':lines.ppinboxfinish,
+    #     #         'dippingfinish':lines.dippingfinish,
+    #     #         'gap':lines.gap,
+    #     #         'bom_id':lines.bom_id,
+    #     #         'tape_con':lines.tape_con,
+    #     #         'slider_con':lines.slider_con,
+    #     #         'topwire_con':lines.topwire_con,
+    #     #         'botomwire_con':lines.botomwire_con,
+    #     #         'wire_con':lines.wire_con,
+    #     #         'pinbox_con':lines.pinbox_con,
+    #     #         'color' : lines.color,
+    #     #     }))
+
+
+    #     orderline_values.append((0, 0, {
+    #         'name':self.name,
+    #         'sequence':max_seq,
+    #         'price_unit':self.price_unit,
+    #         'price_subtotal':self.price_subtotal,
+    #         'price_tax':self.price_tax,
+    #         'price_total':self.price_total,
+    #         'price_reduce':self.price_reduce,
+    #         'tax_id':self.tax_id,
+    #         'price_reduce_taxinc':self.price_reduce_taxinc,
+    #         'price_reduce_taxexcl':self.price_reduce_taxexcl,
+    #         'discount':self.discount,
+    #         'product_id':self.product_id.id,
+    #         'product_template_id':self.product_template_id,
+    #         'product_updatable':self.product_updatable,
+    #         'product_uom_qty':self.product_uom_qty,
+    #         'product_uom':self.product_uom.id,
+    #         'product_uom_category_id':self.product_uom_category_id,
+    #         'product_uom_readonly':self.product_uom_readonly,
+    #         'currency_id':self.currency_id.id,
+    #         'company_id':self.company_id.id,
+    #         'display_type':self.display_type,
+    #         'display_name':self.display_name,
+    #         'create_uid':self.create_uid.id,
+    #         'create_date':self.create_date,
+    #         'write_uid':self.write_uid.id,
+    #         'write_date':self.write_date,
+    #         'product_type':self.product_type,
+    #         'product_qty':self.product_qty,
+    #     }))            
+    #     # planline_values.append((0, 0, {
+    #     #             'sequence': 10,
+    #     #             'oa_id': int(oa[0]),
+    #     #             'sa_oa_ref': oa_det[0].shade_ref,
+    #     #             'actual_qty': oa_total,
+    #     #             'qty_balance': balance_total,
+    #     #             'machine_no': None,
+    #     #             'reserved': None,
+    #     #             'lots': None,
+    #     #             'material_qty': None,
+    #     #             'remarks': None
+    #     #             }))
+    #     # self.order_id.update('order_line':orderline_values)
+    #     self.order_id.update({'order_line': orderline_values,})
+    
         
     @api.onchange('product_id')
     def product_id_change(self):

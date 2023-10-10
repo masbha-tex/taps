@@ -407,7 +407,7 @@
 														<td colspan="2" style="background-color:grey;color:white; text-align: center">
 															<t t-esc="o.q2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 															<span>%</span>
-															<t t-set="q2_total" t-value="q1_total+o.q2"/>
+															<t t-set="q2_total" t-value="q2_total+o.q2"/>
 															<t t-set="q2_gtotal" t-value="q2_gtotal+q2_total"/>
 														</td>
 														<td colspan="2" style="color:black;">

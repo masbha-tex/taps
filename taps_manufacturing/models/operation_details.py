@@ -399,13 +399,16 @@ class OperationDetails(models.Model):
             if l.size_total>0:
                 # l = self.env["manufacturing.order"].browse(l.mrp_line)
                 # quantity_strings = l.quantity_string.split('+')
+                l_capa = 4000
+                if l.lot_capacity > 0:
+                    l_capa = l.lot_capacity
                 lots = 1
                 if l.lots>0:
                     lots = l.lots
                 rest_q = l.size_total
                 for l_q in range(lots):
-                    if rest_q > l.lot_capacity:
-                        qty = l.lot_capacity
+                    if rest_q > l_capa:
+                        qty = l_capa
                     else:
                         qty = rest_q
                     
@@ -438,7 +441,7 @@ class OperationDetails(models.Model):
                                             'next_operation':next,
                                             'qty':qty
                                             })
-                    rest_q = rest_q - l.lot_capacity
+                    rest_q = rest_q - l_capa
 
     def set_delivery_order(self,active_model,ope_id,delivery,delivery_line):
         operation = self.env["operation.details"].browse(ope_id)
@@ -630,7 +633,8 @@ class OperationDetails(models.Model):
         operation = self.env["operation.details"].browse(mo_ids)
         qty = round((qty/len(operation)),2)
         for op in operation:
-            op.update({'uotput_qty':qty})
+            op.write({'uotput_qty':qty})
+            op._output()
 
 
     
