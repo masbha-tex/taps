@@ -17,8 +17,8 @@
         'base', 'hr',
     ],
     'data': [
-        'security/ir.model.access.csv',
         'security/security.xml',
+        'security/ir.model.access.csv',
         'views/hr_retention_bonus_seq.xml',
         #'data/salary_rule_loan.xml',
         'views/hr_retention_bonus.xml',
