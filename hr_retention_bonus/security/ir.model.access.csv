@@ -1,7 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hr_jobuser,hr.job.group_user,hr.model_hr_job,hr.group_hr_user,1,1,1,0
-access_hr_retention_bonus_user,hr.retention.bonus.group_user_retention_bonus,model_hr_retention_bonus,group_user_retention_bonus,1,0,0,0
-access_hr_retention_bonus_line_user,hr.retention.bonus.line.group_user_retention_bonus,model_hr_retention_bonus_line,group_user_retention_bonus,1,0,0,0
-access_hr_retention_bonus_manager,hr.retention.bonus,model_hr_retention_bonus,group_manager_retention_bonus,1,1,1,1
-access_hr_retention_bonus_line_manager,hr.retention.bonus.line,model_hr_retention_bonus_line,group_manager_retention_bonus,1,1,1,1
+access_hr_retention_bonus_user,hr.retention.bonus.group_user_retention_bonus,model_hr_retention_bonus,hr_retention_bonus.group_user_retention_bonus,1,0,0,0
+access_hr_retention_bonus_line_user,hr.retention.bonus.line.group_user_retention_bonus,model_hr_retention_bonus_line,hr_retention_bonus.group_user_retention_bonus,1,0,0,0
+access_hr_retention_bonus_manager,hr.retention.bonus,model_hr_retention_bonus,hr_retention_bonus.group_manager_retention_bonus,1,1,1,1
+access_hr_retention_bonus_line_manager,hr.retention.bonus.line,model_hr_retention_bonus_line,hr_retention_bonus.group_manager_retention_bonus,1,1,1,1
 
