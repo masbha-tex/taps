@@ -28,6 +28,14 @@ class MrpSizewiseLot(models.TransientModel):
     lot_line = fields.One2many('sizewiselot.line', 'lot_id',  string='Lot List',copy=True, auto_join=True)
     full_qty = fields.Boolean(readonly=False, string='Full Qty', default=False)
 
+    @api.depends('lot_line.size_total')
+    def _get_tape_bylots(self):
+        for plan in self:
+            plan.tape_qty = sum( (line.tape_con/line.balance_qty)*line.size_total for line in plan.lot_line)
+            
+
+    tape_qty = fields.Float('Tape Consume',digits='Product Unit of Measure', readonly=False, store=True, default=0.0, compute='_get_tape_bylots') 
+
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
@@ -37,19 +45,31 @@ class MrpSizewiseLot(models.TransientModel):
         orderline = self.env['manufacturing.order'].search([('oa_id', '=', operation[0].oa_id.id),('shade','=',operation[0].shade),('dyeing_plan','!=',None)])#.sorted(key = 'id')
         orderline_values = []
 
-        # grouped_orderline = orderline.groupby(['size', 'shade'])
+        # grouped_orderline = orderline.groupby(['size'])
         # for key, group in grouped_orderline.items():
         #     size, shade = key
+        sizes = []
 
         for lines in orderline:
-            orderline_values.append((0, 0, {
-                'mrp_line': lines.id,
-                'sizein': lines.sizein,
-                'sizecm': lines.sizecm,
-                'gap': lines.gap,
-                'tape_con': lines.tape_con,
-                'balance_qty': lines.balance_qty,
-                }))
+            size = lines.sizein
+            if size == 'N/A':
+                size = lines.sizecm
+            if size not in sizes:
+                orders = orderline.filtered(lambda p: p.sizein == size or p.sizecm == size)
+                mrp_line = ','.join([str(i) for i in sorted(orders.ids)])
+                sale_lines = ','.join([str(i) for i in sorted(orders.sale_order_line.ids)])
+                tape_con = sum(orders.mapped('tape_con'))
+                balance_qty = sum(orders.mapped('balance_qty'))
+                orderline_values.append((0, 0, {
+                    'mrp_line': mrp_line,
+                    'sale_lines': sale_lines,
+                    'sizein': lines.sizein,
+                    'sizecm': lines.sizecm,
+                    'gap': lines.gap,
+                    'tape_con': tape_con,
+                    'balance_qty': balance_qty,
+                    }))
+                sizes.append(size)
             
         res.update({'oa_id': operation[0].oa_id.name,
                     'item': operation[0].fg_categ_type,
@@ -64,8 +84,24 @@ class MrpSizewiseLot(models.TransientModel):
         # raise UserError((self.lot_line[0].mrp_line))
         active_model = self.env.context.get("active_model")
         ope_id = self.env.context.get("active_ids")
-        return self.env['operation.details'].set_sizewiselot(active_model,ope_id,self.lot_line)
-            
+        return self.env['operation.details'].set_sizewiselot(active_model,ope_id,self.tape_qty,self.lot_line)
+    
+    @api.onchange('full_qty')
+    def _onchange_qty_selection(self):
+        if self.full_qty:
+            if self.lot_line:
+                for ml in self.lot_line:
+                    if ml.balance_qty>0:
+                        l_cap = 4000
+                        if ml.lot_capacity>0:
+                            l_cap = ml.lot_capacity
+                        l_lots = math.ceil(ml.qty_balance/l_cap)
+                        ml.update({'material_qty':ml.balance_qty,'lots':l_lots})
+                    else:
+                        raise UserError(('Machine and Quantity Required'))
+                    
+            else:
+                raise UserError(('Data missing'))          
 
 
 class SizewiseLotLine(models.TransientModel):
@@ -74,7 +110,9 @@ class SizewiseLotLine(models.TransientModel):
     _check_company_auto = True
 
     lot_id = fields.Many2one('mrp.sizewiselot', string='Lot ID', ondelete='cascade', index=True, copy=False)
-    mrp_line = fields.Many2one('manufacturing.order', string='Mrp Id', readonly=False)
+    mrp_line = fields.Char(string='Mrp Id', readonly=False)
+    sale_lines = fields.Char(string='Sale Ids', readonly=False)
+    # fields.Many2one('manufacturing.order', string='Mrp Id', readonly=False)
     sizein = fields.Char(string='Size (Inch)', readonly=True)
     sizecm = fields.Char(string='Size (CM)', readonly=True)
     gap = fields.Char(string='Gap', readonly=True)
@@ -114,8 +152,8 @@ class SizewiseLotLine(models.TransientModel):
                 else:
                     l.size_total = (l.lot_capacity*l_num)
         
-    # @api.onchange('quantity_string')
-    # def _get_qty_bylots(self):
+    # @api.onchange('size_total')
+    # def _get_tape_bylots(self):
     #     for l in self:
     #         quantity_strings = l.quantity_string.split('+')
     #         quantities = [int(qty) for qty in quantity_strings]

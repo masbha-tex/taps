@@ -117,7 +117,9 @@ class OperationDetails(models.Model):
     def get_fg_balance(self):
         for s in self:
             s.fg_balance = s.pack_qty - s.fg_done_qty
-            
+
+    
+    actual_qty = fields.Float(string='Actual Qty', readonly=True, store=True, group_operator="sum")
     qty = fields.Float(string='Qty', readonly=False)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
@@ -231,6 +233,9 @@ class OperationDetails(models.Model):
         return action
     
     def button_group_output(self):
+        for r in self:
+            if r.next_operation not in ('Dyeing Output','Dyeing Qc'):
+                raise UserError(('This is not for you'))
         self._check_company()
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_group_output")
         action["domain"] = [('default_id','in',self.mapped('id'))]
@@ -392,9 +397,25 @@ class OperationDetails(models.Model):
                                             'qty':l.material_qty
                                             })
 
-    def set_sizewiselot(self,active_model,ope_id,lot_line):
+    def set_sizewiselot(self,active_model,ope_id,tape_qty,lot_line):
         operation = self.env["operation.details"].browse(ope_id)
-        operation.update({'state':'done'})
+        rs_q = tape_qty
+        
+        for op in operation:
+            qty = 0
+            if op.qty > rs_q:
+                qty = rs_q
+            else:
+                qty = op.qty
+            if op.qty == qty:
+                op.update({'done_qty':qty,'state':'done'})
+            else:
+                op.update({'done_qty':qty,'state':'partial'})
+                
+            rs_q = rs_q - qty
+            # raise UserError((rs_q))
+            if rs_q == 0:
+                break
         for l in lot_line:
             if l.size_total>0:
                 # l = self.env["manufacturing.order"].browse(l.mrp_line)
@@ -406,34 +427,41 @@ class OperationDetails(models.Model):
                 if l.lots>0:
                     lots = l.lots
                 rest_q = l.size_total
+                m_orders = None
+                m_lines =  [int(id_str) for id_str in l.mrp_line.split(',')]
+                
+                m_orders = self.env["manufacturing.order"].browse(m_lines)
                 for l_q in range(lots):
                     if rest_q > l_capa:
                         qty = l_capa
                     else:
                         qty = rest_q
+
                     
-                    # raise UserError((l_q))
+                    # raise UserError((m_orders[0].fg_categ_type))
                     next = 'Assembly Output'
-                    if 'Metal' in l.mrp_line.fg_categ_type or 'AL' in l.mrp_line.fg_categ_type:
+                    if 'Metal' in m_orders[0].fg_categ_type or 'AL' in m_orders[0].fg_categ_type:
                         next = 'CM Output'
-                    ope = operation.create({'mrp_lines':l.mrp_line.id,
-                                            'sale_lines':l.mrp_line.sale_order_line.id,
-                                            'mrp_line':l.mrp_line.id,
-                                            'sale_order_line':l.mrp_line.sale_order_line.id,
-                                            'oa_id':l.mrp_line.oa_id.id,
-                                            'buyer_name':l.mrp_line.buyer_name,
-                                            'product_id':l.mrp_line.product_id.id,
-                                            'product_template_id':l.mrp_line.product_template_id.id,
+                    # 'mrp_line':l.mrp_line.id,
+                    # 'sale_order_line':l.mrp_line.sale_order_line.id,
+                   
+                    
+                    ope = operation.create({'mrp_lines':l.mrp_line,
+                                            'sale_lines':l.sale_lines,
+                                            'oa_id':m_orders[0].oa_id.id,
+                                            'buyer_name':m_orders[0].buyer_name,
+                                            'product_id':m_orders[0].product_id.id,
+                                            'product_template_id':m_orders[0].product_template_id.id,
                                             'action_date':datetime.now(),
-                                            'shade':l.mrp_line.shade,
-                                            'shade_ref':l.mrp_line.shade_ref,
-                                            'finish':l.mrp_line.finish,
-                                            'slidercodesfg':l.mrp_line.slidercodesfg,
-                                            'top':l.mrp_line.ptopfinish,
-                                            'bottom':l.mrp_line.pbotomfinish,
-                                            'pinbox':l.mrp_line.ppinboxfinish,
-                                            'sizein':l.mrp_line.sizein,
-                                            'sizecm':l.mrp_line.sizecm,
+                                            'shade':m_orders[0].shade,
+                                            'shade_ref':m_orders[0].shade_ref,
+                                            'finish':m_orders[0].finish,
+                                            'slidercodesfg':m_orders[0].slidercodesfg,
+                                            'top':m_orders[0].ptopfinish,
+                                            'bottom':m_orders[0].pbotomfinish,
+                                            'pinbox':m_orders[0].ppinboxfinish,
+                                            'sizein':m_orders[0].sizein,
+                                            'sizecm':m_orders[0].sizecm,
                                             'operation_of':'lot',
                                             'work_center':operation[0].work_center.id,
                                             'operation_by':operation[0].work_center.name,
@@ -629,9 +657,10 @@ class OperationDetails(models.Model):
 
            # dyeing_output plating_output top_plat_output bot_plat_output pin_plat_output sli_asmbl_output chain_making_done diping_done assembly_done packing_done         
     def set_group_output(self,mo_ids,qty):
-        raise UserError(('Under Construction'))
+        # raise UserError(('Under Construction'))
         operation = self.env["operation.details"].browse(mo_ids)
         qty = round((qty/len(operation)),2)
+        # raise UserError((qty))
         for op in operation:
             op.write({'uotput_qty':qty})
             op._output()
@@ -900,10 +929,16 @@ class OperationDetails(models.Model):
                     next = 'Done'
             
             operation_of = 'output'
+            actual_qty = 0
             if out.operation_of == 'qc':
                 operation_of = 'input'
             if out.next_operation == 'Dyeing Output':
                 operation_of = 'qc'
+                mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
+                mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
+                mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id and pr.product_id.id == out.product_id.id)
+                actual_qty = sum(mrp_data.mapped('tape_con'))
+                # raise UserError((actual_qty,out.uotput_qty))
             # operation = self.env["operation.details"].browse(self.id)
             # raise UserError((out.code,out.mrp_lines,out.mrp_line.id,out.sale_lines,out.sale_order_line.id))
             # raise UserError((operation_of,next,out.uotput_qty))    
@@ -932,6 +967,7 @@ class OperationDetails(models.Model):
                                                         'operation_by':out.work_center.name,
                                                         'based_on':'Lot Code',
                                                         'next_operation':next,
+                                                        'actual_qty':actual_qty,
                                                         'qty':out.uotput_qty,
                                                         'pack_qty':pack_qty,
                                                         'fr_pcs_pack':fraction_pc_of_pack,

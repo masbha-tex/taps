@@ -53,9 +53,6 @@
                     <button name="button_requisition" type="object" string="Requisition"/>
                     <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
                     <button name="button_group_output" type="object" string="Group Output"/>
-                     <!-- attrs="{'invisible': [('next_operation', 'not in', ('Dyeing Output','Dyeing Qc'))]}" -->
-                    <!-- <button name="action_unplan" confirm="Are you sure to Unplan?" type="object" string="Un-Plan"/>   -->
-                    <!-- <button name="button_output" type="object" string="Output"/> -->
                 </header>
                 <field name="name" readonly="1"/>
                 <field name="mrp_lines" invisible="1"/>
@@ -85,6 +82,7 @@
                 <field name="capacity" readonly="1" force_save="1" optional="show"/>
                 <field name="next_operation" readonly="1" force_save="1" invisible="1"/>
                 <field name="mr_req" readonly="1" optional="show"/>
+                <field name="actual_qty" readonly="1" optional="show"/>
                 <field name="qty" readonly="1" optional="show"/>
                 <field name="done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="balance_qty" readonly="1" force_save="1" optional="show"/>

@@ -12,6 +12,8 @@
                         <field name="shade"/>
                         <field name="work_center"/>
                         <field name="material_qty"/>
+                        <field name="full_qty"/>
+                        <field name="tape_qty"/>
                     </group>
                 </group>
                 <group>
@@ -21,6 +23,7 @@
                                 <tree string="Machinewise Plan" editable="bottom" class="custom_column">
                                     <field name="lot_id" invisible="1"/>
                                     <field name="mrp_line" invisible="1" readonly="1" force_save="1"/>
+                                    <field name="sale_lines" invisible="1" readonly="1" force_save="1"/>
                                     <field name="sizein" readonly="1" force_save="1"/>
                                     <field name="sizecm" readonly="1" force_save="1"/>
                                     <field name="gap" readonly="1" force_save="1"/>
@@ -51,6 +54,7 @@
             <tree string="Lot List" create="false">
                 <field name="lot_id" invisible="1"/>
                 <field name="mrp_line"/>
+                <field name="sale_lines"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="gap"/>

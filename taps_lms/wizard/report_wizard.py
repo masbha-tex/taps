@@ -1,5 +1,5 @@
 from odoo import models, fields, api
-
+from odoo.exceptions import UserError, ValidationError
 
 class LmsPDFReport(models.TransientModel):
     _name = 'lms.pdf.report'
@@ -7,19 +7,36 @@ class LmsPDFReport(models.TransientModel):
 
     date_from = fields.Date('Date from', required=True)
     date_to = fields.Date('Date to', required=True)
+    image_1920 = fields.Image("Image")
+    session_ids = fields.Many2many('lms.session', string='Session')
     course_ids = fields.Many2many('lms.course', string='Course')
     responsible_id = fields.Many2one('res.users', 'Facilitator')
+    
+    report_type = fields.Selection([
+        ('courses',	'Training Courses'),
+        ('attendance',	'Attendance Report'),],
+        string='Report Type', required=True,
+        help='Report Type', default='attendance')
 
     # generate PDF report
     def action_print_report(self):
-        data = {'date_from': self.date_from, 'date_to': self.date_to, 'course_ids': self.course_ids.ids, 'responsible_id': self.responsible_id.id}
-        return self.env.ref('taps_lms.action_lms_pdf_report').report_action(self, data=data)
+        data = {'date_from': self.date_from, 'date_to': self.date_to, 'course_ids': self.course_ids.ids,'report_type': self.report_type, 'responsible_id': self.responsible_id.id}
+        data = {'date_from': self.date_from, 
+                'date_to': self.date_to,
+                'report_type': self.report_type,
+                'course_ids': self.session_ids.ids, 
+                'responsible_id': self.responsible_id.id}
+        if self.report_type == 'courses': 
+            return self.env.ref('taps_lms.action_lms_pdf_report').report_action(self, data=data)
+        if self.report_type == 'attendance': 
+            return self.env.ref('taps_lms.action_lms_attendance_pdf_report').report_action(self, data=data)
 
     # Generate xlsx report
     def action_generate_xlsx_report(self):
         data = {
             'date_from': self.date_from,
             'date_to': self.date_to,
+            'session_ids': self.session_ids.ids,
             'course_ids': self.course_ids.ids,
             'responsible_id': self.responsible_id.id
         }
@@ -52,6 +69,32 @@ class LmsReportPDF(models.AbstractModel):
             'datas': data
         }
 
+class LmsAttendanceReportPDF(models.AbstractModel):
+    _name = 'report.taps_lms.lms_attendance_pdf_template'
+    _description = 'LMS pdf'
+
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        if data.get('date_from'):
+            domain.append(('start_date', '=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('start_date', '=', data.get('date_to')))
+        if data.get('session_ids'):
+            domain.append(('id', 'in', data.get('session_ids')))
+        # if data.get('instructor_id'):
+        #     domain.append(('instructor_id', '=', data.get('responsible_id')))
+        docs = self.env['lms.session'].search(domain)
+        # raise UserError(())
+        responsible = self.env['res.users'].browse(data.get('responsible_id'))
+        session_ids = self.env['lms.session'].browse(data.get('session_ids'))
+        data.update({'responsbile': responsible.name})
+        data.update({'session': ",".join([session.display_name for session in session_ids])})
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'lms.session',
+            'docs': docs,
+            'datas': data
+        }
 
 class LmsXlsxReport(models.AbstractModel):
     _name = 'report.taps_lms.lms_xlsx_report'

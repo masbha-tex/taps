@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="action_lms_pdf_report" model="ir.actions.report">
+    <record id="action_lms_attendance_pdf_report" model="ir.actions.report">
         <field name="name">Attendance PDF Report</field>
         <field name="model">lms.attendance.pdf.report</field>
         <field name="report_type">qweb-pdf</field>
@@ -21,7 +21,7 @@
                     <div class="row">
                         <div class="col-6">
                             Training Headline :
-                            <!-- <span t-esc="datas['date_from']"/> -->
+                            <span t-esc="docs.name.name"/>
                         </div>
                         <div class="col-6">
                             Training for : 
@@ -31,17 +31,17 @@
                     <div class="row">
                         <div class="col-6">
                             Unit:
-                            <!-- <span t-esc="datas['date_from']"/> -->
+                            <!-- <span t-esc="datas['company_id']"/> -->
                         </div>
                         <div class="col-6">
                             Venue:
-                            <!-- <span t-esc="datas['courses']"/> -->
+                            <!-- <span t-esc="datas['venue']"/> -->
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
                             Training Conducted by :
-                            <!-- <span t-esc="datas['date_to']"/> -->
+                            <!-- <span t-esc="datas['responsbile']"/> -->
                         </div>
                         <div class="col-6">
                             Training Date:
@@ -68,7 +68,7 @@
                                         </center>
                                     </td>
                                 </tr>
-                                <tr t-as="session" t-foreach="course.session_ids">
+                                <tr t-as="session" t-foreach="session.session_ids">
                                     <td>
                                         <!-- <span t-field="session.name"/> -->
                                     </td>

@@ -67,8 +67,15 @@
                           শাখা  : <span><strong t-esc="employee.job_id.name"/></span> <br/>
                           তারিখ : <span><strong t-esc="employee.joining_date.strftime('%d-%m-%Y')"/></span> <br/>
                         </div></p>
+                        <p><div>
+                          
+                          <br/>
+                          
+                          স্বাক্ষর : 
+                          ................................<br/>
+                        </div></p>
                       </div>
-
+                      
 
                     </div>
 

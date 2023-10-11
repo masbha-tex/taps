@@ -48,7 +48,7 @@ class HeadwisePDFReport(models.TransientModel):
     mode_company_id = fields.Many2one(
         'res.company',  string='Company Mode', readonly=False)
     department_id = fields.Many2one(
-        'hr.department',  string='Department', readonly=False)
+        'hr.department',  domain="[('parent_id', '=', False)]", string='Department', readonly=False)
 
     
     employee_type = fields.Selection([
@@ -354,205 +354,168 @@ class HeadwisePDFReport(models.TransientModel):
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
 #         domain.append(('code', '=', 'NET'))
         
-        # raise UserError((domain))
-        docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
-        if docs1.employee_id.company_id.id == 1:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-        elif docs1.employee_id.company_id.id == 3:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-        else:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
         
-        docs = docs2 | docs1
-        #raise UserError((docs.id))
+        docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
+        docs = None
         datefrom = data.get('date_from')
         dateto = data.get('date_to')
-#         bankname = self.bank_id.name
-#         categname=[]
-#         if self.employee_type =='staff':
-#             categname='Staffs'
-#         if self.employee_type =='expatriate':
-#             categname='Expatriates'
-#         if self.employee_type =='worker':
-#             categname='Workers'
-#         if self.employee_type =='cstaff':
-#             categname='C-Staffs'
-#         if self.employee_type =='cworker':
-#             categname='C-Workers'
-            
-        
-        #raise UserError((datefrom,dateto,bankname,categname))
-        report_data = []
-        emp_data = []
-        slnumber=0
-        for edata in docs:
-            slnumber = slnumber+1
-            emp_data = [
-                slnumber,
-                edata.name,
-                edata.description,
-                round(edata.baseline,2),
-                round(edata.target,2),
-                (edata.weight/100),
-                'Target',
-                edata.t_apr,
-                edata.t_may,
-                edata.t_jun,
-                edata.t_jul,
-                edata.t_aug,
-                edata.t_sep,
-                edata.t_oct,
-                edata.t_nov,
-                edata.t_dec,
-                edata.t_jan,
-                edata.t_feb,
-                edata.t_mar,
-                edata.y_t_ytd,
-                'ACVD',
-                edata.a_apr,
-                edata.a_may,
-                edata.a_jun,
-                edata.a_jul,
-                edata.a_aug,
-                edata.a_sep,
-                edata.a_oct,
-                edata.a_nov,
-                edata.a_dec,
-                edata.a_jan,
-                edata.a_feb,
-                edata.a_mar,
-                edata.y_a_ytd,
-                'Weightage',
-                edata.apr,
-                edata.may,
-                edata.jun,
-                edata.jul,
-                edata.aug,
-                edata.sep,
-                edata.oct,
-                edata.nov,
-                edata.dec,
-                edata.jan,
-                edata.feb,
-                edata.mar,
-                edata.y_ytd,
-                edata.employee_id.id,
-            ]
-            report_data.append(emp_data)
-        month = docs.mapped('month')[1:]
-        mm = 'Month'
-        for m in month:
-            if m == 'apr':
-                mm = 'April'
-            elif m == 'may':
-                mm = 'May'
-            elif m == 'jun':
-                mm = 'Jun'
-            elif m == 'jul':
-                mm = 'July'
-            elif m == 'aug':
-                mm = 'August'
-            elif m == 'sep':
-                mm = 'September'
-            elif m == 'oct':
-                mm = 'October'
-            elif m == 'nov':
-                mm = 'November'
-            elif m == 'dec':
-                mm = 'December'
-            elif m == 'jan':
-                mm = 'January'
-            elif m == 'feb':
-                mm = 'February'
-            elif m == 'mar':
-                mm = 'March'
-        weight = 0
-        apr = 0
-        may = 0
-        jun = 0
-        jul = 0
-        aug = 0
-        sep = 0
-        oct = 0
-        nov = 0
-        dec = 0
-        jan = 0
-        feb = 0
-        mar = 0
-        ytd = 0
-        for de in docs1:
-            weight = weight + de.weight
-            apr = apr + de.apr
-            may = may + de.may
-            jun = jun + de.jun
-            jul = jul + de.jul
-            aug = aug + de.aug
-            sep = sep + de.sep
-            oct = oct + de.oct
-            nov = nov + de.nov
-            dec = dec + de.dec
-            jan = jan + de.jan
-            feb = feb + de.feb
-            mar = mar + de.mar
-            ytd = ytd + de.y_ytd
-            
-        common_data = [
-            data.get('docs1'),
-            mm,
-            weight,
-            apr,
-            may,
-            jun,
-            jul,
-            aug,
-            sep,
-            oct,
-            nov,
-            dec,
-            jan,
-            feb,
-            mar,
-            ytd,
-#             round(otTotal),
-            data.get('date_from'),
-            data.get('date_to'),
-        ]
-        common_data.append(common_data)
 
-
-            
-        emply = docs.mapped('employee_id')
+        emply = docs1.mapped('employee_id')
         output = io.BytesIO()
-        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        # raise UserError((emply))
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})        
         for emp in emply:
+            if emp.company_id.id == 1:
+                docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Zipper','$ PAT (Thousand) - Zipper')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+            elif emp.company_id.id == 3:
+                docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Metal Trims','$ PAT (Thousand) - Metal Trims')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+            else:
+                docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Zipper','$ PAT (Thousand) - Zipper','$ Revenue (Thousand)  - Metal Trims','$ PAT (Thousand) - Metal Trims')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
             
+            docs = docs2 | docs1.filtered(lambda x: x.employee_id.id == emp.id)
+
+            # raise UserError((docs2))
+            
+            report_data = []
+            emp_data = []
+            slnumber=0
+            for edata in docs:
+                slnumber = slnumber+1
+                emp_data = [
+                    slnumber,
+                    edata.name,
+                    edata.description,
+                    round(edata.baseline,2),
+                    round(edata.target,2),
+                    (edata.weight/100),
+                    'Target',
+                    edata.t_apr,
+                    edata.t_may,
+                    edata.t_jun,
+                    edata.t_jul,
+                    edata.t_aug,
+                    edata.t_sep,
+                    edata.t_oct,
+                    edata.t_nov,
+                    edata.t_dec,
+                    edata.t_jan,
+                    edata.t_feb,
+                    edata.t_mar,
+                    edata.y_t_ytd,
+                    'ACVD',
+                    edata.a_apr,
+                    edata.a_may,
+                    edata.a_jun,
+                    edata.a_jul,
+                    edata.a_aug,
+                    edata.a_sep,
+                    edata.a_oct,
+                    edata.a_nov,
+                    edata.a_dec,
+                    edata.a_jan,
+                    edata.a_feb,
+                    edata.a_mar,
+                    edata.y_a_ytd,
+                    'Weightage',
+                    edata.apr,
+                    edata.may,
+                    edata.jun,
+                    edata.jul,
+                    edata.aug,
+                    edata.sep,
+                    edata.oct,
+                    edata.nov,
+                    edata.dec,
+                    edata.jan,
+                    edata.feb,
+                    edata.mar,
+                    edata.y_ytd,
+                    edata.employee_id.id,
+                ]
+                report_data.append(emp_data)
+            month = docs.mapped('month')[1:]
+            mm = 'Month'
+            for m in month:
+                if m == 'apr':
+                    mm = 'April'
+                elif m == 'may':
+                    mm = 'May'
+                elif m == 'jun':
+                    mm = 'Jun'
+                elif m == 'jul':
+                    mm = 'July'
+                elif m == 'aug':
+                    mm = 'August'
+                elif m == 'sep':
+                    mm = 'September'
+                elif m == 'oct':
+                    mm = 'October'
+                elif m == 'nov':
+                    mm = 'November'
+                elif m == 'dec':
+                    mm = 'December'
+                elif m == 'jan':
+                    mm = 'January'
+                elif m == 'feb':
+                    mm = 'February'
+                elif m == 'mar':
+                    mm = 'March'
+            weight = 0
+            apr = 0
+            may = 0
+            jun = 0
+            jul = 0
+            aug = 0
+            sep = 0
+            oct = 0
+            nov = 0
+            dec = 0
+            jan = 0
+            feb = 0
+            mar = 0
+            ytd = 0
+            for de in docs1.filtered(lambda x: x.employee_id.id == emp.id):
+                weight = weight + de.weight
+                apr = apr + de.apr
+                may = may + de.may
+                jun = jun + de.jun
+                jul = jul + de.jul
+                aug = aug + de.aug
+                sep = sep + de.sep
+                oct = oct + de.oct
+                nov = nov + de.nov
+                dec = dec + de.dec
+                jan = jan + de.jan
+                feb = feb + de.feb
+                mar = mar + de.mar
+                ytd = ytd + de.y_ytd
+                
+                
             worksheet = workbook.add_worksheet(('%s - %s' % (emp.pin,emp.name)))
-            worksheet.set_zoom(75)
+            worksheet.set_zoom(74)
             report_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 16, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_title_style1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'font_size': 13, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
-            report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
+            report_column_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12,'bold': True,'font_color':'#FFFFFF','bg_color': '#714B35', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
+            report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00'})
            
             report_column_style_2.set_text_wrap()
             report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
-            report_column_style_ = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12,'bold': True,'font_color':'#FFFFFF','bg_color': '#714B35', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
-            worksheet.merge_range('A1:C1',('%s' % (emp.name)), report_title_style)
+            worksheet.merge_range('A1:E1',('%s' % (emp.name)), report_title_style)
             
-            img = io.BytesIO(base64.b64decode(emp.image_1920))
-            worksheet.insert_image(0, 1, '', {'image_data': img, "x_scale": 0.06, "y_scale": 0.06,'align': 'center','valign': 'vcenter' })
+            # img = io.BytesIO(base64.b64decode(emp.image_1920))
+            # worksheet.insert_image(0, 1, '', {'image_data': img, "x_scale": 0.06, "y_scale": 0.06,'align': 'center','valign': 'vcenter' })
             
-            img_ = io.BytesIO(base64.b64decode(emp.parent_id.image_1920))
-            worksheet.insert_image(0, 19, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 1})
+            # img_ = io.BytesIO(base64.b64decode(emp.parent_id.image_1920))
+            # worksheet.insert_image(0, 23, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 1})
             
-            worksheet.merge_range('D1:K1', 'KPI Quarterly Scorecard [Challenged By]', report_title_style)
-            worksheet.merge_range('L1:T1', ('%s' % (emp.parent_id.name)), report_title_style)
+            worksheet.merge_range('F1:M1', 'KPI Scorecard [Challenged By]', report_title_style)
+            worksheet.merge_range('N1:X1', ('%s' % (emp.parent_id.name)), report_title_style)
     
             report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
     #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-            worksheet.merge_range('A2:C2',('%s' % (emp.job_title)), report_title_style1)
-            worksheet.merge_range('D2:K2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style1)
-            worksheet.merge_range('L2:T2', ('%s' % (emp.parent_id.job_title)), report_title_style1)
+            worksheet.merge_range('A2:E2',('%s' % (emp.job_title)), report_title_style1)
+            worksheet.merge_range('F2:M2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style1)
+            worksheet.merge_range('N2:X2', ('%s' % (emp.parent_id.job_title)), report_title_style1)
             # worksheet.merge_range('C3:F3', ('KPI objective'), report_small_title_style)
             # worksheet.merge_range('A4:F4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
             worksheet.merge_range('F4:F4', "",report_title_style)
@@ -562,21 +525,23 @@ class HeadwisePDFReport(models.TransientModel):
             merge_format.set_text_wrap()
             merge_format_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF'})
             merge_format_.set_text_wrap()
-            format_rounded = workbook.add_format({'border': 1, 'border_color': 'black', 'bg_color': 'gray'})
             
-            column_product_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
+            column_product_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
             column_product_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B35', 'font_size': 14, 'font_color':'#FFFFFF', 'border': True})
             column_product_style2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
             column_product_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00%'})
-            column_product_style_4 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 14, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00%'})
-            column_product_style_5 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 15, 'font_color':'#FFFFFF', 'border': True})
-            column_product_style_6 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True})
+            column_product_style_5 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+            column_product_style_6 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+            
             column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
             column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
             row_categ_style = workbook.add_format({'border': True})
+            gray_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+            gray_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+            gray_style_1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True,"num_format": "0.00%"})
     
             # set the width od the column
-            _range = len(report_data)
+            # _range = len(report_data)
             percent_format = workbook.add_format({"num_format": "0%"})
             worksheet.freeze_panes(6, 0)
 
@@ -620,7 +585,7 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.set_column(3,4,8)
             worksheet.set_column(5,6,10.20)
             
-            worksheet.set_row(0, 50)
+            worksheet.set_row(0, 20)
             
             worksheet.write(5, 0, 'SL.', column_product_style)
             worksheet.write(5, 1, 'Objectives', column_product_style)
@@ -663,9 +628,11 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.merge_range(row, 0, row, 19, 'Revenue & PAT', merge_format_)
             row=7
             
+            # filtered_data = [line for line in report_data if line[48] == emp.id]
+            # raise UserError((filtered_data))
             for line in report_data:
                 mrg_val = None    
-                if not line[2]:
+                if not line[48]:
                     total_weight_35 += line[35]
                     total_weight_36 += line[36]
                     total_weight_37 += line[37]
@@ -698,7 +665,7 @@ class HeadwisePDFReport(models.TransientModel):
                         if col == 1:
                             etype = l[:1]
                         if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style_2)
+                            worksheet.write(row, col, slnumber, report_column_style)
                         if col == 1:
                             worksheet.write(row, col, l, report_column_style_2)
                         if col == 2:
@@ -776,6 +743,7 @@ class HeadwisePDFReport(models.TransientModel):
             total_weight_45_ = 0
             total_weight_46_ = 0
             total_weight_47_ = 0
+            # filtered_datas = [line for line in report_data if line[48] == emp.id]
             for line in report_data:
                 mrg_val = None 
                 if line[2] != 'Strategic Projects' and line[2]:
@@ -812,11 +780,11 @@ class HeadwisePDFReport(models.TransientModel):
                         if col == 1:
                             etype = l[:1]
                         if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style_2)
+                            worksheet.write(row, col, slnumber, report_column_style)
                         if col == 1:
                             worksheet.write(row, col, l, report_column_style_2)
                         if col == 2:
-                            worksheet.write(row, col, '', report_column_style_2)
+                            worksheet.write(row, col, l, report_column_style_2)
                         elif col == 3:
                             
                             if etype == '%':
@@ -890,8 +858,9 @@ class HeadwisePDFReport(models.TransientModel):
             total_weight_46_l = 0
             total_weight_47_l = 0
             # raise UserError((row,col))
+            # filtered_datass = [line for line in report_data if line[48] == emp.id]
             for line in report_data:
-                mrg_val = None 
+                mrg_val = None
                 if line[2] == 'Strategic Projects':
                     total_weight_35_l += line[35]
                     total_weight_36_l += line[36]
@@ -926,11 +895,11 @@ class HeadwisePDFReport(models.TransientModel):
                         if col == 1:
                             etype = l[:1]
                         if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style_2)
+                            worksheet.write(row, col, slnumber, report_column_style)
                         if col == 1:
                             worksheet.write(row, col, l, report_column_style_2)
                         if col == 2:
-                            worksheet.write(row, col, '', report_column_style_2)
+                            worksheet.write(row, col, l, report_column_style_2)
                         elif col == 3:
                             
                             if etype == '%':
@@ -986,17 +955,6 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.write(row, 18, total_weight_46_l/100, report_column_style_)
             worksheet.write(row, 19, total_weight_47_l/100, report_column_style_)
             row+=1
-
-            # worksheet.write(row, 0, '', report_small_title_style)
-            # worksheet.write(row, 1, 'Grand Total', report_small_title_style)
-            # worksheet.write(row, 2, '', report_small_title_style)
-            # worksheet.write(row, 3, '', report_small_title_style)
-            # worksheet.write(row, 4, '', report_small_title_style)
-            # worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
-
-                                        
-                   
-                    #raise UserError((datefrom,dateto,bankname,categname))
             
         workbook.close()
         output.seek(0)
@@ -1009,7 +967,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s - Score'% (emp.department_id.parent_id.name))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s - Scorecard Quarterly'% (emp.department_id.parent_id.name if data.get('department_id') else emp.name))),
             'target': 'self',
         }
     
@@ -1052,218 +1010,187 @@ class HeadwisePDFReport(models.TransientModel):
         
         # raise UserError((domain))
         docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
-        if docs1.employee_id.company_id.id == 1:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-        elif docs1.employee_id.company_id.id == 3:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-        else:
-            docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-        docs = docs2 | docs1
+        # raise UserError((docs1))
+        # if docs1.filtered(lambda x: x.employee_id.company_id.id == 1):
+        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+        # elif docs1.filtered(lambda x: x.employee_id.company_id.id == 3):
+        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+        # else:
+        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+        
+        # docs = docs2 | docs1
         #raise UserError((docs.id))
+        docs = None
         datefrom = data.get('date_from')
         dateto = data.get('date_to')
-#         bankname = self.bank_id.name
-#         categname=[]
-#         if self.employee_type =='staff':
-#             categname='Staffs'
-#         if self.employee_type =='expatriate':
-#             categname='Expatriates'
-#         if self.employee_type =='worker':
-#             categname='Workers'
-#         if self.employee_type =='cstaff':
-#             categname='C-Staffs'
-#         if self.employee_type =='cworker':
-#             categname='C-Workers'
-            
-        
-        #raise UserError((datefrom,dateto,bankname,categname))
-        report_data = []
-        emp_data = []
-        slnumber=0
-        for edata in docs:
-            slnumber = slnumber+1
-            emp_data = [
-                slnumber,
-                edata.name,
-                edata.description,
-                round(edata.baseline,2),
-                round(edata.target,2),
-                (edata.weight/100),
-                'Target',
-                edata.t_apr,
-                edata.t_may,
-                edata.t_jun,
-                edata.t_q1,
-                edata.t_jul,
-                edata.t_aug,
-                edata.t_sep,
-                edata.t_q2,
-                edata.t_oct,
-                edata.t_nov,
-                edata.t_dec,
-                edata.t_q3,
-                edata.t_jan,
-                edata.t_feb,
-                edata.t_mar,
-                edata.t_q4,
-                edata.y_t_ytd,
-                'ACVD',
-                edata.a_apr,
-                edata.a_may,
-                edata.a_jun,
-                edata.a_q1,
-                edata.a_jul,
-                edata.a_aug,
-                edata.a_sep,
-                edata.a_q2,
-                edata.a_oct,
-                edata.a_nov,
-                edata.a_dec,
-                edata.a_q3,
-                edata.a_jan,
-                edata.a_feb,
-                edata.a_mar,
-                edata.a_q4,
-                edata.y_a_ytd,
-                'Weightage',
-                edata.apr,
-                edata.may,
-                edata.jun,
-                edata.q_1_ytd,
-                edata.jul,
-                edata.aug,
-                edata.sep,
-                edata.q_2_ytd,
-                edata.oct,
-                edata.nov,
-                edata.dec,
-                edata.q_3_ytd,
-                edata.jan,
-                edata.feb,
-                edata.mar,
-                edata.q_4_ytd,
-                edata.y_ytd,
-                edata.employee_id.id,
-            ]
-            report_data.append(emp_data)
-        month = docs.mapped('month')[1:]
-        mm = 'Month'
-        for m in month:
-            if m == 'apr':
-                mm = 'April'
-            elif m == 'may':
-                mm = 'May'
-            elif m == 'jun':
-                mm = 'Jun'
-            elif m == 'jul':
-                mm = 'July'
-            elif m == 'aug':
-                mm = 'August'
-            elif m == 'sep':
-                mm = 'September'
-            elif m == 'oct':
-                mm = 'October'
-            elif m == 'nov':
-                mm = 'November'
-            elif m == 'dec':
-                mm = 'December'
-            elif m == 'jan':
-                mm = 'January'
-            elif m == 'feb':
-                mm = 'February'
-            elif m == 'mar':
-                mm = 'March'
-        weight = 0
-        apr = 0
-        may = 0
-        jun = 0
-        q_1_ytd = 0
-        jul = 0
-        aug = 0
-        sep = 0
-        q_2_ytd = 0
-        oct = 0
-        nov = 0
-        dec = 0
-        q_3_ytd = 0
-        jan = 0
-        feb = 0
-        mar = 0
-        q_4_ytd = 0  
-        ytd = 0
-        for de in docs1:
-            weight = weight + de.weight
-            apr = apr + de.apr
-            may = may + de.may
-            jun = jun + de.jun
-            q_1_ytd = q_1_ytd + de.q_1_ytd
-            jul = jul + de.jul
-            aug = aug + de.aug
-            sep = sep + de.sep
-            q_2_ytd = q_2_ytd + de.q_2_ytd
-            oct = oct + de.oct
-            nov = nov + de.nov
-            dec = dec + de.dec
-            q_3_ytd = q_3_ytd + de.q_3_ytd
-            jan = jan + de.jan
-            feb = feb + de.feb
-            mar = mar + de.mar
-            q_4_ytd = q_4_ytd + de.q_4_ytd
-            ytd = ytd + de.y_ytd
-            
-        common_data = [
-            data.get('docs1'),
-            mm,
-            weight,
-            apr,
-            may,
-            jun,
-            q_1_ytd,
-            jul,
-            aug,
-            sep,
-            q_2_ytd,
-            oct,
-            nov,
-            dec,
-            q_3_ytd,
-            jan,
-            feb,
-            mar,
-            q_4_ytd,
-            ytd,
-#             round(otTotal),
-            data.get('date_from'),
-            data.get('date_to'), 
-        ]
-        common_data.append(common_data)
 
-        
-        emply = docs.mapped('employee_id')
+        emply = docs1.mapped('employee_id')
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        # raise UserError((emply))
         for emp in emply:
+            if emp.company_id.id == 1:
+                docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Zipper','$ PAT (Thousand) - Zipper')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+            elif emp.company_id.id == 3:
+                docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Metal Trims','$ PAT (Thousand) - Metal Trims')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+            else:
+                docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Zipper','$ PAT (Thousand) - Zipper','$ Revenue (Thousand)  - Metal Trims','$ PAT (Thousand) - Metal Trims')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+            
+            docs = docs2 | docs1.filtered(lambda x: x.employee_id.id == emp.id)   
+            
+            report_data = []
+            emp_data = []
+            slnumber=0
+            for edata in docs:
+                slnumber = slnumber+1
+                emp_data = [
+                    slnumber,
+                    edata.name,
+                    edata.description,
+                    round(edata.baseline,2),
+                    round(edata.target,2),
+                    (edata.weight/100),
+                    'Target',
+                    edata.t_apr,
+                    edata.t_may,
+                    edata.t_jun,
+                    edata.t_q1,
+                    edata.t_jul,
+                    edata.t_aug,
+                    edata.t_sep,
+                    edata.t_q2,
+                    edata.t_oct,
+                    edata.t_nov,
+                    edata.t_dec,
+                    edata.t_q3,
+                    edata.t_jan,
+                    edata.t_feb,
+                    edata.t_mar,
+                    edata.t_q4,
+                    edata.y_t_ytd,
+                    'ACVD',
+                    edata.a_apr,
+                    edata.a_may,
+                    edata.a_jun,
+                    edata.a_q1,
+                    edata.a_jul,
+                    edata.a_aug,
+                    edata.a_sep,
+                    edata.a_q2,
+                    edata.a_oct,
+                    edata.a_nov,
+                    edata.a_dec,
+                    edata.a_q3,
+                    edata.a_jan,
+                    edata.a_feb,
+                    edata.a_mar,
+                    edata.a_q4,
+                    edata.y_a_ytd,
+                    'Weightage',
+                    edata.apr,
+                    edata.may,
+                    edata.jun,
+                    edata.q_1_ytd,
+                    edata.jul,
+                    edata.aug,
+                    edata.sep,
+                    edata.q_2_ytd,
+                    edata.oct,
+                    edata.nov,
+                    edata.dec,
+                    edata.q_3_ytd,
+                    edata.jan,
+                    edata.feb,
+                    edata.mar,
+                    edata.q_4_ytd,
+                    edata.y_ytd,
+                    edata.employee_id.id,
+                ]
+                report_data.append(emp_data)
+            month = docs.mapped('month')[1:]
+            mm = 'Month'
+            for m in month:
+                if m == 'apr':
+                    mm = 'April'
+                elif m == 'may':
+                    mm = 'May'
+                elif m == 'jun':
+                    mm = 'Jun'
+                elif m == 'jul':
+                    mm = 'July'
+                elif m == 'aug':
+                    mm = 'August'
+                elif m == 'sep':
+                    mm = 'September'
+                elif m == 'oct':
+                    mm = 'October'
+                elif m == 'nov':
+                    mm = 'November'
+                elif m == 'dec':
+                    mm = 'December'
+                elif m == 'jan':
+                    mm = 'January'
+                elif m == 'feb':
+                    mm = 'February'
+                elif m == 'mar':
+                    mm = 'March'
+            weight = 0
+            apr = 0
+            may = 0
+            jun = 0
+            q_1_ytd = 0
+            jul = 0
+            aug = 0
+            sep = 0
+            q_2_ytd = 0
+            oct = 0
+            nov = 0
+            dec = 0
+            q_3_ytd = 0
+            jan = 0
+            feb = 0
+            mar = 0
+            q_4_ytd = 0  
+            ytd = 0
+            for de in docs1.filtered(lambda x: x.employee_id.id == emp.id):
+                weight = weight + de.weight
+                apr = apr + de.apr
+                may = may + de.may
+                jun = jun + de.jun
+                q_1_ytd = q_1_ytd + de.q_1_ytd
+                jul = jul + de.jul
+                aug = aug + de.aug
+                sep = sep + de.sep
+                q_2_ytd = q_2_ytd + de.q_2_ytd
+                oct = oct + de.oct
+                nov = nov + de.nov
+                dec = dec + de.dec
+                q_3_ytd = q_3_ytd + de.q_3_ytd
+                jan = jan + de.jan
+                feb = feb + de.feb
+                mar = mar + de.mar
+                q_4_ytd = q_4_ytd + de.q_4_ytd
+                ytd = ytd + de.y_ytd
+                
             
             worksheet = workbook.add_worksheet(('%s - %s' % (emp.pin,emp.name)))
-            worksheet.set_zoom(75)
+            worksheet.set_zoom(64)
             report_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 16, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_title_style1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'font_size': 13, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
-            report_column_style_ = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12,'bold': True,'font_color':'#FFFFFF','bg_color': '#714B35', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
-            report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
+            report_column_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12,'bold': True,'font_color':'#FFFFFF','bg_color': '#714B35', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
+            report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00'})
            
             report_column_style_2.set_text_wrap()
             report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
             worksheet.merge_range('A1:E1',('%s' % (emp.name)), report_title_style)
             
-            img = io.BytesIO(base64.b64decode(emp.image_1920))
-            worksheet.insert_image(0, 1, '', {'image_data': img, "x_scale": 0.06, "y_scale": 0.06,'align': 'center','valign': 'vcenter' })
+            # img = io.BytesIO(base64.b64decode(emp.image_1920))
+            # worksheet.insert_image(0, 1, '', {'image_data': img, "x_scale": 0.06, "y_scale": 0.06,'align': 'center','valign': 'vcenter' })
             
-            img_ = io.BytesIO(base64.b64decode(emp.parent_id.image_1920))
-            worksheet.insert_image(0, 23, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 1})
+            # img_ = io.BytesIO(base64.b64decode(emp.parent_id.image_1920))
+            # worksheet.insert_image(0, 23, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 1})
             
-            worksheet.merge_range('F1:M1', 'KPI Scorecard [Challenged By]', report_title_style)
+            worksheet.merge_range('F1:M1', 'KPI Scorecard Quarterly [Challenged By]', report_title_style)
             worksheet.merge_range('N1:X1', ('%s' % (emp.parent_id.name)), report_title_style)
     
             report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
@@ -1281,25 +1208,24 @@ class HeadwisePDFReport(models.TransientModel):
             merge_format_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF'})
             merge_format_.set_text_wrap()
             
-            column_product_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
+            column_product_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
             column_product_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B35', 'font_size': 14, 'font_color':'#FFFFFF', 'border': True})
             column_product_style2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
             column_product_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00%'})
-            column_product_style_5 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True})
-            column_product_style_6 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True})
+            column_product_style_5 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+            column_product_style_6 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
             
             column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
             column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
             row_categ_style = workbook.add_format({'border': True})
-            gray_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
-            gray_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True})
+            gray_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+            gray_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
             gray_style_1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True,"num_format": "0.00%"})
     
             # set the width od the column
-            _range = len(report_data)
             percent_format = workbook.add_format({"num_format": "0%"})
             worksheet.freeze_panes(6, 0)
-
+    
             
             worksheet.write(2, 2, 'WEIGHT', column_product_style_6)
             worksheet.write(2, 3, 'APR', column_product_style_6)
@@ -1321,7 +1247,7 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.write(2, 19, 'YTD', column_product_style_5)
              
             
-            worksheet.write(3, 2, weight, column_product_style2)
+            worksheet.write(3, 2, weight, column_product_style_6)
             worksheet.write(3, 3, apr, column_product_style_6)
             worksheet.write(3, 4, may, column_product_style_6)
             worksheet.write(3, 5, jun, column_product_style_6)
@@ -1349,7 +1275,7 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.set_column(6,6,11)
             worksheet.set_column(23,23,11)
             
-            worksheet.set_row(0, 50)
+            worksheet.set_row(0, 20)
             
             worksheet.write(5, 0, 'SL.', column_product_style)
             worksheet.write(5, 1, 'Objectives', column_product_style)
@@ -1402,7 +1328,7 @@ class HeadwisePDFReport(models.TransientModel):
             
             for line in report_data:
                 mrg_val = None    
-                if not line[2]:
+                if not line[60]:
                     total_weight_43 += line[43]
                     total_weight_44 += line[44]
                     total_weight_45 += line[45]
@@ -1439,7 +1365,7 @@ class HeadwisePDFReport(models.TransientModel):
                         if col == 1:
                             etype = l[:1]
                         if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style_2)
+                            worksheet.write(row, col, slnumber, report_column_style)
                         if col == 1:
                             worksheet.write(row, col, l, report_column_style_2)
                         if col == 2:
@@ -1487,7 +1413,7 @@ class HeadwisePDFReport(models.TransientModel):
                             worksheet.write(row, col, l, report_column_style_3)
                             
                         col+=1
-
+    
                     row = row-1
                     row+=1
             worksheet.write(row, 6, 'Total', column_product_style_)
@@ -1513,7 +1439,7 @@ class HeadwisePDFReport(models.TransientModel):
                     
             worksheet.merge_range(row, 0, row, 23, 'Objective / Score', merge_format_)
             row+=1
-
+    
             total_weight_43_ = 0
             total_weight_44_ = 0
             total_weight_45_ = 0
@@ -1571,11 +1497,11 @@ class HeadwisePDFReport(models.TransientModel):
                         if col == 1:
                             etype = l[:1]
                         if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style_2)
+                            worksheet.write(row, col, slnumber, report_column_style)
                         if col == 1:
                             worksheet.write(row, col, l, report_column_style_2)
                         if col == 2:
-                            worksheet.write(row, col, '', report_column_style_2)
+                            worksheet.write(row, col, l, report_column_style_2)
                         elif col == 3:
                             
                             if etype == '%':
@@ -1619,7 +1545,7 @@ class HeadwisePDFReport(models.TransientModel):
                             worksheet.write(row, col, l, report_column_style_3)
                             
                         col+=1
-
+    
                     row = row-1
                     row+=1
             worksheet.write(row, 6, 'Total', column_product_style_)
@@ -1644,7 +1570,7 @@ class HeadwisePDFReport(models.TransientModel):
             
             worksheet.merge_range(row, 0, row, 23, 'Strategic Projects', merge_format_)
             row+=1
-
+    
             total_weight_43_l = 0
             total_weight_44_l = 0
             total_weight_45_l = 0
@@ -1703,11 +1629,11 @@ class HeadwisePDFReport(models.TransientModel):
                         if col == 1:
                             etype = l[:1]
                         if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style_2)
+                            worksheet.write(row, col, slnumber, report_column_style)
                         if col == 1:
                             worksheet.write(row, col, l, report_column_style_2)
                         if col == 2:
-                            worksheet.write(row, col, '', report_column_style_2)
+                            worksheet.write(row, col, l, report_column_style_2)
                         elif col == 3:
                             
                             if etype == '%':
@@ -1751,7 +1677,7 @@ class HeadwisePDFReport(models.TransientModel):
                             worksheet.write(row, col, l, report_column_style_3)
                             
                         col+=1
-
+    
                     row = row-1
                     row+=1
             worksheet.write(row, 6, 'Total', column_product_style_)
@@ -1771,19 +1697,8 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.write(row, 20, total_weight_56_l/100, report_column_style_)
             worksheet.write(row, 21, total_weight_57_l/100, report_column_style_)
             worksheet.write(row, 22, total_weight_58_l/100, gray_style_1)
-            worksheet.write(row, 23, total_weight_59_l/100, column_product_style_)
+            worksheet.write(row, 23, total_weight_59_l/100, report_column_style_)
             row+=1
-
-            # worksheet.write(row, 0, '', report_small_title_style)
-            # worksheet.write(row, 1, 'Grand Total', report_small_title_style)
-            # worksheet.write(row, 2, '', report_small_title_style)
-            # worksheet.write(row, 3, '', report_small_title_style)
-            # worksheet.write(row, 4, '', report_small_title_style)
-            # worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
-
-                                        
-                   
-                    #raise UserError((datefrom,dateto,bankname,categname))
             
         workbook.close()
         output.seek(0)
@@ -1796,7 +1711,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s - Scorecard Quarterly'% (emp.department_id.parent_id.name))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s - Scorecard Quarterly'% (emp.department_id.parent_id.name if data.get('department_id') else emp.name))),
             'target': 'self',
         }
 

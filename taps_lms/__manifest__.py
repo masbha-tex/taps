@@ -36,6 +36,7 @@
         'data/ir_sequence.xml',
         'wizard/report_wizard_view.xml',
         'reports/lms_pdf_report.xml',
+        'reports/attendance.xml',
         'reports/lms_xlsx_report.xml',
         'views/template.xml',
         'views/templates.xml',
