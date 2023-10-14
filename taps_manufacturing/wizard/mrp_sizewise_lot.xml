@@ -28,7 +28,8 @@
                                     <field name="sizecm" readonly="1" force_save="1"/>
                                     <field name="gap" readonly="1" force_save="1"/>
                                     <field name="tape_con" optional="show" sum="Tape C." decoration-bf="True"/>
-                                    <field name="balance_qty" optional="show" sum="Qty" decoration-bf="True"/>
+                                    <field name="qty" optional="show" sum="Qty" decoration-bf="True"/>
+                                    <field name="balance_qty" optional="show" sum="Bl Qty" decoration-bf="True"/>
                                     <field name="lot_capacity"/>
                                     <field name="lots"/>
                                     <!-- <field name="quantity_string"/> -->
@@ -59,6 +60,7 @@
                 <field name="sizecm"/>
                 <field name="gap"/>
                 <field name="tape_con"/>
+                <field name="qty"/>
                 <field name="balance_qty"/>
                 <field name="lot_capacity"/>
                 <field name="lots"/>

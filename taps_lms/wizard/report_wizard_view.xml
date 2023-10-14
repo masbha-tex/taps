@@ -19,7 +19,7 @@
                     </group>
                     <group>
                         <field name="session_ids" widget="many2many_tags"/>
-                        <field name="responsible_id"/>
+                        <field name="instructor_id"/>
                     </group>
                 </group>
                 <footer>

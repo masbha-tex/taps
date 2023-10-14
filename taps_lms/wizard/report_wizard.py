@@ -10,7 +10,10 @@ class LmsPDFReport(models.TransientModel):
     image_1920 = fields.Image("Image")
     session_ids = fields.Many2many('lms.session', string='Session')
     course_ids = fields.Many2many('lms.course', string='Course')
-    responsible_id = fields.Many2one('res.users', 'Facilitator')
+    responsible_id = fields.Many2one('res.users', 'Facilitators')
+    company_id = fields.Many2one('res.company', string='Company')
+    venue = fields.Many2one('lms.session.venue', string='Venue')
+    instructor_id = fields.Many2one('res.partner',string="Facilitator") 
     
     report_type = fields.Selection([
         ('courses',	'Training Courses'),
@@ -24,8 +27,8 @@ class LmsPDFReport(models.TransientModel):
         data = {'date_from': self.date_from, 
                 'date_to': self.date_to,
                 'report_type': self.report_type,
-                'course_ids': self.session_ids.ids, 
-                'responsible_id': self.responsible_id.id}
+                'session_ids': self.session_ids.ids, 
+                'instructor_id': self.instructor_id.id}
         if self.report_type == 'courses': 
             return self.env.ref('taps_lms.action_lms_pdf_report').report_action(self, data=data)
         if self.report_type == 'attendance': 
@@ -75,25 +78,31 @@ class LmsAttendanceReportPDF(models.AbstractModel):
 
     def _get_report_values(self, docids, data=None):
         domain = []
+    
         if data.get('date_from'):
             domain.append(('start_date', '=', data.get('date_from')))
         if data.get('date_to'):
             domain.append(('start_date', '=', data.get('date_to')))
         if data.get('session_ids'):
             domain.append(('id', 'in', data.get('session_ids')))
-        # if data.get('instructor_id'):
-        #     domain.append(('instructor_id', '=', data.get('responsible_id')))
+        if data.get('instructor_id'):
+            domain.append(('instructor_id', '=', data.get('instructor_id')))
         docs = self.env['lms.session'].search(domain)
-        # raise UserError(())
-        responsible = self.env['res.users'].browse(data.get('responsible_id'))
+        # raise UserError((domain))
+        instructor = self.env['res.users'].search([('id','=', data.get('instructor_id'))])
+        # raise UserError((instructor.id))
         session_ids = self.env['lms.session'].browse(data.get('session_ids'))
-        data.update({'responsbile': responsible.name})
+        # venue = self.env['lms.session.venue'].search(data.get('venue'))
+        data.update({'instructor': instructor.name})
         data.update({'session': ",".join([session.display_name for session in session_ids])})
+        # data.update({'venues': ",".join([venues.name for venues in venue])})
+        
+        
         return {
             'doc_ids': docs.ids,
             'doc_model': 'lms.session',
             'docs': docs,
-            'datas': data
+            'datas': data,
         }
 
 class LmsXlsxReport(models.AbstractModel):

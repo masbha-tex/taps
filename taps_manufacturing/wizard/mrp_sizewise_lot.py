@@ -31,7 +31,7 @@ class MrpSizewiseLot(models.TransientModel):
     @api.depends('lot_line.size_total')
     def _get_tape_bylots(self):
         for plan in self:
-            plan.tape_qty = sum( (line.tape_con/line.balance_qty)*line.size_total for line in plan.lot_line)
+            plan.tape_qty = sum( (line.tape_con/line.qty)*line.size_total for line in plan.lot_line)
             
 
     tape_qty = fields.Float('Tape Consume',digits='Product Unit of Measure', readonly=False, store=True, default=0.0, compute='_get_tape_bylots') 
@@ -59,7 +59,19 @@ class MrpSizewiseLot(models.TransientModel):
                 mrp_line = ','.join([str(i) for i in sorted(orders.ids)])
                 sale_lines = ','.join([str(i) for i in sorted(orders.sale_order_line.ids)])
                 tape_con = sum(orders.mapped('tape_con'))
-                balance_qty = sum(orders.mapped('balance_qty'))
+                op_etails = self.env['operation.details'].search([('oa_id','=',operation[0].oa_id.id),('shade','=',operation[0].shade),('next_operation','=','Assembly Output')])
+                op_etails = op_etails.filtered(lambda p: p.sizein == size or p.sizecm == size)
+                
+                actual_qty = sum(orders.mapped('balance_qty'))
+                balance_qty = 0
+                if op_etails:
+                    balance_qty = actual_qty - sum(op_etails.mapped('qty'))
+                else:
+                    balance_qty = actual_qty
+
+                    
+                # found_values = [value for value in mrp_line if value in op_etails.mrp_lines]
+                # raise UserError((found_values[0].name))
                 orderline_values.append((0, 0, {
                     'mrp_line': mrp_line,
                     'sale_lines': sale_lines,
@@ -67,6 +79,7 @@ class MrpSizewiseLot(models.TransientModel):
                     'sizecm': lines.sizecm,
                     'gap': lines.gap,
                     'tape_con': tape_con,
+                    'qty': actual_qty,
                     'balance_qty': balance_qty,
                     }))
                 sizes.append(size)
@@ -95,7 +108,7 @@ class MrpSizewiseLot(models.TransientModel):
                         l_cap = 4000
                         if ml.lot_capacity>0:
                             l_cap = ml.lot_capacity
-                        l_lots = math.ceil(ml.qty_balance/l_cap)
+                        l_lots = math.ceil(ml.balance_qty/l_cap)
                         ml.update({'material_qty':ml.balance_qty,'lots':l_lots})
                     else:
                         raise UserError(('Machine and Quantity Required'))
@@ -117,7 +130,8 @@ class SizewiseLotLine(models.TransientModel):
     sizecm = fields.Char(string='Size (CM)', readonly=True)
     gap = fields.Char(string='Gap', readonly=True)
     tape_con = fields.Float('Tape C.', readonly=True, digits='Product Unit of Measure')
-    balance_qty = fields.Float(string='Qty', readonly=True)
+    qty = fields.Float(string='Qty', readonly=True)
+    balance_qty = fields.Float(string='Bl Qty', readonly=True)
     lot_capacity = fields.Float(string='Qty/Lot')
     lots = fields.Integer(string='Lots')
     # quantity_string = fields.Char(string="Quantities", readonly=False)
@@ -133,6 +147,7 @@ class SizewiseLotLine(models.TransientModel):
             'sizecm': '',
             'gap': '',
             'tape_con': 0.0,  # Default Tape C. Value
+            'qty': 0.0,  # Default Tape C. Value
             'balance_qty': 0.0,  # Default Qty Value
             'lot_capacity':0.0,
             'lots':0.0

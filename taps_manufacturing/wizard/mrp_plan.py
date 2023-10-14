@@ -242,8 +242,25 @@ class MachineLine(models.TransientModel):
             if l.machine_no.capacity:
                 l.reserved = math.ceil(sum(operation.mapped('balance_qty'))/l.machine_no.capacity)
 
-            
-            
+    def duplicate_line(self):
+        # raise UserError(('fefefe'))
+        max_seq = max(line.sequence for line in self.plan_id.machine_line)
+        # self.copy({'plan_id': self.plan_id.id, 'sequence': max_seq + 1})
+        orderline_values = []
+        orderline_values.append((0, 0, {
+            'sequence':max_seq,
+            'plan_id':self.plan_id,
+            'oa_id':self.oa_id.id,
+            'sa_oa_ref':self.sa_oa_ref,
+            'actual_qty':self.actual_qty,
+            'qty_balance':self.qty_balance,
+            'machine_no':self.machine_no.id,
+            'reserved':self.reserved,
+            'lots':self.lots,
+            'material_qty':self.material_qty,
+            'remarks':self.remarks
+        }))
+        self.plan_id.update({'machine_line': orderline_values,})
 
             
             #l.plan_id.material_qty

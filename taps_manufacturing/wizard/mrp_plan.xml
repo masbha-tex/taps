@@ -26,7 +26,9 @@
                     <notebook>
                         <page name="machine_line" string="Machinewise Plan">
                             <field name="machine_line">
-                                <tree string="Machinewise Plan" editable="bottom">
+                                <tree string="Machinewise Plan" editable="bottom" sample="1">
+                                    <!--  multi_edit="1"  -->
+                                    <!-- <button name="duplicate_line" title="Copy" type="object" class="fa fa-files-o"/> -->
                                     <field name="sequence" widget="handle" />
                                     <field name="plan_id" invisible="1"/>
                                     <field name="oa_id"/>

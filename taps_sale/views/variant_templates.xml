@@ -13,6 +13,8 @@
                 });
               });
             </script>
+        
+        
         </xpath>
 <!--         <xpath expr="//select[contains(@t-attf-class, 'form-control')]" position="attributes">
             <attribute name="multiple">true</attribute>
