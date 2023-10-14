@@ -936,7 +936,8 @@ class OperationDetails(models.Model):
                 operation_of = 'qc'
                 mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
                 mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
-                mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id and pr.product_id.id == out.product_id.id)
+                mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id)
+                 # and pr.product_template_id.id == out.product_template_id.id
                 actual_qty = sum(mrp_data.mapped('tape_con'))
                 # raise UserError((actual_qty,out.uotput_qty))
             # operation = self.env["operation.details"].browse(self.id)
