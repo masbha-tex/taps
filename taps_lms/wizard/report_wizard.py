@@ -13,7 +13,8 @@ class LmsPDFReport(models.TransientModel):
     responsible_id = fields.Many2one('res.users', 'Facilitators')
     company_id = fields.Many2one('res.company', string='Company')
     venue = fields.Many2one('lms.session.venue', string='Venue')
-    instructor_id = fields.Many2one('res.partner',string="Facilitator") 
+    instructor_id = fields.Many2one('res.partner',string="Facilitator")
+    participation_group = fields.Many2one('lms.participation.group', string='Participation Group')
     
     report_type = fields.Selection([
         ('courses',	'Training Courses'),
@@ -92,10 +93,12 @@ class LmsAttendanceReportPDF(models.AbstractModel):
         instructor = self.env['res.users'].search([('id','=', data.get('instructor_id'))])
         # raise UserError((instructor.id))
         session_ids = self.env['lms.session'].browse(data.get('session_ids'))
-        # venue = self.env['lms.session.venue'].search(data.get('venue'))
-        data.update({'instructor': instructor.name})
+        # participation_group = self.env['lms.session'].search(data.get('participation_group'))
+        # venue = self.env['lms.session.venue'].search([('id','=',data.get('name'))])
+        data.update({'instructor': instructor.display_name})
         data.update({'session': ",".join([session.display_name for session in session_ids])})
-        # data.update({'venues': ",".join([venues.name for venues in venue])})
+        # data.update({'participation': participation_group.name})
+        # data.update({'venues': venue.display_name})
         
         
         return {

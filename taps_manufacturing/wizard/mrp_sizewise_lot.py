@@ -72,17 +72,18 @@ class MrpSizewiseLot(models.TransientModel):
                     
                 # found_values = [value for value in mrp_line if value in op_etails.mrp_lines]
                 # raise UserError((found_values[0].name))
-                orderline_values.append((0, 0, {
-                    'mrp_line': mrp_line,
-                    'sale_lines': sale_lines,
-                    'sizein': lines.sizein,
-                    'sizecm': lines.sizecm,
-                    'gap': lines.gap,
-                    'tape_con': tape_con,
-                    'qty': actual_qty,
-                    'balance_qty': balance_qty,
-                    }))
-                sizes.append(size)
+                if balance_qty > 0:
+                    orderline_values.append((0, 0, {
+                        'mrp_line': mrp_line,
+                        'sale_lines': sale_lines,
+                        'sizein': lines.sizein,
+                        'sizecm': lines.sizecm,
+                        'gap': lines.gap,
+                        'tape_con': tape_con,
+                        'qty': actual_qty,
+                        'balance_qty': balance_qty,
+                        }))
+                    sizes.append(size)
             
         res.update({'oa_id': operation[0].oa_id.name,
                     'item': operation[0].fg_categ_type,
@@ -109,7 +110,7 @@ class MrpSizewiseLot(models.TransientModel):
                         if ml.lot_capacity>0:
                             l_cap = ml.lot_capacity
                         l_lots = math.ceil(ml.balance_qty/l_cap)
-                        ml.update({'material_qty':ml.balance_qty,'lots':l_lots})
+                        ml.update({'size_total':ml.balance_qty,'lots':l_lots})
                     else:
                         raise UserError(('Machine and Quantity Required'))
                     

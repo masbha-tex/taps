@@ -119,7 +119,7 @@ class OperationDetails(models.Model):
             s.fg_balance = s.pack_qty - s.fg_done_qty
 
     
-    actual_qty = fields.Float(string='Actual Qty', readonly=True, store=True, group_operator="sum")
+    actual_qty = fields.Float(string='Actual Tape Qty', readonly=True, store=True, group_operator="sum")
     qty = fields.Float(string='Qty', readonly=False)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
@@ -929,7 +929,7 @@ class OperationDetails(models.Model):
                     next = 'Done'
             
             operation_of = 'output'
-            actual_qty = 0
+            actual_qty = out.actual_qty
             if out.operation_of == 'qc':
                 operation_of = 'input'
             if out.next_operation == 'Dyeing Output':
