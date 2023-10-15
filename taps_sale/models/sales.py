@@ -199,7 +199,7 @@ class SaleOrder(models.Model):
             # 'nitish.bassi@texzipperbd.com',
             # 'mirtunjoy.chatterjee@texzipperbd.com',
             'asraful.haque@texzipperbd.com',
-            'shahid.hossain@texzipperbd.com',
+            # 'shahid.hossain@texzipperbd.com',
             record.sale_representative.leader.email
             ]
         if self.env.company.name == 'Zipper':
@@ -245,7 +245,7 @@ class SaleOrder(models.Model):
             body = template._render(template_ctx, engine='ir.qweb')
             mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
             
-        self.env['mail.mail'].sudo().create(mail_values)
+        self.env['mail.mail'].sudo().create(mail_values).send()
 
         
     
@@ -261,7 +261,7 @@ class SaleOrder(models.Model):
                 # 'mudit.tandon@texfasteners.com',
                 # 'deepak.shah@bd.texfasteners.com',
                 'asraful.haque@texzipperbd.com',
-                'shahid.hossain@texzipperbd.com',
+                # 'shahid.hossain@texzipperbd.com',
                 ]
             author_id=0
             
@@ -324,7 +324,7 @@ class SaleOrder(models.Model):
                 body = template._render(template_ctx, engine='ir.qweb')
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
             # raise UserError((mail_values['body_html']))
-            rec.env['mail.mail'].sudo().create(mail_values)
+            rec.env['mail.mail'].sudo().create(mail_values).send()
     
     
     

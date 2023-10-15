@@ -12,30 +12,54 @@
         <t t-call="web.html_container">
             <t t-call="web.internal_layout">
                 <div class="page">
-                    <div class="oe_structure"/>
+                    <!-- <div class="oe_structure"/> -->
                     <h3>
-                        <center>LMS Training Courses detail</center>
+                        <center>LMS Employee Training Report</center>
                     </h3>
                     <br/>
                     <br/>
                     <div class="row">
                         <div class="col-6">
-                            Date from:
-                            <span t-esc="datas['date_from']"/>
+                            Training Headline :
+                             <span t-field="docs.display_name"/> 
                         </div>
                         <div class="col-6">
-                            Courses:
-                            <span t-esc="datas['courses']"/>
+                            Training for : 
+                             <span t-field="docs.participation_group.display_name"/> 
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            Date to:
-                            <span t-esc="datas['date_to']"/>
+                            Unit:
+                             <span t-field="docs.company_id.display_name"/> 
                         </div>
                         <div class="col-6">
-                            Responsible:
-                            <span t-esc="datas['responsbile']"/>
+                            Venue:
+                             <span t-field="docs.venue.display_name"/> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            Training Conducted by :
+                             <table class="m-0 p-0 table-bordered">
+                                <tr t-as="instructor" t-foreach="docs.instructor_id">
+                                    <td>
+                                        <span t-esc="instructor.display_name"/>
+                                    </td>
+                                </tr>
+                              </table>
+                               
+                        </div>
+                        <div class="col-6">
+                            Training Date:
+                             <span t-field="docs.start_date"/> 
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-12">
+                            Content:
+                             <span t-field="docs.description"/> 
                         </div>
                     </div>
                     <br/>
@@ -43,46 +67,27 @@
                     <table class="table table-condensed table-bordered">
                         <thead>
                             <tr>
-                                <th>Session Name</th>
-                                <th>Start date</th>
-                                <th>Duration</th>
-                                <th>No. of Seats</th>
-                                <th>Instructor</th>
-                                <th>Total Attendees</th>
+                                <th class="text-center">Training Photo</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-as="course" t-foreach="docs">
-                                <tr>
-                                    <td colspan="6">
-                                        <center>
-                                            <span t-field="course.display_name"/>
-                                        </center>
-                                    </td>
-                                </tr>
-                                <tr t-as="session" t-foreach="course.session_ids">
-                                    <td>
-                                        <span t-field="session.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="session.start_date"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-field="session.duration"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-field="session.seats"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="session.instructor_id"/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-esc="session.number_of_attendees()"/>
+                            <t>
+                                <tr t-as="employee" t-foreach="docs">
+                                    <td class="text-center">
+                                         <!-- <img class="img-fluid mb-2" style="height:100pt;width:100pt;" t-if="employee.datas" t-att-src="image_data_uri(employee.datas)"/>  -->
+                                        <!-- <span  t-esc="docs.attachment_number.datas"/> -->
+                                        <!-- <img t-if="docs.attachment_number.datas" t-att-src="'data:image/png;base64,%s' % docs.attachment_number.datas"/> -->
                                     </td>
                                 </tr>
                             </t>
                         </tbody>
                     </table>
+                    <div class="row">
+                        <div class="col-12">
+                            Note:
+                             <span t-field="docs.note"/> 
+                        </div>
+                    </div>
                 </div>
             </t>
         </t>

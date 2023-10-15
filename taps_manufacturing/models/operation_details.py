@@ -403,6 +403,7 @@ class OperationDetails(models.Model):
         
         for op in operation:
             qty = 0
+            # raise UserError((op.qty,rs_q))
             if op.qty > rs_q:
                 qty = rs_q
             else:
@@ -423,9 +424,11 @@ class OperationDetails(models.Model):
                 l_capa = 4000
                 if l.lot_capacity > 0:
                     l_capa = l.lot_capacity
-                lots = 1
+                lots = 0
                 if l.lots>0:
                     lots = l.lots
+                else:
+                    lots = math.ceil(l.size_total/l_capa)
                 rest_q = l.size_total
                 m_orders = None
                 m_lines =  [int(id_str) for id_str in l.mrp_line.split(',')]
@@ -437,15 +440,14 @@ class OperationDetails(models.Model):
                     else:
                         qty = rest_q
 
-                    
                     # raise UserError((m_orders[0].fg_categ_type))
                     next = 'Assembly Output'
                     if 'Metal' in m_orders[0].fg_categ_type or 'AL' in m_orders[0].fg_categ_type:
                         next = 'CM Output'
                     # 'mrp_line':l.mrp_line.id,
                     # 'sale_order_line':l.mrp_line.sale_order_line.id,
+                    # for mr_li in l.mrp_line:
                    
-                    
                     ope = operation.create({'mrp_lines':l.mrp_line,
                                             'sale_lines':l.sale_lines,
                                             'oa_id':m_orders[0].oa_id.id,
@@ -850,13 +852,32 @@ class OperationDetails(models.Model):
     
             move_line = None
             if out.next_operation == 'Packing Output':
-                mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
-                pr_pac_qty = mrp_data.product_template_id.pack_qty
+                # mrp_ids = [int(i) for i in sorted(mrp_ids.split(','))]
+                mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
+                mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
+                pr_pac_qty = mrp_data[0].product_template_id.pack_qty
+                mrp_lines = None
                 if pr_pac_qty:
                     pack_qty = math.ceil(out.uotput_qty/pr_pac_qty)
                     fraction_pc_of_pack = round(((out.uotput_qty/pr_pac_qty) % 1)*pr_pac_qty)
-                    
-                mrp_update = mrp_data.update({'done_qty':mrp_data.done_qty + out.uotput_qty, 'packing_done':fraction_pc_of_pack})
+
+                if mrp_data:
+                    out_qty = out.uotput_qty / len(mrp_data)
+                    # fr_sum = out.uotput_qty - int(out_qty)*len(mrp_update)
+                    # extra = fr_sum
+                    each_qty = out_qty
+                    while each_qty > 0:
+                        for datas in mrp_data:
+                            outqty = 0
+                            if datas.balance_qty > out_qty:
+                                outqty = out_qty
+                            else:
+                                outqty = datas.balance_qty
+                            # extra += out_qty - outqty
+                            mrp_update = datas.update({'done_qty':datas.done_qty + outqty})
+                            # , 'packing_done':fraction_pc_of_pack
+                            each_qty = each_qty - outqty
+                        
                 mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
                 tot_b =  sum(mrp_oa_data.mapped('oa_total_balance'))/ len(mrp_oa_data) # mrp_oa_data.oa_total_balance - out.uotput_qty
                 tot_b = tot_b - out.uotput_qty

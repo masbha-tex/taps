@@ -18,8 +18,29 @@
                         <field name="date_to"/>
                     </group>
                     <group>
-                        <field name="session_ids" widget="many2many_tags"/>
-                        <field name="instructor_id"/>
+                        <!-- <field name="session_ids" widget="many2many_tags"/> -->
+                        <!-- <field name="instructor_id"/> -->
+                        <field name="mode_type" string="Mode"/>
+                        <field name="criteria_id" attrs="{
+                        'required': [('mode_type', '=', 'criteria')],
+                        'invisible': [('mode_type', '!=', 'criteria')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="session_ids" attrs="{
+                        'required': [('mode_type', '=', 'title')],
+                        'invisible': [('mode_type', '!=', 'title')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="venue" attrs="{
+                        'required': [('mode_type', '=', 'venues')],
+                        'invisible': [('mode_type', '!=','venues')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="instructor_id" attrs="{
+                        'required': [('mode_type', '=', 'facilitator')],
+                        'invisible': [('mode_type', '!=','facilitator')]
+                        }" options="{'no_create': True, 'no_open': True}"/> 
+                        <field name="participation_group" attrs="{
+                        'required': [('mode_type', '=', 'pg')],
+                        'invisible': [('mode_type', '!=','pg')]
+                        }" options="{'no_create': True, 'no_open': True}"/> 
                     </group>
                 </group>
                 <footer>

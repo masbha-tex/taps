@@ -906,10 +906,10 @@ class HeadwiseReportPDF(models.AbstractModel):
         if data.get('company_all'):
             if data.get('company_all')=='allcompany':
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
-#         domain.append(('code', '=', 'NET'))        
+#       domain.append(('code', '=', 'NET'))        
         
         
-#         raise UserError((domain))
+#       raise UserError((domain))
         docs = self.env['hr.payslip.line'].search(domain).sorted(key = 'employee_id', reverse=False)
         
         otTotal = 0

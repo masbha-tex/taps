@@ -8,29 +8,78 @@ class LmsPDFReport(models.TransientModel):
     date_from = fields.Date('Date from', required=True)
     date_to = fields.Date('Date to', required=True)
     image_1920 = fields.Image("Image")
-    session_ids = fields.Many2many('lms.session', string='Session')
-    course_ids = fields.Many2many('lms.course', string='Course')
-    responsible_id = fields.Many2one('res.users', 'Facilitators')
+    criteria_id = fields.Many2one('lms.criteria', string='Criteria') 
+    session_ids = fields.Many2one('lms.title', string='Title')
     company_id = fields.Many2one('res.company', string='Company')
     venue = fields.Many2one('lms.session.venue', string='Venue')
     instructor_id = fields.Many2one('res.partner',string="Facilitator")
     participation_group = fields.Many2one('lms.participation.group', string='Participation Group')
     
     report_type = fields.Selection([
-        ('courses',	'Training Courses'),
+        ('training',	'Training Courses'),
         ('attendance',	'Attendance Report'),],
         string='Report Type', required=True,
         help='Report Type', default='attendance')
 
+    mode_type = fields.Selection([
+        ('criteria', 'By Criteria'),
+        ('title', 'By Title'),
+        ('venues', 'By Venue'),
+        ('facilitator', 'By Facilitator'),
+        ('pg', 'By Participation Group')],
+        string='Report Mode', required=True, default='title')
+
     # generate PDF report
     def action_print_report(self):
-        data = {'date_from': self.date_from, 'date_to': self.date_to, 'course_ids': self.course_ids.ids,'report_type': self.report_type, 'responsible_id': self.responsible_id.id}
-        data = {'date_from': self.date_from, 
-                'date_to': self.date_to,
-                'report_type': self.report_type,
-                'session_ids': self.session_ids.ids, 
-                'instructor_id': self.instructor_id.id}
-        if self.report_type == 'courses': 
+        # data = {'date_from': self.date_from, 'date_to': self.date_to, 'course_ids': self.course_ids.ids,'report_type': self.report_type, 'responsible_id': self.responsible_id.id}
+        if self.report_type:
+            if self.mode_type == 'criteria':
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : self.criteria_id,
+                        'session_ids': False,
+                        'venue' : False,
+                        'instructor_id': False,
+                        'participation_group' : False}
+            if self.mode_type == 'title':
+                data = {'date_from': self.date_from,
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : False,
+                        'session_ids': self.session_ids.ids,
+                        'venue' : False,
+                        'instructor_id': False,
+                        'participation_group' : False}
+            if self.mode_type == 'venues':
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : False,
+                        'session_ids': False, 
+                        'venue' : self.venue,
+                        'instructor_id': False,
+                        'participation_group' : False}
+            if self.mode_type == 'facilitator':
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : False,
+                        'session_ids': False, 
+                        'venue' : False,
+                        'instructor_id': self.instructor_id,
+                        'participation_group' : False}
+            if self.mode_type == 'pg':
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : False,
+                        'session_ids': False, 
+                        'venue' : False,
+                        'instructor_id': False,
+                        'participation_group' : self.participation_group}
+            
+        if self.report_type == 'training': 
             return self.env.ref('taps_lms.action_lms_pdf_report').report_action(self, data=data)
         if self.report_type == 'attendance': 
             return self.env.ref('taps_lms.action_lms_attendance_pdf_report').report_action(self, data=data)
@@ -46,66 +95,77 @@ class LmsPDFReport(models.TransientModel):
         }
         return self.env.ref('taps_lms.action_lms_xlsx_report').report_action(self, data=data)
 
-
-class LmsReportPDF(models.AbstractModel):
+class LmsAttendanceReportPDF(models.AbstractModel):
     _name = 'report.taps_lms.lms_pdf_template'
     _description = 'LMS pdf'
 
     def _get_report_values(self, docids, data=None):
-        domain = [('state', '!=', 'cancel')]
-        if data.get('date_from'):
-            domain.append(('course_date', '>=', data.get('date_from')))
-        if data.get('date_to'):
-            domain.append(('course_date', '<=', data.get('date_to')))
-        if data.get('course_ids'):
-            domain.append(('id', 'in', data.get('course_ids')))
-        if data.get('responsible_id'):
-            domain.append(('responsible_id', '=', data.get('responsible_id')))
-        docs = self.env['lms.course'].search(domain)
-        responsible = self.env['res.users'].browse(data.get('responsible_id'))
-        course_ids = self.env['lms.course'].browse(data.get('course_ids'))
-        data.update({'responsbile': responsible.name})
-        data.update({'courses': ",".join([course.display_name for course in course_ids])})
-        return {
-            'doc_ids': docs.ids,
-            'doc_model': 'lms.course',
-            'docs': docs,
-            'datas': data
-        }
-
-class LmsAttendanceReportPDF(models.AbstractModel):
-    _name = 'report.taps_lms.lms_attendance_pdf_template'
-    _description = 'LMS pdf'
-
-    def _get_report_values(self, docids, data=None):
         domain = []
-    
         if data.get('date_from'):
-            domain.append(('start_date', '=', data.get('date_from')))
+            domain.append(('start_date', '>=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('start_date', '=', data.get('date_to')))
+            domain.append(('start_date', '<=', data.get('date_to')))
+        if data.get('criteria_id'):
+            domain.append(('criteria_id.id', '=', (data.get('criteria_id'))))
         if data.get('session_ids'):
-            domain.append(('id', 'in', data.get('session_ids')))
+            domain.append(('name.id', '=', (data.get('session_ids'))))
+        if data.get('venue'):
+            domain.append(('venue.id', '=', data.get('venue')))
         if data.get('instructor_id'):
-            domain.append(('instructor_id', '=', data.get('instructor_id')))
-        docs = self.env['lms.session'].search(domain)
+            domain.append(('instructor_id.id', '=', (data.get('instructor_id'))))
+        if data.get('participation_group'):
+            domain.append(('participation_group.id', '=', data.get('participation_group')))
         # raise UserError((domain))
-        instructor = self.env['res.users'].search([('id','=', data.get('instructor_id'))])
-        # raise UserError((instructor.id))
-        session_ids = self.env['lms.session'].browse(data.get('session_ids'))
-        # participation_group = self.env['lms.session'].search(data.get('participation_group'))
-        # venue = self.env['lms.session.venue'].search([('id','=',data.get('name'))])
-        data.update({'instructor': instructor.display_name})
-        data.update({'session': ",".join([session.display_name for session in session_ids])})
-        # data.update({'participation': participation_group.name})
-        # data.update({'venues': venue.display_name})
+        docs = self.env['lms.session'].search(domain)
         
         
         return {
             'doc_ids': docs.ids,
             'doc_model': 'lms.session',
             'docs': docs,
-            'datas': data,
+            # 'datas': data,
+        }
+class LmsAttendanceReportPDF(models.AbstractModel):
+    _name = 'report.taps_lms.lms_attendance_pdf_template'
+    _description = 'LMS pdf'
+
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        if data.get('date_from'):
+            domain.append(('start_date', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('start_date', '<=', data.get('date_to')))
+        if data.get('criteria_id'):
+            domain.append(('criteria_id.id', '=', (data.get('criteria_id'))))
+        if data.get('session_ids'):
+            domain.append(('name.id', '=', (data.get('session_ids'))))
+        if data.get('venue'):
+            domain.append(('venue.id', '=', data.get('venue')))
+        if data.get('instructor_id'):
+            domain.append(('instructor_id.id', '=', (data.get('instructor_id'))))
+        if data.get('participation_group'):
+            domain.append(('participation_group.id', '=', data.get('participation_group')))
+        # raise UserError((domain))
+        docs = self.env['lms.session'].search(domain)
+        
+        # raise UserError((domain, docs.id))
+        # instructor = self.env['res.users'].search([('id','=', data.get('instructor_id'))])
+        # # raise UserError((instructor.id))
+        # session_ids = self.env['lms.session'].browse(data.get('session_ids'))
+        # participation_group = self.env['lms.session'].search(data.get('participation_group'))
+        # # venue = self.env['lms.session.venue'].search([('id','=',data.get('name'))])
+        # data.update({'instructor': instructor.display_name})
+        # data.update({'instructor': ",".join([session.display_name for session in docs.instructor_id])})
+        # data.update({'instructor': docs.instructor_id})
+        # data.update({'participation': participation_group.name})
+        # # data.update({'venues': venue.display_name})
+        
+        
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'lms.session',
+            'docs': docs,
+            # 'datas': data,
         }
 
 class LmsXlsxReport(models.AbstractModel):

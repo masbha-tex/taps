@@ -13,7 +13,7 @@
                         <field name="work_center"/>
                         <field name="material_qty"/>
                         <field name="full_qty"/>
-                        <field name="tape_qty"/>
+                        <field name="tape_qty" readonly="1" force_save="1"/>
                     </group>
                 </group>
                 <group>
