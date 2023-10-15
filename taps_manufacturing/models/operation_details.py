@@ -409,9 +409,9 @@ class OperationDetails(models.Model):
             else:
                 qty = op.qty
             if op.qty == qty:
-                op.update({'done_qty':qty,'state':'done'})
+                op.update({'done_qty':op.done_qty + qty,'state':'done'})
             else:
-                op.update({'done_qty':qty,'state':'partial'})
+                op.update({'done_qty':op.done_qty + qty,'state':'partial'})
                 
             rs_q = rs_q - qty
             # raise UserError((rs_q))

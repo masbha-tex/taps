@@ -261,7 +261,7 @@ class SaleOrder(models.Model):
                 # 'mudit.tandon@texfasteners.com',
                 # 'deepak.shah@bd.texfasteners.com',
                 'asraful.haque@texzipperbd.com',
-                # 'shahid.hossain@texzipperbd.com',
+                'shahid.hossain@texzipperbd.com',
                 ]
             author_id=0
             
