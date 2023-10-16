@@ -267,6 +267,7 @@ class SaleOrder(models.Model):
                 'nitish.bassi@texzipperbd.com',
                 'suranjan.kumar@texzipperbd.com',
                 'mirtunjoy.chatterjee@texzipperbd.com',
+                'abdur.rahman@texzipperbd.com',
                 ]
             author_id=0
             
