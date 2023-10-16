@@ -47,103 +47,7 @@
 				<p style="font-size:16px">
           Daily Order Release of  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> in details is given below:</p>
 				<br/>
-				<!--<table class=" table table-sm  o_main_table p-0 m-0" style="font-size:11px;table-layout: fixed ! important;page-break-inside: avoid ! important;">-->
-				<!--	<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: Left;padding: 5px;font-size: 15px;">-->
-				<!--		<strong>ALL PRODUCTS</strong>-->
-				<!--	</caption>-->
-				<!--	<thead>-->
-				<!--		<tr style="color:white;background-color:rgb(113, 75, 98);">-->
-				<!--			<th style="border: 1px solid white" colspan="2">Sales Person</th>-->
-				<!--			<th style="border: 1px solid white">Date</th>-->
-				<!--			<th style="border: 1px solid white" colspan="2">Customer</th>-->
-				<!--			<th style="border: 1px solid white">Buyer</th>-->
-				<!--			<th style="border: 1px solid white">SL</th>-->
-				<!--			<th style="border: 1px solid white" colspan="3">Product</th>-->
-				<!--			<th style="border: 1px solid white">Finish</th>-->
-				<!--			<th style="border: 1px solid white">PI No</th>-->
-				<!--			<th style="border: 1px solid white">OA No</th>-->
-				<!--			<th style="border: 1px solid white">Size(mm)</th>-->
-				<!--			<th style="border: 1px solid white">Qty/Gross</th>-->
-				<!--			<th style="border: 1px solid white">Value</th>-->
-				<!--			<th style="border: 1px solid white">Avg_Price</th>-->
-				<!--			<th style="border: 1px solid white">P_Terms</th>-->
-							
-				<!--		</tr>-->
-				<!--	</thead>-->
-				<!--	<tbody>-->
-				<!--		<t t-set="sl" t-value="0"/>-->
-				<!--		<t t-foreach="env['sale.order'].search([('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">-->
-				<!--			<t t-set="sl" t-value="sl+1"/>-->
-				<!--			<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">-->
-				<!--				<tr style="border: 1px solid black">-->
-				<!--					<td colspan="2" style="border: 1px solid black">-->
-				<!--						<t t-esc="order.sale_representative.name"/>-->
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="order.date_order.strftime('%d/%m/%y')"/>-->
-				<!--					</td>-->
-				<!--					<td colspan="2" style="border: 1px solid black">-->
-				<!--						<t t-esc="order.partner_id.name"/>-->
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="order.buyer_name.name"/>-->
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-										
-				<!--						<t t-esc="sl"/>-->
-				<!--					</td>-->
-				<!--					<td colspan="3" style="border: 1px solid black">-->
-				<!--						<t t-esc="line.product_template_id.name"/>-->
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="line.finish"/>-->
-				<!--					</td>-->
-									
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="order.order_ref.pi_number"/>-->
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="order.name"/>-->
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="line.sizemm"/>-->
-											
-										
-									
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="line.product_uom_qty"/>-->
-				<!--						<t t-set="grand_total_qty" t-value="grand_total_qty+line.product_uom_qty"/>-->
-										
-										
-										
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
-				<!--						<t t-set="grand_total_value" t-value="grand_total_value+line.price_subtotal"/>-->
-										
-										
-										
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
-				<!--					</td>-->
-				<!--					<td style="border: 1px solid black">-->
-				<!--						<t t-esc="order.order_ref.payment_term_id.name"/>-->
-				<!--					</td>-->
-									
-				<!--				</tr>-->
-				<!--		  </t>-->
-				<!--		</t>-->
-				<!--		<tr style="border: 1px solid black">-->
-				<!--		  <td class="text-right" style="border: 1px solid black;" colspan="13">TOTAL</td>-->
-				<!--		  <td style="border: 1px solid black"><t t-esc="grand_total_qty"/></td>-->
-				<!--		  <td style="border: 1px solid black"><t t-esc="grand_total_value" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>-->
-				<!--		  <td style="border: 1px solid black" colspan="2"/>-->
-				<!--		</tr>-->
-				<!--	</tbody>-->
-				<!--</table>-->
-			  <br/>
+    			<br/>
 			  
 			  
 			  <table class=" table table-sm  o_main_table p-0 m-0" style="font-size:11px;table-layout: fixed ! important;page-break-inside: avoid ! important;">
@@ -162,9 +66,9 @@
 							<th style="border: 1px solid white">PI No</th>
 							<th style="border: 1px solid white">OA No</th>
 							<th style="border: 1px solid white">Size(mm)</th>
-							<th style="border: 1px solid white">Qty/Gross</th>
-							<th style="border: 1px solid white">Value</th>
-							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">Qty(Gross)</th>
+							<th style="border: 1px solid white">Value($)</th>
+							<th style="border: 1px solid white">Avg_Price($)/Gross</th>
 							<th style="border: 1px solid white">P_Terms</th>
 							
 						</tr>
@@ -212,7 +116,7 @@
 									
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="line.product_uom_qty"/>
+										<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_total_qty1" t-value="grand_total_qty1+line.product_uom_qty"/>
 										
 										
@@ -238,8 +142,8 @@
 						</t>
 						<tr style="border: 1px solid black">
 						  <td class="text-right" style="border: 1px solid black;" colspan="13">TOTAL</td>
-						  <td style="border: 1px solid black"><t t-esc="grand_total_qty2"/></td>
-						  <td style="border: 1px solid black"><t t-esc="grand_total_value2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_value1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black" colspan="2"/>
 						</tr>
 					</tbody>
@@ -262,9 +166,9 @@
 							<th style="border: 1px solid white">PI No</th>
 							<th style="border: 1px solid white">OA No</th>
 							<th style="border: 1px solid white">Size(mm)</th>
-							<th style="border: 1px solid white">Qty/Gross</th>
-							<th style="border: 1px solid white">Value</th>
-							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">Qty(Gross)</th>
+							<th style="border: 1px solid white">Value($)</th>
+							<th style="border: 1px solid white">Avg_Price($)/Gross</th>
 							<th style="border: 1px solid white">P_Terms</th>
 							
 						</tr>
@@ -312,7 +216,7 @@
 									
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="line.product_uom_qty"/>
+										<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_total_qty2" t-value="grand_total_qty2+line.product_uom_qty"/>
 										
 										
@@ -338,7 +242,7 @@
 						</t>
 						<tr style="border: 1px solid black">
 						  <td class="text-right" style="border: 1px solid black;" colspan="13">TOTAL</td>
-						  <td style="border: 1px solid black"><t t-esc="grand_total_qty2"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black"><t t-esc="grand_total_value2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black" colspan="2"/>
 						</tr>
@@ -362,9 +266,9 @@
 							<th style="border: 1px solid white">PI No</th>
 							<th style="border: 1px solid white">OA No</th>
 							<th style="border: 1px solid white">Size(mm)</th>
-							<th style="border: 1px solid white">Qty/Gross</th>
-							<th style="border: 1px solid white">Value</th>
-							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">Qty(Gross)</th>
+							<th style="border: 1px solid white">Value($)</th>
+							<th style="border: 1px solid white">Avg_Price($)/Gross</th>
 							<th style="border: 1px solid white">P_Terms</th>
 							
 						</tr>
@@ -412,7 +316,7 @@
 									
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="line.product_uom_qty"/>
+										<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_total_qty3" t-value="grand_total_qty3+line.product_uom_qty"/>
 										
 										
@@ -438,7 +342,7 @@
 						</t>
 						<tr style="border: 1px solid black">
 						  <td class="text-right" style="border: 1px solid black;" colspan="13">TOTAL</td>
-						  <td style="border: 1px solid black"><t t-esc="grand_total_qty3"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black"><t t-esc="grand_total_value3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black" colspan="2"/>
 						</tr>
@@ -461,9 +365,9 @@
 							<th style="border: 1px solid white">PI No</th>
 							<th style="border: 1px solid white">OA No</th>
 							<th style="border: 1px solid white">Size(mm)</th>
-							<th style="border: 1px solid white">Qty/Gross</th>
-							<th style="border: 1px solid white">Value</th>
-							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">Qty(Gross)</th>
+							<th style="border: 1px solid white">Value($)</th>
+							<th style="border: 1px solid white">Avg_Price($)/Gross</th>
 							<th style="border: 1px solid white">P_Terms</th>
 							
 						</tr>
@@ -511,7 +415,7 @@
 									
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="line.product_uom_qty"/>
+										<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_total_qty4" t-value="grand_total_qty4+line.product_uom_qty"/>
 										
 										
@@ -537,7 +441,7 @@
 						</t>
 						<tr style="border: 1px solid black">
 						  <td class="text-right" style="border: 1px solid black;" colspan="13">TOTAL</td>
-						  <td style="border: 1px solid black"><t t-esc="grand_total_qty4"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black"><t t-esc="grand_total_value4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black" colspan="2"/>
 						</tr>
@@ -560,9 +464,9 @@
 							<th style="border: 1px solid white">PI No</th>
 							<th style="border: 1px solid white">OA No</th>
 							<th style="border: 1px solid white">Size(mm)</th>
-							<th style="border: 1px solid white">Qty/Gross</th>
-							<th style="border: 1px solid white">Value</th>
-							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">Qty(Gross)</th>
+							<th style="border: 1px solid white">Value($)</th>
+							<th style="border: 1px solid white">Avg_Price($)/Gross</th>
 							<th style="border: 1px solid white">P_Terms</th>
 							
 						</tr>
@@ -610,7 +514,7 @@
 									
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="line.product_uom_qty"/>
+										<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_total_qty5" t-value="grand_total_qty5+line.product_uom_qty"/>
 										
 										
@@ -636,7 +540,7 @@
 						</t>
 						<tr style="border: 1px solid black">
 						  <td class="text-right" style="border: 1px solid black;" colspan="13">TOTAL</td>
-						  <td style="border: 1px solid black"><t t-esc="grand_total_qty5"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty5" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black"><t t-esc="grand_total_value5" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black" colspan="2"/>
 						</tr>
@@ -660,9 +564,9 @@
 							<th style="border: 1px solid white">PI No</th>
 							<th style="border: 1px solid white">OA No</th>
 							<th style="border: 1px solid white">Size(mm)</th>
-							<th style="border: 1px solid white">Qty/Gross</th>
-							<th style="border: 1px solid white">Value</th>
-							<th style="border: 1px solid white">Avg_Price</th>
+							<th style="border: 1px solid white">Qty(Gross)</th>
+							<th style="border: 1px solid white">Value($)</th>
+							<th style="border: 1px solid white">Avg_Price($)/Gross</th>
 							<th style="border: 1px solid white">P_Terms</th>
 							
 						</tr>
@@ -710,7 +614,7 @@
 									
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="line.product_uom_qty"/>
+										<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_total_qty6" t-value="grand_total_qty6+line.product_uom_qty"/>
 										
 										
@@ -736,7 +640,7 @@
 						</t>
 						<tr style="border: 1px solid black">
 						  <td class="text-right" style="border: 1px solid black;" colspan="13">TOTAL</td>
-						  <td style="border: 1px solid black"><t t-esc="grand_total_qty6"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qty6" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black"><t t-esc="grand_total_value6" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
 						  <td style="border: 1px solid black" colspan="2"/>
 						</tr>
@@ -752,7 +656,7 @@
 							<tr style="color:white;background-color:rgb(113, 75, 98);">
 								<th style="border: 1px solid white">SL</th>
 								<th style="border: 1px solid white">PRODUCT</th>
-								<th style="border: 1px solid white" class="text-right font-weight-bold">TOTAL QUANTITY(Pcs)</th>
+								<th style="border: 1px solid white" class="text-right font-weight-bold">TOTAL QUANTITY(Gross)</th>
 								<th style="border: 1px solid white" class="text-right font-weight-bold">TOTAL VALUE($)</th>
 								
 							</tr>
@@ -760,7 +664,7 @@
 								<td style="border: 1px solid black" class="font-weight-bold">1</td>
 								<td style="border: 1px solid black" class="font-weight-bold">ALLOY PRODUCTS</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_qty1"/>
+									<t t-esc="grand_total_qty1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
 									<t t-esc="grand_total_value1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -771,7 +675,7 @@
 								<td style="border: 1px solid black" class="font-weight-bold">2</td>
 								<td style="border: 1px solid black" class="font-weight-bold">SHANK BUTTONS</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_qty2"/>
+									<t t-esc="grand_total_qty2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
 									<t t-esc="grand_total_value2" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -782,7 +686,7 @@
 								<td style="border: 1px solid black" class="font-weight-bold">3</td>
 								<td style="border: 1px solid black" class="font-weight-bold">SNAP BUTTONS</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_qty3"/>
+									<t t-esc="grand_total_qty3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
 									<t t-esc="grand_total_value3" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -793,7 +697,7 @@
 								<td style="border: 1px solid black" class="font-weight-bold">4</td>
 								<td style="border: 1px solid black" class="font-weight-bold">RIVET</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_qty4"/>
+									<t t-esc="grand_total_qty4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
 									<t t-esc="grand_total_value4" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -804,7 +708,7 @@
 								<td style="border: 1px solid black" class="font-weight-bold">5</td>
 								<td style="border: 1px solid black" class="font-weight-bold">EYELET</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_qty5"/>
+									<t t-esc="grand_total_qty5" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
 									<t t-esc="grand_total_value5" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -815,7 +719,7 @@
 								<td style="border: 1px solid black" class="font-weight-bold">6</td>
 								<td style="border: 1px solid black" class="font-weight-bold">REVISED OA</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_qty6"/>
+									<t t-esc="grand_total_qty6" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
 									<t t-esc="grand_total_value6" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -826,7 +730,7 @@
 								<td style="border: 1px solid black" colspan="2" class="text-center font-weight-bold">GRAND TOTAL</td>
 								
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_qty1+grand_total_qty2+grand_total_qty3+grand_total_qty4+grand_total_qty5+grand_total_qty6"/>
+									<t t-esc="grand_total_qty1+grand_total_qty2+grand_total_qty3+grand_total_qty4+grand_total_qty5+grand_total_qty6" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
 									<t t-esc="grand_total_value1+grand_total_value2+grand_total_value3+grand_total_value4+grand_total_value5+grand_total_value6" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>

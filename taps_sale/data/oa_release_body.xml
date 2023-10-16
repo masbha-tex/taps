@@ -104,7 +104,7 @@
 								</td>
 								<td style="border: 1px solid black" class="text-right">
 									<strong>
-										<t t-esc="day_wise_qty"/>
+										<t t-esc="day_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_day_wise_qty" t-value="grand_day_wise_qty+day_wise_qty"/>
 									</strong>
 								</td>
@@ -128,7 +128,7 @@
 								</td>
 								<td style="border: 1px solid black" class="text-right">
 									<strong>
-										<t t-esc="month_wise_qty"/>
+										<t t-esc="month_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_month_wise_qty" t-value="grand_month_wise_qty+month_wise_qty"/>
 									</strong>
 								</td>
@@ -154,12 +154,12 @@
 						</t>
 						<tr>
 						  <td style="border: 1px solid black" class="text-left"><strong>GRAND TOTAL</strong></td>
-						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_qty"/></strong></td>
+						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
-						  <td style="border: 1px solid black" class="text-right"><strong/></td>
-						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_qty"/></strong></td>
+						  <td style="border: 1px solid black" class="text-right"><strong>--</strong></td>
+						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
-						  <td style="border: 1px solid black" class="text-right"><strong/></td>
+						  <td style="border: 1px solid black" class="text-right"><strong>--</strong></td>
 						</tr>
 					</tbody>
 				</table>
@@ -244,7 +244,7 @@
 								</td>
 								<td style="border: 1px solid black" class="text-right">
 									<strong>
-										<t t-esc="day_wise_qty"/>
+										<t t-esc="day_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_day_wise_qty" t-value="grand_day_wise_qty+day_wise_qty"/>
 									</strong>
 								</td>
@@ -268,7 +268,7 @@
 								</td>
 								<td style="border: 1px solid black" class="text-right">
 									<strong>
-										<t t-esc="month_wise_qty"/>
+										<t t-esc="month_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 										<t t-set="grand_month_wise_qty" t-value="grand_month_wise_qty+month_wise_qty"/>
 									</strong>
 								</td>
@@ -294,12 +294,12 @@
 						</t>
 						<tr>
 						  <td style="border: 1px solid black" class="text-left"><strong>GRAND TOTAL</strong></td>
-						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_qty"/></strong></td>
+						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_day_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
-						  <td style="border: 1px solid black" class="text-right"><strong/></td>
-						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_qty"/></strong></td>
+						  <td style="border: 1px solid black" class="text-right"><strong>--</strong></td>
+						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
 						  <td style="border: 1px solid black" class="text-right"><strong><t t-esc="grand_month_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
-						  <td style="border: 1px solid black"><strong/></td>
+						  <td style="border: 1px solid black" class="text-right"><strong>--</strong></td>
 						</tr>
 					</tbody>
 				</table>

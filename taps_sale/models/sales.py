@@ -195,18 +195,17 @@ class SaleOrder(models.Model):
                     'res_id': record.id
                 })
         email_cc_list = [
-            # 'alamgir@texzipperbd.com',
-            # 'nitish.bassi@texzipperbd.com',
-            # 'mirtunjoy.chatterjee@texzipperbd.com',
-            'asraful.haque@texzipperbd.com',
-            # 'shahid.hossain@texzipperbd.com',
-            record.sale_representative.leader.email
+            'alamgir@texzipperbd.com',
+            'nitish.bassi@texzipperbd.com',
+            'mirtunjoy.chatterjee@texzipperbd.com',
+            record.sale_representative.leader.email,
+            record.user_id.email_formatted or user.email_formatted
             ]
         if self.env.company.name == 'Zipper':
-            # email_cc_list.append('ranjeet.singh@texzipperbd.com')
+            email_cc_list.append('ranjeet.singh@texzipperbd.com')
             email_cc_list.append('csd.zipper@texzipperbd.com')
         if self.env.company.name == 'Metal Trims':
-            # email_cc_list.append('kumar.abhishek@texzipperbd.com')
+            email_cc_list.append('kumar.abhishek@texzipperbd.com')
             email_cc_list.append('nasir.csd@texzipperbd.com')
         if record.sale_representative.related_employee:
             email_cc_list.append(record.sale_representative.related_employee.parent_id.email)
@@ -256,12 +255,18 @@ class SaleOrder(models.Model):
             subject = (rec.name)+' Unit Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
             
             body = 'Hello'
-            email_from_list = [] 
+            email_to_list = []
+            email_to_list = [
+                'mudit.tandon@texfasteners.com',
+                'deepak.shah@bd.texfasteners.com',
+                ]
+            email_from_list = []
             email_cc_list = [
-                # 'mudit.tandon@texfasteners.com',
-                # 'deepak.shah@bd.texfasteners.com',
-                'asraful.haque@texzipperbd.com',
                 'shahid.hossain@texzipperbd.com',
+                'alamgir@texzipperbd.com',
+                'nitish.bassi@texzipperbd.com',
+                'suranjan.kumar@texzipperbd.com',
+                'mirtunjoy.chatterjee@texzipperbd.com',
                 ]
             author_id=0
             
@@ -270,12 +275,12 @@ class SaleOrder(models.Model):
            
             if rec.id == 1:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
-                # email_cc_list.append('ranjeet.singh@texzipperbd.com')
+                email_cc_list.append('ranjeet.singh@texzipperbd.com')
                 email_cc_list.append('csd.zipper@texzipperbd.com')
                 email_from_list.append('csd.zipper@texzipperbd.com')
             if rec.id == 3:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release_mt', False)
-                # email_cc_list.append('kumar.abhishek@texzipperbd.com')
+                email_cc_list.append('kumar.abhishek@texzipperbd.com')
                 email_cc_list.append('nasir.csd@texzipperbd.com')
                 email_from_list.append('nasir.csd@texzipperbd.com')
             pdf_content, content_type = report.sudo()._render_qweb_pdf()
@@ -291,6 +296,7 @@ class SaleOrder(models.Model):
             })
             email_cc = ','.join(email_cc_list)
             email_from = ','.join(email_from_list)
+            email_to = ','.join(email_to_list)
             mail_values = {
                 'email_from': email_from,
                 'author_id': self.env.user.partner_id.id,
@@ -299,7 +305,7 @@ class SaleOrder(models.Model):
                 'subject': subject,
                 'body_html': body,
                 'auto_delete': True,
-                'email_to': rec.env.user.email_formatted,
+                'email_to': email_to,
                 'email_cc': email_cc,
                 'attachment_ids': attachment,
                 
