@@ -200,16 +200,16 @@ class Session(models.Model):
         if vals.get('code', _('New')) == _('New'):
             plan_date = vals.get('start_date')
             vals['code'] = self.env['ir.sequence'].next_by_code('lms.session', sequence_date=plan_date)
-        if vals.get('start_date'):
-            st_date = vals.get('start_date')
-            st_date = fields.Datetime.from_string(st_date)  # Assuming date_from is in datetime format
-            st_date = st_date + timedelta(hours=6)
-            vals['start_date'] = st_date.strftime(fields.DATETIME_FORMAT)
-        if vals.get('end_date'):
-            ed_date = vals.get('end_date')
-            ed_date = fields.Datetime.from_string(ed_date)  # Assuming date_from is in datetime format
-            ed_date = ed_date + timedelta(hours=6)
-            vals['end_date'] = ed_date.strftime(fields.DATETIME_FORMAT)            
+        # if vals.get('start_date'):
+        #     st_date = vals.get('start_date')
+        #     st_date = fields.Datetime.from_string(st_date)  # Assuming date_from is in datetime format
+        #     st_date = st_date + timedelta(hours=6)
+        #     vals['start_date'] = st_date.strftime(fields.DATETIME_FORMAT)
+        # if vals.get('end_date'):
+        #     ed_date = vals.get('end_date')
+        #     ed_date = fields.Datetime.from_string(ed_date)  # Assuming date_from is in datetime format
+        #     ed_date = ed_date + timedelta(hours=6)
+        #     vals['end_date'] = ed_date.strftime(fields.DATETIME_FORMAT)            
         return super(Session, self).create(vals)    
         
     def action_open_barcode_scanner(self):

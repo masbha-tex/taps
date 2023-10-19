@@ -15,25 +15,16 @@
               <div class="page" style="page-break-after: always;">
             
                     <!-- <div class="oe_structure"/> -->
-                    <h4 class="text-right">
-                        <strong>LMS Employee Training Report</strong>
-                    </h4>
-                    <!--<div class="col-12">-->
-                    <!--  <h3>-->
-                    <!--      <center>LMS Employee Training Report</center>-->
-                    <!--  </h3>-->
-                    <!--</div>-->
+                    <h5 class="text-right">
+                        <strong>Employee Training Report</strong>
+                    </h5>
                     <br/>
-                    <br/>
-                    <!--<div class="row">-->
-                    <!--  <div class="col-12" style="font-size:18px;">-->
-                    <!--      Training Headline :-->
-                    <!--       <span t-field="docs.display_name" style="font-size:18px; font-weight:bold"/> -->
-                    <!--  </div>   -->
-                    <!--</div>-->
+                    <h5>
+                        <center>Title : </center>
+                    </h5>
                     <div class="row text-center">
-                      <div class="col-12" style="font-size:30px;">
-                           <span t-field="docs.display_name" style="font-size:18px; font-weight:bold"/> 
+                      <div class="col-12">
+                           <span t-field="docs.display_name" style="font-size:22px; font-weight:bold"/> 
                       </div>   
                     </div>
                     <br/>
@@ -133,24 +124,22 @@
                   </footer>
                 </div>
                 <br/>
-                <br/>
-                <br/>
-                <br/>
                 
                 <div class="page">
                     <!--<div class="oe_structure"/>-->
-                    <h3>
-                        <center>LMS Training Attendance Report</center>
-                    </h3>
+                    <h5 class="text-right">
+                        <strong>Employee Training Attendance Report</strong>
+                    </h5>
                     <br/>
-                    <br/>
-                    
-                    <div class="row">
-                      <div class="col-12" style="font-size:18px;">
-                          Training Headline :
-                           <span t-field="docs.display_name" style="font-size:18px; font-weight:bold"/> 
+                    <h5>
+                        <center>Title : </center>
+                    </h5>
+                    <div class="row text-center">
+                      <div class="col-12">
+                           <span t-field="docs.display_name" style="font-size:22px; font-weight:bold"/> 
                       </div>   
                     </div>
+                    <br/>
                     <div class="row">
                         <div class="col-6">
                             Unit:
@@ -183,63 +172,88 @@
                                 </t>
                           </div>
                     </div>
-                    <!--<div class="row">-->
-                    <!--    <div class="col-6">-->
-                    <!--        Training Conducted by :-->
-                    <!--         <table class="m-0 p-0 table-bordered">-->
-                    <!--            <tr t-as="instructor" t-foreach="docs.instructor_id">-->
-                    <!--                <td>-->
-                    <!--                    <span t-esc="instructor.display_name"/>-->
-                    <!--                </td>-->
-                    <!--            </tr>-->
-                    <!--        </table> -->
-                    <!--    </div>-->
-                    <!--</div>-->
                     <br/>
-                    <!--<table class="table table-sm m-0 p-0 table-bordered">-->
-                    <!--    <thead>-->
-                    <!--        <tr>-->
-                    <!--            <th>SL</th>-->
-                    <!--            <th>Employee Name</th>-->
-                    <!--        </tr>-->
-                    <!--    </thead>-->
-                    <!--    <tbody>-->
-                    <!--        <t>-->
-                    <!--            <tr t-as="employee" t-foreach="docs.attendance_ids">-->
-                    <!--                <td>-->
-                    <!--                    <span t-esc="employee_index+1" class="text-nowrap"/>-->
-                    <!--                </td>-->
-                    <!--                <td>-->
-                    <!--                     <span t-field="employee.attendee_id"/> -->
+                    <table class="table table-sm m-0 p-0 table-bordered">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Employee Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t>
+                                <tr t-as="employee" t-foreach="docs.attendance_ids">
+                                    <td>
+                                        <span t-esc="employee_index+1" class="text-nowrap"/>
+                                    </td>
+                                    <td>
+                                         <span t-field="employee.attendee_id"/> 
                                         
-                    <!--                </td>-->
-                    <!--            </tr>-->
-                    <!--        </t>-->
-                    <!--    </tbody>-->
-                    <!--</table>-->
-                        <div class="float-left" style="width:300pt; page-break-inside: avoid;">
-                          <table class="table table-sm m-0 p-0 table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>SL</th>
-                                    <th>Employee Name</th>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <t>
-                                    <tr t-as="employee" t-foreach="docs.attendance_ids">
+                            </t>
+                        </tbody>
+                    </table>
+                    
+                      <!--  <div class="float-left" style="width:300pt; page-break-inside: avoid;">-->
+                      <!--    <table class="table table-sm m-0 p-0 table-bordered">-->
+                      <!--      <thead>-->
+                      <!--          <tr>-->
+                      <!--              <th>SL</th>-->
+                      <!--              <th>Employee Name</th>-->
+                      <!--          </tr>-->
+                      <!--      </thead>-->
+                      <!--      <tbody>-->
+                      <!--          <t>-->
+                      <!--              <tr t-as="employee" t-foreach="docs.attendance_ids">-->
                                       
-                                        <td>
-                                            <span t-esc="employee_index+1" class="text-nowrap"/>
-                                        </td>
-                                        <td>
-                                             <span t-field="employee.attendee_id"/>
-                                        </td>
-                                    </tr>
-                                </t>
-                            </tbody>
-                        </table>
-                      </div>
+                      <!--                  <td>-->
+                      <!--                      <span t-esc="employee_index+1" class="text-nowrap"/>-->
+                      <!--                  </td>-->
+                      <!--                  <td>-->
+                      <!--                       <span t-field="employee.attendee_id"/>-->
+                      <!--                  </td>-->
+                      <!--              </tr>-->
+                      <!--          </t>-->
+                      <!--      </tbody>-->
+                      <!--  </table>-->
+                      <!--</div>-->
+                      
+                      <!--<table class="table table-condensed table-bordered">-->
+                      <!--  <thead>-->
+                      <!--      <tr>-->
+                      <!--          <th>SL</th>-->
+                      <!--          <th>Employee Name</th>-->
+                      <!--          <th>SL</th>-->
+                      <!--          <th>Employee Name</th>-->
+                      <!--      </tr>-->
+                      <!--  </thead>-->
+                      <!--</table>-->
+                      
+                      <!--<div class="float-left" style="width:300pt;page-break-inside: avoid;">-->
+                      <!--  <t t-as="employee" t-foreach="docs.attendance_ids">-->
+                      <!--    <table class="table table-sm m-0 p-0 table-bordered">-->
+                      <!--      <thead>-->
+                      <!--      <tr>-->
+                      <!--          <th>SL</th>-->
+                      <!--          <th>Employee Name</th>-->
+                      <!--      </tr>-->
+                      <!--      </thead>-->
+                      <!--      <tbody>-->
+                      <!--        <tr>-->
+                      <!--              <td>-->
+                      <!--                  <span t-esc="employee_index+1" class="text-nowrap"/>-->
+                      <!--              </td>-->
+                      <!--              <td>-->
+                      <!--                   <span t-field="employee.attendee_id"/>-->
+                      <!--              </td>-->
+                                  
+                      <!--        </tr>-->
+                                
+                      <!--      </tbody>-->
+                      <!--  </table>-->
+                      <!--  </t>-->
+                      <!--</div>-->
                 </div>
             </t>
         </t>

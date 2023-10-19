@@ -177,8 +177,7 @@ class OperationDetails(models.Model):
                         if p.tape_con > 0.01 and qty <= 0.01:
                             qty = 0
                             
-                        p.update({'dyeing_plan':None,'dyeing_plan_qty':qty,
-                                       'dy_rec_plan_qty':None})
+                        p.update({'dyeing_plan':None,'dyeing_plan_qty':qty,'dy_rec_plan_qty':None})
                         
                         res_qty = res_qty - dn_qty
                         mrp_id.append(p.id)

@@ -244,9 +244,6 @@ class ManufacturingOrder(models.Model):
             else:
                 s.lead_time = 0
 
-            
-
-    
     # def _get_line_value(self):
     #     for s in self:
     #         s.topwire_con = s.sale_order_line.topwire_con

@@ -29,7 +29,7 @@
                         </p>
                         <p>
                           The Manager<br/>
-                          <span t-esc="datas[4]"/><br/>
+                          <span t-esc="bank"/><br/>
                           Dhaka.<br/>  
                         </p>
                         <br/>

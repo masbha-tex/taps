@@ -853,12 +853,13 @@ class ACopeningReportPDF(models.AbstractModel):
             bank.name,
         ]
         common_data.append(common_data)
-        
+        # raise UserError((common_data[4]))
         return {
             'doc_ids': docs.ids,
             'doc_model': 'hr.employee',
             'docs': docs,
             'datas': common_data,
+            'bank' : bank.name
 #             
         }
     

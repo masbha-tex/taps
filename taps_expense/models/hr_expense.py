@@ -22,6 +22,38 @@ class HrExpense(models.Model):
             #course_date = vals.get('course_date')
             vals['name'] = self.env['ir.sequence'].next_by_code('hr.expense.name')
         return super(HrExpense, self).create(vals)
+
+    @api.onchange('product_id', 'date', 'account_id')
+    def _onchange_product_id_date_account_id(self):
+        date_ = self.create_date.date()
+        if self.date:
+            date_ = self.date
+        rec = self.env['account.analytic.default'].sudo().account_get(
+            product_id=self.product_id.id,
+            account_id=self.account_id.id,
+            company_id=self.company_id.id,
+            date=date_
+        )
+        self.analytic_account_id = self.analytic_account_id or rec.analytic_id.id
+        self.analytic_tag_ids = self.analytic_tag_ids or rec.analytic_tag_ids.ids
+    
+    def _prepare_move_values(self):
+        """
+        This function prepares move values related to an expense
+        """
+        self.ensure_one()
+        journal = self.sheet_id.bank_journal_id if self.payment_mode == 'company_account' else self.sheet_id.journal_id
+        account_date = self.sheet_id.accounting_date or self.date or self.create_date.date()
+        move_values = {
+            'journal_id': journal.id,
+            'company_id': self.sheet_id.company_id.id,
+            'date': account_date,
+            'ref': self.sheet_id.name,
+            # force the name to the default value, to avoid an eventual 'default_name' in the context
+            # to set it to '' which cause no number to be given to the account.move when posted.
+            'name': '/',
+        }
+        return move_values
     
     @api.depends('product_id', 'company_id')
     def _compute_from_product_id_company_id(self):

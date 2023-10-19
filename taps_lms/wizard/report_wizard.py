@@ -139,10 +139,11 @@ class LmsAttendanceReportPDF(models.AbstractModel):
         #     date_from = date_from - timedelta(hours=6)
         #     domain.append(('start_date', '>=', date_from.strftime(fields.DATE_FORMAT)))
             
-        if data.get('date_from'):
-            domain.append(('start_date', '>=', data.get('date_from')))
-        if data.get('date_to'):
-            domain.append(('start_date', '<=', data.get('date_to')))
+        # if data.get('date_from'):
+        #     domain.append(('start_date', '>=', data.get('date_from')))
+        # if data.get('date_to'):
+        #     domain.append(('start_date', '<=', data.get('date_to')))
+            
         if data.get('criteria_id'):
             domain.append(('criteria_id', '=', (data.get('criteria_id'))))
         if data.get('session_ids'):
@@ -155,6 +156,10 @@ class LmsAttendanceReportPDF(models.AbstractModel):
             domain.append(('participation_group', '=', data.get('participation_group')))
         # raise UserError((domain))
         docs = self.env['lms.session'].search(domain)
+        if data.get('date_from'):
+            st_date = fields.Datetime.from_string(data.get('date_from'))
+            docs = docs.filtered(lambda x: (x.start_date + timedelta(hours=6)).date() == st_date.date())
+        
         # raise UserError((docs.id,domain))
         attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'lms.session'), ('res_id', '=', docs.id)])
         
