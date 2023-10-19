@@ -73,5 +73,4 @@ class Product(models.Model):
                     # This is the case from existing stock reordering rules.
                     a = ''
                     # self.write({'active': False})
-                    # self.write({'active': True})
                     

@@ -16,12 +16,12 @@
     "website": "http://www.odoo.com",
     "license": "OEEL-1",
     # Check depends order uncomment if necessary
-    "depends": [
-        'purchase',
-        'web_studio',
-    ],
+    # "depends": [
+    #     'purchase',
+    #     'web_studio',
+    # ],
     # Check data order
-    "data": [
-        "views/purchase_itemtype.xml",
-    ],
+    "data": [],
+        #"views/purchase_itemtype.xml",
+    #],
 }

@@ -24,7 +24,7 @@
 			<div class="container">
 			  
                 <p style="font-size:16px">Dear Sir/All,<br/>
-          Please find attached details of order released on  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> .Also Summary of order released given below:</p>
+          Please find attached details of order released on  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/>. Also Summary of order released given below:</p>
 				<br/>
 				<table class=" table table-sm  p-0 m-0" style="font-size:12px;table-layout: fixed ! important; ">
 					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">

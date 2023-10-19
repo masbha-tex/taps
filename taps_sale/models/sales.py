@@ -1271,9 +1271,6 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     
-
-    
-    
     topbottom = fields.Text(string='Top/Bottom', store=True)
     slidercode = fields.Text(string='Slider Code', store=True)
     slidercodesfg = fields.Text(string='Slider Code (SFG)', store=True)
@@ -1451,45 +1448,47 @@ class SaleOrderLine(models.Model):
 
             elif rec.product_template_id and "EYELET"  in rec.product_template_id.name:
                 if rec.sizemm == '8':
-                    rec.product_code = "E40-80"
+                    rec.product_code = "E4.0-8.0"
                 elif rec.sizemm == '9':
-                    rec.product_code = "E50-90"
+                    rec.product_code = "E5.0-9.0"
                 elif rec.sizemm == '9.5':
-                    rec.product_code = "E50-95"
+                    rec.product_code = "E5.0-9.5"
                 elif rec.sizemm == '10':
-                    rec.product_code = "E50-100"
+                    rec.product_code = "E5.0-10.0"
+                elif rec.sizemm == '10.5':
+                    rec.product_code = "E5.0-11.0"
                 elif rec.sizemm == '11':
-                    rec.product_code = "E50-110/E60-110"
+                    rec.product_code = "E5.0-11.0/E6.0-11.0"
                 elif rec.sizemm == '11.5':
-                    rec.product_code = "E70-115"
+                    rec.product_code = "E7.0-11.5/E6.0-11.5"
                 elif rec.sizemm == '12':
-                    rec.product_code = "E60-120/E70/120"
+                    rec.product_code = "E6.0-12.0/E7.0-12.0"
                 elif rec.sizemm == '12.5':
-                    rec.product_code = "E70-125"
+                    rec.product_code = "E7.0-12.5"
                 elif rec.sizemm == '13':
-                    rec.product_code = "E70-130"
+                    rec.product_code = "E7.0-13.0"
                 elif rec.sizemm == '14':
-                    rec.product_code = "E80-140"
+                    rec.product_code = "E8.0-14.0"
                 elif rec.sizemm == '15':
-                    rec.product_code = "E80-150"
+                    rec.product_code = "E8.0-15.0"
                 elif rec.sizemm == '16':
-                    rec.product_code = "E10-160"
+                    rec.product_code = "E10.0-16.0"
                 elif rec.sizemm == '17':
-                    rec.product_code = "E90-170"
+                    rec.product_code = "E9.0-17.0"
                 elif rec.sizemm == '18':
-                    rec.product_code = "E120-180"
+                    rec.product_code = "E12.0-18.0"
                 elif rec.sizemm == '19':
-                    rec.product_code = "E120-190"
+                    rec.product_code = "E12.0-19.0"
                 elif rec.sizemm == '20':
-                    rec.product_code = "E120-200"
+                    rec.product_code = "E12.0-20.0/E9.0-20.0"
                 elif rec.sizemm == '21':
-                    rec.product_code = "E120-210"
+                    rec.product_code = "E12.0-21.0"
                 elif rec.sizemm == '22':
-                    rec.product_code = "E140-220/E120-220"
+                    rec.product_code = "E14.0-22.0/E12.0-22.0"
                 elif rec.sizemm == '25':
-                    rec.product_code = "E140-250"
+                    rec.product_code = "E14.0-25.0"
                 elif rec.sizemm == '33.5':
-                    rec.product_code = "E200-335"
+                    rec.product_code = "E20.0-33.5"
                 else:
                     rec.product_code = ""
                 

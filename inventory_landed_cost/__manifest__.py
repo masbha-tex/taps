@@ -10,15 +10,15 @@
     "website": "http://www.odoo.com",
     "license": "OEEL-1",
     # Check depends order uncomment if necessary
-    "depends": [
-        'stock_account',
-        'product',
-    ],
+    # "depends": [
+    #     'stock_account',
+    #     'product',
+    # ],
     # Check data order
-    "data": [
-        "views/stock_quant.xml",
-        "views/product.xml",
-    ],
+    "data": [],
+    #     "views/stock_quant.xml",
+    #     "views/product.xml",
+    # ],
     # Only used to link to the analysis / Ps-tech store
     "task_id": [2523902, 2557608],
 }

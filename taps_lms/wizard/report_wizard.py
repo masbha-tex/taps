@@ -93,7 +93,7 @@ class LmsPDFReport(models.TransientModel):
             'date_to': self.date_to,
             'session_ids': self.session_ids.ids,
             'course_ids': self.course_ids.ids,
-            'responsible_id': self.responsible_id.id
+            # 'responsible_id': self.responsible_id.id
         }
         return self.env.ref('taps_lms.action_lms_xlsx_report').report_action(self, data=data)
 
@@ -133,14 +133,14 @@ class LmsAttendanceReportPDF(models.AbstractModel):
 
     def _get_report_values(self, docids, data=None):
         domain = []
-        if data.get('date_from'):
-            date_from = data.get('date_from')
-            date_from = fields.Datetime.from_string(date_from)  # Assuming date_from is in datetime format
-            date_from = date_from - timedelta(hours=6)
-            domain.append(('start_date', '>=', date_from.strftime(fields.DATE_FORMAT)))
-            
         # if data.get('date_from'):
-        #     domain.append(('start_date', '>=', data.get('date_from')))
+        #     date_from = data.get('date_from')
+        #     date_from = fields.Datetime.from_string(date_from)  # Assuming date_from is in datetime format
+        #     date_from = date_from - timedelta(hours=6)
+        #     domain.append(('start_date', '>=', date_from.strftime(fields.DATE_FORMAT)))
+            
+        if data.get('date_from'):
+            domain.append(('start_date', '>=', data.get('date_from')))
         if data.get('date_to'):
             domain.append(('start_date', '<=', data.get('date_to')))
         if data.get('criteria_id'):
@@ -153,7 +153,7 @@ class LmsAttendanceReportPDF(models.AbstractModel):
             domain.append(('instructor_id', '=', (data.get('instructor_id'))))
         if data.get('participation_group'):
             domain.append(('participation_group', '=', data.get('participation_group')))
-        raise UserError((domain))
+        # raise UserError((domain))
         docs = self.env['lms.session'].search(domain)
         # raise UserError((docs.id,domain))
         attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'lms.session'), ('res_id', '=', docs.id)])
@@ -178,8 +178,8 @@ class LmsXlsxReport(models.AbstractModel):
             domain.append(('course_date', '<=', data.get('date_to')))
         if data.get('course_ids'):
             domain.append(('id', 'in', data.get('course_ids')))
-        if data.get('responsible_id'):
-            domain.append(('responsible_id', '=', data.get('responsible_id')))
+        # if data.get('responsible_id'):
+        #     domain.append(('responsible_id', '=', data.get('responsible_id')))
 
         sheet = workbook.add_worksheet('LMS Report')
         bold = workbook.add_format({'bold': True, 'align': 'center', 'bg_color': '#fffbed', 'border': True})

@@ -20,13 +20,14 @@
     "license": "OEEL-1",
 
     # any module necessary for this one to work correctly
-    'depends': ['base_setup', 'stock', 'account', 'web_studio','base', 'web'],
+    'depends': ['base_setup', 'stock', 'account', 'web_studio','base', 'web', 'stock_account', 'product'],
 
     # always loaded
     
     'data': [
         #'data/insert_schedule_date.xml',
         #'data/update_duration_for_ageing.xml',
+        "views/stock_quant.xml",
         'data/create_update_qc.xml',
         'reports/sample_print_out_pdf.xml',
         'reports/report_action.xml',

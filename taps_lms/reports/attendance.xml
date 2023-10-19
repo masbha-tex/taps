@@ -6,6 +6,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">taps_lms.lms_attendance_pdf_template</field>
         <field name="report_file">taps_lms.lms_attendance_pdf_template</field>
+        <!-- <field name="paperformat_id" ref="taps_lms.paperformat_lms_attendance_session_report"/> -->
     </record>    
 
     <template id="lms_attendance_pdf_template">
@@ -64,7 +65,7 @@
                     <div class="row">
                         <div class="col-12">
                             Training Tools :
-                             
+                             <span t-field="docs.tools" style="font-weight:bold;"/> 
                         </div>
                     </div>
                     <div class="row">
@@ -132,7 +133,9 @@
                   </footer>
                 </div>
                 <br/>
-                <!--<br/>-->
+                <br/>
+                <br/>
+                <br/>
                 
                 <div class="page">
                     <!--<div class="oe_structure"/>-->

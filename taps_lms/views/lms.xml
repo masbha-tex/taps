@@ -179,6 +179,7 @@
                                 <field name="participation_group"/>
                                 <field name="active" invisible="1"/>
                                 <field name="company_id" options="{'no_create':true, 'no_open':true}"/>
+                                <field name="tools" placeholder="Add Training Tools here..."/>
                             </group>
                             <group string="Schedule">
                                 <field name="start_date"/>
