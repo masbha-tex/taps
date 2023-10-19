@@ -52,6 +52,8 @@
     'qweb': [
         "static/src/xml/qweb_templates.xml",
     ],
+    
+    'license': 'LGPL-3',
     # only loaded in demonstration mode
     # 'demo': [
     #     'demo/demo.xml',

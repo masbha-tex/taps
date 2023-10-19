@@ -11,80 +11,232 @@
     <template id="lms_attendance_pdf_template">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
-                <div class="page">
-                    <!--<div class="oe_structure"/>-->
-                    <h3>
-                        <center>LMS Training Attendance detail</center>
-                    </h3>
+              <div class="page" style="page-break-after: always;">
+            
+                    <!-- <div class="oe_structure"/> -->
+                    <h4 class="text-right">
+                        <strong>LMS Employee Training Report</strong>
+                    </h4>
+                    <!--<div class="col-12">-->
+                    <!--  <h3>-->
+                    <!--      <center>LMS Employee Training Report</center>-->
+                    <!--  </h3>-->
+                    <!--</div>-->
+                    <br/>
+                    <br/>
+                    <!--<div class="row">-->
+                    <!--  <div class="col-12" style="font-size:18px;">-->
+                    <!--      Training Headline :-->
+                    <!--       <span t-field="docs.display_name" style="font-size:18px; font-weight:bold"/> -->
+                    <!--  </div>   -->
+                    <!--</div>-->
+                    <div class="row text-center">
+                      <div class="col-12" style="font-size:30px;">
+                           <span t-field="docs.display_name" style="font-size:18px; font-weight:bold"/> 
+                      </div>   
+                    </div>
                     <br/>
                     <br/>
                     <div class="row">
                         <div class="col-6">
-                            Training Headline :
-                             <span t-field="docs.display_name"/> 
+                            Unit:
+                             <span t-field="docs.company_id.display_name" style="font-weight:bold;"/> 
                         </div>
-                        <div class="col-6">
+                    </div>
+                    <div class="row">
+                      <div class="col-6">
+                            Venue :
+                             <span t-field="docs.venue.display_name" style="font-weight:bold;"/> 
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6">
                             Training for : 
-                             <span t-field="docs.participation_group.display_name"/> 
+                             <span t-field="docs.participation_group.display_name" style="font-weight:bold;"/> 
+                      </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            Training Date:
+                             <span t-field="docs.start_date" style="font-weight:bold;"/> 
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            Training Tools :
+                             
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                              Training Conducted by :
+                                <t t-as="instructor" t-foreach="docs.instructor_id">
+                                  <span t-esc="instructor.display_name" style="font-weight:bold;"/> ;
+                                </t>
+                          </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-12">
+                            Content :
+                             <span t-field="docs.description" style="font-weight:bold;font-size: 14px;"/> 
+                        </div>
+                    </div>
+                    <br/>
+                    <table class="table table-condensed table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Training Photo</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <!--<table>-->
+                    <!--    <tbody>-->
+                    <!--      <tr class="text-center">-->
+                    <!--        <t t-foreach="datas" t-as="attachment">-->
+                    <!--          <td>-->
+                    <!--            <img t-att-src="'/web/image/' + str(attachment.id) + '?unique=1&amp;signature=' + attachment.checksum + '&amp;model=ir.attachment'" style="height:220pt;width:345pt;"/>-->
+                    <!--          </td>-->
+                    <!--        </t>-->
+                    <!--      </tr>-->
+                            
+                    <!--    </tbody>-->
+                    <!--</table>-->
+                    
+                    <div class="row">
+                      <t t-foreach="datas" t-as="attachment">
+                        <div class="col-6">
+                          <img t-att-src="'/web/image/' + str(attachment.id) + '?unique=1&amp;signature=' + attachment.checksum + '&amp;model=ir.attachment'" style="height:220pt;width:330pt;"/>
+                        </div>
+                      </t>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            Note:
+                             <span t-field="docs.note" style="font-weight:bold;font-size: 14px;"/> 
+                        </div>
+                    </div>
+                <br/>
+                <br/>
+                <br/>
+                 <footer>
+                    <div class="row">
+                        <div class="col-6" style="font-weight:bold;font-size: 16px;">
+                            Co-ordinate By 
+                        </div>
+                        <div class="col-6 text-right" style="font-weight:bold;font-size: 16px;">
+                             HR, Admin &amp; Compliance  
+                        </div>
+                    </div>
+                  </footer>
+                </div>
+                <br/>
+                <!--<br/>-->
+                
+                <div class="page">
+                    <!--<div class="oe_structure"/>-->
+                    <h3>
+                        <center>LMS Training Attendance Report</center>
+                    </h3>
+                    <br/>
+                    <br/>
+                    
+                    <div class="row">
+                      <div class="col-12" style="font-size:18px;">
+                          Training Headline :
+                           <span t-field="docs.display_name" style="font-size:18px; font-weight:bold"/> 
+                      </div>   
                     </div>
                     <div class="row">
                         <div class="col-6">
                             Unit:
-                             <span t-field="docs.company_id.display_name"/> 
-                        </div>
-                        <div class="col-6">
-                            Venue:
-                             <span t-field="docs.venue.display_name"/> 
+                             <span t-field="docs.company_id.display_name" style="font-weight:bold;"/> 
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6">
-                            Training Conducted by :
-                             <table class="m-0 p-0 table-bordered">
-                                <tr t-as="instructor" t-foreach="docs.instructor_id">
-                                    <td>
-                                        <span t-esc="instructor.display_name"/>
-                                    </td>
-                                </tr>
-                              </table>
-                               
-                        </div>
+                      <div class="col-6">
+                            Venue :
+                             <span t-field="docs.venue.display_name" style="font-weight:bold;"/> 
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6">
+                            Training for : 
+                             <span t-field="docs.participation_group.display_name" style="font-weight:bold;"/> 
+                      </div>
+                    </div>
+                    <div class="row">
                         <div class="col-6">
                             Training Date:
-                             <span t-field="docs.start_date"/> 
+                             <span t-field="docs.start_date" style="font-weight:bold;"/> 
                         </div>
                     </div>
+                    <div class="row">
+                      <div class="col-12">
+                              Training Conducted by :
+                                <t t-as="instructor" t-foreach="docs.instructor_id">
+                                  <span t-esc="instructor.display_name" style="font-weight:bold;"/> ;
+                                </t>
+                          </div>
+                    </div>
+                    <!--<div class="row">-->
+                    <!--    <div class="col-6">-->
+                    <!--        Training Conducted by :-->
+                    <!--         <table class="m-0 p-0 table-bordered">-->
+                    <!--            <tr t-as="instructor" t-foreach="docs.instructor_id">-->
+                    <!--                <td>-->
+                    <!--                    <span t-esc="instructor.display_name"/>-->
+                    <!--                </td>-->
+                    <!--            </tr>-->
+                    <!--        </table> -->
+                    <!--    </div>-->
+                    <!--</div>-->
                     <br/>
-                    <table class="table table-sm m-0 p-0 table-bordered">
-                        <thead>
-                            <tr>
-                                <th>SL</th>
-                                <th>Employee Name</th>
-                                <th>Present</th>
-                                <th>Photo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t>
-                                <tr t-as="employee" t-foreach="docs.attendance_ids">
-                                    <td>
-                                        <span t-esc="employee_index+1" class="text-nowrap"/>
-                                    </td>
-                                    <td>
-                                         <span t-field="employee.attendee_id.display_name"/> 
+                    <!--<table class="table table-sm m-0 p-0 table-bordered">-->
+                    <!--    <thead>-->
+                    <!--        <tr>-->
+                    <!--            <th>SL</th>-->
+                    <!--            <th>Employee Name</th>-->
+                    <!--        </tr>-->
+                    <!--    </thead>-->
+                    <!--    <tbody>-->
+                    <!--        <t>-->
+                    <!--            <tr t-as="employee" t-foreach="docs.attendance_ids">-->
+                    <!--                <td>-->
+                    <!--                    <span t-esc="employee_index+1" class="text-nowrap"/>-->
+                    <!--                </td>-->
+                    <!--                <td>-->
+                    <!--                     <span t-field="employee.attendee_id"/> -->
                                         
-                                    </td>
-                                    <td class="text-center">
-                                        <span t-field="employee.is_present"/> 
-                                    </td>
-                                    <td class="text-center">
-                                         <img class="img-fluid rounded-circle mb-2" style="height:40pt;width:40pt;" t-if="employee.attendee_id.image_1920" t-att-src="image_data_uri(employee.attendee_id.image_1920)"/> 
-                                    </td>
+                    <!--                </td>-->
+                    <!--            </tr>-->
+                    <!--        </t>-->
+                    <!--    </tbody>-->
+                    <!--</table>-->
+                        <div class="float-left" style="width:300pt; page-break-inside: avoid;">
+                          <table class="table table-sm m-0 p-0 table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>SL</th>
+                                    <th>Employee Name</th>
                                 </tr>
-                            </t>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <t>
+                                    <tr t-as="employee" t-foreach="docs.attendance_ids">
+                                      
+                                        <td>
+                                            <span t-esc="employee_index+1" class="text-nowrap"/>
+                                        </td>
+                                        <td>
+                                             <span t-field="employee.attendee_id"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                      </div>
                 </div>
             </t>
         </t>

@@ -487,7 +487,7 @@ class ManufacturingOrder(models.Model):
                                                                  'product_id':p_q[0].product_id.id,
                                                                  'product_template_id':p_q[0].product_template_id.id,
                                                                  'action_date':plan_start,
-                                                                 'shade':p_q[1].shade,
+                                                                 'shade':p_q[0].shade,
                                                                  'finish':None,
                                                                  'operation_of':'lot',
                                                                  'work_center':plan_for_id,

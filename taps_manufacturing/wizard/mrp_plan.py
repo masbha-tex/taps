@@ -50,6 +50,7 @@ class ManufacturingPlan(models.TransientModel):
     
     machine_line = fields.One2many('machine.line', 'plan_id', string='Machines',copy=True, auto_join=True)
 
+    
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
@@ -180,9 +181,10 @@ class MachineLine(models.TransientModel):
     _description = 'Machine wise plan'
     #_order = 'order_id, sequence, id'
     _check_company_auto = True
-    
+
+
     sequence = fields.Integer(string='Sequence')
-    plan_id = fields.Many2one('mrp.plan', string='Plan ID', ondelete='cascade', index=True, copy=False)
+    plan_id = fields.Many2one('mrp.plan', string='Plan ID', ondelete='cascade')
     oa_id = fields.Many2one('sale.order', string='OA', store=True)
     sa_oa_ref = fields.Text(string='OA/SA Ref.', readonly=False, store=True)
     actual_qty = fields.Float('Actual Qty',digits='Product Unit of Measure')
@@ -193,6 +195,15 @@ class MachineLine(models.TransientModel):
     material_qty = fields.Float('Quantity',digits='Product Unit of Measure')
     remarks = fields.Text(string='Remarks')
 
+
+    @api.model
+    def duplicate_line(self):
+        raise UserError(('thgrfr'))
+        max_seq = max(line.sequence for line in self.plan_id.machine_line)
+        self.copy({'plan_id': self.plan_id.id, 'sequence': max_seq + 1})
+
+
+    
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
@@ -241,26 +252,30 @@ class MachineLine(models.TransientModel):
             operation = production.filtered(lambda op: op.action_date.date() == self.plan_id.plan_start.date() and 'Output' in op.next_operation)
             if l.machine_no.capacity:
                 l.reserved = math.ceil(sum(operation.mapped('balance_qty'))/l.machine_no.capacity)
-
-    def duplicate_line(self):
-        # raise UserError(('fefefe'))
-        max_seq = max(line.sequence for line in self.plan_id.machine_line)
-        # self.copy({'plan_id': self.plan_id.id, 'sequence': max_seq + 1})
-        orderline_values = []
-        orderline_values.append((0, 0, {
-            'sequence':max_seq,
-            'plan_id':self.plan_id,
-            'oa_id':self.oa_id.id,
-            'sa_oa_ref':self.sa_oa_ref,
-            'actual_qty':self.actual_qty,
-            'qty_balance':self.qty_balance,
-            'machine_no':self.machine_no.id,
-            'reserved':self.reserved,
-            'lots':self.lots,
-            'material_qty':self.material_qty,
-            'remarks':self.remarks
-        }))
-        self.plan_id.update({'machine_line': orderline_values,})
+    
+    # @api.model
+    # def duplicate_line(self):
+    #     max_seq = max(line.sequence for line in self.plan_id.machine_line)
+    #     self.copy({'plan_id': self.plan_id.id, 'sequence': max_seq + 1})
+        # for record in self:
+        #     raise UserError(('fefefe'))
+        #     max_seq = max(line.sequence for line in self.plan_id.machine_line)
+        #     # self.copy({'plan_id': self.plan_id.id, 'sequence': max_seq + 1})
+        #     orderline_values = []
+        #     orderline_values.append((0, 0, {
+        #         'sequence':max_seq,
+        #         'plan_id':self.plan_id,
+        #         'oa_id':self.oa_id.id,
+        #         'sa_oa_ref':self.sa_oa_ref,
+        #         'actual_qty':self.actual_qty,
+        #         'qty_balance':self.qty_balance,
+        #         'machine_no':self.machine_no.id,
+        #         'reserved':self.reserved,
+        #         'lots':self.lots,
+        #         'material_qty':self.material_qty,
+        #         'remarks':self.remarks
+        #     }))
+        #     self.plan_id.update({'machine_line': orderline_values,})
 
             
             #l.plan_id.material_qty
