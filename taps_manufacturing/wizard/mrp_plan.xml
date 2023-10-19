@@ -4,7 +4,7 @@
         <field name="name">mrp.plan.form.view</field>
         <field name="model">mrp.plan</field>
         <field name="arch" type="xml">
-            <form string="Manufacturing Plan">
+            <form string="Manufacturing Plan" editable="True">
                 <group>
                     <group>
                         <field name="item"/>
@@ -26,10 +26,9 @@
                     <notebook>
                         <page name="machine_line" string="Machinewise Plan">
                             <field name="machine_line">
-                                <tree string="Machinewise Plan" editable="bottom" sample="1" duplicate="True">
-                                    <!--  multi_edit="1"  -->
+                                <tree string="Machinewise Plan" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
                                     <!-- <button name="duplicate_line" title="Copy" type="object" class="fa fa-files-o"/> -->
-                                    <field name="sequence" widget="handle" />
                                     <field name="plan_id" invisible="1"/>
                                     <field name="oa_id"/>
                                     <field name="sa_oa_ref" force_save="1"/>
@@ -45,7 +44,6 @@
                         </page>
                     </notebook>
                 </group>
-                
                 <footer>
                     <button name="done_mo_plan" string="Done" type="object" default_focus="1" class="oe_highlight"/>
                     <button string="Cancel" class="btn btn-secondary" special="cancel" />
@@ -73,7 +71,7 @@
             </tree>
         </field>
     </record> 
-
+    
     
     <record id="action_mrp_plan" model="ir.actions.act_window">
         <field name="name">Manufacturing Plan</field>

@@ -1,5 +1,7 @@
+import base64
 from odoo import models, fields, api
 from odoo.exceptions import UserError, ValidationError
+from datetime import datetime, timedelta
 
 class LmsPDFReport(models.TransientModel):
     _name = 'lms.pdf.report'
@@ -102,9 +104,9 @@ class LmsAttendanceReportPDF(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         domain = []
         if data.get('date_from'):
-            domain.append(('start_date', '>=', data.get('date_from')))
+            domain.append(('start_date', '>=', data.get('date_from') - timedelta(hours=6)))
         if data.get('date_to'):
-            domain.append(('start_date', '<=', data.get('date_to')))
+            domain.append(('start_date', '<=', data.get('date_to') - timedelta(hours=6)))
         if data.get('criteria_id'):
             domain.append(('criteria_id.id', '=', (data.get('criteria_id'))))
         if data.get('session_ids'):
@@ -132,40 +134,35 @@ class LmsAttendanceReportPDF(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         domain = []
         if data.get('date_from'):
-            domain.append(('start_date', '>=', data.get('date_from')))
+            date_from = data.get('date_from')
+            date_from = fields.Datetime.from_string(date_from)  # Assuming date_from is in datetime format
+            date_from = date_from - timedelta(hours=6)
+            domain.append(('start_date', '>=', date_from.strftime(fields.DATE_FORMAT)))
+            
+        # if data.get('date_from'):
+        #     domain.append(('start_date', '>=', data.get('date_from')))
         if data.get('date_to'):
             domain.append(('start_date', '<=', data.get('date_to')))
         if data.get('criteria_id'):
-            domain.append(('criteria_id.id', '=', (data.get('criteria_id'))))
+            domain.append(('criteria_id', '=', (data.get('criteria_id'))))
         if data.get('session_ids'):
-            domain.append(('name.id', '=', (data.get('session_ids'))))
+            domain.append(('name', '=', (data.get('session_ids'))))
         if data.get('venue'):
-            domain.append(('venue.id', '=', data.get('venue')))
+            domain.append(('venue', '=', data.get('venue')))
         if data.get('instructor_id'):
-            domain.append(('instructor_id.id', '=', (data.get('instructor_id'))))
+            domain.append(('instructor_id', '=', (data.get('instructor_id'))))
         if data.get('participation_group'):
-            domain.append(('participation_group.id', '=', data.get('participation_group')))
-        # raise UserError((domain))
+            domain.append(('participation_group', '=', data.get('participation_group')))
+        raise UserError((domain))
         docs = self.env['lms.session'].search(domain)
-        
-        # raise UserError((domain, docs.id))
-        # instructor = self.env['res.users'].search([('id','=', data.get('instructor_id'))])
-        # # raise UserError((instructor.id))
-        # session_ids = self.env['lms.session'].browse(data.get('session_ids'))
-        # participation_group = self.env['lms.session'].search(data.get('participation_group'))
-        # # venue = self.env['lms.session.venue'].search([('id','=',data.get('name'))])
-        # data.update({'instructor': instructor.display_name})
-        # data.update({'instructor': ",".join([session.display_name for session in docs.instructor_id])})
-        # data.update({'instructor': docs.instructor_id})
-        # data.update({'participation': participation_group.name})
-        # # data.update({'venues': venue.display_name})
-        
+        # raise UserError((docs.id,domain))
+        attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'lms.session'), ('res_id', '=', docs.id)])
         
         return {
             'doc_ids': docs.ids,
             'doc_model': 'lms.session',
             'docs': docs,
-            # 'datas': data,
+            'datas': attachment,
         }
 
 class LmsXlsxReport(models.AbstractModel):
