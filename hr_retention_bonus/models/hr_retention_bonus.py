@@ -19,6 +19,8 @@ class HrRetentionBonus(models.Model):
         else:
             ts_user_id = self.env.context.get('user_id', self.env.user.id)
         result['employee_id'] = self.env['hr.employee'].search([('user_id', '=', ts_user_id)], limit=1).id
+        
+        # result['date'] = self.env['hr.employee'].search([('id', '=', result.get('user_id'))], limit=1).joining_date
         return result
 
     def _compute_retention_bonus_amount(self):
@@ -31,12 +33,22 @@ class HrRetentionBonus(models.Model):
             bonus.total_amount = bonus.bonus_amount
             bonus.balance_amount = balance_amount
             bonus.total_paid_amount = total_paid
-            
+
+    @api.depends('employee_id')
+    def _compute_default_date(self):
+        if self.employee_id:
+            self.date = self.employee_id.joining_date
+        else:
+            fields.Date.today()
+      
          
 
-    name = fields.Char(string="Number", default="/", readonly=True, help="Name of the Retention Bonus Scheme")
-    date = fields.Date(string="Effective Date", default=fields.Date.today(), required=True, tracking=True, help="Effective Date")
+    name = fields.Char(string="Number", readonly=True, help="Name of the Retention Bonus Scheme")
+    employee_id = fields.Many2one('hr.employee', string="Employee", tracking=True, required=True, help="Employee")    
+    date = fields.Date(string="Effective Date ", compute=_compute_default_date, store=True, required=True, readonly=False,  tracking=True, help="Effective Date") 
     duration = fields.Integer(default=1, string="Duration in Month", required=True, tracking=True, help="Duration in Month")
+    
+
     
     @api.depends('date', 'duration')
     def _get_default_entitlement_date(self):
@@ -61,14 +73,12 @@ class HrRetentionBonus(models.Model):
                 record.installment = 1  
 
         
-    entitlement_date = fields.Date(string="Entitlement Date", compute=_get_default_entitlement_date, store=True, help="Date of the Entitlement")   
-    employee_id = fields.Many2one('hr.employee', string="Employee", tracking=True, required=True, help="Employee")
+    entitlement_date = fields.Date(string="Entitlement Date", compute=_get_default_entitlement_date, store=True, required=True, readonly=False, help="Date of the Entitlement")   
+
     department_id = fields.Many2one('hr.department', related="employee_id.department_id", tracking=True, readonly=True, store=True,
                                     string="Department", help="Employee")
     installment = fields.Integer(string="No Of Installments", compute=_get_default_installment_date, help="Number of installments")
-    payment_date = fields.Date(string="Payment Start Date", required=True, tracking=True, default=fields.Date.today(), help="Date of "
-                                                                                                             "the "
-                                                                                                             "paymemt")
+    payment_date = fields.Date(string="Payment Start Date", required=True, tracking=True, default=fields.Date.today(), help="Date of the paymemt")
     bonus_lines = fields.One2many('hr.retention.bonus.line', 'bonus_id', string="Bonus Line", index=True)
     company_id = fields.Many2one('res.company', 'Company', related="employee_id.company_id", store=True, readonly=True, help="Company",
                                  states={'draft': [('readonly', False)]})
@@ -84,9 +94,12 @@ class HrRetentionBonus(models.Model):
                                      help="Total paid amount")
     criteria = fields.Selection([
         ('Appointment Terms', 'Appointment Terms'),
-        ('As per Policy', 'As per Policy'),
         ('Special Retention Bonus', 'Special Retention Bonus'),
-    ], string="Criteria", tracking=True, copy=True, store=True)
+        ('GET policy', 'GET policy'),
+        ('DET Policy', 'DET Policy'),
+        ('ST policy', 'ST policy'),
+        ('KMP policy', 'KMP policy'),
+    ], string="Criteria", default='Appointment Terms', tracking=True, copy=True, required=True, readonly=False, store=True)
     instant_payment = fields.Selection([
         ('3', 'Payment by next 3 months'),
         ('6', 'Payment by next 6 months'),
@@ -156,12 +169,12 @@ class HrRetentionBonus(models.Model):
 
                 
 
-    # def unlink(self):
-    #     for bonus in self:
-    #         if bonus.state not in ('draft', 'cancel'):
-    #             raise UserError(
-    #                 'You cannot delete a Retention Bonus Scheme which is not in draft or cancelled state')
-    #     return super(HrRetentionBonus, self).unlink()
+    def unlink(self):
+        for bonus in self:
+            if bonus.state == 'draft':
+                raise UserError(
+                    'Once saved, You cannot delete a Retention Bonus Scheme.')
+        return super(HrRetentionBonus, self).unlink()
 
 
 class InstallmentLine(models.Model):

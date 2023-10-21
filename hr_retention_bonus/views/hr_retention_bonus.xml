@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <tree string="Retention Requests" sample="1">
                 <field name="name"/>
-                <field name="employee_id"/>
+                <field name="employee_id" options="{'no_create': True}"/>
                 <field name="criteria"/>
                 <field name="bonus_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="date"/>
@@ -41,19 +41,19 @@
                     </div>
                     <field name="name" readonly="1"/>
                     <div class="oe_title">
-                         <label for="criteria" class="oe_edit_only"/>
-                        <h1>
-                            <field name="criteria" placeholder="Criteria's Name" attrs="{'readonly':[('state','=','approve')]}"/>
-                        </h1>
+                         <label for="criteria"/>
+                        <h2>
+                            <field name="criteria" attrs="{'readonly':[('state','=','approve')]}"/>
+                        </h2>
                     </div>
                     <group col="4">
-                        <field name="employee_id"  attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="employee_id" options="{'no_create': True}" attrs="{'readonly':[('state','=','approve')]}"/>
                         <field name="date"/>
-                        <field name="department_id"/>
+                        <field name="department_id" options="{'no_open': True}"/>
                         <field name="duration" attrs="{'readonly':[('state','=','approve')]}"/>
-                        <field name="job_position"/>
+                        <field name="job_position" options="{'no_open': True}"/>
                         <field name="entitlement_date" attrs="{'readonly':[('state','=','approve')]}"/>
-                        <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company" readonly="1"/>
+                        <field name="company_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_company" readonly="1"/>
                         <field name="bonus_amount" widget="monetary" options="{'currency_field': 'currency_id'}" attrs="{'readonly':[('state','=','approve')]}"/>
                         <field name="currency_id" options="{'no_create': True}" groups="base.group_multi_company"/>
                         <field name="payment_date" attrs="{'readonly':[('state','=','approve')]}"/>

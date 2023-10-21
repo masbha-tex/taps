@@ -28,11 +28,15 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="origin" string="Appr"/>
+                </xpath>
                <xpath expr="//filter[@name='my_purchases']" position="after">
                    <filter string="RM" name="rmtype" 
                            domain="[('itemtype', '=', 'raw')]"/>
                    <filter string="Spare" name="sparetype" 
                            domain="[('itemtype', '=', 'spares')]"/>
+                   
                </xpath>
                <xpath expr="//filter[@name='order_date']" position="after">
                    <filter name="po_order_date" string="PO Date" domain="[('date_order','&gt;=', (context_today()).strftime('%%Y-%%m-1'))]"/>
@@ -67,6 +71,7 @@
                </xpath>
             </field>
         </record>
+        
         
         <record model="ir.actions.server" id="action_purchase_approval">
         <field name="name">CEO Approval</field>

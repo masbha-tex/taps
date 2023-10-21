@@ -40,6 +40,11 @@ class ManufacturingPlan(models.TransientModel):
     material_qty = fields.Float('Material Qty',digits='Product Unit of Measure', readonly=True)
     common_machine = fields.Boolean(readonly=False, string='Same Machine', default=False)
     full_qty = fields.Boolean(readonly=False, string='Full Qty', default=False)
+    company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True, store=True)
+    product_id = fields.Many2one('product.product', 'Raw Material', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", index=True)
+    product_uom = fields.Many2one('uom.uom', 'Unit', related='product_id.uom_id')
+    stock_qty = fields.Float('Available', digits='Product Unit of Measure', required=True)
+    
 
     @api.depends('machine_line.material_qty')
     def _compute_plan_qty(self):

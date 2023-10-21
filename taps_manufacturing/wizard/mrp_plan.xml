@@ -20,6 +20,17 @@
                         <field name="plan_qty"/>
                         <field name="common_machine"/>
                         <field name="full_qty"/>
+                        <field name="company_id" invisible="1"/>
+                        <!-- <field name="product_id" options="{'currency_field': 'cost_currency_id'}" optional="show" readonly="1"/> -->
+                        <label for="product_id"/>
+                        <div name="product" class="o_row">
+                            <field name="product_id" optional="show"/>
+                            <span class="oe_read_only">per
+                                <field name="product_uom" optional="show" readonly="1"/>
+                            </span>
+                        </div>
+                        <!-- <field name="product_id"/>
+                        <field name="product_uom"/> -->
                     </group>
                 </group>
                 <group>
