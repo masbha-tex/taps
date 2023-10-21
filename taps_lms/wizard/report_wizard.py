@@ -39,7 +39,7 @@ class LmsPDFReport(models.TransientModel):
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to,
                         'report_type': self.report_type,
-                        'criteria_id' : self.criteria_id,
+                        'criteria_id' : self.criteria_id.id,
                         'session_ids': False,
                         'venue' : False,
                         'instructor_id': False,
@@ -59,7 +59,7 @@ class LmsPDFReport(models.TransientModel):
                         'report_type': self.report_type,
                         'criteria_id' : False,
                         'session_ids': False, 
-                        'venue' : self.venue,
+                        'venue' : self.venue.id,
                         'instructor_id': False,
                         'participation_group' : False}
             if self.mode_type == 'facilitator':
@@ -69,7 +69,7 @@ class LmsPDFReport(models.TransientModel):
                         'criteria_id' : False,
                         'session_ids': False, 
                         'venue' : False,
-                        'instructor_id': self.instructor_id,
+                        'instructor_id': self.instructor_id.id,
                         'participation_group' : False}
             if self.mode_type == 'pg':
                 data = {'date_from': self.date_from, 
@@ -79,7 +79,7 @@ class LmsPDFReport(models.TransientModel):
                         'session_ids': False, 
                         'venue' : False,
                         'instructor_id': False,
-                        'participation_group' : self.participation_group}
+                        'participation_group' : self.participation_group.id}
             
         if self.report_type == 'training': 
             return self.env.ref('taps_lms.action_lms_pdf_report').report_action(self, data=data)
@@ -88,14 +88,56 @@ class LmsPDFReport(models.TransientModel):
 
     # Generate xlsx report
     def action_generate_xlsx_report(self):
-        data = {
-            'date_from': self.date_from,
-            'date_to': self.date_to,
-            'session_ids': self.session_ids.ids,
-            'course_ids': self.course_ids.ids,
-            # 'responsible_id': self.responsible_id.id
-        }
-        return self.env.ref('taps_lms.action_lms_xlsx_report').report_action(self, data=data)
+        if self.report_type:
+            if self.mode_type == 'criteria':
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : self.criteria_id.id,
+                        'session_ids': False,
+                        'venue' : False,
+                        'instructor_id': False,
+                        'participation_group' : False}
+            if self.mode_type == 'title':
+                data = {'date_from': self.date_from,
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : False,
+                        'session_ids': self.session_ids.ids,
+                        'venue' : False,
+                        'instructor_id': False,
+                        'participation_group' : False}
+            if self.mode_type == 'venues':
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : False,
+                        'session_ids': False, 
+                        'venue' : self.venue.id,
+                        'instructor_id': False,
+                        'participation_group' : False}
+            if self.mode_type == 'facilitator':
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : False,
+                        'session_ids': False, 
+                        'venue' : False,
+                        'instructor_id': self.instructor_id.id,
+                        'participation_group' : False}
+            if self.mode_type == 'pg':
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to,
+                        'report_type': self.report_type,
+                        'criteria_id' : False,
+                        'session_ids': False, 
+                        'venue' : False,
+                        'instructor_id': False,
+                        'participation_group' : self.participation_group.id}
+            
+        if self.report_type == 'attendance': 
+            return self.env.ref('taps_lms.action_lms_xlsx_report').report_action(self, data=data)
+        # return self.env.ref('taps_lms.action_lms_xlsx_report').report_action(self, data=data)
 
 class LmsAttendanceReportPDF(models.AbstractModel):
     _name = 'report.taps_lms.lms_pdf_template'
@@ -104,19 +146,19 @@ class LmsAttendanceReportPDF(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         domain = []
         if data.get('date_from'):
-            domain.append(('start_date', '>=', data.get('date_from') - timedelta(hours=6)))
+            domain.append(('start_date', '>=', data.get('date_from')))
         if data.get('date_to'):
-            domain.append(('start_date', '<=', data.get('date_to') - timedelta(hours=6)))
+            domain.append(('start_date', '<=', data.get('date_to')))
         if data.get('criteria_id'):
-            domain.append(('criteria_id.id', '=', (data.get('criteria_id'))))
+            domain.append(('criteria_id', '=', (data.get('criteria_id'))))
         if data.get('session_ids'):
-            domain.append(('name.id', '=', (data.get('session_ids'))))
+            domain.append(('name', '=', (data.get('session_ids'))))
         if data.get('venue'):
-            domain.append(('venue.id', '=', data.get('venue')))
+            domain.append(('venue', '=', data.get('venue')))
         if data.get('instructor_id'):
-            domain.append(('instructor_id.id', '=', (data.get('instructor_id'))))
+            domain.append(('instructor_id', '=', (data.get('instructor_id'))))
         if data.get('participation_group'):
-            domain.append(('participation_group.id', '=', data.get('participation_group')))
+            domain.append(('participation_group', '=', data.get('participation_group')))
         # raise UserError((domain))
         docs = self.env['lms.session'].search(domain)
         
@@ -132,13 +174,7 @@ class LmsAttendanceReportPDF(models.AbstractModel):
     _description = 'LMS pdf'
 
     def _get_report_values(self, docids, data=None):
-        domain = []
-        # if data.get('date_from'):
-        #     date_from = data.get('date_from')
-        #     date_from = fields.Datetime.from_string(date_from)  # Assuming date_from is in datetime format
-        #     date_from = date_from - timedelta(hours=6)
-        #     domain.append(('start_date', '>=', date_from.strftime(fields.DATE_FORMAT)))
-            
+        domain = []            
         # if data.get('date_from'):
         #     domain.append(('start_date', '>=', data.get('date_from')))
         # if data.get('date_to'):
@@ -176,46 +212,56 @@ class LmsXlsxReport(models.AbstractModel):
     _description = 'LMS xlsx'
 
     def generate_xlsx_report(self, workbook, data, partners):
-        domain = [('state', '!=', 'cancel')]
-        if data.get('date_from'):
-            domain.append(('course_date', '>=', data.get('date_from')))
-        if data.get('date_to'):
-            domain.append(('course_date', '<=', data.get('date_to')))
-        if data.get('course_ids'):
-            domain.append(('id', 'in', data.get('course_ids')))
-        # if data.get('responsible_id'):
-        #     domain.append(('responsible_id', '=', data.get('responsible_id')))
+        domain = []
+        if data.get('criteria_id'):
+            domain.append(('criteria_id', '=', (data.get('criteria_id'))))
+        if data.get('session_ids'):
+            domain.append(('name', '=', (data.get('session_ids'))))
+        if data.get('venue'):
+            domain.append(('venue', '=', data.get('venue')))
+        if data.get('instructor_id'):
+            domain.append(('instructor_id', '=', (data.get('instructor_id'))))
+        if data.get('participation_group'):
+            domain.append(('participation_group', '=', data.get('participation_group')))
+        # raise UserError((domain))
+        docs = self.env['lms.session'].search(domain)
+        # if data.get('date_from'):
+        #     st_date = fields.Datetime.from_string(data.get('date_from'))
+        #     docs = docs.filtered(lambda x: (x.start_date + timedelta(hours=6)).date() == st_date.date())
 
         sheet = workbook.add_worksheet('LMS Report')
         bold = workbook.add_format({'bold': True, 'align': 'center', 'bg_color': '#fffbed', 'border': True})
         title = workbook.add_format({'bold': True, 'align': 'center', 'font_size': 20, 'bg_color': '#f2eee4', 'border': True})
         header_row_style = workbook.add_format({'bold': True, 'align': 'center', 'border': True})
+        header_row_style_1 = workbook.add_format({'align': 'center','num_format': 'dd-mm-yyyy hh:mm AM/PM'})
+        header_row_style_2 = workbook.add_format({'align': 'center','num_format': '0.00'})
+        header_row_style_3 = workbook.add_format({'align': 'center'})
 
         sheet.merge_range('A1:F1', 'LMS Report', title)
 
-        courses = self.env['lms.course'].search(domain)
+        # courses = self.env['lms.course'].search(domain)
         row = 3
         col = 0
-
         # Header row
-        sheet.set_column(0, 5, 18)
-        sheet.write(row, col, 'Session Name', header_row_style)
-        sheet.write(row, col+1, 'Start date', header_row_style)
-        sheet.write(row, col+2, 'Duration', header_row_style)
-        sheet.write(row, col+3, 'No. of seats', header_row_style)
-        sheet.write(row, col+4, 'Instructor', header_row_style)
-        sheet.write(row, col+5, 'Attendees', header_row_style)
+        sheet.set_column(0, 4, 18)
+        # sheet.write(row, col, 'Title', header_row_style)
+        sheet.write(row, col, 'Plan date', header_row_style)
+        sheet.write(row, col+1, 'Duration', header_row_style)
+        sheet.write(row, col+2, 'No. of seats', header_row_style)
+        sheet.write(row, col+3, 'Facilitator', header_row_style)
+        sheet.write(row, col+4, 'Attendees', header_row_style)
         row += 2
-        for course in courses:
-            if course.session_ids:
-                sheet.merge_range(f"A{row}:F{row}", course.display_name, bold)
-            for session in course.session_ids:
-                sheet.write(row, col, session.name)
-                sheet.write(row, col+1, session.start_date)
-                sheet.write(row, col+2, session.duration)
-                sheet.write(row, col+3, session.seats)
-                sheet.write(row, col+4, session.instructor_id.name)
-                sheet.write(row, col+5, session.number_of_attendees())
+        sheet.merge_range(f"A{row}:E{row}", docs[0].display_name, bold)
+        for course in docs:
+            
+            # row += 1
+            for doc in course.filtered(lambda x: x.id==course.id):
+                
+                # sheet.write(row, col, doc.name.display_name)
+                sheet.write(row, col, doc.start_date, header_row_style_1)
+                sheet.write(row, col+1, doc.duration, header_row_style_2)
+                sheet.write(row, col+2, doc.seats, header_row_style_3)
+                sheet.write(row, col+3, '; '.join([inst.name for inst in doc.instructor_id if inst]))
+                sheet.write(row, col+4, doc.presents_count, header_row_style_3)
                 row += 1
-            if course.session_ids:
-                row += 1
+        # row += 1 

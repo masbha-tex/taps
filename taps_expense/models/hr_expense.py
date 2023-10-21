@@ -25,7 +25,9 @@ class HrExpense(models.Model):
 
     @api.onchange('product_id', 'date', 'account_id')
     def _onchange_product_id_date_account_id(self):
-        date_ = self.create_date.date()
+        date_ = datetime.now().date()
+        if self.create_date:
+            date_ = self.create_date.date()
         if self.date:
             date_ = self.date
         rec = self.env['account.analytic.default'].sudo().account_get(
