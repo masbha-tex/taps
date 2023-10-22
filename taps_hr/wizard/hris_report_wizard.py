@@ -39,7 +39,8 @@ class HRISPDFReport(models.TransientModel):
         ('anniversarycalendar', 'Anniversary Calendar'),
         ('retentionmatrix', 'Retention Risk Matrix'),
 #         ('leave',	'Leave Form'),
-        ('retentionincentive',	'Retention Incentive'),],
+        ('retentionincentive',	'Retention Incentive'),
+        ('retentionbonus',	'Retention Bonus'),],
         string='Report Type', required=True, default='employee_profile',
         help='By HRIS Report')
     
@@ -238,10 +239,213 @@ class HRISPDFReport(models.TransientModel):
             return self.env.ref('taps_hr.action_hris_anniversary_calendar_pdf_report').report_action(self, data=data)
         if self.report_type == 'retentionmatrix':
             return self.env.ref('taps_hr.action_hris_retention_risk_matrix_pdf_report').report_action(self, data=data)
-        
+
+
+    def action_generate_xlsx_report(self):
+        if self.report_type:
+            if self.mode_type == "employee":#employee  company department category
+                #raise UserError((self.report_type))
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': self.employee_id.id,
+                        'report_type': self.report_type,
+                        'bank_id': self.bank_id.id,
+                        'types': self.types,
+                        'employee_type': self.employee_type}
+
+            if self.mode_type == "company":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': self.mode_company_id.id, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': self.bank_id.id,
+                        'types': self.types,
+                        'employee_type': self.employee_type}
+
+            if self.mode_type == "department":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': self.department_id.id, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': self.bank_id.id,
+                        'types': self.types,
+                        'employee_type': self.employee_type}
+
+            if self.mode_type == "category":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': self.category_id.id, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': self.bank_id.id,
+                        'types': self.types,
+                        'employee_type': self.employee_type}
+            if self.mode_type == "emptype":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': self.bank_id.id,
+                        'types': self.types,
+                        'employee_type': self.employee_type}
+        if self.report_type == 'retentionbonus':
+            return self.retention_bonus_xls_template(self, data=data)
     
     
+    def retention_bonus_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
+        domain = []
+        if data.get('date_from'):
+            domain.append(('date_from', '=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('date_to', '=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+            domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
+        domain.append(('code', '=', 'NET'))
         
+        #raise UserError((domain))
+        docs = self.env['hr.retention.bonus'].search(domain).sorted(key = 'employee_id', reverse=False)
+        #raise UserError((docs.id))
+        datefrom = data.get('date_from')
+        dateto = data.get('date_to')
+        bankname = self.bank_id.name
+        categname=[]
+        if self.employee_type =='staff':
+            categname='Staffs'
+        if self.employee_type =='expatriate':
+            categname='Expatriates'
+        if self.employee_type =='worker':
+            categname='Workers'
+        if self.employee_type =='cstaff':
+            categname='C-Staffs'
+        if self.employee_type =='cworker':
+            categname='C-Workers'
+            
+        
+        #raise UserError((datefrom,dateto,bankname,categname))
+        report_data = []
+        emp_data = []
+        slnumber=0
+        for rdata in docs:
+            slnumber = slnumber+1
+            emp_data = [
+                slnumber,
+                rdata.employee_id.display_name,
+                rdata.employee_id.bonus_amount,
+                rdata.employee_id.payment_date,
+                rdata.employee_id.bonus_lines.date,
+                # format_date(self.env, rdata.employee_id.joining_date),
+                # rdata.employee_id.bank_account_id.acc_number,
+                # round(rdata.total),
+            ]
+            report_data.append(emp_data)     
+        
+        
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+
+        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#C8EAAB'})
+        # worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+
+        report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
+#         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+        # worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+        # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        
+        column_product_style = workbook.add_format({'bold': True, 'bg_color': '#EEED8A', 'font_size': 12})
+        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
+        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
+        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+
+        # set the width od the column
+        
+        worksheet.set_column(0, 5, 20)
+        
+        worksheet.write(4, 0, 'SL.', column_product_style)
+        worksheet.write(4, 1, 'Employee Name', column_product_style)        
+        worksheet.write(4, 2, 'Payment Start DT', column_product_style)
+        worksheet.write(4, 3, 'Amount', column_product_style)
+        worksheet.write(4, 4, 'Apr', column_product_style)
+        worksheet.write(4, 5, 'May', column_product_style)
+        worksheet.write(4, 6, 'Jun', column_product_style)
+        worksheet.write(4, 7, 'Jul', column_product_style)
+        worksheet.write(4, 8, 'Aug', column_product_style)
+        worksheet.write(4, 9, 'Sep', column_product_style)
+        worksheet.write(4, 10, 'Oct', column_product_style)
+        worksheet.write(4, 11, 'Nov', column_product_style)
+        worksheet.write(4, 12, 'Dec', column_product_style)
+        worksheet.write(4, 13, 'Jan', column_product_style)
+        worksheet.write(4, 14, 'Feb', column_product_style)
+        worksheet.write(4, 15, 'Mar', column_product_style)
+        col = 0
+        row=5
+        
+        grandtotal = 0
+        
+        for line in report_data:
+            col=0
+            for l in line:
+                if col>4:
+                    grandtotal = grandtotal+l
+                worksheet.write(row, col, l)
+                col+=1
+            row+=1
+        
+        #worksheet.write(4, 0, 'SL.', column_product_style)
+        #raise UserError((row+1))
+        worksheet.write(row, 4, 'Grand Total', report_small_title_style)
+        worksheet.write(row, 5, round(grandtotal), report_small_title_style)
+        #raise UserError((datefrom,dateto,bankname,categname))
+        workbook.close()
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Retention Bonus')),
+            'target': 'self',
+        }            
 
 
 

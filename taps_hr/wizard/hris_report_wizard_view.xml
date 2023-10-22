@@ -40,7 +40,7 @@
                 </group>
                 <footer>
                     <button string="Print" name="action_print_report" type="object" class="btn-primary"/>
-<!--                     <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/> -->
+                    <!-- <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary" attrs="{'invisible': [('report_type', '!=', 'retentionbonus')]}" options="{'no_create': True, 'no_open': True}"/> -->
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

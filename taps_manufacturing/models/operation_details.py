@@ -117,9 +117,14 @@ class OperationDetails(models.Model):
     def get_fg_balance(self):
         for s in self:
             s.fg_balance = s.pack_qty - s.fg_done_qty
-
+    
+    @api.depends('qty', 'done_qty', 'actual_qty')
+    def get_ac_balance(self):
+        for s in self:
+            s.ac_balance_qty = round((s.actual_qty - s.done_qty),2)
     
     actual_qty = fields.Float(string='Actual Tape Qty', readonly=True, store=True, group_operator="sum")
+    ac_balance_qty = fields.Float(string='Actual Tape Balance', readonly=False, store=True, compute='get_ac_balance', group_operator="sum")
     qty = fields.Float(string='Qty', readonly=False)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
@@ -758,63 +763,7 @@ class OperationDetails(models.Model):
                                                     'pack_qty':pack_qty,
                                                     'fr_pcs_pack':fraction_pc_of_pack
                                                     })
-
-    # @api.onchange('done_qty')
-    # def _done_qty(self):
-    #     for s in self:
-    #         if s.qty <= s.done_qty:
-    #             s.state = 'done'
-    #         elif s.done_qty == 0:
-    #             s.state = 'waiting'
-    #         else:
-    #             s.state = 'partial'
-    #         raise UserError(('eefe'))
-    
-    # @api.onchange('fg_output')
-    # def _done_qty(self):
-    #     for out in self:
-    #         out.fg_done_qty = out.fg_done_qty + out.fg_output
-            
-    #         ope = self.env['operation.details'].create({'mrp_lines':out.mrp_lines,
-    #                                                     'sale_lines':out.sale_lines,
-    #                                                     'mrp_line':out.mrp_line.id,
-    #                                                     'sale_order_line':out.sale_order_line.id,
-    #                                                     'parent_id':out.id,
-    #                                                     'oa_id':out.oa_id.id,
-    #                                                     'buyer_name':out.buyer_name,
-    #                                                     'product_template_id':out.product_template_id.id,
-    #                                                     'action_date':datetime.now(),
-    #                                                     'shade':out.shade,
-    #                                                     'finish':out.finish,
-    #                                                     'sizein':out.sizein,
-    #                                                     'sizecm':out.sizecm,
-    #                                                     'slidercodesfg':out.slidercodesfg,
-    #                                                     'top':out.top,
-    #                                                     'bottom':out.bottom,
-    #                                                     'pinbox':out.pinbox,
-    #                                                     'operation_of':'output',
-    #                                                     # 'work_center':w_center,
-    #                                                     'operation_by':out.work_center.name,
-    #                                                     'based_on':'Packing',
-    #                                                     'next_operation':'Delivery',
-    #                                                     'qty':out.fg_output,
-    #                                                     'pack_qty':out.pack_qty,
-    #                                                     'fr_pcs_pack':fr_pcs_pack.fr_pcs_pack
-    #                                                     })
-    #         s.cartoon_no = ope.id
-    #     return self
-
-    # fg_done_qty
-    # fg_output
-    # cartoon_no
-                
-    # if s.qty <= s.done_qty:
-    #     s.fg_done_qty = s.fg_done_qty + s.fg_output
-    # elif s.done_qty == 0:
-    #     s.state = 'waiting'
-    # else:
-    #     s.state = 'partial'
-    # raise UserError(('eefe'))
+        
             
     @api.onchange('uotput_qty')
     def _output(self):

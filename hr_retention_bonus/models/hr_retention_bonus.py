@@ -59,6 +59,14 @@ class HrRetentionBonus(models.Model):
             else:
                 record.entitlement_date = fields.Date.today()
                 # record.payment_date = fields.Date.today()
+    @api.depends('date', 'duration', 'entitlement_date')
+    def _get_default_payment_date(self):
+        for record in self:
+            if record.date and record.duration and record.entitlement_date:
+                record.payment_date = record.entitlement_date
+                # record.payment_date = record.date + relativedelta(months=record.duration)
+            else:
+                record.payment_date = fields.Date.today()
 
     @api.depends('instant_payment')
     def _get_default_installment_date(self):
@@ -78,7 +86,8 @@ class HrRetentionBonus(models.Model):
     department_id = fields.Many2one('hr.department', related="employee_id.department_id", tracking=True, readonly=True, store=True,
                                     string="Department", help="Employee")
     installment = fields.Integer(string="No Of Installments", compute=_get_default_installment_date, help="Number of installments")
-    payment_date = fields.Date(string="Payment Start Date", required=True, tracking=True, default=fields.Date.today(), help="Date of the paymemt")
+    # payment_date = fields.Date(string="Payment Start Date", required=True, tracking=True, default=fields.Date.today(), help="Date of the paymemt")
+    payment_date = fields.Date(string="Payment Start Date", compute=_get_default_payment_date, store=True, required=True, tracking=True, readonly=False, help="Date of the paymemt")
     bonus_lines = fields.One2many('hr.retention.bonus.line', 'bonus_id', string="Bonus Line", index=True)
     company_id = fields.Many2one('res.company', 'Company', related="employee_id.company_id", store=True, readonly=True, help="Company",
                                  states={'draft': [('readonly', False)]})

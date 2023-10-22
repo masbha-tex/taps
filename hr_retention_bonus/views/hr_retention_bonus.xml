@@ -87,6 +87,8 @@
         </field>
     </record>
 
+    
+
     <!--loan search view-->
     <record id="view_retention_bonus_request_search_form" model="ir.ui.view">
         <field name="name">hr.retention.bonus.search.form</field>
@@ -117,7 +119,7 @@
     <record id="action_hr_retention_bonus_request" model="ir.actions.act_window">
         <field name="name">Request for Retention Bonus Scheme</field>
         <field name="res_model">hr.retention.bonus</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,pivot</field>
         <field name="context">{}</field>
         <field name="search_view_id" ref="view_retention_bonus_request_search_form"/>
          <field name="help" type="html">

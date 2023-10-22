@@ -83,6 +83,7 @@
                 <field name="next_operation" readonly="1" force_save="1" invisible="1"/>
                 <field name="mr_req" readonly="1" optional="show"/>
                 <field name="actual_qty" readonly="1" optional="show"/>
+                <field name="ac_balance_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="qty" readonly="1" optional="show"/>
                 <field name="done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="balance_qty" readonly="1" force_save="1" optional="show"/>
