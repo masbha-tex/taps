@@ -288,6 +288,9 @@ class SaleOrder(models.Model):
                 'suranjan.kumar@texzipperbd.com',
                 'mirtunjoy.chatterjee@texzipperbd.com',
                 'abdur.rahman@texzipperbd.com',
+                'oa@bd.texfasteners.com',
+                'costing@texzipperbd.com',
+                'mis.mkt@texzipperbd.com',
                 ]
             author_id=0
             

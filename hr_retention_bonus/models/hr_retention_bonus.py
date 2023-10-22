@@ -104,10 +104,10 @@ class HrRetentionBonus(models.Model):
     criteria = fields.Selection([
         ('Appointment Terms', 'Appointment Terms'),
         ('Special Retention Bonus', 'Special Retention Bonus'),
-        ('GET policy', 'GET policy'),
+        ('GET Policy', 'GET Policy'),
         ('DET Policy', 'DET Policy'),
-        ('ST policy', 'ST policy'),
-        ('KMP policy', 'KMP policy'),
+        ('ST Policy', 'ST Policy'),
+        ('KMP Policy', 'KMP Policy'),
     ], string="Criteria", default='Appointment Terms', tracking=True, copy=True, required=True, readonly=False, store=True)
     instant_payment = fields.Selection([
         ('3', 'Payment by next 3 months'),
