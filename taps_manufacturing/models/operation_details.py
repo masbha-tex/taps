@@ -930,8 +930,12 @@ class OperationDetails(models.Model):
                                 rest_qty = rest_qty - rest_qty
                             # else:
                             #     qc_qty = qc_qty - existing_qc.actual_qty
+                            #     # qc_qty = rest_qty -  
+                            #     if rest_qty < existing_qc.actual_qty:
+                            #         qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
+                                    
                             #     qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
-                            #     rest_qty = rest_qty - existing_qc.actual_qty
+                            #     rest_qty = 0 #rest_qty - existing_qc.actual_qty
                                 
                         else:
                             # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
@@ -978,6 +982,7 @@ class OperationDetails(models.Model):
                                                                         'capacity':pr_pac_qty,
                                                                         'move_line':move_line
                                                                         })
+                        # raise UserError((rest_qty))
                         if rest_qty == 0:
                             break
 

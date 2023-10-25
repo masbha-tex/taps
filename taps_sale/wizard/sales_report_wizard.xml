@@ -40,7 +40,7 @@
               name="Sale Report Wizard"
               sequence="3"
               action="all_sale_report"
-              parent="sale.menu_sale_report"/>  
+              parent="sale.sale_menu_root" />  
     
     
     
