@@ -96,7 +96,7 @@ class MrpSizewiseLot(models.TransientModel):
             
     def done_mo_lot(self):
         # raise UserError((self.lot_line[0].mrp_line))
-        if self.tape_qty > self.material_qty:
+        if self.tape_qty > self.material_qty + 0.05:
             raise UserError(_('You have %s kg tape to plan.') % (self.material_qty))
 
         active_model = self.env.context.get("active_model")

@@ -19,8 +19,6 @@ class HrRetentionBonus(models.Model):
         else:
             ts_user_id = self.env.context.get('user_id', self.env.user.id)
         result['employee_id'] = self.env['hr.employee'].search([('user_id', '=', ts_user_id)], limit=1).id
-        
-        # result['date'] = self.env['hr.employee'].search([('id', '=', result.get('user_id'))], limit=1).joining_date
         return result
 
     def _compute_retention_bonus_amount(self):
@@ -104,10 +102,10 @@ class HrRetentionBonus(models.Model):
     criteria = fields.Selection([
         ('Appointment Terms', 'Appointment Terms'),
         ('Special Retention Bonus', 'Special Retention Bonus'),
-        ('GET Policy', 'GET Policy'),
+        ('GET policy', 'GET policy'),
         ('DET Policy', 'DET Policy'),
-        ('ST Policy', 'ST Policy'),
-        ('KMP Policy', 'KMP Policy'),
+        ('ST policy', 'ST policy'),
+        ('KMP policy', 'KMP policy'),
     ], string="Criteria", default='Appointment Terms', tracking=True, copy=True, required=True, readonly=False, store=True)
     instant_payment = fields.Selection([
         ('3', 'Payment by next 3 months'),
@@ -195,6 +193,10 @@ class InstallmentLine(models.Model):
     amount = fields.Float(string="Amount", required=True, help="Amount")
     paid = fields.Boolean(string="Paid", help="Paid")
     bonus_id = fields.Many2one('hr.retention.bonus', string="Retention Bonus Ref.", help="Retention Bonus Scheme")
+    payment_date = fields.Date(string="Payment Start Date", related="bonus_id.payment_date", store=True)
+    bonus_amount = fields.Float(string="Bonus Amount", related="bonus_id.bonus_amount", store=True)
+    
+    
     # adjustment_type = fields.Many2one('hr.payslip.input.type', string='Type',required=True,store=True, domain="[('code', '=', 'INCENTIVE')]", default=44)
 
 

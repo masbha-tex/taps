@@ -146,6 +146,7 @@ class SalesXlsx(models.AbstractModel):
         
         sheet = workbook.add_worksheet(report_name[:41])
         #bold = workbook.add_format({'bold': True})
+        
         column_style = workbook.add_format({'bold': True, 'font_size': 11})
         
         _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})

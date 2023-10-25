@@ -8,28 +8,21 @@
             <form string="Sale Report">
                 <group>
                     <group>
-                        <field name="report_type" string="Report Type" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="report_type" string="Report Type" />
                         <field name="date_from"/>
                         <field name="date_to"/>
                        
                     </group>
                     <group>
-                        <field name="holiday_type" string="Mode" groups="hr_holidays.group_hr_holidays_user"/>
+                        <!-- <field name="holiday_type" string="Mode" /> -->
+                
+                        <field name="mode_company_id" string="Company" options="{'no_create': True, 'no_open': True}"/>
                         
-                        <field name="mode_company_id" string="Company" groups="hr_holidays.group_hr_holidays_user" attrs="{
-                        'required': [('holiday_type', '=', 'company')],
-                        'invisible': [('holiday_type', '!=', 'company')]
-                        }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="company_all" groups="hr_holidays.group_hr_holidays_user" attrs="{
-                        'required': [('holiday_type', '=', 'companyall')],
-                        'invisible': [('holiday_type', '!=','companyall')]
-                        }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="bank_id"/>
                     </group>
                 </group>
                 <footer>
-                    <!-- <button string="Print" name="" type="object" class="btn-primary"/>
-                    <button string="Generate xlsx" name="" type="object" class="btn-primary"/> -->
+                    <!-- <button string="Print" name="" type="object" class="btn-primary"/> -->
+                    <button string="Download Excel" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
@@ -37,7 +30,7 @@
     </record>
     
     <record id="all_sale_report" model="ir.actions.act_window">
-        <field name="name">Sale Report</field>
+        <field name="name">Sales Report Wizard</field>
         <field name="res_model">sale.pdf.report</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

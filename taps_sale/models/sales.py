@@ -311,9 +311,11 @@ class SaleOrder(models.Model):
             # author_list = ','.join(author_id)
             # raise UserError((pdf_content))
             attachment = rec.env['ir.attachment'].sudo().create({
-                        'name': rec.name+' Daily OA Release('+(datetime.now().strftime('%d %b, %Y'))+')',
+                        'name': rec.name+' Daily OA Release('+(datetime.now().strftime('%d %b, %Y'))+')'+'.pdf',
                         'type': 'binary',
                         'datas': base64.encodebytes(pdf_content),
+                        'mimetype': 'application/pdf',
+                        'res_model' : 'sale.order',
                         'company_id' : rec.id,
                         
               
@@ -344,7 +346,7 @@ class SaleOrder(models.Model):
             else:
                 
                 template_ctx = {
-                    'message': rec.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA')),
+                    'message': rec.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA.pdf')),
                     'model_description': rec.env['ir.model']._get('sale.order').display_name,
                     'company': rec,
                     'com' : rec,
@@ -353,7 +355,7 @@ class SaleOrder(models.Model):
                     
                 body = template._render(template_ctx, engine='ir.qweb')
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
-            # raise UserError((mail_values['body_html']))
+           
             rec.env['mail.mail'].sudo().create(mail_values).send()
     
     

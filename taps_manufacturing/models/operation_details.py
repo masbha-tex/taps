@@ -121,10 +121,11 @@ class OperationDetails(models.Model):
     @api.depends('qty', 'done_qty', 'actual_qty')
     def get_ac_balance(self):
         for s in self:
-            s.ac_balance_qty = round((s.actual_qty - s.done_qty),2)
+            if s.actual_qty>0:
+                s.ac_balance_qty = round((s.actual_qty - s.done_qty),2)
     
-    actual_qty = fields.Float(string='Actual Tape Qty', readonly=True, store=True, group_operator="sum")
-    ac_balance_qty = fields.Float(string='Actual Tape Balance', readonly=False, store=True, compute='get_ac_balance', group_operator="sum")
+    actual_qty = fields.Float(string='OA Tape Qty', readonly=True, store=True, group_operator="sum")
+    ac_balance_qty = fields.Float(string='OA Tape Balance', readonly=False, store=True, compute='get_ac_balance', group_operator="sum")
     qty = fields.Float(string='Qty', readonly=False)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
@@ -367,7 +368,7 @@ class OperationDetails(models.Model):
                                             'work_center':3,
                                             'operation_by':'Metal chain making',
                                             'based_on':'size',
-                                            'next_operation':'CM Output',
+                                            'next_operation':'Dipping Output',
                                             'qty':l.material_qty
                                             })
                     
@@ -447,7 +448,7 @@ class OperationDetails(models.Model):
                     # raise UserError((m_orders[0].fg_categ_type))
                     next = 'Assembly Output'
                     if 'Metal' in m_orders[0].fg_categ_type or 'AL' in m_orders[0].fg_categ_type:
-                        next = 'CM Output'
+                        next = 'Dipping Output'
                     # 'mrp_line':l.mrp_line.id,
                     # 'sale_order_line':l.mrp_line.sale_order_line.id,
                     # for mr_li in l.mrp_line:
@@ -901,49 +902,119 @@ class OperationDetails(models.Model):
             actual_qty = out.actual_qty
             if out.operation_of == 'qc':
                 operation_of = 'input'
+            
+            existing_qc = None
             if out.next_operation == 'Dyeing Output':
                 operation_of = 'qc'
-                mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
-                mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
-                mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id)
-                 # and pr.product_template_id.id == out.product_template_id.id
-                actual_qty = sum(mrp_data.mapped('tape_con'))
-                # raise UserError((actual_qty,out.uotput_qty))
-            # operation = self.env["operation.details"].browse(self.id)
-            # raise UserError((out.code,out.mrp_lines,out.mrp_line.id,out.sale_lines,out.sale_order_line.id))
-            # raise UserError((operation_of,next,out.uotput_qty))    
-            ope = self.env['operation.details'].create({'name':out.name,
-                                                        'mrp_lines':out.mrp_lines,
-                                                        'sale_lines':out.sale_lines,
-                                                        'mrp_line':out.mrp_line.id,
-                                                        'sale_order_line':out.sale_order_line.id,
-                                                        'parent_id':out.id,
-                                                        'oa_id':out.oa_id.id,
-                                                        'buyer_name':out.buyer_name,
-                                                        'product_id':out.product_id.id,
-                                                        'product_template_id':out.product_template_id.id,
-                                                        'action_date':datetime.now(),
-                                                        'shade':out.shade,
-                                                        'shade_ref':out.shade_ref,
-                                                        'finish':out.finish,
-                                                        'sizein':out.sizein,
-                                                        'sizecm':out.sizecm,
-                                                        'slidercodesfg':out.slidercodesfg,
-                                                        'top':out.top,
-                                                        'bottom':out.bottom,
-                                                        'pinbox':out.pinbox,
-                                                        'operation_of':operation_of,
-                                                        'work_center':w_center,
-                                                        'operation_by':out.work_center.name,
-                                                        'based_on':'Lot Code',
-                                                        'next_operation':next,
-                                                        'actual_qty':actual_qty,
-                                                        'qty':out.uotput_qty,
-                                                        'pack_qty':pack_qty,
-                                                        'fr_pcs_pack':fraction_pc_of_pack,
-                                                        'capacity':pr_pac_qty,
-                                                        'move_line':move_line
-                                                        })
+                # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
+                # mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
+                # mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id)
+                # actual_qty = sum(mrp_data.mapped('tape_con'))
+                tape_in_qc = self.env["operation.details"].search([('plan_id','=', out.plan_id)])
+                oa_ids = tape_in_qc.mapped('oa_id')
+                # oa_ids = ','.join([str(i) for i in sorted(oa_ids)])
+                # oa_ids = [int(i) for i in sorted(oa_ids.split(','))]
+                rest_qty = out.uotput_qty
+                while rest_qty > 0:
+                    for oa in oa_ids:
+                        # raise UserError((oa.id,out.oa_id.id,oa_ids))
+                        # ('mrp_lines','=', out.mrp_lines),
+                        existing_qc = self.env["operation.details"].search([('oa_id','=', oa.id),('shade','=', out.shade),('next_operation','=', 'Dyeing Qc')])
+                        # tape_in_qc.filtered(lambda dy: dy.oa_id.id == oa.id and dy.shade == out.shade and dy.next_operation == 'Dyeing Qc')
+                        qc_qty = 0
+                
+                        if existing_qc:
+                            qc_qty = existing_qc.qty + rest_qty
+                            if existing_qc.actual_qty >= qc_qty:
+                                qc_update = existing_qc.update({'qty':qc_qty})
+                                rest_qty = rest_qty - rest_qty
+                            # else:
+                            #     qc_qty = qc_qty - existing_qc.actual_qty
+                            #     qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
+                            #     rest_qty = rest_qty - existing_qc.actual_qty
+                                
+                        else:
+                            # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
+                            mrp_data = self.env["manufacturing.order"].search([('oa_id','=',oa.id),('shade','=',out.shade)])
+                            # mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id)
+                            actual_qty = sum(mrp_data.mapped('tape_con'))
+                            if actual_qty >= rest_qty:
+                                qc_qty = rest_qty
+                                rest_qty = rest_qty - qc_qty
+                            else:
+                                qc_qty = actual_qty
+                                rest_qty = rest_qty - qc_qty
+
+                            
+                            ope = self.env['operation.details'].create({'name':out.name,
+                                                                        'mrp_lines':out.mrp_lines,
+                                                                        'sale_lines':out.sale_lines,
+                                                                        'mrp_line':out.mrp_line.id,
+                                                                        'sale_order_line':out.sale_order_line.id,
+                                                                        'parent_id':out.id,
+                                                                        'oa_id':oa.id,
+                                                                        'buyer_name':out.buyer_name,
+                                                                        'product_id':out.product_id.id,
+                                                                        'product_template_id':out.product_template_id.id,
+                                                                        'action_date':datetime.now(),
+                                                                        'shade':out.shade,
+                                                                        'shade_ref':out.shade_ref,
+                                                                        'finish':out.finish,
+                                                                        'sizein':out.sizein,
+                                                                        'sizecm':out.sizecm,
+                                                                        'slidercodesfg':out.slidercodesfg,
+                                                                        'top':out.top,
+                                                                        'bottom':out.bottom,
+                                                                        'pinbox':out.pinbox,
+                                                                        'operation_of':operation_of,
+                                                                        'work_center':w_center,
+                                                                        'operation_by':out.work_center.name,
+                                                                        'based_on':'Lot Code',
+                                                                        'next_operation':next,
+                                                                        'actual_qty':actual_qty,
+                                                                        'qty':qc_qty,
+                                                                        'pack_qty':pack_qty,
+                                                                        'fr_pcs_pack':fraction_pc_of_pack,
+                                                                        'capacity':pr_pac_qty,
+                                                                        'move_line':move_line
+                                                                        })
+                        if rest_qty == 0:
+                            break
+
+            
+            else:
+                ope = self.env['operation.details'].create({'name':out.name,
+                                                            'mrp_lines':out.mrp_lines,
+                                                            'sale_lines':out.sale_lines,
+                                                            'mrp_line':out.mrp_line.id,
+                                                            'sale_order_line':out.sale_order_line.id,
+                                                            'parent_id':out.id,
+                                                            'oa_id':out.oa_id.id,
+                                                            'buyer_name':out.buyer_name,
+                                                            'product_id':out.product_id.id,
+                                                            'product_template_id':out.product_template_id.id,
+                                                            'action_date':datetime.now(),
+                                                            'shade':out.shade,
+                                                            'shade_ref':out.shade_ref,
+                                                            'finish':out.finish,
+                                                            'sizein':out.sizein,
+                                                            'sizecm':out.sizecm,
+                                                            'slidercodesfg':out.slidercodesfg,
+                                                            'top':out.top,
+                                                            'bottom':out.bottom,
+                                                            'pinbox':out.pinbox,
+                                                            'operation_of':operation_of,
+                                                            'work_center':w_center,
+                                                            'operation_by':out.work_center.name,
+                                                            'based_on':'Lot Code',
+                                                            'next_operation':next,
+                                                            'actual_qty':actual_qty,
+                                                            'qty':out.uotput_qty,
+                                                            'pack_qty':pack_qty,
+                                                            'fr_pcs_pack':fraction_pc_of_pack,
+                                                            'capacity':pr_pac_qty,
+                                                            'move_line':move_line
+                                                            })
             out.uotput_qty = 0
 
 
