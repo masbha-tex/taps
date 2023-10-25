@@ -916,7 +916,8 @@ class OperationDetails(models.Model):
                 # oa_ids = [int(i) for i in sorted(oa_ids.split(','))]
                 rest_qty = out.uotput_qty
                 while rest_qty > 0:
-                    for oa in oa_ids:
+                    for i, oa in oa_ids:
+                        raise UserError((i,len(oa_ids))) 
                         # raise UserError((oa.id,out.oa_id.id,oa_ids))
                         # ('mrp_lines','=', out.mrp_lines),
                         existing_qc = self.env["operation.details"].search([('oa_id','=', oa.id),('shade','=', out.shade),('next_operation','=', 'Dyeing Qc')])

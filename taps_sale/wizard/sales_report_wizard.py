@@ -155,11 +155,19 @@ class SalesReport(models.TransientModel):
                 worksheet.write(row, col, l.order_line[0].product_template_id.name,column_title_style)
                 col += 1
             if col == 8:
-                worksheet.write(row, col, l.order_line[0].finish.split()[0],column_title_style)
-                col += 1
+                if l.order_line[0].finish != 'TBA':
+                    worksheet.write(row, col, l.order_line[0].finish.split()[0],column_title_style)
+                    col += 1
+                if l.order_line[0].finish == 'TBA':
+                    worksheet.write(row, col, '',column_title_style)
+                    col += 1
             if col == 9:
-                worksheet.write(row, col, "TZP-"+ str(l.order_line[0].slidercodesfg.split('-')[1]),column_title_style)
-                col += 1
+                if l.order_line[0].slidercodesfg != 'TBA':
+                    worksheet.write(row, col, "TZP-"+ str(l.order_line[0].slidercodesfg.split('-')[1]),column_title_style)
+                    col += 1
+                if l.order_line[0].slidercodesfg == 'TBA':
+                    worksheet.write(row, col, '',column_title_style)
+                    col += 1
             if col == 10:
                 worksheet.write(row, col, l.order_ref.pi_number,column_title_style)
                 col += 1
