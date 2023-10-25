@@ -91,12 +91,12 @@
 										<t t-esc="order.order_line[0].product_template_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
-                                        <t t-if="order.order_line[0].finish">
+                                        <t t-if="order.order_line[0].finish !='TBA'">
 										<t t-esc="order.order_line[0].finish.splitlines()[0]"/>
                                         </t>
 									</td>
 									<td style="border: 1px solid black">
-                                        <t t-if="order.order_line[0].slidercodesfg">
+                                        <t t-if="order.order_line[0].slidercodesfg != 'TBA'">
 										<span>TZP-<t t-esc="order.order_line[0].slidercodesfg.split('TZP-')[1]"/>
 										</span>
                                         </t>
@@ -201,12 +201,12 @@
 										<t t-esc="order.order_line[0].product_template_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
-                                        <t t-if="order.order_line[0].finish">
+                                        <t t-if="order.order_line[0].finish != 'TBA'">
 										<t t-esc="order.order_line[0].finish.splitlines()[0]"/>
                                         </t>
 									</td>
 									<td style="border: 1px solid black">
-                                        <t t-if="order.order_line[0].slidercodesfg">
+                                        <t t-if="order.order_line[0].slidercodesfg != 'TBA'">
 										<span>TZP-<t t-esc="order.order_line[0].slidercodesfg.split('TZP-')[1]"/>
 										</span>
                                         </t>
@@ -314,12 +314,12 @@
 										<t t-esc="order.order_line[0].product_template_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
-                                        <t t-if="order.order_line[0].finish">
+                                        <t t-if="order.order_line[0].finish != 'TBA'">
 										<t t-esc="order.order_line[0].finish.splitlines()[0]"/>
                                         </t>
 									</td>
 									<td style="border: 1px solid black">
-                                        <t t-if="order.order_line[0].slidercodesfg">
+                                        <t t-if="order.order_line[0].slidercodesfg != 'TBA'">
 										<span>TZP-<t t-esc="order.order_line[0].slidercodesfg.split('TZP-')[1]"/>
 										</span>
                                         </t>
@@ -426,12 +426,12 @@
 										<t t-esc="order.order_line[0].product_template_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
-                                        <t t-if="order.order_line[0].finish">
+                                        <t t-if="order.order_line[0].finish != 'TBA'">
 										<t t-esc="order.order_line[0].finish.splitlines()[0]"/>
                                         </t>
 									</td>
 									<td style="border: 1px solid black">
-                                        <t t-if="order.order_line[0].slidercodesfg">
+                                        <t t-if="order.order_line[0].slidercodesfg != 'TBA'">
 										<span>TZP-<t t-esc="order.order_line[0].slidercodesfg.split('TZP-')[1]"/>
 										</span>
                                         </t>
@@ -562,6 +562,7 @@
 			  
 			</div>
 			</div>
+              <!-- <dkd -->
 			</div>
 		
             </t>
