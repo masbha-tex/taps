@@ -37,7 +37,7 @@
     </record>
     
     <menuitem id="taps_sale.menu_all_sale_report"
-              name="Sale Report"
+              name="Sale Report Wizard"
               sequence="3"
               action="all_sale_report"
               parent="sale.menu_sale_report"/>  

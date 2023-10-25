@@ -99,6 +99,7 @@ class RetentionPDFReport(models.TransientModel):
     #     current_year = datetime.today().year
     #     return str(current_year+1)  
 
+
     @api.depends('date_from')
     def _compute_from_date(self):
         if date.today().day>25:
@@ -331,8 +332,8 @@ class RetentionPDFReport(models.TransientModel):
         # if data.get('year'):
         #     deadlines = str(data.get('year') + '-03-31')
         #     domain.append(('deadline', '=', deadlines))
-        if data.get('year'):
-            domain.append(('year', '=', data.get('year')))
+        # if data.get('year'):
+        #     domain.append(('year', '=', data.get('year')))
         if data.get('mode_company_id'):
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
@@ -454,54 +455,42 @@ class RetentionPDFReport(models.TransientModel):
             if col == 3: 
                 worksheet.write(row, col, l.bonus_amount,report_title_style3)
                 col += 1
-            if l.date == 'year':
-                if col == 4: 
-                    worksheet.write(row, col, l.bonus_lines[0].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 5: 
-                    worksheet.write(row, col, l.bonus_lines[1].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 6: 
-                    worksheet.write(row, col, l.bonus_lines[2].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 7: 
-                    worksheet.write(row, col, l.bonus_lines[3].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 8: 
-                    worksheet.write(row, col, l.bonus_lines[4].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 9: 
-                    worksheet.write(row, col, l.bonus_lines[5].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 10: 
-                    worksheet.write(row, col, l.bonus_lines[6].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 11: 
-                    worksheet.write(row, col, l.bonus_lines[7].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 12: 
-                    worksheet.write(row, col, l.bonus_lines[8].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 13: 
-                    worksheet.write(row, col, l.bonus_lines[9].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 14: 
-                    worksheet.write(row, col, l.bonus_lines[10].amount,report_title_style3)
-                    col += 1
-            if l.date == 'year':
-                if col == 15: 
-                    worksheet.write(row, col, l.bonus_lines[11].amount,report_title_style3)
-                    col += 1
+            if col == 4: 
+                worksheet.write(row, col, l.bonus_lines[0].amount,report_title_style3)
+                col += 1
+            if col == 5: 
+                worksheet.write(row, col, l.bonus_lines[1].amount,report_title_style3)
+                col += 1
+            if col == 6: 
+                worksheet.write(row, col, l.bonus_lines[2].amount,report_title_style3)
+                col += 1
+            if col == 7: 
+                worksheet.write(row, col, l.bonus_lines[3].amount,report_title_style3)
+                col += 1
+            if col == 8: 
+                worksheet.write(row, col, l.bonus_lines[4].amount,report_title_style3)
+                col += 1
+            if col == 9: 
+                worksheet.write(row, col, l.bonus_lines[5].amount,report_title_style3)
+                col += 1
+            if col == 10: 
+                worksheet.write(row, col, l.bonus_lines[6].amount,report_title_style3)
+                col += 1
+            if col == 11: 
+                worksheet.write(row, col, l.bonus_lines[7].amount,report_title_style3)
+                col += 1
+            if col == 12: 
+                worksheet.write(row, col, l.bonus_lines[8].amount,report_title_style3)
+                col += 1
+            if col == 13: 
+                worksheet.write(row, col, l.bonus_lines[9].amount,report_title_style3)
+                col += 1
+            if col == 14: 
+                worksheet.write(row, col, l.bonus_lines[10].amount,report_title_style3)
+                col += 1
+            if col == 15: 
+                worksheet.write(row, col, l.bonus_lines[11].amount,report_title_style3)
+                col += 1
             
             # if col in (4,5,6,7,8,9,10,11,12,13,14,15): 
             #     worksheet.write(row, col, l.bonus_lines[0].amount,)
