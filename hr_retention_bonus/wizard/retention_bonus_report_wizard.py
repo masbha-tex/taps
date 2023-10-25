@@ -22,8 +22,7 @@ class RetentionPDFReport(models.TransientModel):
         ('retentionbonus',	'Retention Bonus'),],
         string='Report Type', required=True,
         help='Report Type', default='retentionbonus')
-    # year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(), required=True)
-    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(), required=True)    
+    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(), required=True)   
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
@@ -65,18 +64,6 @@ class RetentionPDFReport(models.TransientModel):
     file_data = fields.Binary(readonly=True, attachment=False) 
 
     
-    @staticmethod
-    def _get_year_list():
-        current_year = datetime.today().year
-        year_options = []
-        
-        for year in range(current_year - 1, current_year + 1):
-            year_str = str(year)
-            next_year = str(year+1)
-            year_label = f'{year_str}'
-            year_options.append((next_year, year_label))
-        return year_options 
-    
     # @staticmethod
     # def _get_year_list():
     #     current_year = datetime.today().year
@@ -85,19 +72,27 @@ class RetentionPDFReport(models.TransientModel):
     #     for year in range(current_year - 1, current_year + 1):
     #         year_str = str(year)
     #         next_year = str(year+1)
-    #         year_label = f'{year_str}-{next_year[2:]}'
+    #         year_label = f'{year_str}'
     #         year_options.append((next_year, year_label))
-    #     return year_options     
+    #     return year_options 
+    
+    @staticmethod
+    def _get_year_list():
+        current_year = datetime.today().year
+        year_options = []
+        
+        for year in range(current_year - 1, current_year + 1):
+            year_str = str(year)
+            next_year = str(year+1)
+            year_label = f'{year_str}-{next_year[2:]}'
+            year_options.append((next_year, year_label))
+        return year_options     
+
 
     @staticmethod
     def _get_default_year():
         current_year = datetime.today().year
-        return str(current_year)
-
-    # @staticmethod
-    # def _get_default_year():
-    #     current_year = datetime.today().year
-    #     return str(current_year+1)  
+        return str(current_year+1)  
 
 
     @api.depends('date_from')
@@ -326,9 +321,9 @@ class RetentionPDFReport(models.TransientModel):
         start_time = fields.datetime.now()
         domain = []
         # if data.get('date_from'):
-        #     domain.append(('date_from', '=', data.get('date_from')))
+        #     domain.append(('date_from', '<=', data.get('date_from')))
         # if data.get('date_to'):
-        #     domain.append(('date_to', '=', data.get('date_to')))
+        #     domain.append(('date_to', '>=', data.get('date_to')))
         # if data.get('year'):
         #     deadlines = str(data.get('year') + '-03-31')
         #     domain.append(('deadline', '=', deadlines))

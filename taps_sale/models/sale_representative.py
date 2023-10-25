@@ -34,6 +34,7 @@ class SalesRepresentative(models.Model):
     region = fields.Many2one('team.region', string="Region")
     email = fields.Char(string='Email', help='Email address')
     related_employee = fields.Many2one('hr.employee', string="Related Employee")
+    active = fields.Boolean(string="Active", default=True)
     
     
     

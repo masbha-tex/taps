@@ -928,14 +928,14 @@ class OperationDetails(models.Model):
                             if existing_qc.actual_qty >= qc_qty:
                                 qc_update = existing_qc.update({'qty':qc_qty})
                                 rest_qty = rest_qty - rest_qty
-                            # else:
-                            #     qc_qty = qc_qty - existing_qc.actual_qty
-                            #     # qc_qty = rest_qty -  
-                            #     if rest_qty < existing_qc.actual_qty:
-                            #         qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
+                            else:
+                                qc_qty = qc_qty - existing_qc.qty
+                                # qc_qty = rest_qty -  
+                                # if rest_qty < existing_qc.actual_qty:
+                                #     qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
                                     
-                            #     qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
-                            #     rest_qty = 0 #rest_qty - existing_qc.actual_qty
+                                qc_update = existing_qc.update({'qty': qc_qty})
+                                rest_qty = 0 #rest_qty - existing_qc.actual_qty
                                 
                         else:
                             # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
