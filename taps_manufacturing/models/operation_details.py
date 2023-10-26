@@ -916,9 +916,8 @@ class OperationDetails(models.Model):
                 # oa_ids = [int(i) for i in sorted(oa_ids.split(','))]
                 rest_qty = out.uotput_qty
                 while rest_qty > 0:
-                    for i, oa in oa_ids:
-                        raise UserError((i,len(oa_ids))) 
-                        # raise UserError((oa.id,out.oa_id.id,oa_ids))
+                    excessqty = 0
+                    for i, oa in enumerate(sorted(oa_ids)):
                         # ('mrp_lines','=', out.mrp_lines),
                         existing_qc = self.env["operation.details"].search([('oa_id','=', oa.id),('shade','=', out.shade),('next_operation','=', 'Dyeing Qc')])
                         # tape_in_qc.filtered(lambda dy: dy.oa_id.id == oa.id and dy.shade == out.shade and dy.next_operation == 'Dyeing Qc')
@@ -929,14 +928,16 @@ class OperationDetails(models.Model):
                             if existing_qc.actual_qty >= qc_qty:
                                 qc_update = existing_qc.update({'qty':qc_qty})
                                 rest_qty = rest_qty - rest_qty
+                                excessqty = 0
                             else:
-                                qc_qty = qc_qty - existing_qc.qty
-                                # qc_qty = rest_qty -  
-                                # if rest_qty < existing_qc.actual_qty:
-                                #     qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
-                                    
-                                qc_update = existing_qc.update({'qty': qc_qty})
-                                rest_qty = 0 #rest_qty - existing_qc.actual_qty
+                                if i+1 == len(oa_ids):
+                                    excessqty = rest_qty
+                                # qc_qty = qc_qty - existing_qc.qty
+                                # # qc_qty = rest_qty -  
+                                # # if rest_qty < existing_qc.actual_qty:
+                                # #     qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
+                                # qc_update = existing_qc.update({'qty': qc_qty})
+                                # rest_qty = 0 #rest_qty - existing_qc.actual_qty
                                 
                         else:
                             # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
@@ -986,6 +987,16 @@ class OperationDetails(models.Model):
                         # raise UserError((rest_qty))
                         if rest_qty == 0:
                             break
+                    #i+1 == len(oa_ids)
+                    if excessqty > 0:
+                        excessqty = round((excessqty/len(oa_ids)),2)
+                        rest_qty = 0
+                        # raise UserError((excessqty,len(oa_ids)))
+                        existing_qc = None
+                        for l in sorted(oa_ids):
+                            existing_qc = self.env["operation.details"].search([('oa_id','=', l.id),('shade','=', out.shade),('next_operation','=', 'Dyeing Qc')])
+                            qc_update = existing_qc.update({'qty': existing_qc.qty + excessqty})
+                            # raise UserError((existing_qc.qty + excessqty))
 
             
             else:

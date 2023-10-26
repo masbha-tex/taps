@@ -64,6 +64,18 @@ class RetentionPDFReport(models.TransientModel):
     file_data = fields.Binary(readonly=True, attachment=False) 
 
     
+    @staticmethod
+    def _get_year_list():
+        current_year = datetime.today().year
+        year_options = []
+        
+        for year in range(current_year - 1, current_year + 1):
+            year_str = str(year+1)
+            next_year = str(year+1)
+            year_label = f'{year_str}'
+            year_options.append((next_year, year_label))
+        return year_options 
+    
     # @staticmethod
     # def _get_year_list():
     #     current_year = datetime.today().year
@@ -72,27 +84,15 @@ class RetentionPDFReport(models.TransientModel):
     #     for year in range(current_year - 1, current_year + 1):
     #         year_str = str(year)
     #         next_year = str(year+1)
-    #         year_label = f'{year_str}'
+    #         year_label = f'{year_str}-{next_year[2:]}'
     #         year_options.append((next_year, year_label))
-    #     return year_options 
-    
-    @staticmethod
-    def _get_year_list():
-        current_year = datetime.today().year
-        year_options = []
-        
-        for year in range(current_year - 1, current_year + 1):
-            year_str = str(year)
-            next_year = str(year+1)
-            year_label = f'{year_str}-{next_year[2:]}'
-            year_options.append((next_year, year_label))
-        return year_options     
+    #     return year_options     
 
 
     @staticmethod
     def _get_default_year():
         current_year = datetime.today().year
-        return str(current_year+1)  
+        return str(current_year)  
 
 
     @api.depends('date_from')
@@ -321,14 +321,13 @@ class RetentionPDFReport(models.TransientModel):
         start_time = fields.datetime.now()
         domain = []
         # if data.get('date_from'):
-        #     domain.append(('date_from', '<=', data.get('date_from')))
+        #     domain.append(('date_from', '>=', data.get('date_from')))
         # if data.get('date_to'):
-        #     domain.append(('date_to', '>=', data.get('date_to')))
-        # if data.get('year'):
-        #     deadlines = str(data.get('year') + '-03-31')
-        #     domain.append(('deadline', '=', deadlines))
-        # if data.get('year'):
-        #     domain.append(('year', '=', data.get('year')))
+        #     domain.append(('date_to', '<=', data.get('date_to')))
+        if data.get('year'):
+            # raise UserError((data.get('year')))
+            deadlines = str(data.get('year') + '-01-01')
+            domain.append((str('bonus_lines.date'), '=', deadlines))
         if data.get('mode_company_id'):
             domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
@@ -356,12 +355,14 @@ class RetentionPDFReport(models.TransientModel):
         # domain.append(('code', '=', 'NET'))
         
         # raise UserError((domain))
+        # raise UserError(('bonus_lines[0].date'))
         docs = self.env['hr.retention.bonus'].search(domain).sorted(key = 'employee_id', reverse=False)
         # docs1 = self.env['hr.retention.bonus.line'].search(domain).sorted(key = 'employee_id', reverse=False)
         # raise UserError((docs.payment_date))
         # datefrom = data.get('date_from')
         # dateto = data.get('date_to')
         # bankname = self.bank_id.name
+        # raise UserError((data.get('bonus_lines.date')))
         categname=[]
         if self.employee_type =='staff':
             categname='Staffs'
@@ -373,6 +374,9 @@ class RetentionPDFReport(models.TransientModel):
             categname='C-Staffs'
         if self.employee_type =='cworker':
             categname='C-Workers'
+
+        all_date = docs.mapped('bonus_lines.date')
+        all_date = sorted(list(set(all_date)))
             
         
         #raise UserError((datefrom,dateto,bankname,categname))
@@ -440,6 +444,8 @@ class RetentionPDFReport(models.TransientModel):
         col = 1
         row=5
 
+        # for em in all_date:
+        #     all_da = docs.filtered(lambda pr: pr.bonus_lines.date == em)
         for l in docs:
             if col == 1: 
                 worksheet.write(row, col, l.employee_id.display_name,)
@@ -450,42 +456,103 @@ class RetentionPDFReport(models.TransientModel):
             if col == 3: 
                 worksheet.write(row, col, l.bonus_amount,report_title_style3)
                 col += 1
-            if col == 4: 
-                worksheet.write(row, col, l.bonus_lines[0].amount,report_title_style3)
-                col += 1
-            if col == 5: 
-                worksheet.write(row, col, l.bonus_lines[1].amount,report_title_style3)
-                col += 1
-            if col == 6: 
-                worksheet.write(row, col, l.bonus_lines[2].amount,report_title_style3)
-                col += 1
-            if col == 7: 
-                worksheet.write(row, col, l.bonus_lines[3].amount,report_title_style3)
-                col += 1
-            if col == 8: 
-                worksheet.write(row, col, l.bonus_lines[4].amount,report_title_style3)
-                col += 1
-            if col == 9: 
-                worksheet.write(row, col, l.bonus_lines[5].amount,report_title_style3)
-                col += 1
-            if col == 10: 
-                worksheet.write(row, col, l.bonus_lines[6].amount,report_title_style3)
-                col += 1
-            if col == 11: 
-                worksheet.write(row, col, l.bonus_lines[7].amount,report_title_style3)
-                col += 1
-            if col == 12: 
-                worksheet.write(row, col, l.bonus_lines[8].amount,report_title_style3)
-                col += 1
-            if col == 13: 
-                worksheet.write(row, col, l.bonus_lines[9].amount,report_title_style3)
-                col += 1
-            if col == 14: 
-                worksheet.write(row, col, l.bonus_lines[10].amount,report_title_style3)
-                col += 1
-            if col == 15: 
-                worksheet.write(row, col, l.bonus_lines[11].amount,report_title_style3)
-                col += 1
+            if l.bonus_lines[0].date == 'year':
+                if col == 4:  
+                    if l.bonus_lines[0].amount == l.bonus_lines[0].amount:
+                        worksheet.write(row, col, l.bonus_lines[0].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[0].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[1].date == 'year':
+                if col == 5: 
+                    if l.bonus_lines[1].amount == l.bonus_lines[1].amount:
+                        worksheet.write(row, col, l.bonus_lines[1].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[1].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[2].date == 'year':
+                if col == 6: 
+                    if l.bonus_lines[2].amount == l.bonus_lines[2].amount:
+                        worksheet.write(row, col, l.bonus_lines[2].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[2].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[3].date == 'year':
+                if col == 7: 
+                    if l.bonus_lines[3].amount == l.bonus_lines[3].amount:
+                        worksheet.write(row, col, l.bonus_lines[3].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[3].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[4].date == 'year':
+                if col == 8: 
+                    if l.bonus_lines[4].amount == l.bonus_lines[4].amount:
+                        worksheet.write(row, col, l.bonus_lines[4].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[4].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[5].date == 'year':
+                if col == 9: 
+                    if l.bonus_lines[5].amount == l.bonus_lines[5].amount:
+                        worksheet.write(row, col, l.bonus_lines[5].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[5].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[6].date == 'year':
+                if col == 10: 
+                    if l.bonus_lines[6].amount == l.bonus_lines[6].amount:
+                        worksheet.write(row, col, l.bonus_lines[6].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[6].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[7].date == 'year':
+                if col == 11: 
+                    if l.bonus_lines[7].amount == l.bonus_lines[7].amount:
+                        worksheet.write(row, col, l.bonus_lines[7].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[7].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[8].date == 'year':
+                if col == 12: 
+                    if l.bonus_lines[8].amount == l.bonus_lines[8].amount:
+                        worksheet.write(row, col, l.bonus_lines[8].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[8].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[9].date == 'year':
+                if col == 13: 
+                    if l.bonus_lines[9].amount == l.bonus_lines[9].amount:
+                        worksheet.write(row, col, l.bonus_lines[9].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[9].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[10].date == 'year':
+                if col == 14: 
+                    if l.bonus_lines[10].amount == l.bonus_lines[10].amount:
+                        worksheet.write(row, col, l.bonus_lines[10].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[10].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[11].date == 'year':
+                if col == 15: 
+                    if l.bonus_lines[11].amount == l.bonus_lines[11].amount:
+                        worksheet.write(row, col, l.bonus_lines[11].amount,report_title_style3)
+                        col += 1
+                    if not l.bonus_lines[11].amount:
+                        worksheet.write(row, col, '',report_title_style3)
+                        col += 1
+            if l.bonus_lines[0].date == 'year':
             
             # if col in (4,5,6,7,8,9,10,11,12,13,14,15): 
             #     worksheet.write(row, col, l.bonus_lines[0].amount,)

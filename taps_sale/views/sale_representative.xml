@@ -41,11 +41,62 @@
                         </group>
                         <group>
                         <field name="related_employee" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
-                        <field name="active"/>
+                        <field name="active" invisible="0"/>
+                        <field name="team_activation_date"/>
+                        <field name="team_deact_date" invisible="1" />
                         </group>
                     </group>
                 </sheet>
             </form>
+        </field>
+    </record>
+    <record id="team_transfer_form" model="ir.ui.view">
+        <field name="name">team.transfer.form</field>
+        <field name="model">team.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Team Transfer">
+                <header>
+                    <button name="button_confirm" type="object" states="submit" string="Confirm" groups="hr_expense.group_hr_expense_team_approver" class="oe_highlight"/>
+                    <button name="button_submit" type="object" states="draft" string="Submit" class="oe_highlight"/>
+                    <!-- <button name="button_check" type="object" states="submit" string="Accounts Head Approval" class="oe_highlight"/>
+                    <button name="button_draft" states="refused" string="Set to Precheck" type="object" class="oe_highlight" />
+                    <button name="button_prechecked" states="prechecked" string="HR Approval" type="object" class="oe_highlight" />
+                    <button name="button_cancel" states="prechecked,draft,submit,checked,approved" string="Cancel" type="object" class="oe_highlight" /> -->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,confirm" readonly="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <h2>
+                        <field name="name"/>
+                        </h2>
+                    </group>
+                    <group>
+                        <group>
+                        <field name="sales_rep" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
+                        </group>
+                        <group>
+                        <field name="new_team" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True}"/>
+                        </group>
+                        <group>
+                        <field name="activation_date"/>
+                        </group>
+                        
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="team_transfer_list" model="ir.ui.view">
+        <field name="name">team.transfer.list</field>
+        <field name="model">team.transfer</field>
+        <field name="arch" type="xml">
+            <tree string="Transfer Team List">
+                <field name="name"/>
+                <field name="sales_rep"/>
+                <field name="new_team"/>
+                <field name="activation_date"/>
+                <field name="state" optional="show" readonly="1" decoration-info="state == 'draft'" decoration-success="state in ['confirm']" widget="badge"/>
+            </tree>
         </field>
     </record>
     <record id="sale_team_list" model="ir.ui.view">
@@ -54,6 +105,8 @@
         <field name="arch" type="xml">
             <tree string="Team List">
                 <field name="team_name"/>
+                <!-- <field name="team_region"/> -->
+                <!-- <field name="team_leader"/> -->
                 
             </tree>
         </field>
@@ -64,7 +117,6 @@
         <field name="arch" type="xml">
             <tree string="Sales Region">
                 <field name="team_region"/>
-                
             </tree>
         </field>
     </record>
@@ -81,6 +133,11 @@
     <record id="team_region_action_config" model="ir.actions.act_window">
         <field name="name">Team Region</field>
         <field name="res_model">team.region</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="team_transfer_action_config" model="ir.actions.act_window">
+        <field name="name">Team Transfer</field>
+        <field name="res_model">team.transfer</field>
         <field name="view_mode">tree,form</field>
     </record>
     <menuitem
@@ -106,4 +163,10 @@
         action="team_region_action_config"
         parent="taps_sale.menu_sale_representative"
         sequence="20"/>
+    <menuitem
+        id="menu_team_transfer"
+        name="Team Transfer"
+        action="team_transfer_action_config"
+        parent="taps_sale.menu_sale_representative"
+        sequence="21"/>
 </odoo>    

@@ -71,7 +71,7 @@ class SaleOrder(models.Model):
     # amount_in_word = num2words(amount_total, lang='en_IN')
     appr_weight = fields.Char(string='Approximate Weight')
     applicant_bank = fields.Text(string='Applicant Bank')
-    sale_representative = fields.Many2one('sale.representative', string='Sales Representative')
+    sale_representative = fields.Many2one('sale.representative', string='Sales Representative', required=True, default=None)
     is_revised = fields.Boolean('Revision', tracking=True)
     revised_no = fields.Selection([
             ('r1', 'R1'),

@@ -326,6 +326,7 @@ class HeadwisePDFReport(models.TransientModel):
 #         if data.get('date_to'):
 #             domain.append(('date_to', '=', data.get('date_to')))
         if data.get('year'):
+            # raise UserError((data.get('year')))
             deadlines = str(data.get('year') + '-03-31')
             domain.append(('deadline', '=', deadlines))   
         if data.get('mode_company_id'):
