@@ -43,7 +43,7 @@ odoo.define('taps_sale.ReportingDashboard', function (require) {
             return id;
         });
         }
-        console.log(dashboard_def)
+        
         
         // _render: function () {
         // var self = this;
