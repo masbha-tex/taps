@@ -16,7 +16,7 @@
                         <tbody>
                             <tr>
                                 <td>Jamuna</td>
-                                <td><t t-esc="widget.dashboardValues"/></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 
