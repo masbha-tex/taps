@@ -36,13 +36,13 @@
                                 <field name="date_to" class="oe_inline" attrs="{'readonly':[('state','!=','draft')]}"
                                        nolabel="1"/>
                             </div>
-                            <field name="quarter" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="currency_id" attrs="{'readonly':[('state','!=','draft')]}"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Target Lines" name="budget_lines">
                             <field name="target_line"
-                                   context="{'default_date_from': date_from,'default_date_to': date_to,'default_quarter':quarter}" colspan="4"
+                                   context="{'default_date_from': date_from,'default_date_to': date_to, 'default_currency_id': currency_id}" colspan="4"
                                    nolabel="1" attrs="{'readonly':[('state','!=','draft')]}">
                                 <tree string="Target Lines" decoration-success="is_above_target and target_amount &gt; 0" decoration-danger="is_above_target and target_amount &lt; 0" editable="bottom">
                                     <field name="target_id" invisible="1"/>

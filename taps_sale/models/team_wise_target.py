@@ -26,12 +26,7 @@ class TeamWiseTarget(models.Model):
     user_id = fields.Many2one('res.users', 'Responsible', default=lambda self: self.env.user)
     date_from = fields.Date('Start Date', required=True, states={'done': [('readonly', True)]})
     date_to = fields.Date('End Date', required=True, states={'done': [('readonly', True)]})
-    quarter = fields.Selection([
-        ('q1', 'Q1'),
-        ('q2', 'Q2'),
-        ('q3', 'Q3'),
-        ('q4', 'Q4')
-        ], 'Quarter', default='q1', index=True, required=True, copy=False, tracking=True)
+    currency_id = fields.Many2one('res.currency', readonly=False, required=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('cancel', 'Cancelled'),

@@ -1511,7 +1511,7 @@ class PaySlipReportPDF(models.AbstractModel):
                     ['employee_id', 'id:count'],
                     lazy=False
                 )
-
+        # raise UserError((friday_p))
         common_data = []
         for res in friday_p:
             employee_id = res['employee_id'][0] if res.get('employee_id') else None
@@ -1521,7 +1521,7 @@ class PaySlipReportPDF(models.AbstractModel):
                 'employee_id': employee_id,
                 'count': employee_count
             })
-            # raise UserError((employee_id,employee_count))
+            
         
         # fp_days = len(friday_precord)
         # fp_hours = sum(friday_precord.mapped('worked_hours'))         

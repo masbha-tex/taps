@@ -111,7 +111,10 @@ class OperationDetails(models.Model):
     @api.depends('qty', 'done_qty')
     def get_balance(self):
         for s in self:
-            s.balance_qty = round((s.qty - s.done_qty),2)
+            if s.next_operation == 'Dyeing Qc':
+                s.balance_qty = round((s.actual_qty - s.done_qty),2)
+            else:
+                s.balance_qty = round((s.qty - s.done_qty),2)
     
     @api.depends('pack_qty', 'fg_done_qty')        
     def get_fg_balance(self):
@@ -264,6 +267,11 @@ class OperationDetails(models.Model):
     def button_createmrplot(self):
         # self.ensure_one()
         self._check_company()
+        oa_ids = self.mapped('oa_id')
+        # oa_ids = ','.join([str(i) for i in sorted(self.oa_id.ids)])
+        # raise UserError((len(oa_ids)))
+        if len(oa_ids) > 1:
+            raise UserError(('Create lot with single OA'))
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_sizewiselot")
         #action["domain"] = [('default_id','=',self.mapped('id'))]
         return action
@@ -531,12 +539,20 @@ class OperationDetails(models.Model):
     # @api.model
     def write(self, vals):
         if 'done_qty' in vals:
-            if self.qty <= vals.get('done_qty'):
-                vals['state'] = 'done'
-            elif vals.get('done_qty') == 0:
-                vals['state'] = 'waiting'
+            if self.next_operation == 'Dyeing Qc':
+                if self.actual_qty <= vals.get('done_qty'):
+                    vals['state'] = 'done'
+                elif vals.get('done_qty') == 0:
+                    vals['state'] = 'waiting'
+                else:
+                    vals['state'] = 'partial'
             else:
-                vals['state'] = 'partial'
+                if self.qty <= vals.get('done_qty'):
+                    vals['state'] = 'done'
+                elif vals.get('done_qty') == 0:
+                    vals['state'] = 'waiting'
+                else:
+                    vals['state'] = 'partial'
         if 'fg_output' in vals:
             if self.fg_balance < vals.get('fg_output'):
                 raise UserError(('You can not pack more then balance'))
@@ -666,11 +682,31 @@ class OperationDetails(models.Model):
     def set_group_output(self,mo_ids,qty):
         # raise UserError(('Under Construction'))
         operation = self.env["operation.details"].browse(mo_ids)
-        qty = round((qty/len(operation)),2)
+        qty_ = round((qty/len(operation)),2)
+        # 'Dyeing Qc'
         # raise UserError((qty))
-        for op in operation:
-            op.write({'uotput_qty':qty})
-            op._output()
+        if operation[0].next_operation == 'Dyeing Qc':
+            rest_qty = qty
+            while rest_qty > 0:
+                for op in operation:
+                    o_qty = op.uotput_qty + rest_qty
+                    if op.ac_balance_qty >= o_qty:
+                        op.write({'uotput_qty': op.uotput_qty + o_qty})
+                        op._output()
+                        rest_qty = 0
+                    else:
+                        if op.ac_balance_qty > op.uotput_qty:
+                            o_qty = op.ac_balance_qty - op.uotput_qty
+                            if o_qty > 0:
+                                op.write({'uotput_qty':op.uotput_qty + o_qty})
+                                rest_qty = rest_qty - o_qty
+                                op._output()
+                            else:
+                                rest_qty = 0
+        else:
+            for op in operation:
+                op.write({'uotput_qty':qty_})
+                op._output()
 
 
     
@@ -932,7 +968,8 @@ class OperationDetails(models.Model):
                             else:
                                 if existing_qc.actual_qty > existing_qc.qty:
                                     qc_qty = existing_qc.actual_qty - existing_qc.qty
-                                    qc_update = existing_qc.update({'qty':existing_qc.qty + qc_qty})
+                                    if qc_qty > 0:
+                                        qc_update = existing_qc.update({'qty':existing_qc.qty + qc_qty})
                                     rest_qty = rest_qty - qc_qty
                                     # raise UserError((rest_qty))
                                 if i+1 == len(oa_ids):

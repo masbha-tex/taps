@@ -26,7 +26,7 @@ class ManufacturingGroupOutput(models.TransientModel):
     shade = fields.Text(string='Shade', readonly=True)
     # manuf_date = fields.Datetime(string='Production Date', required=True, default=datetime.now())
     planned_qty = fields.Float(string='Dyed Balance Qty', digits='Product Unit of Measure', readonly=True)
-    # oa_tape_qty = fields.Float(string='OA Tape Balance', digits='Product Unit of Measure', readonly=True)
+    oa_tape_qty = fields.Float(string='OA Tape Balance', digits='Product Unit of Measure', readonly=True)
     qty = fields.Float(string='Qty', default=0.0, digits='Product Unit of Measure',required=True)
     
     @api.model
@@ -40,6 +40,7 @@ class ManufacturingGroupOutput(models.TransientModel):
         res["item"] = production[0].fg_categ_type
         res["shade"] = production[0].shade
         res["planned_qty"] = sum(production.mapped('balance_qty'))
+        res["oa_tape_qty"] = sum(production.mapped('ac_balance_qty'))
         
         # res["planned_qty"] = sum(oa_tape_qty
         return res 
