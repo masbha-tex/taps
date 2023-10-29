@@ -10,3 +10,5 @@ access_sale_report,access_sale_pdf_report,model_sale_pdf_report,sales_team.group
 access_sale_team,access_sale_team,model_sale_team,base.group_user,1,1,1,1
 access_sale_team_region,access_sale_team_region,model_team_region,base.group_user,1,1,1,1
 access_sale_team_transfer,access_team_transfer,model_team_transfer,base.group_user,1,1,1,1
+access_sale_target,access_sale_target,model_sale_target,base.group_user,1,1,1,1
+access_sale_target_lines,access_sale_target_lines,model_sale_target_lines,base.group_user,1,1,1,1

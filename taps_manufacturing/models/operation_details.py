@@ -930,6 +930,11 @@ class OperationDetails(models.Model):
                                 rest_qty = rest_qty - rest_qty
                                 excessqty = 0
                             else:
+                                if existing_qc.actual_qty > existing_qc.qty:
+                                    qc_qty = existing_qc.actual_qty - existing_qc.qty
+                                    qc_update = existing_qc.update({'qty':existing_qc.qty + qc_qty})
+                                    rest_qty = rest_qty - qc_qty
+                                    # raise UserError((rest_qty))
                                 if i+1 == len(oa_ids):
                                     excessqty = rest_qty
                                 # qc_qty = qc_qty - existing_qc.qty

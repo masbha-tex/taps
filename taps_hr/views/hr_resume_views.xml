@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="resume_line_view_form_taps_inherit" model="ir.ui.view">
+        <field name="name">hr.resume.line.form.inherit</field>
+        <field name="model">hr.resume.line</field>
+        <field name="inherit_id" ref="hr_skills.resume_line_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_type']" position="after">
+                <field name="service_length"/>
+                <field name="service_length_days"/>
+                <field name="t_service_length"/>
+                
+            </xpath>
+        </field>
+    </record>
+    <record id="hr_employee_view_form_taps_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.inherit.resume.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_skills.hr_employee_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_type']" position="after">
+                <field name="service_length"/>
+                <field name="service_length_days"/>
+                <field name="t_service_length"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="hr_employee_public_view_form_inherit_taps_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.public.view.form.inherit.resume.inherit</field>
+        <field name="model">hr.employee.public</field>
+        <field name="inherit_id" ref="hr_skills.hr_employee_public_view_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_type']" position="after">
+                <field name="service_length"/>
+                <field name="service_length_days"/>
+                <field name="t_service_length"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

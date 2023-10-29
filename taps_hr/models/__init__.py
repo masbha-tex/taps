@@ -14,3 +14,5 @@ from . import provident_fund
 from . import hr_appraisal_goal
 from . import hr_appraisal
 from . import hr_appraisal_goal_acvd
+from . import hr_resume
+

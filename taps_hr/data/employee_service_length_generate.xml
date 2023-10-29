@@ -12,5 +12,19 @@
             <field name="numbercall">-1</field>
             <field name="nextcall">2022-03-16 18:00:10</field>
         </record>
+        <!-- <record id="ir_cron_data_resume_service_length_generate" model="ir.cron">
+            <field name="name">Resume: Service length Generate</field>
+            <field name="model_id" ref="model_hr_resume_line"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model._calculate_serviceLength()
+model._t_calculate_serviceLength()
+model._d_calculate_serviceLength()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall">2023-10-28 18:00:10</field>
+        </record> -->
+       
     </data>
 </odoo>

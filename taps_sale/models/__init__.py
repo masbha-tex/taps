@@ -10,3 +10,4 @@ from . import bank
 from . import sale_representative
 from . import wastage_percent
 from . import order_flow
+from . import team_wise_target
