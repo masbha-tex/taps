@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+import math
 from datetime import date, datetime, time, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
@@ -26,7 +27,7 @@ class Employee(models.Model):
 class ResumeLine(models.Model):
     _inherit = 'hr.resume.line'
     _description = "Resumé line of an employee"
-    # _order = "line_type_id, date_end desc, date_start desc"
+    _order = "line_type_id, date_end desc, date_start desc"
 
     service_length = fields.Char( string="Service Length", compute='_calculate_serviceLength', store=True, readonly=True, depends=['date_start', 'date_end'])#
     t_service_length = fields.Char( string="Total Service Length", compute='_t_calculate_serviceLength', store=False, readonly=True)# 

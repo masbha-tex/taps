@@ -127,7 +127,7 @@ var AbstractGroupedOne2ManyRenderer = ListRenderer.extend({
                 groupTitle = _t("Other");
             } else {
                 groupTitle = group[0].data[self.groupBy].data.display_name;
-                serviceLength = group[0].data.t_service_length || ''; // Replace 'service_length' with the actual field name
+                serviceLength = group[0].data.t_service_length || '';
             }
             var $title_row = $(self._renderGroupRow(groupTitle,serviceLength));
             $body.append($title_row);

@@ -8,7 +8,8 @@
             <script type="text/javascript" src="/taps_hr/static/src/js/kiosk_confirm.js"></script>
             <script type="text/javascript" src="/taps_hr/static/src/js/my_attendances.js"></script>
             <script type="text/javascript" src="/taps_hr/static/src/js/time_widget.js"></script>
-            <!-- <script type="text/javascript" src="/taps_hr/static/src/js/resume_widget.js"></script> -->
+            <link rel="stylesheet" type="text/scss" href="/taps_hr/static/src/scss/hr_skills.scss"/>
+            <script type="text/javascript" src="/taps_hr/static/src/js/resume_widget.js"></script>
             <link rel="stylesheet" type="text/scss" href="/taps_hr/static/src/scss/hr_attendance.scss"/>
             <link rel="stylesheet" type="text/scss" href="/taps_hr/static/src/scss/hr_appraisal.scss"/>
         </xpath>
