@@ -369,7 +369,7 @@ class SaleOrder(models.Model):
         
         self.check_access_rights('read')
         povalue = 0
-
+        # raise UserError(('hi'))
         result = {
             'regular': 0,#all_to_send
             'block': 0,#all_waiting
@@ -1270,7 +1270,11 @@ class SaleOrder(models.Model):
     # def _action_confirm(self):
     #     self.order_line._action_launch_stock_rule()
     #     return super(SaleOrder, self)._action_confirm()
-
+    # def unlink(self):
+    #     for order in self:
+    #         if order.state not in ('draft', 'cancel'):
+    #             raise UserError(_('You can not delete a sent quotation or a confirmed sales order. You must first cancel it.'))
+    #     return super(SaleOrder, self).unlink()
     
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'

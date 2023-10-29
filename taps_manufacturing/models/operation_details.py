@@ -373,7 +373,7 @@ class OperationDetails(models.Model):
                                             'sizein':m_order.sizein,
                                             'sizecm':m_order.sizecm,
                                             'operation_of':'lot',
-                                            'work_center':3,
+                                            'work_center':17,
                                             'operation_by':'Metal chain making',
                                             'based_on':'size',
                                             'next_operation':'Dipping Output',

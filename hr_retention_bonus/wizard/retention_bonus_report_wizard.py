@@ -64,35 +64,35 @@ class RetentionPDFReport(models.TransientModel):
     file_data = fields.Binary(readonly=True, attachment=False) 
 
     
-    @staticmethod
-    def _get_year_list():
-        current_year = datetime.today().year
-        year_options = []
-        
-        for year in range(current_year - 1, current_year + 1):
-            year_str = str(year+1)
-            next_year = str(year+1)
-            year_label = f'{year_str}'
-            year_options.append((next_year, year_label))
-        return year_options 
-    
     # @staticmethod
     # def _get_year_list():
     #     current_year = datetime.today().year
     #     year_options = []
         
     #     for year in range(current_year - 1, current_year + 1):
-    #         year_str = str(year)
+    #         year_str = str(year+1)
     #         next_year = str(year+1)
-    #         year_label = f'{year_str}-{next_year[2:]}'
+    #         year_label = f'{year_str}'
     #         year_options.append((next_year, year_label))
-    #     return year_options     
+    #     return year_options 
+    
+    @staticmethod
+    def _get_year_list():
+        current_year = datetime.today().year
+        year_options = []
+        
+        for year in range(current_year - 1, current_year + 1):
+            year_str = str(year)
+            next_year = str(year+1)
+            year_label = f'{year_str}-{next_year[2:]}'
+            year_options.append((next_year, year_label))
+        return year_options     
 
 
     @staticmethod
     def _get_default_year():
         current_year = datetime.today().year
-        return str(current_year)  
+        return str(current_year+1) 
 
 
     @api.depends('date_from')
@@ -326,8 +326,8 @@ class RetentionPDFReport(models.TransientModel):
         #     domain.append(('date_to', '<=', data.get('date_to')))
         # if data.get('year'):
         #     # raise UserError((data.get('year')))
-        #     deadlines = str(data.get('year') + '-01-01')
-            # domain.append((str('bonus_lines.date'), '=', deadlines))
+        #     deadlines = str(data.get('year') + '-03-31')
+        #     domain.append(('date', '=', deadlines)) 
         if data.get('mode_company_id'):
             domain.append(('bonus_id.employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
@@ -336,8 +336,8 @@ class RetentionPDFReport(models.TransientModel):
             domain.append(('bonus_id.employee_id.category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             domain.append(('bonus_id.employee_id.id', '=', data.get('employee_id')))
-        if data.get('bank_id'):
-            domain.append(('bonus_id.employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        # if data.get('bank_id'):
+        #     domain.append(('bonus_id.employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
         if data.get('employee_type'):
             if data.get('employee_type')=='staff':
                 domain.append(('bonus_id.employee_id.category_ids.id', 'in',(15,21,31)))
@@ -352,17 +352,16 @@ class RetentionPDFReport(models.TransientModel):
         if data.get('company_all'):
             if data.get('company_all')=='allcompany':
                 domain.append(('bonus_id.employee_id.company_id.id', 'in',(1,2,3,4)))                
-        # domain.append(('code', '=', 'NET'))
         
-       
         # docs = self.env['hr.retention.bonus'].search(domain).sorted(key = 'employee_id', reverse=False)
+        
         datefrom = data.get('date_from')
         year_ = int(datefrom.strftime('%Y'))
         # raise UserError((year_))
         docs = self.env['hr.retention.bonus.line'].search(domain)#.sorted(key = 'employee_id', reverse=False)
-        docs = docs.filtered(lambda x: x.date.year == year_)
+        docs = docs.filtered(lambda x: x.date.month.year == year_)
         # raise UserError((docs[0].date.year))
-        
+
         dateto = data.get('date_to')
         
         categname=[]

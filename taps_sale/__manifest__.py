@@ -49,6 +49,7 @@
         #'views/fg_product.xml',
         # 'views/assets.xml',
         'views/variant_templates.xml',
+        'views/action_reporting_dashboard.xml',
         'reports/report.xml',
         'views/order_flow.xml',
         'wizard/sales_report_wizard.xml',
@@ -56,7 +57,9 @@
         
         
     ],
-    'qweb': ["static/src/xml/sale_dashboard.xml"],
+    'qweb': ["static/src/xml/sale_dashboard.xml",
+             "static/src/xml/sale_reporting_dashboard.xml",
+            ],
     # only loaded in demonstration mode
     'installable': True,
     'auto_install': False,

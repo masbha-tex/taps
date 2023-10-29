@@ -1480,7 +1480,7 @@ class PaySlipReportPDF(models.AbstractModel):
             domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
-            domain.append(('employee_id.id', 'in', data.get('employee_id')))
+            domain.append(('employee_id.id', 'in', (data.get('employee_id'))))
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
@@ -1511,6 +1511,7 @@ class PaySlipReportPDF(models.AbstractModel):
                     ['employee_id', 'id:count'],
                     lazy=False
                 )
+        
         # raise UserError((friday_p))
         common_data = []
         for res in friday_p:

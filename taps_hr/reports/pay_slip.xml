@@ -40,11 +40,12 @@
 										<!-- <span t-esc="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days-(datas[4]+datas[6])"/> -->
                                         
                                         <t t-set="working_total" t-value="o.worked_days_line_ids.filtered(lambda line: line.code == 'P').number_of_days"/>
-                                        
-                                        <t t-if="o.employee_id == datas[0]"> 
-                                        
-                                            <t t-set="working_total" t-value="working_total-datas[1]"/>
-                                        
+                                        <t t-if="datas">
+                                            <t t-if="o.employee_id == datas[0]"> 
+                                            
+                                                <t t-set="working_total" t-value="working_total-datas[1]"/>
+                                            
+                                            </t>
                                         </t>
                                         
         								<span t-esc="working_total"/>

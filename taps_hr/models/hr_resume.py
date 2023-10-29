@@ -32,6 +32,8 @@ class ResumeLine(models.Model):
     t_service_length = fields.Char( string="Total Service Length", compute='_t_calculate_serviceLength', store=False, readonly=True)# 
     service_length_days = fields.Integer( string="Service Length Days", compute='_d_calculate_serviceLength', store=True, readonly=True, depends=['date_start', 'date_end'])
     total_service_length = fields.Char( string="Grand Total Service Length")
+    year = fields.Integer( string="Year")
+    month = fields.Integer( string="Month")
 
     def _calculate_serviceLength(self):
         # emp_obj = self.env['hr.employee'].search([('active', '=', True)])
@@ -57,29 +59,44 @@ class ResumeLine(models.Model):
                 months = total_months % 12 
 
                 # raise UserError((years,months))
+
     
                 # Calculate the remaining days
                 # remaining_days = (deadlineDate - (currentDate + relativedelta(years=years, months=months))).days
     
                 length = f"{years} Years {months} Months"
-                
+                record.year = years
+                record.month = months               
                 record.service_length = length
             else:
-                record.service_length = 0                   
+                record.service_length = f" "                 
                 
     def _t_calculate_serviceLength(self):
-        total_days = sum(dt['service_length_days'] for dt in self)
+        years = sum(dt['year'] for dt in self)
+        months = sum(dt['month'] for dt in self)
         for record in self:
             if record:                
                 # Calculate years from total number of days
-                years = total_days // 365
-                remaining_days = total_days % 365
+                # years = total_days // 365
+                # remaining_days = total_days % 365
                 
-                # Calculate months from the remaining days
-                months = remaining_days // 30
-                remaining_days %= 30      
+                # # Calculate months from the remaining days
+                # months = remaining_days // 30
+                # remaining_days %= 30
+                m_fraction = math.floor(months/12)
+                
+                actual_month = 0
+                if m_fraction < 1 :
+                    actual_month = months
+                elif m_fraction == 1 :
+                    actual_month = 0
+                    years += 1
+                else:
+                    years += m_fraction
+                    actual_month = (months - (m_fraction*12))
+                    
     
-                length = f"{years} Years {months} Months"
+                length = f"{years} Years {actual_month} Months"
                 
                 record.t_service_length = length
                 record.total_service_length = length

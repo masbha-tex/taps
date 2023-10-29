@@ -1,4 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<templates>
+<templates xml:space="preserve">
+    <t t-name="ReportingDashboard">
+        <div class="container mt32">
+            <div class="row">
+            <div class="col-6">
+            <h2 class="text-center">Quaterly Target Vs Achievement</h2>
+                <div>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <th>Team Name</th>
+                            <th>Quarter</th>
+                            <th>Target</th>
+                            <th>Achievement</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jamuna</td>
+                                <td><t t-esc="widget.dashboardValues"/></td>
+                                <td></td>
+                                <td></td>
+                                
+                            </tr>
+                            <tr>
+                                <td>Padma</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                
+                            </tr>
+                            <tr>
+                                <td>Meghna</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-6">
+            <!-- <h2>Quaterly Target Vs Achievement</h2> -->
+            </div>
+            </div>
+        </div>
+        
+    </t>
     
 </templates>
