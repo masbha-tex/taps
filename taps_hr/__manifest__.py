@@ -103,7 +103,7 @@
     'demo': [],
     'qweb': [
         "static/src/xml/attendance.xml",
-        # "static/src/xml/resume_templates.xml",
+        "static/src/xml/resume_templates.xml",
     ],    
     'installable': True,
     'auto_install': False,

@@ -8,7 +8,6 @@ from werkzeug.urls import url_encode
 
 class HrEmployeePrivate(models.Model):
     _inherit = 'hr.employee'
-    
         
     @api.model
     def create(self, vals):

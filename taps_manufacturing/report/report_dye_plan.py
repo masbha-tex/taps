@@ -110,7 +110,7 @@ class ReportDyePlan(models.AbstractModel):
                     plan_lots = math.ceil(plq/m_capa)
                     oa_ = single_plan.mapped('oa_id.name')
                     oa_names = [str(int(record.replace('OA','0'))) for record in oa_]
-                    oa_names_str = ','.join(oa_names)
+                    oa_names_str = '+'.join(oa_names)
                     
                     rest_plq = plq/plan_lots
                     rest_dnq = dnq

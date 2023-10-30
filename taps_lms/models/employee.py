@@ -1,9 +1,8 @@
 from odoo import models, fields, api
 
 
-class HrEmployee(models.Model):
+class HrEmployeePrivate(models.Model):
     _inherit = 'hr.employee'
-    _description = 'Hr Employee'
 
     # instructor = fields.Boolean('Facilitator', default=False)
     session_ids = fields.Many2many('lms.session', string="Attended Training Sessions", compute='_compute_session_ids')

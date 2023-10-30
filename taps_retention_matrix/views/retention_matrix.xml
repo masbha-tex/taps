@@ -50,8 +50,8 @@
         <field name="priority" eval="1"/>
         <field name="arch" type="xml">
             <!-- <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute> -->
-            <!-- <tree string="Retention" multi_edit="1" sample="1" js_class="taps_retention_matrix_tree_dashboard_upload"> -->
-            <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0"> 
+            <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0" js_class="taps_retention_matrix_tree_dashboard_upload">
+            <!-- <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0">  -->
                 <field name="employee_id" required="1" options="{'no_open': True}"/>
                 <field name="company_id" optional="hide"/>
                 <!-- <field name="grade"/> -->

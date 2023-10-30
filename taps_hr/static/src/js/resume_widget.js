@@ -1,4 +1,4 @@
-odoo.define('web.FieldResume', function (require) {
+odoo.define('taps_hr.FieldResume', function (require) {
 "use strict";
 
 var time = require('web.time');

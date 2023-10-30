@@ -343,7 +343,8 @@ class ManufacturingOrder(models.Model):
                         p_ids = max_plan_id
                         if p.plan_ids:
                             p_ids = p.plan_ids + ',' + str(max_plan_id)
-                        p.update({'dyeing_plan':plan_start,'dyeing_plan_qty':m_qty,'dy_rec_plan_qty':re_pqty,'plan_ids':p_ids})
+                        p.update({'dyeing_plan':plan_start,'dyeing_plan_qty':m_qty,
+                                  'dy_rec_plan_qty':re_pqty,'plan_ids':p_ids})
 
         
         for p in production:

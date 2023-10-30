@@ -89,13 +89,13 @@ class HrEmployeePrivate(models.Model):
             # vals.update(self._sync_user(user, vals.get('image_1920') == self._default_image()))
             vals['name'] = vals.get('name', user.name)
         employee = super(HrEmployeePrivate, self).create(vals)
-        url = '/web#%s' % url_encode({
-            'action': 'hr.plan_wizard_action',
-            'active_id': employee.id,
-            'active_model': 'hr.employee',
-            'menu_id': self.env.ref('hr.menu_hr_root').id,
-        })
-        employee._message_log(body=_('<b>Congratulations!</b> May I recommend you to setup an <a href="%s">onboarding plan?</a>') % (url))
+        # url = '/web#%s' % url_encode({
+        #     'action': 'hr.plan_wizard_action',
+        #     'active_id': employee.id,
+        #     'active_model': 'hr.employee',
+        #     'menu_id': self.env.ref('hr.menu_hr_root').id,
+        # })
+        # employee._message_log(body=_('<b>Congratulations!</b> May I recommend you to setup an <a href="%s">onboarding plan?</a>') % (url))
         if employee.department_id:
             self.env['mail.channel'].sudo().search([
                 ('subscription_department_ids', 'in', employee.department_id.id)
@@ -724,7 +724,6 @@ class HrEmployeeBase(models.AbstractModel):
 class HrEmployeePublic(models.Model):
     # _name = "hr.employee.public"
     _inherit = ["hr.employee.public"]
-    _description = 'Public Employee'
     _order = 'emp_id'
     _auto = False
     _log_access = True # Include magic fields

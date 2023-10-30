@@ -138,9 +138,11 @@ class SaleOrder(models.Model):
     #                 raise UserError(('This OA is in production plan. Do you want to update production data with this revision?'))
     #     if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
     #         # if values.get('is_hold'):
-    #         mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
-    #         if mrp:
-    #             sdlkf = mrp.write({'state':'hold'})
+    #         operation = self.env['operation.details'].search([('oa_id','=', self.id)])
+    #         if operation:
+    #             mrp = self.env['manufacturing.order'].search([('oa_id','=', self.id)])
+    #             op_update = operation.write({'state':'hold'})
+    #             mrp_update = mrp.write({'state':'hold'})
         
     #     result = super(SaleOrder, self).write(values)
     #     return result

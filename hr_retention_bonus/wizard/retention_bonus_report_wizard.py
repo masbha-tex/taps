@@ -331,7 +331,7 @@ class RetentionPDFReport(models.TransientModel):
         if data.get('mode_company_id'):
             domain.append(('bonus_id.employee_id.company_id.id', '=', data.get('mode_company_id')))
         if data.get('department_id'):
-            domain.append(('bonus_id.department_id.id', '=', data.get('department_id')))
+            domain.append(('bonus_id.department_id.parent_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             domain.append(('bonus_id.employee_id.category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
@@ -352,14 +352,25 @@ class RetentionPDFReport(models.TransientModel):
                 domain.append(('bonus_id.employee_id.company_id.id', 'in',(1,2,3,4)))                
         
         # docs = self.env['hr.retention.bonus'].search(domain).sorted(key = 'employee_id', reverse=False)
+
         
         datefrom = data.get('date_from')
-        year_ = int(datefrom.strftime('%Y'))
+
+        # raise UserError((data.get('year')))
+        year_from = int(data.get('year'))-1
+        year_to = int(data.get('year'))
+        datefrom = date.today().replace(day=1).replace(month=4).replace(year=year_from)
+        dateto = date.today().replace(day=31).replace(month=3).replace(year=year_to)
+        #(date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
+        # year_ = int(datefrom.strftime('%Y'))
         
-        # raise UserError((year_))
+        # raise UserError((datefrom,dateto))
         docs = self.env['hr.retention.bonus.line'].search(domain)#.sorted(key = 'employee_id', reverse=False)
-        docs = docs.filtered(lambda x: x.date.month.year == year_)
+        docs = docs.filtered(lambda x: x.date >= datefrom and x.date <= dateto)
+
+        
         # raise UserError((docs[0].date.year))
+        
 
         dateto = data.get('date_to')
         
@@ -376,26 +387,6 @@ class RetentionPDFReport(models.TransientModel):
             categname='C-Workers'
             
         
-        #raise UserError((datefrom,dateto,bankname,categname))
-        # report_data = []
-        # emp_data = []
-        # slnumber=0
-        # for rdata in docs:
-        #     slnumber = slnumber+1
-        #     emp_data = [
-        #         slnumber,
-        #         rdata.employee_id.display_name,
-        #         # rdata.bonus_lines[0],
-        #         rdata.payment_date,
-        #         rdata.bonus_amount,
-        #         rdata.bonus_lines.amount[0],
-        #         # format_date(self.env, rdata.employee_id.joining_date),
-        #         # rdata.employee_id.bank_account_id.acc_number,
-        #         # round(rdata.total),
-        #     ]
-        #     report_data.append(emp_data)     
-        
-        
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet()
@@ -404,12 +395,13 @@ class RetentionPDFReport(models.TransientModel):
         report_title_style2 = workbook.add_format({'font_size': 11, 'num_format': 'mmm-yy'})
         report_title_style3 = workbook.add_format({'font_size': 11, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         # worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
-        worksheet.merge_range('B2:C2', 'April to Mar', report_title_style)
+        worksheet.merge_range('B2:C2', ('April to Mar (%s - %s)' % (str(year_from),str(year_to))), report_title_style)
         
         report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
-#         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-        # worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
-        # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        # worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+        # worksheet.merge_range('D2:E2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style)
+        # worksheet.merge_range('D2:E2', (str(year_to), '%Y-%m-%d').strftime('%B  %Y')), report_title_style)
+        # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_title_style)
         
         column_product_style = workbook.add_format({'bold': True, 'font_size': 11})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
@@ -536,19 +528,6 @@ class RetentionPDFReport(models.TransientModel):
         worksheet.write(row, 15, '=SUM(P{0}:P{1})'.format(5, row), column_issued_style)
         
 
-        # for line in report_data:
-        #     col = 0
-        #     for l in line:
-        #         worksheet.write(row, col, l)
-        #         col+=1
-        #     row+=1
-        
-             
-        #worksheet.write(4, 0, 'SL.', column_product_style)
-        #raise UserError((row+1))
-        
-        # worksheet.write(row, 4, 'Grand Total', report_small_title_style)
-        # worksheet.write(row, 5, round(grandtotal), report_small_title_style)
         
         #raise UserError((datefrom,dateto,bankname,categname))
         workbook.close()
