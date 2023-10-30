@@ -131,10 +131,10 @@ class SaleOrder(models.Model):
 
 
     def action_cancel(self):
-        # if self.state == "sale":
-        #     mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
-        #     if mrp:
-        #         raise UserError(('This OA is in plan'))
+        if self.state == "sale" and self.sales_type == "oa":
+            mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
+            if mrp:
+                raise UserError(('You can not cancel, this OA is in plan'))
         cancel_warning = self._show_cancel_wizard()
         if cancel_warning:
             return {
