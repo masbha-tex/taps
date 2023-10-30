@@ -173,6 +173,7 @@ class ManufacturingOrder(models.Model):
         ('done', 'Done'),
         ('hold', 'Hold')],
         string='State')
+    revision_no = fields.Char(string='Revision No', store=True)
 
     # @api.constrains('company_id')
     # def _check_company_id(self):

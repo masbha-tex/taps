@@ -155,6 +155,7 @@ class OperationDetails(models.Model):
         ('done', 'Done'),
         ('hold', 'Hold')],
         string='State')
+    revision_no = fields.Char(string='Revision No', store=True)
     
     # @api.model
     # def action_unplan(self):

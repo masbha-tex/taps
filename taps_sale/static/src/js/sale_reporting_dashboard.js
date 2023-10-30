@@ -22,15 +22,22 @@ odoo.define('taps_sale.ReportingDashboard', function (require) {
         
         init: function () {
             this._super.apply(this, arguments);
+            self = this;
+            self._rpc({
+                    model: 'sale.order',
+                    method: 'search_read',
+                    fields: ['name'],
+                    domain: [['sales_type', '=', 'oa']],
+                    context: self.context,
+                }).then(function (result) {
+              
+                    return result;
+                    
+                });
             
-            
-            
+        
         
         }
-        
-        
-        
-        
         
         
 

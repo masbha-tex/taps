@@ -129,12 +129,40 @@ class SaleOrder(models.Model):
     corrosions_test = fields.Char(string='Corrosions Test Method')
     brand = fields.Char(string='Brand')
 
+    
+    # def write(self, values):
+    #     if 'revised_no' in values and self.state == "sale" and self.sales_type == "oa":
+    #         mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
+    #         if mrp:
+    #             if self.revised_no != values.get('revised_no'):
+    #                 raise UserError(('This OA is in production plan. Do you want to update production data with this revision?'))
+    #     if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
+    #         # if values.get('is_hold'):
+    #         mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
+    #         if mrp:
+    #             sdlkf = mrp.write({'state':'hold'})
+        
+    #     result = super(SaleOrder, self).write(values)
+    #     return result
+    
+    # def _action_generate_backorder_wizard(self, show_transfers=False):
+    #     view = self.env.ref('stock.view_backorder_confirmation')
+    #     return {
+    #         'name': _('Create Backorder?'),
+    #         'type': 'ir.actions.act_window',
+    #         'view_mode': 'form',
+    #         'res_model': 'stock.backorder.confirmation',
+    #         'views': [(view.id, 'form')],
+    #         'view_id': view.id,
+    #         'target': 'new',
+    #         'context': dict(self.env.context, default_show_transfers=show_transfers, default_pick_ids=[(4, p.id) for p in self]),
+    #     }    
 
     def action_cancel(self):
-        if self.state == "sale" and self.sales_type == "oa":
-            mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
-            if mrp:
-                raise UserError(('You can not cancel, this OA is in plan'))
+        # if self.state == "sale" and self.sales_type == "oa":
+        #     mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
+        #     if mrp:
+        #         raise UserError(('You can not cancel, this OA is in plan'))
         cancel_warning = self._show_cancel_wizard()
         if cancel_warning:
             return {

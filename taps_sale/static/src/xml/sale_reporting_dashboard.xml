@@ -16,7 +16,7 @@
                         <tbody>
                             <tr>
                                 <td>Jamuna</td>
-                                <td></td>
+                                <td><t t-esc="result"/></td>
                                 <td></td>
                                 <td></td>
                                 
