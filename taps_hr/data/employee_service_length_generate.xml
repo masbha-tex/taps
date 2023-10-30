@@ -21,7 +21,7 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="nextcall">2023-11-1 18:00:05</field>
+            <field name="nextcall">2023-10-30 18:00:05</field>
         </record>
        
     </data>
