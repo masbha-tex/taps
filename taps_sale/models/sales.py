@@ -17,6 +17,8 @@ import re
 from decimal import Decimal, ROUND_HALF_UP
 import decimal
 from werkzeug.urls import url_encode
+import logging
+_logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -387,9 +389,111 @@ class SaleOrder(models.Model):
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
            
             rec.env['mail.mail'].sudo().create(mail_values).send()
+
     
     
     
+    def _action_daily_oa_release_email_team_wise(self, team_id):
+        
+        team = self.env['sale.team'].search([('id', 'in', (team_id))])
+        # raise UserError((team))
+        for rec in team: 
+            subject = (rec.team_name)+' Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
+            
+            body = 'Hello'
+            email_to_list = []
+            email_to_list = []
+            email_from_list = [
+                'shahid.hossain@texzipperbd.com',
+            ]
+            email_cc_list = [
+                'alamgir@texzipperbd.com',
+                ]
+            author_id=0
+            
+            email_to_list.append(rec.team_leader.email)
+            email_cc_list.append(rec.team_leader.leader.email)
+                
+    
+            
+            # raise UserError((ct['team_name']))
+            report = rec.env.ref('taps_sale.action_report_daily_oa_release_team_wise', False)
+            # report = report.with_context(ct)
+            pdf_content, content_type = report.sudo()._render_qweb_pdf(res_ids=[rec.id], data={"team_id": rec.id})
+            attachment = rec.env['ir.attachment'].sudo().create({
+                        'name': rec.team_name+' Daily OA Release('+(datetime.now().strftime('%d %b, %Y'))+')'+'.pdf',
+                        'type': 'binary',
+                        'datas': base64.encodebytes(pdf_content),
+                        'mimetype': 'application/pdf',
+                        'res_model' : 'sale.order',
+                        
+                        
+              
+            })
+            
+           
+            # if rec.id == 1:
+            #     report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
+            #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
+            #     email_cc_list.append('csd.zipper@texzipperbd.com')
+            #     email_from_list.append('csd.zipper@texzipperbd.com')
+            # if rec.id == 3:
+            #     report = rec.env.ref('taps_sale.action_report_daily_oa_release_mt', False)
+            #     email_cc_list.append('kumar.abhishek@texzipperbd.com')
+            #     email_cc_list.append('nasir.csd@texzipperbd.com')
+            #     email_from_list.append('nasir.csd@texzipperbd.com')
+            # pdf_content, content_type = report.sudo()._render_qweb_pdf()
+            # author_list = ','.join(author_id)
+            # raise UserError((pdf_content))
+            # attachment = rec.env['ir.attachment'].sudo().create({
+            #             'name': rec.name+' Daily OA Release('+(datetime.now().strftime('%d %b, %Y'))+')'+'.pdf',
+            #             'type': 'binary',
+            #             'datas': base64.encodebytes(pdf_content),
+            #             'mimetype': 'application/pdf',
+            #             'res_model' : 'sale.order',
+            #             'company_id' : rec.id,
+                        
+              
+            # })
+            
+            email_cc = ','.join(email_cc_list)
+            email_from = ','.join(email_from_list)
+            email_to = ','.join(email_to_list)
+            mail_values = {
+                'email_from': email_from,
+                'author_id': self.env.user.partner_id.id,
+                'model': None,
+                'res_id': None,
+                'subject': subject,
+                'body_html': body,
+                'auto_delete': True,
+                'email_to': email_to,
+                'email_cc': email_cc,
+                'attachment_ids' : attachment,
+                
+                
+            }
+            # raise UserError((rec.env.ref('taps_sale.view_oa_release_body_team_wise', raise_if_not_found=True)))
+            try:
+                
+                template = rec.env.ref('taps_sale.view_oa_release_body_team_wise', raise_if_not_found=True)
+                
+            except ValueError:
+                _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')
+            else:
+                
+                template_ctx = {
+                    'message': rec.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA.pdf')),
+                    'model_description': rec.env['ir.model']._get('sale.order').display_name,
+                    'team' : rec,
+                }
+                
+                    
+                body = template._render(template_ctx, engine='ir.qweb')
+                mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
+           
+            rec.env['mail.mail'].sudo().create(mail_values).send()
+            
 
     @api.model
     def retrieve_dashboard(self):
@@ -1102,7 +1206,7 @@ class SaleOrder(models.Model):
         for products in self.order_line:
             # text = products.shade
             # shade = text.splitlines()
-            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting'})
+            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting',})
             
 
  

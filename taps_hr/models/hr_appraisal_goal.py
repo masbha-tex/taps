@@ -29,7 +29,7 @@ class HrAppraisalGoal(models.Model):
         ('jan', 'January'),
         ('feb', 'February'),
         ('mar', 'March'),], string="Calculate YTD")
-    sequence = fields.Integer()    
+    sequence = fields.Integer(default=10)    
     employee_id = fields.Many2one('hr.employee', string="Owner",
         default=lambda self: self.env.user.employee_id, required=False, tracking=True)
     manager_id = fields.Many2one('hr.employee', string="Challenged By", required=False, tracking=True)
@@ -106,6 +106,8 @@ class HrAppraisalGoal(models.Model):
     ('approved', 'Approved'),
     ('refused', 'Refused')], string='Status', copy=False, 
         index=True, readonly=True, store=True, default='draft', tracking=False, help="Status of the Goal")
+    active = fields.Boolean('Active', default=True, tracking=True)
+  
     
     def action_confirm(self):
         self.write({'progression': '100'})

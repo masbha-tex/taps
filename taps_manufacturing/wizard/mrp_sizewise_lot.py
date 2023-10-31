@@ -31,7 +31,7 @@ class MrpSizewiseLot(models.TransientModel):
     @api.depends('lot_line.size_total')
     def _get_tape_bylots(self):
         for plan in self:
-            plan.tape_qty = sum( (line.tape_con/line.qty)*line.size_total for line in plan.lot_line)
+            plan.tape_qty = sum((line.tape_con/line.qty)*line.size_total for line in plan.lot_line)
             
 
     tape_qty = fields.Float('Tape Consume',digits='Product Unit of Measure', readonly=False, store=True, default=0.0, compute='_get_tape_bylots') 
@@ -42,7 +42,7 @@ class MrpSizewiseLot(models.TransientModel):
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_ids")
         operation = self.env[""+active_model+""].browse(active_id)
-        orderline = self.env['manufacturing.order'].search([('oa_id', '=', operation[0].oa_id.id),('shade','=',operation[0].shade),('dyeing_plan','!=',None)])#.sorted(key = 'id')
+        orderline = self.env['manufacturing.order'].search([('oa_id', '=', operation[0].oa_id.id),('shade','=',operation[0].shade),('dyeing_plan','!=',None)])#.sorted(key = 'id') ,('dyeing_plan','!=',None)
         orderline_values = []
 
         # grouped_orderline = orderline.groupby(['size'])
@@ -51,6 +51,7 @@ class MrpSizewiseLot(models.TransientModel):
         sizes = []
 
         for lines in orderline:
+            # raise UserError((operation[0].oa_id.id,operation[0].shade))
             size = lines.sizein
             if size == 'N/A':
                 size = lines.sizecm

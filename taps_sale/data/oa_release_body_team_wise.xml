@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<template id="view_oa_release_body_team_wise">
+        <body>
+		<html>
+			<style>
+		     /* Basic reset styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+       
+		    
+		  </style>
+			<div class="container">
+			  
+                <p style="font-size:16px">Dear Sir/All,<br/>
+          Please find attached details of order released on  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/>. Also Summary of order released given below:</p>
+          
+            <t t-set="grand_day_wise_qty" t-value="0"/>
+					  <t t-set="grand_month_wise_qty" t-value="0"/>
+					  <t t-set="grand_day_wise_val" t-value="0"/>
+					  <t t-set="grand_month_wise_val" t-value="0"/>
+					  
+					  
+					    <t t-set="day_wise_qty" t-value="0"/>
+							<t t-set="day_wise_val" t-value="0"/>
+							<t t-set="day_wise_qty_mt" t-value="0"/>
+							<t t-set="day_wise_val_mt" t-value="0"/>
+							<t t-set="month_wise_qty" t-value="0"/>
+							<t t-set="month_wise_val" t-value="0"/>
+							<t t-set="month_wise_qty_mt" t-value="0"/>
+							<t t-set="month_wise_val_mt" t-value="0"/>
+            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 1),('sales_type', '=', 'oa'),('state', '=', 'sale'),('sale_representative.team', '=', team.id),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+                  
+                  
+                    <t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>
+								    <t t-set="day_wise_val" t-value="day_wise_val+order.amount_total"/>
+								  
+								  
+                
+            </t>
+            
+            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 1),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
+								
+							    <t t-set="month_wise_qty" t-value="month_wise_qty+order_mtd.total_product_qty"/>
+							    <t t-set="month_wise_val" t-value="month_wise_val+order_mtd.amount_total"/>
+						  
+						   
+            </t>
+            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 3),('sales_type', '=', 'oa'),('state', '=', 'sale'),('sale_representative.team', '=', team.id),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+                  
+                  
+                    
+								 <t t-foreach="team.env['sale.order.line'].search([('order_id','=',order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
+                    <t t-set="day_wise_qty_mt" t-value="day_wise_qty_mt+line.product_uom_qty"/>
+								    <t t-set="day_wise_val_mt" t-value="day_wise_val_mt+line.price_subtotal"/>
+								  
+                </t>
+            </t>
+            
+            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 3),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
+								
+							    
+						  <t t-foreach="team.env['sale.order.line'].search([('order_id','=',order_mtd.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
+						    
+							    <t t-set="month_wise_qty_mt" t-value="month_wise_qty_mt+line.product_uom_qty"/>
+							    <t t-set="month_wise_val_mt" t-value="month_wise_val_mt+line.price_subtotal"/>
+						  </t>
+            
+            </t>
+            <br/>
+          <table class=" table table-sm  p-0 m-0" style="font-size:10px;table-layout: fixed ! important; width: 70%">  
+          <caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
+						<strong><t t-esc="team.team_name"/></strong>
+					</caption>
+          </table>
+          <br/>
+			   <table class=" table table-sm  p-0 m-0" style="font-size:10px;table-layout: fixed ! important; width: 70%">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
+						<strong>ZIPPER</strong>
+					</caption>
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+						
+							<th style="border: 1px solid white;" colspan="3" class="text-center">TODAY'S RELEASE</th>
+							<th style="border: 1px solid white;" colspan="3" class="text-center">MTD</th>
+						</tr>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th style="border: 1px solid white;" class="text-right">QTY(Pcs)</th>
+							<th style="border: 1px solid white;" class="text-right">VALUE($)</th>
+							<th style="border: 1px solid white;" class="text-right">AVG PRICE($)/Pcs</th>
+							<th style="border: 1px solid white;" class="text-right">QTY(Pcs)</th>
+							<th style="border: 1px solid white;" class="text-right">VALUE($)</th>
+							<th style="border: 1px solid white;" class="text-right">AVG PRICE($)/Pcs</th>
+						</tr>
+					</thead>
+					<tbody>
+					    
+					  
+					  
+					    <tr>
+								<td style="border: 1px solid black;" class="text-right"><strong><t t-esc="day_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
+								<td style="border: 1px solid black;" class="text-right"><strong><t t-esc="day_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
+								<td style="border: 1px solid black;" class="text-right">
+								  <strong>
+								  <t t-if="day_wise_qty !=0 and day_wise_val !=0">
+									 <t t-esc="day_wise_val/day_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</t>
+									</strong>
+								</td>
+								<td style="border: 1px solid black;" class="text-right"><strong><t t-esc="month_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
+								<td style="border: 1px solid black;" class="text-right"><strong><t t-esc="month_wise_val" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
+								<td style="border: 1px solid black;" class="text-right">
+								  <strong>
+								  <t t-if="month_wise_qty !=0 and month_wise_val !=0">
+									 <t t-esc="month_wise_val/month_wise_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</t>
+									</strong>
+								</td>
+								
+							</tr>
+					  
+					 </tbody>
+					 
+					</table>
+					<br/>
+					<table class=" table table-sm  p-0 m-0" style="font-size:10px;table-layout: fixed ! important; width: 70%">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
+						<strong>METAL TRIMS</strong>
+					</caption>
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+						
+							<th style="border: 1px solid white;" colspan="3" class="text-center">TODAY'S RELEASE</th>
+							<th style="border: 1px solid white;" colspan="3" class="text-center">MTD</th>
+						</tr>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th style="border: 1px solid white;" class="text-right">QTY(Gross)</th>
+							<th style="border: 1px solid white;" class="text-right">VALUE($)</th>
+							<th style="border: 1px solid white;" class="text-right">AVG PRICE($)/Gross</th>
+							<th style="border: 1px solid white;" class="text-right">QTY(Gross)</th>
+							<th style="border: 1px solid white;" class="text-right">VALUE($)</th>
+							<th style="border: 1px solid white;" class="text-right">AVG PRICE($)/Gross</th>
+						</tr>
+					</thead>
+					<tbody>
+					    
+					  
+					  
+					     <tr>
+								<td style="border: 1px solid black;" class="text-right"><strong><t t-esc="day_wise_qty_mt" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
+								<td style="border: 1px solid black;" class="text-right"><strong><t t-esc="day_wise_val_mt" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
+								<td style="border: 1px solid black;" class="text-right">
+								  <strong>
+								  <t t-if="day_wise_qty_mt !=0 and day_wise_val_mt !=0">
+									 <t t-esc="day_wise_val_mt/day_wise_qty_mt" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</t>
+									</strong>
+								</td>
+								<td style="border: 1px solid black;" class="text-right"><strong><t t-esc="month_wise_qty_mt" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
+								<td style="border: 1px solid black;" class="text-right"><strong><t t-esc="month_wise_val_mt" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></strong></td>
+								<td style="border: 1px solid black;" class="text-right">
+								  <strong>
+								  <t t-if="month_wise_qty_mt !=0 and month_wise_val_mt !=0">
+									 <t t-esc="month_wise_val_mt/month_wise_qty_mt" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</t>
+									</strong>
+								</td>
+								
+							</tr>
+					  
+					 </tbody>
+					 
+					</table>
+               
+			</div>
+		</html>
+	</body>
+    </template>
+	
+</odoo>

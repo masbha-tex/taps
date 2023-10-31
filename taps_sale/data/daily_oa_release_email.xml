@@ -12,6 +12,19 @@
             <field name="numbercall">-1</field>
             <field name="nextcall">2023-10-16 14:30:00</field>
         </record>
+        <record id="ir_cron_data_daily_oa_release_team_wise_email_template" model="ir.cron">
+            <field name="name">OA: Daily Released OA To Individual Team Send By Email</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">
+                
+            </field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall">2023-10-31 14:35:00</field>
+        </record>
     
     </data>
 </odoo>

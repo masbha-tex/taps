@@ -24,6 +24,7 @@
                     <field name="condition"/>
                     <field name="month"/>
                     <field name="calculate"/>
+                    <field name="active" invisible="1"/>
                     
                 </xpath>
                 <xpath expr="//field[@name='manager_id']" position="after">
@@ -229,6 +230,7 @@
                 <field name="condition"/>
                 <field name="month"/>
                 <field name="calculate"/>
+                <field name="active" invisible="1"/>
             </xpath>
             <tree sample="1">
                 <field name="y_t_ytd" digits="[3,2]"/>
@@ -287,7 +289,13 @@
         <field name="arch" type="xml">
             <xpath expr="//search[1]/group[1]" position="inside">
                 <filter string='Final Review' name="final" icon="fa-user" domain="[]" context="{'group_by': 'date_close'}"/>
+                    
             </xpath>
+            <xpath expr="//search[1]/searchpanel[1]/field[@name='company_id']" position="after">
+                <field name="category" icon="fa-building" enable_counters="1"/>
+                <field name="employee_group" icon="fa-building" enable_counters="1"/>
+            </xpath>            
+                                
             
             <!-- <search string="Search Appraisal">
                 <field name="employee_id"/>
@@ -400,11 +408,16 @@
     </record>
 
 
-<!--     <record id="hr_appraisal_goal_view_search" model="ir.ui.view">
-        <field name="name">hr.appraisal.goal.view.search</field>
+    <record id="hr_appraisal_goal_view_search_inherit" model="ir.ui.view">
+        <field name="name">hr.appraisal.goal.view.search.inherit</field>
         <field name="model">hr.appraisal.goal</field>
+        <field name="inherit_id" ref="hr_appraisal.hr_appraisal_goal_view_search"/>
         <field name="arch" type="xml">
-            <search>
+            <xpath expr="//filter[@name='people_i_manage']" position="after">
+                <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+            </xpath>
+            
+            <!-- <search>
                 <field name="employee_id"/>
                 <field name="manager_id"/>
                 <filter string="My Goals" name="filter_my_goals" domain="[('employee_id.user_id', '=', uid)]"/>
@@ -412,9 +425,9 @@
                 <separator/>
                 <filter string="Late" name="filter_late" domain="[('deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter string="Deadline" name="filter_deadline" date="deadline"/> 
-           </search>
+           </search> -->
         </field>
-    </record> -->
+    </record>
 
     <record id="hr_appraisal.action_hr_appraisal_goal" model="ir.actions.act_window">
         <field name="name">Goals</field>

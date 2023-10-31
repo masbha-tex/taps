@@ -136,7 +136,7 @@ class OperationDetails(models.Model):
     pack_qty = fields.Integer(string='Pack Qty', default=0, readonly=False)
     fr_pcs_pack = fields.Integer(string='Remaining Qty', default=0, readonly=False, help='The remaining pcs to pack')
     fg_done_qty = fields.Integer(string='FG Done', default=0, readonly=False)
-    fg_balance = fields.Integer(string='FG Balance', default=0, readonly=False, store=True, compute='get_fg_balance')
+    fg_balance = fields.Integer(string='FG Balance', default=0, readonly=False, store=True, compute='get_fg_balance', group_operator="sum")
     fg_output = fields.Integer(string='FG Output', default=0, readonly=False, group_operator="sum")
     cartoon_no = fields.Many2one('operation.details', string='Cartoon No', required=False, 
                                  domain="[('next_operation', '=', 'Delivery')]")
@@ -189,7 +189,6 @@ class OperationDetails(models.Model):
                                 qty = 0
                                 
                             p.update({'dyeing_plan':None,'dyeing_plan_qty':qty,'dy_rec_plan_qty':None})
-                            
                             res_qty = res_qty - dn_qty
                             mrp_id.append(p.id)
                 else:
@@ -500,7 +499,9 @@ class OperationDetails(models.Model):
             stock_move_line.update({'qty_done':l.qty})
 
         operation.update({'state':'done','mrp_delivery':picking.id,'total_weight':delivery.total_weight})
-        picking.sudo().button_validate()
+        if picking:
+            # raise UserError(('grrgr'))
+            picking.sudo().button_validate()
                     
                     
     def action_view_lots(self):
@@ -542,14 +543,14 @@ class OperationDetails(models.Model):
     def write(self, vals):
         if 'done_qty' in vals:
             if self.next_operation == 'Dyeing Qc':
-                if self.actual_qty <= vals.get('done_qty'):
+                if round(self.actual_qty,2) <= round(vals.get('done_qty'),2):
                     vals['state'] = 'done'
                 elif vals.get('done_qty') == 0:
                     vals['state'] = 'waiting'
                 else:
                     vals['state'] = 'partial'
             else:
-                if self.qty <= vals.get('done_qty'):
+                if round(self.qty,2) <= round(vals.get('done_qty'),2):
                     vals['state'] = 'done'
                 elif vals.get('done_qty') == 0:
                     vals['state'] = 'waiting'
@@ -918,8 +919,8 @@ class OperationDetails(models.Model):
                 move_line = stockmove_line.id
 
                 picking = self.env["stock.picking"].search([('origin','=',out.oa_id.name),('state','not in',('draft','done','cancel'))])
-                picking.action_assign()
-                
+                if picking:
+                    picking.action_assign()
                 
             next = None
             w_center = out.work_center.id

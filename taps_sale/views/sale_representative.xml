@@ -105,6 +105,7 @@
         <field name="arch" type="xml">
             <tree string="Team List">
                 <field name="team_name"/>
+                <field name="team_leader"/>
                 <!-- <field name="team_region"/> -->
                 <!-- <field name="team_leader"/> -->
                 

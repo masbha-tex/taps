@@ -11,6 +11,7 @@ class TeamTeam(models.Model):
     _description = 'Sale Team'
 
     team_name= fields.Char(string='Team')
+    team_leader =  fields.Many2one('sale.representative', string="Team Leader")
     # team_region = fields.Many2one('team.region',string='Team Region')
     # team_leader = fields.Many2one('sale.representative',string='Team Leader')
 

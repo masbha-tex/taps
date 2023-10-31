@@ -14,7 +14,6 @@ _logger = logging.getLogger(__name__)
 
 class HrAppraisal(models.Model):
     _inherit = "hr.appraisal"
-    _description = "Employee Appraisal"
     _order = 'employee_id'
 
 
@@ -26,6 +25,8 @@ class HrAppraisal(models.Model):
     q_3_ytd = fields.Float(string="Q3",copy=True, compute='_compute_ytd_weightage_acvd', default="0")
     q_4_ytd = fields.Float(string="Q4",copy=True, compute='_compute_ytd_weightage_acvd', default="0")
     kpi_state = fields.Char(string="Kpi Status",store=True)
+    employee_group = fields.Many2one('hr.employee.group', store=True, related = 'employee_id.employee_group', string="Group", related_sudo=False, help="What would be the group of this employee?")
+    category = fields.Selection(store=True, related = 'employee_id.contract_id.category', string="Category", related_sudo=False, help='Category of the Employee')       
     
     
     # @api.multi
