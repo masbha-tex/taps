@@ -17,9 +17,7 @@
             <field name="model_id" ref="model_sale_order"/>
             <field name="type">ir.actions.server</field>
             <field name="state">code</field>
-            <field name="code">
-                
-            </field>
+            <field name="code"></field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
