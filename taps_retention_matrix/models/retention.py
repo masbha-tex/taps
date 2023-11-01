@@ -89,7 +89,7 @@ class RetentionMatrix(models.Model):
         return super(RetentionMatrix, self).create(vals)
 
     @api.model
-    def retrieve_dashboard(self, companyId, departmentId):
+    def retrieve_dashboard(self):
         """ This function returns the values to populate the custom dashboard in
             the purchase order views.
         """
@@ -97,15 +97,15 @@ class RetentionMatrix(models.Model):
         self.check_access_rights('read')
 
         result = {
-            'retention_low_low': '',
-            'retention_low_medium': '',
-            'retention_low_high': '',
-            'retention_medium_low': '',
-            'retention_medium_medium': '',
-            'retention_medium_high': '',
-            'retention_high_low': '',
-            'retention_high_medium': '',
-            'retention_high_high': ''
+            'retention_low_low': 0,
+            'retention_low_medium': 0,
+            'retention_low_high': 0,
+            'retention_medium_low': 0,
+            'retention_medium_medium': 0,
+            'retention_medium_high': 0,
+            'retention_high_low': 0,
+            'retention_high_medium': 0,
+            'retention_high_high': 0,
         }
         retention_low_low = self.env['retention.matrix'].search([('impact', '=', '1'), ('risk', '=', '1')])
         retention_low_medium = self.env['retention.matrix'].search([('impact', '=', '2'), ('risk', '=', '1')])

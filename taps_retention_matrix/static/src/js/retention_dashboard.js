@@ -20,14 +20,13 @@ var KanbanRenderer = require('web.KanbanRenderer');
 var KanbanView = require('web.KanbanView');
 var SampleServer = require('web.SampleServer');
 var view_registry = require('web.view_registry');
-var session = require('web.session');
 
 var QWeb = core.qweb;
 
 // Add mock of method 'retrieve_dashboard' in SampleServer, so that we can have
 // the sample data in empty purchase kanban and list view
 let dashboardValues;
-SampleServer.mockRegistry.add('retention.matrix/retrieve_dashboard', (companyId, departmentId) => {
+SampleServer.mockRegistry.add('retention.matrix/retrieve_dashboard', () => {
     return Object.assign({}, dashboardValues);
 });
 
@@ -36,11 +35,9 @@ SampleServer.mockRegistry.add('retention.matrix/retrieve_dashboard', (companyId,
 // List View
 //--------------------------------------------------------------------------
 
-var ExpenseListDashboardRenderer = ListRenderer.extend({
+var RetentionListDashboardRenderer = ListRenderer.extend({
     events:_.extend({}, ListRenderer.prototype.events, {
         'click .o_dashboard_action': '_onDashboardActionClicked',
-        'click .o_search_panel_field[name="company_id"]': '_onCompanyClick',
-        'click .o_search_panel_field[name="department_id"]': '_onDepartmentClick',
     }),
     /**
      * @override
@@ -69,31 +66,16 @@ var ExpenseListDashboardRenderer = ListRenderer.extend({
             action_name: $action.attr('name')+"_list",
             action_context: $action.attr('context'),
         });
-    },
-    _onCompanyClick: function (ev) {
-        var companyId = $(ev.currentTarget).data('value');
-        console.log("Company Clicked:", companyId);
-        this._companyId = companyId;
-        this.reload();
-    },
-
-    _onDepartmentClick: function (ev) {
-        var departmentId = $(ev.currentTarget).data('value');
-        console.log("Department Clicked:", departmentId);
-        this._departmentId = departmentId;
-        this.reload();
     },     
 });
 
-var ExpenseListDashboardModel = ListModel.extend({
+var RetentionListDashboardModel = ListModel.extend({
     /**
      * @override
      */
     init: function () {
         this.dashboardValues = {};
         this._super.apply(this, arguments);
-        this._companyId;
-        this._departmentId;
     },
     /**
      * @override
@@ -131,7 +113,6 @@ var ExpenseListDashboardModel = ListModel.extend({
         var dashboard_def = this._rpc({
             model: 'retention.matrix',
             method: 'retrieve_dashboard',
-            args: [this._companyId, this._departmentId],
         });
         return Promise.all([super_def, dashboard_def]).then(function(results) {
             var id = results[0];
@@ -142,7 +123,7 @@ var ExpenseListDashboardModel = ListModel.extend({
     },
 });
 
-var ExpenseListDashboardController = ListController.extend({
+var RetentionListDashboardController = ListController.extend({
     custom_events: _.extend({}, ListController.prototype.custom_events, {
         dashboard_open_action: '_onDashboardOpenAction',
     }),
@@ -157,21 +138,21 @@ var ExpenseListDashboardController = ListController.extend({
     },
 });
 
-var ExpenseListDashboardView = ListView.extend({
+var RetentionListDashboardView = ListView.extend({
     config: _.extend({}, ListView.prototype.config, {
-        Model: ExpenseListDashboardModel,
-        Renderer: ExpenseListDashboardRenderer,
-        Controller: ExpenseListDashboardController,
+        Model: RetentionListDashboardModel,
+        Renderer: RetentionListDashboardRenderer,
+        Controller: RetentionListDashboardController,
     }),
 });
 
 
-view_registry.add('taps_retention_matrix_tree_dashboard_upload', ExpenseListDashboardView);
+view_registry.add('taps_retention_matrix_tree_dashboard_upload', RetentionListDashboardView);
 
 return {
-    ExpenseListDashboardModel: ExpenseListDashboardModel,
-    ExpenseListDashboardRenderer: ExpenseListDashboardRenderer,
-    ExpenseListDashboardController: ExpenseListDashboardController
+    RetentionListDashboardModel: RetentionListDashboardModel,
+    RetentionListDashboardRenderer: RetentionListDashboardRenderer,
+    RetentionListDashboardController: RetentionListDashboardController
 };
 
 });

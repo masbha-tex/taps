@@ -132,22 +132,22 @@ class SaleOrder(models.Model):
     brand = fields.Char(string='Brand')
 
     
-    def write(self, values):
-        if 'revised_no' in values and self.state == "sale" and self.sales_type == "oa":
-            mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
-            if mrp:
-                if self.revised_no != values.get('revised_no'):
-                    raise UserError(('This OA is in production plan. Do you want to update production data with this revision?'))
-        if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
-            # if values.get('is_hold'):
-            operation = self.env['operation.details'].search([('oa_id','=', self.id)])
-            if operation:
-                mrp = self.env['manufacturing.order'].search([('oa_id','=', self.id)])
-                op_update = operation.write({'state':'hold'})
-                mrp_update = mrp.write({'state':'hold'})
+    # def write(self, values):
+    #     if 'revised_no' in values and self.state == "sale" and self.sales_type == "oa":
+    #         mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
+    #         if mrp:
+    #             if self.revised_no != values.get('revised_no'):
+    #                 raise UserError(('This OA is in production plan. Do you want to update production data with this revision?'))
+    #     if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
+    #         # if values.get('is_hold'):
+    #         operation = self.env['operation.details'].search([('oa_id','=', self.id)])
+    #         if operation:
+    #             mrp = self.env['manufacturing.order'].search([('oa_id','=', self.id)])
+    #             op_update = operation.write({'state':'hold'})
+    #             mrp_update = mrp.write({'state':'hold'})
         
-        result = super(SaleOrder, self).write(values)
-        return result
+    #     result = super(SaleOrder, self).write(values)
+    #     return result
     
     # def _action_generate_backorder_wizard(self, show_transfers=False):
     #     view = self.env.ref('stock.view_backorder_confirmation')
@@ -494,7 +494,7 @@ class SaleOrder(models.Model):
                 body = template._render(template_ctx, engine='ir.qweb')
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
            
-            rec.env['mail.mail'].sudo().create(mail_values).send()
+            rec.env['mail.mail'].sudo().create(mail_values)
             
 
     @api.model
@@ -1991,7 +1991,7 @@ class SaleOrderLine(models.Model):
         elif self.product_template_id.name == 'BRASS SNAP 100214454':
             self.logo='RALPH LAUREN WORKWEAR'
             self.finish_ref='TG-4117'
-        elif self.product_template_id.name == 'BRASS SNAP 100214447':
+        elif self.product_template_id.name == 'BRASS SNAP 100214454':
             self.logo='WAVY POLO R.LAUREN'
             self.finish_ref='TG-4117'
         

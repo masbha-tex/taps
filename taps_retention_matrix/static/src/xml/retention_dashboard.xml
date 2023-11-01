@@ -27,17 +27,12 @@
                                   <th rowspan="15" style="background-color: #E9FAFF;color: #31216B; vertical-align : middle">RISK OF TURN OVER</th>
                                   <th style="background-color: #E9FAFF; color: #31216B; vertical-align : middle;">LOW</th>
                                   
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #8BD4DB" context='{"search_default_low_low": true}'>
+                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #8BD4DB" context='{"search_default_active": true}'><a href="#"> <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_low']"/></a>
                                   
                                     
-                                    <t t-if="values['retention_low_low']">
-                                        <!-- <t t-set="string_to_output" t-value="values['retention_low_low'].split('\n')"/>
-                                        <t t-foreach="string_to_output" t-as="string_line">
-                                            <span style="font-size:12px;" t-esc="string_line"/>
-                                            <br/>
-                                        </t> -->
-                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_low']"/>
-                                    </t>
+                                    <!-- <t t-if="values['retention_low_low']">
+                                        <a href="#"> <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_low']"/></a>
+                                    </t> -->
                                     </td>
                                   
                                   <td align="left" class="o_main o_dashboard_action" style="background-color: #C5EDEC">

@@ -53,8 +53,8 @@
                     <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute>
             </xpath> -->
             <!-- <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute> -->
-            <!-- <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0" js_class="taps_retention_matrix_tree_dashboard_upload"> -->
-            <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0"> 
+            <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0" js_class="taps_retention_matrix_tree_dashboard_upload">
+            <!-- <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0">  -->
                 <field name="employee_id" required="1" options="{'no_open': True}"/>
                 <field name="company_id" optional="hide"/>
                 <!-- <field name="grade"/> -->
@@ -211,8 +211,17 @@
                 <field name="category"/>
                 <separator/>
                 <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                <filter string="I Low - R Low" name="low_low" domain="[('impact', '=', '1'), ('risk', '=', '1')]"/>
+                <filter string="I Medium - R Low" name="mid_low" domain="[('impact', '=', '2'), ('risk', '=', '1')]"/>
+                <filter string="I High - R Low" name="high_low" domain="[('impact', '=', '3'), ('risk', '=', '1')]"/>
+                <filter string="I Low - R Medium" name="low_mid" domain="[('impact', '=', '1'), ('risk', '=', '2')]"/>
+                <filter string="I Medium - R Medium" name="mid_mid" domain="[('impact', '=', '2'), ('risk', '=', '2')]"/>
+                <filter string="I High - R Medium" name="high_mid" domain="[('impact', '=', '3'), ('risk', '=', '2')]"/>
+                <filter string="I Low - R High" name="low_high" domain="[('impact', '=', '1'), ('risk', '=', '3')]"/>
+                <filter string="I Medium - R High" name="mid_high" domain="[('impact', '=', '2'), ('risk', '=', '3')]"/>
+                <filter string="I High - R High" name="high_high" domain="[('impact', '=', '3'), ('risk', '=', '3')]"/>                
                 <group expand="0" string="Group By">
-                    <!-- <filter string="Low-Low" name="low_low" domain="[('impact', '=', '1'), ('risk', '=', '1'),]"/> -->
+
                     <filter name="company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
                     <filter name="category" domain="[]" context="{'group_by': 'category'}" groups="base.group_multi_company"/>
                     <filter name="employee_group" domain="[]" context="{'group_by': 'employee_group'}" groups="base.group_multi_company"/>

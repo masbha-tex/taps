@@ -22,7 +22,7 @@
         'data/ir_sequence.xml',
         'views/assets.xml',
         'views/retention_matrix.xml',
-        'views/dashboard_action.xml',
+        # 'views/dashboard_action.xml',
         'wizard/retention_wizard.xml',
         'reports/paperformat.xml',        
         'reports/report_action_menu.xml',

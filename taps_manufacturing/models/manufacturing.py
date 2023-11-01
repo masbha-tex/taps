@@ -286,13 +286,8 @@ class ManufacturingOrder(models.Model):
 
     def button_plan(self):
         self._check_company()
-        # if self.state in ("done", "to_close", "cancel"):
-        #     raise UserError(
-        #         _(
-        #             "Cannot split a manufacturing order that is in '%s' state.",
-        #             self._fields["state"].convert_to_export(self.state, self),
-        #         )
-        #     )
+        if len(self.mapped('product_template_id.id')) > 1:
+            raise UserError(_("Cannot plan with two items togather."))
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_plan")
         action["domain"] = [('default_id','in',self.mapped('id'))]
         #action["context"] = {"default_item_qty": 20,"default_material_qty": 12}
