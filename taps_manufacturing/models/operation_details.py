@@ -990,6 +990,7 @@ class OperationDetails(models.Model):
                             mrp_data = self.env["manufacturing.order"].search([('oa_id','=',oa.id),('shade','=',out.shade)])
                             # mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id)
                             actual_qty = sum(mrp_data.mapped('tape_con'))
+                            a = ''
                             if actual_qty >= rest_qty:
                                 qc_qty = rest_qty
                                 rest_qty = rest_qty - qc_qty
