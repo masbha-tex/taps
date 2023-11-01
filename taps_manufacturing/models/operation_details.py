@@ -133,10 +133,10 @@ class OperationDetails(models.Model):
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
-    pack_qty = fields.Integer(string='Pack Qty', default=0, readonly=False)
-    fr_pcs_pack = fields.Integer(string='Remaining Qty', default=0, readonly=False, help='The remaining pcs to pack')
+    pack_qty = fields.Integer(string='Pack Qty', readonly=False)
+    fr_pcs_pack = fields.Integer(string='Remaining Qty', readonly=False, help='The remaining pcs to pack')
     fg_done_qty = fields.Integer(string='FG Done', default=0, readonly=False)
-    fg_balance = fields.Integer(string='FG Balance', default=0, readonly=False, store=True, compute='get_fg_balance', group_operator="sum")
+    fg_balance = fields.Integer(string='FG Balance', readonly=False, store=True, compute='get_fg_balance', group_operator="sum")
     fg_output = fields.Integer(string='FG Output', default=0, readonly=False, group_operator="sum")
     cartoon_no = fields.Many2one('operation.details', string='Cartoon No', required=False, 
                                  domain="[('next_operation', '=', 'Delivery')]")
@@ -453,11 +453,12 @@ class OperationDetails(models.Model):
                         qty = l_capa
                     else:
                         qty = rest_q
-
                     # raise UserError((m_orders[0].fg_categ_type))
                     next = 'Assembly Output'
+                    work_center = operation[0].work_center.id
                     if 'Metal' in m_orders[0].fg_categ_type or 'AL' in m_orders[0].fg_categ_type:
                         next = 'Dipping Output'
+                        work_center = 17
                     # 'mrp_line':l.mrp_line.id,
                     # 'sale_order_line':l.mrp_line.sale_order_line.id,
                     # for mr_li in l.mrp_line:
@@ -479,7 +480,7 @@ class OperationDetails(models.Model):
                                             'sizein':m_orders[0].sizein,
                                             'sizecm':m_orders[0].sizecm,
                                             'operation_of':'lot',
-                                            'work_center':operation[0].work_center.id,
+                                            'work_center':work_center,
                                             'operation_by':operation[0].work_center.name,
                                             'based_on':operation[0].based_on,
                                             'next_operation':next,

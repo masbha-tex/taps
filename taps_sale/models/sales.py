@@ -404,10 +404,11 @@ class SaleOrder(models.Model):
             email_to_list = []
             email_to_list = []
             email_from_list = [
-                'shahid.hossain@texzipperbd.com',
+                'asraful.haque@texzipperbd.com',
             ]
             email_cc_list = [
-                'alamgir@texzipperbd.com',
+                # 'alamgir@texzipperbd.com',
+                'asraful.haque@texzipperbd.com',
                 ]
             author_id=0
             

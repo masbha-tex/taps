@@ -49,9 +49,12 @@
         <field name="model">retention.matrix</field>
         <field name="priority" eval="1"/>
         <field name="arch" type="xml">
+            <!-- <xpath expr="//tree" position="attributes">
+                    <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute>
+            </xpath> -->
             <!-- <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute> -->
-            <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0" js_class="taps_retention_matrix_tree_dashboard_upload">
-            <!-- <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0">  -->
+            <!-- <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0" js_class="taps_retention_matrix_tree_dashboard_upload"> -->
+            <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0"> 
                 <field name="employee_id" required="1" options="{'no_open': True}"/>
                 <field name="company_id" optional="hide"/>
                 <!-- <field name="grade"/> -->
@@ -68,6 +71,19 @@
              
         </field>
     </record>
+<!-- 
+      <record model="ir.ui.view" id="view_retention_matrix_tree.dash">
+        <field name="name">retention.matrix.tree</field>
+        <field name="model">retention.matrix</field>
+        <field name="priority" eval="1"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                    <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute>
+            </xpath>
+             
+        </field>
+    </record> -->
 
     <record model="ir.ui.view" id="view_retention_kanban">
         <field name="name">retention.matrix.kanban</field>
@@ -218,6 +234,7 @@
         <field name="res_model">retention.matrix</field>
         <field name="context" eval="{'search_default_my_retention': 1}"/>
         <field name="view_mode">kanban,tree,form,dashboard,pivot,graph</field>
+        <!-- <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/> -->
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create the first Retention Heat Map
             </p>
