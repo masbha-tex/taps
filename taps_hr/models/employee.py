@@ -133,6 +133,17 @@ class HrEmployeePrivate(models.Model):
             for mc in self:
                 if mc.barcode:
                     mc._machine_user_registration(True, mc.name, mc.barcode, mc.rfid)
+        if self.category == 'staff' or self.category == 'expatriate':
+            for emp in self:
+                appraisal = self.env['hr.appraisal'].sudo().search([('employee_id', '=', emp.id), ('active', 'in', (False,True))]).sorted(key = 'id', reverse=True)[:1]
+                app_goal = self.env['hr.appraisal.goal'].sudo().search([('employee_id', '=', appraisal.employee_id.id), ('deadline', '=', appraisal.date_close), ('active', 'in', (False,True))])
+                if appraisal:
+                    if vals.get('active') is True: 
+                        app_goal.sudo().write({'active': True})
+                        appraisal.sudo().write({'active': True, 'state': 'new'})
+                    if vals.get('active') is False:
+                        app_goal.sudo().write({'active': False})
+                        appraisal.sudo().write({'active': False, 'state': 'cancel'})
         return res
     
     

@@ -132,22 +132,22 @@ class SaleOrder(models.Model):
     brand = fields.Char(string='Brand')
 
     
-    # def write(self, values):
-    #     if 'revised_no' in values and self.state == "sale" and self.sales_type == "oa":
-    #         mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
-    #         if mrp:
-    #             if self.revised_no != values.get('revised_no'):
-    #                 raise UserError(('This OA is in production plan. Do you want to update production data with this revision?'))
-    #     if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
-    #         # if values.get('is_hold'):
-    #         operation = self.env['operation.details'].search([('oa_id','=', self.id)])
-    #         if operation:
-    #             mrp = self.env['manufacturing.order'].search([('oa_id','=', self.id)])
-    #             op_update = operation.write({'state':'hold'})
-    #             mrp_update = mrp.write({'state':'hold'})
+    def write(self, values):
+        if 'revised_no' in values and self.state == "sale" and self.sales_type == "oa":
+            mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
+            if mrp:
+                if self.revised_no != values.get('revised_no'):
+                    raise UserError(('This OA is in production plan. Do you want to update production data with this revision?'))
+        if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
+            # if values.get('is_hold'):
+            operation = self.env['operation.details'].search([('oa_id','=', self.id)])
+            if operation:
+                mrp = self.env['manufacturing.order'].search([('oa_id','=', self.id)])
+                op_update = operation.write({'state':'hold'})
+                mrp_update = mrp.write({'state':'hold'})
         
-    #     result = super(SaleOrder, self).write(values)
-    #     return result
+        result = super(SaleOrder, self).write(values)
+        return result
     
     # def _action_generate_backorder_wizard(self, show_transfers=False):
     #     view = self.env.ref('stock.view_backorder_confirmation')
@@ -409,6 +409,7 @@ class SaleOrder(models.Model):
             email_cc_list = [
                 # 'alamgir@texzipperbd.com',
                 'asraful.haque@texzipperbd.com',
+                'shahid.hossain@texzipperbd.com',
                 ]
             author_id=0
             
@@ -1967,7 +1968,31 @@ class SaleOrderLine(models.Model):
             self.logo='WREATH'
             self.finish_ref='TG-4117'
         elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194':
-            self.logo='WORK WEAR'
+            self.logo='WORKWEAR'
+            self.finish_ref='TG-4117'
+        elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100214452':
+            self.logo='RALPH LAUREN WORKWEAR'
+            self.finish_ref='TS-411703'
+        elif self.product_template_id.name == 'BRASS SNAP 100214456':
+            self.logo='RALPH LAUREN WORKWEAR'
+            self.finish_ref='TS-411703'
+        elif self.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100214448':
+            self.logo='LAUREN WREATH'
+            self.finish_ref='TS-411703'
+        elif self.product_template_id.name == 'BRASS SNAP 100214444':
+            self.logo='LAUREN WREATH'
+            self.finish_ref='TS-411703'
+        elif self.product_template_id.name == 'BRASS SNAP 100214449':
+            self.logo='WAVY POLO R.LAUREN'
+            self.finish_ref='TS-411703'
+        elif self.product_template_id.name == 'BRASS SNAP 100214445':
+            self.logo='LAUREN WREATH'
+            self.finish_ref='TG-4117'
+        elif self.product_template_id.name == 'BRASS SNAP 100214454':
+            self.logo='RALPH LAUREN WORKWEAR'
+            self.finish_ref='TG-4117'
+        elif self.product_template_id.name == 'BRASS SNAP 100214447':
+            self.logo='WAVY POLO R.LAUREN'
             self.finish_ref='TG-4117'
         
                 

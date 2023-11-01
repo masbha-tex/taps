@@ -212,6 +212,7 @@
                 <separator/>
                 <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
                 <group expand="0" string="Group By">
+                    <!-- <filter string="Low-Low" name="low_low" domain="[('impact', '=', '1'), ('risk', '=', '1'),]"/> -->
                     <filter name="company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
                     <filter name="category" domain="[]" context="{'group_by': 'category'}" groups="base.group_multi_company"/>
                     <filter name="employee_group" domain="[]" context="{'group_by': 'employee_group'}" groups="base.group_multi_company"/>
