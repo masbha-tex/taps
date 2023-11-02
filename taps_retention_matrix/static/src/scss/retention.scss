@@ -12,7 +12,7 @@
     }
 
     .o_dashboard_action {
-        cursor: pointer;
+        cursor: pointer; 
     }
     
     .table {
@@ -48,6 +48,91 @@
                         color: white;
                     }
                 }
+                
+                &.o_main_ll {
+                    background-color: #8BD4DB;
+                    &:hover {
+                        background-color: darken(#8BD4DB, 10%);
+                    }
+                    > a {
+                        color: white;
+                    }
+                }
+
+                &.o_main_lm {
+                    background-color: #C5EDEC;
+                    &:hover {
+                        background-color: darken(#C5EDEC, 10%);
+                    }
+                    > a {
+                        color: white;
+                    }
+                }
+
+                &.o_main_lh {
+                    background-color: #FFEBED;
+                    &:hover {
+                        background-color: darken(#FFEBED, 10%);
+                    }
+                    > a {
+                        color: white;
+                    }
+                }  
+                &.o_main_ml {
+                    background-color: #C5EDEC;
+                    &:hover {
+                        background-color: darken(#C5EDEC, 10%);
+                    }
+                    > a {
+                        color: white;
+                    }
+                }
+                &.o_main_mm {
+                    background-color: #FFEBED;
+                    &:hover {
+                        background-color: darken(#FFEBED, 10%);
+                    }
+                    > a {
+                        color: white;
+                    }
+                }
+                &.o_main_mh {
+                    background-color: #FFD0D4;
+                    &:hover {
+                        background-color: darken(#FFD0D4, 10%);
+                    }
+                    > a {
+                        color: white;
+                    }
+                }
+                &.o_main_hl {
+                    background-color: #FFEBED;
+                    &:hover {
+                        background-color: darken(#FFEBED, 10%);
+                    }
+                    > a {
+                        color: white;
+                    }
+                }
+                &.o_main_hm {
+                    background-color: #FFD0D4;
+                    &:hover {
+                        background-color: darken(#FFD0D4, 10%);
+                    }
+                    > a {
+                        color: white;
+                    }
+                }
+                &.o_main_hh {
+                    background-color: #FFA1A1;
+                    &:hover {
+                        background-color: darken(#FFA1A1, 10%);
+                    }
+                    > a {
+                        color: white;
+                    }
+                }
+                
             }
         }
     }

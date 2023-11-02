@@ -49,10 +49,6 @@
         <field name="model">retention.matrix</field>
         <field name="priority" eval="1"/>
         <field name="arch" type="xml">
-            <!-- <xpath expr="//tree" position="attributes">
-                    <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute>
-            </xpath> -->
-            <!-- <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute> -->
             <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0" js_class="taps_retention_matrix_tree_dashboard_upload">
             <!-- <tree string="Retention" multi_edit="1" sample="1" edit="1" editable="top" create="0">  -->
                 <field name="employee_id" required="1" options="{'no_open': True}"/>
@@ -71,19 +67,6 @@
              
         </field>
     </record>
-<!-- 
-      <record model="ir.ui.view" id="view_retention_matrix_tree.dash">
-        <field name="name">retention.matrix.tree</field>
-        <field name="model">retention.matrix</field>
-        <field name="priority" eval="1"/>
-        <field name="mode">primary</field>
-        <field name="arch" type="xml">
-            <xpath expr="//tree" position="attributes">
-                    <attribute name="js_class">taps_retention_matrix_tree_dashboard_upload</attribute>
-            </xpath>
-             
-        </field>
-    </record> -->
 
     <record model="ir.ui.view" id="view_retention_kanban">
         <field name="name">retention.matrix.kanban</field>
@@ -204,6 +187,7 @@
       <record model="ir.ui.view" id="retention_search_view">
         <field name="name">retention.matrix.search</field>
         <field name="model">retention.matrix</field>
+        <field name="priority" eval="15"/>
         <field name="arch" type="xml">
             <search>
                 <field name="emp_id"/>
@@ -221,7 +205,6 @@
                 <filter string="I Medium - R High" name="mid_high" domain="[('impact', '=', '2'), ('risk', '=', '3')]"/>
                 <filter string="I High - R High" name="high_high" domain="[('impact', '=', '3'), ('risk', '=', '3')]"/>                
                 <group expand="0" string="Group By">
-
                     <filter name="company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
                     <filter name="category" domain="[]" context="{'group_by': 'category'}" groups="base.group_multi_company"/>
                     <filter name="employee_group" domain="[]" context="{'group_by': 'employee_group'}" groups="base.group_multi_company"/>
@@ -229,33 +212,49 @@
                 </group>                
 
                 <searchpanel>
-                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" class="o_search_panel_field"/>
-                    <field name="category" icon="fa-building" enable_counters="1" class="o_search_panel_field"/>
-                    <field name="employee_group" icon="fa-building" enable_counters="1" class="o_search_panel_field"/>
-                    <field name="department_id" icon="fa-users" enable_counters="1" class="o_search_panel_field"/>
+                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1"/>
+                    <field name="category" icon="fa-building" enable_counters="1"/>
+                    <field name="employee_group" icon="fa-building" enable_counters="1"/>
+                    <field name="department_id" icon="fa-users" enable_counters="1"/>
                 </searchpanel>                
             </search>
         </field>
     </record>
 
           
-      <record model="ir.actions.act_window" id="retention_list_action">
+      <record model="ir.actions.act_window" id="retention_action_dashboard_list">
         <field name="name">Retention</field>
         <field name="res_model">retention.matrix</field>
-        <field name="context" eval="{'search_default_my_retention': 1}"/>
+        <field name="context" eval="{}"/>
         <field name="view_mode">kanban,tree,form,dashboard,pivot,graph</field>
-        <!-- <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/> -->
+        <field name="target">main</field>
+        <field name="view_id" ref="taps_retention_matrix.view_retention_matrix_tree"/>
+        <field name="search_view_id" ref="taps_retention_matrix.retention_search_view"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create the first Retention Heat Map
             </p>
         </field>
     </record>
 
+      <!-- <record model="ir.actions.act_window" id="retention_action">
+        <field name="name">Retention</field>
+        <field name="res_model">retention.matrix</field>
+        <field name="context" eval="{}"/>
+        <field name="view_mode">kanban,tree,form,dashboard,pivot,graph</field>
+        <field name="target">main</field>
+        <field name="view_id" ref="taps_retention_matrix.view_retention_matrix_tree"/>
+        <field name="search_view_id" ref="taps_retention_matrix.retention_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first Retention Heat Map
+            </p>
+        </field>
+    </record>       -->
+
 
     <menuitem 
         id="main_retention_menu" 
         name="Retention Matrix"
-        action="retention_list_action"
+        action="retention_action_dashboard_list"
         groups="taps_retention_matrix.group_user_retention"
         web_icon="taps_retention_matrix,static/description/icon.png"/>
 

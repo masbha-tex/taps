@@ -319,7 +319,8 @@ class ManufacturingOrder(models.Model):
         max_plan_id = self.env['operation.details'].search([('plan_id','!=',False)]).sorted(key=lambda pr: pr.plan_id, reverse=True)[:1].mapped('plan_id')
         max_plan_id = sum(max_plan_id)
         max_plan_id += 1
-
+        shades = production.mapped('shade')
+        # for sh in shades: pro = produc.filtered(lambda p: p.shade == sh.shade)
         if material == 'tape':
             for mc in machine_line:
                 if mc.material_qty > 0:

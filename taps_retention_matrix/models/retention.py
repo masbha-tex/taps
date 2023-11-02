@@ -5,6 +5,9 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_round, date_utils
 from odoo.tools.misc import format_date, format_amount
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class RetentionMatrix(models.Model):
     _name = 'retention.matrix'
@@ -93,6 +96,7 @@ class RetentionMatrix(models.Model):
         """ This function returns the values to populate the custom dashboard in
             the purchase order views.
         """
+        # _logger.info('Current context: %s', self.env.context)
         # raise UserError((self.env.context.get('default_company_id'),companyId, departmentId))
         self.check_access_rights('read')
 

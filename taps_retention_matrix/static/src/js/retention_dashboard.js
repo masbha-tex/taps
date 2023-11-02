@@ -1,4 +1,4 @@
-odoo.define('taps_retention_matrix.retention_dashboard', function (require) {
+odoo.define('taps_retention_matrix.retention_dashboards', function (require) {
 "use strict";
 
 /**
@@ -60,12 +60,17 @@ var RetentionListDashboardRenderer = ListRenderer.extend({
      * @param {MouseEvent}
      */
     _onDashboardActionClicked: function (e) {
+        
         e.preventDefault();
+        
         var $action = $(e.currentTarget);
+        
+        
         this.trigger_up('dashboard_open_action', {
             action_name: $action.attr('name')+"_list",
             action_context: $action.attr('context'),
         });
+        
     },     
 });
 
@@ -133,6 +138,7 @@ var RetentionListDashboardController = ListController.extend({
      * @param {OdooEvent} e
      */
     _onDashboardOpenAction: function (e) {
+        // console.log(e.data.action_name, JSON.parse(e.data.action_context));
         return this.do_action(e.data.action_name,
             {additional_context: JSON.parse(e.data.action_context)});
     },

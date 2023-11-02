@@ -13,7 +13,7 @@
     'category': 'Generic Modules/Retention Matrix',
     'version': '0.1',
 
-    'depends': ['base','hr','taps_hr'],
+    'depends': ['base','hr','taps_hr','web'],
 
     # always loaded
     'data': [
@@ -31,7 +31,7 @@
     ],
     'qweb': [
         "static/src/xml/retention_dashboard.xml",
-        "static/src/xml/dashboard.xml",
+        # "static/src/xml/dashboard.xml",
     ],    
     'installable': True,
     'application': True,

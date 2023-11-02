@@ -3,6 +3,7 @@
 
 from odoo import api, fields, models
 from odoo.tools.float_utils import float_compare
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 class OaUpdateConfirmation(models.TransientModel):
     _name = 'oa.update.confirmation'
@@ -12,6 +13,7 @@ class OaUpdateConfirmation(models.TransientModel):
 
     @api.model
     def default_get(self, fields):
+        # raise UserError(('rgwefwfe'))
         res = super().default_get(fields)
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_id")

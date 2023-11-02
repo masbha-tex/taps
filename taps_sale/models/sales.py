@@ -130,37 +130,47 @@ class SaleOrder(models.Model):
     garments = fields.Char(string='Garments')
     corrosions_test = fields.Char(string='Corrosions Test Method')
     brand = fields.Char(string='Brand')
-
     
-    # def write(self, values):
-    #     if 'revised_no' in values and self.state == "sale" and self.sales_type == "oa":
-    #         mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
-    #         if mrp:
-    #             if self.revised_no != values.get('revised_no'):
-    #                 raise UserError(('This OA is in production plan. Do you want to update production data with this revision?'))
-    #     if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
-    #         # if values.get('is_hold'):
-    #         operation = self.env['operation.details'].search([('oa_id','=', self.id)])
-    #         if operation:
-    #             mrp = self.env['manufacturing.order'].search([('oa_id','=', self.id)])
-    #             op_update = operation.write({'state':'hold'})
-    #             mrp_update = mrp.write({'state':'hold'})
-        
-    #     result = super(SaleOrder, self).write(values)
-    #     return result
     
-    # def _action_generate_backorder_wizard(self, show_transfers=False):
-    #     view = self.env.ref('stock.view_backorder_confirmation')
+    # def action_confirmation_wizard(self):
+    #     view = self.env.ref('taps_sale.view_oa_update_confirmation')
     #     return {
-    #         'name': _('Create Backorder?'),
+    #         'name': _('Confirm?'),
     #         'type': 'ir.actions.act_window',
     #         'view_mode': 'form',
-    #         'res_model': 'stock.backorder.confirmation',
+    #         'res_model': 'oa.update.confirmation',
     #         'views': [(view.id, 'form')],
     #         'view_id': view.id,
     #         'target': 'new',
-    #         'context': dict(self.env.context, default_show_transfers=show_transfers, default_pick_ids=[(4, p.id) for p in self]),
-    #     }    
+    #         'context': {'default_id': self.id},#dict(self.env.context, default_id = self.id),
+    #     }
+
+    def write(self, values):
+        if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
+            # if values.get('is_hold'):
+            operation = self.env['operation.details'].search([('oa_id','=', self.id)])
+            if operation:
+                mrp = self.env['manufacturing.order'].search([('oa_id','=', self.id)])
+                op_update = operation.write({'state':'hold'})
+                mrp_update = mrp.write({'state':'hold'})
+        
+        result = super(SaleOrder, self).write(values)
+        return result
+    
+
+        # raise UserError((view.id))
+        # return {
+        #     'name': _('Confirm?'),
+        #     'view_mode': 'form',
+        #     'res_model': 'oa.update.confirmation',
+        #     'view_id': self.env.ref('taps_sale.view_oa_update_confirmation').id,
+        #     'type': 'ir.actions.act_window',
+        #     'context': {'default_id': self.id},
+        #     'target': 'new'
+        # }
+
+    # def set_update_confirm(self):
+    #     raise UserError(('osuhfejf'))
 
     def action_cancel(self):
         # if self.state == "sale" and self.sales_type == "oa":
@@ -1205,10 +1215,19 @@ class SaleOrder(models.Model):
         return True
 
     def generate_m_order(self):
+        exist_mrp = self.env['manufacturing.order'].search([('oa_id','=',self.id)])
         for products in self.order_line:
+            can_create = True
+            if exist_mrp:
+                m_order = exist_mrp.filtered(lambda mo: mo.sale_order_line.id == products.id)
+                if m_order:
+                    can_create = False
+                    mrp_update = m_order.update({'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'revision_no':self.revised_no})
+                
             # text = products.shade
             # shade = text.splitlines()
-            mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting',})
+            if can_create == True:
+                mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting','revision_no':self.revised_no})
             
 
  

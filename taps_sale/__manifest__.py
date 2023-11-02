@@ -17,7 +17,7 @@
     'category': 'Generic Modules/Sales',
     'version': '14.0.1.0.0',
 
-    # any module necessary for this one to work correctly
+    # any module necessary for this one to work correctly taps_manufacturing
     'depends': ['base','sale','stock', 'web_studio','sales_team','web','report_xlsx'],
 
     # always loaded
@@ -55,8 +55,7 @@
         'reports/report.xml',
         'views/order_flow.xml',
         'wizard/sales_report_wizard.xml',
-        
-        
+        'wizard/oa_update_confirm.xml',
         
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",

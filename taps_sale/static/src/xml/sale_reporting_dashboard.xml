@@ -6,7 +6,9 @@
                 
                     <p> Hello</p>
                 
-                    <t t-esc="result"/>
+                    <!-- <div t-key="value.name" class="o_reporting_dashboard_item">
+                        <span t-esc="value.name"/>
+                    </div> -->
                 
             
                             

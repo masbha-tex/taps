@@ -24,7 +24,6 @@ odoo.define('taps_sale.ReportingDashboard', function (require) {
         init: function () {
             var self = this;
             this._super.apply(this, arguments);
-        
             
             self._rpc({
                     model: 'sale.team',

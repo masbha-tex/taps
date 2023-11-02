@@ -12,3 +12,4 @@ access_sale_team_region,access_sale_team_region,model_team_region,base.group_use
 access_sale_team_transfer,access_team_transfer,model_team_transfer,base.group_user,1,1,1,1
 access_sale_target,access_sale_target,model_sale_target,base.group_user,1,1,1,1
 access_sale_target_lines,access_sale_target_lines,model_sale_target_lines,base.group_user,1,1,1,1
+access_sale_rev_confirm,access_oa_update_confirmation,model_oa_update_confirmation,base.group_user,1,1,1,1

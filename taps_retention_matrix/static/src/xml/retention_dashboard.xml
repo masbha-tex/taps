@@ -5,128 +5,104 @@
         <div class="o_retention_dashboard container">
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-sm mb-4">
-                            <thead>
-                                <tr>
-                                    <th colspan="5" style="background-color: #31216B;color: white; text-align: center">IMPACT OF TURN OVER</th>
-                                </tr>
-                                <tr style="text-align: center">
-                                    <th colspan="2" style="background-color: #31216B"/>
-                                    <th colspan="1" style="background-color: #E9FAFF;color: #31216B">LOW</th>
-                                    <th colspan="1" style="background-color: #E9FAFF;color: #31216B">MEDIUM</th>
-                                    <th colspan="1" style="background-color: #E9FAFF;color: #31216B">HIGH</th>
-                                </tr>
-                                                      
-                            </thead>
-                            <tbody>
-                                                      
-                                                      
-                                <tr align="center">
-                                 
-                                    
-                                  <th rowspan="15" style="background-color: #E9FAFF;color: #31216B; vertical-align : middle">RISK OF TURN OVER</th>
-                                  <th style="background-color: #E9FAFF; color: #31216B; vertical-align : middle;">LOW</th>
-                                  
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #8BD4DB" context='{"search_default_active": true}'><a href="#"> <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_low']"/></a>
-                                  
-                                    
-                                    <!-- <t t-if="values['retention_low_low']">
-                                        <a href="#"> <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_low']"/></a>
-                                    </t> -->
-                                    </td>
-                                  
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #C5EDEC">
-                                    <t t-if="values['retention_low_medium']">
-                                        <!-- <t t-set="string_to_output" t-value="values['retention_low_medium'].split('\n')"/>
-                                        <t t-foreach="string_to_output" t-as="string_line">
-                                            <span style="font-size:12px;" t-esc="string_line"/>
-                                            <br/>
-                                        </t> -->
-                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_medium']"/>
-                                    </t> 
-                                  </td>
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #FFEBED">
-                                    <t t-if="values['retention_low_high']">
-                                        <!-- <t t-set="string_to_output" t-value="values['retention_low_high'].split('\n')"/>
-                                        <t t-foreach="string_to_output" t-as="string_line">
-                                            <span style="font-size:12px;" t-esc="string_line"/>
-                                            <br/>
-                                        </t> -->
-                                        <span style="font-weight: bold;font-size:14px;" t-esc="values['retention_low_high']"/>
-                                    </t> 
-                                  </td>
-                                  
-                                  </tr>
-                                <tr align="center">
-                                  <th style="background-color: #E9FAFF;color: #31216B; vertical-align : middle">MEDIUM</th>
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #C5EDEC">
-                                    <t t-if="values['retention_medium_low']">
-                                        <!-- <t t-set="string_to_output" t-value="values['retention_medium_low'].split('\n')"/>
-                                        <t t-foreach="string_to_output" t-as="string_line">
-                                            <span style="font-size:12px;" t-esc="string_line"/>
-                                            <br/>
-                                        </t> -->
-                                        <span style="font-weight: bold;font-size:14px;" t-esc="values['retention_medium_low']"/>
-                                    </t>
-                                  </td>
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #FFEBED">
-                                    <t t-if="values['retention_medium_medium']">
-                                        <!-- <t t-set="string_to_output" t-value="values['retention_medium_medium'].split('\n')"/>
-                                        <t t-foreach="string_to_output" t-as="string_line">
-                                            <span style="font-size:12px;" t-esc="string_line"/>
-                                            <br/>
-                                        </t> -->
-                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_medium_medium']"/>
-                                    </t>
-                                  </td>
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #FFD0D4">
-                                    <t t-if="values['retention_medium_high']">
-                                        <!-- <t t-set="string_to_output" t-value="values['retention_medium_high'].split('\n')"/>
-                                        <t t-foreach="string_to_output" t-as="string_line">
-                                            <span style="font-size:12px;" t-esc="string_line"/>
-                                            <br/>
-                                        </t> -->
-                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_medium_high']"/>
-                                    </t>
-                                  </td>
-                                </tr>
-                                <tr align="center">
-                                  <th style="vertical-align : middle; background-color: #E9FAFF;color: #31216B">HIGH</th>
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #FFEBED">
-                                    <t t-if="values['retention_high_low']">
-                                        <!-- <t t-set="string_to_output" t-value="values['retention_high_low'].split('\n')"/>
-                                        <t t-foreach="string_to_output" t-as="string_line">
-                                            <span style="font-size:12px;" t-esc="string_line"/>
-                                            <br/>
-                                        </t> -->
-                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_high_low']"/>
-                                    </t>
-                                  </td>
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #FFD0D4">
-                                    <t t-if="values['retention_high_medium']">
-                                        <!-- <t t-set="string_to_output" t-value="values['retention_high_medium'].split('\n')"/>
-                                        <t t-foreach="string_to_output" t-as="string_line">
-                                            <span style="font-size:12px;" t-esc="string_line"/>
-                                            <br/>
-                                        </t> -->
-                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_high_medium']"/>
-                                    </t>
-                                  </td>
-                                  <td align="left" class="o_main o_dashboard_action" style="background-color: #FFA1A1">
-                                    <t t-if="values['retention_high_high']">
-                                        <!-- <t t-set="string_to_output" t-value="values['retention_high_high'].split('\n')"/>
-                                        <t t-foreach="string_to_output" t-as="string_line">
-                                            <span style="font-size:12px;" t-esc="string_line"/>
-                                            <br/>
-                                        </t> -->
-                                        <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_high_high']"/>
-                                    </t>
-                                  </td>
-                                </tr>
-                                                      
-                            </tbody>
-                        </table>
-				</div>										
+                    <table class="table table-sm">
+                        <!-- thead needed to avoid list view rendering error for some reason -->
+                        <thead>
+                             <tr>
+                                 <td style="font-weight: bold; font-size:14px; color: white; background-color: #31216B">
+                                    <div>IMPACT OF TURN OVER</div>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table></div>
+                <div class="col-sm-12">
+                    <table class="table table-sm">
+                        <thead>
+                            <!-- <tr>
+                                <td align="left" style="background-color: #31216B">
+                                </td>
+                                <td style="background-color: #31216B">
+                                </td>
+                                <td style="background-color: #31216B">
+                                </td>
+                                <td style="font-weight: bold; font-size:14px; color: white; background-color: #31216B">
+                                    <div>IMPACT OF TURN OVER</div>
+                                </td>
+                              <td style="background-color: #31216B">
+                                </td>
+                            </tr> -->
+                            <tr>
+                                <td align="left" style="background-color: #31216B">
+                                </td>
+                                <td style="background-color: #31216B">
+                                </td>
+                                <td style="color: #31216B; font-weight: bold; font-size:14px; background-color: #E9FAFF">
+                                    <div>LOW</div>
+                                </td>
+                                <td style="color: #31216B; font-weight: bold; font-size:14px; background-color: #E9FAFF">
+                                    <div>MEDIUM</div>
+                                </td>
+                              <td style="color: #31216B; font-weight: bold; font-size:14px; background-color: #E9FAFF">
+                                    <div>HIGH</div>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <!-- can't use th tag due to list rendering error when no values in list... -->
+                                <td align="left" class="o_text" style="background-color: #E9FAFF">
+                                </td>
+                                <td style="color: #31216B; font-weight: bold; font-size:14px; background-color: #E9FAFF">
+                                    <div>LOW</div>
+                                </td>
+                                <td align="left" class="o_main_ll o_dashboard_action" name="taps_retention_matrix.retention_action_dashboard" context='{"search_default_low_low": true}'>
+                                  <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_low']"/>
+                                </td>
+                                <td align="left" class="o_main_lm o_dashboard_action" name="taps_retention_matrix.retention_action_dashboard" context='{"search_default_mid_low": true}'>
+                                    <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_low_medium']"/>
+                              </td>
+                              <td align="left" class="o_main_lh o_dashboard_action" name="taps_retention_matrix.retention_action_dashboard" context='{"search_default_high_low": true}'>
+                                    <span style="font-weight: bold;font-size:14px;" t-esc="values['retention_low_high']"/>
+                              </td>
+                            </tr>
+                            <tr>
+                                <td align="left" style="color: #31216B; font-weight: bold; font-size:14px; background-color: #E9FAFF">
+                                    <div>RISK OF TURN OVER</div>
+                                </td>
+                                <td style="color: #31216B; font-weight: bold; font-size:14px; background-color: #E9FAFF">
+                                    <div>MEDIUM</div>
+                                </td>
+                                <td align="left" class="o_main_ml o_dashboard_action" name="taps_retention_matrix.retention_action_dashboard" context='{"search_default_low_mid": true}'>
+                                    <span style="font-weight: bold;font-size:14px;" t-esc="values['retention_medium_low']"/>
+                              </td>
+                              <td align="left" class="o_main_mm o_dashboard_action" name="taps_retention_matrix.retention_action_dashboard" context='{"search_default_mid_mid": true}'>
+                                    <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_medium_medium']"/>
+                              </td>
+                              <td align="left" class="o_main_mh o_dashboard_action" name="taps_retention_matrix.retention_action_dashboard" context='{"search_default_high_mid": true}'>
+                                    <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_medium_high']"/>
+                              </td>
+                            </tr>
+                            <tr>
+                                <td align="left" class="o_text" style="background-color: #E9FAFF">
+                                </td>
+                                <td style="color: #31216B; font-weight: bold; font-size:14px; background-color: #E9FAFF">
+                                    <div>HIGH</div>
+                                </td>
+                                <td align="left" class="o_main_hl o_dashboard_action" name="taps_retention_matrix.retention_action_dashboard" context='{"search_default_low_high": true}'>
+                                    <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_high_low']"/>
+                              </td>
+                              <td align="left" class="o_main_hm o_dashboard_action" name="taps_retention_matrix.retention_action_dashboard" context='{"search_default_mid_high": true}'>
+                                    <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_high_medium']"/>
+                              </td>
+                              <td align="left" class="o_main_hh o_dashboard_action" name="taps_retention_matrix.retention_action_dashboard" context='{"search_default_high_high": true}'>
+                                    <span style="font-weight: bold; font-size:14px;" t-esc="values['retention_high_high']"/>
+                              </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </t>
