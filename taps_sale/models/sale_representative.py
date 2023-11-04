@@ -15,6 +15,22 @@ class TeamTeam(models.Model):
     # team_region = fields.Many2one('team.region',string='Team Region')
     # team_leader = fields.Many2one('sale.representative',string='Team Leader')
 
+    
+    @api.model
+    def get_team_info(self):
+        team = self.env['sale.team'].search([('id', '=', 1)])
+        team_info = []
+        team_list = []
+        for rec in team:
+            team_list = [
+                team.team_name
+                # team.team_leader
+            ]
+        team_info.append(team_list)
+            
+        # rasise UserError(("HI"))
+        return team_info
+
 
 class TeamRegion(models.Model):
     _name = 'team.region'

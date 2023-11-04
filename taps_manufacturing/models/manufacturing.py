@@ -286,7 +286,15 @@ class ManufacturingOrder(models.Model):
 
     def button_plan(self):
         self._check_company()
-        if len(self.mapped('product_template_id.id')) > 1:
+        items = self.mapped('fg_categ_type')
+        items = ','.join([str(i) for i in sorted(items)])
+        items = items.replace('OE','')
+        items = items.replace('CE','')
+        # items = list(items)
+        items = [str(i) for i in sorted(items.split(','))]
+        items = list(set(items))
+        # raise UserError(items)
+        if len(items) > 1:
             raise UserError(_("Cannot plan with two items togather."))
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_plan")
         action["domain"] = [('default_id','in',self.mapped('id'))]
@@ -431,6 +439,7 @@ class ManufacturingOrder(models.Model):
         if machine_line:
             machines = machine_line.mapped('machine_no')
             qty = 0.0
+            ope_ids = []
             for mc in machines:
                 mc_oa_ids = machine_line.filtered(lambda sol: sol.machine_no.id == mc.id)
                 oa_ids = mc_oa_ids.mapped('oa_id')
@@ -465,6 +474,8 @@ class ManufacturingOrder(models.Model):
                             if len(p_q) == 1:
                                 mrp_line = p_q.id
                                 sal_line = p_q.sale_order_line.id
+
+
                                 # qty = sum(p_q.mapped('dy_rec_plan_qty'))
                         
                         # for lots in range(m.lots):
@@ -472,7 +483,11 @@ class ManufacturingOrder(models.Model):
                         #         qty = m.machine_no.capacity
                         #     else:
                         #         qty = rest_q
-                            
+                        
+                        # op_ids = ','.join([str(i) for i in sorted(ope_ids)])
+                        # op_ids = [int(i) for i in sorted(op_ids.split(','))]
+                        # operation = self.env["operation.details"].browse(op_ids)   
+                        
                         mrp_ = self.env['operation.details'].create({'mrp_lines':mrp_lines,
                                                                  'sale_lines':sale_lines,
                                                                  'mrp_line':mrp_line,
@@ -496,6 +511,13 @@ class ManufacturingOrder(models.Model):
                                                                  'plan_id': max_plan_id,
                                                                  'plan_remarks': mc_oa_ids[0].remarks
                                                                  })
+                        ope_ids.append(mrp_.id)
+            op_ids = ','.join([str(i) for i in sorted(ope_ids)])
+            op_ids = [int(i) for i in sorted(op_ids.split(','))]
+            planned_ope = self.env["operation.details"].browse(op_ids)
+            for op in planned_ope:
+                oper = op.write({'uotput_qty':op.qty})
+                op._output()
                             # rest_q = rest_q - m.machine_no.capacity
 
 

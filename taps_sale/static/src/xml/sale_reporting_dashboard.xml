@@ -4,13 +4,13 @@
         <div class="container mt32">
             <div class="row">
                 
-                    <p> Hello</p>
+                    <p> Hello</p><br/>
                 
                     <!-- <div t-key="value.name" class="o_reporting_dashboard_item">
                         <span t-esc="value.name"/>
                     </div> -->
                 
-            
+            <span t-esc="result"/>
                             
         </div>
         </div>

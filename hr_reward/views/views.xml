@@ -1,60 +1,80 @@
 <odoo>
   <data>
     <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="hr_reward.list">
-      <field name="name">hr_reward list</field>
-      <field name="model">hr_reward.hr_reward</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
-    </record>
--->
 
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="hr_reward.action_window">
-      <field name="name">hr_reward window</field>
-      <field name="res_model">hr_reward.hr_reward</field>
-      <field name="view_mode">tree,form</field>
+    <record model="ir.ui.view" id="view_hr_reward_form">
+        <field name="name">hr_reward.form</field>
+        <field name="model">hr.reward</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <header>
+                    <button name="action_submit" confirm="Are you sure to submit HR Team?" type="object" class="btn-success" string="Submit to HR Team" states="draft"/>  
+                    <button name="action_investigation" confirm="Are you sure to Primary Investigation?" type="object" class="btn-success" string="Primary Investigation" states="Submit" groups="hr.group_hr_user"/>  
+                    <button name="action_issue" confirm="Are you sure to Letter Issue?" type="object" class="btn-success" string="Letter Issue" states="Primary Investigation" groups="hr.group_hr_user"/>  
+                    <button name="action_answard" confirm="Are you sure to Return Answard?" type="object" class="btn-success" string="Return Answard" states="Letter Issue" groups="hr.group_hr_user"/>  
+                    <button name="action_satisfy" confirm="Are you sure to Satisfactory?" type="object" class="btn-success" string="Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>  
+                    <button name="action_nonsatisfy" confirm="Are you sure to Non-Satisfactory?" type="object" class="btn-success" string="Non-Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>
+                    <button name="action_closed" confirm="Are you sure to Closed?" type="object" class="btn-success" string="Closed" states="Satisfactory,Non-Satisfactory" groups="hr.group_hr_user"/>                    
+					<field name="state" widget="statusbar"/>
+				</header>
+				<sheet>
+                    <!-- <widget name="web_ribbon" title="Pending" bg_color="bg-danger"
+                            attrs="{'invisible': [('state', '!=', 'pending')]}"/> -->
+                    <widget name="web_ribbon" title="Closed" bg_color="bg-success"
+                            attrs="{'invisible': [('state', '!=', 'Closed')]}"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_get_attachment_view"
+                            class="oe_stat_button"
+                            icon="fa-file-text-o"
+                            type="object">
+                            <field name="attachment_number" widget="statinfo" string="Documents" options="{'reload_on_button': true}"/>
+                        </button>                        
+                    </div>
+                    <field name="name"/>
+                    <div class="oe_title">
+                        <label for="employee_id" class="oe_edit_only"/>
+                        <h1><field name="employee_id" placeholder="e.g. Employee Name" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create':true, 'no_open':true}"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="complaint_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="action_taken" options="{'no_create':true, 'no_open':true}"  groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
+                            <field name="final_action_taken" options="{'no_create':true, 'no_open':true}" groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
+                        </group>                       
+                    </group>
+                    <group colspan="2" col="2">
+                        <field name="details" placeholder="Details of Misconduct..." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    </group>                    
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" options="{'open_attachments': True}"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>                
+            </form>
+        </field>
     </record>
--->
 
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="hr_reward.action_server">
-      <field name="name">hr_reward server</field>
-      <field name="model_id" ref="model_hr_reward_hr_reward"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
+    <record model="ir.ui.view" id="view_hr_reward_tree">
+        <field name="name">hr_reward.tree</field>
+        <field name="model">hr.reward</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Reward" sample="1">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="details" optional="hide"/>
+                <field name="submit_by" options="{'no_create':true, 'no_open':true}"/>
+                <field name="issue_date"/>
+                <field name="state" widget="badge"/>             
+            </tree>
+        </field>
     </record>
--->
 
-    <!-- Top menu item -->
-<!--
-    <menuitem name="hr_reward" id="hr_reward.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="hr_reward.menu_1" parent="hr_reward.menu_root"/>
-    <menuitem name="Menu 2" id="hr_reward.menu_2" parent="hr_reward.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="hr_reward.menu_1_list" parent="hr_reward.menu_1"
-              action="hr_reward.action_window"/>
-    <menuitem name="Server to list" id="hr_reward" parent="hr_reward.menu_2"
-              action="hr_reward.action_server"/>
--->
   </data>
 </odoo>
