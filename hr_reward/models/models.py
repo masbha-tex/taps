@@ -7,6 +7,7 @@ from odoo.exceptions import ValidationError, UserError
 class HrReward(models.Model):
     _name = 'hr.reward'
     _description = 'Employee Reward & Recognition'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New')) 
     employee_id = fields.Many2one('hr.employee', "Employee", tracking=True, required=True)

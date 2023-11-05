@@ -448,45 +448,60 @@ class OperationDetails(models.Model):
                 m_lines =  [int(id_str) for id_str in l.mrp_line.split(',')]
                 
                 m_orders = self.env["manufacturing.order"].browse(m_lines)
+
+                size = l.sizein
+                if size == 'N/A':
+                    size = l.sizecm
+
                 for l_q in range(lots):
-                    if rest_q > l_capa:
-                        qty = l_capa
-                    else:
-                        qty = rest_q
-                    # raise UserError((m_orders[0].fg_categ_type))
-                    next = 'Assembly Output'
-                    work_center = operation[0].work_center.id
-                    if 'Metal' in m_orders[0].fg_categ_type or 'AL' in m_orders[0].fg_categ_type:
-                        next = 'Dipping Output'
-                        work_center = 17
-                    # 'mrp_line':l.mrp_line.id,
-                    # 'sale_order_line':l.mrp_line.sale_order_line.id,
-                    # for mr_li in l.mrp_line:
-                   
-                    ope = operation.create({'mrp_lines':l.mrp_line,
-                                            'sale_lines':l.sale_lines,
-                                            'oa_id':m_orders[0].oa_id.id,
-                                            'buyer_name':m_orders[0].buyer_name,
-                                            'product_id':m_orders[0].product_id.id,
-                                            'product_template_id':m_orders[0].product_template_id.id,
-                                            'action_date':datetime.now(),
-                                            'shade':m_orders[0].shade,
-                                            'shade_ref':m_orders[0].shade_ref,
-                                            'finish':m_orders[0].finish,
-                                            'slidercodesfg':m_orders[0].slidercodesfg,
-                                            'top':m_orders[0].ptopfinish,
-                                            'bottom':m_orders[0].pbotomfinish,
-                                            'pinbox':m_orders[0].ppinboxfinish,
-                                            'sizein':m_orders[0].sizein,
-                                            'sizecm':m_orders[0].sizecm,
-                                            'operation_of':'lot',
-                                            'work_center':work_center,
-                                            'operation_by':operation[0].work_center.name,
-                                            'based_on':operation[0].based_on,
-                                            'next_operation':next,
-                                            'qty':qty
-                                            })
-                    rest_q = rest_q - l_capa
+                    size_wise = m_orders.filtered(lambda op: op.sizein == size or op.sizecm == size)
+                    while rest_q > 0:
+                        for s in size_wise:
+                            
+                            if rest_q > l_capa:
+                                qty = l_capa
+                            else:
+                                qty = rest_q
+
+                            s_qty = qty
+                            if s.balance_qty > qty:
+                                s_qty = qty
+                            else:
+                                s_qty = s.balance_qty
+                            # raise UserError((m_orders[0].fg_categ_type))
+                            next = 'Assembly Output'
+                            work_center = operation[0].work_center.id
+                            if 'Metal' in m_orders[0].fg_categ_type or 'AL' in m_orders[0].fg_categ_type:
+                                next = 'Dipping Output'
+                                work_center = 17
+                            # 'mrp_line':l.mrp_line.id,
+                            # 'sale_order_line':l.mrp_line.sale_order_line.id,
+                            # for mr_li in l.mrp_line:
+                           
+                            ope = operation.create({'mrp_lines':s.id,
+                                                    'sale_lines':s.sale_order_line,
+                                                    'oa_id':s.oa_id.id,
+                                                    'buyer_name':s.buyer_name,
+                                                    'product_id':s.product_id.id,
+                                                    'product_template_id':s.product_template_id.id,
+                                                    'action_date':datetime.now(),
+                                                    'shade':s.shade,
+                                                    'shade_ref':s.shade_ref,
+                                                    'finish':s.finish,
+                                                    'slidercodesfg':s.slidercodesfg,
+                                                    'top':s.ptopfinish,
+                                                    'bottom':s.pbotomfinish,
+                                                    'pinbox':s.ppinboxfinish,
+                                                    'sizein':s.sizein,
+                                                    'sizecm':s.sizecm,
+                                                    'operation_of':'lot',
+                                                    'work_center':work_center,
+                                                    'operation_by':operation[0].work_center.name,
+                                                    'based_on':operation[0].based_on,
+                                                    'next_operation':next,
+                                                    'qty':s_qty
+                                                    })
+                            rest_q = rest_q - s_qty
 
     def set_delivery_order(self,active_model,ope_id,delivery,delivery_line):
         operation = self.env["operation.details"].browse(ope_id)
@@ -952,8 +967,18 @@ class OperationDetails(models.Model):
                 # actual_qty = sum(mrp_data.mapped('tape_con'))
                 tape_in_qc = self.env["operation.details"].search([('plan_id','=', out.plan_id)])
                 oa_ids = tape_in_qc.mapped('oa_id')
-                shades = tape_in_qc.mapped('shade')
                 items = tape_in_qc.mapped('product_template_id')
+                m_lines = tape_in_qc.mapped('mrp_lines')
+                m_lines = ','.join([str(i) for i in sorted(m_lines)])
+                m_lines = [int(id_str) for id_str in m_lines.split(',')]
+                m_order = self.env["manufacturing.order"].browse(m_lines)
+                
+                shades = m_order.mapped('shade')
+                # raise UserError((shades))
+                # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
+                # mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
+
+                
                 # shades = ','.join([str(i) for i in sorted(shades)])
                 # oa_ids = ','.join([str(i) for i in sorted(oa_ids)])
                 # oa_ids = [int(i) for i in sorted(oa_ids.split(','))]
@@ -964,101 +989,102 @@ class OperationDetails(models.Model):
                     ope_ids = []
                     # raise UserError((sorted(oa_ids),len(oa_ids)))
                     for i, oa in enumerate(sorted(oa_ids)):
-                        # for sh in shades:
-                        #     for item in items:
-                        # ('mrp_lines','=', out.mrp_lines),
-                        # mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id)
-                        # existing_qc = self.env["manufacturing.order"].search([('oa_id','=', oa.id),('id','in', out.shade)])
-                        existing_qc = None
-                        # raise UserError((shades))
                         for sh in shades:
+                            #     for item in items:
+                            # ('mrp_lines','=', out.mrp_lines),
+                            # mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id)
+                            # existing_qc = self.env["manufacturing.order"].search([('oa_id','=', oa.id),('id','in', out.shade)])
+                            existing_qc = None
+                            # raise UserError((shades))
+                            # for sh in shades:
                             existing_qc = self.env["operation.details"].search([('oa_id','=', oa.id),('shade','=', sh),('next_operation','=', 'Dyeing Qc')])
+                                # if existing_qc:
+                                #     break
+                            #('shade','=', sh),('product_template_id','=', item.id)
+                            # tape_in_qc.filtered(lambda dy: dy.oa_id.id == oa.id and dy.shade == out.shade and dy.next_operation == 'Dyeing Qc')
+                            qc_qty = 0
+                    
                             if existing_qc:
-                                break
-                        #('shade','=', sh),('product_template_id','=', item.id)
-                        # tape_in_qc.filtered(lambda dy: dy.oa_id.id == oa.id and dy.shade == out.shade and dy.next_operation == 'Dyeing Qc')
-                        qc_qty = 0
-                
-                        if existing_qc:
-                            qc_qty = existing_qc.qty + rest_qty
-                            if existing_qc.actual_qty >= qc_qty:
-                                ope_ids.append(existing_qc.id)
-                                qc_update = existing_qc.update({'qty':qc_qty})
-                                rest_qty = rest_qty - rest_qty
-                                excessqty = 0
-                            else:
-                                if existing_qc.actual_qty > existing_qc.qty:
-                                    qc_qty = existing_qc.actual_qty - existing_qc.qty
-                                    if qc_qty > 0:
-                                        ope_ids.append(existing_qc.id)
-                                        qc_update = existing_qc.update({'qty':existing_qc.qty + qc_qty})
-                                    
-                                    rest_qty = rest_qty - qc_qty
-                                    
-                                    # raise UserError((rest_qty))
-                                if i+1 == len(oa_ids):
-                                    excessqty = rest_qty
-                                # qc_qty = qc_qty - existing_qc.qty
-                                # # qc_qty = rest_qty -  
-                                # # if rest_qty < existing_qc.actual_qty:
-                                # #     qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
-                                # qc_update = existing_qc.update({'qty': qc_qty})
-                                # rest_qty = 0 #rest_qty - existing_qc.actual_qty
-                                
-                        else:
-                            # raise UserError(('ere',rest_qty,i+1))
-                            row_creates += 1
-                            # _mrp_data = mrp_data.filtered(lambda pr: pr.shade == sh and pr.oa_id.id == oa.id and pr.product_template_id.id == item.id)
-                            mrp_data = self.env["manufacturing.order"].search([('oa_id','=',oa.id),('shade','=',out.shade)])#tape_in_qc.mapped('shade')
-                            if mrp_data:
-                                # actual_qty = sum(mrp_data.mapped('tape_con'))
-                                # raise UserError(('grrgrg',actual_qty))
-                                actual_qty = sum(mrp_data.mapped('tape_con'))
-                                a = ''
-                                if actual_qty >= rest_qty:
-                                    qc_qty = rest_qty
-                                    rest_qty = rest_qty - qc_qty
+                                qc_qty = existing_qc.qty + rest_qty
+                                if existing_qc.actual_qty >= qc_qty:
+                                    ope_ids.append(existing_qc.id)
+                                    qc_update = existing_qc.update({'qty':qc_qty})
+                                    rest_qty = rest_qty - rest_qty
+                                    excessqty = 0
                                 else:
-                                    qc_qty = actual_qty
-                                    rest_qty = rest_qty - qc_qty
-    
-                                
-                                ope = self.env['operation.details'].create({'name':out.name,
-                                                                            'mrp_lines':out.mrp_lines,
-                                                                            'sale_lines':out.sale_lines,
-                                                                            'mrp_line':out.mrp_line.id,
-                                                                            'sale_order_line':out.sale_order_line.id,
-                                                                            'parent_id':out.id,
-                                                                            'oa_id':oa.id,
-                                                                            'buyer_name':out.buyer_name,
-                                                                            'product_id':out.product_id.id,
-                                                                            'product_template_id':out.product_template_id.id,
-                                                                            'action_date':datetime.now(),
-                                                                            'shade':out.shade,
-                                                                            'shade_ref':out.shade_ref,
-                                                                            'finish':out.finish,
-                                                                            'sizein':out.sizein,
-                                                                            'sizecm':out.sizecm,
-                                                                            'slidercodesfg':out.slidercodesfg,
-                                                                            'top':out.top,
-                                                                            'bottom':out.bottom,
-                                                                            'pinbox':out.pinbox,
-                                                                            'operation_of':operation_of,
-                                                                            'work_center':w_center,
-                                                                            'operation_by':out.work_center.name,
-                                                                            'based_on':'Lot Code',
-                                                                            'next_operation':next,
-                                                                            'actual_qty':actual_qty,
-                                                                            'qty':qc_qty,
-                                                                            'pack_qty':pack_qty,
-                                                                            'fr_pcs_pack':fraction_pc_of_pack,
-                                                                            'capacity':pr_pac_qty,
-                                                                            'move_line':move_line
-                                                                            })
-                                ope_ids.append(ope.id)
-                        # raise UserError((rest_qty))
-                        if rest_qty == 0:
-                            break
+                                    if existing_qc.actual_qty > existing_qc.qty:
+                                        qc_qty = existing_qc.actual_qty - existing_qc.qty
+                                        if qc_qty > 0:
+                                            ope_ids.append(existing_qc.id)
+                                            # raise UserError((existing_qc.qty,qc_qty))
+                                            qc_update = existing_qc.update({'qty':existing_qc.qty + qc_qty})
+                                        
+                                        rest_qty = rest_qty - qc_qty
+                                        
+                                        # raise UserError((rest_qty))
+                                    if i+1 == len(oa_ids):
+                                        excessqty = rest_qty
+                                    # qc_qty = qc_qty - existing_qc.qty
+                                    # # qc_qty = rest_qty -  
+                                    # # if rest_qty < existing_qc.actual_qty:
+                                    # #     qc_update = existing_qc.update({'qty': existing_qc.actual_qty})
+                                    # qc_update = existing_qc.update({'qty': qc_qty})
+                                    # rest_qty = 0 #rest_qty - existing_qc.actual_qty
+                                    
+                            else:
+                                # raise UserError(('ere',rest_qty,i+1))
+                                row_creates += 1
+                                # _mrp_data = mrp_data.filtered(lambda pr: pr.shade == sh and pr.oa_id.id == oa.id and pr.product_template_id.id == item.id)
+                                mrp_data = self.env["manufacturing.order"].search([('oa_id','=',oa.id),('shade','=',sh)])#tape_in_qc.mapped('shade')
+                                if mrp_data:
+                                    # actual_qty = sum(mrp_data.mapped('tape_con'))
+                                    # raise UserError(('grrgrg',actual_qty))
+                                    actual_qty = sum(mrp_data.mapped('tape_con'))
+                                    a = ''
+                                    if actual_qty >= rest_qty:
+                                        qc_qty = rest_qty
+                                        rest_qty = rest_qty - qc_qty
+                                    else:
+                                        qc_qty = actual_qty
+                                        rest_qty = rest_qty - qc_qty
+        
+                                    # raise UserError((rest_qty,qc_qty))
+                                    ope = self.env['operation.details'].create({'name':out.name,
+                                                                                'mrp_lines':out.mrp_lines,
+                                                                                'sale_lines':out.sale_lines,
+                                                                                'mrp_line':out.mrp_line.id,
+                                                                                'sale_order_line':out.sale_order_line.id,
+                                                                                'parent_id':out.id,
+                                                                                'oa_id':oa.id,
+                                                                                'buyer_name':out.buyer_name,
+                                                                                'product_id':out.product_id.id,
+                                                                                'product_template_id':mrp_data[0].product_template_id.id,
+                                                                                'action_date':datetime.now(),
+                                                                                'shade':sh,
+                                                                                'shade_ref':mrp_data[0].shade_ref,
+                                                                                'finish':mrp_data[0].finish,
+                                                                                'sizein':mrp_data[0].sizein,
+                                                                                'sizecm':mrp_data[0].sizecm,
+                                                                                'slidercodesfg':mrp_data[0].slidercodesfg,
+                                                                                'top':mrp_data[0].ptopfinish,
+                                                                                'bottom':mrp_data[0].pbotomfinish,
+                                                                                'pinbox':mrp_data[0].ppinboxfinish,
+                                                                                'operation_of':operation_of,
+                                                                                'work_center':w_center,
+                                                                                'operation_by':out.work_center.name,
+                                                                                'based_on':'Lot Code',
+                                                                                'next_operation':next,
+                                                                                'actual_qty':actual_qty,
+                                                                                'qty':qc_qty,
+                                                                                'pack_qty':pack_qty,
+                                                                                'fr_pcs_pack':fraction_pc_of_pack,
+                                                                                'capacity':pr_pac_qty,
+                                                                                'move_line':move_line
+                                                                                })
+                                    ope_ids.append(ope.id)
+                            # raise UserError((rest_qty))
+                            if rest_qty == 0:
+                                break
                     #i+1 == len(oa_ids)
                     if excessqty > 0:
                         excessqty = round((excessqty/len(oa_ids)),2)
@@ -1067,10 +1093,10 @@ class OperationDetails(models.Model):
                         # operation = self.env["operation.details"].browse(op_ids)
                         # excessqty = round((excessqty/len(operation)),2)
                         rest_qty = 0
-                        existing_qc = None
-                        for l in sorted(oa_ids):
-                            existing_qc = self.env["operation.details"].search([('oa_id','=', l.id),('shade','=', out.shade),('next_operation','=', 'Dyeing Qc')])
-                            qc_update = existing_qc.update({'qty': existing_qc.qty + excessqty})
+                        # existing_qc = None
+                        # for l in sorted(oa_ids):
+                        #     existing_qc = self.env["operation.details"].search([('oa_id','=', l.id),('shade','=', out.shade),('next_operation','=', 'Dyeing Qc')])
+                        #     qc_update = existing_qc.update({'qty': existing_qc.qty + excessqty})
             
             else:
                 ope = self.env['operation.details'].create({'name':out.name,
