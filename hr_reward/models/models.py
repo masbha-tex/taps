@@ -3,7 +3,6 @@
 from odoo import models, fields, api, _ 
 from odoo.exceptions import ValidationError, UserError
 
-
 class HrReward(models.Model):
     _name = 'hr.reward'
     _description = 'Employee Reward & Recognition'
@@ -19,7 +18,7 @@ class HrReward(models.Model):
             ('draft', 'Draft'),
             ('Submit', 'Submit'),
             ('Approved', 'Approved'),
-            ('Cancel', 'Cancel'),
+            # ('Cancel', 'Cancel'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
     attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
@@ -36,10 +35,10 @@ class HrReward(models.Model):
                     
                     <br>
                     			% if ctx.get('recipient_users'):
-                    			Here is the link of your Grievance:
+                    			Here is the link of your Reward:
                     			<p style="margin:16px 0px 16px 0px;">
                     				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
-                    		View Grievance
+                    		View Reward
                     	</a>
                     			</p>
                     			% endif
@@ -49,17 +48,17 @@ class HrReward(models.Model):
                     <div style="margin:0px;padding: 0px;">
                     <span>Dear Concern,</span>
                     <br>
-                    <span>Your Employee Grievance has been closed</span>
+                    <span>Your Employee Reward has been Approved</span>
                     <br>
                     <br>
                     
                     <br>
                     		
                     			% if ctx.get('recipient_users'):
-                    			Here is the link of your Grievance:
+                    			Here is the link of your Reward:
                     			<p style="margin:16px 0px 16px 0px;">
                     				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
-                    		View Grievance
+                    		View Reward
                     	</a>
                     			</p>
                     			% endif
@@ -203,7 +202,7 @@ class HrReward(models.Model):
                 				</div>        
                 """                
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
-                subject = RenderMixin._render_template(self.type.name, 'hr.reward', reward.ids, post_process=True)[reward.id]
+                subject = RenderMixin._render_template('Reward and Recognition', 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_submit = RenderMixin._render_template(self.submit_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
@@ -225,12 +224,12 @@ class HrReward(models.Model):
                     'author_id': self.env.user.partner_id.id,
                     'model': None,
                     'res_id': None,
-                    'subject': 'Raise a new reward against %s' % employee.display_name,
+                    'subject': 'Raise a new reward for %s' % employee.display_name,
                     'body_html': body,
                     'attachment_ids': attachment,                    
                     'auto_delete': True,
                     'email_to': mailto or '',
-                    'email_cc': mailcc or ''
+                    'email_cc': mailcc or '',
                 
                 }
                 try:
@@ -275,13 +274,13 @@ class HrReward(models.Model):
                         'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
                     }
                     RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
-                    subject = RenderMixin._render_template(self.type.name, 'hr.reward', reward.ids, post_process=True)[reward.id]
-                    # body = RenderMixin._render_template(self.details, 'hr.grievance', grievance.ids, post_process=True)[grievance.id]
+                    subject = RenderMixin._render_template('Rewarded', 'hr.reward', reward.ids, post_process=True)[reward.id]
+                    # body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
     
                     # body = """
                     #     <div style="margin:0px;padding: 0px;">
                     #     <p>Dear Concern,</p>
-                    #     <p>Your Employee Grievance has been closed</p>
+                    #     <p>Your Employee Reward has been closed</p>
                     #     </div>
                     #         """
                     body_closed = RenderMixin._render_template(self.closed_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
@@ -303,7 +302,7 @@ class HrReward(models.Model):
                         'author_id': self.env.user.partner_id.id,
                         'model': None,
                         'res_id': None,
-                        'subject': '%s reward has been closed' % employee.display_name,
+                        'subject': '%s reward has been approved' % employee.display_name,
                         'body_html': body,
                         'attachment_ids': attachment,
                         'auto_delete': True,
@@ -356,8 +355,16 @@ class HrReward(models.Model):
     #     if self.state == 'Return Answard':
     #         self.state = 'Satisfactory'  
     def action_refused(self):
-        if self.state == 'Approved':
+        if self.state == 'Submit':
             self.state = 'Refused'
+
+            return {
+                        'effect': {
+                            'fadeout': 'slow',
+                            'message': 'Reward Refused',
+                            'type': 'cancel',
+                        }
+                    }
      
 
     @api.model

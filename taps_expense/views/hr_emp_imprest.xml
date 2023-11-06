@@ -5,9 +5,13 @@
             <field name="model">hr.imprest</field>
             <field name="arch" type="xml">
                 <tree string="Expenses" multi_edit="1" sample="1">
-<!--                     <header>
-                        <button name="action_submit_expenses" type="object" string="Create"/>
-                    </header> -->
+                    <header>
+                        <button name="button_approve" type="object"  string="Bulk" 
+                        class="oe_stat_button" 
+                        icon="fa-check-square-o"
+                        groups="hr_expense.group_hr_expense_manager"/>
+                        
+                    </header>
                     <field name="name"/>
                     <field name="imprest_employee"/>
                     <field name="description"/>
@@ -25,7 +29,7 @@
         <field name="arch" type="xml">
             <form string="Employee Imprest"  class="o_expense_form">
                 <header>
-                    <button name="button_approve" type="object" states='checked' string="Approve" groups="hr_expense.group_hr_expense_team_approver" class="oe_highlight"/>
+                    <button name="button_approve" type="object" states="checked" string="Approve" groups="hr_expense.group_hr_expense_team_approver" class="oe_highlight"/>
                     <button name="button_confirm" type="object" states="draft" string="HR Head Approval" class="oe_highlight"/>
                     <button name="button_check" type="object" states="submit" string="Accounts Head Approval" class="oe_highlight"/>
                     <button name="button_draft" states="refused" string="Set to Precheck" type="object" class="oe_highlight" />

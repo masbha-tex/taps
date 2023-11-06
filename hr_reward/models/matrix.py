@@ -5,7 +5,7 @@ from datetime import timedelta
 
 class RewardMatrix(models.Model):
     _name = 'hr.reward.matrix'
-    _description = 'eward Matrix'
+    _description = 'Reward Matrix'
     _inherit = ['mail.thread']
     _rec_name = 'name'
 
@@ -18,13 +18,7 @@ class RewardMatrix(models.Model):
 
     _sql_constraints = [
         ('name_company_uniq', 'unique(name, company_id)', 'The name of the Action Name must be unique per Action Name in company!'),]    
-
-    # @api.model
-    # def create(self, vals):
-    #     return super(Title, self).create(vals)
-
-    # def write(self, vals):
-    #     return super(Title, self).write(vals)        
+      
 
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):

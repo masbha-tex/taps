@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_hr_reward_matrix_tree" model="ir.ui.view">
+            <field name="name">hr.reward.matrix.tree</field>
+            <field name="model">hr.reward.matrix</field>
+            <field name="arch" type="xml">
+                <tree string="Reward Matrix" sample="1" edit="1" editable="top" create="1">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="next_user" widget="many2many_tags"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+        <record id="view_hr_reward_matrix_filter" model="ir.ui.view">
+            <field name="name">hr.reward.matrix.search</field>
+            <field name="model">hr.reward.matrix</field>
+            <field name="arch" type="xml">
+                <search string="Reward Matrix">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                    
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter name="next_user" domain="[]" context="{'group_by': 'next_user'}"/>
+                        <filter name="company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_hr_reward_matrix" model="ir.actions.act_window">
+            <field name="name">RewardMatrix</field>
+            <field name="res_model">hr.reward.matrix</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="view_hr_reward_matrix_filter"/>
+            <field name="context">{"search_default_Current":1}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Ready to reward more Matrix?
+              </p><p>
+                Let's create a Reward Matrix.
+              </p>
+            </field>
+        </record>
+      
+        <menuitem
+            id="menu_hr_reward_matrix"
+            name="Reward Matrix"
+            parent="hr.menu_human_resources_configuration"
+            groups="hr.group_hr_manager"
+            sequence="35"/>  
+            <menuitem
+                id="menu_hr_reward_matrix_tree"
+                action="action_hr_reward_matrix"
+                parent="menu_hr_reward_matrix"
+                groups="hr.group_hr_manager"
+                sequence="36"/>        
+
+    </data>
+</odoo>

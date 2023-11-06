@@ -46,7 +46,13 @@ class HrImprest(models.Model):
     def button_approve(self, force=False):
         #self = self.filtered(lambda order: order._approval_allowed())
         self.write({'state': 'approved'})
-        return {}
+        return {
+            'effect': {
+                'fadeout': 'slow',
+                'message': 'well Done!',
+                'type'   : 'rainbow_man'
+            }
+        }
     
     def button_confirm(self):
         for order in self:
