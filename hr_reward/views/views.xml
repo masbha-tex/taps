@@ -64,7 +64,7 @@
                 <field name="details" optional="hide"/>
                 <field name="submit_by" options="{'no_create':true, 'no_open':true}"/>
                 <field name="issue_date"/>
-                <field name="state" widget="badge"/>             
+                <field name="state" widget="badge" options="{'color_field': 'color'}"/>             
             </tree>
         </field>
     </record>

@@ -16,4 +16,4 @@ class Attendee(models.Model):
     # _rec_name = 'common_name'
     # _description = 'Calendar Attendee Information'
 
-    partner_id = fields.Many2one('res.partner', 'Contact', required=False, readonly=True)
+    # partner_id = fields.Many2one('res.partner', 'Contact', required=False, readonly=True)

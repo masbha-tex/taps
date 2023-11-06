@@ -22,9 +22,10 @@
                         <field name="full_qty"/>
                         <field name="company_id" invisible="1"/>
                         <!-- <field name="product_id" options="{'currency_field': 'cost_currency_id'}" optional="show" readonly="1"/> -->
-                        <label for="product_id"/>
+                        <field name="create_mr"/>
+                        <label for="product_id" attrs="{'invisible': [('create_mr', '=', 'False')]}"/>
                         <div name="product" class="o_row">
-                            <field name="product_id" optional="show"/>
+                            <field name="product_id" optional="show" attrs="{'invisible': [('create_mr', '=', 'False')]}"/>
                             <span class="oe_read_only">per
                                 <field name="product_uom" optional="show" readonly="1"/>
                             </span>
