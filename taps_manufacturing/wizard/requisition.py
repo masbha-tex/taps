@@ -15,7 +15,7 @@ from typing import List, Union
 _logger = logging.getLogger(__name__)
 
 
-class ManufacturingPlan(models.TransientModel):
+class ManufacturingRequisition(models.TransientModel):
     _name = 'mrp.requisition'
     _description = 'Requisition'
     _check_company_auto = True
@@ -113,9 +113,9 @@ class ManufacturingPlan(models.TransientModel):
         active_model = self.env.context.get("active_model")
         ope_id = self.env.context.get("active_ids")
         operation = self.env['operation.details'].browse(1)
-        return operation.set_requisition(self.company_id.id, active_model,ope_id,self.work_center.id,self.requisition_line)
+        return operation.set_requisition(self.company_id.id, active_model,ope_id,self.work_center.id,None,self.requisition_line)
 
-class MachineLine(models.TransientModel):
+class ProductLine(models.TransientModel):
     _name = 'mrp.requisition.line'
     _description = 'RM Requisition'
     #_order = 'order_id, sequence, id'

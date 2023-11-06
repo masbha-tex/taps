@@ -277,7 +277,7 @@ class OperationDetails(models.Model):
         #action["domain"] = [('default_id','=',self.mapped('id'))]
         return action
     
-    def set_requisition(self,company_id,active_model,ope_id,work_center,product_line):
+    def set_requisition(self,company_id,active_model,ope_id,work_center,product_id,product_line):
         operation = self.env["operation.details"].search([])
         mrp_lines = sale_lines = parent_ids = oa_ids = None
         

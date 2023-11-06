@@ -20,8 +20,6 @@ class HrReward(models.Model):
             ('Approved', 'Approved'),
             # ('Cancel', 'Cancel'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
-    next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
-    attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
     details = fields.Html('Reward For', tracking=True, default="""
                     <div style="margin:0px;padding: 0px;">
                     <br>
@@ -64,6 +62,9 @@ class HrReward(models.Model):
                     			% endif
                     </div>
                         """ ) 
+    
+    next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
+    attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
     
     def action_submit(self):
         if self.state == 'draft':

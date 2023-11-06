@@ -314,7 +314,10 @@ class ManufacturingOrder(models.Model):
         return field_data
       
     
-    def set_plan(self,mo_ids,plan_for_id,plan_for,material,plan_start,plan_end,plan_qty,machine_line):
+    def set_plan(self,mo_ids,plan_for_id,plan_for,material,plan_start,plan_end,plan_qty,machine_line,product_id=None):
+        # 
+        # operation.set_requisition(self.company_id.id, active_model,ope_id,self.work_center.id,None,self.requisition_line)
+        
         production = self.env["manufacturing.order"].browse(mo_ids)
         m_qty = 0.00
         rest_pl_q = plan_qty
@@ -603,7 +606,7 @@ class ManufacturingOrder(models.Model):
                                                              'state':'waiting',
                                                              'plan_id': max_plan_id
                                                              })
-
+                
     def button_requisition(self):
         self._check_company()
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_requisition")

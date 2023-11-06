@@ -176,7 +176,7 @@ class ManufacturingPlan(models.TransientModel):
         production = self.env["manufacturing.order"].browse(mo_ids)
         
         production.set_plan(mo_ids,self.plan_for.id,self.plan_for.name,self.material,self.plan_start,
-                            self.plan_end,self.plan_qty,self.machine_line)
+                            self.plan_end,self.plan_qty,self.machine_line,self.product_id)
         #production.set_operation(mo_ids,self.plan_for,self.machine_line)
         return 
 
