@@ -314,10 +314,12 @@ class ManufacturingOrder(models.Model):
         return field_data
       
     
-    def set_plan(self,mo_ids,plan_for_id,plan_for,material,plan_start,plan_end,plan_qty,machine_line,product_id=None):
-        # 
-        # operation.set_requisition(self.company_id.id, active_model,ope_id,self.work_center.id,None,self.requisition_line)
-        
+    def set_plan(self,mo_ids,plan_for_id,plan_for_sec,material,plan_start,plan_end,plan_qty,machine_line,product_id=None):
+        req_id = None
+        if product_id:
+            # raise UserError((plan_for_sec.id,product_id.id))
+            req_id = self.env["operation.details"].set_requisition(self.company_id.id, 'manufacturing.order',mo_ids,plan_for_sec.id,product_id,None,plan_qty)
+        plan_for = plan_for_sec.name
         production = self.env["manufacturing.order"].browse(mo_ids)
         m_qty = 0.00
         rest_pl_q = plan_qty
@@ -512,7 +514,7 @@ class ManufacturingOrder(models.Model):
                                                                  'qty':qty,
                                                                  'state':'waiting',
                                                                  'plan_id': max_plan_id,
-                                                                 'plan_remarks': mc_oa_ids[0].remarks
+                                                                 'plan_remarks': mc_oa_ids[0].remarks,'mr_req': req_id 
                                                                  })
                         ope_ids.append(mrp_.id)
             op_ids = ','.join([str(i) for i in sorted(ope_ids)])
@@ -604,7 +606,7 @@ class ManufacturingOrder(models.Model):
                                                              'next_operation':next_operation,
                                                              'qty':round(qty,2),
                                                              'state':'waiting',
-                                                             'plan_id': max_plan_id
+                                                             'plan_id': max_plan_id,'mr_req': req_id
                                                              })
                 
     def button_requisition(self):

@@ -277,7 +277,7 @@ class OperationDetails(models.Model):
         #action["domain"] = [('default_id','=',self.mapped('id'))]
         return action
     
-    def set_requisition(self,company_id,active_model,ope_id,work_center,product_id,product_line):
+    def set_requisition(self,company_id,active_model,ope_id,work_center,product_id,product_line,qty=None):
         operation = self.env["operation.details"].search([])
         mrp_lines = sale_lines = parent_ids = oa_ids = None
         
@@ -287,8 +287,10 @@ class OperationDetails(models.Model):
             mrp_lines = ope_id
             sale_lines = ','.join([str(i) for i in sorted(m_order.sale_order_line.ids)])
             oa_ids = ','.join([str(i) for i in sorted(m_order.oa_id.ids)])
+            oa_ids = [int(id_str) for id_str in oa_ids.split(',')]
             sale_order = self.env["sale.order"].browse(oa_ids)
             oa_list = sale_order.mapped('name')
+            # raise UserError((oa_list))
             #operation._ids2str('sale_order_line')
         else:
             operation = operation.browse(ope_id)
@@ -297,7 +299,7 @@ class OperationDetails(models.Model):
             sale_order = self.env["sale.order"].search([('id', 'in', (oa_ids,0))])#(oa_ids)
             oa_list = sale_order.mapped('name')
 
-        # raise UserError((oa_list))
+        # raise UserError((self.env.user.partner_id.id,self.env.company.id,self.env.user.user_id))
         pick = self.env["stock.picking"].create({'move_type':'direct',
                                                  'state':'draft',
                                                  'scheduled_date':datetime.now(),
@@ -310,11 +312,43 @@ class OperationDetails(models.Model):
                                                  'immediate_transfer':False,
                                                  'operation_lines':parent_ids,
                                                  'mrp_lines':mrp_lines,
-                                                 'oa_ids': oa_ids,
+                                                 'oa_ids':oa_ids,
                                                  'x_studio_oa_no':oa_list
                                                  })
-        
-        for prod in product_line:
+        if product_line:
+            for prod in product_line:
+                ope = operation.create({'mrp_lines':mrp_lines,
+                                        'sale_lines':sale_lines,
+                                        'parent_ids':parent_ids,
+                                        'company_id':self.env.company.id,
+                                        'action_date':datetime.now(),
+                                        'operation_of':'req',
+                                        'work_center':work_center,
+                                        'operation_by':self.env.user.name,
+                                        'product_id':prod.product_id.id,
+                                        'based_on':'process',
+                                        'next_operation':'Issue',
+                                        'mr_req': pick.id,
+                                        'qty':prod.product_qty
+                                        })
+    
+                stockmove = self.env["stock.move"].create({'name':prod.product_id.product_tmpl_id.display_name,
+                                                           'company_id':self.env.company.id,
+                                                           'product_id':prod.product_id.id,
+                                                           'description_picking':prod.product_id.product_tmpl_id.name,
+                                                           # 'product_qty':prod.product_qty,
+                                                           'product_uom_qty':prod.product_qty,
+                                                           'product_uom':prod.product_id.product_tmpl_id.uom_id.id,
+                                                           'location_id':8,
+                                                           'location_dest_id':15,
+                                                           'partner_id':self.env.user.partner_id.id,
+                                                           'picking_id':pick.id,
+                                                           'state':'draft',
+                                                           'procure_method':'make_to_stock',
+                                                           'picking_type_id':26,
+                                                           'reference':pick.name
+                                                           })
+        elif product_id:
             ope = operation.create({'mrp_lines':mrp_lines,
                                     'sale_lines':sale_lines,
                                     'parent_ids':parent_ids,
@@ -323,20 +357,20 @@ class OperationDetails(models.Model):
                                     'operation_of':'req',
                                     'work_center':work_center,
                                     'operation_by':self.env.user.name,
-                                    'product_id':prod.product_id.id,
+                                    'product_id':product_id.id,
                                     'based_on':'process',
                                     'next_operation':'Issue',
                                     'mr_req': pick.id,
-                                    'qty':prod.product_qty
+                                    'qty':qty
                                     })
-
-            stockmove = self.env["stock.move"].create({'name':prod.product_id.product_tmpl_id.display_name,
+    
+            stockmove = self.env["stock.move"].create({'name':product_id.product_tmpl_id.display_name,
                                                        'company_id':self.env.company.id,
-                                                       'product_id':prod.product_id.id,
-                                                       'description_picking':prod.product_id.product_tmpl_id.name,
+                                                       'product_id':product_id.id,
+                                                       'description_picking':product_id.product_tmpl_id.name,
                                                        # 'product_qty':prod.product_qty,
-                                                       'product_uom_qty':prod.product_qty,
-                                                       'product_uom':prod.product_id.product_tmpl_id.uom_id.id,
+                                                       'product_uom_qty':qty,
+                                                       'product_uom':product_id.product_tmpl_id.uom_id.id,
                                                        'location_id':8,
                                                        'location_dest_id':15,
                                                        'partner_id':self.env.user.partner_id.id,
@@ -346,6 +380,7 @@ class OperationDetails(models.Model):
                                                        'picking_type_id':26,
                                                        'reference':pick.name
                                                        })
+        return pick.id
             
     
     def set_lot(self,active_model,ope_id,lot_line):
@@ -1099,7 +1134,14 @@ class OperationDetails(models.Model):
                         #     qc_update = existing_qc.update({'qty': existing_qc.qty + excessqty})
             
             else:
-                ope = self.env['operation.details'].create({'name':out.name,
+                can_create = True
+                if out.next_operation == 'Assembly Output':
+                    pack_exist = self.env['operation.details'].search([('mrp_lines','=',out.mrp_lines),('sizein','=',out.sizein),('sizecm','=',out.sizecm),('oa_id','=',out.oa_id.id),('next_operation','=','Packing Output')])
+                    if pack_exist:
+                        can_create = False
+                        up_pack = pack_exist.update({'qty':pack_exist.qty + out.uotput_qty})
+                if can_create:
+                    ope = self.env['operation.details'].create({'name':out.name,
                                                             'mrp_lines':out.mrp_lines,
                                                             'sale_lines':out.sale_lines,
                                                             'mrp_line':out.mrp_line.id,

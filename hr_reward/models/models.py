@@ -65,6 +65,7 @@ class HrReward(models.Model):
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
     attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
+
     
     def action_submit(self):
         if self.state == 'draft':
@@ -243,10 +244,10 @@ class HrReward(models.Model):
                         'model_description': self.env['ir.model']._get('hr.reward').display_name,
                         'company': self.env.company,
                     }
-                    # raise UserError((a))
                     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
                 self.env['mail.mail'].sudo().create(mail_values).send()
+                # raise UserError((mail_values))
                 
         return {
             'effect': {
@@ -256,18 +257,22 @@ class HrReward(models.Model):
                 # 'img_url': 'taps_grievance/static/img/success.png'
             }
         }
+        
+        # raise UserError((effect)))
             
     def action_closed(self):
+        # raise UserError(('goodbye'))
         if self.state == 'Submit':
-            self.state = 'Approved' 
-
+            self.state = 'Approved'
             for reward in self:
                 reward_mail_template = reward.closed_template
                 mapped_data = {
                     **{reward.employee_id: reward_mail_template}
                 }
                 for employee, mail_template in mapped_data.items():
+                    # raise UserError((hi))
                     if not employee.email or not self.env.user.email:
+                        # raise UserError((hi))
                         continue
                     ctx = {
                         'employee_to_name': employee.display_name,
@@ -277,7 +282,7 @@ class HrReward(models.Model):
                     RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                     subject = RenderMixin._render_template('Rewarded', 'hr.reward', reward.ids, post_process=True)[reward.id]
                     # body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
-    
+        
                     # body = """
                     #     <div style="margin:0px;padding: 0px;">
                     #     <p>Dear Concern,</p>
@@ -324,7 +329,7 @@ class HrReward(models.Model):
                         body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                         mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
                     self.env['mail.mail'].sudo().create(mail_values).send()
-                         
+          
             return {
                 'effect': {
                     'fadeout': 'slow',
@@ -333,39 +338,18 @@ class HrReward(models.Model):
                     # 'img_url': 'taps_grievance/static/img/success.png'
                 }
             }
-            
-    # def action_issue(self):
-    #     attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-    #     if attachment:
-    #         if self.action_taken:
-    #             if self.state == 'Primary Investigation':
-    #                 self.state = 'Letter Issue'
-    #         else:
-    #             raise UserError(('You forget to select Action To be Taken!!'))
-    #     else:
-    #         raise UserError(('You forget to upload Attachment!!'))   
-    # def action_answard(self):
-    #     attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-    #     if len(attachment) > 1:
-    #         if self.state == 'Letter Issue':
-    #             self.state = 'Return Answard'
-    #     else:
-    #         raise UserError(('Maybe you forget to upload Return Answard Attachment!!'))                  
-                   
-    # def action_satisfy(self):
-    #     if self.state == 'Return Answard':
-    #         self.state = 'Satisfactory'  
+             
     def action_refused(self):
         if self.state == 'Submit':
             self.state = 'Refused'
 
-            return {
-                        'effect': {
-                            'fadeout': 'slow',
-                            'message': 'Reward Refused',
-                            'type': 'cancel',
-                        }
+        return {
+                    'effect': {
+                        'fadeout': 'slow',
+                        'message': 'Reward Refused',
+                        'type': 'cancel',
                     }
+                }
      
 
     @api.model

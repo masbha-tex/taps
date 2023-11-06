@@ -49,6 +49,7 @@ class ManufacturingRequisition(models.TransientModel):
         res = super().default_get(fields_list)
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_ids")
+        mrp_ids = active_id
         material_qty = None
         # f"{record.prefix} - {record.float_value}"
         tape = slider = top = bottom = pinbox = wire = 0.0
@@ -68,10 +69,10 @@ class ManufacturingRequisition(models.TransientModel):
                 i += 1
             
         
-        # all_mrp_lines = ','.join(all_mrp_lines)
-        all_mrp_lines_st = str(all_mrp_lines)
-        # raise UserError((all_mrp_lines))
-        mrp_ids = [int(id_str) for id_str in all_mrp_lines_st.split(',')]
+            # all_mrp_lines = ','.join(all_mrp_lines)
+            all_mrp_lines_st = str(all_mrp_lines)
+            # raise UserError((all_mrp_lines))
+            mrp_ids = [int(id_str) for id_str in all_mrp_lines_st.split(',')]
         
         production = self.env["manufacturing.order"].browse(mrp_ids)
         res["item"] = production[0].fg_categ_type
@@ -113,7 +114,7 @@ class ManufacturingRequisition(models.TransientModel):
         active_model = self.env.context.get("active_model")
         ope_id = self.env.context.get("active_ids")
         operation = self.env['operation.details'].browse(1)
-        return operation.set_requisition(self.company_id.id, active_model,ope_id,self.work_center.id,None,self.requisition_line)
+        return operation.set_requisition(self.company_id.id, active_model,ope_id,self.work_center.id,None,self.requisition_line,None)
 
 class ProductLine(models.TransientModel):
     _name = 'mrp.requisition.line'
