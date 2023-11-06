@@ -10,19 +10,20 @@
             <form string="">
                 <header>
                     <button name="action_submit" confirm="Are you sure to submit HR Team?" type="object" class="btn-success" string="Submit to HR Team" states="draft"/>  
-                    <button name="action_investigation" confirm="Are you sure to Primary Investigation?" type="object" class="btn-success" string="Primary Investigation" states="Submit" groups="hr.group_hr_user"/>  
+                    <!-- <button name="action_investigation" confirm="Are you sure to Primary Investigation?" type="object" class="btn-success" string="Primary Investigation" states="Submit" groups="hr.group_hr_user"/>  
                     <button name="action_issue" confirm="Are you sure to Letter Issue?" type="object" class="btn-success" string="Letter Issue" states="Primary Investigation" groups="hr.group_hr_user"/>  
                     <button name="action_answard" confirm="Are you sure to Return Answard?" type="object" class="btn-success" string="Return Answard" states="Letter Issue" groups="hr.group_hr_user"/>  
                     <button name="action_satisfy" confirm="Are you sure to Satisfactory?" type="object" class="btn-success" string="Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>  
-                    <button name="action_nonsatisfy" confirm="Are you sure to Non-Satisfactory?" type="object" class="btn-success" string="Non-Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>
-                    <button name="action_closed" confirm="Are you sure to Closed?" type="object" class="btn-success" string="Closed" states="Satisfactory,Non-Satisfactory" groups="hr.group_hr_user"/>                    
+                    <button name="action_nonsatisfy" confirm="Are you sure to Non-Satisfactory?" type="object" class="btn-success" string="Non-Satisfactory" states="Return Answard" groups="hr.group_hr_user"/> -->
+                    <button name="action_closed" confirm="Are you sure to Approved?" type="object" class="btn-success" string="Approved" states="Submit" groups="hr.group_hr_user"/> 
+                    <button name="action_refused" confirm="Are you sure to Refused?" type="object" class="btn-success" string="Refused" states="Return Answard" groups="hr.group_hr_user"/>
 					<field name="state" widget="statusbar"/>
 				</header>
 				<sheet>
-                    <!-- <widget name="web_ribbon" title="Pending" bg_color="bg-danger"
-                            attrs="{'invisible': [('state', '!=', 'pending')]}"/> -->
+                    <widget name="web_ribbon" title="Pending" bg_color="bg-danger"
+                            attrs="{'invisible': [('state', '!=', 'pending')]}"/>
                     <widget name="web_ribbon" title="Closed" bg_color="bg-success"
-                            attrs="{'invisible': [('state', '!=', 'Closed')]}"/>
+                            attrs="{'invisible': [('state', '!=', 'Approved')]}"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_get_attachment_view"
                             class="oe_stat_button"
@@ -38,13 +39,13 @@
                     </div>
                     <group>
                         <group>
-                            <field name="type" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <!-- <field name="type" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
                             <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         </group>
                         <group>
-                            <field name="complaint_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                            <field name="action_taken" options="{'no_create':true, 'no_open':true}"  groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
-                            <field name="final_action_taken" options="{'no_create':true, 'no_open':true}" groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/>
+                            <field name="issue_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <!-- <field name="action_taken" options="{'no_create':true, 'no_open':true}"  groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/> -->
+                            <!-- <field name="final_action_taken" options="{'no_create':true, 'no_open':true}" groups="hr.group_hr_user" attrs="{'readonly': [('state', '=', 'Closed')]}"/> -->
                         </group>                       
                     </group>
                     <group colspan="2" col="2">
@@ -75,6 +76,39 @@
             </tree>
         </field>
     </record>
+
+
+    <record model="ir.actions.act_window" id="action_hr_reward">
+        <field name="name">Reward</field>
+        <field name="res_model">hr.reward</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+	<menuitem name="Reward" parent="hr.menu_hr_root" id="menu_hr_reward" sequence="6" action="action_hr_reward"/>
+
+<!-- Add Complaint Count to Employee Form-->
+     <record id="act_hr_employee_2_hr_reward" model="ir.actions.act_window">
+		<field name="res_model">hr.reward</field>
+		<field name="name">Reward</field>
+		<field name="view_mode">tree,form</field>
+		<field name="context">{'search_default_employee_id': [active_id]}</field>
+     </record>
+	
+     <record id="hr_employee_reward_view_form" model="ir.ui.view">
+		<field name="name">hr.employee.reward.view.form</field>
+		<field name="model">hr.employee</field>
+		<field name="inherit_id" ref="hr.view_employee_form"/>
+		<field name="arch" type="xml">
+    		<xpath expr="//div[@name='button_box']" position="inside">
+    			<button name="%(act_hr_employee_2_hr_reward)d"  
+    				class="oe_stat_button"
+    				icon="fa-frown-o"
+    				type="action">
+    				<field name="reward_count" widget="statinfo" string="Reward"/>
+    			</button>
+    		</xpath>
+		</field>
+	</record>
 
   </data>
 </odoo>

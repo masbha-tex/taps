@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-new
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _ 
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -22,6 +22,7 @@ class HrReward(models.Model):
             ('Cancel', 'Cancel'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
+    attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
     details = fields.Html('Reward For', tracking=True, default="""
                     <div style="margin:0px;padding: 0px;">
                     <br>
@@ -29,8 +30,43 @@ class HrReward(models.Model):
                     <br>                    
                     </div>
                         """)
+
+    submit_template = fields.Html('Submit Template', default="""
+                    <div style="margin:0px;padding: 0px;">
+                    
+                    <br>
+                    			% if ctx.get('recipient_users'):
+                    			Here is the link of your Grievance:
+                    			<p style="margin:16px 0px 16px 0px;">
+                    				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+                    		View Grievance
+                    	</a>
+                    			</p>
+                    			% endif
+                    </div>
+                        """ )
+    closed_template = fields.Html('Closed Template', default="""
+                    <div style="margin:0px;padding: 0px;">
+                    <span>Dear Concern,</span>
+                    <br>
+                    <span>Your Employee Grievance has been closed</span>
+                    <br>
+                    <br>
+                    
+                    <br>
+                    		
+                    			% if ctx.get('recipient_users'):
+                    			Here is the link of your Grievance:
+                    			<p style="margin:16px 0px 16px 0px;">
+                    				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+                    		View Grievance
+                    	</a>
+                    			</p>
+                    			% endif
+                    </div>
+                        """ ) 
     
-    def Fs(self):
+    def action_submit(self):
         if self.state == 'draft':
             self.state = 'Submit'
         for reward in self:
@@ -217,120 +253,112 @@ class HrReward(models.Model):
                 'fadeout': 'slow',
                 'message': 'Submit Completed',
                 'type': 'rainbow_man',
-                'img_url': 'taps_grievance/static/img/success.png'
+                # 'img_url': 'taps_grievance/static/img/success.png'
             }
-        } 
+        }
             
-    def action_investigation(self):
-        if self.state == 'Submit':
-            self.state = 'Primary Investigation'      
-    def action_issue(self):
-        attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-        if attachment:
-            if self.action_taken:
-                if self.state == 'Primary Investigation':
-                    self.state = 'Letter Issue'
-            else:
-                raise UserError(('You forget to select Action To be Taken!!'))
-        else:
-            raise UserError(('You forget to upload Attachment!!'))   
-    def action_answard(self):
-        attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-        if len(attachment) > 1:
-            if self.state == 'Letter Issue':
-                self.state = 'Return Answard'
-        else:
-            raise UserError(('Maybe you forget to upload Return Answard Attachment!!'))                  
-                   
-    def action_satisfy(self):
-        if self.state == 'Return Answard':
-            self.state = 'Satisfactory'  
-    def action_nonsatisfy(self):
-        if self.state == 'Return Answard':
-            self.state = 'Non-Satisfactory'
     def action_closed(self):
-        attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-        if len(attachment) > 2:        
-            if self.state == 'Satisfactory' or self.state == 'Non-Satisfactory':
-                if self.final_action_taken:
-                    self.state = 'Closed'
-            
-                    for reward in self:
-                        reward_mail_template = reward.closed_template
-                        mapped_data = {
-                            **{reward.employee_id: reward_mail_template}
-                        }
-                        for employee, mail_template in mapped_data.items():
-                            if not employee.email or not self.env.user.email:
-                                continue
-                            ctx = {
-                                'employee_to_name': employee.display_name,
-                                'recipient_users': employee.user_id,
-                                'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
-                            }
-                            RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
-                            subject = RenderMixin._render_template(self.type.name, 'hr.reward', reward.ids, post_process=True)[reward.id]
-                            # body = RenderMixin._render_template(self.details, 'hr.grievance', grievance.ids, post_process=True)[grievance.id]
-            
-                            # body = """
-                            #     <div style="margin:0px;padding: 0px;">
-                            #     <p>Dear Concern,</p>
-                            #     <p>Your Employee Grievance has been closed</p>
-                            #     </div>
-                            #         """
-                            body_closed = RenderMixin._render_template(self.closed_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
-                            body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
-                            
-                            body = f"{body_closed}<br/>{body_sig}"
-                            # post the message
-                            matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
-                            if matrix:
-                                mailto = ','.join([email.email for email in matrix.next_user if email])
-                            matrix_cc = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', False)], limit=1)
-                            if matrix_cc:
-                                mailcc = ','.join([email.email for email in matrix_cc.next_user if email]) +','+employee.parent_id.email
-                            attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-                                
-                            mail_values = {
-                                # 'email_from': self.env.user.email_formatted,
-                                'email_from': self.env.user.email_formatted,
-                                'author_id': self.env.user.partner_id.id,
-                                'model': None,
-                                'res_id': None,
-                                'subject': '%s reward has been closed' % employee.display_name,
-                                'body_html': body,
-                                'attachment_ids': attachment,
-                                'auto_delete': True,
-                                'email_to': self.submit_by.email,
-                                'email_cc': mailcc or ''
-                            
-                            }
-                            try:
-                                template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
-                            except ValueError:
-                                _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
-                            else:
-                                template_ctx = {
-                                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=employee.display_name)),
-                                    'model_description': self.env['ir.model']._get('hr.reward').display_name,
-                                    'company': self.env.company,
-                                }
-                                body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
-                                mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                            self.env['mail.mail'].sudo().create(mail_values).send()
-                                 
-                    return {
-                        'effect': {
-                            'fadeout': 'slow',
-                            'message': 'reward Closed',
-                            'type': 'rainbow_man',
-                            'img_url': 'taps_grievance/static/img/success.png'
-                        }
+        if self.state == 'Submit':
+            self.state = 'Approved' 
+
+            for reward in self:
+                reward_mail_template = reward.closed_template
+                mapped_data = {
+                    **{reward.employee_id: reward_mail_template}
+                }
+                for employee, mail_template in mapped_data.items():
+                    if not employee.email or not self.env.user.email:
+                        continue
+                    ctx = {
+                        'employee_to_name': employee.display_name,
+                        'recipient_users': employee.user_id,
+                        'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
                     }
-                else:
-                    raise UserError(('You forget to select Final Action!!'))    
-        else:
-            raise UserError(('Maybe you forget to upload Closed Attachment!!')) 
+                    RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
+                    subject = RenderMixin._render_template(self.type.name, 'hr.reward', reward.ids, post_process=True)[reward.id]
+                    # body = RenderMixin._render_template(self.details, 'hr.grievance', grievance.ids, post_process=True)[grievance.id]
+    
+                    # body = """
+                    #     <div style="margin:0px;padding: 0px;">
+                    #     <p>Dear Concern,</p>
+                    #     <p>Your Employee Grievance has been closed</p>
+                    #     </div>
+                    #         """
+                    body_closed = RenderMixin._render_template(self.closed_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
+                    body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
+                    
+                    body = f"{body_closed}<br/>{body_sig}"
+                    # post the message
+                    matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
+                    if matrix:
+                        mailto = ','.join([email.email for email in matrix.next_user if email])
+                    matrix_cc = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', False)], limit=1)
+                    if matrix_cc:
+                        mailcc = ','.join([email.email for email in matrix_cc.next_user if email]) +','+employee.parent_id.email
+                    attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
+                        
+                    mail_values = {
+                        # 'email_from': self.env.user.email_formatted,
+                        'email_from': self.env.user.email_formatted,
+                        'author_id': self.env.user.partner_id.id,
+                        'model': None,
+                        'res_id': None,
+                        'subject': '%s reward has been closed' % employee.display_name,
+                        'body_html': body,
+                        'attachment_ids': attachment,
+                        'auto_delete': True,
+                        'email_to': self.submit_by.email,
+                        'email_cc': mailcc or ''
+                    
+                    }
+                    try:
+                        template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+                    except ValueError:
+                        _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
+                    else:
+                        template_ctx = {
+                            'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=employee.display_name)),
+                            'model_description': self.env['ir.model']._get('hr.reward').display_name,
+                            'company': self.env.company,
+                        }
+                        body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+                        mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+                    self.env['mail.mail'].sudo().create(mail_values).send()
+                         
+            return {
+                'effect': {
+                    'fadeout': 'slow',
+                    'message': 'Reward Closed',
+                    'type': 'rainbow_man',
+                    # 'img_url': 'taps_grievance/static/img/success.png'
+                }
+            }
+            
+    # def action_issue(self):
+    #     attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
+    #     if attachment:
+    #         if self.action_taken:
+    #             if self.state == 'Primary Investigation':
+    #                 self.state = 'Letter Issue'
+    #         else:
+    #             raise UserError(('You forget to select Action To be Taken!!'))
+    #     else:
+    #         raise UserError(('You forget to upload Attachment!!'))   
+    # def action_answard(self):
+    #     attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
+    #     if len(attachment) > 1:
+    #         if self.state == 'Letter Issue':
+    #             self.state = 'Return Answard'
+    #     else:
+    #         raise UserError(('Maybe you forget to upload Return Answard Attachment!!'))                  
+                   
+    # def action_satisfy(self):
+    #     if self.state == 'Return Answard':
+    #         self.state = 'Satisfactory'  
+    def action_refused(self):
+        if self.state == 'Approved':
+            self.state = 'Refused'
+     
 
     @api.model
     def create(self, vals):
@@ -338,6 +366,22 @@ class HrReward(models.Model):
             issue_date = vals.get('issue_date')
             vals['name'] = self.env['ir.sequence'].next_by_code('hr.reward', sequence_date=issue_date)
         return super(HrReward, self).create(vals)
+
+    def _compute_attachment_number(self):
+        attachment_data = self.env['ir.attachment'].read_group([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)], ['res_id'], ['res_id'])
+        attachment = dict((data['res_id'], data['res_id_count']) for data in attachment_data)
+        for reward in self:
+            reward.attachment_number = attachment.get(reward.id, 0)        
+        
+
+    def action_get_attachment_view(self):
+        res = self.env['ir.actions.act_window']._for_xml_id('base.action_attachment')
+        res['domain'] = [('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)]
+        res['context'] = {
+            'default_res_model': 'hr.reward',
+            'default_res_id': self.id,
+        }
+        return res
 
 
 

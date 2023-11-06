@@ -12,6 +12,18 @@
                <xpath expr="//field[@name='amount_total']" position="replace">
                    <field name="amount_total" widget="monetary" optional="show" decoration-bf="1"/>
                </xpath>
+                <xpath expr="//tree/header/button[@name='action_create_invoice']" position="after">
+                   
+                    <button 
+                        name="button_approve" 
+                        type="object" 
+                        string="Bulk" 
+                        groups="purchase.group_purchase_manager"
+                        class="oe_stat_button" 
+                        icon="fa-check-square-o"
+                        />
+                   
+               </xpath>
             </field>
         </record>
         
