@@ -256,7 +256,7 @@ class HrReward(models.Model):
                     'email_cc': mailcc or '',
                 
                 }
-                raise UserError((mail_values['email_to']))
+                # raise UserError((mail_values['email_to']))
                 try:
                     template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
                 except ValueError:
@@ -322,7 +322,11 @@ class HrReward(models.Model):
                 if matrix_cc:
                     mailcc = ','.join([email.email for email in matrix_cc.next_user if email]) +','+employee.parent_id.email
                 attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-                    
+                email_to_list = []
+                email_to_list.append(self.employee_id.email)
+                email_to_list.append(self.submit_by.email)
+                email_to = ','.join(email_to_list)
+                
                 mail_values = {
                     # 'email_from': self.env.user.email_formatted,
                     'email_from': self.env.user.email_formatted,
@@ -333,8 +337,8 @@ class HrReward(models.Model):
                     'body_html': body,
                     'attachment_ids': attachment,
                     'auto_delete': True,
-                    'email_to': self.employee_id.email,
-                    'email_cc': mailcc or ''
+                    'email_to': email_to,
+                    'email_cc': mailcc or '',
                 
                 }
                 # raise UserError((mail_values['email_to']))
@@ -432,7 +436,7 @@ class HrReward(models.Model):
                     'effect': {
                         'fadeout': 'slow',
                         'message': 'Reward Refused',
-                        'type': 'cancel',
+                        # 'type': 'cancel',
                     }
                 }
      
