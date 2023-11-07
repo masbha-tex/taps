@@ -21,9 +21,10 @@ class ReportPaintingPlan(models.AbstractModel):
         capacities = planids.mapped('capacity')
         capacities = list(set(capacities))
         
-        column_style = workbook.add_format({'bold': True, 'font_size': 11, 'align': 'center', 'valign': 'vcenter'})
+        column_style = workbook.add_format({'bold': True, 'font_size': 9, 'align': 'center', 'valign': 'vcenter'})
+        _column_style = workbook.add_format({'text_wrap':True, 'bold': True, 'font_size': 9, 'align': 'center', 'valign': 'vcenter'})
         
-        _row_style = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'vcenter'})
+        _row_style = workbook.add_format({'font_size': 9, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'vcenter'})
         __row_style = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'align': 'center', 'valign': 'vcenter'})
         
         row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
@@ -35,44 +36,54 @@ class ReportPaintingPlan(models.AbstractModel):
         
         format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        merge_format = workbook.add_format({'align': 'top', 'bold': True, 'align': 'center'})
+        merge_format = workbook.add_format({'font_size': 10, 'align': 'top', 'bold': True, 'align': 'center'})
         merge_format_ = workbook.add_format({'align': 'bottom', 'bold': True})
         
         mc_name = 'Painting Plan'
         sheet = workbook.add_worksheet(mc_name[:41])
-        # sheet.set_column(6, 6, 20)
-        sheet.merge_range(0, 0, 0, 8, 'Painting Plan', merge_format)
+        sheet.set_column(0, 0, 10)
+        sheet.set_column(3, 3, 20)
+        sheet.set_column(4, 4, 20)
+        sheet.set_column(5, 5, 15)
+        sheet.set_column(7, 7, 15)
+        sheet.set_column(9, 9, 15)
+        sheet.merge_range(0, 0, 0, 9, 'Painting Plan', merge_format)
         
         sheet.write(2, 0, "PLAN DATE", column_style)
         sheet.write(2, 1, "OA", column_style)
         sheet.write(2, 2, "TZP", column_style)
         sheet.write(2, 3, "SHADE", column_style)
-        sheet.write(2, 4, "Qty 3% ADD", column_style)
-        sheet.write(2, 5, "KG", column_style)
-        sheet.write(2, 6, "OPERATOR SIGNATUR", column_style)
-        sheet.write(2, 7, "URGENT LIST", column_style)
-        sheet.write(2, 8, "Remarks", column_style)
-        
+        sheet.write(2, 4, "FINISH", column_style)
+        sheet.write(2, 5, "Qty 3% ADD", column_style)
+        sheet.write(2, 6, "KG", column_style)
+        sheet.write(2, 7, "OPERATOR SIGNATUR", _column_style)
+        sheet.write(2, 8, "URGENT LIST", _column_style)
+        sheet.write(2, 9, "Remarks", column_style)
+        report_data = []
         for pid in planids:
+            slider = pid.slidercodesfg.split("TZP-",1)[1]
             order_data = [
-                pid.ac,
-                action_date,
-                oa_date,
-                single_plan[0].partner_id.name,
-                single_plan[0].buyer_name,
-                item,
-                single_plan[0].shade,shade_ref,
-                qty,'','','','','','','','',remarks
+                pid.action_date.strftime("%m-%d"),
+                int(pid.oa_id.name.replace('OA','0')),
+                slider,
+                pid.shade,
+                pid.finish,
+                pid.qty,
+                '',
+                '',
+                '',
+                ''
                 ]
             report_data.append(order_data)
-                
+        row = 3        
         for line in report_data:
             col = 0
             for l in line:
-                if col == 6:
-                    sheet.write(row, col, l, __row_style)
-                else:
-                    sheet.write(row, col, l, _row_style)
+                sheet.write(row, col, l, _row_style)
+                # if col == 6:
+                #     sheet.write(row, col, l, __row_style)
+                # else:
+                #     sheet.write(row, col, l, _row_style)
                     
                 col += 1
             row += 1

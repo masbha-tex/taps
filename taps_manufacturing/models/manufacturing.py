@@ -428,13 +428,13 @@ class ManufacturingOrder(models.Model):
         if material == 'tape':
             query = """ select oa_id,shade,'' as finish,'' as material,sum(dy_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade """
         if material == 'slider':
-            query = """ select oa_id,'' as shade, finish,slidercodesfg as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,slidercodesfg """
+            query = """ select oa_id,shade as shade, finish,slidercodesfg as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade,finish,slidercodesfg """
         if material == 'top':
-            query = """ select oa_id,'' as shade, finish,ptopfinish as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,ptopfinish """
+            query = """ select oa_id, shade as shade, finish,ptopfinish as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade,finish,ptopfinish """
         if material == 'bottom':
-            query = """ select oa_id,'' as shade, finish,pbotomfinish as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,pbotomfinish """
+            query = """ select oa_id,shade as shade, finish,pbotomfinish as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade,finish,pbotomfinish """
         if material == 'pinbox':
-            query = """ select oa_id,'' as shade, finish,ppinboxfinish as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,finish,ppinboxfinish """            
+            query = """ select oa_id,shade as shade, finish,ppinboxfinish as material,sum(pl_rec_plan_qty) as qty from manufacturing_order where id in %s and 1=%s group by oa_id,shade,finish,ppinboxfinish """            
             
         cr = self._cr
         cursor = self.env.cr

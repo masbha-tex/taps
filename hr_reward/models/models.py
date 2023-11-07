@@ -62,6 +62,27 @@ class HrReward(models.Model):
                     			% endif
                     </div>
                         """ ) 
+
+    refused_template = fields.Html('Refused Template', default="""
+                    <div style="margin:0px;padding: 0px;">
+                    <span>Dear Concern,</span>
+                    <br>
+                    <span>Your Employee Reward has been Refused</span>
+                    <br>
+                    <br>
+                    
+                    <br>
+                    		
+                    			% if ctx.get('recipient_users'):
+                    			Here is the link of your Refused:
+                    			<p style="margin:16px 0px 16px 0px;">
+                    				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+                    		View Refused
+                    	</a>
+                    			</p>
+                    			% endif
+                    </div>
+                        """ ) 
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
     attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
@@ -202,13 +223,14 @@ class HrReward(models.Model):
                 					<p/>
                 					<p/>
                 				</div>        
-                """                
+                """ 
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                 subject = RenderMixin._render_template('Reward and Recognition', 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_submit = RenderMixin._render_template(self.submit_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
-                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
+                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
+                
                 body = f"{body}<br/>{body_submit}<br/>{body_sig}"
                 # post the message
                 matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
@@ -234,6 +256,7 @@ class HrReward(models.Model):
                     'email_cc': mailcc or '',
                 
                 }
+                raise UserError((mail_values['email_to']))
                 try:
                     template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
                 except ValueError:
@@ -246,7 +269,7 @@ class HrReward(models.Model):
                     }
                     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                self.env['mail.mail'].sudo().create(mail_values).send()
+                self.env['mail.mail'].sudo().create(mail_values)#.send()
                 # raise UserError((mail_values))
                 
         return {
@@ -264,85 +287,147 @@ class HrReward(models.Model):
         # raise UserError(('goodbye'))
         if self.state == 'Submit':
             self.state = 'Approved'
-            for reward in self:
-                reward_mail_template = reward.closed_template
-                mapped_data = {
-                    **{reward.employee_id: reward_mail_template}
-                }
-                for employee, mail_template in mapped_data.items():
-                    # raise UserError((hi))
-                    if not employee.email or not self.env.user.email:
-                        # raise UserError((hi))
-                        continue
-                    ctx = {
-                        'employee_to_name': employee.display_name,
-                        'recipient_users': employee.user_id,
-                        'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
-                    }
-                    RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
-                    subject = RenderMixin._render_template('Rewarded', 'hr.reward', reward.ids, post_process=True)[reward.id]
-                    # body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
-        
-                    # body = """
-                    #     <div style="margin:0px;padding: 0px;">
-                    #     <p>Dear Concern,</p>
-                    #     <p>Your Employee Reward has been closed</p>
-                    #     </div>
-                    #         """
-                    body_closed = RenderMixin._render_template(self.closed_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
-                    body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
-                    
-                    body = f"{body_closed}<br/>{body_sig}"
-                    # post the message
-                    matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
-                    if matrix:
-                        mailto = ','.join([email.email for email in matrix.next_user if email])
-                    matrix_cc = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', False)], limit=1)
-                    if matrix_cc:
-                        mailcc = ','.join([email.email for email in matrix_cc.next_user if email]) +','+employee.parent_id.email
-                    attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-                        
-                    mail_values = {
-                        # 'email_from': self.env.user.email_formatted,
-                        'email_from': self.env.user.email_formatted,
-                        'author_id': self.env.user.partner_id.id,
-                        'model': None,
-                        'res_id': None,
-                        'subject': '%s reward has been approved' % employee.display_name,
-                        'body_html': body,
-                        'attachment_ids': attachment,
-                        'auto_delete': True,
-                        'email_to': self.submit_by.email,
-                        'email_cc': mailcc or ''
-                    
-                    }
-                    try:
-                        template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
-                    except ValueError:
-                        _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
-                    else:
-                        template_ctx = {
-                            'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=employee.display_name)),
-                            'model_description': self.env['ir.model']._get('hr.reward').display_name,
-                            'company': self.env.company,
-                        }
-                        body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
-                        mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                    self.env['mail.mail'].sudo().create(mail_values).send()
-          
-            return {
-                'effect': {
-                    'fadeout': 'slow',
-                    'message': 'Reward Closed',
-                    'type': 'rainbow_man',
-                    # 'img_url': 'taps_grievance/static/img/success.png'
-                }
+        for reward in self:
+            reward_mail_template = reward.closed_template
+            mapped_data = {
+                **{reward.employee_id: reward_mail_template}
             }
+            for employee, mail_template in mapped_data.items():
+                if not employee.email or not self.env.user.email:
+                    continue
+                ctx = {
+                    'employee_to_name': employee.display_name,
+                    'recipient_users': employee.user_id,
+                    'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
+                }
+                RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
+                subject = RenderMixin._render_template('Rewarded', 'hr.reward', reward.ids, post_process=True)[reward.id]
+                # body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
+    
+                # body = """
+                #     <div style="margin:0px;padding: 0px;">
+                #     <p>Dear Concern,</p>
+                #     <p>Your Employee Reward has been closed</p>
+                #     </div>
+                #         """
+                body_closed = RenderMixin._render_template(self.closed_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
+                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
+                
+                body = f"{body_closed}<br/>{body_sig}"
+                # post the message
+                matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
+                if matrix:
+                    mailto = ','.join([email.email for email in matrix.next_user if email])
+                matrix_cc = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', False)], limit=1)
+                if matrix_cc:
+                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email]) +','+employee.parent_id.email
+                attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
+                    
+                mail_values = {
+                    # 'email_from': self.env.user.email_formatted,
+                    'email_from': self.env.user.email_formatted,
+                    'author_id': self.env.user.partner_id.id,
+                    'model': None,
+                    'res_id': None,
+                    'subject': '%s reward has been approved' % employee.display_name,
+                    'body_html': body,
+                    'attachment_ids': attachment,
+                    'auto_delete': True,
+                    'email_to': self.employee_id.email,
+                    'email_cc': mailcc or ''
+                
+                }
+                # raise UserError((mail_values['email_to']))
+                try:
+                    template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+                except ValueError:
+                    _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
+                else:
+                    template_ctx = {
+                        'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=employee.display_name)),
+                        'model_description': self.env['ir.model']._get('hr.reward').display_name,
+                        'company': self.env.company,
+                    }
+                    body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+                    mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+                self.env['mail.mail'].sudo().create(mail_values)#.send()
+      
+        return {
+            'effect': {
+                'fadeout': 'slow',
+                'message': 'Reward Closed',
+                'type': 'rainbow_man',
+            }
+        }
              
     def action_refused(self):
         if self.state == 'Submit':
             self.state = 'Refused'
-
+        for reward in self:
+            reward_mail_template = reward.refused_template
+            mapped_data = {
+                **{reward.employee_id: reward_mail_template}
+            }
+            for employee, mail_template in mapped_data.items():
+                if not employee.email or not self.env.user.email:
+                    continue
+                ctx = {
+                    'employee_to_name': employee.display_name,
+                    'recipient_users': employee.user_id,
+                    'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
+                }
+                RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
+                subject = RenderMixin._render_template('Refused', 'hr.reward', reward.ids, post_process=True)[reward.id]
+                # body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
+    
+                # body = """
+                #     <div style="margin:0px;padding: 0px;">
+                #     <p>Dear Concern,</p>
+                #     <p>Your Employee Reward has been closed</p>
+                #     </div>
+                #         """
+                body_closed = RenderMixin._render_template(self.refused_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
+                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
+                
+                body = f"{body_closed}<br/>{body_sig}"
+                # post the message
+                matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
+                if matrix:
+                    mailto = ','.join([email.email for email in matrix.next_user if email])
+                matrix_cc = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', False)], limit=1)
+                if matrix_cc:
+                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email]) +','+employee.parent_id.email
+                attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
+                    
+                mail_values = {
+                    # 'email_from': self.env.user.email_formatted,
+                    'email_from': self.env.user.email_formatted,
+                    'author_id': self.env.user.partner_id.id,
+                    'model': None,
+                    'res_id': None,
+                    'subject': '%s reward has been refused' % employee.display_name,
+                    'body_html': body,
+                    'attachment_ids': attachment,
+                    'auto_delete': True,
+                    'email_to': self.submit_by.email,
+                    'email_cc': mailcc or ''
+                
+                }
+                # raise UserError((mail_values['email_to']))
+                try:
+                    template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+                except ValueError:
+                    _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
+                else:
+                    template_ctx = {
+                        'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=employee.display_name)),
+                        'model_description': self.env['ir.model']._get('hr.reward').display_name,
+                        'company': self.env.company,
+                    }
+                    body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+                    mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+                self.env['mail.mail'].sudo().create(mail_values)#.send()
+                
         return {
                     'effect': {
                         'fadeout': 'slow',
