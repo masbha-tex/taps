@@ -17,13 +17,13 @@ class Meeting(models.Model):
     _inherit = ['calendar.event', 'microsoft.calendar.sync']
 
     optional_attendee_ids = fields.Many2many('res.partner','lms_session_optional_attendee_rel','event_id', 'partner_id', string="Optional Participants")
-    description = fields.Html('Description')
+    description = fields.Html('Description') 
 
     @api.model_create_multi
     def create(self, vals_list):
         for values in vals_list:
-            if values.get('partner_id') == False:
-                values['partner_id'] = 3     
+            if values.get('res_partner_id') == False:
+                values['res_partner_id'] = 3    
         records = super().create(vals_list)
 
         records_to_sync = records.filtered(lambda r: r.need_sync_m and r.active)
