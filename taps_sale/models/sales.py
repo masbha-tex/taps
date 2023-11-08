@@ -414,12 +414,14 @@ class SaleOrder(models.Model):
             email_to_list = []
             email_to_list = []
             email_from_list = [
-                'asraful.haque@texzipperbd.com',
+                'csd.zipper@texzipperbd.com',
+                'nasir.csd@texzipperbd.com',
             ]
             email_cc_list = [
                 # 'alamgir@texzipperbd.com',
                 'asraful.haque@texzipperbd.com',
-                'shahid.hossain@texzipperbd.com',
+                'csd.zipper@texzipperbd.com',
+                'nasir.csd@texzipperbd.com',
                 ]
             author_id=0
             
@@ -444,29 +446,7 @@ class SaleOrder(models.Model):
             })
             
            
-            # if rec.id == 1:
-            #     report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
-            #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
-            #     email_cc_list.append('csd.zipper@texzipperbd.com')
-            #     email_from_list.append('csd.zipper@texzipperbd.com')
-            # if rec.id == 3:
-            #     report = rec.env.ref('taps_sale.action_report_daily_oa_release_mt', False)
-            #     email_cc_list.append('kumar.abhishek@texzipperbd.com')
-            #     email_cc_list.append('nasir.csd@texzipperbd.com')
-            #     email_from_list.append('nasir.csd@texzipperbd.com')
-            # pdf_content, content_type = report.sudo()._render_qweb_pdf()
-            # author_list = ','.join(author_id)
-            # raise UserError((pdf_content))
-            # attachment = rec.env['ir.attachment'].sudo().create({
-            #             'name': rec.name+' Daily OA Release('+(datetime.now().strftime('%d %b, %Y'))+')'+'.pdf',
-            #             'type': 'binary',
-            #             'datas': base64.encodebytes(pdf_content),
-            #             'mimetype': 'application/pdf',
-            #             'res_model' : 'sale.order',
-            #             'company_id' : rec.id,
-                        
-              
-            # })
+            
             
             email_cc = ','.join(email_cc_list)
             email_from = ','.join(email_from_list)
