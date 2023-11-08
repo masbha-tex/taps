@@ -21,11 +21,11 @@ class Attendee(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for values in vals_list:
-            if 'partner_id' in values:
-                raise UserError((values.get('partner_id')))
+            # if 'partner_id' in values:
+            #     raise UserError((values.get('partner_id')))
             # by default, if no state is given for the attendee corresponding to the current user
             # that means he's the event organizer so we can set his state to "accepted"
-            if values.get('partner_id') == 'NULL':
+            if values.get('partner_id') is False:
                 # raise UserError((values.get('partner_id')))
                 values['partner_id'] = 3
             # if not values.get("email") and values.get("common_name"):
