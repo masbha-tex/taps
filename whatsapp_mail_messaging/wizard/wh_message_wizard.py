@@ -36,7 +36,7 @@ class WhatsappSendMessage(models.TransientModel):
     def _onchange_partner_id(self):
         """Function for fetching the mobile number and image of partner
         in Odoo"""
-        self.mobile = self.partner_id.mobile
+        self.mobile = self.partner_id.mobile if self.partner_id.mobile else self.partner_id.phone
         self.image_1920 = self.partner_id.image_1920
 
     def send_message(self):

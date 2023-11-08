@@ -34,6 +34,7 @@
                     </div>
                     <group>
                         <group>
+                            <field name="r_type" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         </group>
                         <group>
@@ -61,6 +62,7 @@
             <tree string="Reward" sample="1">
                 <field name="name"/>
                 <field name="employee_id"/>
+                <field name="r_type" widget="selection"/>
                 <field name="details" optional="hide"/>
                 <field name="submit_by" options="{'no_create':true, 'no_open':true}"/>
                 <field name="issue_date"/>

@@ -20,6 +20,11 @@ class HrReward(models.Model):
             ('Approved', 'Approved'),
             # ('Cancel', 'Cancel'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
+    r_type = fields.Selection([
+            ('hero', 'Hero Card'),
+            ('thank', 'Thank You'),
+            ('Kudos', 'Kudos')], 'Type of Reward', required=True, tracking=True)
+    
     details = fields.Html('Reward For', tracking=True, default="""
                     <div style="margin:0px;padding: 0px;">
                     <br>

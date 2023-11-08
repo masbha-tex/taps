@@ -44,17 +44,17 @@ class PurchaseOrder(models.Model):
     is_received = fields.Boolean(string="Receive Status", related='is_shipped', store=True)
     po_type = fields.Selection([('Import', 'Import'), ('Local', 'Local')], 'PO Type',required=True, states={'cancel': [('readonly', True)], 'done': [('readonly', True)], 'purchase': [('readonly', True)], 'to approve': [('readonly', True)]})
     
-    def button_approve(self, force=False):
-        self = self.filtered(lambda order: order._approval_allowed())
-        self.write({'state': 'purchase', 'date_approve': fields.Datetime.now()})
-        self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
-        return {
-            'effect': {
-                'fadeout': 'slow',
-                'message': 'well Done!',
-                'type'   : 'rainbow_man'
-            }
-        }
+    # def button_approve(self, force=False):
+    #     self = self.filtered(lambda order: order._approval_allowed())
+    #     self.write({'state': 'purchase', 'date_approve': fields.Datetime.now()})
+    #     self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
+    #     return {
+    #         'effect': {
+    #             'fadeout': 'slow',
+    #             'message': 'well Done!',
+    #             'type'   : 'rainbow_man'
+    #         }
+    #     }
 
     
     @api.model

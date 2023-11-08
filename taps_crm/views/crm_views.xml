@@ -1,0 +1,57 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record model="ir.ui.view" id="crm_lead_view_list_activities_inherited">
+      <field name="name">crm.lead.list.activities.inherited</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_lead_view_list_activities"/>
+      <field name="arch" type="xml">
+        <xpath expr="//tree//button[@name='action_snooze']" position="after">
+            <button name="action_send_whatsapp" type="object" string="whatsApp" icon="fa-whatsapp" />
+        </xpath>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="taps_crm.action_window">
+      <field name="name">taps_crm window</field>
+      <field name="res_model">taps_crm.taps_crm</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="taps_crm.action_server">
+      <field name="name">taps_crm server</field>
+      <field name="model_id" ref="model_taps_crm_taps_crm"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="taps_crm" id="taps_crm.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="taps_crm.menu_1" parent="taps_crm.menu_root"/>
+    <menuitem name="Menu 2" id="taps_crm.menu_2" parent="taps_crm.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="taps_crm.menu_1_list" parent="taps_crm.menu_1"
+              action="taps_crm.action_window"/>
+    <menuitem name="Server to list" id="taps_crm" parent="taps_crm.menu_2"
+              action="taps_crm.action_server"/>
+-->
+  </data>
+</odoo>

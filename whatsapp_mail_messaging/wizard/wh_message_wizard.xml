@@ -21,7 +21,7 @@
                             <field name="message" widget="text_emojis"/>
                         </group>
                         <group>
-                            <field name="image_1920" widget='image' class="oe_avatar"
+                            <field name="image_1920" widget="image" class="oe_avatar"
                                    options='{"preview_image": "image", "size": [150, 150]}' nolabel="1"/>
                         </group>
                     </group>

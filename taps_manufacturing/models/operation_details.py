@@ -178,17 +178,44 @@ class OperationDetails(models.Model):
                     res_qty = order.qty
                     for p in production:
                         dn_qty = 0
-                        if p.dyeing_plan_qty > 0:
-                            if p.dyeing_plan_qty >= res_qty:
-                                qty = p.dyeing_plan_qty - res_qty
+                        plqty = 0
+                        if order.based_on == 'tape':
+                            plqty = p.dyeing_plan_qty
+                            m_con = p.tape_con
+                        if order.based_on == 'slider':
+                            plqty = p.plating_plan_qty
+                            m_con = p.slider_con
+                        if order.based_on == 'top':
+                            plqty = p.top_plat_plan_qty
+                            m_con = p.topwire_con
+                        if order.based_on == 'bottom':
+                            plqty = p.bot_plat_plan_qty
+                            m_con = p.botomwire_con
+                        if order.based_on == 'pinbox':
+                            plqty = p.pin_plat_plan_qty
+                            m_con = p.pinbox_con
+                            
+                            
+                        if plqty > 0:
+                            if plqty >= res_qty:
+                                qty = plqty - res_qty
                                 dn_qty = res_qty
                             else:
-                                qty = p.dyeing_plan_qty - p.dyeing_plan_qty
-                                dn_qty = p.dyeing_plan_qty
-                            if p.tape_con > 0.01 and qty <= 0.01:
+                                qty = plqty - plqty
+                                dn_qty = plqty
+                            if m_con > 0.01 and qty <= 0.01:
                                 qty = 0
-                                
-                            p.update({'dyeing_plan':None,'dyeing_plan_qty':qty,'dy_rec_plan_qty':None})
+                            if order.based_on == 'tape':
+                                p.update({'dyeing_plan':None,'dyeing_plan_qty':qty,'dy_rec_plan_qty':None})
+                            if order.based_on == 'slider':
+                                p.update({'plating_plan':None,'plating_plan_qty':qty,'pl_rec_plan_qty':None})
+                            if order.based_on == 'top':
+                                p.update({'top_plat_plan':None,'top_plat_plan_qty':qty,'tpl_rec_plan_qty':None})
+                            if order.based_on == 'bottom':
+                                p.update({'bot_plat_plan':None,'bot_plat_plan_qty':qty,'bpl_rec_plan_qty':None})
+                            if order.based_on == 'pinbox':
+                                p.update({'pin_plat_plan':None,'pin_plat_plan_qty':qty,'ppl_rec_plan_qty':None})
+                            
                             res_qty = res_qty - dn_qty
                             mrp_id.append(p.id)
                 else:
@@ -280,20 +307,23 @@ class OperationDetails(models.Model):
     def set_requisition(self,company_id,active_model,ope_id,work_center,product_id,product_line,qty=None):
         operation = self.env["operation.details"].search([])
         mrp_lines = sale_lines = parent_ids = oa_ids = None
-        
+        finish = None
         if active_model == 'manufacturing.order':
             # raise UserError(('sdfdfds'))
             m_order = self.env["manufacturing.order"].browse(ope_id)
+            finish = m_order[0].finish
             mrp_lines = ope_id
             sale_lines = ','.join([str(i) for i in sorted(m_order.sale_order_line.ids)])
             oa_ids = ','.join([str(i) for i in sorted(m_order.oa_id.ids)])
             oa_ids = [int(id_str) for id_str in oa_ids.split(',')]
             sale_order = self.env["sale.order"].browse(oa_ids)
             oa_list = sale_order.mapped('name')
+            
             # raise UserError((oa_list))
             #operation._ids2str('sale_order_line')
         else:
             operation = operation.browse(ope_id)
+            finish = operation[0].finish
             parent_ids = operation._ids2str('ids')
             oa_ids = operation._ids2str('oa_id')
             sale_order = self.env["sale.order"].search([('id', 'in', (oa_ids,0))])#(oa_ids)
@@ -313,7 +343,8 @@ class OperationDetails(models.Model):
                                                  'operation_lines':parent_ids,
                                                  'mrp_lines':mrp_lines,
                                                  'oa_ids':oa_ids,
-                                                 'x_studio_oa_no':oa_list
+                                                 'x_studio_oa_no':oa_list,
+                                                 'text':finish,
                                                  })
         if product_line:
             for prod in product_line:
