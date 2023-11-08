@@ -19,6 +19,18 @@ class Meeting(models.Model):
     optional_attendee_ids = fields.Many2many('res.partner','lms_session_optional_attendee_rel','event_id', 'partner_id', string="Optional Participants")
     description = fields.Html('Description')
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for values in vals_list:
+            if values.get('partner_id') == False:
+                values['partner_id'] = 3     
+        records = super().create(vals_list)
+
+        records_to_sync = records.filtered(lambda r: r.need_sync_m and r.active)
+        for record in records_to_sync:
+            record._microsoft_insert(record._microsoft_values(self._get_microsoft_synced_fields()), timeout=3)
+        return records    
+
     def _microsoft_values(self, fields_to_sync, initial_values={}):
         values = dict(initial_values)
         if not fields_to_sync:
