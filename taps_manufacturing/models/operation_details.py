@@ -170,10 +170,16 @@ class OperationDetails(models.Model):
         for order in self:
             production = None
             if (order.state == 'waiting') and (order.operation_by == 'Planning'):
-                production = self.env["manufacturing.order"].search([('oa_id','=',order.oa_id.id),('shade','=',order.shade),('plan_ids','!=',False)])
+                if order.work_center.name == 'Dyeing':
+                    production = self.env["manufacturing.order"].search([('oa_id','=',order.oa_id.id),('shade','=',order.shade),('plan_ids','!=',False)])
+                else:
+                    m_lines = order.mrp_lines
+                    m_lines = [int(i) for i in sorted(m_lines.split(','))]
+                    production = self.env["manufacturing.order"].search([('id','in',m_lines)])
                 if order.mr_req:
-                    # if order.mr_req.state == '':
-                    picking = self.env["stock.picking"].update({'state':'cancel'})
+                    if order.mr_req.state not in ('done','cancel'):
+                        picking = self.env["stock.picking"].search([('id','=',order.mr_req.id)]).action_cancel()
+                same_mr = self.env["operation.details"].search([('id','!=',order.id),('mr_req','=',order.mr_req.id)]).update({'qty':0})
                 # if order.id not in(207,0):
                 #     raise UserError((order.id,str(order.plan_id),str(production[0].plan_ids),order.oa_id.id,order.shade))
                 production = production.filtered(lambda op: str(order.plan_id) in op.plan_ids)
