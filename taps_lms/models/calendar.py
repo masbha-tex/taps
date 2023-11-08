@@ -19,13 +19,25 @@ class Meeting(models.Model):
     optional_attendee_ids = fields.Many2many('res.partner','lms_session_optional_attendee_rel','event_id', 'partner_id', string="Optional Participants")
     description = fields.Html('Description') 
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        for values in vals_list:
-            if values.get('partner_ids') == False:
-                values['partner_ids'] = 3    
-        events = super().create(vals_list)
-        return events 
+    @api.model
+    def _default_partners(self):
+        """ When active_model is res.partner, the current partners should be attendees """
+        partners = self.env.user.partner_id
+        active_id = self._context.get('active_id')
+        if self._context.get('active_model') == 'res.partner' and active_id:
+            if active_id not in partners.ids:
+                partners |= self.env['res.partner'].browse(active_id)
+        if not partners:
+            partners |= self.env['res.partner'].browse(3)
+        return partners    
+
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     for values in vals_list:
+    #         if values.get('partner_ids') == False:
+    #             values['partner_ids'] = 3    
+    #     events = super().create(vals_list)
+    #     return events 
 
     def _microsoft_values(self, fields_to_sync, initial_values={}):
         values = dict(initial_values)
