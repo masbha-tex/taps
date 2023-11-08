@@ -171,6 +171,9 @@ class OperationDetails(models.Model):
             production = None
             if (order.state == 'waiting') and (order.operation_by == 'Planning'):
                 production = self.env["manufacturing.order"].search([('oa_id','=',order.oa_id.id),('shade','=',order.shade),('plan_ids','!=',False)])
+                if order.mr_req:
+                    # if order.mr_req.state == '':
+                    picking = self.env["stock.picking"].update({'state':'cancel'})
                 # if order.id not in(207,0):
                 #     raise UserError((order.id,str(order.plan_id),str(production[0].plan_ids),order.oa_id.id,order.shade))
                 production = production.filtered(lambda op: str(order.plan_id) in op.plan_ids)

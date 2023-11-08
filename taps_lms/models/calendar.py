@@ -22,14 +22,10 @@ class Meeting(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for values in vals_list:
-            if values.get('res_partner_id') == False:
-                values['res_partner_id'] = 3    
-        records = super().create(vals_list)
-
-        records_to_sync = records.filtered(lambda r: r.need_sync_m and r.active)
-        for record in records_to_sync:
-            record._microsoft_insert(record._microsoft_values(self._get_microsoft_synced_fields()), timeout=3)
-        return records    
+            if values.get('partner_ids') == False:
+                values['partner_ids'] = 3    
+        events = super().create(vals_list)
+        return events 
 
     def _microsoft_values(self, fields_to_sync, initial_values={}):
         values = dict(initial_values)
