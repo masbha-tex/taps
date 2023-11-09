@@ -179,7 +179,9 @@ class OperationDetails(models.Model):
                 if order.mr_req:
                     if order.mr_req.state not in ('done','cancel'):
                         picking = self.env["stock.picking"].search([('id','=',order.mr_req.id)]).action_cancel()
-                same_mr = self.env["operation.details"].search([('id','!=',order.id),('mr_req','=',order.mr_req.id)]).update({'qty':0})
+                    
+                        same_mr = self.env["operation.details"].search([('id','!=',order.id),('mr_req','=',order.mr_req.id)])
+                        mr_update = same_mr.update({'qty':0})
                 # if order.id not in(207,0):
                 #     raise UserError((order.id,str(order.plan_id),str(production[0].plan_ids),order.oa_id.id,order.shade))
                 production = production.filtered(lambda op: str(order.plan_id) in op.plan_ids)
@@ -353,7 +355,7 @@ class OperationDetails(models.Model):
                                                  'mrp_lines':mrp_lines,
                                                  'oa_ids':oa_ids,
                                                  'x_studio_oa_no':oa_list,
-                                                 'text':finish,
+                                                 'note':finish
                                                  })
         if product_line:
             for prod in product_line:
