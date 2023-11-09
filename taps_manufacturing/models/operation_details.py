@@ -945,6 +945,7 @@ class OperationDetails(models.Model):
                     # fr_sum = out.uotput_qty - int(out_qty)*len(mrp_update)
                     # extra = fr_sum
                     each_qty = out_qty
+                    extra = out_qty
                     while each_qty > 0:
                         for datas in mrp_data:
                             outqty = 0
@@ -955,63 +956,70 @@ class OperationDetails(models.Model):
                             # extra += out_qty - outqty
                             mrp_update = datas.update({'done_qty':datas.done_qty + outqty})
                             # , 'packing_done':fraction_pc_of_pack
-                            each_qty = each_qty - outqty
-                        
+                            if outqty == 0:
+                                each_qty = 0
+                                extra = each_qty
+                            else:
+                                each_qty = each_qty - outqty
+                
+                move_qty = out.uotput_qty
+                if extra > 0:
+                    move_qty = out.uotput_qty - extra
                 mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
                 tot_b =  sum(mrp_oa_data.mapped('oa_total_balance'))/ len(mrp_oa_data) # mrp_oa_data.oa_total_balance - out.uotput_qty
-                tot_b = tot_b - out.uotput_qty
+                tot_b = tot_b - move_qty #out.uotput_qty
                 mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b})
 # id,name,sequence,company_id,product_id,product_qty,product_uom_qty,product_uom,location_id,location_dest_id,state,origin,procure_method,scrapped,group_id,propagate_cancel,picking_type_id,warehouse_id,additional,reference,is_done,production_id,unit_factor,weight                   
-                
-                stockmove = self.env["stock.move"].create({'name':'New',
-                                                           'sequence':10,
-                                                           'company_id':self.env.company.id,
-                                                           'product_id':out.product_id.id,
-                                                           # 'product_qty':out.uotput_qty,
-                                                           'product_uom_qty':out.uotput_qty,
-                                                           'product_uom':out.product_id.product_tmpl_id.uom_id.id,
-                                                           'location_id':15,
-                                                           'location_dest_id':8,
-                                                           'state':'done',
-                                                           'procure_method':'make_to_stock',
-                                                           'scrapped':False,
-                                                           # 'group_id':11129,
-                                                           'propagate_cancel':False,
-                                                           'picking_type_id':8,
-                                                           'warehouse_id':1,
-                                                           'additional':False,
-                                                           # 'reference':,
-                                                           'is_done':True,
-                                                           # 'production_id':,
-                                                           'unit_factor':out.uotput_qty
-                                                           # 'weight':,
-                                                           # 'reference':pick.name
-                                                           })
-                # raise UserError(('trtrtr'))
-                lot_producing_id = self.env['stock.production.lot'].create({
-                    'product_id': out.product_id.id,
-                    'company_id': self.env.company.id
-                })
-              
-                stockmove_line = self.env["stock.move.line"].create({'move_id': stockmove.id,
-                                                                     'company_id':self.env.company.id,
-                                                                     'product_id':out.product_id.id,
-                                                                     'product_uom_id':out.product_id.product_tmpl_id.uom_id.id,
-                                                                     # 'product_qty':out.uotput_qty,
-                                                                     # 'product_uom_qty':out.uotput_qty,
-                                                                     'qty_done':out.uotput_qty,
-                                                                     'lot_id':lot_producing_id.id,
-                                                                     'date':datetime.now(),
-                                                                     'location_id':15,
-                                                                     'location_dest_id':8,
-                                                                     'state':'done',# 'reference':,
-                                                                     'qty_onhand':out.uotput_qty
-                                                                     })
-                move_line = stockmove_line.id
-
-                picking = self.env["stock.picking"].search([('origin','=',out.oa_id.name),('state','not in',('draft','done','cancel'))])
-                if picking:
-                    picking.action_assign()
+                if move_qty > 0:
+                    stockmove = self.env["stock.move"].create({'name':'New',
+                                                               'sequence':10,
+                                                               'company_id':self.env.company.id,
+                                                               'product_id':out.product_id.id,
+                                                               # 'product_qty':out.uotput_qty,
+                                                               'product_uom_qty':move_qty,
+                                                               'product_uom':out.product_id.product_tmpl_id.uom_id.id,
+                                                               'location_id':15,
+                                                               'location_dest_id':8,
+                                                               'state':'done',
+                                                               'procure_method':'make_to_stock',
+                                                               'scrapped':False,
+                                                               # 'group_id':11129,
+                                                               'propagate_cancel':False,
+                                                               'picking_type_id':8,
+                                                               'warehouse_id':1,
+                                                               'additional':False,
+                                                               # 'reference':,
+                                                               'is_done':True,
+                                                               # 'production_id':,
+                                                               'unit_factor':move_qty
+                                                               # 'weight':,
+                                                               # 'reference':pick.name
+                                                               })
+                    # raise UserError(('trtrtr'))
+                    lot_producing_id = self.env['stock.production.lot'].create({
+                        'product_id': out.product_id.id,
+                        'company_id': self.env.company.id
+                    })
+                  
+                    stockmove_line = self.env["stock.move.line"].create({'move_id': stockmove.id,
+                                                                         'company_id':self.env.company.id,
+                                                                         'product_id':out.product_id.id,
+                                                                         'product_uom_id':out.product_id.product_tmpl_id.uom_id.id,
+                                                                         # 'product_qty':out.uotput_qty,
+                                                                         # 'product_uom_qty':out.uotput_qty,
+                                                                         'qty_done':move_qty,
+                                                                         'lot_id':lot_producing_id.id,
+                                                                         'date':datetime.now(),
+                                                                         'location_id':15,
+                                                                         'location_dest_id':8,
+                                                                         'state':'done',# 'reference':,
+                                                                         'qty_onhand':move_qty
+                                                                         })
+                    move_line = stockmove_line.id
+    
+                    picking = self.env["stock.picking"].search([('origin','=',out.oa_id.name),('state','not in',('draft','done','cancel'))])
+                    if picking:
+                        picking.action_assign()
                 
             next = None
             w_center = out.work_center.id

@@ -14,7 +14,7 @@
                 <field name="shade"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
-                <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;=',0.0)]"/>
+                <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;',0.0)]"/>
                 <separator/>
                 <filter string="Order Date" name="action_date_filter" date="date_order"/>
                 <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>
