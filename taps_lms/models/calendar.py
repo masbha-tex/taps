@@ -17,7 +17,139 @@ class Meeting(models.Model):
     _inherit = ['calendar.event', 'microsoft.calendar.sync']
 
     optional_attendee_ids = fields.Many2many('res.partner','lms_session_optional_attendee_rel','event_id', 'partner_id', string="Optional Participants")
-    description = fields.Html('Description') 
+    description = fields.Html('Description')
+
+    @api.model
+    def _microsoft_to_odoo_values(self, microsoft_event, default_reminders=(), default_values=None, with_ids=False):
+        if microsoft_event.is_cancelled():
+            return {'active': False}
+
+        sensitivity_o2m = {
+            'normal': 'public',
+            'private': 'private',
+            'confidential': 'confidential',
+        }
+        
+        commands_attendee, commands_required_partner, commands_optional_partner = self._odoo_attendee_commands_m(microsoft_event)
+        timeZone_start = pytz.timezone(microsoft_event.start.get('timeZone'))
+        timeZone_stop = pytz.timezone(microsoft_event.end.get('timeZone'))
+        start = parse(microsoft_event.start.get('dateTime')).astimezone(timeZone_start).replace(tzinfo=None)
+        if microsoft_event.isAllDay:
+            stop = parse(microsoft_event.end.get('dateTime')).astimezone(timeZone_stop).replace(tzinfo=None) - relativedelta(days=1)
+        else:
+            stop = parse(microsoft_event.end.get('dateTime')).astimezone(timeZone_stop).replace(tzinfo=None)
+        values = default_values or {}
+        values.update({
+            'name': microsoft_event.subject or _("(No title)"),
+            'description': microsoft_event.body and microsoft_event.body['content'],
+            'location': microsoft_event.location and microsoft_event.location.get('displayName') or False,
+            'user_id': microsoft_event.owner_id(self.env),
+            'privacy': sensitivity_o2m.get(microsoft_event.sensitivity, self.default_get(['privacy'])['privacy']),
+            'attendee_ids': commands_attendee,
+            'allday': microsoft_event.isAllDay,
+            'start': start,
+            'stop': stop,
+            'show_as': 'free' if microsoft_event.showAs == 'free' else 'busy',
+            'recurrency': microsoft_event.is_recurrent()
+        })
+        if commands_required_partner:
+            # Add partner_commands only if set from Microsoft. The write method on calendar_events will
+            # override attendee commands if the partner_ids command is set but empty.
+            values['partner_ids'] = commands_required_partner
+        if commands_optional_partner:
+            # Add optional_partner_commands only if set from Microsoft. The write method on calendar_events will
+            # override attendee commands if the optional_attendee_ids command is set but empty.
+            values['optional_attendee_ids'] = commands_optional_partner            
+
+        if microsoft_event.is_recurrent() and not microsoft_event.is_recurrence():
+            # Propagate the follow_recurrence according to the Outlook result
+            values['follow_recurrence'] = not microsoft_event.is_recurrence_outlier()
+
+        if with_ids:
+            values['microsoft_id'] = combine_ids(microsoft_event.id, microsoft_event.iCalUId)
+
+        if microsoft_event.is_recurrent():
+            values['microsoft_recurrence_master_id'] = microsoft_event.seriesMasterId
+
+        alarm_commands = self._odoo_reminders_commands_m(microsoft_event)
+        if alarm_commands:
+            values['alarm_ids'] = alarm_commands
+
+        return values
+
+    @api.model
+    def _odoo_attendee_commands_m(self, microsoft_event):
+        commands_attendee = []
+        # commands_partner = []
+        commands_required_partner = []
+        commands_optional_partner = []        
+
+        microsoft_attendees = microsoft_event.attendees or []
+        emails = [
+            a.get('emailAddress').get('address')
+            for a in microsoft_attendees
+            if email_normalize(a.get('emailAddress').get('address'))
+        ]
+        existing_attendees = self.env['calendar.attendee']
+        if microsoft_event.match_with_odoo_events(self.env):
+            existing_attendees = self.env['calendar.attendee'].search([
+                ('event_id', '=', microsoft_event.odoo_id(self.env)),
+                ('email', 'in', emails)])
+        elif self.env.user.partner_id.email not in emails:
+            commands_attendee += [(0, 0, {'state': 'accepted', 'partner_id': self.env.user.partner_id.id, 'role':'Required'})]
+            commands_required_partner += [(4, self.env.user.partner_id.id)]
+        partners = self.env['mail.thread']._mail_find_partner_from_emails(emails, records=self, force_create=True)
+        attendees_by_emails = {a.email: a for a in existing_attendees}
+        # for email, partner, attendee_info in zip(emails, partners, microsoft_attendees):
+        #     state = ATTENDEE_CONVERTER_M2O.get(attendee_info.get('status').get('response'), 'needsAction')
+
+        #     if email in attendees_by_emails:
+        #         # Update existing attendees
+        #         commands_attendee += [(1, attendees_by_emails[email].id, {'state': state})]
+        #     else:
+        #         # Create new attendees
+        #         commands_attendee += [(0, 0, {'state': state, 'partner_id': partner.id})]
+        #         commands_partner += [(4, partner.id)]
+        #         if attendee_info.get('emailAddress').get('name') and not partner.name:
+        #             partner.name = attendee_info.get('emailAddress').get('name')
+        # for odoo_attendee in attendees_by_emails.values():
+        #     # Remove old attendees
+        #     if odoo_attendee.email not in emails:
+        #         commands_attendee += [(2, odoo_attendee.id)]
+        #         commands_partner += [(3, odoo_attendee.partner_id.id)]
+        # return commands_attendee, commands_partner  
+        for email, partner, attendee_info in zip(emails, partners, microsoft_attendees):
+            state = ATTENDEE_CONVERTER_M2O.get(attendee_info.get('status').get('response'), 'needsAction')
+            # Categorize partners based on role (required or optional)
+            role = attendee_info.get('type', '').lower()  # Assuming 'type' indicates the role in Microsoft Graph API
+    
+            if email in attendees_by_emails:
+                # Update existing attendees
+                commands_attendee += [(1, attendees_by_emails[email].id, {'state': state, 'role': role})]
+            else:
+                # Create new attendees
+                commands_attendee += [(0, 0, {'state': state, 'partner_id': partner.id, 'role': role})]
+    
+                if role == "required":
+                    commands_required_partner += [(4, partner.id)]
+                elif role == "optional":
+                    commands_optional_partner += [(4, partner.id)]                
+    
+                if attendee_info.get('emailAddress').get('name') and not partner.name:
+                    partner.name = attendee_info.get('emailAddress').get('name')
+    
+        for odoo_attendee in attendees_by_emails.values():          
+            # Remove old attendees
+            if odoo_attendee.email not in emails:
+                commands_attendee += [(2, odoo_attendee.id)]
+                
+                # Separate partners based on some condition
+                if odoo_attendee.role == "Required":
+                    commands_required_partner += [(3, odoo_attendee.partner_id.id)]
+                elif odoo_attendee.role == "Optional":
+                    commands_optional_partner += [(3, odoo_attendee.partner_id.id)]
+    
+        return commands_attendee, commands_required_partner, commands_optional_partner
 
     def _microsoft_values(self, fields_to_sync, initial_values={}):
         values = dict(initial_values)

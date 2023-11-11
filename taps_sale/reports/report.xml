@@ -59,7 +59,7 @@
             <field name="binding_type">report</field>
             <field name="default_print_option">print</field>
             <field name="print_report_name">"SA_Pending_"+(object.name)</field>
-            
+            <!-- <field name="groups">base.group_multi_company</field> -->
         </record>
         
         

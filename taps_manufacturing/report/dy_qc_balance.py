@@ -48,6 +48,11 @@ class DyeingQcBalance(models.AbstractModel):
         sheet.write(2, 5, "TAPE SHORT", column_style)
         sheet.write(2, 6, "Remarks", column_style)
         report_data = []
+        shades = planids.mapped('shade')
+        for sh in shades:
+            sh_records = planids.filtered(lambda pr: pr.shade == sh)
+            oa_ids = sh_records.mapped('oa_id')
+            bl_qty = sum(sh_records.mapped('balance_qty'))
         for pid in planids:
             slider = pid.slidercodesfg.split("TZP-",1)[1]
             order_data = [

@@ -65,5 +65,18 @@
             <field name="print_report_name">"Painting Plan"</field>
             <!-- + (object.time.strftime('%d-%m-%Y')) -->
         </record>
+
+        <record id="action_report_qc_balance_xls" model="ir.actions.report">
+            <field name="name">QC Balance</field>
+            <field name="model">operation.details</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">taps_manufacturing.report_dy_qc_balance_xls</field>
+            <field name="report_file">taps_manufacturing.report_dy_qc_balance_xls</field>
+            <field name="binding_model_id" ref="model_operation_details"/>
+            <field name="binding_type">report</field>
+            <field name="default_print_option">print</field>
+            <field name="print_report_name">"QC Balance"</field>
+            <!-- + (object.time.strftime('%d-%m-%Y')) -->
+        </record>
     </data>
 </odoo>
