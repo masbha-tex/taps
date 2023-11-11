@@ -12,6 +12,21 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tools import html2plaintext, is_html_empty, email_normalize
 from odoo.addons.microsoft_calendar.utils.event_id_storage import combine_ids
 
+ATTENDEE_CONVERTER_O2M = {
+    'needsAction': 'notresponded',
+    'tentative': 'tentativelyaccepted',
+    'declined': 'declined',
+    'accepted': 'accepted'
+}
+ATTENDEE_CONVERTER_M2O = {
+    'none': 'needsAction',
+    'notResponded': 'needsAction',
+    'tentativelyAccepted': 'tentative',
+    'declined': 'declined',
+    'accepted': 'accepted',
+    'organizer': 'accepted',
+}
+
 class Meeting(models.Model):
     _name = 'calendar.event'
     _inherit = ['calendar.event', 'microsoft.calendar.sync']
