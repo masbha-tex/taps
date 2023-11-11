@@ -1,60 +1,35 @@
 <odoo>
   <data>
     <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="whatsapp_gateway.list">
-      <field name="name">whatsapp_gateway list</field>
-      <field name="model">whatsapp_gateway.whatsapp_gateway</field>
+    <record model="ir.ui.view" id="whatsapp_gateway_form">
+      <field name="name">whats.app.form</field>
+      <field name="model">whats.app</field>
       <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
+        <form string="WhatsApp">
+          <header>
+            <button name="send_message_wapp" string="Test Send" class="o_e_highlight" type="object"/>
+          </header>
+          <field name="url_field"/>
+          <field name="access_token"/>
+        </form>
       </field>
     </record>
--->
 
     <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="whatsapp_gateway.action_window">
+    <record model="ir.actions.act_window" id="whatsapp_gateway_action_window">
       <field name="name">whatsapp_gateway window</field>
-      <field name="res_model">whatsapp_gateway.whatsapp_gateway</field>
-      <field name="view_mode">tree,form</field>
+      <field name="res_model">whats.app</field>
+      <field name="view_mode">form</field>
     </record>
--->
 
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="whatsapp_gateway.action_server">
-      <field name="name">whatsapp_gateway server</field>
-      <field name="model_id" ref="model_whatsapp_gateway_whatsapp_gateway"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
--->
+    <!-- Add your menu item to the technical menu -->
+    <!-- <menuitem id="menu_whatsapp_gateway" name="Whats App" parent="base.menu_technical" action="whatsapp_gateway_action_window" sequence="1000"/> -->
+    <menuitem
+        id="menu_whatsapp"
+        name="WhatsApp Connector"
+        action="whatsapp_gateway_action_window"
+        parent="taps_sale.menu_sale_representative"
+        sequence="219"/>
 
-    <!-- Top menu item -->
-<!--
-    <menuitem name="whatsapp_gateway" id="whatsapp_gateway.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="whatsapp_gateway.menu_1" parent="whatsapp_gateway.menu_root"/>
-    <menuitem name="Menu 2" id="whatsapp_gateway.menu_2" parent="whatsapp_gateway.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="whatsapp_gateway.menu_1_list" parent="whatsapp_gateway.menu_1"
-              action="whatsapp_gateway.action_window"/>
-    <menuitem name="Server to list" id="whatsapp_gateway" parent="whatsapp_gateway.menu_2"
-              action="whatsapp_gateway.action_server"/>
--->
   </data>
 </odoo>

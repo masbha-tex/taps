@@ -42,6 +42,31 @@ class OrderFlow(models.Model):
     quantity_balance = fields.Monetary(string='Balance Qty', store=True)
     value_balance = fields.Monetary(string='Balance Value', store=True)
     state = fields.Selection(related='order_id.state',string='Status')
+    customer_address = fields.Char(string='Cus. Addr.', compute='_cus_assress')
+
+
+    def _cus_assress(self):
+        for order in self:
+            addr = order.partner_id.street
+            if order.partner_id.city:
+                r_char = addr[-1]
+                if r_char == ',':
+                    addr = addr + order.partner_id.city
+                else:
+                    addr = addr + ',' + order.partner_id.city
+            if order.partner_id.state_id.name:
+                r_char = addr[-1]
+                if r_char == ',':
+                    addr = addr + order.partner_id.state_id.name
+                else:
+                    addr = addr + ',' + order.partner_id.state_id.name
+            if order.partner_id.country_id.name:
+                r_char = addr[-1]
+                if r_char == ',':
+                    addr = addr + order.partner_id.country_id.name
+                else:
+                    addr = addr + ',' + order.partner_id.country_id.name
+            order.customer_address = addr
     
     def init(self):
         tools.drop_view_if_exists(self._cr, 'order_flow')
@@ -51,7 +76,7 @@ class OrderFlow(models.Model):
         select row_number() OVER() AS id,order_id,company_id,pi_type,sale_representative,date_order,user_id, 
         pi_number,pi_date,currency_id,partner_id,buyer_name,style_ref,season,po_no,payment_term_id, 
         incoterm,bank,department,product,finish,slider,oa_no, 
-        so_qty,so_value,oa_qty,oa_value,quantity_balance,value_balance,state 
+        so_qty,so_value,oa_qty,oa_value,quantity_balance,value_balance,state,'' as customer_address
         from
         ( 
         select 

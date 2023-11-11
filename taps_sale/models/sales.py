@@ -414,8 +414,7 @@ class SaleOrder(models.Model):
             email_to_list = []
             email_to_list = []
             email_from_list = [
-                'csd.zipper@texzipperbd.com',
-                'nasir.csd@texzipperbd.com',
+                'asraful.haque@texzipperbd.com',
             ]
             email_cc_list = [
                 # 'alamgir@texzipperbd.com',

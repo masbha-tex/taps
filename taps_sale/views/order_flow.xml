@@ -20,6 +20,14 @@
         </field>
     </record>
 
+    <record model="ir.rule" id="record_not_shared_order_flow_multi_company_rule">
+        <field name="name">Non Shared Records:model</field>
+        <field name="model_id" ref="model_order_flow"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    
+
     <record id="view_sale_order_flow_tree" model="ir.ui.view">
         <field name="name">order.flow.tree</field>
         <field name="model">order.flow</field>
@@ -53,7 +61,7 @@
                 <field name="quantity_balance"/>
                 <field name="value_balance"/>
                 <field name="state"/>
-
+                <field name="customer_address"/>
             </tree>
         </field>
     </record>

@@ -75,7 +75,7 @@ class ManufacturingOrder(models.Model):
     ppinboxfinish = fields.Char(string='Pin-Box Finish', store=True)
     dippingfinish = fields.Char(string='Dipping Finish', store=True)
     gap = fields.Char(string='Gap', store=True)
-    
+
     logo = fields.Text(string='Logo', store=True)
     logoref = fields.Text(string='Logo Ref', store=True)
     logo_type = fields.Text(string='Logo Type', store=True)
@@ -95,6 +95,10 @@ class ManufacturingOrder(models.Model):
     nu1washer = fields.Text(string='1 NO. Washer Material & Size', store=True)
     nu2washer = fields.Text(string='2 NO. Washer Material & Size', store=True)
     back_part = fields.Text(string='Back Part', store=True)
+    # mold_set
+    # weight_per_gross
+    # color
+    # dimension
     tape_con = fields.Float('Tape C.', related='sale_order_line.tape_con', readonly=True, digits='Unit Price', store=True)
     slider_con = fields.Float('Slider C.', related='sale_order_line.slider_con', readonly=True, digits='Unit Price', store=True)
     

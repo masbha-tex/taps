@@ -22,28 +22,42 @@ _logger = logging.getLogger(__name__)
 
 
 import os
-from twilio.rest import Client
+import requests
 
 class wApp(models.Model):
     _name = "whats.app"
     _description = "WhatsApp Gateway"
 
-    account_sid = fields.Char(string="Account Sid")
-    auth_token = fields.Char(string="Auth Tocken")
+    
+    url_field = fields.Char('URL', default='https://graph.facebook.com/v17.0/118373814703008/messages')
+    access_token = fields.Char('Access Tocken')
 
+    def send_message_wapp(self):
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": "8801676778656",
+            "type": "template",
+            "template": {
+                "name": "customer_template",
+            "language": {
+                "code": "en_US"
+                }
+            }
+        }
+        
+        headers = {
+            "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json"
+            }
+        # Make the POST request
+        response = requests.post(self.url_field, json=payload, headers=headers)
 
-    def send_message_wapp(self)
-
-# # Find your Account SID and Auth Token at twilio.com/console
-# # and set the environment variables. See http://twil.io/secure
-# account_sid = os.environ['TWILIO_ACCOUNT_SID']
-# auth_token = os.environ['TWILIO_AUTH_TOKEN']
-# client = Client(account_sid, auth_token)
-
-# message = client.messages.create(
-#                               from_='whatsapp:+14155238886',
-#                               body='Hello, there!',
-#                               to='whatsapp:+15005550006'
-#                           )
-
-# print(message.sid)
+        if response.status_code == 200:
+        # Success: Handle the response as needed
+            response_data = response.json()
+        # Process the response data
+        else:
+        # Error: Handle the error
+            error_message = response.text
+        # Handle the error message
+        raise UserError((error_message))
