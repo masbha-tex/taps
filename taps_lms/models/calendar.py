@@ -9,7 +9,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import html2plaintext, is_html_empty, email_normalize
+from odoo.tools import html2plaintext, plaintext2html, is_html_empty, email_normalize
 from odoo.addons.microsoft_calendar.utils.event_id_storage import combine_ids
 
 ATTENDEE_CONVERTER_O2M = {
@@ -56,7 +56,7 @@ class Meeting(models.Model):
         values = default_values or {}
         values.update({
             'name': microsoft_event.subject or _("(No title)"),
-            'description': microsoft_event.body and microsoft_event.body['content'],
+            'description': microsoft_event.body and plaintext2html(microsoft_event.body['content']),
             'location': microsoft_event.location and microsoft_event.location.get('displayName') or False,
             'user_id': microsoft_event.owner_id(self.env),
             'privacy': sensitivity_o2m.get(microsoft_event.sensitivity, self.default_get(['privacy'])['privacy']),
@@ -115,24 +115,6 @@ class Meeting(models.Model):
             commands_required_partner += [(4, self.env.user.partner_id.id)]
         partners = self.env['mail.thread']._mail_find_partner_from_emails(emails, records=self, force_create=True)
         attendees_by_emails = {a.email: a for a in existing_attendees}
-        # for email, partner, attendee_info in zip(emails, partners, microsoft_attendees):
-        #     state = ATTENDEE_CONVERTER_M2O.get(attendee_info.get('status').get('response'), 'needsAction')
-
-        #     if email in attendees_by_emails:
-        #         # Update existing attendees
-        #         commands_attendee += [(1, attendees_by_emails[email].id, {'state': state})]
-        #     else:
-        #         # Create new attendees
-        #         commands_attendee += [(0, 0, {'state': state, 'partner_id': partner.id})]
-        #         commands_partner += [(4, partner.id)]
-        #         if attendee_info.get('emailAddress').get('name') and not partner.name:
-        #             partner.name = attendee_info.get('emailAddress').get('name')
-        # for odoo_attendee in attendees_by_emails.values():
-        #     # Remove old attendees
-        #     if odoo_attendee.email not in emails:
-        #         commands_attendee += [(2, odoo_attendee.id)]
-        #         commands_partner += [(3, odoo_attendee.partner_id.id)]
-        # return commands_attendee, commands_partner  
         for email, partner, attendee_info in zip(emails, partners, microsoft_attendees):
             state = ATTENDEE_CONVERTER_M2O.get(attendee_info.get('status').get('response'), 'needsAction')
             # Categorize partners based on role (required or optional)
