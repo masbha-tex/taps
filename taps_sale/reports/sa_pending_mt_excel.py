@@ -14,14 +14,8 @@ class SalesXlsx(models.AbstractModel):
     _inherit = 'report.report_xlsx.abstract'
     _description = 'report for Pi Pending MT'
     
-    
-
-    
     def generate_xlsx_report(self, workbook, data, orders):
         # report_name = orders.name
-
-        
-        
 
         sheet = workbook.add_worksheet("SA")
         column_style = workbook.add_format({'bold': True, 'font_size': 12})

@@ -1144,7 +1144,7 @@ class OperationDetails(models.Model):
                                                                                 'buyer_name':out.buyer_name,
                                                                                 'product_id':out.product_id.id,
                                                                                 'product_template_id':mrp_data[0].product_template_id.id,
-                                                                                'action_date':datetime.now(),
+                                                                                'action_date':out.action_date,
                                                                                 'shade':sh,
                                                                                 'shade_ref':mrp_data[0].shade_ref,
                                                                                 'finish':mrp_data[0].finish,

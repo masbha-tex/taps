@@ -3,7 +3,7 @@
 
     <t t-name="OrganizationalEmployeeChart">
         <div id="o_organizational_chart">
-        <h4 class="o_org_chart_title mb16 mt0" align="center">Organization Chart</h4>
+        <h4 class="o_org_chart_title mb16 mt0" align="center">Tex Fasteners, BD Team</h4>
             <center>
             <div id="o_parent_employee" class="empchart">
 

@@ -3,7 +3,8 @@
 }
 .o_chart_head img {
   width: 68px;
-  border: 3px solid #777;
+  border: 3px solid rgb(89, 87, 87);
+  // border: 5px solid #757575;
   border-radius: 100%;
 }
 .o_child_container {
@@ -14,11 +15,15 @@
 }
 .o_level_1 img {
   width: 68px;
-  border: 3px solid #777;
+  border: 3px solid rgb(89, 87, 87);
   border-radius: 100%;
+  margin-top: -20px;  
 }
 .o_level_1 {
-  margin: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: 15px;
+  margin-top: 0px;
   min-width: 100px;
 }
 
@@ -34,8 +39,9 @@
 }
 
 .empchart .lines:nth-child(3) td {
-  height: 20px;
+  height: 50px;
   box-sizing: border-box;
+  color : orange;
 }
 
 .empchart .lines .leftLine {
@@ -53,7 +59,7 @@
   float: none;
   margin: 0 auto;
   width: 2px;
-  height: 20px;
+  height: 30px;
 }
 
 .empchart .lines .rightLine {
@@ -66,8 +72,34 @@
     font-weight: 600;
     margin-bottom: -2px;
     margin-top: 7px;
+    color: #492A49;
+    font-size: 14px;
 }
+.employee_name p:nth-child(2) {
+    font-weight: 600;
+    margin-bottom: -2px;
+    margin-top: 0px;
+    // color: #757575;
+}
+
+
+.employee_name p:nth-child(3) {
+    font-weight: 600;
+    margin-bottom: -2px;
+    margin-top: 0px;
+    color: #757575;
+    font-size: 12px;
+}
+.badge-pill {
+    
+    margin-bottom: -20px;
+    
+}
+
 #o_organizational_chart .o_org_chart_title.mb16.mt0 {
-    background-color: darkgray;
+    // background-color: darkgray;
+    background-color: #492A49;
+    color: white;
     padding: 17px;
+    font-weight: 600;
 }

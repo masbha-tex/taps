@@ -61,6 +61,7 @@ class EmployeeChart(http.Controller):
                     <img src='/web/image/hr.employee.public/""" + str(child.id) + """/image_1024/'/></div>
                     <div class='employee_name'><p>""" + str(child.name) + """</p>  
                     <p>""" + str(child.job_id.name) + """</p>
+                    <p>""" + str(child.department_id.name) + """</p>
                     <span class='badge badge-pill'>""" + str(len(child.child_ids)) + """</span></div></a></div>"""
                 child_nodes += child_table + view + """</div></td></tr></table></td>"""
             nodes = child_nodes + """</tr>"""
@@ -81,6 +82,7 @@ class EmployeeChart(http.Controller):
                 <img class='o_emp_active' src='/web/image/hr.employee.public/""" + str(val) + """/image_1024/'/></div>
                 <div class='employee_name o_width'><p>""" + str(emp.name) + """</p>
                 <p>""" + str(emp.job_id.name) + """</p>
+                <p>""" + str(emp.department_id.name) + """</p>
                 <span class='badge badge-pill'>""" + str(len(emp.child_ids)) + """</span></div></a></div>"""
             table += view + """</div></td></tr>"""
             loop_len = len(child_ids)*2
