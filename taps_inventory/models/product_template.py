@@ -55,7 +55,7 @@ class Product(models.Model):
             to_unlink = self._filter_to_unlink()
             to_archive = self - to_unlink
             # raise UserError(('b'))
-            to_archive.write({'active': False})
+            # to_archive.write({'active': False})
             self = to_unlink
 
         try:

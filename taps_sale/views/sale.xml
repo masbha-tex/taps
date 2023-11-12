@@ -5,7 +5,9 @@
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_form"/>
 			<field name="arch" type="xml">
-                
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
+                </xpath>
 				<xpath expr="//field[@name='name']" position="before">
 					<field name="priority_sales" widget="priority" class="mr-3"/>
 				</xpath>
@@ -17,13 +19,14 @@
 				<xpath expr="//field[@name='partner_invoice_id']" position="attributes">
 					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]]}</attribute>
 					<attribute name="groups"/>
-					<attribute name="options">{'always_reload':true,'no_create':true}</attribute>
+					<attribute name="options">{'always_reload':true,'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
 				</xpath>
 				<xpath expr="//field[@name='partner_invoice_id']" position="after">
 					<field name="invoice_details"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_shipping_id']" position="attributes">
 					<attribute name="groups"/>
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
 				</xpath>
 				<xpath expr="//field[@name='partner_shipping_id']" position="after">
 					<field name="delivery_details" options="{'no_create': True, 'no_create_edit':True}"/>
@@ -36,7 +39,7 @@
 				<xpath expr="//field[@name='sale_order_template_id']" position="after">
 					<field name="customer_ref" attrs="{'invisible': [['sales_type','=',False]]}"/>
 					<field name="style_ref"/>
-					<field name="sale_representative" options="{'no_create': True, 'no_create_edit':True}"/>
+					<field name="sale_representative" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
 					<field name="garments" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2)]]}"/>
                     <field name="corrosions_test" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2)]]}"/>
                     <field name="assortment" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
@@ -68,7 +71,7 @@
 					<field name="cause_of_revision" attrs="{'invisible': [('is_revised', '=', False), ('is_hold', '=', False)]}"/>
                     <field name="department" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
 					<field name="division" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
-					<field name="buyer_name" options="{'no_create': True, 'no_create_edit':True}"/>
+					<field name="buyer_name" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
 					<field name="hs_code" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="production_type" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
 					<field name="production_group" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
