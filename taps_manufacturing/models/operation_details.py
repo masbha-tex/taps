@@ -785,16 +785,16 @@ class OperationDetails(models.Model):
             rest_qty = qty
             while rest_qty > 0:
                 for op in operation:
-                    o_qty = op.uotput_qty + rest_qty
+                    o_qty = op.done_qty + rest_qty
                     if op.ac_balance_qty >= o_qty:
-                        op.write({'uotput_qty': op.uotput_qty + o_qty})
+                        op.write({'uotput_qty': rest_qty})
                         op._output()
                         rest_qty = 0
                     else:
-                        if op.ac_balance_qty > op.uotput_qty:
-                            o_qty = op.ac_balance_qty - op.uotput_qty
+                        if op.ac_balance_qty > op.done_qty:
+                            o_qty = op.ac_balance_qty - op.done_qty
                             if o_qty > 0:
-                                op.write({'uotput_qty':op.uotput_qty + o_qty})
+                                op.write({'uotput_qty': o_qty})
                                 rest_qty = rest_qty - o_qty
                                 op._output()
                             else:
