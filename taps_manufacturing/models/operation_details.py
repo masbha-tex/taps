@@ -924,14 +924,14 @@ class OperationDetails(models.Model):
             if out.next_operation in('Dyeing Output','Dyeing Qc','CM Output','Dipping Output','Assembly Output','Packing Output','Plating Output','Painting Output','Slider Assembly Output'):
                 up = self.set_mrp_output(out.next_operation,out.mrp_lines,out.uotput_qty,out.based_on)
             
-            if out.parent_id:
-                parent_id = out.parent_id
-                while (parent_id):
-                    if out.parent_id != parent_id.id:
-                        operation_p = self.env["operation.details"].browse(parent_id.id)
-                        dqt = operation_p.done_qty + out.uotput_qty
-                        ope = operation_p.write({'done_qty':dqt})
-                    parent_id = parent_id.parent_id
+            # if out.parent_id:
+            #     parent_id = out.parent_id
+            #     while (parent_id):
+            #         if out.parent_id != parent_id.id:
+            #             operation_p = self.env["operation.details"].browse(parent_id.id)
+            #             dqt = operation_p.done_qty + out.uotput_qty
+            #             ope = operation_p.write({'done_qty':dqt})
+            #         parent_id = parent_id.parent_id
     
             move_line = None
             if out.next_operation == 'Packing Output':

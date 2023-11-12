@@ -56,7 +56,8 @@ class Meeting(models.Model):
         values = default_values or {}
         values.update({
             'name': microsoft_event.subject or _("(No title)"),
-            'description': microsoft_event.body and plaintext2html(microsoft_event.body['content']),
+            # 'description': microsoft_event.body and plaintext2html(microsoft_event.body['content']),
+            'description': microsoft_event.body and ('<html>%s</html>' % microsoft_event.body['content']) or False,
             'location': microsoft_event.location and microsoft_event.location.get('displayName') or False,
             'user_id': microsoft_event.owner_id(self.env),
             'privacy': sensitivity_o2m.get(microsoft_event.sensitivity, self.default_get(['privacy'])['privacy']),
@@ -141,9 +142,9 @@ class Meeting(models.Model):
                 commands_attendee += [(2, odoo_attendee.id)]
                 
                 # Separate partners based on some condition
-                if odoo_attendee.role == "Required":
+                if odoo_attendee.role == "required":
                     commands_required_partner += [(3, odoo_attendee.partner_id.id)]
-                elif odoo_attendee.role == "Optional":
+                elif odoo_attendee.role == "optional":
                     commands_optional_partner += [(3, odoo_attendee.partner_id.id)]
     
         return commands_attendee, commands_required_partner, commands_optional_partner
@@ -303,4 +304,23 @@ class Meeting(models.Model):
             }
 
         return values
+
+    # def write(self, values):
+    #     update_alarms = False
+    #     if 'partner_ids' in values:
+    #         values['attendee_ids'] = self._attendees_values(values['partner_ids'])
+    #         update_alarms = True
+    #     if 'optional_attendee_ids' in values:
+    #         values['attendee_ids'] += self._attendees_values(values['optional_attendee_ids'])
+    #         update_alarms = True        
+
+    #     previous_attendees = self.attendee_ids
+
+    #     super().write(values)
+
+    #     current_attendees = self.filtered('active').attendee_ids
+    #     if 'optional_attendee_ids' in values:
+    #         (current_attendees - previous_attendees)._send_mail_to_attendees('calendar.calendar_template_meeting_invitation')
+
+    #     return True
 

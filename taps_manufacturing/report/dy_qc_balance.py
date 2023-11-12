@@ -49,6 +49,8 @@ class DyeingQcBalance(models.AbstractModel):
         sheet.write(2, 6, "Remarks", column_style)
         report_data = []
         shades = planids.mapped('shade')
+        planids = planids.mapped('parent_id.plan_id')
+        plandates = planids.mapped('action_date')
         for sh in shades:
             sh_records = planids.filtered(lambda pr: pr.shade == sh)
             oa_ids = sh_records.mapped('oa_id')
