@@ -53,7 +53,7 @@ class MrpSizewiseLot(models.TransientModel):
         sizes = []
 
         for lines in orderline:
-            raise UserError((operation[0].oa_id.id,operation[0].shade))
+            # raise UserError((operation[0].oa_id.id,operation[0].shade))
             size = lines.sizein
             if size == 'N/A':
                 size = lines.sizecm
@@ -75,6 +75,8 @@ class MrpSizewiseLot(models.TransientModel):
                     
                 # found_values = [value for value in mrp_line if value in op_etails.mrp_lines]
                 # raise UserError((found_values[0].name))
+                
+                raise UserError((balance_qty))
                 if balance_qty > 0:
                     orderline_values.append((0, 0, {
                         'mrp_line': mrp_line,
