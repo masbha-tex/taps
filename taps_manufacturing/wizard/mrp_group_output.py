@@ -48,5 +48,11 @@ class ManufacturingGroupOutput(models.TransientModel):
     def done_mo_output(self):
         mo_ids = self.env.context.get("active_ids")
         production = self.env["operation.details"].browse(mo_ids)
+        # for r in production:
+        #     if r.next_operation not in ('Dyeing Output','Dyeing Qc'):
+        #         oa_tape_qty
+        #         qty
+        #         raise UserError(('This is not for you'))
+        
         production.set_group_output(mo_ids,self.qty)#self.manuf_date,
         return

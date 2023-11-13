@@ -280,9 +280,9 @@ class OperationDetails(models.Model):
         return action
     
     def button_group_output(self):
-        for r in self:
-            if r.next_operation not in ('Dyeing Output','Dyeing Qc'):
-                raise UserError(('This is not for you'))
+        # for r in self:
+        #     if r.next_operation not in ('Dyeing Output','Dyeing Qc'):
+        #         raise UserError(('This is not for you'))
         self._check_company()
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_group_output")
         action["domain"] = [('default_id','in',self.mapped('id'))]

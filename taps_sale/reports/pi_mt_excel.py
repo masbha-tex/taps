@@ -69,7 +69,10 @@ class SalesXlsx(models.AbstractModel):
                 elif col == 4:
                     sheet.write(row, col, o_data.order_id.buyer_name.name, row_style)
                 elif col == 5:
-                    sheet.write(row, col, o_data.order_id.expected_date.strftime("%d/%m/%Y"), row_style)
+                    if o_data.order_id.expected_date:
+                        sheet.write(row, col, o_data.order_id.expected_date.strftime("%d/%m/%Y"), row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
                 elif col == 6:
                     sheet.write(row, col, '', row_style)
                 elif col == 7:
