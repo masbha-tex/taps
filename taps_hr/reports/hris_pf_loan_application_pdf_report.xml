@@ -5,267 +5,110 @@
 			<t t-call="web.html_container">
 				<t t-call="web.external_layout">
 					<div class="page mt-4">
-						<div class="container" style="outline: thin solid Black;font-size:12px">
-							<div class="row">
-								<div class="col-4 border-right border-dark">
-									<b>Document No: TEX/HRD/<span t-esc="employee.emp_id"/>
-										<br/>
-                             Issue No   : <span t-esc="employee.emp_id"/>
-										<br/>
-                             Issue Date : <span t-esc="datas[2]"/>
-									</b>
-								</div>
-								<div class="col-8 d-flex align-items-center justify-content-center mx-auto mt-3" style="font-size:18px;">
-									<i>
-										<b>
-											<span>EMPLOYEE PF LOAN APPLICATION FORM</span>
-										</b>
-									</i>
-								</div>
+						<div class="container">
+							<div class="row text-center">
+								<div class="col-12"><strong style="font-size: 15 px; text-decoration: underline;">Form - Ga</strong>
+								<br/>
+								<strong style="font-size: 12 px;">Loan Disbursement Form of Provident Fund</strong></div>
 							</div>
 						</div>
-						<div class="container" style="outline: thin solid Black; font-size:15px">
-							<div class="row mt-2">
-								<div class="col-6">
-									<div class="row">
-										<div class="col-4">
-											<strong>Name</strong>
-											<br/>
-											<strong>Department</strong>
-											<br/>
-											<strong>Section</strong>
-										</div>
-										<div class="col-1">
-											<strong>:</strong>
-											<br/>
-											<strong>:</strong>
-											<br/>
-											<strong>:</strong>
-										</div>
-										<div class="col-7">
-											<strong>
-												<t t-esc="employee.name"/>
-											</strong>
-											<br/>
-											<strong>
-												<t t-esc="employee.department_id.parent_id.name"/>
-											</strong>
-											<br/>
-											<strong>
-												<t t-esc="employee.department_id.name"/>
-											</strong>
-										</div>
-									</div>
-								</div>
-								<div class="col-6">
-									<div class="row">
-										<div class="col-4">
-											<strong>Service Length</strong>
-											<br/>
-											<strong>Designation</strong>
-											<br/>
-											<strong>Grade</strong>
-										</div>
-										<div class="col-1">
-											<strong>:</strong>
-											<br/>
-											<strong>:</strong>
-											<br/>
-											<strong>:</strong>
-										</div>
-										<div class="col-7">
-											<strong>
-												<t t-esc="employee.service_length"/>
-											</strong>
-											<br/>
-											<strong>
-												<t t-esc="employee.job_id.name"/>
-											</strong>
-											<br/>
-											<strong>
-												<t t-esc="employee.grade"/>
-											</strong>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row mt-2">
-								<div class="col-4">
-									<p>Amount of Loan Tk. ______________</p>
-								</div>
-								<div class="col-8">
-									<p>In Word: __________________________________ </p>
-								</div>
-							</div>
-							<div class="row mt-2">
-								<div class="col-2">
-									<strong>Purpose of Loan:</strong>
-								</div>
-								<div class="col-6">
-									<p>
-										<span>1.Health Related Emergency</span>
-										<br/>
-										<span>2.Self Marriage</span>
-										<br/>
-										<span>3.Marriage of Dependents(Specify the relationship)</span>
-									</p>
-								</div>
-							</div>
-							<div class="row mt-2">
-								<div class="col-12">
-									<p>Loan recovered in: ________________________________________________________________________________ Installments/as per policy.</p>
-								</div>
-							</div>
-							<div class="clearfix mt-4">
-								<div class="float-left">
-                      ____________________________<br/>
-									<p>Signature(Employee)</p>
-								</div>
-								<div class="float-right">
-                      _______________________________<br/>
-									<p>Signature(Head of Department)</p>
-								</div>
-							</div>
-						</div>
-						<div class="container" style="outline: thin solid Black; font-size:20px">
-							<div class="row">
-								<div align="center" class="col-12">
-									<strong>FOR HRM DEPARTMENT</strong>
-								</div>
-							</div>
-						</div>
-						<div class="container" style="outline: thin solid Black; font-size:15px">
+						
+						<div class="container" style="font-size:15px">
 							<div class="row">
 								<div class="col-12 mt-4">
-									<p>Date of joining: <strong>
-											<span t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
-										</strong> 
-                          Gross salary: <strong>
-											<span t-esc="employee.contract_id.wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-										</strong> 
-                          Loan Entitlement ____________________________________________________</p>
-									<p>Recommended Loan of ______________________ without/with interest 1 installment extra. Total: ______________________________ </p>
-									<p>EMI Amount :_______________________________ Loan to be recovered in __________________________________________________ insatllments</p>
-									<p>Last Loan taken on_______________________________ Outstanding Amount :________________________________________________ </p>
+								  Chairman
+								  <p>________________________ Employees' (Contributory) Provident Fund Trustee Board<br/>
+								  M/S <strong style="text-decoration: underline;">  TEX ZIPPERS (BD) LIMITED  </strong><br/>
+								  <strong style="text-decoration: underline;">  Adamjee    </strong> Export Processing Zone.<br/>
+								  <strong style="text-decoration: underline;"> Plot # 180,264 &amp; 273, Adamjee EPZ, Shiddhirganj, Narayanganj 1431 </strong></p>
+                                    <br/>
 								</div>
 							</div>
-							<div class="clearfix mt-4">
-								<div class="float-left">
-									<p>Date:</p>
-								</div>
-								<div class="float-right">
-                            ___________________________________<br/>
-									<p>Signature<br/>
-                            HRD</p>
-								</div>
-							</div>
-						</div>
-						<div class="container" style="outline: thin solid Black; font-size:20px">
 							<div class="row">
-								<div align="center" class="col-12">
-									<strong>SANCTION</strong>
-								</div>
-							</div>
-						</div>
-						<div class="container" style="outline: thin solid Black; font-size:15px">
-							<div class="row">
-								<div class="col-12 mt-4 mb-2">
-									<p>* SANCTIONED AS RECOMMENDED ABOVE.</p>
-									<p> * SANCTIONED A LOAN OF _______________ TO BE RECOVERED IN___________________________ INSTALLMENTS</p>
-								</div>
-							</div>
-							<div class="clearfix mt-4">
-								<div class="float-left">
-									<p>Date:</p>
-								</div>
-								<div class="float-right">
-                            ___________________________________<br/>
-									<p>Signature<br/>
-										<strong>(Sanctioning Authority)</strong>
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="container" style="outline: thin solid Black; font-size:20px">
-							<div class="row">
-								<div align="center" class="col-12">
-									<strong>GUARANTOR (Company Employee)</strong>
-								</div>
-							</div>
-						</div>
-						<div class="container" style="outline: thin solid Black; font-size:15px">
-							<div class="row">
-								<div class="col-4 mt-3">
-									<div class="row">
-										<div class="col-5">
-											<strong>Name</strong>
+										<div class="col-6">
+											1. Name:   <strong><t t-esc="employee.name"/></strong>
 											<br/>
-											<strong>Department</strong>
 											<br/>
-											<strong>Designation</strong>
+											3. Section:   <strong><t t-esc="employee.department_id.name"/></strong>
 											<br/>
+											<br/>
+											5. Card No:   <strong><t t-esc="employee.emp_id"/></strong>
+											<br/>
+											<br/>
+											6. Amount of loan applied for:   <strong></strong>
+											<br/>
+											<br/>
+											7. Reason for Loan:  <strong></strong>
+											<br/>
+											<br/>
+											8. Installment against loan:  <strong></strong>
 										</div>
-										<div class="col-1">
-											<strong>:</strong>
+										<div class="col-6">
+											2. Designation:   <strong><t t-esc="employee.job_id.name"/></strong>
 											<br/>
-											<strong>:</strong>
 											<br/>
-											<strong>:</strong>
+											4. Division:   <strong><t t-esc="employee.department_id.parent_id.name"/></strong>
 											<br/>
-										</div>
-										<div class="col-5">
-                                
-                              </div>
-									</div>
-								</div>
-								<div class="col-7 mt-3">
-									<div class="row">
-										<div class="col-3">
-											<strong>Emp ID</strong>
-											<br/>
-											<strong>Grade</strong>
-											<br/>
-											<strong>Date of Joining</strong>
-											<br/>
-										</div>
-										<div class="col-1">
-											<strong>:</strong>
-											<br/>
-											<strong>:</strong>
-											<br/>
-											<strong>:</strong>
-											<br/>
-										</div>
-										<div class="col-4">
-                                
-                              </div>
-										<div class="col-4" style="text-aline:center;border:2px solid black; background-size: 100px;width: 100px;height: 100px;">
-											<div class="center">
-												<strong>Photo</strong>
-											</div>
 										</div>
 									</div>
+							<div class="clearfix mt-4">
+								<div class="float-left">
+									<p></p>
+								</div>
+								<div class="float-right">
+                            ___________________________________<br/>
+									<p>Member's Signature<br/>
+                            Date:</p>
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-12 mt-3 mb-3">
-									<p>That the aforesaid loan shall be repayable by the employee in ______________Equated monthly installments.
-In the event of termination of services of Employee before the loan amount fully repaid or due to resignation,
-retirement, death or any other reason, the entire unpaid balance amount of loan shall become immediately
-due and payable to the company, in such case employee fail to make the payment, </p>
-									<p>I,__________________________the "Guarantor" will be liable to make the entire unpaid balance amount
-of loan to the company.</p>
-								</div>
+							  <p>Recommendation of Departmental Head</p>
 							</div>
+                            <div class="row">
+                                Total Savings:   <strong style="text-decoration: underline;"><t t-esc="employee.contribution_sum"/></strong>  <strong style="text-decoration: underline; font-size: 20px">৳</strong><br/>
+                            </div>
+                            <div class="row">
+                              Amount of loan recommended: ______________________________________________<br/>
+                            </div>
+						</div>
+								
 							<div class="clearfix mt-4">
 								<div class="float-left">
-                            Date:
-                          </div>
+                                    <br/>
+									<p>Accounts Officer</p>
+								</div>
+								<div class="float-right"><br/>
+									<p>Member-secretary, Trustee Board<br/></p>
+								</div>
+        					</div>
+                            <div class="row">
+                              <div class="col-12">
+                                <p>The amount of Taka________________________________________________________as loan has been approved whichshallbe recovered by_____________________________________________________installments.</p>
+                              </div>
+                            </div>
+							<div class="clearfix mt-4">
+								<div class="float-left">
+									<p></p>
+								</div>
 								<div class="float-right">
-                            ___________________________________<br/>
-									<p>Signature</p>
+									<p>Approved<br/>
+                            Chairment, Trustee Board</p>
 								</div>
 							</div>
+							<div class="row">
+						  <div class="col-12">
+						    <p>Received Taka____________________________from Provident Fund as Loan.</p>
+						  </div>
+						</div>
+						<div class="clearfix mt-4">
+								<div class="float-left">
+									<p></p>
+								</div>
+								<div class="float-right">
+                            ___________________________________<br/>
+									<p>Member's Signature<br/>
+                            Date:</p>
+								</div>
 						</div>
 					</div>
 				</t>

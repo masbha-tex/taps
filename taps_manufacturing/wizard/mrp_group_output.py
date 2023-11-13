@@ -25,7 +25,7 @@ class ManufacturingGroupOutput(models.TransientModel):
     item = fields.Char(string='Item', readonly=True)
     shade = fields.Text(string='Shade', readonly=True)
     # manuf_date = fields.Datetime(string='Production Date', required=True, default=datetime.now())
-    planned_qty = fields.Float(string='Dyed Balance Qty', digits='Product Unit of Measure', readonly=True)
+    planned_qty = fields.Float(string='Balance Qty', digits='Product Unit of Measure', readonly=True)
     oa_tape_qty = fields.Float(string='OA Tape Balance', digits='Product Unit of Measure', readonly=True)
     qty = fields.Float(string='Qty', default=0.0, digits='Product Unit of Measure',required=True)
     
@@ -48,11 +48,16 @@ class ManufacturingGroupOutput(models.TransientModel):
     def done_mo_output(self):
         mo_ids = self.env.context.get("active_ids")
         production = self.env["operation.details"].browse(mo_ids)
-        # for r in production:
-        #     if r.next_operation not in ('Dyeing Output','Dyeing Qc'):
-        #         oa_tape_qty
-        #         qty
-        #         raise UserError(('This is not for you'))
-        
-        production.set_group_output(mo_ids,self.qty)#self.manuf_date,
+        allow = True
+        other_sec = False
+        for r in production:
+            if r.next_operation not in ('Dyeing Output','Dyeing Qc'):
+                other_sec = True
+                break
+        if self.planned_qty != self.qty and other_sec:
+            allow = False
+        if allow:
+            production.set_group_output(mo_ids,self.qty,self.planned_qty)#self.manuf_date,
+        else:
+            raise UserError(('You have to done full qty'))
         return

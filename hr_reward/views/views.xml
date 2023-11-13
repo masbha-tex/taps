@@ -97,7 +97,7 @@
 
 
     <record model="ir.actions.act_window" id="action_hr_reward">
-        <field name="name">Reward</field>
+        <field name="name">Reward &amp; Recognition</field>
         <field name="res_model">hr.reward</field>
         <field name="view_mode">tree,form</field>
     </record>

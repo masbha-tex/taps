@@ -19,8 +19,8 @@ class MrpRunningOrders(models.AbstractModel):
         report_name = 'Running Orders'#orders.name
         # raise UserError((m_orders.oa_id.ids))
         sale_orders = self.env['sale.order'].browse(m_orders.oa_id.ids)
+        
 
-        sheet = workbook.add_worksheet(report_name[:41])
         column_style = workbook.add_format({'bold': True, 'font_size': 11})
         
         _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -36,6 +36,14 @@ class MrpRunningOrders(models.AbstractModel):
         
         merge_format = workbook.add_format({'align': 'top'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
+
+        # items = m_orders.mapped('fg_categ_type')
+        # items = list(set(items))
+        # sale_orders
+        # all_orders = self.env['sale.order.line'].browse(m_orders.oa_id.ids)
+        # for item in items:
+        #     sale_orders = self.env['sale.order'].browse(m_orders.oa_id.ids)
+        sheet = workbook.add_worksheet(report_name[:41])
         
         sheet.write(0, 0, "CUSTOMER NAME", column_style)
         sheet.write(0, 1, "PRODUCT", column_style)

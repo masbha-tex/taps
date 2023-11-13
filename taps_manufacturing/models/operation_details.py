@@ -280,9 +280,9 @@ class OperationDetails(models.Model):
         return action
     
     def button_group_output(self):
-        # for r in self:
-        #     if r.next_operation not in ('Dyeing Output','Dyeing Qc'):
-        #         raise UserError(('This is not for you'))
+        for r in self:
+            if r.next_operation in ('Chain Making','Gapping'):
+                raise UserError(('This is not for you'))
         self._check_company()
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_group_output")
         action["domain"] = [('default_id','in',self.mapped('id'))]
@@ -775,7 +775,7 @@ class OperationDetails(models.Model):
             
 
            # dyeing_output plating_output top_plat_output bot_plat_output pin_plat_output sli_asmbl_output chain_making_done diping_done assembly_done packing_done         
-    def set_group_output(self,mo_ids,qty):
+    def set_group_output(self,mo_ids,qty,planned_qty):
         # raise UserError(('Under Construction'))
         operation = self.env["operation.details"].browse(mo_ids)
         qty_ = round((qty/len(operation)),2)
@@ -801,6 +801,8 @@ class OperationDetails(models.Model):
                                 rest_qty = 0
         else:
             for op in operation:
+                if planned_qty == qty:
+                    qty_ = op.balance_qty
                 op.write({'uotput_qty':qty_})
                 op._output()
 
