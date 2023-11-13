@@ -44,105 +44,117 @@ class SalesXlsx(models.AbstractModel):
         sheet.write(0, 14, "LOGO TYPE", column_style)
         sheet.write(0, 15, "FINISH", column_style)
         sheet.write(0, 16, "FINISH REF", column_style)
-        sheet.write(0, 17, "B PART", column_style)
-        sheet.write(0, 18, "C PART", column_style)
-        sheet.write(0, 19, "D PART", column_style)
-        sheet.write(0, 20, "QTY", column_style)
-        sheet.write(0, 21, "STYLE", column_style)
-        sheet.write(0, 22, "SEARCH", column_style)
+        sheet.write(0, 17, "QTY", column_style)
+        sheet.write(0, 18, "STYLE", column_style)
+        sheet.write(0, 19, "SEARCH", column_style)
         col = 0
         row = 1
         list = orders.mapped('id')
         docs = self.env['sale.order.line'].search([('order_id', 'in', list)])
         docs = sorted(docs, key=lambda r: r.order_id.id, reverse=False)
         for o_data in docs:
-            col = 0
-        
-            
-            for l in range(24):
-                
-                if col == 0:
-                    sheet.write(row, col, o_data.order_id.name, row_style)
-                elif col == 1:
-                    sheet.write(row, col, o_data.order_id.create_date.strftime("%d/%m/%Y"), row_style)
-                elif col == 2:
-                    sheet.write(row, col, o_data.order_id.order_ref.pi_number, row_style)
-                elif col == 3:
-                    sheet.write(row, col, o_data.order_id.partner_id.name, row_style)
-                elif col == 4:
-                    sheet.write(row, col, o_data.order_id.buyer_name.name, row_style)
-                elif col == 5:
-                    sheet.write(row, col, o_data.order_id.expected_date.strftime("%d/%m/%Y"), row_style)
-                elif col == 6:
-                    sheet.write(row, col, '', row_style)
-                elif col == 7:
-                    sheet.write(row, col, '', row_style)
-                elif col == 8:
-                    if o_data.product_code:
-                        sheet.write(row, col, o_data.product_code, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 9:
-                    sheet.write(row, col, o_data.product_template_id.name, row_style)
-                elif col == 10:
-                    sheet.write(row, col, o_data.sizemm, row_style)
-                elif col == 11:
-                    if o_data.shape:
-                        sheet.write(row, col, o_data.shape, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 12:
-                    if o_data.logo:
-                        sheet.write(row, col, o_data.logo, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 13:
-                    if o_data.logoref:
-                        sheet.write(row, col, o_data.logoref, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 14:
-                    if o_data.logo_type:
-                        sheet.write(row, col, o_data.logo_type, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 15:
-                    if o_data.finish:
-                        sheet.write(row, col, o_data.finish, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 16:
-                    if o_data.finish_ref:
-                        sheet.write(row, col, o_data.finish_ref, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 17:
-                    if o_data.b_part:
-                        sheet.write(row, col, o_data.b_part, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 18:
-                    if o_data.c_part:
-                        sheet.write(row, col, o_data.c_part, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 19:
-                    if o_data.d_part:
-                        sheet.write(row, col, o_data.d_part, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 20:
-                    sheet.write(row, col, o_data.product_uom_qty, row_style)
-                elif col == 21:
-                    if o_data.style:
-                        sheet.write(row, col, o_data.style, row_style)
-                    else:
-                        sheet.write(row, col, '', row_style)
-                elif col == 22:
-                    sheet.write(row, col, '', row_style)
-                
-                col += 1
-            row += 1
+            # col = 0
+            count = 0
+            bpart = 0
+            cpart= 0
+            dpart= 0
+            bup = 0
+            cup= 0
+            dup= 0
+            if o_data.b_part != "N/A":
+                count += 1
+                bpart = 1
+            if o_data.c_part != "N/A":
+                count += 1
+                cpart = 1
+            if o_data.d_part != "N/A":
+                count += 1
+                dpart = 1
+            # raise UserError((count))
+            for i in range(count):
+                col = 0
+                if o_data.product_template_id.name != 'MOULD':
+                    for l in range(20):
+                        
+                        if col == 0:
+                            sheet.write(row, col, o_data.order_id.name, row_style)
+                        elif col == 1:
+                            sheet.write(row, col, o_data.order_id.create_date.strftime("%d/%m/%Y"), row_style)
+                        elif col == 2:
+                            sheet.write(row, col, o_data.order_id.order_ref.pi_number, row_style)
+                        elif col == 3:
+                            sheet.write(row, col, o_data.order_id.partner_id.name, row_style)
+                        elif col == 4:
+                            sheet.write(row, col, o_data.order_id.buyer_name.name, row_style)
+                        elif col == 5:
+                            sheet.write(row, col, o_data.order_id.expected_date.strftime("%d/%m/%Y"), row_style)
+                        elif col == 6:
+                            sheet.write(row, col, '', row_style)
+                        elif col == 7:
+                            sheet.write(row, col, '', row_style)
+                        elif col == 8:
+                            if o_data.product_code:
+                                sheet.write(row, col, o_data.product_code, row_style)
+                            else:
+                                sheet.write(row, col, '', row_style)
+                        elif col == 9:
+                            if dpart == 1 and dup == 0:
+                                sheet.write(row, col, o_data.d_part, row_style)
+                                dup = 1
+                            elif cpart == 1 and cup == 0:
+                                sheet.write(row, col, o_data.c_part, row_style)
+                                cup = 1
+                                
+                                
+                            elif bpart == 1 and bup == 0:
+                                sheet.write(row, col, o_data.b_part, row_style)
+                                bup = 1
+    
+                            
+                        elif col == 10:
+                            sheet.write(row, col, o_data.sizemm, row_style)
+                        elif col == 11:
+                            if o_data.shape:
+                                sheet.write(row, col, o_data.shape, row_style)
+                            else:
+                                sheet.write(row, col, '', row_style)
+                        elif col == 12:
+                            if o_data.logo:
+                                sheet.write(row, col, o_data.logo, row_style)
+                            else:
+                                sheet.write(row, col, '', row_style)
+                        elif col == 13:
+                            if o_data.logoref:
+                                sheet.write(row, col, o_data.logoref, row_style)
+                            else:
+                                sheet.write(row, col, '', row_style)
+                        elif col == 14:
+                            if o_data.logo_type:
+                                sheet.write(row, col, o_data.logo_type, row_style)
+                            else:
+                                sheet.write(row, col, '', row_style)
+                        elif col == 15:
+                            if o_data.finish:
+                                sheet.write(row, col, o_data.finish, row_style)
+                            else:
+                                sheet.write(row, col, '', row_style)
+                        elif col == 16:
+                            if o_data.finish_ref:
+                                sheet.write(row, col, o_data.finish_ref, row_style)
+                            else:
+                                sheet.write(row, col, '', row_style)
+                        elif col == 17:
+                            sheet.write(row, col, o_data.product_uom_qty, row_style)
+                        elif col == 18:
+                            if o_data.style:
+                                sheet.write(row, col, o_data.style, row_style)
+                            else:
+                                sheet.write(row, col, '', row_style)
+                        elif col == 19:
+                            sheet.write(row, col, '', row_style)
+                        
+                        col += 1
+                    row += 1
                 
         # sheet.write(row, 15, '=SUM(P{0}:P{1})'.format(2, row), row_style)
         # sheet.write(row, 16, '=SUM(Q{0}:Q{1})'.format(2, row), row_style)
