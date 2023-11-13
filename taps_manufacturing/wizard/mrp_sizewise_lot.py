@@ -43,6 +43,7 @@ class MrpSizewiseLot(models.TransientModel):
         active_id = self.env.context.get("active_ids")
         operation = self.env[""+active_model+""].browse(active_id)
         shade = operation.mapped('shade')
+        
         orderline = self.env['manufacturing.order'].search([('oa_id', '=', operation[0].oa_id.id),('shade','in',shade),('dyeing_plan','!=',None)])#.sorted(key = 'id') ,('dyeing_plan','!=',None)
         orderline_values = []
 
@@ -52,7 +53,7 @@ class MrpSizewiseLot(models.TransientModel):
         sizes = []
 
         for lines in orderline:
-            # raise UserError((operation[0].oa_id.id,operation[0].shade))
+            raise UserError((operation[0].oa_id.id,operation[0].shade))
             size = lines.sizein
             if size == 'N/A':
                 size = lines.sizecm

@@ -31,6 +31,8 @@ class DyeingQcBalance(models.AbstractModel):
         merge_format = workbook.add_format({'font_size': 10, 'align': 'top', 'bold': True, 'align': 'center'})
 
         items = qcids.mapped('fg_categ_type')
+        items = list(set(items))
+        
         for item in items:
             mc_name = item
             # mc_name = 'QC Balance'

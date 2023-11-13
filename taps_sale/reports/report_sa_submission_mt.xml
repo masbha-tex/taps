@@ -125,6 +125,12 @@
 										<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
 									</td>
 								</tr>
+								<tr>
+									<td style="height:40px; vertical-align:middle">SIGNATURE</td>
+									<td style="height:40px">
+										<span></span>
+									</td>
+								</tr>
 							</table>
 						</div>
 					</t>
