@@ -17,7 +17,7 @@ class SalesXlsx(models.AbstractModel):
     def generate_xlsx_report(self, workbook, data, orders):
         # report_name = orders.name
 
-        sheet = workbook.add_worksheet("PI_MT_EXCEL")
+        sheet = workbook.add_worksheet("PI_MT_EXCEL_PART_WISE")
         column_style = workbook.add_format({'bold': True, 'font_size': 9})
         
         row_style = workbook.add_format({'font_size': 11, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'middle', 'text_wrap':True})#
@@ -57,7 +57,10 @@ class SalesXlsx(models.AbstractModel):
         docs = sorted(docs, key=lambda r: r.order_id.id, reverse=False)
         for o_data in docs:
             col = 0
-            for l in range(23):
+        
+            
+            for l in range(24):
+                
                 if col == 0:
                     sheet.write(row, col, o_data.order_id.name, row_style)
                 elif col == 1:
@@ -137,8 +140,10 @@ class SalesXlsx(models.AbstractModel):
                         sheet.write(row, col, '', row_style)
                 elif col == 22:
                     sheet.write(row, col, '', row_style)
+                
                 col += 1
             row += 1
+                
         # sheet.write(row, 15, '=SUM(P{0}:P{1})'.format(2, row), row_style)
         # sheet.write(row, 16, '=SUM(Q{0}:Q{1})'.format(2, row), row_style)
                 

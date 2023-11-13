@@ -71,12 +71,10 @@ class MrpSizewiseLot(models.TransientModel):
                     balance_qty = actual_qty - sum(op_etails.mapped('qty'))
                 else:
                     balance_qty = actual_qty
-
                     
                 # found_values = [value for value in mrp_line if value in op_etails.mrp_lines]
                 # raise UserError((found_values[0].name))
                 
-                raise UserError((balance_qty))
                 if balance_qty > 0:
                     orderline_values.append((0, 0, {
                         'mrp_line': mrp_line,
