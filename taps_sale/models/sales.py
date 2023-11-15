@@ -333,6 +333,7 @@ class SaleOrder(models.Model):
                 'oa@bd.texfasteners.com',
                 'costing@texzipperbd.com',
                 'mis.mkt@texzipperbd.com',
+                'asraful.haque@texzipperbd.com',
                 ]
             author_id=0
             

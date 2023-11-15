@@ -21,7 +21,6 @@ class BomVerification(models.TransientModel):
     _description = 'Bom Verification'
     _check_company_auto = True
 
-    
     product_tmpl_id = fields.Many2one('product.template', 'Product',  required=True)
     unit = fields.Selection([
         ('inch',	'Inch'),
