@@ -148,7 +148,7 @@ class ManufacturingPlan(models.TransientModel):
             self.shade = production[0].shade
             self.material_name = production[0].dyedtape
         elif self.material == 'slider':
-            self.material_qty = round(sum(production.mapped('slider_con')),2)
+            self.material_qty = round(sum(production.mapped('slider_con')),0)
             self.finish = production[0].finish
             self.material_name = production[0].slidercodesfg
         elif self.material == 'top':
@@ -160,11 +160,11 @@ class ManufacturingPlan(models.TransientModel):
             self.finish = production[0].finish
             self.material_name = production[0].pbotomfinish
         elif self.material == 'pinbox':
-            self.material_qty = round(sum(production.mapped('pinbox_con')),2)
+            self.material_qty = round(sum(production.mapped('pinbox_con')),0)
             self.finish = production[0].finish
             self.material_name = production[0].ppinboxfinish
         elif self.plan_for.name == 'Slider assembly':
-            self.material_qty = round(sum(production.mapped('slider_con')),2)
+            self.material_qty = round(sum(production.mapped('slider_con')),0)
             self.finish = production[0].finish
             self.material_name = production[0].slidercodesfg
          

@@ -13,7 +13,7 @@ class HrReward(models.Model):
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
     submit_by = fields.Many2one('hr.employee',"Recommended By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
-    issue_date = fields.Date('Issue date', required=True, default=fields.Date.today())
+    issue_date = fields.Date('Issue date', readonly=True) #default=fields.Date.today()
     state = fields.Selection([
             ('draft', 'Draft'),
             ('Submit', 'Submit'),
@@ -291,6 +291,7 @@ class HrReward(models.Model):
     def action_closed(self):
         # raise UserError(('goodbye'))
         if self.state == 'Submit':
+            self.issue_date = fields.Date.today()
             self.state = 'Approved'
         for reward in self:
             reward_mail_template = reward.closed_template
@@ -371,6 +372,7 @@ class HrReward(models.Model):
              
     def action_refused(self):
         if self.state == 'Submit':
+            self.issue_date = fields.Date.today()
             self.state = 'Refused'
         for reward in self:
             reward_mail_template = reward.refused_template

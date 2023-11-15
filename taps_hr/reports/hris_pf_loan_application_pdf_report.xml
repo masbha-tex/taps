@@ -3,113 +3,136 @@
 	<template id="hris_pf_loan_pdf_template">
 		<t t-foreach="docs" t-as="employee">
 			<t t-call="web.html_container">
-				<t t-call="web.external_layout">
+				<t t-call="web.basic_layout">
+					<style>
+                        .pf-loan{
+                        padding:30px 50px;
+                        td,tr{
+                        padding:5px 10px;
+                        }
+                        table{
+                        width:100%
+                        }
+                        }
+                        <!-- .p1{
+                           font-family: "Times New Roman", Times, serif;
+                         } -->
+                    </style>
 					<div class="page mt-4">
-						<div class="container">
-							<div class="row text-center">
-								<div class="col-12"><strong style="font-size: 15 px; text-decoration: underline;">Form - Ga</strong>
-								<br/>
-								<strong style="font-size: 12 px;">Loan Disbursement Form of Provident Fund</strong></div>
-							</div>
-						</div>
-						
-						<div class="container" style="font-size:15px">
-							<div class="row">
-								<div class="col-12 mt-4">
-								  Chairman
-								  <p>________________________ Employees' (Contributory) Provident Fund Trustee Board<br/>
-								  M/S <strong style="text-decoration: underline;">  TEX ZIPPERS (BD) LIMITED  </strong><br/>
-								  <strong style="text-decoration: underline;">  Adamjee    </strong> Export Processing Zone.<br/>
-								  <strong style="text-decoration: underline;"> Plot # 180,264 &amp; 273, Adamjee EPZ, Shiddhirganj, Narayanganj 1431 </strong></p>
+                      <div class="pf-loan">
+                            <div class="container">
+                                <div class="row text-center">
+                                    <div class="col-12"><br/><strong style="font-size: 15px; text-decoration: underline;">Form - Ga</strong>
                                     <br/>
-								</div>
-							</div>
-							<div class="row">
-										<div class="col-6">
-											1. Name:   <strong><t t-esc="employee.name"/></strong>
-											<br/>
-											<br/>
-											3. Section:   <strong><t t-esc="employee.department_id.name"/></strong>
-											<br/>
-											<br/>
-											5. Card No:   <strong><t t-esc="employee.emp_id"/></strong>
-											<br/>
-											<br/>
-											6. Amount of loan applied for:   <strong></strong>
-											<br/>
-											<br/>
-											7. Reason for Loan:  <strong></strong>
-											<br/>
-											<br/>
-											8. Installment against loan:  <strong></strong>
-										</div>
-										<div class="col-6">
-											2. Designation:   <strong><t t-esc="employee.job_id.name"/></strong>
-											<br/>
-											<br/>
-											4. Division:   <strong><t t-esc="employee.department_id.parent_id.name"/></strong>
-											<br/>
-										</div>
-									</div>
-							<div class="clearfix mt-4">
-								<div class="float-left">
-									<p></p>
-								</div>
-								<div class="float-right">
-                            ___________________________________<br/>
-									<p>Member's Signature<br/>
-                            Date:</p>
-								</div>
-							</div>
-							<div class="row">
-							  <p>Recommendation of Departmental Head</p>
-							</div>
-                            <div class="row">
-                                Total Savings:   <strong style="text-decoration: underline;"><t t-esc="employee.contribution_sum"/></strong>  <strong style="text-decoration: underline; font-size: 20px">৳</strong><br/>
+                                    <strong style="font-size: 14px;">Loan Disbursement Form of Provident Fund</strong></div>
+                                </div>
                             </div>
-                            <div class="row">
-                              Amount of loan recommended: ______________________________________________<br/>
-                            </div>
-						</div>
-								
-							<div class="clearfix mt-4">
-								<div class="float-left">
+                            
+                            <div class="container" style="font-size: 14px">
+                                <div class="row">
+                                    <div class="col-12 mt-4">
+                                      Chairman
+                                      <p>M/S <strong style="text-decoration: underline;">  TEX ZIPPERS (BD) LIMITED  </strong> Employees' (Contributory) Provident Fund Trustee Board<br/>
+                                      M/S <strong style="text-decoration: underline;">  TEX ZIPPERS (BD) LIMITED  </strong><br/>
+                                      <strong style="text-decoration: underline;">  Adamjee    </strong> Export Processing Zone.<br/>
+                                      <strong style="text-decoration: underline;"> Plot # 180,264 &amp; 273, Adamjee EPZ, Shiddhirganj, Narayanganj 1431 </strong></p>
+                                        <br/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        1. Name:   <strong><t t-esc="employee.name"/></strong>
+                                        <br/>
+                                        <br/>
+                                        3. Section:   <strong><t t-esc="employee.department_id.name"/></strong>
+                                        <br/>
+                                        <br/>
+                                        5. Card No:   <strong><t t-esc="employee.emp_id"/></strong>
+                                        <br/>
+                                        <br/>
+                                        6. Amount of loan applied for:   <strong/>
+                                        <br/>
+                                        <br/>
+                                        7. Reason for Loan:  <strong/>
+                                        <br/>
+                                        <br/>
+                                        8. Installment against loan:  <strong/>
+                                    </div>
+                                    <div class="col-6">
+                                        2. Designation:   <strong><t t-esc="employee.job_id.name"/></strong>
+                                        <br/>
+                                        <br/>
+                                        4. Division:   <strong><t t-esc="employee.department_id.parent_id.name"/></strong>
+                                        <br/>
+                                    </div>
+                                </div>
+                                <div class="clearfix mt-4">
+                                    <div class="float-left">
+                                        <p/>
+                                    </div>
+                                    <div class="float-right">
+                                        ___________________________________<br/>
+                                        <p>Member's Signature<br/>
+                                        Date:</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                  <p>Recommendation of Departmental Head</p>
+                                </div>
+                                <div class="row">
+                                    Total Savings:   <strong style="text-decoration: underline;"><t t-esc="employee.contribution_sum"/></strong>  <strong style="text-decoration: underline; font-size: 20px">৳</strong>
                                     <br/>
-									<p>Accounts Officer</p>
-								</div>
-								<div class="float-right"><br/>
-									<p>Member-secretary, Trustee Board<br/></p>
-								</div>
-        					</div>
-                            <div class="row">
-                              <div class="col-12">
-                                <p>The amount of Taka________________________________________________________as loan has been approved whichshallbe recovered by_____________________________________________________installments.</p>
-                              </div>
+                                </div>
+                                <div class="row">
+                                  Amount of loan recommended: ______________________________________________<br/>
+                                </div>
                             </div>
-							<div class="clearfix mt-4">
-								<div class="float-left">
-									<p></p>
-								</div>
-								<div class="float-right">
-									<p>Approved<br/>
-                            Chairment, Trustee Board</p>
-								</div>
-							</div>
-							<div class="row">
-						  <div class="col-12">
-						    <p>Received Taka____________________________from Provident Fund as Loan.</p>
-						  </div>
-						</div>
-						<div class="clearfix mt-4">
-								<div class="float-left">
-									<p></p>
-								</div>
-								<div class="float-right">
-                            ___________________________________<br/>
-									<p>Member's Signature<br/>
-                            Date:</p>
-								</div>
-						</div>
+                            
+                            <div style="font-size: 14px">	
+                                <div class="clearfix mt-4">
+                                    <div class="float-left">
+                                        <br/>
+                                        <p>Accounts Officer</p>
+                                    </div>
+                                    <div class="float-right"><br/>
+                                        <p>Member-secretary, Trustee Board<br/></p>
+                                    </div>
+                                </div>
+                                <br/>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-12">
+                                      <p>The amount of Taka________________________________________________________as loan has been approved which shall be</p>
+                                      <p>recovered by_____________________________________________________installments.</p>
+                                    </div>
+                                </div>
+                                <br/>
+                               <div class="row">
+                                    <div class="col-9">
+                                      
+                                    </div>
+                                    <div class="col-3 text-center">
+                                      Approved
+                                    </div>
+                                </div>
+                                    
+                                <div class="clearfix mt-4">
+                                    <div class="float-right">
+                                        Chairment, Trustee Board
+                                    </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12">
+                                    <p>Received Taka____________________________from Provident Fund as Loan.</p>
+                                  </div>
+                                </div>
+                                <div class="clearfix mt-4">
+                                    <div class="float-right">
+                                        ___________________________________<br/><p>Member's Signature<br/>Date:</p>
+                                    </div>
+                                </div>
+                            </div>	
+                        </div>
 					</div>
 				</t>
 			</t>
