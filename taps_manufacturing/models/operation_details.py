@@ -908,8 +908,8 @@ class OperationDetails(models.Model):
             pr_pac_qty = 0
             done_qty = out.done_qty + out.uotput_qty
 
-            # if out.balance_qty < out.uotput_qty:
-            #     raise UserError(('You can not produce more then balance'))
+            if (out.next_operation != 'Dyeing Output') and (round(out.balance_qty,0) < round(out.uotput_qty,0)):
+                raise UserError(('You can not produce more then balance'))
             # else:
             s = out.write({'done_qty':done_qty})#done_qty = done_qty
             manufac_ids = self.env["manufacturing.order"].browse(out.mrp_lines)

@@ -19,7 +19,8 @@ class MrpRunningOrders(models.AbstractModel):
         # report_name = 'Running Orders'#orders.name
         # raise UserError((m_orders.oa_id.ids))
         # sale_orders = self.env['sale.order'].browse(m_orders.oa_id.ids)
-        
+        # raise UserError(('items'))
+        # raise UserError(('items'))
 
         column_style = workbook.add_format({'bold': True, 'font_size': 11})
         
@@ -36,9 +37,11 @@ class MrpRunningOrders(models.AbstractModel):
         
         merge_format = workbook.add_format({'align': 'top'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
+        
 
         items = m_orders.mapped('fg_categ_type')
         items = list(set(items))
+        
         for item in items:
             all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
             all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item)

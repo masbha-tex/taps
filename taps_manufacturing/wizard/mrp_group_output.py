@@ -46,6 +46,9 @@ class ManufacturingGroupOutput(models.TransientModel):
         return res 
             
     def done_mo_output(self):
+        if self.planned_qty < self.qty:
+            raise UserError(('You can not put qty more then Balance'))
+            return
         mo_ids = self.env.context.get("active_ids")
         production = self.env["operation.details"].browse(mo_ids)
         allow = True
@@ -60,4 +63,6 @@ class ManufacturingGroupOutput(models.TransientModel):
             production.set_group_output(mo_ids,self.qty,self.planned_qty)#self.manuf_date,
         else:
             raise UserError(('You have to done full qty'))
+            return
+        
         return
