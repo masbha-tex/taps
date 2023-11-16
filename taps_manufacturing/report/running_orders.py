@@ -108,7 +108,7 @@ class MrpRunningOrders(models.AbstractModel):
                         oa_num = orders.name
                         remarks = orders.remarks
                         create_date = orders.create_date.strftime("%d-%m-%Y")
-                        expected_date = orders.expected_date.strftime("%d-%m-%Y")
+                        expected_date = ''#orders.expected_date.strftime("%d-%m-%Y")
                     else:
                         customer = ''
                         pi_num = ''
@@ -143,7 +143,7 @@ class MrpRunningOrders(models.AbstractModel):
                     m_order = self.env['manufacturing.order'].search([('sale_order_line','=',o_data.id)])
                     ready_qty = sum(m_order.mapped('done_qty'))
                     # raise UserError((o_data.id,ready_qty))
-                    balance_qty = o_data.product_uom_qty-ready_qty
+                    balance_qty = o_data.product_uom_qty - ready_qty
                     order_data = [
                         customer,
                         pr_name,
@@ -322,32 +322,7 @@ class MrpRunningOrders(models.AbstractModel):
                 sheet.write(row, 20, top_total, row_style)
                 sheet.write(row, 21, '')
     
-                row_rang = row + 2
-            
-            # extra_row = row + 1
-            
-            # sheet.write(extra_row, 0, '')
-            # sheet.write(extra_row, 1, '')
-            # sheet.write(extra_row, 2, '')
-            # sheet.write(extra_row, 3, '')
-            # sheet.write(extra_row, 4, '')
-            # sheet.write(extra_row, 5, '')
-            # sheet.write(extra_row, 6, '')
-            # sheet.write(extra_row, 7, '')
-            # sheet.write(extra_row, 8, '')
-            # sheet.write(extra_row, 9, '')
-            # sheet.write(extra_row, 10, '')
-            # sheet.write(extra_row, 11, '')
-            # sheet.write(extra_row, 12, '', row_style)
-            # sheet.write(extra_row, 13, '', row_style)
-            # sheet.write(extra_row, 14, '', row_style)
-            # sheet.write(extra_row, 15, '')
-            # sheet.write(extra_row, 16, '', row_style)
-            # sheet.write(extra_row, 17, '', row_style)
-            # sheet.write(extra_row, 18, '', row_style)
-            # sheet.write(extra_row, 19, '', row_style)
-            # sheet.write(extra_row, 20, '', row_style)
-            # sheet.write(extra_row, 21, '')            
+                row_rang = row + 2   
 
 
 

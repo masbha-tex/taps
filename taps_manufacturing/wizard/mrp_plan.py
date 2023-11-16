@@ -144,27 +144,27 @@ class ManufacturingPlan(models.TransientModel):
         production = self.env["manufacturing.order"].browse(active_id)
         #raise UserError((self.plan_for))
         if self.material == 'tape':
-            self.material_qty = round(sum(production.mapped('tape_con')),2)
+            self.material_qty = round(sum(production.mapped('tape_con')),2) - round(sum(production.mapped('dyeing_plan_qty')),2)
             self.shade = production[0].shade
             self.material_name = production[0].dyedtape
         elif self.material == 'slider':
-            self.material_qty = round(sum(production.mapped('slider_con')),0)
+            self.material_qty = round(sum(production.mapped('slider_con')),0) - round(sum(production.mapped('plating_plan_qty')),0)
             self.finish = production[0].finish
             self.material_name = production[0].slidercodesfg
         elif self.material == 'top':
-            self.material_qty = round(sum(production.mapped('topwire_con')),2)
+            self.material_qty = round(sum(production.mapped('topwire_con')),2) - round(sum(production.mapped('top_plat_plan_qty')),2)
             self.finish = production[0].finish
             self.material_name = production[0].ptopfinish
         elif self.material == 'bottom':
-            self.material_qty = round(sum(production.mapped('botomwire_con')),2)
+            self.material_qty = round(sum(production.mapped('botomwire_con')),2) - round(sum(production.mapped('bot_plat_plan_qty')),2)
             self.finish = production[0].finish
             self.material_name = production[0].pbotomfinish
         elif self.material == 'pinbox':
-            self.material_qty = round(sum(production.mapped('pinbox_con')),0)
+            self.material_qty = round(sum(production.mapped('pinbox_con')),0) - round(sum(production.mapped('pin_plat_plan_qty')),0)
             self.finish = production[0].finish
             self.material_name = production[0].ppinboxfinish
         elif self.plan_for.name == 'Slider assembly':
-            self.material_qty = round(sum(production.mapped('slider_con')),0)
+            self.material_qty = round(sum(production.mapped('slider_con')),0) - round(sum(production.mapped('sli_asmbl_plan_qty')),0)
             self.finish = production[0].finish
             self.material_name = production[0].slidercodesfg
          

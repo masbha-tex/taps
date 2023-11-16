@@ -63,46 +63,12 @@ class SalesXlsx(models.AbstractModel):
             shade = o_data.shade
             shadewise_tape = o_data.shadewise_tape
             
-            # filtered_name = [x for x in report_data if x[1] == o_data.product_template_id.name]
-            # if filtered_name:
-            #     pr_name = ''
-            
-#             filtered_slider = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[2] == o_data.slidercodesfg]
-#             if filtered_slider:
-#                 slider = ''
-
-#             filtered_finish = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[3] == o_data.finish]
-#             if filtered_finish:
-#                 finish = ''
-                
-            # filtered_pi_num = [x for x in report_data if x[4] == orders.order_ref.pi_number]
-            # if filtered_pi_num:
-            #     pi_num = ''
-            
-            # filtered_create_date = [x for x in report_data if x[6] == orders.create_date.strftime("%d-%m-%Y")]
-            # if filtered_create_date:
-            #     create_date = ''
-            
-            # filtered_expected_date = [x for x in report_data if x[5] == orders.expected_date.strftime("%d-%m-%Y")]
-            # if filtered_expected_date:
-            #     expected_date = ''
-            
-#             filtered_shade = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and x[9] == o_data.shade]
-#             if filtered_shade:
-#                 shade = ''
-                
-#             filtered_shadewise_tape = [x for x in report_data if (x[1] == o_data.product_template_id.name or x[1] == '') and  x[9] == o_data.shade and x[16] == o_data.shadewise_tape]
-#             if filtered_shadewise_tape:
-#                 shadewise_tape = ''
-                
-            
             sizein = o_data.sizein
             sizecm = o_data.sizecm
             if sizein == 'N/A':
                 sizein = ''
             if sizecm == 'N/A':
                 sizecm = ''
-            
 
             order_data = [
                 customer,
@@ -131,12 +97,7 @@ class SalesXlsx(models.AbstractModel):
                 orders.sale_representative.name,
             ]
             report_data.append(order_data)
-        
-        # output = io.BytesIO()
-        # workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        # worksheet = workbook.add_worksheet()
-        
-        
+
         qty_total = 0
         shade_total = 0
         wire_total = 0
@@ -270,39 +231,6 @@ class SalesXlsx(models.AbstractModel):
                     sheet.merge_range(last_one, 9, shade_range, 9, '', merge_format)
                     sheet.merge_range(last_one, 16, shade_range, 16, '', merge_format_)
                     shade_range = row
-                    
-#                 if (x[1] == line[1]):
-#                     product_range += 1
-#                 else:
-#                     sheet.merge_range(row, 1, product_range, 1, '', merge_format)
-#                     product_range = row
-                    
-#                 if (x[2] == line[2]):
-#                     slider_range += 1
-#                 else:
-#                     sheet.merge_range(row, 2, slider_range, 2, '', merge_format)
-#                     slider_range = row
-                    
-#                 if (x[3] == line[3]): 
-#                     finish_range += 1
-#                 else:
-#                     sheet.merge_range(row, 3, finish_range, 3, '', merge_format)
-#                     finish_range = row
-                
-                
-                
-                # if _range == product_range:
-                #     sheet.merge_range(p_last_one, 1, product_range, 1, '', merge_format)
-                #     product_range = row
-                # if _range == slider_range:
-                #     sheet.merge_range(sl_last_one, 2, slider_range, 2, '', merge_format)
-                #     slider_range = row
-                # if _range == finish_range:
-                #     sheet.merge_range(f_last_one, 3, finish_range, 3, '', merge_format)
-                #     finish_range = row
-                
-                    
-                
             
             col = 0
             for l in line:
