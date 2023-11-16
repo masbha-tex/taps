@@ -209,10 +209,10 @@ class MrpRunningOrders(models.AbstractModel):
                 row_f = 0
                 row_sh = 0
                 
-                product_range += product_range
-                slider_range += slider_range
-                finish_range += finish_range
-                shade_range += shade_range
+                # product_range += product_range
+                # slider_range += slider_range
+                # finish_range += finish_range
+                # shade_range += shade_range
                 
                 for line in report_data:
                     for x in report_data[row_p:]:
@@ -253,8 +253,6 @@ class MrpRunningOrders(models.AbstractModel):
                             finish_range = row
         
                     for x in report_data[row_sh:]:
-                        if line[5] == 'OA005219':
-                            raise UserError((row,shade_range,row_sh))
                         last_one = row
                         if (x[9] == line[9]):
                             shade_range += 1
@@ -324,10 +322,10 @@ class MrpRunningOrders(models.AbstractModel):
                 sheet.write(row, 20, top_total, row_style)
                 sheet.write(row, 21, '')
 
-                row += 1
-                row_rang = row + 1
+                # row += 1
+                row_rang = row + 2
                 
-                product_range = slider_range = finish_range = shade_range = row_rang
+                product_range = slider_range = finish_range = shade_range = row_rang - 1
 
 
 

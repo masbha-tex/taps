@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "taps_web",
-    'summary': """ """,
-    'description': """ """,
+    'name': "Taps Web",
+    'summary': """Web Manage""",
+    'description': """App for Web Module inherit and Manage some functional term""",
     'author': "My Company",
-    'website': "http://www.yourcompany.com",
-    'category': 'Uncategorized',
+    'category': 'Generic Modules/Web',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','web'],
 
     # always loaded
     'data': [
@@ -24,5 +23,4 @@
     'qweb': [
         
     ],
-    'bootstrap': True,
 }
