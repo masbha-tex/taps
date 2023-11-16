@@ -75,6 +75,17 @@ class MrpRunningOrders(models.AbstractModel):
             sheet.write(0, 20, "U-TOP/KG", column_style)
             #sheet.write(0, 18, "PINBOX/KG", column_style)
             sheet.write(0, 21, "SALESPERSON", column_style)
+
+            sheet.set_column(0, 0, 20)
+            sheet.set_column(1, 1, 30)
+            sheet.set_column(2, 2, 20)
+            sheet.set_column(3, 3, 20)
+            sheet.set_column(4, 4, 20)
+            sheet.set_column(5, 5, 20)
+            sheet.set_column(8, 8, 40)
+            sheet.set_column(9, 9, 40)
+
+            
             row_rang = 1
             _range = 0
             
@@ -93,7 +104,7 @@ class MrpRunningOrders(models.AbstractModel):
                 
                 report_data = []
                 order_data = []
-                slnumber=0
+                # slnumber=0
                 customer = ''
                 pi_num = ''
                 oa_num = ''
@@ -101,7 +112,7 @@ class MrpRunningOrders(models.AbstractModel):
                 create_date = ''
                 expected_date = ''
                 for x,o_data in enumerate(docs):
-                    slnumber = slnumber+1
+                    # slnumber = slnumber+1
                     if x == 0:
                         customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name,orders.payment_term_id.name])
                         pi_num = orders.order_ref.pi_number
@@ -172,20 +183,10 @@ class MrpRunningOrders(models.AbstractModel):
                     ]
                     report_data.append(order_data)
                 if _range > 0:
-                    _range += 1
+                    _range += 2
                 _range += len(report_data)
-                sheet.set_column(0, 0, 20)
-                sheet.set_column(1, 1, 30)
-                sheet.set_column(2, 2, 20)
-                sheet.set_column(3, 3, 20)
-                sheet.set_column(4, 4, 20)
-                sheet.set_column(5, 5, 20)
-                sheet.set_column(8, 8, 40)
-                sheet.set_column(9, 9, 40)
+                
                 sheet.merge_range(row_rang, 0, _range, 0, '', merge_format)
-                #sheet.merge_range(1, 1, _range, 1, '', merge_format)
-                #sheet.merge_range(1, 2, _range, 2, '', merge_format)
-                #sheet.merge_range(1, 3, _range, 3, '', merge_format)
                 sheet.merge_range(row_rang, 4, _range, 4, '', merge_format)
                 sheet.merge_range(row_rang, 5, _range, 5, '', merge_format)
                 sheet.merge_range(row_rang, 6, _range, 6, '', merge_format)
@@ -214,7 +215,6 @@ class MrpRunningOrders(models.AbstractModel):
                 shade_range += shade_range
                 
                 for line in report_data:
-                        
                     for x in report_data[row_p:]:
                         p_last_one = row
                         if (x[1] == line[1]):
@@ -253,6 +253,8 @@ class MrpRunningOrders(models.AbstractModel):
                             finish_range = row
         
                     for x in report_data[row_sh:]:
+                        if line[5] == 'OA005219':
+                            raise UserError((row,shade_range,row_sh))
                         last_one = row
                         if (x[9] == line[9]):
                             shade_range += 1
@@ -297,7 +299,7 @@ class MrpRunningOrders(models.AbstractModel):
                         
                     row += 1
                     inline_row += 1
-                    row_p = row_sl = row_f = row_sh = inline_row-1
+                    row_p = row_sl = row_f = row_sh = inline_row - 1
                 
                 sheet.write(row, 0, '')
                 sheet.write(row, 1, '')
@@ -321,8 +323,11 @@ class MrpRunningOrders(models.AbstractModel):
                 sheet.write(row, 19, bottom_total, row_style)
                 sheet.write(row, 20, top_total, row_style)
                 sheet.write(row, 21, '')
-    
-                row_rang = row + 2   
+
+                row += 1
+                row_rang = row + 1
+                
+                product_range = slider_range = finish_range = shade_range = row_rang
 
 
 

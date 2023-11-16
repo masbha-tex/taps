@@ -3,9 +3,10 @@
 # from odoo import models, fields, api
 
 
-# class taps_documents(models.Model):
-#     _name = 'taps_documents.taps_documents'
-#     _description = 'taps_documents.taps_documents'
+# class Document(models.Model):
+    # _name = 'taps_documents.taps_documents'
+    # _inherit = 'documents.document'
+#     _description = 'Document'
 
 #     name = fields.Char()
 #     value = fields.Integer()
