@@ -292,7 +292,19 @@ class HrGrievance(models.Model):
             self.state = 'Non-Satisfactory'
     def action_closed(self):
         attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.grievance'), ('res_id', 'in', self.ids)])
-        if len(attachment) > 2:        
+        if self.state == 'Submit' and len(attachment) <=1:
+            self.state = 'Closed'
+        elif self.state == 'Primary Investigation' and len(attachment) <=1:
+            self.state = 'Closed'
+        elif self.state == 'Letter Issue' and len(attachment) <=2:
+            self.state = 'Closed'
+        elif self.state == 'Return Answard' and len(attachment) <=3:
+            self.state = 'Closed'
+        elif self.state == 'Satisfactory' and len(attachment) <=3:
+            self.state = 'Closed'
+        elif self.state == 'Non-Satisfactory' and len(attachment) <=3:
+            self.state = 'Closed'
+        elif len(attachment) > 2:        
             if self.state == 'Satisfactory' or self.state == 'Non-Satisfactory':
                 if self.final_action_taken:
                     self.state = 'Closed'

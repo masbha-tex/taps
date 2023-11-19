@@ -3,7 +3,7 @@
     'name': "Taps Web",
     'summary': """Web Manage""",
     'description': """App for Web Module inherit and Manage some functional term""",
-    'author': "My Company",
+    'author': "Mohammad Adnan",
     'category': 'Generic Modules/Web',
     'version': '0.1',
 

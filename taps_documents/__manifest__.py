@@ -17,12 +17,13 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'security/ir.model.access.csv',
+        'views/assets.xml',
+        # 'views/documents_views.xml',
+        # 'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'qweb': [
-        # "static/src/xml/*.xml",
+        "static/src/xml/*.xml",
     ],
 }

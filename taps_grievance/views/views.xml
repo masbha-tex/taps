@@ -14,7 +14,7 @@
                     <button name="action_answard" confirm="Are you sure to Return Answard?" type="object" class="btn-success" string="Return Answard" states="Letter Issue" groups="hr.group_hr_user"/>  
                     <button name="action_satisfy" confirm="Are you sure to Satisfactory?" type="object" class="btn-success" string="Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>  
                     <button name="action_nonsatisfy" confirm="Are you sure to Non-Satisfactory?" type="object" class="btn-success" string="Non-Satisfactory" states="Return Answard" groups="hr.group_hr_user"/>
-                    <button name="action_closed" confirm="Are you sure to Closed?" type="object" class="btn-success" string="Closed" states="Satisfactory,Non-Satisfactory" groups="hr.group_hr_user"/>                    
+                    <button name="action_closed" confirm="Are you sure to Closed?" type="object" class="btn-success" string="Closed" states="Submit,Primary Investigation,Return Answard,Letter Issue,Satisfactory,Non-Satisfactory" groups="hr.group_hr_user"/>                    
 					<field name="state" widget="statusbar"/>
 				</header>
 				<sheet>

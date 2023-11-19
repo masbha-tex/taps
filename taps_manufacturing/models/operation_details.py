@@ -153,7 +153,8 @@ class OperationDetails(models.Model):
         ('waiting', 'Waiting'),
         ('partial', 'Partial'),
         ('done', 'Done'),
-        ('hold', 'Hold')],
+        ('hold', 'Hold'),
+        ('closed', 'Closed')],
         string='State')
     revision_no = fields.Char(string='Revision No', store=True)
     

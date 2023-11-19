@@ -47,6 +47,7 @@
         'data/ir_lot_sequence.xml',
         'report/report_action.xml',
         'report/mrp_lot_barcode.xml',
+        'report/mrp_rpt_wizard.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     'qweb': [

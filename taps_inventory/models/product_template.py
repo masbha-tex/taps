@@ -145,17 +145,28 @@ class IncludeCateTypeInPT(models.Model):
     gap_cm = fields.Float(string="GAP(cm & inc)", copy=True, default=None)
     gap_inch = fields.Float(string="GAP(inch)", copy=True, default=None)
     fg_categ_type = fields.Selection([
+        ('AL #4 CE', 'AL #4 CE'),
         ('AL #5 CE', 'AL #5 CE'),
+        ('AL #5 OE', 'AL #5 OE'),
         ('Coil #3 CE', 'Coil #3 CE'),
+        ('Coil #3 OE', 'Coil #3 OE'),
         ('Coil #5 OE', 'Coil #5 OE'),
         ('Coil #5 CE', 'Coil #5 CE'),
         ('Metal #4 CE', 'Metal #4 CE'),
+        ('Metal #4 OE', 'Metal #4 OE'),
         ('Metal #5 CE', 'Metal #5 CE'),
         ('Metal #5 OE', 'Metal #5 OE'),
         ('Metal #8 OE', 'Metal #8 OE'),
+        ('Metal #8 CE', 'Metal #8 CE'),
+        ('Metal #10 OE', 'Metal #10 OE'),
+        ('Metal #10 CE', 'Metal #10 CE'),
         ('Plastic #3 CE', 'Plastic #3 CE'),
+        ('Plastic #3 OE', 'Plastic #3 OE'),
         ('Plastic #5 CE', 'Plastic #5 CE'),
-        ('Plastic #5 OE', 'Plastic #5 OE')
+        ('Plastic #5 OE', 'Plastic #5 OE'),
+        ('Plastic #8 CE', 'Plastic #8 CE'),
+        ('Plastic #8 OE', 'Plastic #8 OE'),
+        ('Others', 'Others')
     ],string='FG Category', store=True, readonly=False, copy=False)
 
     pack_qty = fields.Float(string="Qty/Pack", copy=True, default=0.0)

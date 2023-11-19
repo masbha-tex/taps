@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<templates xml:space="preserve">
+<!-- <templates xml:space="preserve">
 
 <div t-name="DocumentsViews.buttons">
     <button type="button" class="btn btn-primary o_documents_kanban_upload" disabled="true">
@@ -11,31 +11,23 @@
     <button type="button" class="btn btn-secondary o_documents_kanban_url" disabled="true">
         Add a Link
     </button>
-    <button type="button" class="btn btn-secondary o_documents_kanban_share_domain" title="Share this domain" disabled="true" groups="documents.group_documents_user">
+    <button type="button" class="btn btn-secondary o_documents_kanban_share_domain" title="Share this domain" disabled="true" groups="documents.documents_document_write_rule">
         Share
     </button>
 </div>
 
-<div t-name="documents.ControlPanelButtonsMobile" class="dropdown">
-    <a role="button" class="btn btn-primary dropdown-toggle" href="#"
-        data-toggle="dropdown" aria-expanded="false">Action</a>
-    <div class="dropdown-menu" role="menu"/>
-</div>
+</templates> -->
 
-<span t-name="documents.dragIcon" class="o_documents_drag_icon">
-    <t t-esc="dragIconContent"/>
-</span>
+<templates xml:space="preserve">
 
-<div t-name="documents.ChatterContainer" class="o_document_chatter_container">
-    <div class="o_documents_chatter_placeholder"/>
-</div>
+    <!-- Inherit the original template -->
+    <t t-extend="DocumentsViews.buttons">
+        <t t-jquery=".o_documents_kanban_share_domain" t-operation="replace"/>
+    </t>
 
-<div t-name="documents.uploadText" class="o_documents_upload_text text-center text-white">
-    <i class="d-block fa fa-upload fa-9x mb-4"/>
-    <span>Drop files here to upload</span>
-</div>
-
-<span t-name="documents.lockIcon" t-att-title="tooltip" class="o_documents_locked fa fa-lock"/>
+    <!-- <t t-extend="documents.ChatterContainer" class="o_document_chatter_container">
+        <t t-jquery=".o_ChatterTopbar_buttonAttachments" t-operation="replace"/>
+    </t>     -->
 
 </templates>
 

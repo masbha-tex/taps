@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="mrp_report_wizard_view">
+        <field name="name">mrp.report.form.view</field>
+        <field name="model">mrp.report</field>
+        <field name="arch" type="xml">
+            <form string="MRP Reports">
+                <group>
+                    <group>
+                        <field name="report_type" string="Report Type"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="month_list" widget="selection"/>
+                    </group>
+                </group>
+                <footer>
+                    <!-- <button string="Print" name="action_print_report" type="object" class="btn-primary"/> -->
+                    <button string="Download Excel" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="mrp_reports" model="ir.actions.act_window">
+        <field name="name">MRP Reports</field>
+        <field name="res_model">mrp.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="menu_mrp_reports"
+              name="MRP Reports"
+              sequence="12"
+              action="mrp_reports"
+              parent="mrp.menu_mrp_reporting"/>
+</odoo>

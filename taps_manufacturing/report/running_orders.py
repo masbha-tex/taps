@@ -16,12 +16,7 @@ class MrpRunningOrders(models.AbstractModel):
     _description = 'report for packing'
     
     def generate_xlsx_report(self, workbook, data, m_orders):
-        # report_name = 'Running Orders'#orders.name
-        # raise UserError((m_orders.oa_id.ids))
-        # sale_orders = self.env['sale.order'].browse(m_orders.oa_id.ids)
-        # raise UserError(('items'))
-        # raise UserError(('items'))
-
+        
         column_style = workbook.add_format({'bold': True, 'font_size': 11})
         
         _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -45,7 +40,7 @@ class MrpRunningOrders(models.AbstractModel):
         for item in items:
             all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
             all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item)
-            sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids)
+            sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
             report_name = item
             
