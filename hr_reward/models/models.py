@@ -261,7 +261,7 @@ class HrReward(models.Model):
                     'email_cc': mailcc or '',
                 
                 }
-                # raise UserError((mail_values['email_to']))
+                # raise UserError((mail_values['mail_values']))
                 try:
                     template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
                 except ValueError:

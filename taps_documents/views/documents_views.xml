@@ -489,7 +489,6 @@
                         <field name="can_upload" invisible="1"/>
                         <field name="type" groups="base.group_no_one"/>
                         <field name="name" placeholder="Name of the share link"/>
-                        <!-- <field name="attendee_ids"/> -->
                         <field name="action" widget="radio" attrs="{'invisible' : ['|', ('type', 'in', ['ids']), ('can_upload', '=', False)]}"/>
                         </group>
                         <group>

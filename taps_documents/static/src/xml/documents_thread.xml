@@ -16,7 +16,7 @@
             </span>
         </t>
         <t t-if="widget._isLocked" t-jquery=".o_download_btn" t-operation="replace"/>
-        <t t-jquery=".print" t-operation="replace"/>
+        <t t-jquery=".toolbarViewerRight" t-operation="replace"/>
         <t t-jquery=".download" t-operation="replace"/>
             <!-- <attribute name="disabled" t-if="!widget.openPdfManager and !widget._isLocked"/>
         </t>         -->

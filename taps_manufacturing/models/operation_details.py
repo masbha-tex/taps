@@ -127,8 +127,8 @@ class OperationDetails(models.Model):
             if s.actual_qty>0:
                 s.ac_balance_qty = round((s.actual_qty - s.done_qty),2)
     
-    actual_qty = fields.Float(string='OA Tape Qty', readonly=True, store=True, group_operator="sum")
-    ac_balance_qty = fields.Float(string='OA Tape Balance', readonly=False, store=True, compute='get_ac_balance', group_operator="sum")
+    actual_qty = fields.Float(string='OA Qty', readonly=True, store=True, group_operator="sum")
+    ac_balance_qty = fields.Float(string='OA Balance', readonly=False, store=True, compute='get_ac_balance', group_operator="sum")
     qty = fields.Float(string='Qty', readonly=False)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
@@ -157,6 +157,7 @@ class OperationDetails(models.Model):
         ('closed', 'Closed')],
         string='State')
     revision_no = fields.Char(string='Revision No', store=True)
+    closing_date = fields.Datetime(string='Closing Date', readonly=False)
     
     # @api.model
     # def action_unplan(self):
@@ -557,7 +558,7 @@ class OperationDetails(models.Model):
                             # for mr_li in l.mrp_line:
                            
                             ope = operation.create({'mrp_lines':s.id,
-                                                    'sale_lines':s.sale_order_line,
+                                                    'sale_lines':s.sale_order_line.id,
                                                     'oa_id':s.oa_id.id,
                                                     'buyer_name':s.buyer_name,
                                                     'product_id':s.product_id.id,
@@ -577,6 +578,7 @@ class OperationDetails(models.Model):
                                                     'operation_by':operation[0].work_center.name,
                                                     'based_on':operation[0].based_on,
                                                     'next_operation':next,
+                                                    'actual_qty':s.product_uom_qty,
                                                     'qty':s_qty
                                                     })
                             rest_q = rest_q - s_qty
@@ -909,7 +911,7 @@ class OperationDetails(models.Model):
             pr_pac_qty = 0
             done_qty = out.done_qty + out.uotput_qty
 
-            if (out.next_operation != 'Dyeing Output') and (round(out.balance_qty,0) < round(out.uotput_qty,0)):
+            if (out.next_operation not in ('Dyeing Output','Packing Output')) and (round(out.balance_qty,0) < round(out.uotput_qty,0)):
                 raise UserError(('You can not produce more then balance'))
             # else:
             s = out.write({'done_qty':done_qty})#done_qty = done_qty
@@ -1193,6 +1195,9 @@ class OperationDetails(models.Model):
                     if pack_exist:
                         can_create = False
                         up_pack = pack_exist.update({'qty':pack_exist.qty + out.uotput_qty})
+                if next == 'Packing Output':
+                    oa_qty = self.env['manufacturing.order'].browse(out.mrp_lines)
+                    actual_qty = sum(oa_qty.mapped('product_uom_qty'))
                 if can_create:
                     ope = self.env['operation.details'].create({'name':out.name,
                                                             'mrp_lines':out.mrp_lines,

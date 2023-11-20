@@ -14,7 +14,7 @@
                 <field name="shade"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
-                <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;',0.0)]"/>
+                <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;',0.0),('state','!=','closed')]"/>
                 <separator/>
                 <filter string="Order Date" name="action_date_filter" date="date_order"/>
                 <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>
@@ -124,6 +124,7 @@
 				<field name="packing_done" readonly="1" force_save="1" optional="show" sum="Packing Output" decoration-bf="True"/>
 				<field name="oa_total_qty" readonly="1" force_save="1" invisible="1"/>
 				<field name="oa_total_balance" readonly="1" force_save="1" invisible="1"/>
+				<field name="closing_date" readonly="1" force_save="1" optional="show"/>
                 
                 <field name="plan_ids" readonly="1" invisible="1" force_save="1"/>
                 <field name="state" readonly="1" force_save="1" optional="show"/>

@@ -19,6 +19,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/assets.xml',
+        'views/taps_documents_views.xml',
         # 'views/documents_views.xml',
         # 'views/templates.xml',
     ],

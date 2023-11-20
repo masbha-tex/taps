@@ -1,0 +1,53 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record model="ir.ui.view" id="google_sheet_connector_list">
+      <field name="name">google.sheet.connector.list</field>
+      <field name="model">google.sheet.connector</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="scope"/>
+          <field name="sprade_sheet_id"/>
+          
+        </tree>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="google_sheet_connector_form">
+      <field name="name">google.sheet.connector.form</field>
+      <field name="model">google.sheet.connector</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+              <button  type="object" name="generate_google_docs" string="Connect"/>
+          </header>
+          <sheet>
+              <group>
+                  <group>
+                      <field name="scope"/>
+                  </group>
+                  <group>
+                      <field name="sprade_sheet_id"/>
+                  </group>
+              </group>
+          </sheet>
+          
+          
+          
+        </form>
+      </field>
+    </record>
+    <record model="ir.actions.act_window" id="google_sheet_connector_action">
+      <field name="name">google.sheet.connector.window</field>
+      <field name="res_model">google.sheet.connector</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="menu_whatsapp"
+        name="Google Sheet Connector"
+        action="google_sheet_connector_action"
+        parent="taps_sale.menu_sale_representative"
+        sequence="220"/>
+
+  </data>
+</odoo>

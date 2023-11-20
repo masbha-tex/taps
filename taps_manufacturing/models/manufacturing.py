@@ -179,6 +179,7 @@ class ManufacturingOrder(models.Model):
         ('closed', 'Closed')],
         string='State')
     revision_no = fields.Char(string='Revision No', store=True)
+    closing_date = fields.Datetime(string='Closing Date', readonly=False)
 
     # @api.constrains('company_id')
     # def _check_company_id(self):
