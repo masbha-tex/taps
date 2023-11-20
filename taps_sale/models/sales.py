@@ -130,6 +130,8 @@ class SaleOrder(models.Model):
     garments = fields.Char(string='Garments')
     corrosions_test = fields.Char(string='Corrosions Test Method')
     brand = fields.Char(string='Brand')
+    closing_date = fields.Date(string='Closing Date')
+    pr_delivery_date = fields.Date(string='Product Delivery Date')
     
     
     # def action_confirmation_wizard(self):

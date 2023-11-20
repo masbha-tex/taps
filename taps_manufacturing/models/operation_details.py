@@ -1196,7 +1196,8 @@ class OperationDetails(models.Model):
                         can_create = False
                         up_pack = pack_exist.update({'qty':pack_exist.qty + out.uotput_qty})
                 if next == 'Packing Output':
-                    oa_qty = self.env['manufacturing.order'].browse(out.mrp_lines)
+                    mrp_l_ids = int(out.mrp_lines)
+                    oa_qty = self.env['manufacturing.order'].browse(mrp_l_ids)
                     actual_qty = sum(oa_qty.mapped('product_uom_qty'))
                 if can_create:
                     ope = self.env['operation.details'].create({'name':out.name,

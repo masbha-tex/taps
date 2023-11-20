@@ -47,6 +47,8 @@
 					<field name="season"/>
 					
                     <field name="remarks"/>
+					<field name="closing_date" invisible="1"/>
+					<field name="pr_delivery_date" invisible="1"/>
                     <field name="old_sa_num" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsale']]}"/>
                     <!-- <field name="old_pi_num" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsa']],'required':[['sales_type','=','oldsale']]}"/> -->
                     <field name="sa_date" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsale']]}"/>

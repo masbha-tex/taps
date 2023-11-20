@@ -1,5 +1,7 @@
 from odoo import models, fields, api
 import os
+# import gspread
+from google.oauth2 import service_account
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
@@ -17,33 +19,24 @@ class SaleOrder(models.Model):
     scope = fields.Char(string="Scope")
     sprade_sheet_id = fields.Char(string="Sprade Sheet ID")
     def generate_google_docs(self):
-        # SCOPES=["https://googleapis.com/auth/spradesheets"]
-        # SPRADESHEET_ID = "1xzHMo4HSMRAZ2k9D29meN4rUDMpgMgKPighGKoqsrAs"
-        # Load credentials from the session.
-        credentials = None
-        # The file token.json stores the user's access and refresh tokens, and is
-        # created automatically when the authorization flow completes for the first
-        # time.
-        if os.path.exists('token.json'):
-            credentials = Credentials.from_authorized_user_file('token.json', self.scope)
-        if not credentials or not credentials.valid:
-            if credentials and credentials.expired and credentials.refresh_token:
-              credentials.refresh(Request())
-            else:
-              flow = InstalledAppFlow.from_client_secrets_file("src/user/google_sheet_connector/models/credentials.json",self.scope)
-              credentials = flow.run_local_server(port=0)
-    # Save the credentials for the next run
-            with open("token.json", "w") as token:
-              token.write(credentials.to_json())
-        
-        
-        
+        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/cred_service.json'
+        scope = [
+                    'https://www.googleapis.com/auth/spreadsheets',
+                    'https://www.googleapis.com/auth/drive'
+                ]
+        credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
         service = build("sheets", "v4", credentials=credentials)
-           
-            # Call the Sheets API
         sheet = service.spreadsheets()
-        result = (sheet.values().get(spreadsheetId=self.sprade_sheet_id, range="Sheet1!A1:A1").execute())
+        result = (sheet.values().get(spreadsheetId=self.sprade_sheet_id, range="Sheet1!A1:B2").execute())
         values = result.get("values", [])
-        
-        raise UserError((values))  
-
+        # raise UserError((values))
+        # data = ['1']
+        docs = self.env['sale.order'].search([('sales_type','=', 'oa')], limit=1)
+        asif=1
+        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!A3", valueInputOption="USER_ENTERED", body={"values": [[docs.order_line[0].product_template_id.name]]}).execute())
+        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!B3", valueInputOption="USER_ENTERED", body={"values": [[docs.name]]}).execute())
+        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!C3", valueInputOption="USER_ENTERED", body={"values": [[docs.partner_id.name]]}).execute())
+        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!D3", valueInputOption="USER_ENTERED", body={"values": [[docs.buyer_name.name]]}).execute())
+        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!E3", valueInputOption="USER_ENTERED", body={"values": [[docs.total_product_qty]]}).execute())
+        # raise UserError((values))
+        # return update

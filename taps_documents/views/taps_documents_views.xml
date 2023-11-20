@@ -5,6 +5,12 @@
         <field name="model">documents.share</field>
         <field name="inherit_id" ref="documents.share_view_form"/>
         <field name="arch" type="xml">
+            <!-- <xpath expr="//field[@name='folder_id']" position="after">
+              <field name="name" placeholder="Name of the share link"/>
+            </xpath> -->
+            <xpath expr="//field[@name='type']" position="attributes">
+              <attribute name="readonly">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='date_deadline']" position="after">
               <field name="receiver_ids" options="{'no_create':true, 'no_open':true}" widget="many2many_tags"/>
             </xpath> 
@@ -16,9 +22,9 @@
         <field name="model">documents.share</field>
         <field name="inherit_id" ref="documents.share_view_form_popup"/>
         <field name="arch" type="xml">
-            <!-- <xpath expr="//field[@name='folder_id']" position="after">
-              <field name="name" placeholder="Name of the share link"/>
-            </xpath>  -->
+            <xpath expr="//field[@name='type']" position="attributes">
+              <attribute name="readonly">1</attribute>
+            </xpath> 
             <xpath expr="//field[@name='date_deadline']" position="after">
               <field name="receiver_ids" options="{'no_create':true, 'no_open':true}" widget="many2many_tags"/>
             </xpath> 

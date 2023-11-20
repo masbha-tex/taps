@@ -258,6 +258,7 @@ class HrReward(models.Model):
                     'attachment_ids': attachment,                    
                     'auto_delete': True,
                     'email_to': mailto or '',
+                    # 'email_to': self.submit_by.email,
                     'email_cc': mailcc or '',
                 
                 }
