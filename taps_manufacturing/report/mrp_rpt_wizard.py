@@ -461,11 +461,11 @@ class MrpReportWizard(models.TransientModel):
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         
-        column_style = workbook.add_format({'bold': True, 'font_size': 11, 'text_wrap':True})
+        column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
         
         _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -508,6 +508,7 @@ class MrpReportWizard(models.TransientModel):
             items = datewise_outputs.mapped('fg_categ_type')
             items = list(set(items))
             report_data = []
+            closed_ids = 0
             for item in items:
                 comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item)
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item)
@@ -519,10 +520,8 @@ class MrpReportWizard(models.TransientModel):
                 or_ids = [int(id_str) for id_str in or_ids.split(',')]
                 
                 order_lines = self.env['sale.order.line'].browse(or_ids)
-                # if order_lines:
-                #     raise UserError((or_ids,order_lines[0].order_id))
-                
-                order_lines = order_lines.filtered(lambda ol: ol.order_id.state == 'sale')
+                if order_lines:
+                    order_lines = order_lines.filtered(lambda ol: ol.order_id.state == 'sale')
                 
                 price = 0
                 total_qty = 0
@@ -535,9 +534,27 @@ class MrpReportWizard(models.TransientModel):
                 comu_inv = round((comu_pcs*price),2)
                 today_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item)])
                 comu_released = today_released.filtered(lambda pr: pr.date_order.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day)
-                comur_value = sum(comu_released.mapped('sale_order_line.price_subtotal'))
+                comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
+                full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
+                full_date = full_date.replace(day = day)
+                
+                pending_oa = today_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
+
+                closed_oa = today_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and  pr.closing_date != False)
+                if closed_oa:
+                    closed_oa = closed_oa.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+                
+                pending_ids = 0
+                
+                if pending_oa:
+                    oa_ids = pending_oa.mapped('oa_id')
+                    pending_ids = len(oa_ids)
+                if closed_oa:
+                    oa_ids = closed_oa.mapped('oa_id')
+                    closed_ids += len(oa_ids)
+                
                 today_released = today_released.filtered(lambda pr: pr.date_order.month == int(month_) and pr.date_order.year == year and pr.date_order.day == day)
-                tr_value = sum(today_released.mapped('sale_order_line.price_subtotal'))
+                tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
                 
                 # comur_qty = sum(comu_released.mapped('product_uom_qty'))
                 
@@ -552,7 +569,7 @@ class MrpReportWizard(models.TransientModel):
                     comu_inv,
                     tr_value,
                     comur_value,
-                    0,
+                    pending_ids,
                     ]
                 report_data.append(order_data)
             
@@ -565,18 +582,18 @@ class MrpReportWizard(models.TransientModel):
                     col += 1
                 row += 1
 
-            sheet.write(row, 0, 'Total Order Close :')
-            sheet.write(row, 1, '')
-            sheet.write(row, 2, '')
-            sheet.write(row, 3, '')
-            sheet.write(row, 4, '')
-            sheet.write(row, 5, '')
-            sheet.write(row, 6, '')
-            sheet.write(row, 7, '')
-            sheet.write(row, 8, '')
-            sheet.write(row, 9, '')
+            sheet.write(row, 0, 'Total Order Close :', format_label_1)
+            sheet.write(row, 1, closed_ids, format_label_1)
+            sheet.write(row, 2, '', format_label_1)
+            sheet.write(row, 3, '', format_label_1)
+            sheet.write(row, 4, '', format_label_1)
+            sheet.write(row, 5, '', format_label_1)
+            sheet.write(row, 6, '', format_label_1)
+            sheet.write(row, 7, '', format_label_1)
+            sheet.write(row, 8, '', format_label_1)
+            sheet.write(row, 9, '', format_label_1)
             row += 1    
-            sheet.write(row, 0, 'TOTAL')
+            sheet.write(row, 0, 'TOTAL', row_style)
             sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
             sheet.write(row, 2, '=SUM(C{0}:C{1})'.format(1, row), row_style)
             sheet.write(row, 3, '=SUM(D{0}:D{1})'.format(1, row), row_style)

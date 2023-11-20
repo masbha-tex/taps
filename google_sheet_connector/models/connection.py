@@ -31,12 +31,38 @@ class SaleOrder(models.Model):
         values = result.get("values", [])
         # raise UserError((values))
         # data = ['1']
-        docs = self.env['sale.order'].search([('sales_type','=', 'oa')], limit=1)
-        asif=1
-        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!A3", valueInputOption="USER_ENTERED", body={"values": [[docs.order_line[0].product_template_id.name]]}).execute())
-        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!B3", valueInputOption="USER_ENTERED", body={"values": [[docs.name]]}).execute())
-        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!C3", valueInputOption="USER_ENTERED", body={"values": [[docs.partner_id.name]]}).execute())
-        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!D3", valueInputOption="USER_ENTERED", body={"values": [[docs.buyer_name.name]]}).execute())
-        (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!E3", valueInputOption="USER_ENTERED", body={"values": [[docs.total_product_qty]]}).execute())
+        all_orders = self.env['sale.order'].search([('sales_type','=', 'oa'),('company_id', '=', 1)],limit=10)
+        start_row = 3
+        # asif=1
+        # (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!A3", valueInputOption="USER_ENTERED", body={"values": [[docs.order_line[0].product_template_id.name]]}).execute())
+        # (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!B3", valueInputOption="USER_ENTERED", body={"values": [[docs.name]]}).execute())
+        # (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!C3", valueInputOption="USER_ENTERED", body={"values": [[docs.partner_id.name]]}).execute())
+        # (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!D3", valueInputOption="USER_ENTERED", body={"values": [[docs.buyer_name.name]]}).execute())
+        # (sheet.values().update(spreadsheetId=self.sprade_sheet_id, range="Sheet1!E3", valueInputOption="USER_ENTERED", body={"values": [[docs.total_product_qty]]}).execute())
         # raise UserError((values))
         # return update
+        for  order in all_orders:
+            update_range = "Sheet1"
+            new_values = []
+            row_values = [
+                order.order_line[0].product_template_id.name,
+                order.name,
+                order.partner_id.name,
+                order.buyer_name.name,
+                float(order.total_product_qty),
+                float(order.avg_price),
+                float(order.amount_total),
+                order.sale_representative.name,
+            ]
+            new_values.append(row_values)
+            update_body = {'values': new_values}
+
+            try:
+                sheet.values().append(
+                    spreadsheetId=self.sprade_sheet_id,
+                    range=update_range,
+                    valueInputOption="USER_ENTERED",
+                    body=update_body
+                ).execute()
+            except HttpError as e:
+                raise UserError(f"Error updating data: {e}")

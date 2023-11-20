@@ -1,8 +1,8 @@
 odoo.define('taps_documents.custom_viewer', function (require) {
     'use strict';
-    var pdfjsWebApp = require('web.pdf');
+    var PDFViewerApplication = window.PDFViewerApplication;
 
-    pdfjsWebApp.PDFViewerApplication.prototype.webViewerLoad = function () {
+    PDFViewerApplication.prototype.webViewerLoad = function () {
         // Call the parent webViewerLoad function
         this._super.apply(this, arguments);
 
