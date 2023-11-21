@@ -975,7 +975,14 @@ class OperationDetails(models.Model):
                 mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
                 tot_b =  sum(mrp_oa_data.mapped('oa_total_balance'))/ len(mrp_oa_data) # mrp_oa_data.oa_total_balance - out.uotput_qty
                 tot_b = tot_b - move_qty #out.uotput_qty
-                mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b})
+                if tot_b == 0:
+                    mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b,'closing_date':datetime.now(),'state':'closed'})
+                    op_closed = self.env["operation.details"].browse(out.oa_id.id)
+                    _closed = op_closed.update({'closing_date':datetime.now(),'state':'closed'})
+                    sl_closed = self.env["sale.order"].browse(out.oa_id.id)
+                    _slclosed = sl_closed.update({'closing_date':datetime.now().date()})
+                else:
+                    mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b})
 # id,name,sequence,company_id,product_id,product_qty,product_uom_qty,product_uom,location_id,location_dest_id,state,origin,procure_method,scrapped,group_id,propagate_cancel,picking_type_id,warehouse_id,additional,reference,is_done,production_id,unit_factor,weight                   
                 if move_qty > 0:
                     stockmove = self.env["stock.move"].create({'name':'New',

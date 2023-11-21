@@ -30,14 +30,14 @@
                         </b>
                         <br/>
                         ID :&amp;nbsp;
-                        <strong t-esc="employee.emp_id"></strong>
+                        <strong t-esc="employee.emp_id"/>
                         <br/>
                         Date Of Joining :&amp;nbsp;
-                        <strong t-esc="employee.joining_date"></strong>
+                        <strong t-esc="employee.joining_date"/>
                         <br/>
-                        Department / Section :&amp;nbsp;<strong t-esc="employee.department_id.parent_id.name"></strong>&amp;nbsp;<strong>
+                        Department / Section :&amp;nbsp;<strong t-esc="employee.department_id.parent_id.name"/>&amp;nbsp;<strong>
                         /</strong>&amp;nbsp;
-                        <strong t-esc="employee.department_id.name"></strong>
+                        <strong t-esc="employee.department_id.name"/>
                         <br/>
                         <p>
                             <div>
@@ -170,25 +170,26 @@
                                 </ul>
                             </div>
                         </p>
-                        <br/>
-
-                        <p>
-                            <div style="float:left;width:30%;">
-
-                                <hr/>
+                        
+                        <div class="row">
+                            <div class="col-4">
+                              <br/>
+                              <br/>
+                              <br/>
+                              __________________________
                                 Signature of Employee
                             </div>
-                            <div style="float:right;width:30%;">
-                                <hr/>
-                                Signature of HRD
+                            <div class="col-4">
+                              
                             </div>
-                        </p>
-                        <br/>
-
-
+                            <div class="col-4 text-center">
+                              <span><img  class="p0" style="width: 80%;" src="taps_hr/static/img/sig_shahid.png"/></span>
+                               __________________________
+                               Signature of HRD
+                            </div>
+                        </div>
                     </div>
-                    <br/>
-                    <footer style="text-align :center; font-size: 10px;">
+                    <footer align="center" style="text-align :center; font-size: 10px;">
                         <b>Sales Office:</b>
                         Flat No. 05/1, House No. 196, Road No. 02, DOSH Baridhara, Dhaka 1206, Bangladesh.
                     </footer>

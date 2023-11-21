@@ -3,6 +3,7 @@
 from ast import literal_eval
 
 from odoo import models, fields, api, exceptions
+from odoo.exceptions import ValidationError, UserError
 from odoo.tools.translate import _
 from odoo.tools import consteq
 
@@ -38,7 +39,7 @@ class DocumentShare(models.Model):
                         """ )
 
     def action_closed(self):
-        
+        raise UserError((self.full_url))
         sig = """
         <div style="margin:0px;padding: 0px;">
         	<p class="MsoNormal">Regards,<o:p/>
@@ -160,7 +161,42 @@ class DocumentShare(models.Model):
         				</div>        
         """
         
+        docu = self.env['documents.share']
+        
+        RenderMixin = self.env['mail.render.mixin']
+        sent_template = RenderMixin._render_template(self.sent_template, 'documents.share', document_ids.ids, post_process=True)[document_ids.id]        
+        body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
+        body = f"{sent_template}<br/>{body_sig}"
+        
+        mail_values = {
+            # 'email_from': self.env.user.email_formatted,
+            'email_from': self.env.user.ids.email,
+            'author_id': self.env.user.partner_id.id,
+            'model': None,
+            'res_id': None,
+            'subject': 'Raise a new reward for %s' % employee.display_name,
+            'body_html': body,
+            'attachment_ids': attachment,                    
+            'auto_delete': True,
+            'email_to': self.env.receiver_ids.email,
+            # 'email_to': self.submit_by.email,
+            'email_cc': mailcc or '',
+        
+        }
+        # raise UserError((mail_values['mail_values']))
+        try:
+            template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+        except ValueError:
+            _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
+        else:
+            template_ctx = {
+                'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'])),
+                'model_description': self.env['ir.model']._get('documents.share').name,
+                'company': self.env.company,
+            }
+            body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+            mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+        self.env['mail.mail'].sudo().create(mail_values)#.send()
 
-
-
+        return {'type': 'ir.actions.act_window_close'}
 
