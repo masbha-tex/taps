@@ -39,11 +39,7 @@ class SaleOrder(models.Model):
         credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
         service = build("sheets", "v4", credentials=credentials)
         sheet = service.spreadsheets()
-        # result = (sheet.values().get(spreadsheetId=self.sprade_sheet_id, range="Sheet1!A1:B2").execute())
-        # values = result.get("values", [])
-        # raise UserError((date.today().strftime('%d-%m-%Y')))
-        # data = ['1']
-        docs = self.env['sale.order'].search([('sales_type','=', 'oa'),('company_id', '=',1)],limit=50)
+        docs = self.env['sale.order'].search([('sales_type','=', 'oa'),('company_id', '=',1)],limit=200)
         all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
 
 
