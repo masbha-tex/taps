@@ -160,6 +160,7 @@
 						<br/>
 						<div class="row ml-32" style="font-size:10px">
 							<!--Heading Count-->
+                            <t t-set="st" t-value="0"/>
 							<t t-set="c" t-value="0"/>
 							<t t-set="pin" t-value="0"/>
 							<t t-set="t_b" t-value="0"/>
@@ -213,6 +214,11 @@
 								<t t-if="fin==0">
 									<t t-if="line.finish">
 										<t t-set="fin" t-value="1"/>
+									</t>
+								</t>
+                                <t t-if="st == 0">
+									<t t-if="line.style">
+										<t t-set="st" t-value="1"/>
 									</t>
 								</t>
 								<t t-if="sh==0">
@@ -317,6 +323,10 @@
 											<th colspan="5" class="text-left">Shade</th>
 											<t t-set="line_count" t-value="line_count+5"/>
 										</t>
+                                        <t t-if="st == 1">
+											<th colspan="2" class="text-left">Style</th>
+											<t t-set="line_count" t-value="line_count+2"/>
+										</t>
 										<t t-if="inh == 1">
 											<th colspan="2" class="text-right">Inch</th>
 											<t t-set="line_count" t-value="line_count+2"/>
@@ -355,6 +365,7 @@
 									<t t-set="number_of_top" t-value=""/>
 									<t t-set="finish_shade" t-value=""/>
 									<t t-set="finish_shade_total" t-value="0"/>
+                                    <t t-set="style" t-value=""/>
 									<t t-foreach="o.order_line" t-as="line">
 										<tr>
 											<t t-if="not line.display_type">
@@ -570,6 +581,27 @@
 														<td colspan="5"/>
 													</t>
 												</t>
+                                                <t t-if="st == 1">
+                                                    <t t-if="line.style">
+														<t t-if="style == line.style">
+															<td colspan="2" style="border-top:hidden !important"/>
+														</t>
+														<t t-if="style != line.style">
+															
+																<span style="font-size:12px;">
+																	<td colspan="2" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+                                                                        <t t-esc="line.style"/>
+                                                                    </td>
+																	<t t-set="style" t-value="line.style"/>
+																</span>
+															
+														</t>
+													</t>
+                                                    <t t-if="not line.style">
+														<td colspan="2"/>
+                                                        
+													</t>
+                                                </t>
 												<t t-if="inh == 1">
 													<t t-if="line.sizein != 'N/A'">
 														<td colspan="2" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
@@ -582,6 +614,7 @@
 														<td colspan="2"/>
 													</t>
 												</t>
+                                                
 												<t t-if="cm == 1">
 													<t t-if="line.sizecm != 'N/A'">
 														<td colspan="2" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">

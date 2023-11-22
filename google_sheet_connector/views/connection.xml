@@ -6,7 +6,7 @@
       <field name="model">google.sheet.connector</field>
       <field name="arch" type="xml">
         <tree>
-          <field name="scope"/>
+          <field name="name"/>
           <field name="sprade_sheet_id"/>
           
         </tree>
@@ -17,13 +17,11 @@
       <field name="model">google.sheet.connector</field>
       <field name="arch" type="xml">
         <form>
-          <header>
-              <button  type="object" name="generate_google_docs" string="Connect"/>
-          </header>
+          
           <sheet>
               <group>
                   <group>
-                      <field name="scope"/>
+                      <field name="name"/>
                   </group>
                   <group>
                       <field name="sprade_sheet_id"/>

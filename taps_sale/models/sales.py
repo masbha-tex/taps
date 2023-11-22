@@ -1536,6 +1536,7 @@ class SaleOrderLine(models.Model):
     weight_per_gross = fields.Float(string='Weight/Gross', compute='_compute_weight_per_gross', inverse='_inverse_compute_weight_per_gross', store=True)
     is_selected = fields.Boolean('Select',default=False)
     is_copied = fields.Boolean('Copied',default=False)
+    last_update_gsheet = fields.Datetime(string='Last Update GSheet')
 
     
     

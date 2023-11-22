@@ -37,7 +37,7 @@
         'views/assets.xml',
         # 'views/portal_whatsapp_view.xml',
         'views/sale_order_inherited.xml',
-        # 'views/documents_share_inherited.xml',
+        'views/documents_share_inherited.xml',
         'views/account_move_inherited.xml',
         # 'views/website_inherited.xml',
         'wizard/wh_message_wizard.xml',

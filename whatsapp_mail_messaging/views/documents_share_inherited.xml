@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="documents_share_form_view_inherited">
+        <field name="name">documents.shareform.view.inherited</field>
+        <field name="model">documents.share</field>
+        <field name="inherit_id" ref="documents.share_view_form_popup"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form[1]/sheet[1]/footer[1]" position="inside">
+                <button type="object" class="oe_stat_button" style="background-color: #25D366;color: white;"
+                        name="action_send_whatsapp" icon="fa-whatsapp" string="Send by Whatsapp" attrs="{'invisible': [('receiver_ids', '=', [])]}"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- <record model="ir.ui.view" id="documents_share_list_view_inherited">
+        <field name="name">documents.share.list.view.inherited</field>
+        <field name="model">documents.share</field>
+        <field name="inherit_id" ref="sale.share_view_form_popup_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <header>
+                    <button type="object" class="btn-primary"
+                            name="action_whatsapp_multi" icon="fa-whatsapp" string="Send by Whatsapp"/>
+                </header>
+            </xpath>
+        </field>
+    </record> -->
+</odoo>

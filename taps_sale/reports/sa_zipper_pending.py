@@ -73,9 +73,10 @@ class SalesXlsx(models.AbstractModel):
         product_range = 0
         slider_range = 0
         shade_range = 0
-        
+        sale_orders = sorted(sale_orders, key=lambda r: r.id, reverse=False)
         for orders in sale_orders:
             docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
+            
             
             report_data = []
             order_data = []
@@ -102,6 +103,8 @@ class SalesXlsx(models.AbstractModel):
                     delivery_date = ''
                 
                 pr_name = o_data.product_template_id.name
+                if o_data.finish:
+                    pr_name = "\n".join([pr_name,o_data.finish])
                 if o_data.numberoftop:
                     pr_name = "\n".join([pr_name,o_data.numberoftop])
                 if o_data.ptopfinish:
@@ -113,7 +116,7 @@ class SalesXlsx(models.AbstractModel):
                 if o_data.topbottom:
                     pr_name = "\n".join([pr_name,o_data.topbottom])
                 slider = o_data.slidercodesfg
-                finish = o_data.finish #.replace('\n',' ')
+                # finish = o_data.finish #.replace('\n',' ')
                 shade = o_data.shade
                 
                 sizein = o_data.sizein

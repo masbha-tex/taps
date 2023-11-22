@@ -27,7 +27,8 @@ class DocumentShare(models.Model):
                     <br>
                     <span>Here you have been sent a file. Please click  below</span>
                     <br>
-                    <span>And file will be expire in <strong>${(object.date_deadline or '')| safe}</strong></span>
+                    
+                    <span>And the file will be expired in <strong>${(object.date_deadline or '')| safe}</strong></span>
                     <br>
                     
                     <br>

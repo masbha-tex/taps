@@ -980,7 +980,7 @@ class OperationDetails(models.Model):
                     op_closed = self.env["operation.details"].browse(out.oa_id.id)
                     _closed = op_closed.update({'closing_date':datetime.now(),'state':'closed'})
                     sl_closed = self.env["sale.order"].browse(out.oa_id.id)
-                    _slclosed = sl_closed.update({'closing_date':datetime.now().date()})
+                    _slclosed = sl_closed.write({'closing_date':datetime.now().date()})
                 else:
                     mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b})
 # id,name,sequence,company_id,product_id,product_qty,product_uom_qty,product_uom,location_id,location_dest_id,state,origin,procure_method,scrapped,group_id,propagate_cancel,picking_type_id,warehouse_id,additional,reference,is_done,production_id,unit_factor,weight                   

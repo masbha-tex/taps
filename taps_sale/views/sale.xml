@@ -137,7 +137,7 @@
                     <field name="c_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
                     <field name="d_part" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
                     <field name="dimension" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
-                    <field name="style" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
+                    <field name="style" attrs="{'column_invisible':[('parent.company_id', 'in',(2,4))]}" />
                     <field name="gmt" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
                     <field name="mold_set" attrs="{'column_invisible':[('parent.company_id', 'in',(2,1,4))]}" />
                     <field name="weight_per_gross" attrs="{'column_invisible':['|','|',('parent.company_id', 'in',(2,1,4)),('parent.sales_type', '=' , False),('parent.sales_type', '=' , 'oa')]}" />
