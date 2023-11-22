@@ -8,7 +8,7 @@ from decimal import Decimal
 
 
 
-
+from google.auth import external_account
 from odoo import models, fields, api
 import os
 # import gspread
