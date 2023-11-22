@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="web_custom_viewer" name="web_custom_viewer" inherit_id="web.assets_frontend">
+            <xpath expr="//*[@id='download']" position="attributes">
+                <!-- Add a class to the button for styling -->
+                <attribute name="hidden">True</attribute>
+            </xpath>
+        </template>
+    </data>
+</odoo>

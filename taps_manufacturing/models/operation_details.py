@@ -111,7 +111,7 @@ class OperationDetails(models.Model):
     @api.depends('qty', 'done_qty')
     def get_balance(self):
         for s in self:
-            if s.next_operation == 'Dyeing Qc':
+            if s.next_operation in ('Dyeing Qc','Packing Output'):
                 s.balance_qty = round((s.actual_qty - s.done_qty),2)
             else:
                 s.balance_qty = round((s.qty - s.done_qty),2)
@@ -911,7 +911,7 @@ class OperationDetails(models.Model):
             pr_pac_qty = 0
             done_qty = out.done_qty + out.uotput_qty
 
-            if (out.next_operation not in ('Dyeing Output','Packing Output')) and (round(out.balance_qty,0) < round(out.uotput_qty,0)):
+            if (out.next_operation not in ('Dyeing Output')) and (round(out.balance_qty,0) < round(out.uotput_qty,0)):
                 raise UserError(('You can not produce more then balance'))
             # else:
             s = out.write({'done_qty':done_qty})#done_qty = done_qty
@@ -970,7 +970,7 @@ class OperationDetails(models.Model):
                                 each_qty = each_qty - outqty
                 
                 move_qty = out.uotput_qty
-                if extra > 0:
+                if (extra > 0) and (out.uotput_qty != extra):
                     move_qty = out.uotput_qty - extra
                 mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
                 tot_b =  sum(mrp_oa_data.mapped('oa_total_balance'))/ len(mrp_oa_data) # mrp_oa_data.oa_total_balance - out.uotput_qty

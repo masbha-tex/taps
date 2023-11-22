@@ -18,6 +18,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'data/ir_cron.xml',
         'views/assets.xml',
         'views/taps_documents_views.xml',
         # 'views/documents_views.xml',

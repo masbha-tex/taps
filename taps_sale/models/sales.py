@@ -1199,18 +1199,83 @@ class SaleOrder(models.Model):
 
     def generate_m_order(self):
         exist_mrp = self.env['manufacturing.order'].search([('oa_id','=',self.id)])
+        operation = self.env['operation.details'].search([('oa_id','=',self.id)])
         for products in self.order_line:
             can_create = True
+            op_can_create = True
+            
+            mrp_lines = None
+            sale_lines = None
+            mrp_id = None
+            
             if exist_mrp:
                 m_order = exist_mrp.filtered(lambda mo: mo.sale_order_line.id == products.id)
                 if m_order:
                     can_create = False
                     mrp_update = m_order.update({'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'revision_no':self.revised_no})
+                    mrp_lines = str(m_order.id)
+                    sale_lines = str(products.id)
+                    mrp_id = m_order.id
+            if operation:
+                op = operation.filtered(lambda mo: mo.sale_order_line.id == products.id)
+                if op:
+                    op_can_create = False
+                    ope_update = op.update({'product_id':products.product_id.id,
+                                            'product_template_id':products.product_id.product_tmpl_id.id,
+                                            'shade':products.shade,
+                                            'shade_ref':products.shade_ref,
+                                            'finish':products.finish,
+                                            'sizein':products.sizein,
+                                            'sizecm':products.sizecm,
+                                            'slidercodesfg':products.slidercodesfg,
+                                            'top':products.ptopfinish,
+                                            'bottom':products.pbotomfinish,
+                                            'pinbox':products.ppinboxfinish,
+                                            'actual_qty':products.product_uom_qty,
+                                            'revision_no':self.revised_no
+                                            })
                 
             # text = products.shade
             # shade = text.splitlines()
+            
             if can_create == True:
                 mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting','revision_no':self.revised_no})
+                
+                mrp_lines = str(mrp_.id)
+                sale_lines = str(products.id)
+                mrp_id = mrp_.id
+            if op_can_create == True:
+                ope = self.env['operation.details'].create({'name':'','mrp_lines':mrp_lines,
+                                                            'sale_lines':sale_lines,
+                                                            'mrp_line':mrp_id,
+                                                            'sale_order_line':products.id,
+                                                            'parent_id':None,
+                                                            'oa_id':products.order_id.id,
+                                                            'buyer_name':products.order_id.buyer_name.name,
+                                                            'product_id':products.product_id.id,
+                                                            'product_template_id':products.product_id.product_tmpl_id.id,
+                                                            'action_date':self.date_order,
+                                                            'shade':products.shade,
+                                                            'shade_ref':products.shade_ref,
+                                                            'finish':products.finish,
+                                                            'sizein':products.sizein,
+                                                            'sizecm':products.sizecm,
+                                                            'slidercodesfg':products.slidercodesfg,
+                                                            'top':products.ptopfinish,
+                                                            'bottom':products.pbotomfinish,
+                                                            'pinbox':products.ppinboxfinish,
+                                                            'operation_of':'output',
+                                                            'work_center':7,
+                                                            'operation_by':self.env.user.name,
+                                                            'based_on':'Lot Code',
+                                                            'next_operation':'Packing Output',
+                                                            'actual_qty':products.product_uom_qty,
+                                                            'qty':0,
+                                                            'pack_qty':0,
+                                                            'fr_pcs_pack':0,
+                                                            'capacity':0,
+                                                            'move_line':None
+                                                            })
             
     # def manuf_values(self,seq,id,oa,company):
     #     values = 

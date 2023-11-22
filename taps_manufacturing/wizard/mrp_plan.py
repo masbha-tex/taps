@@ -131,7 +131,9 @@ class ManufacturingPlan(models.TransientModel):
             self.update({'machine_line': planline_values,})
         elif self.plan_for.name == 'Plating':
             self.material = 'slider'
-            # self.material = None
+            self.machine_line.unlink()
+        elif self.plan_for.name == 'Painting':
+            self.material = 'slider'
             self.machine_line.unlink()
         else:
             self.material = None

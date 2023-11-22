@@ -557,9 +557,9 @@ class ManufacturingOrder(models.Model):
                         sal_line = p_q.sale_order_line.id
                         
                     if plan_for == 'Slider Assembly':
-                        qty = sum(p_q.mapped('sass_rec_plan_qty'))
+                        qty = round(sum(p_q.mapped('sass_rec_plan_qty')),0)
                     else:
-                        qty = sum(p_q.mapped('pl_rec_plan_qty')) 
+                        qty = round(sum(p_q.mapped('pl_rec_plan_qty')),0)
                         
                 elif material == 'top': #ptopfinish pbotomfinish ppinboxfinish
                     p_q = production.filtered(lambda sol: sol.oa_id.id == p[0] and sol.finish == p[2] and sol.ptopfinish == p[3])

@@ -29,7 +29,7 @@
               <field name="receiver_ids" options="{'no_create':true, 'no_open':true}" widget="many2many_tags"/>
             </xpath> 
             <xpath expr="//form[1]/sheet[1]/footer[1]" position="inside">
-                <button name="action_closed" string="Sent Mail" type="object" class="btn-primary"/>
+                <button name="send_share_doc_mail" string="Done &amp; Send Mail" type="object" class="btn-primary" attrs="{'invisible': [('receiver_ids', '=', [])]}"/>
             </xpath>
         </field>
     </record>    
