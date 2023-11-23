@@ -38,175 +38,175 @@ class GoogleSheetConnector(models.Model):
                     'https://www.googleapis.com/auth/spreadsheets',
                     'https://www.googleapis.com/auth/drive'
                 ]
-        connect = self.env['google.sheet.connector'].search([('id','in', id)])
-        for con in connect:
-            ID = con.sprade_sheet_id
-            
-            credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
-            service = build("sheets", "v4", credentials=credentials)
-            sheet = service.spreadsheets()
-            if con.id == 1 :
-                docs = self.env['sale.order'].search([('sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',1)])
-                all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
-                all_orders = sorted(all_orders, key=lambda r: r.id, reverse=False)
+        connect = self.env['google.sheet.connector'].search([('id','=', id)])
         
-                # raise UserError((docs))
+        ID = connect.sprade_sheet_id
+        
+        credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
+        service = build("sheets", "v4", credentials=credentials)
+        sheet = service.spreadsheets()
+        if id == 1 :
+            docs = self.env['sale.order'].search([('sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',1)])
+            all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
+            all_orders = sorted(all_orders, key=lambda r: r.id, reverse=False)
+    
+            # raise UserError((docs))
+            
+            for  order in all_orders:
                 
-                for  order in all_orders:
+                row_index = self.find_row_index(ID, "Sheet1", order.id)
+                
+                update_range = "Sheet1"
+                # raise UserError((row_index))
+                if row_index is not None:
+                # Update the entire row with new values
+                    range_ = f'{update_range}!A{row_index}'
+                    # raise UserError((range_))
+                    new_values = []
+                    row_values = [
+                        order.id,
+                        order.order_line[0].product_template_id.fg_categ_type,
+                        order.name,
+                        order.date_order.strftime('%d-%m-%Y'),
+                        order.partner_id.name,
+                        order.buyer_name.name,
+                        f"{(float(order.total_product_qty)):0,.2f}",
+                        f"{(float(order.avg_price)):0,.2f}",
+                        f"{(float(order.amount_total)):0,.4f}",
+                        order.sale_representative.name,
+                        "",
+                        "",
+                        datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+                        
+                    ]
+                    new_values.append(row_values)
+                    update_body = {'values': new_values}
                     
-                    row_index = self.find_row_index(ID, "Sheet1", order.id)
-                    
+                    try:
+                        sheet.values().update(
+                            spreadsheetId=ID,
+                            range=range_,
+                            valueInputOption="USER_ENTERED",
+                            body=update_body
+                        ).execute()
+                        
+                        order.write({'last_update_gsheet':datetime.now()})
+                    except HttpError as e:
+                        raise UserError(f"Error updating data: {e}")
+            
+        
+                if row_index is None:
                     update_range = "Sheet1"
-                    # raise UserError((row_index))
-                    if row_index is not None:
-                    # Update the entire row with new values
-                        range_ = f'{update_range}!A{row_index}'
-                        # raise UserError((range_))
-                        new_values = []
-                        row_values = [
-                            order.id,
-                            order.order_line[0].product_template_id.fg_categ_type,
-                            order.name,
-                            order.date_order.strftime('%d-%m-%Y'),
-                            order.partner_id.name,
-                            order.buyer_name.name,
-                            f"{(float(order.total_product_qty)):0,.2f}",
-                            f"{(float(order.avg_price)):0,.2f}",
-                            f"{(float(order.amount_total)):0,.4f}",
-                            order.sale_representative.name,
-                            "",
-                            "",
-                            datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
-                            
-                        ]
-                        new_values.append(row_values)
-                        update_body = {'values': new_values}
-                        
-                        try:
-                            sheet.values().update(
-                                spreadsheetId=ID,
-                                range=range_,
-                                valueInputOption="USER_ENTERED",
-                                body=update_body
-                            ).execute()
-                            
-                            order.write({'last_update_gsheet':datetime.now()})
-                        except HttpError as e:
-                            raise UserError(f"Error updating data: {e}")
-                
-            
-                    if row_index is None:
-                        update_range = "Sheet1"
-                        new_values = []
-                        row_values = [
-                            order.id,
-                            order.order_line[0].product_template_id.fg_categ_type,
-                            order.name,
-                            order.date_order.strftime('%d-%m-%Y'),
-                            order.partner_id.name,
-                            order.buyer_name.name,
-                            f"{(float(order.total_product_qty)):0,.2f}",
-                            f"{(float(order.avg_price)):0,.2f}",
-                            f"{(float(order.amount_total)):0,.4f}",
-                            order.sale_representative.name,
-                            "",
-                            "",
-                            datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
-                        ]
-                        new_values.append(row_values)
-                        update_body = {'values': new_values}
-            
-                        try:
-                            sheet.values().append(
-                                spreadsheetId=ID,
-                                range=update_range,
-                                valueInputOption="USER_ENTERED",
-                                body=update_body
-                            ).execute()
-                            order.write({'last_update_gsheet':datetime.now()})
-                        except HttpError as e:
-                            raise UserError(f"Error updating data: {e}")
-                        
-            if con.id == 2 :
-                docs = self.env['sale.order.line'].search([('order_id.sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',3),('product_template_id.name', '!=', 'MOULD')])
-                all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
-                all_orders = sorted(all_orders, key=lambda r: r.id, reverse=False)
-                
-                # raise UserError((all_orders))
-                
-                for  order in all_orders:
-                    row_index = self.find_row_index(ID, "Sheet1", order.id)
+                    new_values = []
+                    row_values = [
+                        order.id,
+                        order.order_line[0].product_template_id.fg_categ_type,
+                        order.name,
+                        order.date_order.strftime('%d-%m-%Y'),
+                        order.partner_id.name,
+                        order.buyer_name.name,
+                        f"{(float(order.total_product_qty)):0,.2f}",
+                        f"{(float(order.avg_price)):0,.2f}",
+                        f"{(float(order.amount_total)):0,.4f}",
+                        order.sale_representative.name,
+                        "",
+                        "",
+                        datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+                    ]
+                    new_values.append(row_values)
+                    update_body = {'values': new_values}
+        
+                    try:
+                        sheet.values().append(
+                            spreadsheetId=ID,
+                            range=update_range,
+                            valueInputOption="USER_ENTERED",
+                            body=update_body
+                        ).execute()
+                        order.write({'last_update_gsheet':datetime.now()})
+                    except HttpError as e:
+                        raise UserError(f"Error updating data: {e}")
                     
-                    update_range = "Sheet1"
-                    # raise UserError((row_index))
-                    if row_index is not None:
-                    # Update the entire row with new values
-                        range_ = f'{update_range}!A{row_index}'
-                        # raise UserError((range_))
-                        new_values = []
-                        row_values = [
-                            order.id,
-                            order.product_template_id.name,
-                            order.name,
-                            order.order_id.date_order.strftime('%d-%m-%Y'),
-                            order.order_id.partner_id.name,
-                            order.order_id.buyer_name.name,
-                            f"{(float(order.product_uom_qty)):0,.2f}",
-                            f"{(float(order.price_unit)):0,.2f}",
-                            f"{(float(order.price_subtotal)):0,.4f}",
-                            order.order_id.sale_representative.name,
-                            "",
-                            "",
-                            datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
-                            
-                        ]
-                        new_values.append(row_values)
-                        update_body = {'values': new_values}
+        if id == 2 :
+            docs = self.env['sale.order.line'].search([('order_id.sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',3),('product_template_id.name', '!=', 'MOULD')])
+            all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
+            all_orders = sorted(all_orders, key=lambda r: r.id, reverse=False)
+            
+            # raise UserError((all_orders))
+            
+            for  order in all_orders:
+                row_index = self.find_row_index(ID, "Sheet1", order.id)
+                
+                update_range = "Sheet1"
+                # raise UserError((row_index))
+                if row_index is not None:
+                # Update the entire row with new values
+                    range_ = f'{update_range}!A{row_index}'
+                    # raise UserError((range_))
+                    new_values = []
+                    row_values = [
+                        order.id,
+                        order.product_template_id.name,
+                        order.name,
+                        order.order_id.date_order.strftime('%d-%m-%Y'),
+                        order.order_id.partner_id.name,
+                        order.order_id.buyer_name.name,
+                        f"{(float(order.product_uom_qty)):0,.2f}",
+                        f"{(float(order.price_unit)):0,.2f}",
+                        f"{(float(order.price_subtotal)):0,.4f}",
+                        order.order_id.sale_representative.name,
+                        "",
+                        "",
+                        datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
                         
-                        try:
-                            sheet.values().update(
-                                spreadsheetId=ID,
-                                range=range_,
-                                valueInputOption="USER_ENTERED",
-                                body=update_body
-                            ).execute()
-                            
-                            order.write({'last_update_gsheet':datetime.now()})
-                        except HttpError as e:
-                            raise UserError(f"Error updating data: {e}")
-                            
-                    if row_index is None:
-                        update_range = "Sheet1"
-                        new_values = []
-                        row_values = [
-                            order.id,
-                            order.product_template_id.name,
-                            order.order_id.name,
-                            order.order_id.date_order.strftime('%d-%m-%Y'),
-                            order.order_id.partner_id.name,
-                            order.order_id.buyer_name.name,
-                            f"{(float(order.product_uom_qty)):0,.2f}",
-                            f"{(float(order.price_unit)):0,.2f}",
-                            f"{(float(order.price_subtotal)):0,.4f}",
-                            order.order_id.sale_representative.name,
-                            "",
-                            "",
-                            datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
-                        ]
-                        new_values.append(row_values)
-                        update_body = {'values': new_values}
-            
-                        try:
-                            sheet.values().append(
-                                spreadsheetId=ID,
-                                range=update_range,
-                                valueInputOption="USER_ENTERED",
-                                body=update_body
-                            ).execute()
-                            order.write({'last_update_gsheet':datetime.now()})
-                        except HttpError as e:
-                            raise UserError(f"Error updating data: {e}")
-            
+                    ]
+                    new_values.append(row_values)
+                    update_body = {'values': new_values}
+                    
+                    try:
+                        sheet.values().update(
+                            spreadsheetId=ID,
+                            range=range_,
+                            valueInputOption="USER_ENTERED",
+                            body=update_body
+                        ).execute()
+                        
+                        order.write({'last_update_gsheet':datetime.now()})
+                    except HttpError as e:
+                        raise UserError(f"Error updating data: {e}")
+                        
+                if row_index is None:
+                    update_range = "Sheet1"
+                    new_values = []
+                    row_values = [
+                        order.id,
+                        order.product_template_id.name,
+                        order.order_id.name,
+                        order.order_id.date_order.strftime('%d-%m-%Y'),
+                        order.order_id.partner_id.name,
+                        order.order_id.buyer_name.name,
+                        f"{(float(order.product_uom_qty)):0,.2f}",
+                        f"{(float(order.price_unit)):0,.2f}",
+                        f"{(float(order.price_subtotal)):0,.4f}",
+                        order.order_id.sale_representative.name,
+                        "",
+                        "",
+                        datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+                    ]
+                    new_values.append(row_values)
+                    update_body = {'values': new_values}
+        
+                    try:
+                        sheet.values().append(
+                            spreadsheetId=ID,
+                            range=update_range,
+                            valueInputOption="USER_ENTERED",
+                            body=update_body
+                        ).execute()
+                        order.write({'last_update_gsheet':datetime.now()})
+                    except HttpError as e:
+                        raise UserError(f"Error updating data: {e}")
+        
     def find_row_index(self, spreadsheet_id, sheet_name, id):
         
         
