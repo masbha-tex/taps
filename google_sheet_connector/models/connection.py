@@ -33,7 +33,7 @@ class GoogleSheetConnector(models.Model):
     
     def generate_google_docs(self,id,limit):
         
-        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/cred_service.json'
+        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/mis.json'
         scope = [
                     'https://www.googleapis.com/auth/spreadsheets',
                     'https://www.googleapis.com/auth/drive'
