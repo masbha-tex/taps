@@ -30,21 +30,47 @@ class DocumentFolder(models.Model):
         result = super(DocumentFolder, self).create(vals)
         if vals.get('group_ids'):
             # # raise UserError(folder.group_ids)
-            self.folder_email(result.group_ids, None)
+            self.folder_email(result.group_ids, None,result.id)
         if vals.get('read_group_ids'):
             # raise UserError(folder.read_group_ids)
-            self.folder_email(None, result.read_group_ids)            
+            self.folder_email(None, result.read_group_ids,result.id)            
         return result
         
+    def write(self, vals):
+        gr_ids = re_ids = None
+        result = super(DocumentFolder, self).write(vals)
+        # raise UserError((vals.get('group_ids')))
+        # groups = vals.get('group_ids').replace('6,false,','')
+        # items = ','.join([str(i) for x,i in vals.get('group_ids')]) 
+        items = ','.join([str(i) for i in vals.get('group_ids') if isinstance(i, int) and i > 1])
 
-    def folder_email(self, group_id, read_group_id):
+        raise UserError((items))
+        if 'group_ids' in vals:
+            sefefe = self.env['res.groups'].browse(vals.get('group_ids'))
+            gr_ids = sefefe - self.group_ids
+        if 'read_group_ids' in vals:
+            re_ids = vals.get('read_group_ids') - self.group_ids
+     
+        if 'group_ids' in vals:
+            if len(self) == 1:
+                self.folder_email(gr_ids, None, self.id)
+
+        if 'read_group_ids' in vals:
+            if len(self) == 1:
+                self.folder_email(None, re_ids, self.id)
+
+        return result
+
+        
+
+    def folder_email(self, group_id, read_group_id,id):
         
         # raise UserError(())
         folder_mail_template = """
                     <div style="margin:0px;padding: 0px;">
                     <span>Dear Concern,</span>
                     <br>
-                    <span>Here you have been sent an access right in the workspace. Please click  below</span>
+                    <span>Here you have been sent an access right for this workspace. Please click  below</span>
                     <br>
                     <br>
                     <br>
@@ -52,7 +78,7 @@ class DocumentFolder(models.Model):
                     			Here is the link:
                     			<p style="margin:16px 0px 16px 0px;">
                     				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
-                    		View Shared File
+                    		View Shared Workspace
                     	</a>
                     			</p>
                     			% endif
@@ -78,12 +104,19 @@ class DocumentFolder(models.Model):
                 ctx = {
                     'employee_to_name': employee.users.display_name,
                     'recipient_users': self.env.user.id,
-                    'url': '/mail/view?model=%s&res_id=%s' % ('documents.folder', self.id),
+                    'url': '/mail/view?model=%s&res_id=%s' % ('documents', self.id),
                 }
                 
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
+                
                 # subject = RenderMixin._render_template(folder.name, 'documents.folder', folder.ids, post_process=True)[folder.id]
-                body = RenderMixin._render_template(folder_mail_template, 'documents.folder', self.ids, post_process=True)[self.id]
+                # render_result = RenderMixin._render_template(folder_mail_template, 'documents.folder', self.ids, post_process=True)
+                # body = render_result.get(self.id)
+                # all_doc = self.env['documents.folder'].search([])
+                id_list = [id]
+                # raise UserError(((id)list))
+                body = RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
+                # raise UserError((self.ids))
                 # body_submit = RenderMixin._render_template(folder.e_template, 'documents.folder', folder.ids, post_process=True)[folder.id]
                 # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]  
@@ -96,7 +129,7 @@ class DocumentFolder(models.Model):
                     'model': None,
                     'res_id': None,
                     # 'subject': 'folder a documents : %s' % ', '.join([str(i.display_name) for i in sorted(folder.document_ids)]),
-                    'subject': ' %s' % self.name,
+                    'subject': 'Give access for: %s' % self.name,
                     'body_html': body,
                     # 'attachment_ids': attachment,                    
                     'auto_delete': True,

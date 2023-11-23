@@ -33,7 +33,7 @@ class GoogleSheetConnector(models.Model):
     
     def generate_google_docs(self,id,limit):
         
-        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/mis.json'
+        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/cred_service.json'
         scope = [
                     'https://www.googleapis.com/auth/spreadsheets',
                     'https://www.googleapis.com/auth/drive'
@@ -83,14 +83,21 @@ class GoogleSheetConnector(models.Model):
                     update_body = {'values': new_values}
                     
                     try:
-                        sheet.values().update(
+                        response = sheet.values().update(
                             spreadsheetId=ID,
                             range=range_,
                             valueInputOption="USER_ENTERED",
                             body=update_body
                         ).execute()
+                        self.env.cr.execute("""
+                            UPDATE sale_order
+                            SET last_update_gsheet = %s
+                            WHERE id = %s
+                            """, (datetime.now(), order.id))
+       
+                        self.env.cr.commit()
                         
-                        order.write({'last_update_gsheet':datetime.now()})
+                        # order.write({'last_update_gsheet':datetime.now()})
                     except HttpError as e:
                         raise UserError(f"Error updating data: {e}")
             
@@ -123,7 +130,13 @@ class GoogleSheetConnector(models.Model):
                             valueInputOption="USER_ENTERED",
                             body=update_body
                         ).execute()
-                        order.write({'last_update_gsheet':datetime.now()})
+                        self.env.cr.execute("""
+                            UPDATE sale_order
+                            SET last_update_gsheet = %s
+                            WHERE id = %s
+                            """, (datetime.now(), order.id))
+       
+                        self.env.cr.commit()
                     except HttpError as e:
                         raise UserError(f"Error updating data: {e}")
                     
@@ -132,9 +145,9 @@ class GoogleSheetConnector(models.Model):
             all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
             all_orders = sorted(all_orders, key=lambda r: r.id, reverse=False)
             
-            # raise UserError((all_orders))
-            
-            for  order in all_orders:
+            # raise UserError((len(all_orders)))
+            for order in all_orders:
+                
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
                 update_range = "Sheet1"
@@ -165,7 +178,13 @@ class GoogleSheetConnector(models.Model):
                     
                     try:
                         sheet.values().update(spreadsheetId=ID,range=range_,valueInputOption="USER_ENTERED",body=update_body).execute()
-                        order.write({'last_update_gsheet':datetime.now()})
+                        self.env.cr.execute("""
+                            UPDATE sale_order_line
+                            SET last_update_gsheet = %s
+                            WHERE id = %s
+                            """, (datetime.now(), order.id))
+       
+                        self.env.cr.commit()
                     except HttpError as e:
                         raise UserError(f"Error updating data: {e}")
                         
@@ -194,11 +213,20 @@ class GoogleSheetConnector(models.Model):
                         sheet.values().append(
                             spreadsheetId=ID,
                             range=update_range,valueInputOption="USER_ENTERED",body=update_body).execute()
-                        order.update({'last_update_gsheet':datetime.now()})
+                        self.env.cr.execute("""
+                            UPDATE sale_order_line
+                            SET last_update_gsheet = %s
+                            WHERE id = %s
+                            """, (datetime.now(), order.id))
+       
+                        self.env.cr.commit()
+                        
                         
                         # raise UserError((order.write({'last_update_gsheet':datetime.now()})))
                     except HttpError as e:
                         raise UserError(f"Error updating data: {e}")
+                
+                        
         
     def find_row_index(self, spreadsheet_id, sheet_name, id):
         
