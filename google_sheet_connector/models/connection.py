@@ -31,7 +31,7 @@ class GoogleSheetConnector(models.Model):
     name = fields.Char(string="Name")
     sprade_sheet_id = fields.Char(string="Sprade Sheet ID")
     
-    def generate_google_docs(self,id):
+    def generate_google_docs(self,id,limit):
         
         SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/mis.json'
         scope = [
@@ -46,7 +46,7 @@ class GoogleSheetConnector(models.Model):
         service = build("sheets", "v4", credentials=credentials)
         sheet = service.spreadsheets()
         if id == 1 :
-            docs = self.env['sale.order'].search([('sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',1)])
+            docs = self.env['sale.order'].search([('sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',1)],limit=limit)
             all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
             all_orders = sorted(all_orders, key=lambda r: r.id, reverse=False)
     
@@ -128,7 +128,7 @@ class GoogleSheetConnector(models.Model):
                         raise UserError(f"Error updating data: {e}")
                     
         if id == 2 :
-            docs = self.env['sale.order.line'].search([('order_id.sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',3),('product_template_id.name', '!=', 'MOULD')])
+            docs = self.env['sale.order.line'].search([('order_id.sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',3),('product_template_id.name', '!=', 'MOULD')],limit=limit)
             all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
             all_orders = sorted(all_orders, key=lambda r: r.id, reverse=False)
             
@@ -147,7 +147,7 @@ class GoogleSheetConnector(models.Model):
                     row_values = [
                         order.id,
                         order.product_template_id.name,
-                        order.name,
+                        order.order_id.name,
                         order.order_id.date_order.strftime('%d-%m-%Y'),
                         order.order_id.partner_id.name,
                         order.order_id.buyer_name.name,
@@ -164,13 +164,7 @@ class GoogleSheetConnector(models.Model):
                     update_body = {'values': new_values}
                     
                     try:
-                        sheet.values().update(
-                            spreadsheetId=ID,
-                            range=range_,
-                            valueInputOption="USER_ENTERED",
-                            body=update_body
-                        ).execute()
-                        
+                        sheet.values().update(spreadsheetId=ID,range=range_,valueInputOption="USER_ENTERED",body=update_body).execute()
                         order.write({'last_update_gsheet':datetime.now()})
                     except HttpError as e:
                         raise UserError(f"Error updating data: {e}")
@@ -199,11 +193,10 @@ class GoogleSheetConnector(models.Model):
                     try:
                         sheet.values().append(
                             spreadsheetId=ID,
-                            range=update_range,
-                            valueInputOption="USER_ENTERED",
-                            body=update_body
-                        ).execute()
-                        order.write({'last_update_gsheet':datetime.now()})
+                            range=update_range,valueInputOption="USER_ENTERED",body=update_body).execute()
+                        order.update({'last_update_gsheet':datetime.now()})
+                        
+                        # raise UserError((order.write({'last_update_gsheet':datetime.now()})))
                     except HttpError as e:
                         raise UserError(f"Error updating data: {e}")
         
