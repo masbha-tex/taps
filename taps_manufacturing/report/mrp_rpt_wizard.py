@@ -477,6 +477,8 @@ class MrpReportWizard(models.TransientModel):
         merge_format = workbook.add_format({'align': 'top'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
 
+        initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id)])
+
         for day in self.iterate_days(year, int(month_)):
             comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day <= day)
             datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day == day)
@@ -557,6 +559,19 @@ class MrpReportWizard(models.TransientModel):
                 tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
                 
                 # comur_qty = sum(comu_released.mapped('product_uom_qty'))
+                if initial_pr[0].production_date.dte() > full_date.date():
+                    pack_pcs = invoiced = pending_pcs = pending_usd = comu_pcs = comu_inv = tr_value = comur_value = 0
+                if initial_pr[0].production_date.dte() == full_date.date():
+                    item_initial = initial_pr.filtered(lambda pr: pr.fg_categ_type == item)
+                    comu_pcs = item_initial.production_till_date
+                    comu_inv = item_initial.invoice_till_date
+                    comur_value = item_initial.released_till_date
+                
+                if initial_pr[0].production_date.dte() < full_date.date():
+                    item_initial = initial_pr.filtered(lambda pr: pr.fg_categ_type == item)
+                    comu_pcs += item_initial.production_till_date
+                    comu_inv += item_initial.invoice_till_date
+                    comur_value += item_initial.released_till_date
                 
                 order_data = []
                 order_data = [

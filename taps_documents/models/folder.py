@@ -5,25 +5,6 @@ from odoo.exceptions import ValidationError, UserError
 class DocumentFolder(models.Model):
     _inherit = 'documents.folder'
 
-    e_template = fields.Html('Sent Template', default="""
-                    <div style="margin:0px;padding: 0px;">
-                    <span>Dear Concern,</span>
-                    <br>
-                    <span>Here you have been sent an access right in the workspace. Please click  below</span>
-                    <br>
-                    <br>
-                    <br>
-                    			% if ctx.get('recipient_users'):
-                    			Here is the link:
-                    			<p style="margin:16px 0px 16px 0px;">
-                    				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
-                    		View Shared File
-                    	</a>
-                    			</p>
-                    			% endif
-                    </div>
-                        """ )
-
     
     @api.model
     def create(self, vals):
@@ -80,7 +61,7 @@ class DocumentFolder(models.Model):
                     <div style="margin:0px;padding: 0px;">
                     <span>Dear Concern,</span>
                     <br>
-                    <span>Here you have been sent an access right for this workspace. Please click  below</span>
+                    <span>Here you have been sent an <strong>Write</strong> access for this workspace. Please click  below</span>
                     <br>
                     <br>
                     <br>
@@ -94,6 +75,24 @@ class DocumentFolder(models.Model):
                     			% endif
                     </div>
                         """   
+        read_folder_mail_template = """
+                    <div style="margin:0px;padding: 0px;">
+                    <span>Dear Concern,</span>
+                    <br>
+                    <span>Here you have been sent an <strong>Read</strong> access for this workspace. Please click  below</span>
+                    <br>
+                    <br>
+                    <br>
+                    			% if ctx.get('recipient_users'):
+                    			Here is the link:
+                    			<p style="margin:16px 0px 16px 0px;">
+                    				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+                    		View Shared Workspace
+                    	</a>
+                    			</p>
+                    			% endif
+                    </div>
+                        """
         employees_group_id = employees_read_group_id = employees = None
         employees_group_id = group_id
         employees_read_group_id = read_group_id
@@ -105,7 +104,8 @@ class DocumentFolder(models.Model):
             employees = employees_read_group_id
         
         mapped_data = {
-            **{employees : folder_mail_template}
+            **{employees : folder_mail_template},
+            **{employees : read_folder_mail_template}
         }
         # raise UserError((mapped_data.items()))
         for employee, mail_template in mapped_data.items():
@@ -127,12 +127,26 @@ class DocumentFolder(models.Model):
                 # all_doc = self.env['documents.folder'].search([])
                 id_list = [id]
                 # raise UserError(((id)list))
-                body = RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
+                body = ""
+
+                if employees_group_id:
+                    body += RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
+                elif employees_read_group_id:
+                    body += RenderMixin._render_template(read_folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
+                
+                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
+                body = f"{body}<br/>{body_sig}"
+                # if employees_group_id == True:
+                #     body = RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
+                # if employees_read_group_id == True:
+                #     body = RenderMixin._render_template(read_folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
                 # raise UserError((self.ids))
                 # body_submit = RenderMixin._render_template(folder.e_template, 'documents.folder', folder.ids, post_process=True)[folder.id]
                 # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
-                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]  
-                body = f"{body}<br/>{body_sig}"
+                # body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]  
+                # body = f"{body}<br/>{body_sig}"
+
+
                 
                 mail_values = {
                     'email_from': self.env.user.email_formatted,

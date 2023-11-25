@@ -57,7 +57,7 @@ class SalesXlsx(models.AbstractModel):
         worksheet.set_column(6,9,15)
         worksheet.set_column(6,9,20)
         worksheet.set_column(10,11,25)
-        worksheet.set_column(12,19,25)
+        worksheet.set_column(12,23,25)
         
         worksheet.write(0, 0, "OA", column_issued_style)
         worksheet.write(0, 1, "PI", column_issued_style)
@@ -79,6 +79,10 @@ class SalesXlsx(models.AbstractModel):
         worksheet.write(0, 17, "STYLE", column_issued_style)
         worksheet.write(0, 18, "GMT", column_issued_style)
         worksheet.write(0, 19, "MOLD", column_issued_style)
+        worksheet.write(0, 20, "WASHING TYPE", column_issued_style)
+        worksheet.write(0, 21, "METAL DETECTION", column_issued_style)
+        worksheet.write(0, 22, "CORROSIONS TEST", column_issued_style)
+        worksheet.write(0, 23, "BCD PART FINISH", column_issued_style)
         
         col = 0
         row = 1
@@ -88,7 +92,7 @@ class SalesXlsx(models.AbstractModel):
         docs = sorted(docs, key=lambda r: r.order_id.id, reverse=False)
         for o_data in docs:
             col = 0
-            for l in range(20):
+            for l in range(24):
                 if col == 0:
                     worksheet.write(row, col, o_data.order_id.name, column_title_style)
                 elif col == 1:
@@ -160,6 +164,26 @@ class SalesXlsx(models.AbstractModel):
                 elif col == 19:
                     if o_data.mold_set:
                         worksheet.write(row, col, o_data.mold_set, column_title_style)
+                    else:
+                        worksheet.write(row, col,'', column_title_style)
+                elif col == 20:
+                    if o_data.order_id.washing_type:
+                        worksheet.write(row, col, o_data.order_id.washing_type, column_title_style)
+                    else:
+                        worksheet.write(row, col,'', column_title_style)
+                elif col == 21:
+                    if o_data.order_id.metal_detection:
+                        worksheet.write(row, col, o_data.order_id.metal_detection, column_title_style)
+                    else:
+                        worksheet.write(row, col,'', column_title_style)
+                elif col == 22:
+                    if o_data.order_id.corrosions_test:
+                        worksheet.write(row, col, o_data.order_id.corrosions_test, column_title_style)
+                    else:
+                        worksheet.write(row, col,'', column_title_style)
+                elif col == 23:
+                    if o_data.order_id.bcd_part_finish:
+                        worksheet.write(row, col, o_data.order_id.bcd_part_finish, column_title_style)
                     else:
                         worksheet.write(row, col,'', column_title_style)
                 col += 1

@@ -26,7 +26,7 @@ class InitialProduction(models.Model):
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True, store=True)
     product_tmpl_id = fields.Many2one('product.template', 'Template Id', store=True)
     product_name = fields.Char(related='product_tmpl_id.name', string='Product', store=True)
-    fg_categ_type = fields.Selection(string='Item', related='product_tmpl_id.fg_categ_type', store=True)
+    fg_categ_type = fields.Char(string='Item', store=True)#related='product_tmpl_id.fg_categ_type', 
     production_date = fields.Datetime(string='Production Date')
     production_till_date = fields.Float(string='Comul. Production')
     invoice_till_date = fields.Float(string='Comul. Invoiced')
