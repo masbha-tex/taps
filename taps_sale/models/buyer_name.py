@@ -9,3 +9,8 @@ class BuyerName(models.Model):
     _description = 'Buyer List'
     
     name = fields.Char(string='Buyer Name')
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+
+    is_buyer = fields.Boolean(string='Is Buyer')

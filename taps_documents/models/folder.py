@@ -5,56 +5,81 @@ from odoo.exceptions import ValidationError, UserError
 class DocumentFolder(models.Model):
     _inherit = 'documents.folder'
 
+    group_ids = fields.Many2many('res.groups',
+        string="Write Groups", default=lambda self: self._get_write_group(self), help='Groups able to see the workspace and read/create/edit its documents.')
     
+    @staticmethod
+    def _get_write_group(self):
+        res_group = False
+        res_group = self.env['res.groups'].sudo().search([('category_id','=', False), ('users.id', '=', self.env.user.id)])
+        
+        return res_group
+        
     @api.model
     def create(self, vals):
         result = super(DocumentFolder, self).create(vals)
-        if vals.get('group_ids'):
-            # # raise UserError(folder.group_ids)
-            self.folder_email(result.group_ids, result.read_group_ids,result.id)
-        if vals.get('read_group_ids'):
-            # raise UserError(folder.read_group_ids)
-            self.folder_email(result.group_ids, result.read_group_ids,result.id)            
+        if vals.get('group_ids') and vals.get('read_group_ids') or vals.get('group_ids') or vals.get('read_group_ids'):
+            res_group = self.env['res.groups'].sudo().search([('category_id','=', False), ('users.id', '=', self.env.user.id)])
+            if not res_group in result.group_ids:
+                raise UserError(('You forget to add your write access group in "Write Groups" !!'))
+            self.folder_email(result.group_ids, result.read_group_ids,result.id, result.display_name)        
         return result
         
     def write(self, vals):
-        gr_ids = re_ids = None
+        gr_ids = re_ids = w_recent_ids = r_recent_ids = None
         gr_ids = self.group_ids
         re_ids = self.read_group_ids
         result = super(DocumentFolder, self).write(vals)
         
-        if 'group_ids' in vals:
+        if vals.get('group_ids') and vals.get('read_group_ids'):
+            # raise UserError(('folder.read_group_ids'))
+            w_groups = ','.join([str(i) for i in vals.get('group_ids')])
+            w_groups = w_groups.replace('[6, False, [','').replace(']]','')
+            if w_groups:
+                grp_ids = [int(id_str) for id_str in w_groups.split(',')]
+                w_recent_ids = self.env['res.groups'].browse(grp_ids)
+
+            r_groups = ','.join([str(i) for i in vals.get('read_group_ids')])
+            r_groups = r_groups.replace('[6, False, [','').replace(']]','')
+            if r_groups:
+                r_grp_ids = [int(id_str) for id_str in r_groups.split(',')]
+                r_recent_ids = self.env['res.groups'].browse(r_grp_ids)
+            if w_recent_ids:
+                gr_ids = w_recent_ids - gr_ids
+            else:
+                gr_ids
+            if r_recent_ids:
+                re_ids = r_recent_ids - re_ids
+            else:
+                re_ids
+            if len(self) == 1:
+                self.folder_email(gr_ids, re_ids, self.id)      
+                
+        if vals.get('group_ids') and not vals.get('read_group_ids'):
             groups = ','.join([str(i) for i in vals.get('group_ids')])
             groups = groups.replace('[6, False, [','').replace(']]','')
-            grp_ids = [int(id_str) for id_str in groups.split(',')]
-            
-            recent_ids = self.env['res.groups'].browse(grp_ids)
-            gr_ids = recent_ids - gr_ids
-            
-            if len(self) == 1:
-                self.folder_email(gr_ids, None, self.id)
-        if 'read_group_ids' in vals:
+            # raise UserError((groups))
+            if groups:
+                grp_ids = [int(id_str) for id_str in groups.split(',')]
+                recent_ids = self.env['res.groups'].browse(grp_ids)
+                gr_ids = recent_ids - gr_ids
+                if len(self) == 1:
+                    self.folder_email(gr_ids, '', self.id)
+                                        
+        if vals.get('read_group_ids') and not vals.get('group_ids'):
             groups = ','.join([str(i) for i in vals.get('read_group_ids')])
             groups = groups.replace('[6, False, [','').replace(']]','')
-            r_grp_ids = [int(id_str) for id_str in groups.split(',')]
-            
-            recent_ids = self.env['res.groups'].browse(r_grp_ids)
-            re_ids = recent_ids - re_ids
-            if len(self) == 1:
-                self.folder_email(None, re_ids, self.id)
-        
-        # if 'group_ids' in vals:
-        #     if len(self) == 1:
-        #         self.folder_email(gr_ids, None, self.id)
-
-        # if 'read_group_ids' in vals:
-        #     if len(self) == 1:
-        #         self.folder_email(None, re_ids, self.id)
+            if groups:
+                r_grp_ids = [int(id_str) for id_str in groups.split(',')]
+                recent_ids = self.env['res.groups'].browse(r_grp_ids)
+                re_ids = recent_ids - re_ids
+                if len(self) == 1:
+                    self.folder_email('', re_ids, self.id)
 
         return result
         
 
-    def folder_email(self, group_id, read_group_id,id):
+    def folder_email(self, group_id, read_group_id,id, f_name=None):
         
         # raise UserError(())
         folder_mail_template = """
@@ -96,7 +121,7 @@ class DocumentFolder(models.Model):
         employees_group_id = employees_read_group_id = employees = None
         employees_group_id = group_id
         employees_read_group_id = read_group_id
-        raise UserError((employees_group_id, employees_read_group_id))
+        # raise UserError((employees_group_id, employees_read_group_id))
         write_mail_template = folder_mail_template
         read_mail_template = read_folder_mail_template
         mapped_data = {
@@ -112,7 +137,7 @@ class DocumentFolder(models.Model):
         #     **{employees : folder_mail_template},
         #     **{employees : read_folder_mail_template}
         # }
-        raise UserError((mapped_data.items()))
+        # raise UserError((employee.users for employee, mail_template in mapped_data.items()))
         for employee, mail_template in mapped_data.items():
             # for employee in employee:
             
@@ -122,7 +147,7 @@ class DocumentFolder(models.Model):
             ctx = {
                 'employee_to_name': employee.users.display_name,
                 'recipient_users': self.env.user.id,
-                'url': '/mail/view?model=%s&res_id=%s' % ('documents.folder', self.id),
+                'url': '/mail/view?model=%s&res_id=%s' % ('documents.folder', id),
             }
             
             RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
@@ -163,7 +188,7 @@ class DocumentFolder(models.Model):
                 'model': None,
                 'res_id': None,
                 # 'subject': 'folder a documents : %s' % ', '.join([str(i.display_name) for i in sorted(folder.document_ids)]),
-                'subject': 'Give access for: %s' % self.display_name,
+                'subject': '%s has invited you to "%s"' % (self.env.user.name, f_name or self.display_name),
                 'body_html': body,
                 # 'attachment_ids': attachment,                    
                 'auto_delete': True,
@@ -181,19 +206,10 @@ class DocumentFolder(models.Model):
             else:
                 template_ctx = {
                     # 'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=folder_doc_name)),
-                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.name)),
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=f_name or self.display_name)),
                     'model_description': self.env['ir.model']._get('documents.folder').name,
                     'company': self.env.company,
                 }
                 body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                 mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            self.env['mail.mail'].sudo().create(mail_values)#.send()
-    
-        return {
-            'effect': {
-                'fadeout': 'slow',
-                'message': 'Mail Sent Successfully',
-                'type': 'rainbow_man',
-                'img_url': 'taps_grievance/static/img/success.png'
-            }
-        }    
+            self.env['mail.mail'].sudo().create(mail_values)#.send()   

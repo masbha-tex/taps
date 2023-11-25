@@ -1,5 +1,29 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+    <field name="name">res.partner.form.inherit</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
+            <page string="Buyer" name="buyer Info">
+              <group name="Buyer_group">
+                <field name="is_buyer"/>
+              </group>
+            </page>
+        </xpath>
+    </field>
+    </record>
+    <record id="view_res_partner_search_inherit" model="ir.ui.view">
+    <field name="name">res.partner.search.inherit</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_res_partner_filter"/>
+    <field name="arch" type="xml">
+        <xpath expr="//search/filter[2][@name='type_company']" position="after">
+            <filter string="Buyers" name="buyers" domain="[('is_buyer', '=', True)]"/>
+        </xpath>
+    </field>
+    </record>
     <record id="buyer_list" model="ir.ui.view">
         <field name="name">sale.buyer.list</field>
         <field name="model">sale.buyer</field>
