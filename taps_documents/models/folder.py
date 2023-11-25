@@ -11,10 +11,10 @@ class DocumentFolder(models.Model):
         result = super(DocumentFolder, self).create(vals)
         if vals.get('group_ids'):
             # # raise UserError(folder.group_ids)
-            self.folder_email(result.group_ids, None,result.id)
+            self.folder_email(result.group_ids, result.read_group_ids,result.id)
         if vals.get('read_group_ids'):
             # raise UserError(folder.read_group_ids)
-            self.folder_email(None, result.read_group_ids,result.id)            
+            self.folder_email(result.group_ids, result.read_group_ids,result.id)            
         return result
         
     def write(self, vals):
@@ -59,7 +59,7 @@ class DocumentFolder(models.Model):
         # raise UserError(())
         folder_mail_template = """
                     <div style="margin:0px;padding: 0px;">
-                    <span>Dear Concern,</span>
+                    <span>Dear ${ctx['employee_to_name']},</span>
                     <br>
                     <span>Here you have been sent an <strong>Write</strong> access for this workspace. Please click  below</span>
                     <br>
@@ -77,7 +77,7 @@ class DocumentFolder(models.Model):
                         """   
         read_folder_mail_template = """
                     <div style="margin:0px;padding: 0px;">
-                    <span>Dear Concern,</span>
+                    <span>Dear ${ctx['employee_to_name']},</span>
                     <br>
                     <span>Here you have been sent an <strong>Read</strong> access for this workspace. Please click  below</span>
                     <br>
@@ -96,90 +96,98 @@ class DocumentFolder(models.Model):
         employees_group_id = employees_read_group_id = employees = None
         employees_group_id = group_id
         employees_read_group_id = read_group_id
-        # raise UserError((group_id))
-        
-        if employees_group_id:
-            employees = employees_group_id
-        elif employees_read_group_id:
-            employees = employees_read_group_id
-        
+        raise UserError((employees_group_id, employees_read_group_id))
+        write_mail_template = folder_mail_template
+        read_mail_template = read_folder_mail_template
         mapped_data = {
-            **{employees : folder_mail_template},
-            **{employees : read_folder_mail_template}
-        }
-        # raise UserError((mapped_data.items()))
+            **{write_employee: write_mail_template for write_employee in employees_group_id},
+            **{read_employee: read_mail_template for read_employee in employees_read_group_id}
+        }        
+        # if employees_group_id:
+        #     employees = employees_group_id
+        # elif employees_read_group_id:
+        #     employees = employees_read_group_id
+        
+        # mapped_data = {
+        #     **{employees : folder_mail_template},
+        #     **{employees : read_folder_mail_template}
+        # }
+        raise UserError((mapped_data.items()))
         for employee, mail_template in mapped_data.items():
-            for employee in employee:
-                if not employee.users.login or not self.env.user.email:
-                    return True
-                # raise UserError((mail_template))
-                ctx = {
-                    'employee_to_name': employee.users.display_name,
-                    'recipient_users': self.env.user.id,
-                    'url': '/mail/view?model=%s&res_id=%s' % ('documents.document', self.id),
+            # for employee in employee:
+            
+            if not employee.users.login or not self.env.user.email:
+                return True
+            # raise UserError((mail_template))
+            ctx = {
+                'employee_to_name': employee.users.display_name,
+                'recipient_users': self.env.user.id,
+                'url': '/mail/view?model=%s&res_id=%s' % ('documents.folder', self.id),
+            }
+            
+            RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
+            
+            # subject = RenderMixin._render_template(folder.name, 'documents.folder', folder.ids, post_process=True)[folder.id]
+            # render_result = RenderMixin._render_template(folder_mail_template, 'documents.folder', self.ids, post_process=True)
+            # body = render_result.get(self.id)
+            # all_doc = self.env['documents.folder'].search([])
+            id_list = [id]
+            # raise UserError(((id)list))
+            body = ""
+
+            # if employees_group_id:
+            #     body += RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
+            # elif employees_read_group_id:
+            #     body += RenderMixin._render_template(read_folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
+
+            body += RenderMixin._render_template(mail_template, 'documents.folder', id_list, post_process=True)[id]
+            
+            body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
+            body = f"{body}<br/>{body_sig}"
+            # if employees_group_id == True:
+            #     body = RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
+            # if employees_read_group_id == True:
+            #     body = RenderMixin._render_template(read_folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
+            # raise UserError((self.ids))
+            # body_submit = RenderMixin._render_template(folder.e_template, 'documents.folder', folder.ids, post_process=True)[folder.id]
+            # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
+            # body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]  
+            # body = f"{body}<br/>{body_sig}"
+
+
+            
+            mail_values = {
+                'email_from': self.env.user.email_formatted,
+                # 'email_from': self.env.user.ids.email,
+                'author_id': self.env.user.partner_id.id,
+                'model': None,
+                'res_id': None,
+                # 'subject': 'folder a documents : %s' % ', '.join([str(i.display_name) for i in sorted(folder.document_ids)]),
+                'subject': 'Give access for: %s' % self.display_name,
+                'body_html': body,
+                # 'attachment_ids': attachment,                    
+                'auto_delete': True,
+                'notification': True,
+                'email_to': employee.users.login,
+                # 'email_to': self.submit_by.email,
+                # 'email_cc': mailcc or '',
+            
+            }
+            # raise UserError((mail_values['mail_values']))
+            try:
+                template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+            except ValueError:
+                _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
+            else:
+                template_ctx = {
+                    # 'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=folder_doc_name)),
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.name)),
+                    'model_description': self.env['ir.model']._get('documents.folder').name,
+                    'company': self.env.company,
                 }
-                
-                RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
-                
-                # subject = RenderMixin._render_template(folder.name, 'documents.folder', folder.ids, post_process=True)[folder.id]
-                # render_result = RenderMixin._render_template(folder_mail_template, 'documents.folder', self.ids, post_process=True)
-                # body = render_result.get(self.id)
-                # all_doc = self.env['documents.folder'].search([])
-                id_list = [id]
-                # raise UserError(((id)list))
-                body = ""
-
-                if employees_group_id:
-                    body += RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
-                elif employees_read_group_id:
-                    body += RenderMixin._render_template(read_folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
-                
-                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
-                body = f"{body}<br/>{body_sig}"
-                # if employees_group_id == True:
-                #     body = RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
-                # if employees_read_group_id == True:
-                #     body = RenderMixin._render_template(read_folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
-                # raise UserError((self.ids))
-                # body_submit = RenderMixin._render_template(folder.e_template, 'documents.folder', folder.ids, post_process=True)[folder.id]
-                # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
-                # body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]  
-                # body = f"{body}<br/>{body_sig}"
-
-
-                
-                mail_values = {
-                    'email_from': self.env.user.email_formatted,
-                    # 'email_from': self.env.user.ids.email,
-                    'author_id': self.env.user.partner_id.id,
-                    'model': None,
-                    'res_id': None,
-                    # 'subject': 'folder a documents : %s' % ', '.join([str(i.display_name) for i in sorted(folder.document_ids)]),
-                    'subject': 'Give access for: %s' % self.name,
-                    'body_html': body,
-                    # 'attachment_ids': attachment,                    
-                    'auto_delete': True,
-                    'notification': True,
-                    'email_to': employee.users.login,
-                    # 'email_to': self.submit_by.email,
-                    # 'email_cc': mailcc or '',
-                
-                }
-                # raise UserError((mail_values['mail_values']))
-                try:
-                    template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
-                except ValueError:
-                    _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
-                else:
-                    template_ctx = {
-                        # 'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=folder_doc_name)),
-                        'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.name)),
-                        'model_description': self.env['ir.model']._get('documents.folder').name,
-                        'company': self.env.company,
-                    }
-                    body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
-                    mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                self.env['mail.mail'].sudo().create(mail_values)#.send()
+                body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+                mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+            self.env['mail.mail'].sudo().create(mail_values)#.send()
     
         return {
             'effect': {
