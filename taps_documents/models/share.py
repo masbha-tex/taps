@@ -25,10 +25,11 @@ class DocumentShare(models.Model):
                     <div style="margin:0px;padding: 0px;">
                     <span>Dear Concern,</span>
                     <br>
-                    <span>Here you have been sent a file. Please click  below</span>
+                    <span>Here's the document that ${ctx['employee_to_name']} shared with you.</span>
                     <br>
-                    
+                    % if ctx.get('validate'):
                     <span>And the file will be expired in <strong>${(object.date_deadline or '')| safe}</strong></span>
+                    % endif
                     <br>
                     
                     <br>
@@ -64,7 +65,7 @@ class DocumentShare(models.Model):
                         return True
                     # raise UserError((employee))
                     ctx = {
-                        'employee_to_name': employee.display_name,
+                        'employee_to_name': share.env.user.name,
                         'recipient_users': share.env.user.id,
                         # 'url': '/mail/view?model=%s&res_id=%s' % ('documents.share', share.id),
                         'validate': share.date_deadline,
@@ -209,7 +210,7 @@ class DocumentShare(models.Model):
                         'model': None,
                         'res_id': None,
                         # 'subject': 'Share a documents : %s' % ', '.join([str(i.display_name) for i in sorted(share.document_ids)]),
-                        'subject': ' %s' % share.name,
+                        'subject': '%s shared "%s" with you' % (share.env.user.name, ', '.join([str(i.display_name.replace('.pdf','')) for i in sorted(share.document_ids)])),
                         'body_html': body,
                         # 'attachment_ids': attachment,                    
                         'auto_delete': True,
@@ -228,7 +229,7 @@ class DocumentShare(models.Model):
                         share_doc_name = ', '.join([str(i.display_name) for i in sorted(share.document_ids) if share.document_ids])
                         template_ctx = {
                             # 'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=share_doc_name)),
-                            'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=share.name)),
+                            'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='%s shared a file with you ' % share.env.user.name)),
                             'model_description': self.env['ir.model']._get('documents.share').name,
                             'company': self.env.company,
                         }

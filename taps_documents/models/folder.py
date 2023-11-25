@@ -38,29 +38,39 @@ class DocumentFolder(models.Model):
         
     def write(self, vals):
         gr_ids = re_ids = None
+        gr_ids = self.group_ids
+        re_ids = self.read_group_ids
         result = super(DocumentFolder, self).write(vals)
-        # raise UserError((vals.get('group_ids')))
-        # groups = vals.get('group_ids').replace('6,false,','')
-        # items = ','.join([str(i) for x,i in vals.get('group_ids')]) 
-        items = ','.join([str(i) for i in vals.get('group_ids') if isinstance(i, int) and i > 1])
-
-        raise UserError((items))
+        
         if 'group_ids' in vals:
-            sefefe = self.env['res.groups'].browse(vals.get('group_ids'))
-            gr_ids = sefefe - self.group_ids
-        if 'read_group_ids' in vals:
-            re_ids = vals.get('read_group_ids') - self.group_ids
-     
-        if 'group_ids' in vals:
+            groups = ','.join([str(i) for i in vals.get('group_ids')])
+            groups = groups.replace('[6, False, [','').replace(']]','')
+            grp_ids = [int(id_str) for id_str in groups.split(',')]
+            
+            recent_ids = self.env['res.groups'].browse(grp_ids)
+            gr_ids = recent_ids - gr_ids
+            
             if len(self) == 1:
                 self.folder_email(gr_ids, None, self.id)
-
         if 'read_group_ids' in vals:
+            groups = ','.join([str(i) for i in vals.get('read_group_ids')])
+            groups = groups.replace('[6, False, [','').replace(']]','')
+            r_grp_ids = [int(id_str) for id_str in groups.split(',')]
+            
+            recent_ids = self.env['res.groups'].browse(r_grp_ids)
+            re_ids = recent_ids - re_ids
             if len(self) == 1:
                 self.folder_email(None, re_ids, self.id)
+        
+        # if 'group_ids' in vals:
+        #     if len(self) == 1:
+        #         self.folder_email(gr_ids, None, self.id)
+
+        # if 'read_group_ids' in vals:
+        #     if len(self) == 1:
+        #         self.folder_email(None, re_ids, self.id)
 
         return result
-
         
 
     def folder_email(self, group_id, read_group_id,id):
@@ -83,10 +93,12 @@ class DocumentFolder(models.Model):
                     			</p>
                     			% endif
                     </div>
-                        """
+                        """   
+        employees_group_id = employees_read_group_id = employees = None
         employees_group_id = group_id
         employees_read_group_id = read_group_id
         # raise UserError((group_id))
+        
         if employees_group_id:
             employees = employees_group_id
         elif employees_read_group_id:
@@ -104,7 +116,7 @@ class DocumentFolder(models.Model):
                 ctx = {
                     'employee_to_name': employee.users.display_name,
                     'recipient_users': self.env.user.id,
-                    'url': '/mail/view?model=%s&res_id=%s' % ('documents', self.id),
+                    'url': '/mail/view?model=%s&res_id=%s' % ('documents.document', self.id),
                 }
                 
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)

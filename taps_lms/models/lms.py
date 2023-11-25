@@ -671,7 +671,7 @@ class EventWizard(models.TransientModel):
             }
             # raise UserError((a))
             body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
-            event_vals['description'] = self.env['mail.render.mixin']._replace_local_links(body)        
+            event_vals['description'] = self.env['mail.render.mixin']._replace_local_links(body)      
         meeting = self.env['calendar.event'].create(event_vals)
         lms_session.meeting_id = meeting.id
 

@@ -23,3 +23,4 @@ access_machine_list,machine_list,model_machine_list,base.group_user,1,1,1,1
 access_packing_report,access_packing_report,model_packing_report,base.group_user,1,1,1,1
 access_mrp_group_output,mrp_group_output,model_mrp_group_output,base.group_user,1,1,1,1
 access_mrp_reports,mrp_report,model_mrp_report,base.group_user,1,1,1,1
+access_initial_production,initial_production,model_initial_production,base.group_user,1,1,1,1
