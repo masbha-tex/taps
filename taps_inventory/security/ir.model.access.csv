@@ -3,3 +3,4 @@ access_stock_opening_closing,access_stock_opening_closing,model_stock_opening_cl
 access_taps_inventory.taps_inventory,taps_inventory.taps_inventory,model_searching_date,base.group_user,1,1,1,1
 access_taps_inventory.taps_inventory,taps_inventory.taps_inventory,model_stock_ageing,base.group_user,1,1,1,1
 access_searching_date,access_searching_date,model_searching_date,base.group_user,1,0,0,0
+access_fg_category,fg.category,model_fg_category,base.group_user,1,1,1,1

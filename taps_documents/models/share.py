@@ -23,9 +23,9 @@ class DocumentShare(models.Model):
 
     sent_template = fields.Html('Sent Template', default="""
                     <div style="margin:0px;padding: 0px;">
-                    <span>Dear Concern,</span>
+                    <span>Dear ${ctx['employee_to_name']},</span>
                     <br>
-                    <span>Here's the document that ${ctx['employee_to_name']} shared with you.</span>
+                    <span>Here's the document that ${ctx['user_to_name']} shared with you.</span>
                     <br>
                     % if ctx.get('validate'):
                     <span>And the file will be expired in <strong>${(object.date_deadline or '')| safe}</strong></span>
@@ -65,7 +65,8 @@ class DocumentShare(models.Model):
                         return True
                     # raise UserError((employee))
                     ctx = {
-                        'employee_to_name': share.env.user.name,
+                        'user_to_name': share.env.user.name,
+                        'employee_to_name': employee.name,
                         'recipient_users': share.env.user.id,
                         # 'url': '/mail/view?model=%s&res_id=%s' % ('documents.share', share.id),
                         'validate': share.date_deadline,

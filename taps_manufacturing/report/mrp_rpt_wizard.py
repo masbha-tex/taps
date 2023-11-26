@@ -30,6 +30,37 @@ class MrpReportWizard(models.TransientModel):
 
     file_data = fields.Binary(readonly=True, attachment=False)
 
+    fg_categ_type = fields.Selection([
+        ('Metal #4 CE', 'Metal #4 CE'),
+        ('Metal #4 OE', 'Metal #4 OE'),
+        ('Metal #5 CE', 'Metal #5 CE'),
+        ('Metal #5 OE', 'Metal #5 OE'),
+        ('Metal #8 OE', 'Metal #8 OE'),
+        ('Metal #8 CE', 'Metal #8 CE'),
+        ('Metal #10 OE', 'Metal #10 OE'),
+        ('Metal #10 CE', 'Metal #10 CE'),
+        ('AL #4 CE', 'AL #4 CE'),
+        ('AL #5 CE', 'AL #5 CE'),
+        ('AL #5 OE', 'AL #5 OE'),
+        ('Coil #3 CE', 'Coil #3 CE'),
+        ('Coil #3 Inv CE', 'Coil #3 Inv CE'),
+        ('Coil #3 OE', 'Coil #3 OE'),
+        ('Coil #3 Inv OE', 'Coil #3 Inv OE'),
+        ('Coil #5 CE', 'Coil #5 CE'),
+        ('Coil #5 Inv CE', 'Coil #5 Inv CE'),
+        ('Coil #5 OE', 'Coil #5 OE'),
+        ('Plastic #3 CE', 'Plastic #3 CE'),
+        ('Plastic #3 OE', 'Plastic #3 OE'),
+        ('Plastic #5 CE', 'Plastic #5 CE'),
+        ('Plastic #5 OE', 'Plastic #5 OE'),
+        ('Plastic #8 CE', 'Plastic #8 CE'),
+        ('Plastic #8 OE', 'Plastic #8 OE'),
+        ('Others', 'Others')
+    ],string='FG Category', store=True, readonly=False, copy=False)
+
+
+    
+
     @staticmethod
     def _get_year_list():
         current_year = datetime.today().year

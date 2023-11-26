@@ -30,7 +30,7 @@ class DocumentFolder(models.Model):
         gr_ids = self.group_ids
         re_ids = self.read_group_ids
         result = super(DocumentFolder, self).write(vals)
-        
+        res_group = self.env['res.groups'].sudo().search([('category_id','=', False), ('users.id', '=', self.env.user.id)])
         if vals.get('group_ids') and vals.get('read_group_ids'):
             # raise UserError(('folder.read_group_ids'))
             w_groups = ','.join([str(i) for i in vals.get('group_ids')])
@@ -38,6 +38,8 @@ class DocumentFolder(models.Model):
             if w_groups:
                 grp_ids = [int(id_str) for id_str in w_groups.split(',')]
                 w_recent_ids = self.env['res.groups'].browse(grp_ids)
+                if not res_group.id in grp_ids:
+                    raise UserError(('You forget to add your write access group in "Write Groups" !!'))
 
             r_groups = ','.join([str(i) for i in vals.get('read_group_ids')])
             r_groups = r_groups.replace('[6, False, [','').replace(']]','')
@@ -52,6 +54,7 @@ class DocumentFolder(models.Model):
                 re_ids = r_recent_ids - re_ids
             else:
                 re_ids
+            
             if len(self) == 1:
                 self.folder_email(gr_ids, re_ids, self.id)      
                 
@@ -61,6 +64,8 @@ class DocumentFolder(models.Model):
             # raise UserError((groups))
             if groups:
                 grp_ids = [int(id_str) for id_str in groups.split(',')]
+                if not res_group.id in grp_ids:
+                    raise UserError(('You forget to add your write access group in "Write Groups" !!'))
                 recent_ids = self.env['res.groups'].browse(grp_ids)
                 gr_ids = recent_ids - gr_ids
                 if len(self) == 1:
@@ -125,8 +130,8 @@ class DocumentFolder(models.Model):
         write_mail_template = folder_mail_template
         read_mail_template = read_folder_mail_template
         mapped_data = {
-            **{write_employee: write_mail_template for write_employee in employees_group_id},
-            **{read_employee: read_mail_template for read_employee in employees_read_group_id}
+            **{read_employee: read_mail_template for read_employee in employees_read_group_id},
+            **{write_employee: write_mail_template for write_employee in employees_group_id}
         }        
         # if employees_group_id:
         #     employees = employees_group_id
@@ -137,7 +142,7 @@ class DocumentFolder(models.Model):
         #     **{employees : folder_mail_template},
         #     **{employees : read_folder_mail_template}
         # }
-        # raise UserError((employee.users for employee, mail_template in mapped_data.items()))
+        # raise UserError((mapped_data.items()))
         for employee, mail_template in mapped_data.items():
             # for employee in employee:
             

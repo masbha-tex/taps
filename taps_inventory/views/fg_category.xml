@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+         <record id="fg_category_form_view" model="ir.ui.view">
+            <field name="name">fg.category.form</field>
+            <field name="model">fg.category</field>
+            <field name="arch" type="xml">
+                <form string="FG Categories">
+                    <sheet>
+                        <group>
+                            <field name="sequence" invisible="1"/>
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+         </record>
+
+        <record id="fg_category_tree_view" model="ir.ui.view">
+            <field name="name">fg.category.tree</field>
+            <field name="model">fg.category</field>
+            <field name="arch" type="xml">
+                <tree string="FG Categories" editable="bottom">
+                    <field name="sequence" widget="handle" />
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_fg_category_form" model="ir.actions.act_window">
+            <field name="name">FG Categories</field>
+            <field name="res_model">fg.category</field>
+            <field name="view_mode">tree</field>
+        </record>
+        <menuitem action="action_fg_category_form" id="menu_fg_category_form" parent="stock.menu_product_in_config_stock" sequence="4"/>
+    </data>
+</odoo>

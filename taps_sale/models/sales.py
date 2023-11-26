@@ -25,7 +25,7 @@ class SaleOrder(models.Model):
     
     priority_sales = fields.Selection(
         [('0', 'Normal'), ('1', 'Urgent')], 'Priority Sales', default='0', index=True)
-    buyer_name = fields.Many2one('sale.buyer', string='Buyer Name')
+    buyer_name = fields.Many2one('res.partner', string='Buyer Name')
     season = fields.Char(string='Season')
     sample_ref = fields.Many2many(comodel_name='sale.order',
                                   relation='id_name',column1='id',column2='name',

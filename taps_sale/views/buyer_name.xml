@@ -14,16 +14,18 @@
         </xpath>
     </field>
     </record> -->
-    <!-- <record id="view_res_partner_search_inherit" model="ir.ui.view">
-    <field name="name">res.partner.search.inherit</field>
-    <field name="model">res.partner</field>
-    <field name="inherit_id" ref="base.view_res_partner_filter"/>
-    <field name="arch" type="xml">
-        <xpath expr="//search/filter[2][@name='type_company']" position="after">
-            <filter string="Buyers" name="buyers" domain="[('is_buyer', '=', True)]"/>
-        </xpath>
-    </field>
-    </record> -->
+    <record id="res_partner_view_search_inherit" model="ir.ui.view">
+            <field name="name">res.partner.search.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='inactive']" position="before">
+                   <filter string="Buyers List" name="buyer" domain="[('buyer_rank','>', 0)]"/>
+                   
+                   <separator/>
+                </xpath>
+            </field>
+        </record>
     <record id="buyer_list" model="ir.ui.view">
         <field name="name">sale.buyer.list</field>
         <field name="model">sale.buyer</field>
@@ -48,6 +50,23 @@
         </field>
     </record>
     
+    <record id="res_partner_action_buyer" model="ir.actions.act_window">
+            <field name="name">Buyers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'search_default_buyer': 1,'res_partner_search_mode': 'buyer', 'default_is_company': True, 'default_buyer_rank': 1}</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new customer in your address book
+              </p><p>
+                Odoo helps you easily track all activities related to a customer.
+              </p>
+            </field>
+        </record>
+    
+    
     <record id="buyer_name_action_config" model="ir.actions.act_window">
         <field name="name">Buyer Name</field>
         <field name="res_model">sale.buyer</field>
@@ -59,4 +78,11 @@
         action="buyer_name_action_config"
         parent="sale.menu_sales_config"
         sequence="17"/>
+    
+    <menuitem 
+        id="sale_order_menu_inherit"
+        name="Buyers"
+        action ="res_partner_action_buyer"
+        parent="sale.sale_order_menu"
+        sequence="16"/>
 </odoo>    

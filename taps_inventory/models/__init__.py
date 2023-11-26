@@ -6,3 +6,5 @@ from . import product_move
 from . import stock_opening_closing
 from . import searching_date
 from . import stock_ageing
+from . import stock_ageing
+from . import fg_category
