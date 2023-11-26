@@ -217,4 +217,4 @@ class DocumentFolder(models.Model):
                 }
                 body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                 mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            self.env['mail.mail'].sudo().create(mail_values)#.send()   
+            self.env['mail.mail'].sudo().create(mail_values).send()   
