@@ -92,6 +92,28 @@ class HrReward(models.Model):
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
     attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
 
+    @api.onchange('employee_id')
+    def _onchange_employee_id(self):
+        invalid_partners = self.employee_id.filtered(lambda partner: not partner.private_email)
+        if invalid_partners:
+            warning = {
+                'title': 'Invalid "Employee" Email',
+                'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
+            }
+            self.employee_id -= invalid_partners
+            return {'warning': warning}
+            
+    @api.onchange('submit_by')
+    def _onchange_submit_by(self):
+        invalid_partners = self.submit_by.filtered(lambda partner: not partner.private_email)
+        if invalid_partners:
+            warning = {
+                'title': 'Invalid "Recommended By" Email',
+                'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
+            }
+            self.submit_by -= invalid_partners
+            return {'warning': warning}               
+
     
     def action_submit(self):
         if self.state == 'draft':
@@ -238,13 +260,13 @@ class HrReward(models.Model):
                 
                 body = f"{body}<br/>{body_submit}<br/>{body_sig}"
                 # post the message
-                matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
+                matrix = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILTO')], limit=1)
                 if matrix:
                     mailto = ','.join([email.email for email in matrix.next_user if email])
-                matrix_cc = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', False)], limit=1)
+                matrix_cc = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
                 if matrix_cc:
-                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email]) +','+employee.parent_id.email
-                
+                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email])
+                # raise UserError((self.env['hr.reward.matrix']))
                 attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
                 
                 mail_values = {

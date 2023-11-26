@@ -133,16 +133,6 @@ class DocumentFolder(models.Model):
             **{read_employee: read_mail_template for read_employee in employees_read_group_id},
             **{write_employee: write_mail_template for write_employee in employees_group_id}
         }        
-        # if employees_group_id:
-        #     employees = employees_group_id
-        # elif employees_read_group_id:
-        #     employees = employees_read_group_id
-        
-        # mapped_data = {
-        #     **{employees : folder_mail_template},
-        #     **{employees : read_folder_mail_template}
-        # }
-        # raise UserError((mapped_data.items()))
         for employee, mail_template in mapped_data.items():
             # for employee in employee:
             
@@ -156,35 +146,14 @@ class DocumentFolder(models.Model):
             }
             
             RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
-            
-            # subject = RenderMixin._render_template(folder.name, 'documents.folder', folder.ids, post_process=True)[folder.id]
-            # render_result = RenderMixin._render_template(folder_mail_template, 'documents.folder', self.ids, post_process=True)
-            # body = render_result.get(self.id)
-            # all_doc = self.env['documents.folder'].search([])
             id_list = [id]
             # raise UserError(((id)list))
             body = ""
-
-            # if employees_group_id:
-            #     body += RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
-            # elif employees_read_group_id:
-            #     body += RenderMixin._render_template(read_folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
-
             body += RenderMixin._render_template(mail_template, 'documents.folder', id_list, post_process=True)[id]
             
-            body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
+            body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
+            raise UserError((body_sig))
             body = f"{body}<br/>{body_sig}"
-            # if employees_group_id == True:
-            #     body = RenderMixin._render_template(folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
-            # if employees_read_group_id == True:
-            #     body = RenderMixin._render_template(read_folder_mail_template, 'documents.folder', id_list, post_process=True)[id]
-            # raise UserError((self.ids))
-            # body_submit = RenderMixin._render_template(folder.e_template, 'documents.folder', folder.ids, post_process=True)[folder.id]
-            # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
-            # body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]  
-            # body = f"{body}<br/>{body_sig}"
-
-
             
             mail_values = {
                 'email_from': self.env.user.email_formatted,
@@ -192,7 +161,6 @@ class DocumentFolder(models.Model):
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
-                # 'subject': 'folder a documents : %s' % ', '.join([str(i.display_name) for i in sorted(folder.document_ids)]),
                 'subject': '%s has invited you to "%s"' % (self.env.user.name, f_name or self.display_name),
                 'body_html': body,
                 # 'attachment_ids': attachment,                    
@@ -217,4 +185,4 @@ class DocumentFolder(models.Model):
                 }
                 body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                 mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            self.env['mail.mail'].sudo().create(mail_values).send()   
+            self.env['mail.mail'].sudo().create(mail_values)#.send()   

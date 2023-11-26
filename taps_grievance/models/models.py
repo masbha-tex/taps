@@ -72,6 +72,28 @@ class HrGrievance(models.Model):
     attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
 
+    @api.onchange('employee_id')
+    def _onchange_employee_id(self):
+        invalid_partners = self.employee_id.filtered(lambda partner: not partner.private_email)
+        if invalid_partners:
+            warning = {
+                'title': 'Invalid "Employee" Email',
+                'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
+            }
+            self.employee_id -= invalid_partners
+            return {'warning': warning}
+            
+    @api.onchange('submit_by')
+    def _onchange_submit_by(self):
+        invalid_partners = self.submit_by.filtered(lambda partner: not partner.private_email)
+        if invalid_partners:
+            warning = {
+                'title': 'Invalid "Recommended By" Email',
+                'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
+            }
+            self.submit_by -= invalid_partners
+            return {'warning': warning}    
+
     def action_submit(self):
         if self.state == 'draft':
             self.state = 'Submit'

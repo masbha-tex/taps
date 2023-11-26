@@ -102,7 +102,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-	<menuitem name="Reward" parent="hr.menu_hr_root" id="menu_hr_reward" sequence="6" action="action_hr_reward"/>
+	<menuitem name="R &amp; R" parent="hr.menu_hr_root" id="menu_hr_reward" sequence="5" action="action_hr_reward"/>
 
 <!-- Add Complaint Count to Employee Form-->
      <record id="act_hr_employee_2_hr_reward" model="ir.actions.act_window">

@@ -977,8 +977,8 @@ class OperationDetails(models.Model):
                 tot_b = tot_b - move_qty #out.uotput_qty
                 if tot_b == 0:
                     mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b,'closing_date':datetime.now(),'state':'closed'})
-                    op_closed = self.env["operation.details"].browse(out.oa_id.id)
-                    _closed = op_closed.update({'closing_date':datetime.now(),'state':'closed'})
+                    # op_closed = self.env["operation.details"].browse(out.oa_id.id)
+                    # _closed = op_closed.update({'closing_date':datetime.now(),'state':'closed'})
                     sl_closed = self.env["sale.order"].browse(out.oa_id.id)
                     _slclosed = sl_closed.write({'closing_date':datetime.now().date()})
                 else:

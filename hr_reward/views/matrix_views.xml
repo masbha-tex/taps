@@ -10,7 +10,7 @@
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="next_user" widget="many2many_tags"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -23,7 +23,7 @@
             <field name="arch" type="xml">
                 <search string="Reward Matrix">
                     <field name="name"/>
-                    <field name="company_id"/>
+                    <field name="company_id" invisible="1"/>
                     <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
                     
                     <separator/>
