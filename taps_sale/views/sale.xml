@@ -213,7 +213,7 @@
   </xpath>
                 <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']" position="before">
                     
-                       <button name="action_copy" confirm="Are You Sure, you want to copy all selected lines" string="Mass Copy" type="object" class="btn-primary"/>
+                       <button name="action_copy" string="Mass Copy" type="object" class="btn-primary"/>
                         
                         <button  name="action_del" confirm="Are You Sure, you want to delete all selected lines" string="Mass Delete" type="object" class="btn-secondary"/>
                     

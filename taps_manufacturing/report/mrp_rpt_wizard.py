@@ -129,32 +129,32 @@ class MrpReportWizard(models.TransientModel):
         merge_format_ = workbook.add_format({'align': 'bottom'})
         
 
-        fg_items = m_orders.mapped('fg_categ_type')
-        fg_items = list(set(fg_items))
+        # fg_items = m_orders.mapped('fg_categ_type')
+        # fg_items = list(set(fg_items))
         items = self.env['fg.category'].search([('active','=',True)]).sorted(key=lambda pr: pr.sequence)
         
-        de_items = items.filtered(lambda pr: pr.name not in (fg_items))
-        items = items - de_items
+        # de_items = items.filtered(lambda pr: pr.name not in (fg_items))
+        # items = items - de_items
         # items = items.search([]).sorted(key=lambda pr: pr.sequence)
-        items = items.mapped('name')
-        items = list(set(items))
-
-        
-        
+        # items = items.mapped('name')
+        # items = list(set(items))
+        # or_ids = ','.join([str(i) for i in sorted(or_ids)])
         if rev_orders:
-            items.append('Revised PI')
+            a = ''#items.append('Revised PI')
+        else:
+            items = items.filtered(lambda pr: pr.name != 'Revised PI').sorted(key=lambda pr: pr.sequence)
 
         for item in items:
             all_orders = None
-            if item == 'Revised PI':
+            if item.name == 'Revised PI':
                 all_orders = self.env['sale.order.line'].browse(rev_orders.sale_order_line.ids)
             else:
                 all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
-                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item)
+                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item.name)
             
             sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
-            report_name = item
+            report_name = item.name
             # raise UserError((items))
            
             sheet = workbook.add_worksheet(('%s' % (report_name)))

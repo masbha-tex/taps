@@ -563,8 +563,7 @@
 												<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 													<span>
 														<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
-                                                        <t t-if="(line.product_template_id.name != 'ADJUSTED AMOUNT
-') and (line.product_template_id.name != 'DOCUMENTATION CHARGE') and (line.product_template_id.name != 'PAYMENT PENDING PI VALUE') and (line.product_template_id.name != 'OTHERS CHARGE')">
+                                                        <t t-if="(line.product_template_id.name != 'ADJUSTED AMOUNT ') and (line.product_template_id.name != 'DOCUMENTATION CHARGE') and (line.product_template_id.name != 'PAYMENT PENDING PI VALUE') and (line.product_template_id.name != 'OTHERS CHARGE')">
 														<t t-set="total_quantity" t-value="total_quantity+line.product_uom_qty"/>
                                                         </t>
 													</span>
@@ -581,12 +580,17 @@
 														<t t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 4}"/>
 													</span>
 												</td>
+												<t t-if="dis == 1">
 												<t t-if="line.discount != 0">
 													<td class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 														<span>
 															<t t-esc="line.discount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 4}"/>
 														</span>
 													</td>
+												</t>
+												<t  t-if="line.discount == 0">
+												  <td class="text-right" style="vertical-align:middle;border-top: 1px solid black;"></td>
+												</t>
 												</t>
 												<td class="text-right o_price_total" style="vertical-align:middle;border-top: 1px solid black;border-bottom: 1px solid black; background-color: white ! important">
 													<span>

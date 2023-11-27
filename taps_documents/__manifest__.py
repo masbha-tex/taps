@@ -18,7 +18,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'data/ir_cron.xml',
+        # 'data/ir_cron.xml',
         'views/assets.xml',
         'views/taps_documents_views.xml',
         # 'views/documents_views.xml',
@@ -28,4 +28,7 @@
     'qweb': [
         "static/src/xml/*.xml",
     ],
+    'installable': True,
+    'auto_install': False,
+    'application': True,    
 }

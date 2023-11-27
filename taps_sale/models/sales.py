@@ -208,22 +208,18 @@ class SaleOrder(models.Model):
         
         
     def action_copy(self):
-        # return {
-        #     'type': 'ir.actions',
-        #     'res_model': 'sale.order.line',
-        #     'view_mode': 'form',
-        #     # 'res_id': new_record.id,
-        #     'target': 'current',
-        # # }
-        docs=self.env['sale.order.line'].search([('order_id','=', self.id),('is_selected', '=',True)])
-        # raise UserError((docs))
         
+        docs=self.env['sale.order.line'].search([('order_id','=', self.id),('is_selected', '=',True)])
+        
+        
+        # raise UserError((doc_len))
         for record in docs:
             record.is_selected = False
-            max_seq = max(line.sequence for line in record.order_id.order_line)
-            # seq = record.order_id.order_line.sequence
+            max_seq = max(line.sequence for line in self.order_id.order_line)
+            # seq = record.sequence
             # raise UserError((seq))
-            record.copy({'order_id': record.order_id.id, 'sequence': max_seq + 1})
+            record.copy({'order_id': record.order_id.id,'sequence': max_seq+1})
+            
             record.is_copied = True
             # return {'type': 'ir.actions.act_window_close'}
 

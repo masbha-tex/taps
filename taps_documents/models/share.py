@@ -44,12 +44,23 @@ class DocumentShare(models.Model):
                     </div>
                         """ )
 
+    @api.onchange('receiver_ids')
+    def _onchange_receiver_ids(self):
+        invalid_partners = self.receiver_ids.filtered(lambda partner: not partner.email)
+        if invalid_partners:
+            warning = {
+                'title': 'Invalid "Employee" Email',
+                'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
+            }
+            self.receiver_ids -= invalid_partners
+            return {'warning': warning}
+            
     def action_send_share_doc_by_email_cron(self):
         share_doc_ids = self.env['documents.share'].search([('email_sent', '=', False)])
         for share_doc in share_doc_ids:
             if share_doc.email_sent is False:
                 share_doc.send_share_doc_mail()
-                # share_doc.email_sent = True
+                share_doc.email_sent = True
     
     def send_share_doc_mail(self):
         for share in self:
