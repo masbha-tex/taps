@@ -129,20 +129,18 @@ class MrpReportWizard(models.TransientModel):
         merge_format_ = workbook.add_format({'align': 'bottom'})
         
 
-        # fg_items = m_orders.mapped('fg_categ_type')
-        # fg_items = list(set(fg_items))
+        fg_items = m_orders.mapped('fg_categ_type')
+        fg_items = list(set(fg_items))
         items = self.env['fg.category'].search([('active','=',True)]).sorted(key=lambda pr: pr.sequence)
         
-        # de_items = items.filtered(lambda pr: pr.name not in (fg_items))
-        # items = items - de_items
-        # items = items.search([]).sorted(key=lambda pr: pr.sequence)
-        # items = items.mapped('name')
-        # items = list(set(items))
-        # or_ids = ','.join([str(i) for i in sorted(or_ids)])
         if rev_orders:
-            a = ''#items.append('Revised PI')
+            fg_items.append('Revised PI')
         else:
             items = items.filtered(lambda pr: pr.name != 'Revised PI').sorted(key=lambda pr: pr.sequence)
+        
+        de_items = items.filtered(lambda pr: pr.name not in (fg_items))
+        exists_items = items - de_items
+        items = exists_items.sorted(key=lambda pr: pr.sequence)
 
         for item in items:
             all_orders = None
@@ -520,13 +518,16 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(8, 8, 15)
             sheet.set_column(9, 9, 15)
             
-            items = datewise_outputs.mapped('fg_categ_type')
-            items = list(set(items))
+            # items = datewise_outputs.mapped('fg_categ_type')
+            # items = list(set(items))
+            
+            items = self.env['fg.category'].search([('active','=',True)]).sorted(key=lambda pr: pr.sequence)
+            
             report_data = []
             closed_ids = 0
             for item in items:
-                comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item)
-                itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item)
+                comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
+                itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 comu_pcs = sum(comu_outputs.mapped('qty'))
                 pack_pcs = sum(itemwise_outputs.mapped('qty'))
                 or_ids = itemwise_outputs.mapped('sale_lines')
@@ -547,7 +548,7 @@ class MrpReportWizard(models.TransientModel):
                 pending_pcs = total_qty - pack_pcs
                 pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
-                today_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item)])
+                today_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
                 comu_released = today_released.filtered(lambda pr: pr.date_order.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day)
                 comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
                 full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
@@ -588,7 +589,7 @@ class MrpReportWizard(models.TransientModel):
                 
                 order_data = []
                 order_data = [
-                    item,
+                    item.name,
                     pack_pcs,
                     invoiced,
                     pending_pcs,
