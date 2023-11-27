@@ -7,7 +7,7 @@
 			<field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
-                    <attribute name="domain">[('supplier_rank', '=', True)]</attribute>
+                    <!-- <attribute name="domain">[('supplier_rank', '=', True)]</attribute> -->
                 </xpath>
 				<xpath expr="//field[@name='name']" position="before">
 					<field name="priority_sales" widget="priority" class="mr-3"/>

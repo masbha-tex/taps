@@ -8,6 +8,6 @@ class FgCategory(models.Model):
     _description = "Finish Goods Categories"
 
     name = fields.Char(string='Category', store=True)
-    sequence = fields.Integer(string='Sequence', default=10)
+    sequence = fields.Integer(string='Sequence')
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True, store=True)
     active = fields.Boolean('Active', default = True)

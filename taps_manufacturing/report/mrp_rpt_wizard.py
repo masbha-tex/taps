@@ -30,34 +30,6 @@ class MrpReportWizard(models.TransientModel):
 
     file_data = fields.Binary(readonly=True, attachment=False)
 
-    fg_categ_type = fields.Selection([
-        ('Metal #4 CE', 'Metal #4 CE'),
-        ('Metal #4 OE', 'Metal #4 OE'),
-        ('Metal #5 CE', 'Metal #5 CE'),
-        ('Metal #5 OE', 'Metal #5 OE'),
-        ('Metal #8 OE', 'Metal #8 OE'),
-        ('Metal #8 CE', 'Metal #8 CE'),
-        ('Metal #10 OE', 'Metal #10 OE'),
-        ('Metal #10 CE', 'Metal #10 CE'),
-        ('AL #4 CE', 'AL #4 CE'),
-        ('AL #5 CE', 'AL #5 CE'),
-        ('AL #5 OE', 'AL #5 OE'),
-        ('Coil #3 CE', 'Coil #3 CE'),
-        ('Coil #3 Inv CE', 'Coil #3 Inv CE'),
-        ('Coil #3 OE', 'Coil #3 OE'),
-        ('Coil #3 Inv OE', 'Coil #3 Inv OE'),
-        ('Coil #5 CE', 'Coil #5 CE'),
-        ('Coil #5 Inv CE', 'Coil #5 Inv CE'),
-        ('Coil #5 OE', 'Coil #5 OE'),
-        ('Plastic #3 CE', 'Plastic #3 CE'),
-        ('Plastic #3 OE', 'Plastic #3 OE'),
-        ('Plastic #5 CE', 'Plastic #5 CE'),
-        ('Plastic #5 OE', 'Plastic #5 OE'),
-        ('Plastic #8 CE', 'Plastic #8 CE'),
-        ('Plastic #8 OE', 'Plastic #8 OE'),
-        ('Others', 'Others')
-    ],string='FG Category', store=True, readonly=False, copy=False)
-
 
     
 
@@ -157,8 +129,17 @@ class MrpReportWizard(models.TransientModel):
         merge_format_ = workbook.add_format({'align': 'bottom'})
         
 
-        items = m_orders.mapped('fg_categ_type')
+        fg_items = m_orders.mapped('fg_categ_type')
+        fg_items = list(set(fg_items))
+        items = self.env['fg.category'].search([('active','=',True)]).sorted(key=lambda pr: pr.sequence)
+        
+        de_items = items.filtered(lambda pr: pr.name not in (fg_items))
+        items = items - de_items
+        # items = items.search([]).sorted(key=lambda pr: pr.sequence)
+        items = items.mapped('name')
         items = list(set(items))
+
+        
         
         if rev_orders:
             items.append('Revised PI')
@@ -174,6 +155,7 @@ class MrpReportWizard(models.TransientModel):
             sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
             report_name = item
+            raise UserError((items))
            
             sheet = workbook.add_worksheet(('%s' % (report_name)))
             

@@ -50,23 +50,23 @@ class ResPartner(models.Model):
         
     #     return '%s, %s' % (res, order_by_field % field) if res else order_by_field
 
-    def _increase_rank(self, field, n=1):
-        if self.ids and field in ['customer_rank', 'supplier_rank', 'buyer_rank']:
-            try:
-                with self.env.cr.savepoint(flush=False):
-                    query = sql.SQL("""
-                        SELECT {field} FROM res_partner WHERE ID IN %(partner_ids)s FOR UPDATE NOWAIT;
-                        UPDATE res_partner SET {field} = {field} + %(n)s
-                        WHERE id IN %(partner_ids)s
-                    """).format(field=sql.Identifier(field))
-                    self.env.cr.execute(query, {'partner_ids': tuple(self.ids), 'n': n})
-                    for partner in self:
-                        self.env.cache.remove(partner, partner._fields[field])
-            except DatabaseError as e:
-                if e.pgcode == '55P03':
-                    _logger.debug('Another transaction already locked partner rows. Cannot update partner ranks.')
-                else:
-                    raise e
+    # def _increase_rank(self, field, n=1):
+    #     if self.ids and field in ['customer_rank', 'supplier_rank', 'buyer_rank']:
+    #         try:
+    #             with self.env.cr.savepoint(flush=False):
+    #                 query = sql.SQL("""
+    #                     SELECT {field} FROM res_partner WHERE ID IN %(partner_ids)s FOR UPDATE NOWAIT;
+    #                     UPDATE res_partner SET {field} = {field} + %(n)s
+    #                     WHERE id IN %(partner_ids)s
+    #                 """).format(field=sql.Identifier(field))
+    #                 self.env.cr.execute(query, {'partner_ids': tuple(self.ids), 'n': n})
+    #                 for partner in self:
+    #                     self.env.cache.remove(partner, partner._fields[field])
+    #         except DatabaseError as e:
+    #             if e.pgcode == '55P03':
+    #                 _logger.debug('Another transaction already locked partner rows. Cannot update partner ranks.')
+    #             else:
+    #                 raise e
 
 
     
