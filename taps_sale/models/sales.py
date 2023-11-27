@@ -221,6 +221,8 @@ class SaleOrder(models.Model):
         for record in docs:
             record.is_selected = False
             max_seq = max(line.sequence for line in record.order_id.order_line)
+            # seq = record.order_id.order_line.sequence
+            # raise UserError((seq))
             record.copy({'order_id': record.order_id.id, 'sequence': max_seq + 1})
             record.is_copied = True
             # return {'type': 'ir.actions.act_window_close'}

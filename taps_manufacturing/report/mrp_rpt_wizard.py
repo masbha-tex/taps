@@ -155,7 +155,7 @@ class MrpReportWizard(models.TransientModel):
             sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
             report_name = item
-            raise UserError((items))
+            # raise UserError((items))
            
             sheet = workbook.add_worksheet(('%s' % (report_name)))
             
