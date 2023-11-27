@@ -8,9 +8,9 @@
         <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
             <page string="Others" name="Others info">
               <group name="Others">
-                <field name="sale_representative"/>
-                <field name="related_buyer"/>
-                <field name="related_customer"/>
+                <field name="sale_representative" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                <field name="related_buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
+                <field name="related_customer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
               </group>
             </page>
         </xpath>

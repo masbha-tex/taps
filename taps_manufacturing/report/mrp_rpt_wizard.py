@@ -521,7 +521,7 @@ class MrpReportWizard(models.TransientModel):
             # items = datewise_outputs.mapped('fg_categ_type')
             # items = list(set(items))
             
-            items = self.env['fg.category'].search([('active','=',True)]).sorted(key=lambda pr: pr.sequence)
+            items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
             
             report_data = []
             closed_ids = 0
@@ -531,11 +531,12 @@ class MrpReportWizard(models.TransientModel):
                 comu_pcs = sum(comu_outputs.mapped('qty'))
                 pack_pcs = sum(itemwise_outputs.mapped('qty'))
                 or_ids = itemwise_outputs.mapped('sale_lines')
-                
-                or_ids = ','.join([str(i) for i in sorted(or_ids)])
-                or_ids = [int(id_str) for id_str in or_ids.split(',')]
-                
-                order_lines = self.env['sale.order.line'].browse(or_ids)
+                order_lines = None
+                if or_ids:
+                    or_ids = ','.join([str(i) for i in sorted(or_ids)])
+                    or_ids = [int(id_str) for id_str in or_ids.split(',')]
+                    order_lines = self.env['sale.order.line'].browse(or_ids)
+                    
                 if order_lines:
                     order_lines = order_lines.filtered(lambda ol: ol.order_id.state == 'sale')
                 
@@ -572,20 +573,6 @@ class MrpReportWizard(models.TransientModel):
                 today_released = today_released.filtered(lambda pr: pr.date_order.month == int(month_) and pr.date_order.year == year and pr.date_order.day == day)
                 tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
                 
-                # comur_qty = sum(comu_released.mapped('product_uom_qty'))
-                # if initial_pr[0].production_date.dte() > full_date.date():
-                #     pack_pcs = invoiced = pending_pcs = pending_usd = comu_pcs = comu_inv = tr_value = comur_value = 0
-                # if initial_pr[0].production_date.dte() == full_date.date():
-                #     item_initial = initial_pr.filtered(lambda pr: pr.fg_categ_type == item)
-                #     comu_pcs = item_initial.production_till_date
-                #     comu_inv = item_initial.invoice_till_date
-                #     comur_value = item_initial.released_till_date
-                
-                # if initial_pr[0].production_date.dte() < full_date.date():
-                #     item_initial = initial_pr.filtered(lambda pr: pr.fg_categ_type == item)
-                #     comu_pcs += item_initial.production_till_date
-                #     comu_inv += item_initial.invoice_till_date
-                #     comur_value += item_initial.released_till_date
                 
                 order_data = []
                 order_data = [
@@ -632,7 +619,11 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row, 7, '=SUM(H{0}:H{1})'.format(1, row), row_style)
             sheet.write(row, 8, '=SUM(I{0}:I{1})'.format(1, row), row_style)
             sheet.write(row, 9, '=SUM(J{0}:J{1})'.format(1, row), row_style)
-            
+
+            # if start_time.day == day and start_time.month == int(month_):
+            #     sheet.Activate()
+        # raise UserError(())
+        # workbook.active =  start_time.day  
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()

@@ -215,7 +215,7 @@ class SaleOrder(models.Model):
         # raise UserError((doc_len))
         for record in docs:
             record.is_selected = False
-            max_seq = max(line.sequence for line in self.order_id.order_line)
+            max_seq = max(line.sequence for line in self.order_line)
             # seq = record.sequence
             # raise UserError((seq))
             record.copy({'order_id': record.order_id.id,'sequence': max_seq+1})
