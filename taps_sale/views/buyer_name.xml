@@ -1,19 +1,19 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-    <!-- <record id="view_partner_form_inherit" model="ir.ui.view">
+    <record id="view_partner_form_inherit" model="ir.ui.view">
     <field name="name">res.partner.form.inherit</field>
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form"/>
     <field name="arch" type="xml">
         <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
-            <page string="Buyer" name="buyer Info">
-              <group name="Buyer_group">
-                <field name="is_buyer"/>
+            <page string="Others" name="Others info">
+              <group name="Others">
+                <field name="sale_representative"/>
               </group>
             </page>
         </xpath>
     </field>
-    </record> -->
+    </record>
     <record id="res_partner_view_search_inherit" model="ir.ui.view">
             <field name="name">res.partner.search.inherit</field>
             <field name="model">res.partner</field>

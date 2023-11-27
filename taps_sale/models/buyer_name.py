@@ -14,6 +14,8 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     buyer_rank = fields.Integer(default=0, copy=False)
+    sale_representative = fields.Many2one('sale.team', string="Sale Representative")
+    
     @api.model_create_multi
     def create(self, vals_list):
         search_partner_mode = self.env.context.get('res_partner_search_mode')
