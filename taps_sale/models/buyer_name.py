@@ -14,7 +14,9 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     buyer_rank = fields.Integer(default=0, copy=False)
-    sale_representative = fields.Many2one('sale.team', string="Sale Representative")
+    sale_representative = fields.Many2one('sale.representative', string="Sale Representative")
+    related_buyer = fields.Many2one('res.partner', string="Related Buyer")
+    related_customer = fields.Many2one('res.partner', string="Related Customer")
     
     @api.model_create_multi
     def create(self, vals_list):

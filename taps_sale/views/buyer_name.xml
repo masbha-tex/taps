@@ -9,6 +9,8 @@
             <page string="Others" name="Others info">
               <group name="Others">
                 <field name="sale_representative"/>
+                <field name="related_buyer"/>
+                <field name="related_customer"/>
               </group>
             </page>
         </xpath>
