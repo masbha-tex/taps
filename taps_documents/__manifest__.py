@@ -30,5 +30,6 @@
     ],
     'installable': True,
     'auto_install': False,
-    'application': True,    
+    'application': True, 
+    'images': ['static/description/icon.png'],
 }

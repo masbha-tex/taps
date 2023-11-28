@@ -33,5 +33,18 @@
             </xpath>
         </field>
     </record>    
+    <record id="folder_view_form_inherit" model="ir.ui.view">
+        <field name="name">Workspace form inherit</field>
+        <field name="model">documents.folder</field>
+        <field name="inherit_id" ref="documents.folder_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_see_actions']" position="attributes">
+              <attribute name="attrs">{'invisible' : [('action_count', '=', 0)]}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_see_documents']" position="attributes">
+              <attribute name="attrs">{}</attribute>
+            </xpath>            
+        </field>
+    </record>       
 </odoo>
     

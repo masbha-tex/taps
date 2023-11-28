@@ -31,20 +31,23 @@ class ResPartner(models.Model):
         help='Default account for receivables',
         default=lambda self: self._get_default_account_payable_id(),
         )
-
+        
+    @api.onchange('property_account_payable_id')
+    def _onchange_company_id(self):
+        # Automatically update the property_account_payable_id based on the current company
+        self.property_account_receivable_id = self._get_default_account_receivable_id()
+        self.property_account_payable_id = self._get_default_account_payable_id()
+        
     def _get_default_account_receivable_id(self):
         
-        # You can customize this method to return the desired default account
-        # For example, you might look up the default account based on some criteria.
         property_account_receivable_id = self.env['account.account'].search([('internal_type', '=', 'receivable')], limit=1)
         # raise UserError((return property_account_receivable_id.id))
-        return property_account_receivable_id.id 
-
+        return property_account_receivable_id.id
+        
+    
     def _get_default_account_payable_id(self):
         
-        # You can customize this method to return the desired default account
-        # For example, you might look up the default account based on some criteria.
-        property_account_payable_id = self.env['account.account'].search([(('internal_type', '=', 'payable'))], limit=1)
+        property_account_payable_id = self.env['account.account'].search([('internal_type', '=', 'payable')], limit=1)
         # raise UserError((return property_account_receivable_id.id))
         return property_account_payable_id.id
     

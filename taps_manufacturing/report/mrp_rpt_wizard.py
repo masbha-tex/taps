@@ -220,7 +220,7 @@ class MrpReportWizard(models.TransientModel):
                 for x,o_data in enumerate(docs):
                     # slnumber = slnumber+1 orders.buyer_name.name,
                     if x == 0:
-                        customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name,orders.payment_term_id.name])
+                        customer = "\n".join([orders.partner_id.name,"\n",orders.payment_term_id.name])
                         pi_num = orders.order_ref.pi_number
                         oa_num = orders.name
                         remarks = orders.remarks
@@ -552,34 +552,43 @@ class MrpReportWizard(models.TransientModel):
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 comu_pcs = sum(comu_outputs.mapped('qty'))
                 pack_pcs = sum(itemwise_outputs.mapped('qty'))
-                or_ids = itemwise_outputs.mapped('mrp_lines')
+                # or_ids = itemwise_outputs.mapped('mrp_lines')
                 
-                order_lines = None
-                if or_ids:
-                    or_ids = ','.join([str(i) for i in sorted(or_ids)])
-                    or_ids = [int(id_str) for id_str in or_ids.split(',')]
-                    order_lines = self.env['sale.order.line'].browse(or_ids)
+                # order_lines = None
+                # if or_ids:
+                #     or_ids = ','.join([str(i) for i in sorted(or_ids)])
+                #     or_ids = [int(id_str) for id_str in or_ids.split(',')]
+                #     order_lines = self.env['sale.order.line'].browse(or_ids)
                     
-                if order_lines:
-                    order_lines = order_lines.filtered(lambda ol: ol.order_id.state == 'sale')
+                # if order_lines:
+                #     order_lines = order_lines.filtered(lambda ol: ol.order_id.state == 'sale')
                 
-                price = 0
-                total_qty = 0
-                if order_lines:
-                    price = sum(order_lines.mapped('price_unit')) / len(order_lines)
-                    total_qty = sum(order_lines.mapped('product_uom_qty'))
+                # price = 0
+                # total_qty = 0
+                # if order_lines:
+                #     price = sum(order_lines.mapped('price_unit')) / len(order_lines)
+                #     total_qty = sum(order_lines.mapped('product_uom_qty'))
                     
-                invoiced = round((pack_pcs*price),2)
-                pending_pcs = total_qty - comu_pcs
-                pending_usd = round((pending_pcs*price),2)
-                comu_inv = round((comu_pcs*price),2)
+                full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
+                full_date = full_date.replace(day = day)
                 
                 today_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
                 
-                comu_released = today_released.filtered(lambda pr: pr.date_order.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day)
-                comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
-                full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
-                full_date = full_date.replace(day = day)
+                comu_released = today_released.filtered(lambda pr: pr.date_order.date() <= full_date.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
+
+                price = total_qty = comur_value = pending_pcs = 0
+                
+                if comu_released:
+                    comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
+                    total_qty = sum(comu_released.mapped('product_uom_qty'))
+                    price = round((comur_value / total_qty),4)
+                    pending_pcs = total_qty - comu_pcs
+                
+                invoiced = round((pack_pcs*price),2)
+                pending_usd = round((pending_pcs*price),2)
+                comu_inv = round((comu_pcs*price),2)
+                
+                
                 
                 pending_oa = today_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
 
@@ -596,7 +605,7 @@ class MrpReportWizard(models.TransientModel):
                     oa_ids = closed_oa.mapped('oa_id')
                     closed_ids += len(oa_ids)
                 
-                today_released = today_released.filtered(lambda pr: pr.date_order.month == int(month_) and pr.date_order.year == year and pr.date_order.day == day)
+                today_released = today_released.filtered(lambda pr: pr.date_order.date() == full_date.date())
                 tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
                 
                 
