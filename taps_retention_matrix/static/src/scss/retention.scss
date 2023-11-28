@@ -1,3 +1,9 @@
+.o_inspector_history_item_delete_disabled {
+    /* Add your disabled styles here */
+    opacity: 0.5; /* Example: reduce opacity for a disabled look */
+    pointer-events: none; /* Example: disable pointer events */
+    /* Add any other styles you need */
+}
 .o_retention_dashboard {
     flex: 1 0 100%;
     padding: 10px 10px 18px 10px;

@@ -280,7 +280,18 @@ class OperationDetails(models.Model):
         action["domain"] = [('default_id','in',self.mapped('id'))]
         a = 'a'
         return action
-    
+
+
+
+    def button_return(self):
+        # self.ensure_one()
+        self._check_company()
+        for s in self:
+            ope = self.env["operation.details"].search([('mrp_lines','=',int(s.mrp_lines)),('next_operation','=','Packing Output')])
+            if ope:
+                ope = ope.write({'actual_qty': ope.actual_qty + s.qty})
+        raise UserError((self.ids))
+        
     def button_group_output(self):
         for r in self:
             if r.next_operation in ('Chain Making','Gapping'):

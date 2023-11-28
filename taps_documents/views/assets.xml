@@ -24,10 +24,10 @@
             <script type="text/javascript" src="/documents/static/src/js/documents_search_panel.js"/>
             <script type="text/javascript" src="/documents/static/src/js/documents_search_panel_model_extension.js"/> -->
             <script type="text/javascript" src="/taps_documents/static/src/js/taps_documents_inspector.js"/>
-            <script type="text/javascript" src="/taps_documents/static/src/js/taps_documents_controller_mixin.js"/>
+            <!-- <script type="text/javascript" src="/taps_documents/static/src/js/taps_documents_controller_mixin.js"/> -->
             <!-- <script type="text/javascript" src="/web/static/lib/pdfjs/web/viewer.js"/> -->
-            <script type="text/javascript" src="/taps_documents/static/src/js/taps_viewer.js"></script>
-            <link href="/taps_documents/static/src/xml/pdf_viewer.less" rel="stylesheet" type="text/less"/>
+            <!-- <script type="text/javascript" src="/taps_documents/static/src/js/taps_viewer.js"></script>
+            <link href="/taps_documents/static/src/xml/pdf_viewer.less" rel="stylesheet" type="text/less"/> -->
             <!-- <script type="text/javascript">
                 document.addEventListener('webViewerLoad', function () {
                     checkViewerContainer();

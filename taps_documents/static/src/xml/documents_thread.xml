@@ -8,18 +8,14 @@
     </t>
 
     <t t-name="DocumentViewer.ContentWithPdfSplit" t-extend="DocumentViewer.Content">
-        <t t-jquery=".o_download_btn" t-operation="before">
+        <t t-jquery=".o_download_btn" t-operation="replace">
             <span t-if="!widget.openPdfManager and !widget._isLocked" class="o_documents_split_pdf_area">
                 <button t-if="widget.activeAttachment.fileType == 'application/pdf'" class="btn btn-sm btn-primary o_documents_pdf_manager_button" data-toggle="tooltip">
                     Split PDF
                 </button>
             </span>
         </t>
-        <t t-if="widget._isLocked" t-jquery=".o_download_btn" t-operation="replace"/>
-        <t t-jquery=".toolbar" t-operation="replace"/>
-        <t t-jquery=".download" t-operation="replace"/>
-            <!-- <attribute name="disabled" t-if="!widget.openPdfManager and !widget._isLocked"/>
-        </t>         -->
+        <!-- <t t-if="!widget._isLocked" t-jquery=".o_download_btn" t-operation="replace"/> -->
     </t>
 
 </templates>

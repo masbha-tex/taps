@@ -9,7 +9,7 @@
             <page string="Others" name="Others info">
               <group name="Others">
                 <field name="sale_representative" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                <field name="related_buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
+                <field name="related_buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" />
                 <field name="related_customer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
               </group>
             </page>

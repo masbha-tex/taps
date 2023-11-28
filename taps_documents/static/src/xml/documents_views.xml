@@ -19,14 +19,17 @@
 </templates> -->
 
 <templates xml:space="preserve">
-
     <!-- Inherit the original template -->
     <t t-extend="DocumentsViews.buttons">
         <t t-jquery=".o_documents_kanban_share_domain" t-operation="replace"/>
     </t>
-
-    <!-- <t t-extend="documents.ChatterContainer" class="o_document_chatter_container">
-        <t t-jquery=".o_ChatterTopbar_buttonAttachments" t-operation="replace"/>
+    <t t-extend="documents.inspector.attachmentHistory">
+        <t t-jquery=".o_inspector_history_item_delete" t-operation="replace"/>        
+    </t>  
+    <!-- <t t-extend="documents.inspector.attachmentHistory">
+        <t t-jquery=".o_inspector_history_item_delete" t-operation="attributes">
+            <t t-attf-style="opacity: 0.5; pointer-events: none !important;"/>
+        </t>
     </t>     -->
 
 </templates>

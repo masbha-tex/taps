@@ -218,7 +218,7 @@ class MrpReportWizard(models.TransientModel):
                 create_date = ''
                 expected_date = ''
                 for x,o_data in enumerate(docs):
-                    # slnumber = slnumber+1
+                    # slnumber = slnumber+1 orders.buyer_name.name,
                     if x == 0:
                         customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name,orders.payment_term_id.name])
                         pi_num = orders.order_ref.pi_number
@@ -433,6 +433,28 @@ class MrpReportWizard(models.TransientModel):
                 
                 product_range = slider_range = finish_range = shade_range = row_rang - 1
             
+            sheet.write(row+1, 0, '')
+            sheet.write(row+1, 1, '')
+            sheet.write(row+1, 2, '')
+            sheet.write(row+1, 3, '')
+            sheet.write(row+1, 4, '')
+            sheet.write(row+1, 5, '')
+            sheet.write(row+1, 6, '')
+            sheet.write(row+1, 7, '')
+            sheet.write(row+1, 8, '')
+            sheet.write(row+1, 9, '')
+            sheet.write(row+1, 10, '')
+            sheet.write(row+1, 11, '')
+            sheet.write(row+1, 12, '=SUM(M{0}:M{1})/2'.format(1, row_rang-1), row_style)
+            sheet.write(row+1, 13, '=SUM(N{0}:N{1})/2'.format(1, row_rang-1), row_style)
+            sheet.write(row+1, 14, '=M{1}-N{1}'.format(row_rang, row_rang), row_style)
+            sheet.write(row+1, 15, '')
+            sheet.write(row+1, 16, '')
+            sheet.write(row+1, 17, '')
+            sheet.write(row+1, 18, '')
+            sheet.write(row+1, 19, '')
+            sheet.write(row+1, 20, '')
+            sheet.write(row+1, 21, '')
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -546,7 +568,7 @@ class MrpReportWizard(models.TransientModel):
                     price = sum(order_lines.mapped('price_unit')) / len(order_lines)
                     total_qty = sum(order_lines.mapped('product_uom_qty'))
                 invoiced = round((pack_pcs*price),2)
-                pending_pcs = total_qty - pack_pcs
+                pending_pcs = total_qty - comu_pcs
                 pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
                 today_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])

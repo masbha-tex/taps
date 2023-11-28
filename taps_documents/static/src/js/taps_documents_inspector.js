@@ -9,8 +9,12 @@ odoo.define('taps_documents.DocumentsInspector', function (require) {
 
             const binary = this.records.some(record => record.data.type === 'binary');
             if (this._isLocked) {
-                this.$('.o_inspector_download').prop('disabled', true);
-                this.$('.o_inspector_share').prop('disabled', true);
+                // this.$('.o_inspector_download').prop('disabled', true);
+                // this.$('.o_inspector_share').prop('disabled', true);
+                this.$('.o_inspector_open_chatter').prop('hidden', true);
+                this.$('.o_inspector_history_button .o_inspector_history_item_download').prop('disabled', true);
+                this.$('.o_inspector_history_button .o_inspector_history_item_restore').prop('disabled', true);
+                
                 this.$('.o_inspector_replace').prop('disabled', true);
                 this.$('.o_inspector_delete').prop('disabled', true);
                 this.$('.o_inspector_archive').prop('disabled', true);

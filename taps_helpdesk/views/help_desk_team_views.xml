@@ -1,0 +1,17 @@
+<odoo>
+  <data>
+      <!-- <record id="helpdesk_team_view_kanban_inherit" model="ir.ui.view">
+			<field name="name">helpdesk.team.dashboard.inherit</field>
+			<field name="model">helpdesk.team</field>
+			<field name="inherit_id" ref="helpdesk.helpdesk_team_view_kanban"/>
+			<field name="arch" type="xml">
+                <xpath expr="//kanban/templates/div/div[2]/div[1]/div[2]/div[2]" position="after">
+                    <div class="mb4">
+                        <a name="%(helpdesk.helpdesk_ticket_action_unassigned)d" type="action" context="{'search_default_team_id': active_id, 'default_team_id': active_id}"><t t-esc="record.unassigned_tickets.raw_value"/> SLA Complaints</a>
+                    </div>
+                </xpath>
+            </field>
+      </record> -->
+   
+  </data>
+</odoo>

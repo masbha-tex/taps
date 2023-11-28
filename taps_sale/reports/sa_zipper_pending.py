@@ -76,6 +76,8 @@ class SalesXlsx(models.AbstractModel):
         sale_orders = sorted(sale_orders, key=lambda r: r.id, reverse=False)
         for orders in sale_orders:
             docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
+            # docs = sorted(docs, key=lambda r: r.product_template_id.fg_categ_type, reverse=False)
+            
             
             
             report_data = []
@@ -103,8 +105,6 @@ class SalesXlsx(models.AbstractModel):
                     delivery_date = ''
                 
                 pr_name = o_data.product_template_id.name
-                if o_data.finish:
-                    pr_name = "\n".join([pr_name,o_data.finish])
                 if o_data.numberoftop:
                     pr_name = "\n".join([pr_name,o_data.numberoftop])
                 if o_data.ptopfinish:
@@ -116,6 +116,8 @@ class SalesXlsx(models.AbstractModel):
                 if o_data.topbottom:
                     pr_name = "\n".join([pr_name,o_data.topbottom])
                 slider = o_data.slidercodesfg
+                if o_data.finish:
+                    slider = "\n".join([slider,o_data.finish])
                 # finish = o_data.finish #.replace('\n',' ')
                 shade = o_data.shade
                 
@@ -194,6 +196,7 @@ class SalesXlsx(models.AbstractModel):
                     if (x[1] == line[1]):
                         product_range += 1
                         row_p += 1
+                        
                     else:
                         sheet.merge_range(row, 1, product_range, 1, '', merge_format)
                         product_range = row
@@ -201,6 +204,7 @@ class SalesXlsx(models.AbstractModel):
                     if _range == product_range:
                         sheet.merge_range(p_last_one, 1, product_range, 1, '', merge_format)
                         product_range = row
+                
                 for x in report_data[row_sl:]:
                     sl_last_one = row
                     if (x[2] == line[2]):

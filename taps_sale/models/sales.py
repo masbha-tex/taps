@@ -1272,6 +1272,7 @@ class SaleOrder(models.Model):
                                                             'pack_qty':0,
                                                             'fr_pcs_pack':0,
                                                             'capacity':0,
+                                                            'state':'waiting',
                                                             'move_line':None
                                                             })
             
