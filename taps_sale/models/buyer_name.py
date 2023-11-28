@@ -17,6 +17,37 @@ class ResPartner(models.Model):
     sale_representative = fields.Many2one('sale.representative', string="Sale Representative")
     related_buyer = fields.Many2one('res.partner', string="Related Buyer")
     related_customer = fields.Many2one('res.partner', string="Related Customer")
+    contact_person = fields.Char(string="Contact Person")
+    contact_mobile = fields.Char(string="Contact Person's Mobile")
+    property_account_receivable_id = fields.Many2one(
+        'account.account',
+        string='Account Receivable',
+        help='Default account for receivables',
+        default=lambda self: self._get_default_account_receivable_id(),
+    )
+    property_account_payable_id = fields.Many2one(
+        'account.account',
+        string="Account Payable",
+        help='Default account for receivables',
+        default=lambda self: self._get_default_account_payable_id(),
+        )
+
+    def _get_default_account_receivable_id(self):
+        
+        # You can customize this method to return the desired default account
+        # For example, you might look up the default account based on some criteria.
+        property_account_receivable_id = self.env['account.account'].search([('internal_type', '=', 'receivable')], limit=1)
+        # raise UserError((return property_account_receivable_id.id))
+        return property_account_receivable_id.id 
+
+    def _get_default_account_payable_id(self):
+        
+        # You can customize this method to return the desired default account
+        # For example, you might look up the default account based on some criteria.
+        property_account_payable_id = self.env['account.account'].search([(('internal_type', '=', 'payable'))], limit=1)
+        # raise UserError((return property_account_receivable_id.id))
+        return property_account_payable_id.id
+    
     
     @api.model_create_multi
     def create(self, vals_list):

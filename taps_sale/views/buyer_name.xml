@@ -11,6 +11,8 @@
                 <field name="sale_representative" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                 <field name="related_buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" />
                 <field name="related_customer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
+                <field name="contact_person"/>
+                <field name="contact_mobile" widget="phone"/>
               </group>
             </page>
         </xpath>

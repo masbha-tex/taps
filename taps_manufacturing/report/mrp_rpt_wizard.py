@@ -552,7 +552,8 @@ class MrpReportWizard(models.TransientModel):
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 comu_pcs = sum(comu_outputs.mapped('qty'))
                 pack_pcs = sum(itemwise_outputs.mapped('qty'))
-                or_ids = itemwise_outputs.mapped('sale_lines')
+                or_ids = itemwise_outputs.mapped('mrp_lines')
+                
                 order_lines = None
                 if or_ids:
                     or_ids = ','.join([str(i) for i in sorted(or_ids)])
@@ -567,11 +568,14 @@ class MrpReportWizard(models.TransientModel):
                 if order_lines:
                     price = sum(order_lines.mapped('price_unit')) / len(order_lines)
                     total_qty = sum(order_lines.mapped('product_uom_qty'))
+                    
                 invoiced = round((pack_pcs*price),2)
                 pending_pcs = total_qty - comu_pcs
                 pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
+                
                 today_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
+                
                 comu_released = today_released.filtered(lambda pr: pr.date_order.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day)
                 comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
                 full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
