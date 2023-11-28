@@ -19,6 +19,7 @@ class ResPartner(models.Model):
     related_customer = fields.Many2one('res.partner', string="Related Customer")
     contact_person = fields.Char(string="Contact Person")
     contact_mobile = fields.Char(string="Contact Person's Mobile")
+    
     property_account_receivable_id = fields.Many2one(
         'account.account',
         string='Account Receivable',
@@ -32,22 +33,36 @@ class ResPartner(models.Model):
         default=lambda self: self._get_default_account_payable_id(),
         )
         
-    @api.onchange('property_account_payable_id')
+    @api.onchange('name')
     def _onchange_company_id(self):
         # Automatically update the property_account_payable_id based on the current company
         self.property_account_receivable_id = self._get_default_account_receivable_id()
         self.property_account_payable_id = self._get_default_account_payable_id()
+    # def write(self, vals):
+    #     # Call the parent write method
+    #     result = super(ResPartner, self).write(vals)
+
+    #     # Update property_account_payable_id based on the current company
+    #     if 'company_id' not in vals:
+    #         # Only update when company_id is not explicitly changed
+    #         current_company = self.env.company
+    #         property_account_receivable_id = self._get_default_account_receivable_id()
+    #         self.property_account_receivable_id = property_account_receivable_id
+    #         property_account_payable_id = self._get_default_account_payable_id()
+    #         self.property_account_payable_id = property_account_payable_id
+
+    #     return result
         
     def _get_default_account_receivable_id(self):
         
-        property_account_receivable_id = self.env['account.account'].search([('internal_type', '=', 'receivable')], limit=1)
+        property_account_receivable_id = self.env['account.account'].search([('internal_type', '=', 'receivable'),('company_id', '=', self.env.company.id)], limit=1)
         # raise UserError((return property_account_receivable_id.id))
         return property_account_receivable_id.id
         
     
     def _get_default_account_payable_id(self):
         
-        property_account_payable_id = self.env['account.account'].search([('internal_type', '=', 'payable')], limit=1)
+        property_account_payable_id = self.env['account.account'].search([('internal_type', '=', 'payable'),('company_id', '=', self.env.company.id)], limit=1)
         # raise UserError((return property_account_receivable_id.id))
         return property_account_payable_id.id
     

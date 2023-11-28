@@ -44,6 +44,7 @@ class ManufacturingOrder(models.Model):
     fg_categ_type = fields.Selection(related='product_template_id.fg_categ_type', string='Item', store=True)
     product_uom = fields.Many2one('uom.uom', string='Unit', related='product_template_id.uom_id')
     product_uom_qty = fields.Float(string='Quantity', related='sale_order_line.product_uom_qty', digits='Product Unit of Measure', readonly=True, store=True)
+    price_unit = fields.Float('Unit Price', related='sale_order_line.price_unit', digits='Product Price', default=0.0, readonly=True, store=True)
     done_qty = fields.Float(string='Done Qty', digits='Product Unit of Measure', readonly=False, store=True)
     balance_qty = fields.Float(string='Balance', compute='_balance_qty', digits='Product Unit of Measure', readonly=True, group_operator="sum", store=True)
 
@@ -167,7 +168,7 @@ class ManufacturingOrder(models.Model):
     packing_done = fields.Float(string='Packing Output', readonly=False)
     
     oa_total_qty = fields.Float(string='OA Total Qty', readonly=True)
-    oa_total_balance = fields.Float(string='OA Balance', readonly=True, store=True)#, compute='_oa_balance'
+    oa_total_balance = fields.Float(string='OA Balance', readonly=True, store=True, compute='_oa_balance')#, compute='_oa_balance'
     remarks = fields.Text(string='Remarks', readonly=True, store=True)
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     plan_ids = fields.Char(string='Plan Ids', store=True)
