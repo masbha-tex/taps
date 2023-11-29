@@ -650,6 +650,7 @@ class OperationDetails(models.Model):
     def write(self, vals):
         if 'done_qty' in vals:
             if self.state not in('done','closed'):
+                a = ''
                 if self.next_operation == 'Dyeing Qc':
                     if round(self.actual_qty,2) <= round(vals.get('done_qty'),2):
                         vals['state'] = 'done'
