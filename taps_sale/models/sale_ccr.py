@@ -24,20 +24,25 @@ class SaleCcr(models.Model):
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
     _order = 'id desc'
     _check_company_auto = True
+    
+    # def dynamic_selection(self):
+    #     # self.dynamic_selection_onchange(15328)
+    #     raise UserError((self.oa_number.id))
+    #     order = self.oa_number.id
+    #     if order:
+    #         result = self.dynamic_selection_onchange(order)
+    #     else:
+    #         result = False
+    #     return result
 
-    def dynamic_selection(self):
-        # self.dynamic_selection_onchange(15328)
-        return{}
+
         
 
     # @api.onchange('oa_number')
     # def dynamic_selection_onchange(self, id):
-    #     selection= set()
-    #     # order = 15328
-    #     for product in self.env['sale.order.line'].search([('order_id','=',id)]):
-    #         selection.add((product.product_template_id.name, product.product_template_id.name))
-    #         # raise UserError((selection))
-    #     return list(selection)
+        
+
+
         
 
     name = fields.Char(string='CCR')
@@ -53,10 +58,42 @@ class SaleCcr(models.Model):
     analysis_activity = fields.Text(string='Analysis Activity')
     currective_action = fields.Text(string='Currective Action')
     preventive_action = fields.Text(string='Preventive Action')
-    fg_product = fields.Selection(selection=lambda self: self.dynamic_selection(), string="Fg Product")
+    # fg_product = fields.Selection(selection=lambda self: self.dynamic_selection(), string="Fg Product")
+    fg_product = fields.Selection([], string="Fg Product")    
     state = fields.Selection(
         [('justified','Justified'),
          ('notjustified','Not Justified')],
         'State', store=True)
+
+    # @api.model
+    # def create(self, values):
+    #     res = super(SaleCcr, self).create(values)
+    #     if vals.get('oa_number'):
+        
+    #     return res  
+    
+    # def dynamic_selection(self):
+    #     # raise UserError((self.id))
+    #     selection= []
+    #     selection.append((0, 0))
+    #         # raise UserError((self.env['sale.order.line'].search([('order_id','=',order)])))
+    #     return selection
+
+    
+    @api.depends('oa_number')
+    def _compute_fg_product_selection(self):
+        selection = []
+        order = self.oa_number.id
+        raise UseError((self.env['sale.order.line'].search([('order_id', '=', order)])))
+        for product in self.env['sale.order.line'].search([('order_id', '=', order)]):
+            selection.append((product.product_template_id.id, product.product_template_id.name))
+            
+            
+        return {'value': {'self.fg_product': selection}}
+        
+        # Add new options to the Selection field
+        
+
+        
         
 

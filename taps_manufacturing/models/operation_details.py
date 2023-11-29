@@ -659,7 +659,7 @@ class OperationDetails(models.Model):
                     else:
                         vals['state'] = 'partial'
                 else:
-                    if round(self.qty,2) <= round(vals.get('done_qty'),2):
+                    if round(self.actual_qty,2) <= round(vals.get('done_qty'),2):
                         vals['state'] = 'done'
                     elif vals.get('done_qty') == 0:
                         vals['state'] = 'waiting'
