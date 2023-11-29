@@ -649,20 +649,21 @@ class OperationDetails(models.Model):
     # @api.model
     def write(self, vals):
         if 'done_qty' in vals:
-            if self.next_operation == 'Dyeing Qc':
-                if round(self.actual_qty,2) <= round(vals.get('done_qty'),2):
-                    vals['state'] = 'done'
-                elif vals.get('done_qty') == 0:
-                    vals['state'] = 'waiting'
+            if self.state not in('done','closed'):
+                if self.next_operation == 'Dyeing Qc':
+                    if round(self.actual_qty,2) <= round(vals.get('done_qty'),2):
+                        vals['state'] = 'done'
+                    elif vals.get('done_qty') == 0:
+                        vals['state'] = 'waiting'
+                    else:
+                        vals['state'] = 'partial'
                 else:
-                    vals['state'] = 'partial'
-            else:
-                if round(self.qty,2) <= round(vals.get('done_qty'),2):
-                    vals['state'] = 'done'
-                elif vals.get('done_qty') == 0:
-                    vals['state'] = 'waiting'
-                else:
-                    vals['state'] = 'partial'
+                    if round(self.qty,2) <= round(vals.get('done_qty'),2):
+                        vals['state'] = 'done'
+                    elif vals.get('done_qty') == 0:
+                        vals['state'] = 'waiting'
+                    else:
+                        vals['state'] = 'partial'
         if 'fg_output' in vals:
             if self.fg_balance < vals.get('fg_output'):
                 raise UserError(('You can not pack more then balance'))
@@ -924,6 +925,8 @@ class OperationDetails(models.Model):
 
             if (out.next_operation not in ('Dyeing Output')) and (round(out.balance_qty,0) < round(out.uotput_qty,0)):
                 raise UserError(('You can not produce more then balance'))
+            if (out.state not in ('partial','waiting')):
+                raise UserError(('You can not update this data because of state is done/closed'))
             # else:
             s = out.write({'done_qty':done_qty})#done_qty = done_qty
             manufac_ids = self.env["manufacturing.order"].browse(out.mrp_lines)
@@ -1217,6 +1220,8 @@ class OperationDetails(models.Model):
                     mrp_l_ids = int(out.mrp_lines)
                     oa_qty = self.env['manufacturing.order'].browse(mrp_l_ids)
                     actual_qty = sum(oa_qty.mapped('product_uom_qty'))
+                if (next == '' or next == None) and w_center == 7:
+                    next = 'FG Packing'
                 if can_create:
                     ope = self.env['operation.details'].create({'name':out.name,
                                                             'mrp_lines':out.mrp_lines,

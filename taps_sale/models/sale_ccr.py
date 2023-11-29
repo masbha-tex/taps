@@ -26,12 +26,19 @@ class SaleCcr(models.Model):
     _check_company_auto = True
 
     def dynamic_selection(self):
-        # raise UserError((self))
-        selection=[]
+        # self.dynamic_selection_onchange(15328)
+        return{}
         
-        for product in self.env['sale.order.line'].search([('order_id','=', 1)]):
-            selection += [('%s'% product.product_template_id, '%s'% product.product_template_id)]
-        return selection
+
+    # @api.onchange('oa_number')
+    # def dynamic_selection_onchange(self, id):
+    #     selection= set()
+    #     # order = 15328
+    #     for product in self.env['sale.order.line'].search([('order_id','=',id)]):
+    #         selection.add((product.product_template_id.name, product.product_template_id.name))
+    #         # raise UserError((selection))
+    #     return list(selection)
+        
 
     name = fields.Char(string='CCR')
     oa_number = fields.Many2one('sale.order', string='OA Number')
