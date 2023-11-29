@@ -26,7 +26,7 @@ class SaleCcr(models.Model):
     _check_company_auto = True
 
     def dynamic_selection(self):
-        raise UserError((self))
+        # raise UserError((self))
         selection=[]
         
         for product in self.env['sale.order.line'].search([('order_id','=', 1)]):
