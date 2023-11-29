@@ -33,7 +33,7 @@ class ResPartner(models.Model):
         default=lambda self: self._get_default_account_payable_id(),
         )
         
-    @api.onchange('name')
+    @api.onchange('phone')
     def _onchange_company_id(self):
         # Automatically update the property_account_payable_id based on the current company
         self.property_account_receivable_id = self._get_default_account_receivable_id()

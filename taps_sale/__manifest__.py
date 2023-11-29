@@ -31,6 +31,7 @@
         #'views/mrp_productivity.xml',
         'views/sale_representative.xml',
         'views/team_wise_target.xml',
+        'views/sale_ccr_view.xml',
         # 'views/bank.xml',
         'reports/report_action.xml',
         'reports/report_proforma_invoice.xml',

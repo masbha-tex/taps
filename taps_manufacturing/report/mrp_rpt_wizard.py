@@ -20,7 +20,7 @@ class MrpReportWizard(models.TransientModel):
     
     # is_company = fields.Boolean(readonly=False, default=False)
     
-    report_type = fields.Selection([('pir', 'PI Report'),('dpr', 'Daily Production Report'),], string='Report Type', required=True, help='Report Type', default='pir')
+    report_type = fields.Selection([('pir', 'PI Report'),('pis', 'PI Summary'),('dpr', 'Daily Production Report'),], string='Report Type', required=True, help='Report Type', default='pir')
     
     date_from = fields.Date('Date from', readonly=False)
     date_to = fields.Date('Date to', readonly=False)
@@ -50,7 +50,7 @@ class MrpReportWizard(models.TransientModel):
         month_list = []
         for month in range(12):
             mon = month + 1
-            month_label = f'{datetime.today().replace(month=mon).replace(day=1).strftime("%B-%Y")}'
+            month_label = f'{datetime.today().replace(day=1).replace(month=mon).strftime("%B-%Y")}'
             #{year_str}-{next_year[2:]}
             month_list.append((mon, month_label))
         return month_list     
@@ -61,28 +61,13 @@ class MrpReportWizard(models.TransientModel):
         return str(current_year+1)  
 
     
-    # @api.depends('date_from')
-    # def _compute_from_date(self):
-    #     if date.today().day>25:
-    #         dt_from = fields.Date.today().strftime('%Y-%m-26')
-    #     else:
-    #         dt_from = (date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
-    #     return dt_from
-
-    # @api.depends('date_to')
-    # def _compute_to_date(self):
-    #     if date.today().day>25:
-    #         to_date = fields.Date.today() + relativedelta(months=1)
-    #         dt_to = to_date.strftime('%Y-%m-25')
-    #     else:
-    #         dt_to = fields.Date.today().strftime('%Y-%m-25')
-    #     return dt_to
-    
-    
     def action_generate_xlsx_report(self):
         if self.report_type == "pir":
             data = {'date_from': self.date_from,'date_to': self.date_to}
             return self.pi_xls_template(self, data=data)
+        if self.report_type == "pis":
+            data = {'date_from': self.date_from,'date_to': self.date_to}
+            return self.pis_xls_template(self, data=data)
         if self.report_type == "dpr":
             data = {'month_list': self.month_list}
             return self.daily_pr_xls_template(self, data=data)
@@ -470,6 +455,100 @@ class MrpReportWizard(models.TransientModel):
             'target': 'self',
         }
 
+    def pis_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
+        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','!=','closed')])
+        if data.get('date_from'):
+            if data.get('date_to'):
+                running_orders = running_orders.filtered(lambda pr: pr.date_order.date() >= data.get('date_from') and pr.date_order.date() <= data.get('date_to'))
+            else:
+                running_orders = running_orders.filtered(lambda pr: pr.date_order.date() == data.get('date_from'))
+                
+        m_orders = running_orders.search([('revision_no','=',None)])
+        rev_orders = running_orders - m_orders
+        m_orders = running_orders
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        column_style = workbook.add_format({'bold': True, 'font_size': 11})
+        _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        
+
+        fg_items = m_orders.mapped('fg_categ_type')
+        fg_items = list(set(fg_items))
+        items = self.env['fg.category'].search([('active','=',True)]).sorted(key=lambda pr: pr.sequence)
+        
+        if rev_orders:
+            fg_items.append('Revised PI')
+        else:
+            items = items.filtered(lambda pr: pr.name != 'Revised PI').sorted(key=lambda pr: pr.sequence)
+        
+        de_items = items.filtered(lambda pr: pr.name not in (fg_items))
+        exists_items = items - de_items
+        items = exists_items.sorted(key=lambda pr: pr.sequence)
+
+        for item in items:
+            all_orders = None
+            if item.name == 'Revised PI':
+                all_orders = self.env['sale.order.line'].browse(rev_orders.sale_order_line.ids)
+            else:
+                all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
+                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item.name)
+            
+            sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
+            
+            report_name = item.name
+            sheet = workbook.add_worksheet(('%s' % (report_name)))
+            
+            sheet.write(0, 0, "OA ID", column_style)
+            sheet.write(0, 1, "PI NO", column_style)
+            sheet.write(0, 2, "OA NO", column_style)
+            sheet.write(0, 3, "OA DATE", column_style)
+            sheet.write(0, 4, "ORDER QTY", column_style)
+            sheet.write(0, 5, "READY QTY", column_style)
+            sheet.write(0, 6, "PENDING QTY", column_style)
+            # docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
+            report_data = []
+            for orders in sale_orders:
+                # docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
+                create_date = orders.date_order.strftime("%d-%m-%Y")
+                m_order = self.env['manufacturing.order'].search([('oa_id','=',orders.id)])
+                ready_qty = sum(m_order.mapped('done_qty'))
+                balance_qty = orders.total_product_qty - ready_qty
+                order_data = []
+                order_data = [
+                    orders.id,
+                    orders.order_ref.pi_number,
+                    orders.name,
+                    create_date,
+                    orders.total_product_qty,
+                    ready_qty,
+                    balance_qty,
+                ]
+                report_data.append(order_data)
+            row = 1    
+            for line in report_data:
+                col = 0
+                for l in line:
+                    sheet.write(row, col, l, row_style)
+                    col += 1
+                row += 1
+                
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('PI Summary')),
+            'target': 'self',
+        }
+    
 
     def iterate_days(self, year, month):
         # Get the number of days in the given month

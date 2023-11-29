@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_sale_ccr_tree" model="ir.ui.view">
+            <field name="name">sale.ccr.tree</field>
+            <field name="model">sale.ccr</field>
+            <field name="arch" type="xml">
+                <tree string="CCR TREE" multi_edit="1" sample="1">
+                    <field name="name"/>
+                    <field name="oa_number"/>
+                    <field name="customer"/>
+                </tree>
+            </field>
+    </record>
+    <record id="view_sale_ccr_form" model="ir.ui.view">
+            <field name="name">sale.ccr.form</field>
+            <field name="model">sale.ccr</field>
+            <field name="arch" type="xml">
+                <form string="CCR FORM" multi_edit="1" sample="1">
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group>
+                        
+                        <group>
+                            <field name="oa_number" domain="[('sales_type','=', 'oa')]"/>
+                            <field name="customer"/>
+                            <field name="buyer"/>
+                            <field name="pi_number"/>
+                            <field name="order_quantity"/>
+                            <field name="rejected_quantity"/>
+                            <field name="fg_product"/>
+                        </group>
+                        <group>
+                            <field name="complaint"/>
+                            <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="replacement_quantity"/>
+                            <field name="analysis_activity"/>
+                        </group>
+                            
+                        </group>
+                        <div class="oe_title">
+                                <h1>CAPA</h1>
+                            </div>
+                        <group>
+                            
+                            <group>
+                                <field name="currective_action"/>
+                            </group>
+                            <group>
+                                <field name="preventive_action"/>
+                            </group>
+                            
+                        </group>
+                        <group>
+                            <field name="state" widget="radio"/>
+                        </group>
+                    </sheet>
+                    
+                </form>
+            </field>
+    </record>
+    <record id="action_sale_ccr" model="ir.actions.act_window">
+            <field name="name">CCR</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.ccr</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <!-- <field name="search_view_id" ref="sale_order_view_search_inherit_sale"/> -->
+            <field name="context">{}</field>
+            <!-- <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field> -->
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new CCR, the first step of a new CCR!
+                </p>
+            </field>
+        </record>
+
+    
+    <menuitem id="sale_ccr_view_menu"
+            name="CCR"
+            parent="sale.sale_menu_root"
+            action = "action_sale_ccr"
+            sequence="6"/>
+</odoo>
