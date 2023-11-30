@@ -651,7 +651,7 @@ class OperationDetails(models.Model):
         if 'done_qty' in vals:
             if self.state not in('done','closed'):
                 a = ''
-                if self.next_operation == 'Dyeing Qc':
+                if self.next_operation in ('Dyeing Qc','Packing Output'):
                     if round(self.actual_qty,2) <= round(vals.get('done_qty'),2):
                         vals['state'] = 'done'
                     elif vals.get('done_qty') == 0:
@@ -659,7 +659,7 @@ class OperationDetails(models.Model):
                     else:
                         vals['state'] = 'partial'
                 else:
-                    if round(self.actual_qty,2) <= round(vals.get('done_qty'),2):
+                    if round(self.qty,2) <= round(vals.get('done_qty'),2):
                         vals['state'] = 'done'
                     elif vals.get('done_qty') == 0:
                         vals['state'] = 'waiting'

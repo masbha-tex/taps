@@ -42,7 +42,8 @@ class SaleCcr(models.Model):
     # def dynamic_selection_onchange(self, id):
         
 
-
+    
+    
         
 
     name = fields.Char(string='CCR')
@@ -59,41 +60,61 @@ class SaleCcr(models.Model):
     currective_action = fields.Text(string='Currective Action')
     preventive_action = fields.Text(string='Preventive Action')
     # fg_product = fields.Selection(selection=lambda self: self.dynamic_selection(), string="Fg Product")
-    fg_product = fields.Selection([], string="Fg Product")    
+    
+    sale_order_line_id = fields.Many2many('sale.order.line', string="Sale Order Line")
+    fg_product = fields.Selection(selection="_compute_selection", string="Fg Products")
+    
     state = fields.Selection(
         [('justified','Justified'),
          ('notjustified','Not Justified')],
         'State', store=True)
 
-    # @api.model
-    # def create(self, values):
-    #     res = super(SaleCcr, self).create(values)
-    #     if vals.get('oa_number'):
-        
-    #     return res  
-    
-    # def dynamic_selection(self):
-    #     # raise UserError((self.id))
-    #     selection= []
-    #     selection.append((0, 0))
-    #         # raise UserError((self.env['sale.order.line'].search([('order_id','=',order)])))
-    #     return selection
 
+    # @api.onchange('oa_number')
+    # def _onchange_oa_number(self):
+    #     if self.oa_number:
+    #         sale_order_lines = self.env['sale.order.line'].search([
+    #             ('order_id', '=', self.oa_number.id),
+    #         ])
+    #         self.sale_order_line_id = [(6, 0, sale_order_lines.ids)]
+
+    #         # Update the domain for fg_product based on the products in sale_order_lines
+    #         product_ids = sale_order_lines.mapped('product_id')
+    #         return {'domain': {'fg_product': [('id', 'in', product_ids)]}}
+    #     else:
+    #         self.sale_order_line_id = False
+    #         return {'domain': {'fg_product': []}}
     
-    @api.depends('oa_number')
-    def _compute_fg_product_selection(self):
+    def _compute_selection(self):
+        # raise UserError((self))
+        selection = set()
+        sale_order_lines = self.env['sale.order.line'].search([])
+        for order in sale_order_lines:
+            selection.add((str(order.product_template_id.id), str(order.product_template_id.name)))
+    
+        return list(selection)
+    @api.onchange('oa_number')
+    def _compute_selection_onchange(self):
+        # raise UserError((self))
+        # selection = set()
         selection = []
-        order = self.oa_number.id
-        raise UseError((self.env['sale.order.line'].search([('order_id', '=', order)])))
-        for product in self.env['sale.order.line'].search([('order_id', '=', order)]):
-            selection.append((product.product_template_id.id, product.product_template_id.name))
-            
-            
-        return {'value': {'self.fg_product': selection}}
-        
-        # Add new options to the Selection field
-        
+        sale_order_lines = self.env['sale.order.line'].search([('order_id','=', self.oa_number.id)])
+        self.sale_order_line_id = [(6, 0, sale_order_lines.ids)]
+        product_template_ids = sale_order_lines.mapped('product_template_id.id')
+        return {'domain': {'fg_product': [('product_template_id.id', 'in', product_template_ids)]}}
+        # for order in sale_order_lines:
+            # selection.add((order.product_template_id.id, order.product_template_id.name))
+            # selection += [('%s' % order.product_template_id.name, '%s' % order.product_template_id.)]
+        # self.fg_product = (selection)
+        # return list(selection)
 
+
+    # @api.depends('oa_number')
+    # def change_sel(self):
+    #     if self.oa_number:
+    #         # sale_order_lines = self.env['sale.order.line'].search([('order_id', '=', self.oa_number.id)])
+    #         # raise UserError((self))
+    #         self.fg_product = [('', ''),('transfer', 'Bank transfer')]
         
         
 

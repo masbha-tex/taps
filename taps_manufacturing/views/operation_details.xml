@@ -53,7 +53,7 @@
                     <button name="button_requisition" type="object" string="Requisition"/>
                     <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
                     <button name="button_group_output" type="object" string="Group Output"/>
-                    <button name="button_return" type="object" string="Return"/>
+                    <!-- <button name="button_return" type="object" string="Return"/> -->
                 </header>
                 <field name="name" readonly="1"/>
                 <field name="mrp_lines" invisible="1"/>
