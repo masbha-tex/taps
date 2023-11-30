@@ -156,7 +156,7 @@ class SalesReport(models.TransientModel):
                 col += 1
             if col == 8:
                 if l.order_line[0].finish != 'TBA':
-                    worksheet.write(row, col, l.order_line[0].finish.split()[0],column_title_style)
+                    worksheet.write(row, col, l.order_line[0].finish.split('\n')[0],column_title_style)
                     col += 1
                 if l.order_line[0].finish == 'TBA':
                     worksheet.write(row, col, '',column_title_style)

@@ -209,7 +209,7 @@ class MrpReportWizard(models.TransientModel):
                         pi_num = orders.order_ref.pi_number
                         oa_num = orders.name
                         remarks = orders.remarks
-                        create_date = orders.date_order.strftime("%d-%m-%Y")
+                        create_date = orders.create_date.strftime("%d-%m-%Y")
                         expected_date = ''#orders.expected_date.strftime("%d-%m-%Y")
                     else:
                         customer = ''
@@ -512,7 +512,7 @@ class MrpReportWizard(models.TransientModel):
             report_data = []
             for orders in sale_orders:
                 # docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
-                create_date = orders.date_order.strftime("%d-%m-%Y")
+                create_date = orders.create_date.strftime("%d-%m-%Y")
                 m_order = self.env['manufacturing.order'].search([('oa_id','=',orders.id)])
                 ready_qty = sum(m_order.mapped('done_qty'))
                 balance_qty = orders.total_product_qty - ready_qty
