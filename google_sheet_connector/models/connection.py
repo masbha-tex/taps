@@ -56,7 +56,7 @@ class GoogleSheetConnector(models.Model):
             
             for  order in all_orders:
                 if order.closing_date:
-                    closing_date = order.closing_date.strftime('%d/%m/%Y')
+                    closing_date = order.closing_date.strftime('%m/%d/%Y')
                 else:
                     closing_date = ""
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
@@ -72,7 +72,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.order_line[0].product_template_id.fg_categ_type,
                         order.name,
-                        order.date_order.strftime('%d/%m/%Y'),
+                        order.date_order.strftime('%m/%d/%Y'),
                         order.partner_id.name,
                         order.buyer_name.name,
                         f"{(float(order.total_product_qty)):0,.2f}",
@@ -81,7 +81,7 @@ class GoogleSheetConnector(models.Model):
                         order.sale_representative.name,
                         closing_date,
                         "",
-                        datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                        datetime.now().strftime('%m/%d/%Y %H:%M:%S'),
                         
                     ]
                     new_values.append(row_values)
@@ -114,7 +114,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.order_line[0].product_template_id.fg_categ_type,
                         order.name,
-                        order.date_order.strftime('%d/%m/%Y'),
+                        order.date_order.strftime('%m/%d/%Y'),
                         order.partner_id.name,
                         order.buyer_name.name,
                         f"{(float(order.total_product_qty)):0,.2f}",
@@ -123,7 +123,7 @@ class GoogleSheetConnector(models.Model):
                         order.sale_representative.name,
                         closing_date,
                         "",
-                        datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                        datetime.now().strftime('%m/%d/%Y %H:%M:%S'),
                     ]
                     new_values.append(row_values)
                     update_body = {'values': new_values}
@@ -153,7 +153,7 @@ class GoogleSheetConnector(models.Model):
             # raise UserError((len(all_orders)))
             for order in all_orders:
                 if order.order_id.closing_date:
-                    closing_date = order.order_id.closing_date.strftime('%d/%m/%Y')
+                    closing_date = order.order_id.closing_date.strftime('%m/%d/%Y')
                 else:
                     closing_date = ""
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
@@ -169,7 +169,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.product_template_id.name,
                         order.order_id.name,
-                        order.order_id.date_order.strftime('%d/%m/%Y'),
+                        order.order_id.date_order.strftime('%m/%d/%Y'),
                         order.order_id.partner_id.name,
                         order.order_id.buyer_name.name,
                         f"{(float(order.product_uom_qty)):0,.2f}",
@@ -178,7 +178,7 @@ class GoogleSheetConnector(models.Model):
                         order.order_id.sale_representative.name,
                         closing_date,
                         "",
-                        datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                        datetime.now().strftime('%m/%d/%Y %H:%M:%S'),
                         
                     ]
                     new_values.append(row_values)
@@ -203,7 +203,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.product_template_id.name,
                         order.order_id.name,
-                        order.order_id.date_order.strftime('%d/%m/%Y'),
+                        order.order_id.date_order.strftime('%m/%d/%Y'),
                         order.order_id.partner_id.name,
                         order.order_id.buyer_name.name,
                         f"{(float(order.product_uom_qty)):0,.2f}",
@@ -212,7 +212,7 @@ class GoogleSheetConnector(models.Model):
                         order.order_id.sale_representative.name,
                         closing_date,
                         "",
-                        datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                        datetime.now().strftime('%m/%d/%Y %H:%M:%S'),
                     ]
                     new_values.append(row_values)
                     update_body = {'values': new_values}
