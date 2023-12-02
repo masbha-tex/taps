@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_connect_mssql_form">
+        <field name="name">connect.mssql.form</field>
+        <field name="model">connect.mssql</field>
+        <field name="arch" type="xml">
+            <form string="Connect MSSQL">
+                <sheet>
+                    <group>
+                        <field name="server_name"  placeholder="ex. www.someserver.com"/>
+                        <field name="database_name"/>
+                        <field name="user_name"/>
+                        <field name="password"  password="True"/>
+                        <field name="query" placeholder="Select * from sometable"/>
+                        <button name="execute_query" string="Execute Query"  icon="fa-refresh" type="object"/>
+                    </group>
+                    <field name="result"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_connect_mssql">
+        <field name="name">Connect MSSQL</field>
+        <field name="res_model">connect.mssql</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_connect_mssql_form"/>
+    </record>
+
+    <menuitem name="Connect MSSQL" id="menu_connect_mssql" parent="base.next_id_9" action="action_connect_mssql"/>
+</odoo>

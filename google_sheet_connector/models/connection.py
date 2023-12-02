@@ -19,6 +19,8 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.errors import HttpError
 from odoo.exceptions import AccessError, UserError, ValidationError
+import json
+
 
 
 
@@ -53,8 +55,8 @@ class GoogleSheetConnector(models.Model):
             # raise UserError((docs))
             
             for  order in all_orders:
-                date_order_datetime = datetime.strptime(str(order.date_order), '%Y-%m-%d %H:%M:%S')
-                
+                # date_order_date = order.date_order.strftime('%d-%m-%Y')
+                # date_order_date = json.dumps(date_order_date)
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
                 update_range = "Sheet1"
@@ -68,7 +70,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.order_line[0].product_template_id.fg_categ_type,
                         order.name,
-                        date_order_datetime,
+                        order.date_order.strftime('%d/%m/%Y %H:%M:%S'),
                         order.partner_id.name,
                         order.buyer_name.name,
                         f"{(float(order.total_product_qty)):0,.2f}",
@@ -77,7 +79,7 @@ class GoogleSheetConnector(models.Model):
                         order.sale_representative.name,
                         "",
                         "",
-                        datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+                        datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                         
                     ]
                     new_values.append(row_values)
@@ -110,7 +112,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.order_line[0].product_template_id.fg_categ_type,
                         order.name,
-                        date_order_datetime,
+                        order.date_order.strftime('%d/%m/%Y %H:%M:%S'),
                         order.partner_id.name,
                         order.buyer_name.name,
                         f"{(float(order.total_product_qty)):0,.2f}",
@@ -119,7 +121,7 @@ class GoogleSheetConnector(models.Model):
                         order.sale_representative.name,
                         "",
                         "",
-                        datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     ]
                     new_values.append(row_values)
                     update_body = {'values': new_values}
@@ -148,7 +150,8 @@ class GoogleSheetConnector(models.Model):
             
             # raise UserError((len(all_orders)))
             for order in all_orders:
-                date_order_datetime = datetime.strptime(str(order.date_order), '%d-%m-%Y %H:%M:%S')
+                # date_order_date = order.order_id.date_order.strftime('%d-%m-%Y')
+                # date_order_date = json.dumps(date_order_date)
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
                 update_range = "Sheet1"
@@ -162,7 +165,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.product_template_id.name,
                         order.order_id.name,
-                        date_order_datetime,
+                        order.order_id.date_order.strftime('%d/%m/%Y'),
                         order.order_id.partner_id.name,
                         order.order_id.buyer_name.name,
                         f"{(float(order.product_uom_qty)):0,.2f}",
@@ -171,7 +174,7 @@ class GoogleSheetConnector(models.Model):
                         order.order_id.sale_representative.name,
                         "",
                         "",
-                        datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+                        datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                         
                     ]
                     new_values.append(row_values)
@@ -196,7 +199,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.product_template_id.name,
                         order.order_id.name,
-                        date_order_datetime,
+                        order.order_id.date_order.strftime('%d/%m/%Y'),
                         order.order_id.partner_id.name,
                         order.order_id.buyer_name.name,
                         f"{(float(order.product_uom_qty)):0,.2f}",
@@ -205,7 +208,7 @@ class GoogleSheetConnector(models.Model):
                         order.order_id.sale_representative.name,
                         "",
                         "",
-                        datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+                        datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     ]
                     new_values.append(row_values)
                     update_body = {'values': new_values}
@@ -257,7 +260,7 @@ class GoogleSheetConnector(models.Model):
         return None
     def get_sheets_service(self):
         # Load credentials from the credentials JSON file
-        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/cred_service.json'
+        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/mis.json'
         scope = [
                     'https://www.googleapis.com/auth/spreadsheets',
                     'https://www.googleapis.com/auth/drive'
