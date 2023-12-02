@@ -53,7 +53,7 @@ class GoogleSheetConnector(models.Model):
             # raise UserError((docs))
             
             for  order in all_orders:
-                date_order_datetime = datetime.strptime(str(order.date_order), '%d-%m_%Y %H:%M:%S')
+                date_order_datetime = datetime.strptime(str(order.date_order), '%d-%m-%Y %H:%M:%S')
                 
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
@@ -148,7 +148,7 @@ class GoogleSheetConnector(models.Model):
             
             # raise UserError((len(all_orders)))
             for order in all_orders:
-                date_order_datetime = datetime.strptime(str(order.date_order), '%d-%m_%Y %H:%M:%S')
+                date_order_datetime = datetime.strptime(str(order.date_order), '%d-%m-%Y %H:%M:%S')
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
                 update_range = "Sheet1"
@@ -266,4 +266,4 @@ class GoogleSheetConnector(models.Model):
         service = build('sheets', 'v4', credentials=credentials)
         return service
 
-    
+    # jsdsf
