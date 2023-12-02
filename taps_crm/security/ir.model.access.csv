@@ -1,3 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_taps_crm_taps_crm,taps_crm.taps_crm,model_taps_crm_taps_crm,base.group_user,1,1,1,1
 access_crm_visit_purpose,access_crm_visit_purpose,model_crm_visit_purpose,base.group_user,1,1,1,1

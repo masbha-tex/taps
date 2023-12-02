@@ -53,6 +53,7 @@ class GoogleSheetConnector(models.Model):
             # raise UserError((docs))
             
             for  order in all_orders:
+                date_order_datetime = datetime.strptime(order.date_order, '%d-%m_%Y %H:%M:%S')
                 
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
@@ -67,7 +68,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.order_line[0].product_template_id.fg_categ_type,
                         order.name,
-                        order.date_order,
+                        date_order_datetime,
                         order.partner_id.name,
                         order.buyer_name.name,
                         f"{(float(order.total_product_qty)):0,.2f}",
@@ -109,7 +110,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.order_line[0].product_template_id.fg_categ_type,
                         order.name,
-                        order.date_order,
+                        date_order_datetime,
                         order.partner_id.name,
                         order.buyer_name.name,
                         f"{(float(order.total_product_qty)):0,.2f}",
@@ -147,7 +148,7 @@ class GoogleSheetConnector(models.Model):
             
             # raise UserError((len(all_orders)))
             for order in all_orders:
-                
+                date_order_datetime = datetime.strptime(order.date_order, '%d-%m_%Y %H:%M:%S')
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
                 update_range = "Sheet1"
@@ -161,7 +162,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.product_template_id.name,
                         order.order_id.name,
-                        order.order_id.date_order,
+                        date_order_datetime,
                         order.order_id.partner_id.name,
                         order.order_id.buyer_name.name,
                         f"{(float(order.product_uom_qty)):0,.2f}",
@@ -195,7 +196,7 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.product_template_id.name,
                         order.order_id.name,
-                        order.order_id.date_order,
+                        date_order_datetime,
                         order.order_id.partner_id.name,
                         order.order_id.buyer_name.name,
                         f"{(float(order.product_uom_qty)):0,.2f}",
