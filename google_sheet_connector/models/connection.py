@@ -50,7 +50,7 @@ class GoogleSheetConnector(models.Model):
         if id == 1 :
             docs = self.env['sale.order'].search([('sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',1)],limit=limit)
             all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
-            all_orders = sorted(all_orders, key=lambda r: r.id, reverse=False)
+            all_orders = sorted(all_orders, key=lambda r: r.date_order, reverse=False)
     
             # raise UserError((docs))
             
@@ -77,7 +77,7 @@ class GoogleSheetConnector(models.Model):
                         f"{(float(order.avg_price)):0,.2f}",
                         f"{(float(order.amount_total)):0,.4f}",
                         order.sale_representative.name,
-                        "",
+                        order.closing_date.strftime('%d/%m/%Y'),
                         "",
                         datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                         
@@ -119,7 +119,7 @@ class GoogleSheetConnector(models.Model):
                         f"{(float(order.avg_price)):0,.2f}",
                         f"{(float(order.amount_total)):0,.4f}",
                         order.sale_representative.name,
-                        "",
+                        order.closing_date.strftime('%d/%m/%Y'),
                         "",
                         datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     ]
@@ -146,7 +146,7 @@ class GoogleSheetConnector(models.Model):
         if id == 2 :
             docs = self.env['sale.order.line'].search([('order_id.sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',3),('product_template_id.name', '!=', 'MOULD')],limit=limit)
             all_orders = docs.filtered(lambda rec: not rec.last_update_gsheet or (rec.last_update_gsheet and rec.write_date > rec.last_update_gsheet))
-            all_orders = sorted(all_orders, key=lambda r: r.id, reverse=False)
+            all_orders = sorted(all_orders, key=lambda r: r.order_id.date_order, reverse=False)
             
             # raise UserError((len(all_orders)))
             for order in all_orders:
@@ -172,7 +172,7 @@ class GoogleSheetConnector(models.Model):
                         f"{(float(order.price_unit)):0,.2f}",
                         f"{(float(order.price_subtotal)):0,.4f}",
                         order.order_id.sale_representative.name,
-                        "",
+                        order.order_id.closing_date.strftime('%d/%m/%Y'),
                         "",
                         datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                         
@@ -206,7 +206,7 @@ class GoogleSheetConnector(models.Model):
                         f"{(float(order.price_unit)):0,.2f}",
                         f"{(float(order.price_subtotal)):0,.4f}",
                         order.order_id.sale_representative.name,
-                        "",
+                        order.order_id.closing_date.strftime('%d/%m/%Y'),
                         "",
                         datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     ]
