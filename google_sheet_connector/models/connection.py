@@ -53,7 +53,7 @@ class GoogleSheetConnector(models.Model):
             # raise UserError((docs))
             
             for  order in all_orders:
-                date_order_datetime = datetime.strptime(str(order.date_order), '%d-%m-%Y %H:%M:%S')
+                date_order_datetime = datetime.strptime(str(order.date_order), '%Y-%m-%d %H:%M:%S')
                 
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
@@ -119,7 +119,7 @@ class GoogleSheetConnector(models.Model):
                         order.sale_representative.name,
                         "",
                         "",
-                        datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
+                        datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     ]
                     new_values.append(row_values)
                     update_body = {'values': new_values}
