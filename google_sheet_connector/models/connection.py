@@ -55,8 +55,10 @@ class GoogleSheetConnector(models.Model):
             # raise UserError((docs))
             
             for  order in all_orders:
-                # date_order_date = order.date_order.strftime('%d-%m-%Y')
-                # date_order_date = json.dumps(date_order_date)
+                if order.closing_date:
+                    closing_date = order.closing_date.strftime('%d/%m/%Y')
+                else:
+                    closing_date = ""
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
                 update_range = "Sheet1"
@@ -70,14 +72,14 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.order_line[0].product_template_id.fg_categ_type,
                         order.name,
-                        order.date_order.strftime('%d/%m/%Y %H:%M:%S'),
+                        order.date_order.strftime('%d/%m/%Y'),
                         order.partner_id.name,
                         order.buyer_name.name,
                         f"{(float(order.total_product_qty)):0,.2f}",
                         f"{(float(order.avg_price)):0,.2f}",
                         f"{(float(order.amount_total)):0,.4f}",
                         order.sale_representative.name,
-                        order.closing_date.strftime('%d/%m/%Y'),
+                        closing_date,
                         "",
                         datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                         
@@ -112,14 +114,14 @@ class GoogleSheetConnector(models.Model):
                         order.id,
                         order.order_line[0].product_template_id.fg_categ_type,
                         order.name,
-                        order.date_order.strftime('%d/%m/%Y %H:%M:%S'),
+                        order.date_order.strftime('%d/%m/%Y'),
                         order.partner_id.name,
                         order.buyer_name.name,
                         f"{(float(order.total_product_qty)):0,.2f}",
                         f"{(float(order.avg_price)):0,.2f}",
                         f"{(float(order.amount_total)):0,.4f}",
                         order.sale_representative.name,
-                        order.closing_date.strftime('%d/%m/%Y'),
+                        closing_date,
                         "",
                         datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     ]
@@ -150,8 +152,10 @@ class GoogleSheetConnector(models.Model):
             
             # raise UserError((len(all_orders)))
             for order in all_orders:
-                # date_order_date = order.order_id.date_order.strftime('%d-%m-%Y')
-                # date_order_date = json.dumps(date_order_date)
+                if order.order_id.closing_date:
+                    closing_date = order.order_id.closing_date.strftime('%d/%m/%Y')
+                else:
+                    closing_date = ""
                 row_index = self.find_row_index(ID, "Sheet1", order.id)
                 
                 update_range = "Sheet1"
@@ -172,7 +176,7 @@ class GoogleSheetConnector(models.Model):
                         f"{(float(order.price_unit)):0,.2f}",
                         f"{(float(order.price_subtotal)):0,.4f}",
                         order.order_id.sale_representative.name,
-                        order.order_id.closing_date.strftime('%d/%m/%Y'),
+                        closing_date,
                         "",
                         datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                         
@@ -206,7 +210,7 @@ class GoogleSheetConnector(models.Model):
                         f"{(float(order.price_unit)):0,.2f}",
                         f"{(float(order.price_subtotal)):0,.4f}",
                         order.order_id.sale_representative.name,
-                        order.order_id.closing_date.strftime('%d/%m/%Y'),
+                        closing_date,
                         "",
                         datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     ]
