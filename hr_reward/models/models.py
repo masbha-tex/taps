@@ -88,6 +88,166 @@ class HrReward(models.Model):
                     			% endif
                     </div>
                         """ ) 
+
+    hero_template = fields.Html('Hero Template', default=""" 
+                    <div style="margin:0px; padding: 0px;">
+
+                        <head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .border-wrapper {
+            border: 2px solid #000000; 
+            border-radius: 0px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .background-image {
+            background-image: url('static/src/img/1.png'); 
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 100px; /* Adjust the size of the logo as needed */
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        .logoBottom {
+            max-width: 100px; /* Adjust the size of the logo as needed */
+            position: relative;
+            top: 10px;
+            left: 10px;
+        }
+
+        .company-name {
+            font-size: 27px;
+            position: absolute;
+            top: 30px;
+            right: 20px;
+            font-weight: bold;
+            text-align: right;
+            color: #000000;
+        }
+
+        .hero-text {
+            font-size: 70px;
+            font-weight: bold;
+            margin-top: 5px;
+            color: #0F964F;
+            font-family: 'Gotham';
+        }
+
+        .dear-text {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 50px;
+            color: #000000;
+        }
+
+        .you-text {
+            font-size: 36px;
+            font-weight: bolder;
+            margin-top: 20px;
+            color: #000000;
+        }
+
+        .content-text {
+            font-size: 12px;
+            margin-top: 10px;
+            color: #000000;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content {
+            background-color: #fff;
+            padding: 20px;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            /* background-color: #4CAF50; */
+            color: #000000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-right {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            /* background-color: #4CAF50; */
+            color: #000000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .signature {
+            max-width: 100px; /* Adjust the size of the signature as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="background-image">
+            <div class="container" style="padding: 25px 25px 25px 25px;">
+            <div class="border-wrapper">
+                <img src="static/src/img/logo_tex_tiny.png" alt="Company Logo" class="logo">
+                <div class="company-name">Tex Fasteners<br/>Bangladesh<p style="font-size: 10px;">DESIGN  .  QUALITY  .  SPEED</p></div>
+                <br/>
+                <br/>
+                <br/>
+                <h3 class="dear-text">Dear, Winston</h3>
+                <h2 class="you-text">You Are A<br/><span style="font-weight: bold; font-size: 70px;color: #0F964F; margin-left: -5px; margin-top: -25px;">Hero</span></h2>
+                <div class="content-text">
+                    <p>Congratulations! You are being recognized as a hero for your outstanding contributions and achievements.</p>
+                    <p>Your hard work and dedication have made a significant impact on our team and company.</p>
+                    <p>Thank you for embodying our company values and going above and beyond in your role.</p>
+                    <p>We appreciate your exceptional efforts and look forward to seeing more great things from you in the future.</p>
+                    <p>Well done, keep it up!</p>
+                    <p>recomented by - <p style="font-weight: bold; font-size: 14px;">John Wick</p></p>
+                </div>
+                <div class="footer">
+                    <span>__________________<br/>Date</span>
+                    <img src="static/src/img/3865076.png" alt="Company Logo" class="logoBottom">
+                    <span class="footer-right">__________________<br/>Signature</span>
+                </div>
+                <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
+            </div>
+        </div>
+        </div>
+
+        
+    </div>
+</body>
+                    
+                    </div>
+                    """)
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
     attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
@@ -257,7 +417,6 @@ class HrReward(models.Model):
                 body_submit = RenderMixin._render_template(self.submit_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
-                
                 body = f"{body}<br/>{body_submit}<br/>{body_sig}"
                 # post the message
                 matrix = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILTO')], limit=1)
@@ -340,9 +499,10 @@ class HrReward(models.Model):
                 #     </div>
                 #         """
                 body_closed = RenderMixin._render_template(self.closed_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
+                body_hero = RenderMixin._render_template(self.hero_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
                 
-                body = f"{body_closed}<br/>{body_sig}"
+                body = f"{body_closed}<br/>{body_hero}<br/>{body_sig}"
                 # post the message
                 matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
                 if matrix:

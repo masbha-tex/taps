@@ -2,6 +2,11 @@
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo import models, fields, api
 
+class VisitPurpose(models.Model):
+    _name = 'crm.visit.purpose'
+    _description = 'Visit Purposes'
+
+    name = fields.Char(string="Purpose Objective")
 
 class TapsCrm(models.Model):
     _inherit = 'crm.lead'
@@ -31,3 +36,13 @@ class TapsCrm(models.Model):
             'target': 'new',
             'context': ctx,
         }
+
+    type_of_opportunity = fields.Selection(
+        [('visit', 'Visit'),('normal', 'Normal')], string="Type Of Opportunity")
+    visit_purpose = fields.Many2one('crm.visit.purpose', string='Purpuse of Visit')
+    visit_outcome = fields.Char(string='Visit Outcome')
+    next_action = fields.Char(string='Next Action')
+    
+    
+    
+    

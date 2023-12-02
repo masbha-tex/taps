@@ -12,46 +12,33 @@
       </field>
     </record>
 
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="taps_crm.action_window">
-      <field name="name">taps_crm window</field>
-      <field name="res_model">taps_crm.taps_crm</field>
-      <field name="view_mode">tree,form</field>
+    <record id="crm_lead_view_form_inherited" model="ir.ui.view">
+            <field name="name">crm.lead.form</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form[1]/sheet[1]/group[1]/group[@name='opportunity_partner']/field[@name='partner_id']" position="before">
+                    <field name="type_of_opportunity" widget="radio"/>
+                </xpath>
+                <xpath expr="//form[1]/sheet[1]/group[1]" position="after">
+                    <div class="oe_title" attrs="{'invisible': [('type_of_opportunity', 'not in', 'visit')]}">
+                        <h2 style="color: #E54F6D">VISIT</h2>
+                    </div>
+                    <group attrs="{'invisible': [('type_of_opportunity', 'not in', 'visit')]}">
+                        <group>
+                            <field name="visit_purpose"/>
+                            <field name="visit_outcome"/>
+                        </group>
+                        <group>
+                            <field name="next_action"/>
+                        </group>
+                    </group>
+                    
+                    
+                </xpath>
+            </field>
     </record>
--->
 
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="taps_crm.action_server">
-      <field name="name">taps_crm server</field>
-      <field name="model_id" ref="model_taps_crm_taps_crm"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
--->
 
-    <!-- Top menu item -->
-<!--
-    <menuitem name="taps_crm" id="taps_crm.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="taps_crm.menu_1" parent="taps_crm.menu_root"/>
-    <menuitem name="Menu 2" id="taps_crm.menu_2" parent="taps_crm.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="taps_crm.menu_1_list" parent="taps_crm.menu_1"
-              action="taps_crm.action_window"/>
-    <menuitem name="Server to list" id="taps_crm" parent="taps_crm.menu_2"
-              action="taps_crm.action_server"/>
--->
   </data>
 </odoo>
