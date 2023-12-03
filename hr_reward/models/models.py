@@ -90,162 +90,32 @@ class HrReward(models.Model):
                         """ ) 
 
     hero_template = fields.Html('Hero Template', default=""" 
-                    <div style="margin:0px; padding: 0px;">
-
-                        <head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .border-wrapper {
-            border: 2px solid #000000; 
-            border-radius: 0px;
-            padding: 20px;
-            position: relative;
-        }
-
-        .background-image {
-            background-image: url('static/src/img/1.png'); 
-            background-size: cover;
-            background-position: center;
-            color: #fff;
-            text-align: center;
-        }
-
-        .logo {
-            max-width: 100px; /* Adjust the size of the logo as needed */
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-        .logoBottom {
-            max-width: 100px; /* Adjust the size of the logo as needed */
-            position: relative;
-            top: 10px;
-            left: 10px;
-        }
-
-        .company-name {
-            font-size: 27px;
-            position: absolute;
-            top: 30px;
-            right: 20px;
-            font-weight: bold;
-            text-align: right;
-            color: #000000;
-        }
-
-        .hero-text {
-            font-size: 70px;
-            font-weight: bold;
-            margin-top: 5px;
-            color: #0F964F;
-            font-family: 'Gotham';
-        }
-
-        .dear-text {
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 50px;
-            color: #000000;
-        }
-
-        .you-text {
-            font-size: 36px;
-            font-weight: bolder;
-            margin-top: 20px;
-            color: #000000;
-        }
-
-        .content-text {
-            font-size: 12px;
-            margin-top: 10px;
-            color: #000000;
-        }
-
-        .header {
-            background-color: #4CAF50;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .content {
-            background-color: #fff;
-            padding: 20px;
-        }
-        .footer {
-            text-align: center;
-            padding: 10px;
-            font-size: 12px;
-            /* background-color: #4CAF50; */
-            color: #000000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .footer-right {
-            text-align: center;
-            padding: 10px;
-            font-size: 12px;
-            /* background-color: #4CAF50; */
-            color: #000000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-
-        .signature {
-            max-width: 100px; /* Adjust the size of the signature as needed */
-        }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <div class="background-image">
-            <div class="container" style="padding: 25px 25px 25px 25px;">
-            <div class="border-wrapper">
-                <img src="static/src/img/logo_tex_tiny.png" alt="Company Logo" class="logo">
-                <div class="company-name">Tex Fasteners<br/>Bangladesh<p style="font-size: 10px;">DESIGN  .  QUALITY  .  SPEED</p></div>
-                <br/>
-                <br/>
-                <br/>
-                <h3 class="dear-text">Dear, Winston</h3>
-                <h2 class="you-text">You Are A<br/><span style="font-weight: bold; font-size: 70px;color: #0F964F; margin-left: -5px; margin-top: -25px;">Hero</span></h2>
-                <div class="content-text">
-                    <p>Congratulations! You are being recognized as a hero for your outstanding contributions and achievements.</p>
-                    <p>Your hard work and dedication have made a significant impact on our team and company.</p>
-                    <p>Thank you for embodying our company values and going above and beyond in your role.</p>
-                    <p>We appreciate your exceptional efforts and look forward to seeing more great things from you in the future.</p>
-                    <p>Well done, keep it up!</p>
-                    <p>recomented by - <p style="font-weight: bold; font-size: 14px;">John Wick</p></p>
-                </div>
-                <div class="footer">
-                    <span>__________________<br/>Date</span>
-                    <img src="static/src/img/3865076.png" alt="Company Logo" class="logoBottom">
-                    <span class="footer-right">__________________<br/>Signature</span>
-                </div>
-                <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
-            </div>
-        </div>
-        </div>
-
-        
-    </div>
-</body>
-                    
+                    <div class="card" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
+                        <div class="background-image" style="background-image: url('static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
+                            <div class="container" style="padding: 25px 25px 25px 25px;">
+                            <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
+                                <img src="static/src/img/logo_tex_tiny.png" alt="Company Logo" style="max-width: 100px; position: absolute; top: 20px;left: 20px;" class="logo">
+                                <div class="company-name" style="font-size: 27px; position: absolute;top: 30px; right: 20px; font-weight: bold; text-align: right; color: #000000;">Tex Fasteners<br/>Bangladesh<p style="font-size: 10px;">DESIGN  .  QUALITY  .  SPEED</p></div>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <h3 class="dear-text" style="font-size: 16px; font-weight: bold; margin-top: 50px; color: #000000;">Dear, ${ctx['employee_to_name']}</h3>
+                                <h2 class="you-text" style="font-size: 37px; font-weight: bold; margin-top: 20px; color: #000000;">You Are A<br/><span style="font-weight: bold; font-size: 70px;color: #0F964F; margin-left: -5px; margin-top: -25px;">Hero</span></h2>
+                                <div class="content-text" style="font-size: 12px; margin-top: 10px; color: #000000;">
+                                    <p>Congratulations! For ${ctx['note']}</p>
+                                    <p>Well done, keep it up!</p>
+                                    <p>Recommended by - <p style="font-weight: bold; font-size: 14px;">${ctx['submit_by_to_name']}</p></p>
+                                </div>
+                                <div class="footer" style="text-align: center; padding: 10px; font-size: 12px; color: #000000; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>__________________<br/>Date</span>
+                                    <img src="static/src/img/3865076.png" alt="Company Logo" class="logoBottom">
+                                    <span class="footer-right" style="text-align: center; padding: 10px; font-size: 12px; color: #000000; display: flex; justify-content: space-between; align-items: center;">__________________<br/>Signature</span>
+                                </div>
+                                <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
+                            </div>
+                        </div>
+                    </div>
+                        
                     </div>
                     """)
     
@@ -485,7 +355,9 @@ class HrReward(models.Model):
                     continue
                 ctx = {
                     'employee_to_name': employee.display_name,
+                    'submit_by_to_name': self.submit_by.display_name,
                     'recipient_users': employee.user_id,
+                    'note': self.details,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
                 }
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)

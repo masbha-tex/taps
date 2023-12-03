@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend_hr_reward" inherit_id="web.assets_backend" name="hr reward backend assets">
+        <!-- <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/hr_reward/static/src/js/expense_dashboard.js"></script>
+        </xpath> -->
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/scss" href="/hr_reward/static/src/scss/reward.scss"/>
+            <!-- <link rel="stylesheet" type="text/css" href="/hr_reward/static/src/css/expense_budget_dashboard.css"/> -->
+            
+        </xpath>
+    </template>
+</odoo>

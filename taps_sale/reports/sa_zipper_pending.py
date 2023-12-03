@@ -76,7 +76,7 @@ class SalesXlsx(models.AbstractModel):
         sale_orders = sorted(sale_orders, key=lambda r: r.id, reverse=False)
         for orders in sale_orders:
             docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
-            # docs = sorted(docs, key=lambda r: r.product_template_id.fg_categ_type, reverse=False)
+            docs = sorted(docs, key=lambda r: r.product_template_id.fg_categ_type, reverse=False)
             
             
             
@@ -185,18 +185,14 @@ class SalesXlsx(models.AbstractModel):
             row_f = 0
             row_sh = 0
             
-            product_range += product_range
-            slider_range += slider_range
-            shade_range += shade_range
+            
             
             for line in report_data:
-                    
                 for x in report_data[row_p:]:
                     p_last_one = row
-                    if (x[1] == line[1]):
+                    if (x[1] == line[1] and x[3] == line[3]):
                         product_range += 1
                         row_p += 1
-                        
                     else:
                         sheet.merge_range(row, 1, product_range, 1, '', merge_format)
                         product_range = row
@@ -207,7 +203,7 @@ class SalesXlsx(models.AbstractModel):
                 
                 for x in report_data[row_sl:]:
                     sl_last_one = row
-                    if (x[2] == line[2]):
+                    if (x[2] == line[2] and x[3] == line[3]):
                         slider_range += 1
                         row_sl += 1
                     else:
@@ -220,7 +216,7 @@ class SalesXlsx(models.AbstractModel):
     
                 for x in report_data[row_sh:]:
                     last_one = row
-                    if (x[9] == line[9]):
+                    if (x[9] == line[9] and x[3] == line[3]):
                         shade_range += 1
                         row_sh += 1
                     else:
@@ -272,3 +268,4 @@ class SalesXlsx(models.AbstractModel):
             # sheet.write(row, 14, '')
 
             row_rang = row + 1
+            product_range = slider_range = shade_range = row_rang - 1 

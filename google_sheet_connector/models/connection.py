@@ -59,7 +59,8 @@ class GoogleSheetConnector(models.Model):
                     closing_date = order.closing_date.strftime('%m/%d/%Y')
                 else:
                     closing_date = ""
-                row_index = self.find_row_index(ID, "Sheet1", order.id)
+                if order.write_date > order.last_update_gsheet:
+                    row_index = next((i for i, row in enumerate(values, start=2) if row and int(row[0]) == order.id), None)
                 
                 update_range = "Sheet1"
                 # raise UserError((row_index))
@@ -156,7 +157,8 @@ class GoogleSheetConnector(models.Model):
                     closing_date = order.order_id.closing_date.strftime('%m/%d/%Y')
                 else:
                     closing_date = ""
-                row_index = self.find_row_index(ID, "Sheet1", order.id)
+                if order.write_date > order.last_update_gsheet:
+                    row_index = next((i for i, row in enumerate(values, start=2) if row and int(row[0]) == order.id), None)
                 
                 update_range = "Sheet1"
                 # raise UserError((row_index))
@@ -236,41 +238,41 @@ class GoogleSheetConnector(models.Model):
                 
                         
         
-    def find_row_index(self, spreadsheet_id, sheet_name, id):
+    # def find_row_index(self, spreadsheet_id, sheet_name, id):
         
         
-        row_index = self.find_row_index_in_sheet(spreadsheet_id, sheet_name, id)
-        # raise UserError((row_index))
+    #     row_index = self.find_row_index_in_sheet(spreadsheet_id, sheet_name, id)
+    #     # raise UserError((row_index))
         
-        return row_index
+    #     return row_index
 
-    def find_row_index_in_sheet(self, spreadsheet_id, sheet_name, unique_identifier):
-        # Example: Assume column A contains the unique identifier, and we want to find the row index based on that
+    # def find_row_index_in_sheet(self, spreadsheet_id, sheet_name, unique_identifier):
+    #     # Example: Assume column A contains the unique identifier, and we want to find the row index based on that
         
-        range_ = f'{sheet_name}!A2:A'
-        service = self.get_sheets_service()
-        # raise UserError((self, spreadsheet_id, sheet_name, unique_identifier))
+    #     range_ = f'{sheet_name}!A2:A'
+    #     service = self.get_sheets_service()
+    #     # raise UserError((self, spreadsheet_id, sheet_name, unique_identifier))
         
-        result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_).execute()
+    #     result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_).execute()
         
-        values = result.get('values', [])
+    #     values = result.get('values', [])
         
-        for i, row in enumerate(values, start=2):
-            # raise UserError((i,row[0]))
-            if  row and int(row[0]) == unique_identifier:
+    #     for i, row in enumerate(values, start=2):
+    #         # raise UserError((i,row[0]))
+    #         if  row and int(row[0]) == unique_identifier:
                 
-                return i
+    #             return i
 
-        return None
-    def get_sheets_service(self):
-        # Load credentials from the credentials JSON file
-        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/mis.json'
-        scope = [
-                    'https://www.googleapis.com/auth/spreadsheets',
-                    'https://www.googleapis.com/auth/drive'
-                ]
-        credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
-        service = build('sheets', 'v4', credentials=credentials)
-        return service
+    #     return None
+    # def get_sheets_service(self):
+    #     # Load credentials from the credentials JSON file
+    #     SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/mis.json'
+    #     scope = [
+    #                 'https://www.googleapis.com/auth/spreadsheets',
+    #                 'https://www.googleapis.com/auth/drive'
+    #             ]
+    #     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
+    #     service = build('sheets', 'v4', credentials=credentials)
+    #     return service
 
     # jsdsf

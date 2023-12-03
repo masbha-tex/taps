@@ -1,0 +1,116 @@
+.body {
+            font-family: Arial, sans-serif ! important;
+            background-color: #f4f4f4 ! important;
+            padding: 20px ! important;
+        }
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.border-wrapper {
+    border: 2px solid #000000;
+    border-radius: 0px;
+    padding: 20px;
+    position: relative;
+}
+
+.background-image {
+    background-image: url('static/src/img/1.png'); 
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    text-align: center;
+}
+
+.logo {
+    max-width: 100px
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+.logoBottom {
+    max-width: 100px;
+    position: relative;
+    top: 10px;
+    left: 10px;
+}
+
+.company-name {
+    font-size: 27px;
+    position: absolute;
+    top: 30px;
+    right: 20px;
+    font-weight: bold;
+    text-align: right;
+    color: #000000;
+}
+
+.hero-text {
+    font-size: 70px;
+    font-weight: bold;
+    margin-top: 5px;
+    color: #0F964F;
+    font-family: 'Gotham';
+}
+
+.dear-text {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 50px;
+    color: #000000;
+}
+
+.you-text {
+    font-size: 36px;
+    font-weight: bolder;
+    margin-top: 20px;
+    color: #000000;
+}
+
+.content-text {
+    font-size: 12px;
+    margin-top: 10px;
+    color: #000000;
+}
+
+.header {
+    background-color: #4CAF50;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+.content {
+    background-color: #fff;
+    padding: 20px;
+}
+.footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    /* background-color: #4CAF50; */
+    color: #000000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-right {
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    /* background-color: #4CAF50; */
+    color: #000000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.signature {
+    max-width: 100px;
+}
