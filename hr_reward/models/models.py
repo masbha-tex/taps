@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-new
 
 from odoo import models, fields, api, _ 
+from odoo.tools import html2plaintext, plaintext2html, is_html_empty, email_normalize
 from odoo.exceptions import ValidationError, UserError
 
 class HrReward(models.Model):
@@ -25,13 +26,7 @@ class HrReward(models.Model):
             ('thank', 'Thank You'),
             ('Kudos', 'Kudos')], 'Type of Reward', required=True, tracking=True)
     
-    details = fields.Html('Reward For', tracking=True, default="""
-                    <div style="margin:0px;padding: 0px;">
-                    <br>
-                    <br>
-                    <br>                    
-                    </div>
-                        """)
+    details = fields.Html('Reward For', tracking=True)
 
     submit_template = fields.Html('Submit Template', default="""
                     <div style="margin:0px;padding: 0px;">
@@ -47,6 +42,7 @@ class HrReward(models.Model):
                     			% endif
                     </div>
                         """ )
+    
     closed_template = fields.Html('Closed Template', default="""
                     <div style="margin:0px;padding: 0px;">
                     <span>Dear Concern,</span>
@@ -91,15 +87,18 @@ class HrReward(models.Model):
 
     hero_template = fields.Html('Hero Template', default=""" 
                     <div class="card" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
-                        <div class="background-image" style="background-image: url('static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
+                        <div class="background-image" style="background-image: url('hr_reward/static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
                             <div class="container" style="padding: 25px 25px 25px 25px;">
                             <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
-                                <img src="static/src/img/logo_tex_tiny.png" alt="Company Logo" style="max-width: 100px; position: absolute; top: 20px;left: 20px;" class="logo">
+                            
+                                <img src="${ctx['image_url']}" alt="Company Logo" style="max-width: 100px; position: absolute; top: 20px;left: 20px;" class="logo">
                                 <div class="company-name" style="font-size: 27px; position: absolute;top: 30px; right: 20px; font-weight: bold; text-align: right; color: #000000;">Tex Fasteners<br/>Bangladesh<p style="font-size: 10px;">DESIGN  .  QUALITY  .  SPEED</p></div>
                                 <br/>
                                 <br/>
                                 <br/>
-                                <h3 class="dear-text" style="font-size: 16px; font-weight: bold; margin-top: 50px; color: #000000;">Dear, ${ctx['employee_to_name']}</h3>
+                                <br/>
+                                <br/>
+                                <h3 class="dear-text" style="font-size: 14px; font-weight: bold; margin-top: 50px; color: #000000;">Dear, ${ctx['employee_to_name']}</h3>
                                 <h2 class="you-text" style="font-size: 37px; font-weight: bold; margin-top: 20px; color: #000000;">You Are A<br/><span style="font-weight: bold; font-size: 70px;color: #0F964F; margin-left: -5px; margin-top: -25px;">Hero</span></h2>
                                 <div class="content-text" style="font-size: 12px; margin-top: 10px; color: #000000;">
                                     <p>Congratulations! For ${ctx['note']}</p>
@@ -108,7 +107,7 @@ class HrReward(models.Model):
                                 </div>
                                 <div class="footer" style="text-align: center; padding: 10px; font-size: 12px; color: #000000; display: flex; justify-content: space-between; align-items: center;">
                                     <span>__________________<br/>Date</span>
-                                    <img src="static/src/img/3865076.png" alt="Company Logo" class="logoBottom">
+                                    <img src="hr_reward/static/src/img/3865076.png" alt="Company Logo" style="max-width: 100px; position: relative; top: 10px; left: 10px;" class="logoBottom">
                                     <span class="footer-right" style="text-align: center; padding: 10px; font-size: 12px; color: #000000; display: flex; justify-content: space-between; align-items: center;">__________________<br/>Signature</span>
                                 </div>
                                 <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
@@ -118,6 +117,9 @@ class HrReward(models.Model):
                         
                     </div>
                     """)
+    # ctx['image_url'] = 'hr_reward/static/src/img/logo_tex_tiny.png'
+
+    # html_content = hero_template.format(ctx=ctx)
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
     attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
@@ -354,11 +356,12 @@ class HrReward(models.Model):
                 if not employee.email or not self.env.user.email:
                     continue
                 ctx = {
-                    'employee_to_name': employee.display_name,
-                    'submit_by_to_name': self.submit_by.display_name,
+                    'employee_to_name': employee.name,
+                    'submit_by_to_name': self.submit_by.name,
                     'recipient_users': employee.user_id,
-                    'note': self.details,
+                    'note': html2plaintext(self.details) if not is_html_empty(self.details) else '',
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
+                    'image_url': 'hr_reward/static/src/img/logo_tex_tiny.png',
                 }
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                 subject = RenderMixin._render_template('Rewarded', 'hr.reward', reward.ids, post_process=True)[reward.id]
@@ -372,7 +375,7 @@ class HrReward(models.Model):
                 #         """
                 body_closed = RenderMixin._render_template(self.closed_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_hero = RenderMixin._render_template(self.hero_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
-                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
+                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
                 
                 body = f"{body_closed}<br/>{body_hero}<br/>{body_sig}"
                 # post the message

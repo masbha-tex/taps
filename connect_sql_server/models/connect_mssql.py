@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright 2019 Ehab Mosilhy (ehabmosilhy@gmail.com)
-
+import pymssql
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError, UserError
 
 
 class ConnectMssql(models.Model):
     _name = "connect.mssql"
     _description = 'Connect to MS SQL Server'
+    
     server_name = fields.Char('Server', required=True, help="The server name, could be an IP or a URL")
     database_name = fields.Char('Database name', required=True)
     user_name = fields.Char('User name', required=True)
@@ -15,20 +17,20 @@ class ConnectMssql(models.Model):
                         help="A Select statement or an insert/update/delete instruction")
     result = fields.Text('Result')
 
-    @api.model
-    def execute_query(self, name):
+    # @api.model
+    def execute_query(self, name=None):
+        my_server = self.server_name
+        my_user = self.user_name
+        my_database = self.database_name
+        my_password = self.password
+        my_query = self.query
+        my_port = 8000
+
         try:
-            import pymssql
-
-            # Connection Parameters
-            my_server = self.server_name
-            my_user = self.user_name
-            my_database = self.database_name
-            my_password = self.password
-            my_query = self.query
-
+            
             # Make the connection and execute the query
-            conn = pymssql.connect(server=my_server, user=my_user, password=my_password, database=my_database)
+            conn = pymssql.connect(server=my_server, user=my_user, password=my_password, database=my_database, port=my_port)
+            # raise UserError((conn))
             cursor = conn.cursor()
             cursor.execute(my_query)
 
@@ -48,6 +50,8 @@ class ConnectMssql(models.Model):
                 self.result = "Statement executed successfully, please check your database or make a select statement."
             conn.close()
 
-        except:
-            self.result = "An Error Occurred, please check your parameters!\n" \
-                          "And make sure (pymssql) is installed (pip3 install pymssql)."
+        except pymssql.OperationalError as e:
+            self.result = f"Operational Error: {e}"        
+
+        except Exception as e:
+            self.result = f"Error connecting to the database: {e}"
