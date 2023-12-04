@@ -87,7 +87,7 @@ class GoogleSheetConnector(models.Model):
                     
         if id == 2:
             # Fetch data from the Odoo model (sale.order in this case)
-            sale_orders_line = self.env['sale.order.line'].sudo().search([('order_id.sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',3),('product_template_id.name', '!=', 'MOULD'),('product_template_id', 'in', ['t','f'])],limit=limit)
+            sale_orders_line = self.env['sale.order.line'].sudo().search([('order_id.sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',3),('product_template_id.name', '!=', 'MOULD'),('product_template_id.active', 'in',(False,True))],limit=limit)
             sale_orders_line = sorted(sale_orders_line, key=lambda r: r.id, reverse=False)
 
             # Create a DataFrame from the Odoo records
