@@ -1022,6 +1022,7 @@ class OperationDetails(models.Model):
 
                 picking_types = self.env["stock.picking.type"].search([('company_id','=',self.env.company.id),('code', '=', 'mrp_operation' )])#('Z_Manufacturing','M_Manufacturing')
                 pic_typeid = picking_types.id
+                warehouse_id = picking_types.warehouse_id
                 
                 if move_qty > 0:
                     stockmove = self.env["stock.move"].create({'name':'New',
@@ -1039,7 +1040,7 @@ class OperationDetails(models.Model):
                                                                # 'group_id':11129,
                                                                'propagate_cancel':False,
                                                                'picking_type_id':pic_typeid,
-                                                               'warehouse_id':1,
+                                                               'warehouse_id':warehouse_id,
                                                                'additional':False,
                                                                # 'reference':,
                                                                'is_done':True,
@@ -1063,8 +1064,8 @@ class OperationDetails(models.Model):
                                                                          'qty_done':move_qty,
                                                                          'lot_id':lot_producing_id.id,
                                                                          'date':datetime.now(),
-                                                                         'location_id':15,
-                                                                         'location_dest_id':8,
+                                                                         'location_id':des_locationid,
+                                                                         'location_dest_id':locationid,
                                                                          'state':'done',# 'reference':,
                                                                          'qty_onhand':move_qty
                                                                          })
