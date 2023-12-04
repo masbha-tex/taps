@@ -37,7 +37,7 @@ class GoogleSheetConnector(models.Model):
     
     def generate_google_docs(self,id,limit):
         
-        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/mis.json'
+        SERVICE_ACCOUNT_FILE = 'src/user/google_sheet_connector/models/cred_service.json'
         scope = [
                     'https://spreadsheets.google.com/feeds', 
                     'https://www.googleapis.com/auth/drive'
@@ -87,7 +87,7 @@ class GoogleSheetConnector(models.Model):
                     
         if id == 2:
             # Fetch data from the Odoo model (sale.order in this case)
-            sale_orders_line = self.env['sale.order.line'].sudo().search([('order_id.sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',3),('product_template_id.name', '!=', 'MOULD')],limit=limit)
+            sale_orders_line = self.env['sale.order.line'].sudo().search([('order_id.sales_type','=', 'oa'),('state', '=','sale'),('company_id', '=',3),('product_template_id.name', '!=', 'MOULD'),('product_template_id', 'in', ('t','f'))],limit=limit)
             sale_orders_line = sorted(sale_orders_line, key=lambda r: r.id, reverse=False)
 
             # Create a DataFrame from the Odoo records

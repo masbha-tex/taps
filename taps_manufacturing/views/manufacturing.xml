@@ -69,6 +69,21 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                
+                <field name="logo" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logoref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logo_type" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="style" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="gmt" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shapefin" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="b_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="c_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="d_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="finish_ref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="product_code" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shape" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="back_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                
                 <field name="remarks" optional="show"/>
                 <!-- widget -->
                 <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>
@@ -169,6 +184,21 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                
+                <field name="logo" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logoref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logo_type" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="style" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="gmt" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shapefin" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="b_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="c_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="d_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="finish_ref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="product_code" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shape" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="back_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                
                 <field name="remarks" optional="show"/>
                 <!-- widget -->
                 <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>

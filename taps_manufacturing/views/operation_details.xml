@@ -69,12 +69,29 @@
                 <field name="product_id" readonly="1" invisible="1"/>
                 <field name="product_template_id" readonly="1"/>
                 <field name="fg_categ_type" optional="show"/>
+                
                 <field name="slidercodesfg" optional="show"/>
                 <field name="finish" optional="show"/>
                 <field name="shade" optional="show"/>
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="company_id" invisible="1"/>
+                
+                <field name="logo" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logoref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logo_type" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="style" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="gmt" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shapefin" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="b_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="c_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="d_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="finish_ref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="product_code" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shape" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="back_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                
                 <field name="work_center" invisible="1"/>
                 <field name="operation_of" readonly="1" invisible="1"/>
                 <field name="operation_by" readonly="1" invisible="1"/>
@@ -143,6 +160,22 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="company_id" invisible="1"/>
+                
+                <field name="logo" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logoref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logo_type" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="style" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="gmt" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shapefin" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="b_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="c_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="d_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="finish_ref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="product_code" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shape" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="back_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1" optional="show"/>
@@ -186,6 +219,21 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="company_id" invisible="1"/>
+                <field name="logo" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logoref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logo_type" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="style" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="gmt" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shapefin" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="b_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="c_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="d_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="finish_ref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="product_code" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shape" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="back_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1" optional="show"/>
@@ -224,6 +272,21 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="company_id" invisible="1"/>
+                <field name="logo" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logoref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="logo_type" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="style" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="gmt" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shapefin" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="b_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="c_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="d_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="finish_ref" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="product_code" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="shape" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                <field name="back_part" optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}"/>
+                
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1" optional="show"/>

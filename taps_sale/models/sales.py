@@ -1191,13 +1191,16 @@ class SaleOrder(models.Model):
             self.order_line.product_consumption(self.id)
             self.order_line.compute_shadewise_tape()
             #self.generate_mrp()
-            if self.company_id.id == 1:
-                self.generate_m_order()
+            # if self.company_id.id == 1:
+            self.generate_m_order()
         return True
+
 
     def generate_m_order(self):
         exist_mrp = self.env['manufacturing.order'].search([('oa_id','=',self.id)])
         operation = self.env['operation.details'].search([('oa_id','=',self.id)])
+        w_centers = self.env['mrp.workcenter'].search([('company_id','=',self.company_id.id),('name','=','Packing')])
+        w_center = w_centers.id
         for products in self.order_line:
             can_create = True
             op_can_create = True
@@ -1210,7 +1213,7 @@ class SaleOrder(models.Model):
                 m_order = exist_mrp.filtered(lambda mo: mo.sale_order_line.id == products.id)
                 if m_order:
                     can_create = False
-                    mrp_update = m_order.update({'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'revision_no':self.revised_no})
+                    mrp_update = m_order.update({'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'revision_no':self.revised_no,'logo':products.logo,'logoref':products.logoref,'logo_type':products.logo_type,'style':products.style,'gmt':products.gmt,'shapefin':products.shapefin,'b_part':products.b_part,'c_part':products.c_part,'d_part':products.d_part,'finish_ref':products.finish_ref,'product_code':products.product_code,'shape':products.shape,'back_part':products.back_part})
                     mrp_lines = str(m_order.id)
                     sale_lines = str(products.id)
                     mrp_id = m_order.id
@@ -1230,14 +1233,27 @@ class SaleOrder(models.Model):
                                             'bottom':products.pbotomfinish,
                                             'pinbox':products.ppinboxfinish,
                                             'actual_qty':products.product_uom_qty,
-                                            'revision_no':self.revised_no
+                                            'revision_no':self.revised_no,
+                                            'logo':products.logo,
+                                            'logoref':products.logoref,
+                                            'logo_type':products.logo_type,
+                                            'style':products.style,
+                                            'gmt':products.gmt,
+                                            'shapefin':products.shapefin,
+                                            'b_part':products.b_part,
+                                            'c_part':products.c_part,
+                                            'd_part':products.d_part,
+                                            'finish_ref':products.finish_ref,
+                                            'product_code':products.product_code,
+                                            'shape':products.shape,
+                                            'back_part':products.back_part
                                             })
                 
             # text = products.shade
             # shade = text.splitlines()
             
             if can_create == True:
-                mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting','revision_no':self.revised_no})
+                mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting','revision_no':self.revised_no,'logo':products.logo,'logoref':products.logoref,'logo_type':products.logo_type,'style':products.style,'gmt':products.gmt,'shapefin':products.shapefin,'b_part':products.b_part,'c_part':products.c_part,'d_part':products.d_part,'finish_ref':products.finish_ref,'product_code':products.product_code,'shape':products.shape,'back_part':products.back_part})
                 
                 mrp_lines = str(mrp_.id)
                 sale_lines = str(products.id)
@@ -1263,7 +1279,7 @@ class SaleOrder(models.Model):
                                                             'bottom':products.pbotomfinish,
                                                             'pinbox':products.ppinboxfinish,
                                                             'operation_of':'output',
-                                                            'work_center':7,
+                                                            'work_center':w_center,
                                                             'operation_by':self.env.user.name,
                                                             'based_on':'Lot Code',
                                                             'next_operation':'Packing Output',
@@ -1273,7 +1289,20 @@ class SaleOrder(models.Model):
                                                             'fr_pcs_pack':0,
                                                             'capacity':0,
                                                             'state':'waiting',
-                                                            'move_line':None
+                                                            'move_line':None,
+                                                            'logo':products.logo,
+                                                            'logoref':products.logoref,
+                                                            'logo_type':products.logo_type,
+                                                            'style':products.style,
+                                                            'gmt':products.gmt,
+                                                            'shapefin':products.shapefin,
+                                                            'b_part':products.b_part,
+                                                            'c_part':products.c_part,
+                                                            'd_part':products.d_part,
+                                                            'finish_ref':products.finish_ref,
+                                                            'product_code':products.product_code,
+                                                            'shape':products.shape,
+                                                            'back_part':products.back_part
                                                             })
             
     # def manuf_values(self,seq,id,oa,company):

@@ -67,7 +67,21 @@ class OperationDetails(models.Model):
     top = fields.Char(string='Top', store=True, readonly=True)
     bottom = fields.Char(string='Bottom', store=True)
     pinbox = fields.Char(string='Pin-Box', store=True)
-    
+    logo = fields.Text(string='Logo', store=True)
+    logoref = fields.Text(string='Logo Ref', store=True)
+    logo_type = fields.Text(string='Logo Type', store=True)
+    style = fields.Text(string='Style', store=True)
+    gmt = fields.Text(string='Gmt', store=True)
+    shapefin = fields.Text(string='Shape Finish', store=True)
+    bcdpart = fields.Text(string='BCD Part Material Type / Size', store=True)
+    b_part = fields.Text(string='B Part', store=True)
+    c_part = fields.Text(string='C Part', store=True)
+    d_part = fields.Text(string='D Part', store=True)
+    finish_ref = fields.Text(string='Finish Ref', store=True)
+    product_code = fields.Text(string='Product Code', store=True)
+    shape = fields.Text(string='Shape', store=True)
+    back_part = fields.Text(string='Back Part', store=True)
+
     operation_of = fields.Selection([
         ('plan', 'Planning'),
         ('lot', 'Create Lot'),
@@ -353,11 +367,13 @@ class OperationDetails(models.Model):
             sale_order = self.env["sale.order"].search([('id', 'in', (oa_ids,0))])#(oa_ids)
             oa_list = sale_order.mapped('name')
 
+        locations = self.env["stock.location"].search([('company_id','=',self.env.company.id),('name', '=', 'Stock')])
+        locationid = locations.id
         # raise UserError((self.env.user.partner_id.id,self.env.company.id,self.env.user.user_id))
         pick = self.env["stock.picking"].create({'move_type':'direct',
                                                  'state':'draft',
                                                  'scheduled_date':datetime.now(),
-                                                 'location_id':8,
+                                                 'location_id':locationid,
                                                  'location_dest_id':15,
                                                  'picking_type_id':26,
                                                  'partner_id':self.env.user.partner_id.id,
@@ -394,7 +410,7 @@ class OperationDetails(models.Model):
                                                            # 'product_qty':prod.product_qty,
                                                            'product_uom_qty':prod.product_qty,
                                                            'product_uom':prod.product_id.product_tmpl_id.uom_id.id,
-                                                           'location_id':8,
+                                                           'location_id':locationid,
                                                            'location_dest_id':15,
                                                            'partner_id':self.env.user.partner_id.id,
                                                            'picking_id':pick.id,
@@ -426,7 +442,7 @@ class OperationDetails(models.Model):
                                                        # 'product_qty':prod.product_qty,
                                                        'product_uom_qty':qty,
                                                        'product_uom':product_id.product_tmpl_id.uom_id.id,
-                                                       'location_id':8,
+                                                       'location_id':locationid,
                                                        'location_dest_id':15,
                                                        'partner_id':self.env.user.partner_id.id,
                                                        'picking_id':pick.id,
@@ -998,7 +1014,15 @@ class OperationDetails(models.Model):
                     _slclosed = sl_closed.write({'closing_date':datetime.now().date()})
                 else:
                     mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b})
-# id,name,sequence,company_id,product_id,product_qty,product_uom_qty,product_uom,location_id,location_dest_id,state,origin,procure_method,scrapped,group_id,propagate_cancel,picking_type_id,warehouse_id,additional,reference,is_done,production_id,unit_factor,weight                   
+# id,name,sequence,company_id,product_id,product_qty,product_uom_qty,product_uom,location_id,location_dest_id,state,origin,procure_method,scrapped,group_id,propagate_cancel,picking_type_id,warehouse_id,additional,reference,is_done,production_id,unit_factor,weight   
+                locations = self.env["stock.location"].search([('company_id','=',self.env.company.id),('name', 'in', ('Stock','Production'))])
+                locationid = locations.filtered(lambda pr: pr.name == 'Stock').id
+                
+                des_locationid = locations.filtered(lambda pr: pr.name == 'Production').id
+
+                picking_types = self.env["stock.picking.type"].search([('company_id','=',self.env.company.id),('code', '=', 'mrp_operation' )])#('Z_Manufacturing','M_Manufacturing')
+                pic_typeid = picking_types.id
+                
                 if move_qty > 0:
                     stockmove = self.env["stock.move"].create({'name':'New',
                                                                'sequence':10,
@@ -1007,14 +1031,14 @@ class OperationDetails(models.Model):
                                                                # 'product_qty':out.uotput_qty,
                                                                'product_uom_qty':move_qty,
                                                                'product_uom':out.product_id.product_tmpl_id.uom_id.id,
-                                                               'location_id':15,
-                                                               'location_dest_id':8,
+                                                               'location_id':des_locationid,
+                                                               'location_dest_id':locationid,
                                                                'state':'done',
                                                                'procure_method':'make_to_stock',
                                                                'scrapped':False,
                                                                # 'group_id':11129,
                                                                'propagate_cancel':False,
-                                                               'picking_type_id':8,
+                                                               'picking_type_id':pic_typeid,
                                                                'warehouse_id':1,
                                                                'additional':False,
                                                                # 'reference':,
@@ -1221,7 +1245,7 @@ class OperationDetails(models.Model):
                     mrp_l_ids = int(out.mrp_lines)
                     oa_qty = self.env['manufacturing.order'].browse(mrp_l_ids)
                     actual_qty = sum(oa_qty.mapped('product_uom_qty'))
-                if (next == '' or next == None) and w_center == 7:
+                if (next == '' or next == None) and w_center in (7,14):
                     next = 'FG Packing'
                 if can_create:
                     ope = self.env['operation.details'].create({'name':out.name,

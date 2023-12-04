@@ -21,12 +21,26 @@ class HrReward(models.Model):
             ('Approved', 'Approved'),
             # ('Cancel', 'Cancel'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
-    r_type = fields.Selection([
-            ('hero', 'Hero Card'),
-            ('thank', 'Thank You'),
-            ('Kudos', 'Kudos')], 'Type of Reward', required=True, tracking=True)
+    criteria_id = fields.Many2one('reward.criteria', required=True, string='Criteria') 
+    title_ids = fields.Many2one('reward.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")  
+    # r_type = fields.Selection([
+    #         ('hero', 'Hero Card'),
+    #         ('thank', 'Thank You'),
+    #         ('Kudos', 'Kudos')], 'Type of Reward', required=True, tracking=True)
     
     details = fields.Html('Reward For', tracking=True)
+
+    # @api.model
+    # def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+    #     if not args:
+    #         args = []
+    #     if name:
+    #         course_ids = self._search([('name', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
+    #         if not course_ids:
+    #             course_ids = self._search([('title_ids', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
+    #     else:
+    #         course_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+    #     return course_ids #models.lazy_name_get(self.browse(course_ids).with_user(name_get_uid))
 
     submit_template = fields.Html('Submit Template', default="""
                     <div style="margin:0px;padding: 0px;">
@@ -86,30 +100,31 @@ class HrReward(models.Model):
                         """ ) 
 
     hero_template = fields.Html('Hero Template', default=""" 
-                    <div class="card" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
+                    <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
                         <div class="background-image" style="background-image: url('hr_reward/static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
                             <div class="container" style="padding: 25px 25px 25px 25px;">
                             <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
                             
                                 <img src="${ctx['image_url']}" alt="Company Logo" style="max-width: 100px; position: absolute; top: 20px;left: 20px;" class="logo">
-                                <div class="company-name" style="font-size: 27px; position: absolute;top: 30px; right: 20px; font-weight: bold; text-align: right; color: #000000;">Tex Fasteners<br/>Bangladesh<p style="font-size: 10px;">DESIGN  .  QUALITY  .  SPEED</p></div>
+                                <div class="company-name" style="font-size: 23px; bottom: 0px; position: absolute;top: 30px; right: 20px; font-weight: bold; text-align: right; color: #000000;">Tex Fasteners<p style="font-size: 7px;">DESIGN  .  QUALITY  .  SPEED</p></div>
                                 <br/>
                                 <br/>
                                 <br/>
                                 <br/>
-                                <br/>
-                                <h3 class="dear-text" style="font-size: 14px; font-weight: bold; margin-top: 50px; color: #000000;">Dear, ${ctx['employee_to_name']}</h3>
-                                <h2 class="you-text" style="font-size: 37px; font-weight: bold; margin-top: 20px; color: #000000;">You Are A<br/><span style="font-weight: bold; font-size: 70px;color: #0F964F; margin-left: -5px; margin-top: -25px;">Hero</span></h2>
+                                <h3 class="dear-text" style="font-size: 12px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 14px; font-weight: bold; margin-top: 50px; color: #000000;">${ctx['employee_to_name']}</span></h3>
+                                <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 16px; margin-bottom: 0px; color: #000000;">You Are A<br/><span style="font-weight: bold; font-size: 70px;color: #0F964F; margin-left: -5px; margin-top: -25px;">Hero</span></h2>
                                 <div class="content-text" style="font-size: 12px; margin-top: 10px; color: #000000;">
                                     <p>Congratulations! For ${ctx['note']}</p>
                                     <p>Well done, keep it up!</p>
-                                    <p>Recommended by - <p style="font-weight: bold; font-size: 14px;">${ctx['submit_by_to_name']}</p></p>
+                                    <br/>
+                                    <p>Recommended by - <p style=" font-size: 12px;">${ctx['submit_by_to_name']}</p></p>
                                 </div>
                                 <div class="footer" style="text-align: center; padding: 10px; font-size: 12px; color: #000000; display: flex; justify-content: space-between; align-items: center;">
-                                    <span>__________________<br/>Date</span>
+                                    <span>${ctx['date']}<br/>__________________<br/>Date</span>
                                     <img src="hr_reward/static/src/img/3865076.png" alt="Company Logo" style="max-width: 100px; position: relative; top: 10px; left: 10px;" class="logoBottom">
                                     <span class="footer-right" style="text-align: center; padding: 10px; font-size: 12px; color: #000000; display: flex; justify-content: space-between; align-items: center;">__________________<br/>Signature</span>
                                 </div>
+                                <br/>
                                 <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
                             </div>
                         </div>
@@ -117,9 +132,6 @@ class HrReward(models.Model):
                         
                     </div>
                     """)
-    # ctx['image_url'] = 'hr_reward/static/src/img/logo_tex_tiny.png'
-
-    # html_content = hero_template.format(ctx=ctx)
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
     attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
@@ -360,6 +372,7 @@ class HrReward(models.Model):
                     'submit_by_to_name': self.submit_by.name,
                     'recipient_users': employee.user_id,
                     'note': html2plaintext(self.details) if not is_html_empty(self.details) else '',
+                    'date': self.issue_date,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
                     'image_url': 'hr_reward/static/src/img/logo_tex_tiny.png',
                 }
@@ -377,7 +390,7 @@ class HrReward(models.Model):
                 body_hero = RenderMixin._render_template(self.hero_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
                 
-                body = f"{body_closed}<br/>{body_hero}<br/>{body_sig}"
+                body = f"{body_hero}<br/>{body_sig}"
                 # post the message
                 matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
                 if matrix:

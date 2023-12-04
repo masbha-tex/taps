@@ -17,6 +17,8 @@
         'data/ir_sequence.xml',
         # 'views/assets.xml',
         'views/views.xml',
+        'views/reward_criteria_views.xml',
+        'views/reward_title_views.xml',
         'views/matrix_views.xml',
         'views/templates.xml',
     ],

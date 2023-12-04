@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hr_reward,hr_reward,model_hr_reward,base.group_user,1,1,1,1
 access_hr_reward_matrix,hr_reward_matrix,model_hr_reward_matrix,base.group_user,1,1,1,1
+access_reward_criteria,reward_criteria,model_reward_criteria,base.group_user,1,1,1,1
+access_reward_title,reward_title,model_reward_title,base.group_user,1,1,1,1

@@ -34,11 +34,14 @@
                     </div>
                     <group>
                         <group>
-                            <field name="r_type" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                            <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="criteria_id" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="title_ids" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            
                         </group>
                         <group>
-                            <field name="issue_date" />
+                            <!-- <field name="r_type" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
+                            <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="issue_date" attrs="{'invisible': [('state', '!=', 'Approved')]}"/>
                         </group>                       
                     </group>
                     <group colspan="2" col="2">
@@ -62,7 +65,7 @@
             <tree string="Reward" sample="1">
                 <field name="name"/>
                 <field name="employee_id"/>
-                <field name="r_type" widget="selection"/>
+                <!-- <field name="r_type" widget="selection"/> -->
                 <field name="details" optional="hide"/>
                 <field name="submit_by" options="{'no_create':true, 'no_open':true}"/>
                 <field name="issue_date"/>
@@ -88,7 +91,7 @@
                 <searchpanel>
                     <field name="company_id" enable_counters="1"/>
                     <field name="state" enable_counters="1"/>
-                    <field name="r_type" enable_counters="1"/>
+                    <!-- <field name="r_type" enable_counters="1"/> -->
                     <field name="department_id" enable_counters="1"/>
                 </searchpanel>
             </search>
