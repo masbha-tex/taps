@@ -21,13 +21,8 @@ class HrReward(models.Model):
             ('Approved', 'Approved'),
             # ('Cancel', 'Cancel'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
-    criteria_id = fields.Many2one('reward.criteria', required=True, string='Criteria') 
-    title_ids = fields.Many2one('reward.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")  
-    # r_type = fields.Selection([
-    #         ('hero', 'Hero Card'),
-    #         ('thank', 'Thank You'),
-    #         ('Kudos', 'Kudos')], 'Type of Reward', required=True, tracking=True)
-    
+    criteria_id = fields.Many2one('reward.criteria', required=True, string='Scope')
+    title_ids = fields.Many2one('reward.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")    
     details = fields.Html('Reward For', tracking=True)
 
     # @api.model
@@ -309,39 +304,42 @@ class HrReward(models.Model):
                 matrix_cc = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
                 if matrix_cc:
                     mailcc = ','.join([email.email for email in matrix_cc.next_user if email])
-                # raise UserError((self.env['hr.reward.matrix']))
-                attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-                
-                mail_values = {
-                    # 'email_from': self.env.user.email_formatted,
-                    'email_from': self.submit_by.email,
-                    'author_id': self.env.user.partner_id.id,
-                    'model': None,
-                    'res_id': None,
-                    'subject': 'Raise a new reward for %s' % employee.display_name,
-                    'body_html': body,
-                    'attachment_ids': attachment,                    
-                    'auto_delete': True,
-                    'email_to': mailto or '',
-                    # 'email_to': self.submit_by.email,
-                    'email_cc': mailcc or '',
-                
-                }
-                # raise UserError((mail_values['mail_values']))
-                try:
-                    template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
-                except ValueError:
-                    _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
-                else:
-                    template_ctx = {
-                        'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=employee.display_name)),
-                        'model_description': self.env['ir.model']._get('hr.reward').display_name,
-                        'company': self.env.company,
+                if matrix or matrix_cc:
+                    
+                    # raise UserError((self.env['hr.reward.matrix']))
+                    attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
+                    
+                    mail_values = {
+                        # 'email_from': self.env.user.email_formatted,
+                        'email_from': self.submit_by.email,
+                        'author_id': self.env.user.partner_id.id,
+                        'model': None,
+                        'res_id': None,
+                        'subject': 'Raise a new reward for %s' % employee.display_name,
+                        'body_html': body,
+                        'attachment_ids': attachment,                    
+                        'auto_delete': True,
+                        'email_to': mailto or '',
+                        # 'email_to': self.submit_by.email,
+                        'email_cc': mailcc or '',
+                    
                     }
-                    body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
-                    mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                self.env['mail.mail'].sudo().create(mail_values)#.send()
-                # raise UserError((mail_values))
+                    # raise UserError((mail_values['mail_values']))
+                    try:
+                        template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+                    except ValueError:
+                        _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
+                    else:
+                        template_ctx = {
+                            'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=employee.display_name)),
+                            'model_description': self.env['ir.model']._get('hr.reward').display_name,
+                            'company': self.env.company,
+                        }
+                        body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+                        mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+                    self.env['mail.mail'].sudo().create(mail_values)#.send()
+                else:
+                    raise UserError(('Maybe forget to add Email Matrix like..EMAILTO, EMAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
                 
         return {
             'effect': {

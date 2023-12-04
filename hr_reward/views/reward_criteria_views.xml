@@ -16,7 +16,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company" invisible="1"/>
                             </group>                            
                         </group>                        
                     </sheet>
@@ -32,9 +32,9 @@
             <field name="model">reward.criteria</field>
             <field name="arch" type="xml">
                 <tree string="Criteria" sample="1">
-                    <field name="display_name"/>
+                    <field name="name"/>
                     <field name="title_ids"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -58,7 +58,7 @@
             <field name="arch" type="xml">
                 <kanban class="oe_background_grey o_kanban_dashboard o_hr_kanban" sample="1">
                     <field name="name"/>
-                    <field name="company_id"/>
+                    <field name="company_id" invisible="1"/>
                     <field name="title_ids"/>
                     <field name="color"/>
                     <templates>
@@ -92,7 +92,7 @@
         </record>
 
         <record id="reward_criteria_kanban_action" model="ir.actions.act_window">
-            <field name="name">Reward Criteria</field>
+            <field name="name">R &amp; R Scope</field>
             <field name="res_model">reward.criteria</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="view_reward_criteria_filter"/>
@@ -106,7 +106,7 @@
             </field>
         </record>
         <record id="reward_criteria_tree_action" model="ir.actions.act_window">
-            <field name="name">Reward Type</field>
+            <field name="name">R &amp; R Scope</field>
             <field name="res_model">reward.criteria</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="search_view_id" ref="view_reward_criteria_filter"/>
@@ -119,18 +119,13 @@
                 </p>
             </field>
         </record>
-
-        <!-- <menuitem
-            id="menu_reward_criteria_tree"
-            action="reward_criteria_tree_action"
-            parent="menu_reward_config_settings"
-            sequence="1"
-            groups="group_user_reward"/>   -->
         <menuitem
-                id="menu_reward_criteria_tree"
-                action="reward_criteria_tree_action"
-                parent="menu_hr_reward_matrix"
-                groups="hr.group_hr_manager"
-                sequence="37"/>
+            id="menu_reward_criteria_tree"
+            name="Scope"
+            action="reward_criteria_tree_action"
+            parent="hr_reward.menu_hr_reward_matrix"
+            groups="hr.group_hr_manager"
+            sequence="2"/>
+        
     </data>
 </odoo>

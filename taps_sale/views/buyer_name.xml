@@ -5,12 +5,15 @@
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form"/>
     <field name="arch" type="xml">
+        <xpath expr="//form" position="inside">
+            <field name="brand_rank" invisible="1"/>
+        </xpath>
         <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
             <page string="Others" name="Others info">
               <group name="Others">
                 <field name="sale_representative" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                 <field name="related_buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" />
-                <field name="related_customer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
+                <field name="related_customer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                 <field name="contact_person"/>
                 <field name="contact_mobile" widget="phone"/>
               </group>
@@ -25,6 +28,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//filter[@name='inactive']" position="before">
                    <filter string="Buyers List" name="buyer" domain="[('buyer_rank','>', 0)]"/>
+                   <filter string="Brands List" name="brand" domain="[('brand_rank','>', 0)]"/>
                    
                    <separator/>
                 </xpath>
@@ -65,7 +69,22 @@
               <p class="o_view_nocontent_smiling_face">
                 Create a new customer in your address book
               </p><p>
-                Odoo helps you easily track all activities related to a customer.
+                Odoo helps you easily track all activities related to a Buyer.
+              </p>
+            </field>
+        </record>
+        <record id="res_partner_action_brand" model="ir.actions.act_window">
+            <field name="name">Brands</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'search_default_brand': 1,'res_partner_search_mode': 'brand', 'default_is_company': True, 'default_brand_rank': 1}</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new Brand in your address book
+              </p><p>
+                Odoo helps you easily track all activities related to a Brand.
               </p>
             </field>
         </record>
@@ -90,4 +109,11 @@
         parent="sale.sale_order_menu"
         groups="sales_team.group_sale_salesman_all_leads"
         sequence="16"/>
+        <menuitem 
+        id="sale_order_menu_inherit_brand"
+        name="Brands"
+        action ="res_partner_action_brand"
+        parent="sale.sale_order_menu"
+        groups="sales_team.group_sale_salesman_all_leads"
+        sequence="20"/>
 </odoo>    

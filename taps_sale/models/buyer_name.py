@@ -14,6 +14,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     buyer_rank = fields.Integer(default=0, copy=False)
+    brand_rank = fields.Integer(default=0, copy=False)
     sale_representative = fields.Many2one('sale.representative', string="Sale Representative")
     related_buyer = fields.Many2one('res.partner', string="Related Buyer")
     related_customer = fields.Many2one('res.partner', string="Related Customer")
@@ -73,6 +74,7 @@ class ResPartner(models.Model):
         is_customer = search_partner_mode == 'customer'
         is_supplier = search_partner_mode == 'supplier'
         is_buyer = search_partner_mode == 'buyer'
+        is_brand = search_partner_mode == 'brand'
         if search_partner_mode:
             for vals in vals_list:
                 if is_customer and 'customer_rank' not in vals:
@@ -81,6 +83,8 @@ class ResPartner(models.Model):
                     vals['supplier_rank'] = 1
                 elif is_buyer and 'buyer_rank' not in vals:
                     vals['buyer_rank'] = 1
+                elif is_brand and 'brand_rank' not in vals:
+                    vals['brand_rank'] = 1
         return super().create(vals_list)
 
 

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <record id="view_reward_title_form" model="ir.ui.view">
             <field name="name">reward.title.form</field>
             <field name="model">reward.title</field>
             <field name="arch" type="xml">
-                <form string="Reward">
+                <form string="R &amp; R Title">
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <field name="active" invisible="1"/>
@@ -20,7 +19,7 @@
                                 <field name="criteria_id" options="{'no_create': True}"/>
                             </group>
                             <group>
-                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company" invisible="1"/>
                             </group>
                             <separator string="Content" colspan="2" />
                             <group colspan="2" col="2">
@@ -39,10 +38,10 @@
             <field name="name">reward.title.tree</field>
             <field name="model">reward.title</field>
             <field name="arch" type="xml">
-                <tree string="Title" sample="1">
-                    <field name="display_name"/>
+                <tree string="R &amp; R Title" sample="1">
+                    <field name="name"/>
                     <field name="criteria_id"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -59,7 +58,7 @@
                                     <strong><field name="name"/></strong>
                                 </div>
                                 <div>
-                                    <span><field name="criteria_id"/>&amp;nbsp;</span>
+                                    <field name="criteria_id"/>
                                 </div>
                             </div>
                         </t>
@@ -87,7 +86,7 @@
         </record>
 
         <record id="action_reward_title" model="ir.actions.act_window">
-            <field name="name">Title</field>
+            <field name="name">R &amp; R Title</field>
             <field name="res_model">reward.title</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="search_view_id" ref="view_reward_title_filter"/>
@@ -100,18 +99,13 @@
               </p>
             </field>
         </record>
-        <!-- <menuitem
-            id="menu_reward_title_tree"
-            action="action_reward_title"
-            parent="menu_reward_config_settings"
-            sequence="2"
-            groups="group_user_reward"/>  -->
         <menuitem
-                id="menu_reward_title_tree"
-                action="action_reward_title"
-                parent="menu_hr_reward_matrix"
-                groups="hr.group_hr_manager"
-                sequence="38"/>
+            id="menu_reward_title_tree"
+            name="Title"
+            action="action_reward_title"
+            parent="hr_reward.menu_hr_reward_matrix"
+            groups="hr.group_hr_manager"
+            sequence="3"/>
 
     </data>
 </odoo>
