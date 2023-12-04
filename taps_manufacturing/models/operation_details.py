@@ -367,15 +367,22 @@ class OperationDetails(models.Model):
             sale_order = self.env["sale.order"].search([('id', 'in', (oa_ids,0))])#(oa_ids)
             oa_list = sale_order.mapped('name')
 
-        locations = self.env["stock.location"].search([('company_id','=',self.env.company.id),('name', '=', 'Stock')])
-        locationid = locations.id
+        locations = self.env["stock.location"].search([('company_id','=',self.env.company.id),('name', 'in', ('Stock','Production'))])
+        locationid = locations.filtered(lambda pr: pr.name == 'Stock').id
+        
+        des_locationid = locations.filtered(lambda pr: pr.name == 'Production').id
+
+        picking_types = self.env["stock.picking.type"].search([('company_id','=',self.env.company.id),('code', '=', 'mrp_operation' )])#('Z_Manufacturing','M_Manufacturing')
+        pic_typeid = picking_types.id
+        warehouse_id = picking_types.warehouse_id.id
+        
         # raise UserError((self.env.user.partner_id.id,self.env.company.id,self.env.user.user_id))
         pick = self.env["stock.picking"].create({'move_type':'direct',
                                                  'state':'draft',
                                                  'scheduled_date':datetime.now(),
                                                  'location_id':locationid,
-                                                 'location_dest_id':15,
-                                                 'picking_type_id':26,
+                                                 'location_dest_id':des_locationid,
+                                                 'picking_type_id':pic_typeid,
                                                  'partner_id':self.env.user.partner_id.id,
                                                  'company_id':self.env.company.id,
                                                  'user_id':self.env.user.user_id,
@@ -411,12 +418,12 @@ class OperationDetails(models.Model):
                                                            'product_uom_qty':prod.product_qty,
                                                            'product_uom':prod.product_id.product_tmpl_id.uom_id.id,
                                                            'location_id':locationid,
-                                                           'location_dest_id':15,
+                                                           'location_dest_id':des_locationid,
                                                            'partner_id':self.env.user.partner_id.id,
                                                            'picking_id':pick.id,
                                                            'state':'draft',
                                                            'procure_method':'make_to_stock',
-                                                           'picking_type_id':26,
+                                                           'picking_type_id':pic_typeid,
                                                            'reference':pick.name
                                                            })
         elif product_id:
@@ -443,12 +450,12 @@ class OperationDetails(models.Model):
                                                        'product_uom_qty':qty,
                                                        'product_uom':product_id.product_tmpl_id.uom_id.id,
                                                        'location_id':locationid,
-                                                       'location_dest_id':15,
+                                                       'location_dest_id':des_locationid,
                                                        'partner_id':self.env.user.partner_id.id,
                                                        'picking_id':pick.id,
                                                        'state':'draft',
                                                        'procure_method':'make_to_stock',
-                                                       'picking_type_id':26,
+                                                       'picking_type_id':pic_typeid,
                                                        'reference':pick.name
                                                        })
         return pick.id
@@ -1022,7 +1029,7 @@ class OperationDetails(models.Model):
 
                 picking_types = self.env["stock.picking.type"].search([('company_id','=',self.env.company.id),('code', '=', 'mrp_operation' )])#('Z_Manufacturing','M_Manufacturing')
                 pic_typeid = picking_types.id
-                warehouse_id = picking_types.warehouse_id
+                warehouse_id = picking_types.warehouse_id.id
                 
                 if move_qty > 0:
                     stockmove = self.env["stock.move"].create({'name':'New',
