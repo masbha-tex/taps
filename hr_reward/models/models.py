@@ -373,7 +373,7 @@ class HrReward(models.Model):
                         }
                         body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                         mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                    self.env['mail.mail'].sudo().create(mail_values)#.send()
+                    self.env['mail.mail'].sudo().create(mail_values).send()
                 else:
                     raise UserError(('Maybe forget to add Email Matrix like..EMAILTO, EMAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
                 
@@ -471,7 +471,7 @@ class HrReward(models.Model):
                     }
                     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                self.env['mail.mail'].sudo().create(mail_values)#.send()
+                self.env['mail.mail'].sudo().create(mail_values).send()
       
         return {
             'effect': {
@@ -548,7 +548,7 @@ class HrReward(models.Model):
                     }
                     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                self.env['mail.mail'].sudo().create(mail_values)#.send()
+                self.env['mail.mail'].sudo().create(mail_values).send()
                 
         return {
                     'effect': {
