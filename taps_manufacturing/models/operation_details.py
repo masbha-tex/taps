@@ -372,7 +372,7 @@ class OperationDetails(models.Model):
         
         des_locationid = locations.filtered(lambda pr: pr.name == 'Production').id
 
-        picking_types = self.env["stock.picking.type"].search([('company_id','=',self.env.company.id),('code', '=', 'mrp_operation' )])#('Z_Manufacturing','M_Manufacturing')
+        picking_types = self.env["stock.picking.type"].search([('company_id','=',self.env.company.id),('sequence_code', '=', 'MR' )])#('Z_Manufacturing','M_Manufacturing')
         pic_typeid = picking_types.id
         warehouse_id = picking_types.warehouse_id.id
         
