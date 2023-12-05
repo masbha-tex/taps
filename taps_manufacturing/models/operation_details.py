@@ -18,8 +18,6 @@ from odoo.addons.stock.models.stock_move import PROCUREMENT_PRIORITIES
 from werkzeug.urls import url_encode
 from datetime import datetime
 # from user.taps_manufacturing import manufacturing_order
-     
-
 
 class OperationDetails(models.Model):
     _name = "operation.details"

@@ -76,10 +76,10 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
-                <field name="company_id" invisible="1"/>
+                <field name="company_id" invisible="1" optional="show"/>
                  <!--  optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}" -->
-                <field name="logo" invisible="1"/>
-                <field name="logoref" invisible="1"/>
+                <field name="logo"/>
+                <field name="logoref"/>
                 <field name="logo_type" invisible="1"/>
                 <field name="style" invisible="1"/>
                 <field name="gmt" invisible="1"/>

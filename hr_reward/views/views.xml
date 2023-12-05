@@ -66,6 +66,7 @@
                 <field name="name"/>
                 <field name="employee_id"/>
                 <!-- <field name="r_type" widget="selection"/> -->
+                <field name="criteria_id"/>
                 <field name="details" optional="hide"/>
                 <field name="submit_by" options="{'no_create':true, 'no_open':true}"/>
                 <field name="issue_date"/>
@@ -92,6 +93,7 @@
                     <field name="company_id" enable_counters="1"/>
                     <field name="state" enable_counters="1"/>
                     <!-- <field name="r_type" enable_counters="1"/> -->
+                    <field name="criteria_id" enable_counters="1"/>
                     <field name="department_id" enable_counters="1"/>
                 </searchpanel>
             </search>

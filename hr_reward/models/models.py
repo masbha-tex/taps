@@ -99,32 +99,68 @@ class HrReward(models.Model):
                         <div class="background-image" style="background-image: url('hr_reward/static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
                             <div class="container" style="padding: 25px 25px 25px 25px;">
                             <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
-                            
-                                <img src="${ctx['image_url']}" alt="Company Logo" style="max-width: 100px; position: absolute; top: 20px;left: 20px;" class="logo">
-                                <div class="company-name" style="font-size: 23px; bottom: 0px; position: absolute;top: 30px; right: 20px; font-weight: bold; text-align: right; color: #000000;">Tex Fasteners<p style="font-size: 7px;">DESIGN  .  QUALITY  .  SPEED</p></div>
                                 <br/>
                                 <br/>
+                                <img src="hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%;">
                                 <br/>
+                                <h3 class="dear-text" style="font-size: 14px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 16px; font-weight: bold; margin-top: 50px; color: #000000;">${ctx['employee_to_name']}</span></h3>
+                                <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 17px; margin-bottom: 0px; color: #000000;">You Are A<br/></h2><img src="hr_reward/static/src/img/hero.png" alt="Company Logo" style="position: relative; width: 50%;"><br/>
                                 <br/>
-                                <h3 class="dear-text" style="font-size: 12px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 14px; font-weight: bold; margin-top: 50px; color: #000000;">${ctx['employee_to_name']}</span></h3>
-                                <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 16px; margin-bottom: 0px; color: #000000;">You Are A<br/><span style="font-weight: bold; font-size: 70px;color: #0F964F; margin-left: -5px; margin-top: -25px;">Hero</span></h2>
+                                <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8"><p style="font-size: 12px; color: #000000; text-align: center;">For ${ctx['note']}</p></div>
+                            <div class="col-2"></div>
+                        
+                            </div>
                                 <div class="content-text" style="font-size: 12px; margin-top: 10px; color: #000000;">
-                                    <p>Congratulations! For ${ctx['note']}</p>
+                                    
                                     <p>Well done, keep it up!</p>
                                     <br/>
-                                    <p>Recommended by - <p style=" font-size: 12px;">${ctx['submit_by_to_name']}</p></p>
+                                    <p>Recommended by - <p style=" font-size: 12px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
                                 </div>
-                                <div class="footer" style="text-align: center; padding: 10px; font-size: 12px; color: #000000; display: flex; justify-content: space-between; align-items: center;">
-                                    <span>${ctx['date']}<br/>__________________<br/>Date</span>
-                                    <img src="hr_reward/static/src/img/3865076.png" alt="Company Logo" style="max-width: 100px; position: relative; top: 10px; left: 10px;" class="logoBottom">
-                                    <span class="footer-right" style="text-align: center; padding: 10px; font-size: 12px; color: #000000; display: flex; justify-content: space-between; align-items: center;">__________________<br/>Signature</span>
-                                </div>
+                                <img src="hr_reward/static/src/img/3865076.png" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
+                                <br/>
                                 <br/>
                                 <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
+                                <br/>
                             </div>
                         </div>
                     </div>
                         
+                    </div>
+                    """)
+
+    thanku_template = fields.Html('Thank you Template', default=""" 
+                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('hr_reward/static/src/img/th.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
+                       
+                        <img src="hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="max-width: 100px; position: absolute; top: 45px; left: 500px;">
+                        <p style="font-size: 12px; font-weight: bold; margin-top: 160px; color: #000000; text-align: left;  margin-left: 100px;">${ctx['employee_to_name']}</p><br/>
+                        <div class="row">
+                        <div class="col-7">
+                        <p style="font-size: 9px; color: #000000; text-align: left; margin-left: 30px; ">${ctx['note']}</p>
+                        </div>
+                        </div>
+                        <br/>
+                        <p style="font-size: 10px; color: #000000; text-align: left;  margin-left: 50px;">Recommended by - ${ctx['submit_by_to_name']}</p>
+                        <br/>
+                        <br/>
+                    </div>
+                    """)
+
+    kudos_template = fields.Html('Kudos Template', default=""" 
+                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('hr_reward/static/src/img/Ku.jpg');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
+                       
+                        <p style="font-size: 12px; font-weight: bold; margin-top: 220px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p><br/>
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8"><p style="font-size: 9px; color: #000000; text-align: center;">${ctx['note']}</p></div>
+                            <div class="col-2"></div>
+                        
+                        </div>
+                        <br/>
+                        <p style="font-size: 10px; color: #000000; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
+                        <br/>
+                        <br/>
                     </div>
                     """)
     
@@ -386,9 +422,15 @@ class HrReward(models.Model):
                 #         """
                 body_closed = RenderMixin._render_template(self.closed_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_hero = RenderMixin._render_template(self.hero_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
+                body_thanku = RenderMixin._render_template(self.thanku_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
+                body_kudos = RenderMixin._render_template(self.kudos_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
-                
-                body = f"{body_hero}<br/>{body_sig}"
+                if self.criteria_id.name == 'HERO':
+                    body = f"{body_hero}<br/>{body_sig}"
+                elif self.criteria_id.name == 'KUDOS':
+                    body = f"{body_kudos}<br/>{body_sig}"
+                elif self.criteria_id.name == 'THANK YOU':
+                    body = f"{body_thanku}<br/>{body_sig}"
                 # post the message
                 matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
                 if matrix:
