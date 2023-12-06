@@ -96,7 +96,7 @@ class HrReward(models.Model):
 
     hero_template = fields.Html('Hero Template', default=""" 
                     <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
-                        <div class="background-image" style="background-image: url('https://taps.odoo.com/hr_reward/static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
+                        <div class="background-image" style="background-image: url("https://taps.odoo.com/hr_reward/static/src/img/1.png"); background-size: cover; background-position: center;color: #fff;text-align: center;">
                             <div class="container" style="padding: 25px 25px 25px 25px;">
                             <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
                                 <br/>
@@ -104,7 +104,7 @@ class HrReward(models.Model):
                                 <img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%;">
                                 <br/>
                                 <h3 class="dear-text" style="font-size: 14px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 16px; font-weight: bold; margin-top: 50px; color: #000000;">${ctx['employee_to_name']}</span></h3>
-                                <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 17px; margin-bottom: 0px; color: #000000;">You Are A<br/></h2><img src="hr_reward/static/src/img/hero.png" alt="Company Logo" style="position: relative; width: 50%;"><br/>
+                                <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 17px; margin-bottom: 0px; color: #000000;">You Are A<br/></h2><img src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" alt="Company Logo" style="position: relative; width: 50%;"><br/>
                                 <br/>
                                 <div class="row">
                             <div class="col-2"></div>
@@ -131,9 +131,9 @@ class HrReward(models.Model):
                     """)
 
     thanku_template = fields.Html('Thank you Template', default=""" 
-                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('hr_reward/static/src/img/th.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
+                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url("https://taps.odoo.com/hr_reward/static/src/img/th.png");  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
                        
-                        <img src="hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="max-width: 100px; position: absolute; top: 45px; left: 500px;">
+                        <img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="max-width: 100px; position: absolute; top: 45px; left: 500px;">
                         <p style="font-size: 12px; font-weight: bold; margin-top: 160px; color: #000000; text-align: left;  margin-left: 100px;">${ctx['employee_to_name']}</p><br/>
                         <div class="row">
                         <div class="col-7">
@@ -148,7 +148,7 @@ class HrReward(models.Model):
                     """)
 
     kudos_template = fields.Html('Kudos Template', default=""" 
-                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('hr_reward/static/src/img/Ku.jpg');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
+                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url("https://taps.odoo.com/hr_reward/static/src/img/Ku.jpg");  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
                        
                         <p style="font-size: 12px; font-weight: bold; margin-top: 220px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p><br/>
                         <div class="row">
