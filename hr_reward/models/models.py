@@ -96,12 +96,12 @@ class HrReward(models.Model):
 
     hero_template = fields.Html('Hero Template', default=""" 
                     <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
-                        <div class="background-image" style="background-image: url('hr_reward/static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
+                        <div class="background-image" style="background-image: url('https://taps.odoo.com/hr_reward/static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
                             <div class="container" style="padding: 25px 25px 25px 25px;">
                             <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
                                 <br/>
                                 <br/>
-                                <img src="hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%;">
+                                <img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%;">
                                 <br/>
                                 <h3 class="dear-text" style="font-size: 14px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 16px; font-weight: bold; margin-top: 50px; color: #000000;">${ctx['employee_to_name']}</span></h3>
                                 <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 17px; margin-bottom: 0px; color: #000000;">You Are A<br/></h2><img src="hr_reward/static/src/img/hero.png" alt="Company Logo" style="position: relative; width: 50%;"><br/>
@@ -118,7 +118,7 @@ class HrReward(models.Model):
                                     <br/>
                                     <p>Recommended by - <p style=" font-size: 12px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
                                 </div>
-                                <img src="hr_reward/static/src/img/3865076.png" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
+                                <img src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
                                 <br/>
                                 <br/>
                                 <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
