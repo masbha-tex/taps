@@ -592,3 +592,6 @@ class HrEmployee(models.Model):
 	def _compute_reward_count(self):
 		Reward = self.env['hr.reward']
 		self.reward_count = Reward.search_count([('employee_id','=',self.id)])
+
+
+# gsggu
