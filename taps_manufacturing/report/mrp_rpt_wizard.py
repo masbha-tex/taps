@@ -642,8 +642,16 @@ class MrpReportWizard(models.TransientModel):
                 
                 comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
 
+                if full_date.date() == in_pr.production_date.date():
+                    comu_pcs = in_pr.production_till_date
+
+                cm_pcs = 0
                 if full_date.date() > in_pr.production_date.date():
-                    comu_pcs = in_pr.production_till_date + pack_pcs
+                    comu_day_outputs = comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
+                    cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
+                    cm_rel = sum(cm_day_released.mapped('product_uom_qty'))
+                    cm_pcs = sum(comu_day_outputs.mapped('qty'))
+                    comu_pcs = in_pr.production_till_date + cm_pcs
 
                 price = total_qty = comur_value = pending_pcs = 0
                 
@@ -676,9 +684,16 @@ class MrpReportWizard(models.TransientModel):
                 
                 today_released = all_released.filtered(lambda pr: pr.date_order.date() == full_date.date())
                 tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
+                
+                if full_date.date() == in_pr.production_date.date():
+                    comu_inv = in_pr.invoice_till_date
+                    comur_value = in_pr.released_till_date
+                    
                 if full_date.date() > in_pr.production_date.date():
-                    comu_inv = in_pr.invoice_till_date + invoiced
-                    comur_value = in_pr.released_till_date + tr_value
+                    cm_inv = price * cm_pcs
+                    cmr_val = cm_rel * price
+                    comu_inv = in_pr.invoice_till_date + cm_inv
+                    comur_value = in_pr.released_till_date + cmr_val
                 
                 order_data = []
                 order_data = [

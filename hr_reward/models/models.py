@@ -95,33 +95,36 @@ class HrReward(models.Model):
                         """ ) 
 
     hero_template = fields.Html('Hero Template', default=""" 
-                    <table role="presentation" width="640" style="width:640px;" cellpadding="0" cellspacing="0" border="0" align="center">
-                <tr>
-                    <td align="center" bgcolor="#000000" background="https://taps.odoo.com/hr_reward/static/src/img/1.png" width="640" height="400" valign="top" style="background: url('https://taps.odoo.com/hr_reward/static/src/img/1.png') center / cover no-repeat #000000;">
-                        <!--[if gte mso 9]>
-                        <v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="border: 0;display: inline-block; width: 480pt; height: 300pt;" src="https://taps.odoo.com/hr_reward/static/src/img/1.png" />
-                        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="border: 0;display: inline-block;position: absolute; width: 480pt; height:300pt;">
-                            <v:fill  opacity="0%" color="#000000" />
-                            <v:textbox inset="0,0,0,0">
-                        <![endif]-->
-                        <div>
-                            <div style="font-size: 0;">
-                                <table role="presentation" width="640" style="width:640px;" cellpadding="0" cellspacing="0" border="0" align="center">
-                                    <tr>
-                                        <td height="400" align="center"><img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%; margin-right: 50px;"></td>
-                                    </tr>
-                                </table>
+                    <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
+                        <div class="background-image" style="background-image: url('https://taps.odoo.com/hr_reward/static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
+                            <div class="container" style="padding: 25px 25px 25px 25px;">
+                            <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
+                                <br/>
+                                <br/>
+                                <img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%; margin-right: 50px;">
+                                <br/>
+                                <h3 class="dear-text" style="margin-right: 33px; font-size: 14px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 16px;margin-right: 50px; font-weight: bold; margin-top: 50px; color: #000000;">${ctx['employee_to_name']}</span></h3>
+                                <h2 class="you-text" style="margin-right: 50px;font-size: 25px; font-weight: bold; margin-top: 17px; margin-bottom: 0px; color: #000000;">You Are A<br/></h2><img src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" alt="Company Logo" style="margin-right: 50px;position: relative; width: 50%;"><br/>
+                                <br/>
+                                <p style="font-size: 12px; margin-left: 30px; margin-right: 80px; color: #000000; text-align: center;">For ${ctx['note']}</p>
+                                <div class="content-text" style="margin-right: 50px;font-size: 12px; margin-top: 10px; color: #000000;">
+                                    
+                                    <p>Well done, keep it up!</p>
+                                    <br/>
+                                    <p>Recommended by - <p style="font-size: 12px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
+                                </div>
+                                <br/>
+                                <div style="margin-right: 60px;">
+                                <img src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
+                                </div>
+                                <br/>
+                                <p style="margin-right: 50px;font-size: 11px;color: #000000;">www.texfasteners.com</p>
+                                <br/>
                             </div>
                         </div>
-                        <!--[if gte mso 9]>
-                            </v:textbox>
-                        </v:fill>
-                        </v:rect>
-                        </v:image>
-                        <![endif]-->
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                        
+                    </div>
                     """)
 
     thanku_template = fields.Html('Thank you Template', default=""" 
