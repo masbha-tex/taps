@@ -95,46 +95,40 @@ class HrReward(models.Model):
                         """ ) 
 
     hero_template = fields.Html('Hero Template', default=""" 
-                    <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
-                        <div class="background-image" style="background-image: url("https://taps.odoo.com/hr_reward/static/src/img/1.png"); background-size: cover; background-position: center;color: #fff;text-align: center;">
-                            <div class="container" style="padding: 25px 25px 25px 25px;">
-                            <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
-                                <br/>
-                                <br/>
-                                <img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%;">
-                                <br/>
-                                <h3 class="dear-text" style="font-size: 14px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 16px; font-weight: bold; margin-top: 50px; color: #000000;">${ctx['employee_to_name']}</span></h3>
-                                <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 17px; margin-bottom: 0px; color: #000000;">You Are A<br/></h2><img src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" alt="Company Logo" style="position: relative; width: 50%;"><br/>
-                                <br/>
-                                <div class="row">
-                            <div class="col-2"></div>
-                            <div class="col-8"><p style="font-size: 12px; color: #000000; text-align: center;">For ${ctx['note']}</p></div>
-                            <div class="col-2"></div>
-                        
-                            </div>
-                                <div class="content-text" style="font-size: 12px; margin-top: 10px; color: #000000;">
-                                    
-                                    <p>Well done, keep it up!</p>
-                                    <br/>
-                                    <p>Recommended by - <p style=" font-size: 12px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
-                                </div>
-                                <img src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
-                                <br/>
-                                <br/>
-                                <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
-                                <br/>
+                    <table role="presentation" width="640" style="width:640px;" cellpadding="0" cellspacing="0" border="0" align="center">
+                <tr>
+                    <td align="center" bgcolor="#000000" background="https://taps.odoo.com/hr_reward/static/src/img/1.png" width="640" height="400" valign="top" style="background: url('https://taps.odoo.com/hr_reward/static/src/img/1.png') center / cover no-repeat #000000;">
+                        <!--[if gte mso 9]>
+                        <v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="border: 0;display: inline-block; width: 480pt; height: 300pt;" src="https://taps.odoo.com/hr_reward/static/src/img/1.png" />
+                        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="border: 0;display: inline-block;position: absolute; width: 480pt; height:300pt;">
+                            <v:fill  opacity="0%" color="#000000" />
+                            <v:textbox inset="0,0,0,0">
+                        <![endif]-->
+                        <div>
+                            <div style="font-size: 0;">
+                                <table role="presentation" width="640" style="width:640px;" cellpadding="0" cellspacing="0" border="0" align="center">
+                                    <tr>
+                                        <td height="400" align="center"><img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%; margin-right: 50px;"></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
-                    </div>
-                        
-                    </div>
+                        <!--[if gte mso 9]>
+                            </v:textbox>
+                        </v:fill>
+                        </v:rect>
+                        </v:image>
+                        <![endif]-->
+                    </td>
+                </tr>
+            </table>
                     """)
 
     thanku_template = fields.Html('Thank you Template', default=""" 
-                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url("https://taps.odoo.com/hr_reward/static/src/img/th.png");  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
+                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_reward/static/src/img/th.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
                        
-                        <img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="max-width: 100px; position: absolute; top: 45px; left: 500px;">
-                        <p style="font-size: 12px; font-weight: bold; margin-top: 160px; color: #000000; text-align: left;  margin-left: 100px;">${ctx['employee_to_name']}</p><br/>
+                    
+                        <p style="font-size: 12px; font-weight: bold; margin-top: 210px; color: #000000; text-align: left;  margin-left: 100px;">${ctx['employee_to_name']}</p><br/>
                         <div class="row">
                         <div class="col-7">
                         <p style="font-size: 9px; color: #000000; text-align: left; margin-left: 30px; ">${ctx['note']}</p>
@@ -148,9 +142,9 @@ class HrReward(models.Model):
                     """)
 
     kudos_template = fields.Html('Kudos Template', default=""" 
-                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url("https://taps.odoo.com/hr_reward/static/src/img/Ku.jpg");  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
+                    <div class="card" style="position: relative; width: 680px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_reward/static/src/img/Ku.jpg');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
                        
-                        <p style="font-size: 12px; font-weight: bold; margin-top: 220px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p><br/>
+                        <p style="font-size: 12px; font-weight: bold; margin-top: 260px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p><br/>
                         <div class="row">
                             <div class="col-2"></div>
                             <div class="col-8"><p style="font-size: 9px; color: #000000; text-align: center;">${ctx['note']}</p></div>
@@ -373,7 +367,7 @@ class HrReward(models.Model):
                         }
                         body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                         mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                    self.env['mail.mail'].sudo().create(mail_values).send()
+                    self.env['mail.mail'].sudo().create(mail_values)#.send()
                 else:
                     raise UserError(('Maybe forget to add Email Matrix like..EMAILTO, EMAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
                 
@@ -471,7 +465,28 @@ class HrReward(models.Model):
                     }
                     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                self.env['mail.mail'].sudo().create(mail_values).send()
+                self.env['mail.mail'].sudo().create(mail_values)#.send()                
+                # try:
+                #     # template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+                #     template = self.env.ref('hr_reward.mail_notification_hero_template', raise_if_not_found=True)
+                # except ValueError:
+                #     _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
+                # else:
+                #     template_ctx = {
+                #         'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=employee.display_name)),
+                #         'model_description': self.env['ir.model']._get('hr.reward').display_name,
+                #         'company': self.env.company,
+                #         'employee_to_name': employee.name,
+                #         'submit_by_to_name': self.submit_by.name,
+                #         'recipient_users': employee.user_id,
+                #         'note': html2plaintext(self.details) if not is_html_empty(self.details) else '',
+                #         'date': self.issue_date,
+                #         'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
+                #         'image_url': '/hr_reward/static/src/img/logo_tex_tiny.png',
+                #     }
+                #     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+                #     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+                # self.env['mail.mail'].sudo().create(mail_values)#.send()
       
         return {
             'effect': {

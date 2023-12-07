@@ -61,6 +61,7 @@ class OperationDetails(models.Model):
     shade_ref = fields.Char(string='Shade Ref.', store=True, readonly=True)
     sizein = fields.Char(string='Size (Inch)', store=True, readonly=True)
     sizecm = fields.Char(string='Size (CM)', store=True, readonly=True)
+    sizemm = fields.Char(string='Size (MM)', store=True, readonly=True)
     
     top = fields.Char(string='Top', store=True, readonly=True)
     bottom = fields.Char(string='Bottom', store=True)

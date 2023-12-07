@@ -1,24 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <data>
-<!--
-        <template id="listing">
-          <ul>
-            <li t-foreach="objects" t-as="object">
-              <a t-attf-href="#{ root }/objects/#{ object.id }">
-                <t t-esc="object.display_name"/>
-              </a>
-            </li>
-          </ul>
-        </template>
-        <template id="object">
-          <h1><t t-esc="object.display_name"/></h1>
-          <dl>
-            <t t-foreach="object._fields" t-as="field">
-              <dt><t t-esc="field"/></dt>
-              <dd><t t-esc="object[field]"/></dd>
-            </t>
-          </dl>
-        </template>
--->
+        <!-- noupdate="1" -->
+    <template id="mail_notification_hero_template">
+    <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+    <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 24px; background-color: white; color: #454748; border-collapse:separate;">
+    <tbody>
+        <tr>
+            <td align="center" style="min-width: 590px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; padding: 0; border-collapse:separate;">
+                    <tr><td valign="middle">
+                        <span style="font-size: 10px;">Your <t t-esc="model_description or 'document'"/></span><br/>
+                        <span style="font-size: 20px; font-weight: bold;">
+                            <t t-esc="message.record_name and message.record_name.replace('/','-') or ''"/>
+                        </span>
+                    </td><td valign="middle" align="right">
+                        <img t-att-src="'/logo.png?company=%s' % (company.id or 0)" style="padding: 0px; margin: 0px; height: 48px;" t-att-alt="'%s' % company.name"/>
+                    </td></tr>
+                    <tr><td colspan="2" style="text-align:center;">
+                      <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:4px 0px 32px 0px;"/>
+                    </td></tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="min-width: 590px;">
+                <!-- <t t-raw="message.body"/> -->
+
+                <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
+                    <!--[if gte mso 9]>
+                    <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:400px;">
+                        <v:fill type="tile" src="https://taps.odoo.com/hr_reward/static/src/img/1.png" color="#F1F1F1"/>
+                    </v:rect>
+                    <![endif]-->                    
+                    <div class="background-image" style="background-image: url('https://taps.odoo.com/hr_reward/static/src/img/1.png); background-size: cover; background-position: center;color: #fff;text-align: center;">
+                        <div class="container" style="padding: 25px 25px 25px 25px;">
+                            <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
+                                <br/>
+                                <br/>
+                                
+                                <img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%; margin-right: 50px;"/>
+                                <br/>
+                                <h3 class="dear-text" style="font-size: 14px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 16px; font-weight: bold; margin-top: 50px; color: #000000;"><t t-esc="employee_to_name"/></span></h3>
+                                <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 17px; margin-bottom: 0px; color: #000000;">You Are A<br/></h2><img src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" alt="Company Logo" style="position: relative; width: 50%;"/><br/>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-2"></div>
+                                    <div class="col-8"><p style="font-size: 12px; color: #000000; text-align: center;">For <t t-esc="note"/></p></div>
+                                    <div class="col-2"></div>
+                                </div>
+                                <div class="content-text" style="font-size: 12px; margin-top: 10px; color: #000000;">
+                                    
+                                    <p>Well done, keep it up!</p>
+                                    <br/>
+                                    <p>Recommended by - <p style=" font-size: 12px; font-weight: bold;"><t t-esc="submit_by_to_name"/></p></p>
+                                </div>
+                                <img src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;"/>
+                                <br/>
+                                <br/>
+                                <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
+                                <br/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td align="center" style="min-width: 590px; padding: 0 8px 0 8px; font-size:11px;">
+                <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 4px 0px;"/>
+                <b t-esc="company.name"/><br/>
+                <div style="color: #999999;">
+                    <t t-esc="company.phone"/>
+                    <t t-if="company.email"> |
+                        <a t-att-href="'mailto:%s' % company.email" style="text-decoration:none; color: #999999;"><t t-esc="company.email"/></a>
+                    </t>
+                    <t t-if="company.website"> |
+                        <a t-att-href="'%s' % company.website" style="text-decoration:none; color: #999999;">
+                            <t t-esc="company.website"/>
+                        </a>
+                    </t>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+    </td></tr>
+    <tr><td align="center" style="min-width: 590px;">
+            Powered by <a target="_blank" href="https://www.odoo.com?utm_source=db&amp;utm_medium=email" style="color: #875A7B;">Odoo</a>
+    </td></tr>
+    </table>
+    </template>
     </data>
 </odoo>

@@ -9,7 +9,7 @@
     'description': '',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mail','hr','taps_hr'],
+    'depends': ['base','mail','hr','taps_hr','web'],
 
     # always loaded
     'data': [
@@ -20,7 +20,7 @@
         'views/matrix_views.xml',
         'views/reward_criteria_views.xml',
         'views/reward_title_views.xml',
-        # 'views/templates.xml',
+        'views/templates.xml',
     ],
     'qweb': [],      
     'images': ['static/src/img/rr.png'],    

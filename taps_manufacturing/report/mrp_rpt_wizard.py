@@ -565,8 +565,6 @@ class MrpReportWizard(models.TransientModel):
             month_ = data.get('month_list')
         year = datetime.today().year
         
-            # raise UserError((day))
-        
         daily_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing')])
         daily_outputs = daily_outputs.filtered(lambda pr: pr.action_date.month == int(month_) and pr.action_date.year == year)#.sorted(key=lambda pr: pr.sequence)
         
@@ -631,29 +629,21 @@ class MrpReportWizard(models.TransientModel):
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 comu_pcs = sum(comu_outputs.mapped('qty'))
                 pack_pcs = sum(itemwise_outputs.mapped('qty'))
-                # or_ids = itemwise_outputs.mapped('mrp_lines')
+                # invoiced = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
+                #sum(order.qty * order. for order in itemwise_outputs)
+
+                in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
                 
-                # order_lines = None
-                # if or_ids:
-                #     or_ids = ','.join([str(i) for i in sorted(or_ids)])
-                #     or_ids = [int(id_str) for id_str in or_ids.split(',')]
-                #     order_lines = self.env['sale.order.line'].browse(or_ids)
-                    
-                # if order_lines:
-                #     order_lines = order_lines.filtered(lambda ol: ol.order_id.state == 'sale')
-                
-                # price = 0
-                # total_qty = 0
-                # if order_lines:
-                #     price = sum(order_lines.mapped('price_unit')) / len(order_lines)
-                #     total_qty = sum(order_lines.mapped('product_uom_qty'))
                     
                 full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
                 full_date = full_date.replace(day = day)
                 
-                today_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
+                all_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
                 
-                comu_released = today_released.filtered(lambda pr: pr.date_order.date() <= full_date.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
+                comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
+
+                if full_date.date() > in_pr.production_date.date():
+                    comu_pcs = in_pr.production_till_date + pack_pcs
 
                 price = total_qty = comur_value = pending_pcs = 0
                 
@@ -662,16 +652,16 @@ class MrpReportWizard(models.TransientModel):
                     total_qty = sum(comu_released.mapped('product_uom_qty'))
                     price = round((comur_value / total_qty),4)
                     pending_pcs = total_qty - comu_pcs
+
                 
                 invoiced = round((pack_pcs*price),2)
                 pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
                 
-                
-                
-                pending_oa = today_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
 
-                closed_oa = today_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and  pr.closing_date != False)
+                pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
+
+                closed_oa = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and  pr.closing_date != False)
                 if closed_oa:
                     closed_oa = closed_oa.filtered(lambda pr: pr.closing_date.date() == full_date.date())
                 
@@ -684,9 +674,11 @@ class MrpReportWizard(models.TransientModel):
                     oa_ids = closed_oa.mapped('oa_id')
                     closed_ids += len(oa_ids)
                 
-                today_released = today_released.filtered(lambda pr: pr.date_order.date() == full_date.date())
+                today_released = all_released.filtered(lambda pr: pr.date_order.date() == full_date.date())
                 tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
-                
+                if full_date.date() > in_pr.production_date.date():
+                    comu_inv = in_pr.invoice_till_date + invoiced
+                    comur_value = in_pr.released_till_date + tr_value
                 
                 order_data = []
                 order_data = [

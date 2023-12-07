@@ -14,6 +14,7 @@
                 <field name="shade"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
+                <field name="sizemm"/>
                 <field name="work_center"/>
                 <filter string="Ready" name="ready" domain="[('operation_of','in',('plan','input')),('state','!=','done'),('state','!=','closed')]"/>
                 <filter string="Pending" name="progress" domain="[('operation_of','in',('lot','output')),('state','!=','done'),('next_operation','ilike','Output'),('state','!=','closed')]"/>
@@ -76,9 +77,78 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
-                <field name="company_id" optional="show"/>
-                 <!--  optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}" -->
-                <field name="logo" attrs="{'invisible': [['company_id','!=','Metal Trims']]}"/>
+                
+                <field name="company_id" invisible="1"/>
+                
+                <field name="work_center" invisible="1"/>
+                <field name="operation_of" readonly="1" invisible="1"/>
+                <field name="operation_by" readonly="1" invisible="1"/>
+                <field name="based_on" readonly="1" invisible="1"/>
+                <field name="machine_no" readonly="1" optional="show"/>
+                <field name="capacity" readonly="1" force_save="1" optional="show"/>
+                <field name="next_operation" readonly="1" force_save="1" invisible="1"/>
+                <field name="mr_req" readonly="1" optional="show"/>
+                <field name="actual_qty" readonly="1" optional="show"/>
+                <field name="ac_balance_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="qty" readonly="1" optional="show"/>
+                <field name="done_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="balance_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="uotput_qty" attrs="{'readonly': [('operation_of', 'not in', ('output','qc','lot'))]}" optional="show"/>
+                <field name="pack_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="fr_pcs_pack" readonly="1" force_save="1" optional="show"/>
+                <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="fg_balance" readonly="1" force_save="1"  optional="show"/>
+                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
+                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
+                <field name="mrp_delivery" readonly="1" force_save="1" optional="show"/>
+                <field name="total_weight" readonly="1" force_save="1" optional="show"/>
+                <field name="move_line" readonly="1" invisible="1" force_save="1"/>
+                <field name="state" readonly="1" force_save="1" optional="show"/>
+                <field name="plan_id" readonly="1" invisible="1" force_save="1"/>
+                <field name="plan_remarks" readonly="1" force_save="1" optional="show"/>
+                <field name="revision_no" readonly="1" force_save="1" optional="show"/>
+                <field name="closing_date" readonly="1" force_save="1" optional="show"/>
+                <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
+                <field name="num_of_lots"/>
+                <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
+                <!-- <button name="button_output" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/> -->
+                
+                <!-- <button name="action_view_lots" class="oe_highlight" type="object" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/> "Create Lot (Lots: #{record.num_of_lots})"-->
+                
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_mt_operation_tree" model="ir.ui.view">
+        <field name="name">mt.operation.details.tree</field>
+        <field name="model">operation.details</field>
+        <field name="arch" type="xml" >
+            <tree string="Operation Details" create="false" delete="true" editable="top" sample="1"> 
+                <!-- editable="top" -->
+                <header>
+                    <button name="button_requisition" type="object" string="Requisition"/>
+                    <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
+                    <button name="button_group_output" type="object" string="Group Output"/>
+                    <!-- <button name="button_return" type="object" string="Return"/> -->
+                </header>
+                <field name="name" readonly="1"/>
+                <field name="mrp_lines" invisible="1"/>
+                <field name="sale_lines" invisible="1"/>
+                <field name="mrp_line" invisible="1"/>
+                <field name="sale_order_line" invisible="1"/>
+                <field name="oa_id" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="action_date" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="parent_ids" invisible="1"/>
+                <field name="buyer_name" optional="show"/>
+                <field name="product_id" readonly="1" invisible="1"/>
+                <field name="product_template_id" readonly="1"/>
+                <field name="fg_categ_type" optional="show"/>
+                <field name="finish" optional="show"/>
+                <field name="sizemm" optional="show"/>
+                <field name="company_id" invisible="1"/>
+                <field name="logo"/>
                 <field name="logoref"/>
                 <field name="logo_type" invisible="1"/>
                 <field name="style" invisible="1"/>
@@ -129,7 +199,7 @@
                 
             </tree>
         </field>
-    </record>
+    </record>    
 
     <record id="view_fg_packing_tree" model="ir.ui.view">
         <field name="name">fg.packing.tree</field>
@@ -160,9 +230,51 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="sizemm" optional="show"/>
+                <field name="company_id" invisible="1"/>
+                <field name="work_center" invisible="1"/>
+                <field name="next_operation" invisible="1"/>
+                <field name="qty" readonly="1" optional="show"/>
+                <field name="pack_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="fr_pcs_pack" readonly="1" force_save="1" optional="show"/>
+                <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
+                <field name="fg_balance" readonly="1" force_save="1" optional="show"/>
+                <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
+                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
+                <field name="state" readonly="1" force_save="1" optional="show"/>
+                <field name="revision_no" readonly="1" force_save="1" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_mt_fg_packing_tree" model="ir.ui.view">
+        <field name="name">mt.fg.packing.tree</field>
+        <field name="model">operation.details</field>
+        <field name="arch" type="xml" >
+            <tree string="FG Packing" create="false" delete ="false" editable="top"> 
+                <!-- editable="top" -->
+                <header>
+                    <button name="button_requisition" type="object" string="Requisition"/>
+                </header>
+                <field name="name" readonly="1"/>
+                <field name="mrp_lines" invisible="1"/>
+                <field name="sale_lines" invisible="1"/>
+                <field name="mrp_line" invisible="1"/>
+                <field name="sale_order_line" invisible="1"/>
+                <field name="oa_id" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="action_date" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="parent_ids" invisible="1"/>
+                <field name="buyer_name" optional="show"/>
+                <field name="product_id" readonly="1" invisible="1"/>
+                <field name="product_template_id" readonly="1" optional="show"/>
+                <field name="fg_categ_type" optional="show"/>
                 <field name="company_id" invisible="1"/>
                 
-                <field name="logo" invisible="1"/>
+                <field name="finish" optional="show"/>
+                <field name="sizemm" optional="show"/>
+                <field name="logo"/>
                 <field name="logoref" invisible="1"/>
                 <field name="logo_type" invisible="1"/>
                 <field name="style" invisible="1"/>
@@ -190,6 +302,8 @@
             </tree>
         </field>
     </record>
+
+    
     <record id="view_fg_delivery_tree" model="ir.ui.view">
         <field name="name">fg.delivery.tree</field>
         <field name="model">operation.details</field>
@@ -219,8 +333,50 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="sizemm" optional="show"/>
                 <field name="company_id" invisible="1"/>
-                <field name="logo" invisible="1"/>
+                
+                <field name="work_center" invisible="1"/>
+                <field name="next_operation" invisible="1"/>
+                <field name="qty" readonly="1" optional="show"/>
+                <field name="pack_qty" readonly="1" optional="show"/>
+                <field name="fr_pcs_pack" readonly="1" optional="show"/>
+                <field name="fg_done_qty" readonly="1" optional="show"/>
+                <field name="mrp_delivery" readonly="1" force_save="1" optional="show"/>
+                <field name="total_weight" readonly="1" force_save="1" optional="show"/>
+                <field name="state" readonly="1" force_save="1" optional="show"/>
+                <field name="revision_no" readonly="1" force_save="1" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_mt_fg_delivery_tree" model="ir.ui.view">
+        <field name="name">mt.fg.delivery.tree</field>
+        <field name="model">operation.details</field>
+        <field name="arch" type="xml" >
+            <tree string="FG Delivery" create="false" delete ="false" editable="top"> 
+                <!-- editable="top" -->
+                <header>
+                    <button name="button_delivery" type="object" string="Delivery"/>
+                </header>
+                <field name="name" readonly="1"/>
+                <field name="mrp_lines" invisible="1"/>
+                <field name="sale_lines" invisible="1"/>
+                <field name="mrp_line" invisible="1"/>
+                <field name="sale_order_line" invisible="1"/>
+                <field name="oa_id" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="action_date" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="parent_ids" invisible="1"/>
+                <field name="buyer_name" optional="show"/>
+                <field name="product_id" readonly="1" invisible="1"/>
+                <field name="product_template_id" readonly="1" optional="show"/>
+                <field name="fg_categ_type" optional="show"/>
+                <field name="finish" optional="show"/>
+                <field name="sizemm" optional="show"/>
+                <field name="company_id" invisible="1"/>
+                <field name="logo" />
                 <field name="logoref" invisible="1"/>
                 <field name="logo_type" invisible="1"/>
                 <field name="style" invisible="1"/>
@@ -247,6 +403,7 @@
             </tree>
         </field>
     </record>
+    
     <record id="view_fg_delivered_tree" model="ir.ui.view">
         <field name="name">fg.delivered.tree</field>
         <field name="model">operation.details</field>
@@ -272,8 +429,9 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="sizemm" optional="show"/>
                 <field name="company_id" invisible="1"/>
-                <field name="logo" invisible="1"/>
+                <field name="logo"/>
                 <field name="logoref" invisible="1"/>
                 <field name="logo_type" invisible="1"/>
                 <field name="style" invisible="1"/>
@@ -308,7 +466,15 @@
         <field name="view_id" ref="view_operation_tree" />
         <field name="search_view_id" ref="view_mrp_operatin_details_search" />
     </record>
-
+    
+    <record id="action_mt_operation_details" model="ir.actions.act_window">
+        <field name="name">Operation Details</field>
+        <field name="res_model">operation.details</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_mt_operation_tree" />
+        <field name="search_view_id" ref="view_mrp_operatin_details_search" />
+    </record>
+    
     <record id="action_fg_packing" model="ir.actions.act_window">
         <field name="name">FG Packing</field>
         <field name="res_model">operation.details</field>
@@ -318,7 +484,17 @@
         <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
         <field name="context">{'search_default_packing': 1}</field>
     </record>
-
+    
+    <record id="action_mt_fg_packing" model="ir.actions.act_window">
+        <field name="name">FG Packing</field>
+        <field name="res_model">operation.details</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_mt_fg_packing_tree" />
+        <field name="domain">[('next_operation','=','FG Packing')]</field>
+        <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
+        <field name="context">{'search_default_packing': 1}</field>
+    </record>
+    
     <record id="action_fg_delivery" model="ir.actions.act_window">
         <field name="name">FG Delivery</field>
         <field name="res_model">operation.details</field>
@@ -328,6 +504,16 @@
         <field name="context">{'search_default_delivery': 1}</field>
     </record>
 
+    
+    <record id="action_mt_fg_delivery" model="ir.actions.act_window">
+        <field name="name">FG Delivery</field>
+        <field name="res_model">operation.details</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_mt_fg_delivery_tree"/>
+        <field name="domain">[('next_operation','=','Delivery')]</field>
+        <field name="context">{'search_default_delivery': 1}</field>
+    </record>
+    
     <record id="action_fg_delivered" model="ir.actions.act_window">
         <field name="name">Order Delivered</field>
         <field name="res_model">operation.details</field>

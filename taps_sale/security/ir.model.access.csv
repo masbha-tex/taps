@@ -15,4 +15,5 @@ access_sale_target_lines,access_sale_target_lines,model_sale_target_lines,base.g
 access_sale_rev_confirm,access_oa_update_confirmation,model_oa_update_confirmation,base.group_user,1,1,1,1
 access_sale_ccr,access_sale_ccr,model_sale_ccr,base.group_user,1,1,1,1
 access_sale_ccr_type,access_sale_ccr_type,model_sale_ccr_type,base.group_user,1,1,1,1
-access_sale_ccr_old,access_sale_ccr_old,model_sale_ccr_old,base.group_user,1,1,1,1 
+access_sale_ccr_old,access_sale_ccr_old,model_sale_ccr_old,base.group_user,1,1,1,1
+access_sale_ccr_wizard,access_sale_ccr_wizard,model_sale_ccr_wizard,base.group_user,1,1,1,1

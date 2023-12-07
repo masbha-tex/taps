@@ -14,6 +14,7 @@
                 <field name="shade"/>
                 <field name="sizein"/>
                 <field name="sizecm"/>
+                <field name="sizemm"/>
                 <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;',0.0),('state','!=','closed')]"/>
                 <separator/>
                 <filter string="Order Date" name="action_date_filter" date="date_order"/>
@@ -69,6 +70,7 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="sizemm" optional="show"/>
                  <!-- optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}" -->
                 <field name="logo" invisible="1"/>
                 <field name="logoref" invisible="1"/>
@@ -184,6 +186,7 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="sizemm" optional="show"/>
                 
                 <field name="logo" invisible="1"/>
                 <field name="logoref" invisible="1"/>

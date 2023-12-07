@@ -59,7 +59,7 @@
         'views/order_flow.xml',
         'wizard/sales_report_wizard.xml',
         'wizard/oa_update_confirm.xml',
-        
+        'wizard/ccr_wizard.xml',
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",
              "static/src/xml/sale_reporting_dashboard.xml",

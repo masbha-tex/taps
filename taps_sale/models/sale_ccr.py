@@ -49,7 +49,6 @@ class ResPartner(models.Model):
 class CcrType(models.Model):
     _name = 'sale.ccr.type'
     _description = 'CCR COMPLAINT Type'
-    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
     _order = 'id desc'
 
     name = fields.Char(string="CCR Type")
@@ -61,15 +60,7 @@ class SaleCcr(models.Model):
     _order = 'id desc'
     _check_company_auto = True
     
-    # def dynamic_selection(self):
-    #     # self.dynamic_selection_onchange(15328)
-    #     raise UserError((self.oa_number.id))
-    #     order = self.oa_number.id
-    #     if order:
-    #         result = self.dynamic_selection_onchange(order)
-    #     else:
-    #         result = False
-    #     return result
+    
 
 
         
@@ -82,7 +73,7 @@ class SaleCcr(models.Model):
     
         
 
-    name = fields.Char(string='CCR Reference', required=True, copy=False, index=True, default=lambda self: _('New'))
+    name = fields.Char(string='CCR Reference', required=True, copy=False, index=True, readonly=True,  default=lambda self: _('New'))
     oa_number = fields.Many2one('sale.order', string='OA Number')
     customer = fields.Many2one('res.partner',related = 'oa_number.partner_id', string='Customer')
     buyer = fields.Many2one('res.partner',related = 'oa_number.buyer_name', string='Buyer')
@@ -91,32 +82,36 @@ class SaleCcr(models.Model):
     rejected_quantity = fields.Float(string='Rejected Quantity')
     ccr_type= fields.Many2one('sale.ccr.type',string='CCR Type')
     complaint = fields.Text(string='Complaint/Defeat')
-    department_id = fields.Many2one('hr.department', domain="[('parent_id', '=', False)]" ,string='Responsible Department')
+    department_id = fields.Many2one('hr.department', string='Resp. Department')
+    replacement_return_qty = fields.Float(string='Replacement Return Quantity')
     replacement_quantity = fields.Float(string='Replacement Quantity')
+    replacement_value = fields.Float(string='Replacement Value')
     analysis_activity = fields.Text(string='Analysis Activity')
     currective_action = fields.Text(string='Currective Action')
     preventive_action = fields.Text(string='Preventive Action')
-    # fg_product = fields.Selection(selection=lambda self: self.dynamic_selection(), string="Fg Product")
     sale_order_line_id = fields.Many2many('sale.order.line', string="Sale Order Line")
     fg_product = fields.Many2one('product.template',string="Fg Products", domain="[['categ_id.complete_name','ilike','ALL / FG']]")
-    finish = fields.Char(string="Finish")
-    slider = fields.Char(string="Slider")
+    finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
+    # slider = fields.Char(string="Slider")
     sale_representative = fields.Many2one('sale.representative', related = 'oa_number.sale_representative', string='Sale Representative')
     team = fields.Many2one(related ='sale_representative.team', string='Team')
     team_leader = fields.Many2one(related ='sale_representative.leader', string='Team Leader')
     company_id = fields.Many2one(related='oa_number.company_id', string='Company', store=True, readonly=True, index=True)
     invoice_reference = fields.Char(string='Invoice Ref.')
     report_date = fields.Date(string='Report Date', default= date.today())
-    justification_level = fields.Selection(
-        [('justified','Justified'),
-         ('notjustified','Not Justified')],
-        'State', store=True)
+    # justification_level = fields.Selection(
+    #     [('justified','Justified'),
+    #      ('notjustified','Not Justified')],
+    #     'State', store=True)
+    justification = fields.Char('Justification Status', readonly=True)
 
-    state = fields.Selection([
-        ('draft', 'draft'),
+    states = fields.Selection([
+        ('draft', 'Draft'),
+        ('just', 'Justified'),
+        ('nonjust', 'Non justified'),
         ('done', 'Closed'),
         ('cancel', 'Cancelled'),
-        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+        ], string='Status', readonly=True, copy=False, index=True, tracking=5, default='draft')
 
 
     @api.model
@@ -131,15 +126,34 @@ class SaleCcr(models.Model):
         return result
 
     def action_cancel(self):
-        self.write({'state': 'cancel'})
+        self.write({'states': 'cancel'})
         return {}
     def action_draft(self):
-        self.write({'state': 'draft'})
+        self.write({'states': 'draft'})
         return {}
     def action_close(self):
-        self.write({'state': 'done'})
+        self.write({'states': 'done'})
         return {}
 
     def action_smart_button(self):
         return {}
-   
+
+    def action_justify(self):
+        self.write({'states': 'just'})
+        self.write({'justification': 'Justified'})
+        return {}
+    def action_take(self):
+        compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form').id
+        ctx = dict(self.env.context)
+        ctx.update({
+            'default_cap_closing_date': date.today(),
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'sale.ccr.wizard',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context': ctx,
+        }

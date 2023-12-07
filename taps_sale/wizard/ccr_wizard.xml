@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="sale_ccr_wizard_form" model="ir.ui.view">
+            <field name="name">sale.ccr.wizard.form</field>
+            <field name="model">sale.ccr.wizard</field>
+            <field name="priority" eval="10"/>
+            <field name="arch" type="xml">
+                <form string="Action">
+                    <!-- <script>
+                        $(document).ready(function(){
+                        $('.modal-dialog').css({'width': '70%', 'height': '60%'});
+                        $('.modal-content').css({'height': '100%'});
+                        $('.modal-body').css({'height': '100%'});
+                        });
+                    </script> -->
+                    <group>
+                        <group>
+                            <field name="currective_action"/>
+                            <field name="cap_closing_date"/>
+                            
+                        </group>
+                        <group>
+                            
+                            <field name="preventive_action"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_capa" string="Save" type="object" class="oe_highlight"/>
+                        <button name="action_capa" string="Save and Close" type="object" class="oe_highlight"/>
+                        <button name="cancel" string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

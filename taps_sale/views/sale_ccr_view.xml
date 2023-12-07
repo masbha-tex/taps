@@ -30,6 +30,15 @@
                 </page> -->
             </field>
         </record>
+    <record id="view_sale_ccr__typetree" model="ir.ui.view">
+            <field name="name">sale.ccr.type.tree</field>
+            <field name="model">sale.ccr.type</field>
+            <field name="arch" type="xml">
+                <tree string="CCR TYPE TREE" multi_edit="1" sample="1">
+                    <field name="name"/>
+                </tree>
+            </field>
+    </record>
 
     <record id="view_sale_ccr_tree" model="ir.ui.view">
             <field name="name">sale.ccr.tree</field>
@@ -42,18 +51,34 @@
                 </tree>
             </field>
     </record>
+    <record id="action_sale_ccr_type" model="ir.actions.act_window">
+            <field name="name">CCR TYPE</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.ccr.type</field>
+            <field name="view_mode">tree,form</field>
+            <!-- <field name="search_view_id" ref="sale_order_view_search_inherit_sale"/> -->
+            <field name="context">{}</field>
+            <!-- <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field> -->
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new CCR TYPE, the first step of a new CCR TYPE!
+                </p>
+            </field>
+        </record>
     <record id="view_sale_ccr_form" model="ir.ui.view">
             <field name="name">sale.ccr.form</field>
             <field name="model">sale.ccr</field>
             <field name="arch" type="xml">
                 <form string="CCR FORM" multi_edit="1" sample="1">
                     <header>
+                        <button name="action_justify" type="object" string="Justify"/>
+                        <button name="action_take" type="object" string="Take Action"/>
                         <button name="action_cancel" type="object" string="Cancel"/>
-                        <button name="action_draft" type="object" string="Set To Draft"  attrs="{'invisible': [('state', 'not in', ['cancel'])]}"/>
-                        <button name="action_close" type="object" string="Close" attrs="{'invisible': [('state', 'in', ['done' ,'cancel'])]}"/>
+                        <button name="action_draft" type="object" string="Set To Draft"  attrs="{'invisible': [('states', 'not in', ['cancel'])]}"/>
+                        <button name="action_close" type="object" string="Close" attrs="{'invisible': [('states', 'in', ['done' ,'cancel'])]}"/>
                         <!-- <button name="action_draft" states="cancel" type="object" string="Set to Draft"/> -->
                         
-                        <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                        <field name="states" widget="statusbar" statusbar_visible="draft,done"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -74,9 +99,10 @@
                             <field name="pi_number"/>
                             <field name="order_quantity"/>
                             <field name="rejected_quantity"/>
+                            <field name="sale_order_line_id" invisible="1"/>
                             <field name="fg_product"/>
                             <field name="finish"/>
-                            <field name="slider"/>
+                            
                         </group>
                         <group>
                             <field name="ccr_type"/>
@@ -101,15 +127,15 @@
                                 <field name="team_leader"/>
                             </group>
                         </group>
-                        <div class="oe_title">
+                        <div class="oe_title" attrs="{'invisible': [('states', 'not in', ['just'])]}">
                                 <h2 style="color: #E54F6D">CAPA</h2>
                         </div>
                         <group>
                             
-                            <group>
+                            <group attrs="{'invisible': [('states', 'not in', ['just'])]}">
                                 <field name="currective_action"/>
                             </group>
-                            <group>
+                            <group attrs="{'invisible': [('states', 'not in', ['just'])]}">
                                 <field name="preventive_action"/>
                             </group>
                             
@@ -118,7 +144,7 @@
                                 <h2 style="color: #E54F6D">JUSTIFICATION</h2>
                         </div>
                         <group>
-                            <field name="justification_level" widget="radio" nolabel="1"/>
+                            <field name="justification" widget="radio" nolabel="1"/>
                         </group>
                     </sheet>
                     
@@ -150,4 +176,18 @@
             parent="taps_sale.sale_ccr_view_menu"
             action = "action_sale_ccr"
             sequence="7"/>
+
+
+
+    <menuitem
+        id="menu_sale_ccr"
+        name="CCR"
+        parent="sale.menu_sales_config"
+        sequence="25"/>
+    <menuitem
+        id="menu_sale_ccr_type"
+        name="CCR TYPE"
+        parent="taps_sale.menu_sale_ccr"
+        action="taps_sale.action_sale_ccr_type"
+        sequence="26"/>
 </odoo>
