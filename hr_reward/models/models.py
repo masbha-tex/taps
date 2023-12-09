@@ -95,30 +95,51 @@ class HrReward(models.Model):
                         """ ) 
 
     hero_template = fields.Html('Hero Template', default=""" 
-                    <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
+                    <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 590px; margin: 0 auto;">
                         <div class="background-image" style="background-image: url('https://taps.odoo.com/hr_reward/static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
                             <div class="container" style="padding: 25px 25px 25px 25px;">
                             <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
                                 <br/>
                                 <br/>
-                                <img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%; margin-right: 50px;">
+                                <!--[if !vml]-->
+                                <img width="192" height="126" src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" class="" alt="Company Logo" style="position: relative; width: 30%;">
+                                <!--[endif]-->
                                 <br/>
-                                <h3 class="dear-text" style="margin-right: 33px; font-size: 14px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 16px;margin-right: 50px; font-weight: bold; margin-top: 50px; color: #000000;">${ctx['employee_to_name']}</span></h3>
-                                <h2 class="you-text" style="margin-right: 50px;font-size: 25px; font-weight: bold; margin-top: 17px; margin-bottom: 0px; color: #000000;">You Are A<br/></h2><img src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" alt="Company Logo" style="margin-right: 50px;position: relative; width: 50%;"><br/>
+                        		<p class="MsoNormal">
+                                    <h3 class="dear-text" style="font-size: 14px; margin-top: 0.5208333333in; color: #000000;">Dear, 
+                                        <span style="font-size: 16px; font-weight: bold; margin-top: 0.5208333333in; color: #000000;">
+                                            ${ctx['employee_to_name']}
+                                        </span>
+                                    </h3>
+                                    <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 0.1770833333in; margin-bottom: 0px; color: #000000;">
+                                        You Are A
+                                        <br/>
+                                    </h2>
+                        		</p>                                
+                                
+                                <!--[if !vml]-->
+                                <img width="300" height="112.07" src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" class="" alt="Company Logo" style="position: relative; width: 50%;">
+                                <!--[endif]-->
                                 <br/>
-                                <p style="font-size: 12px; margin-left: 30px; margin-right: 80px; color: #000000; text-align: center;">For ${ctx['note']}</p>
-                                <div class="content-text" style="margin-right: 50px;font-size: 12px; margin-top: 10px; color: #000000;">
+                                <br/>
+                            <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8"><p style="font-size: 12px; color: #000000; text-align: center;">For ${ctx['note']}</p></div>
+                            <div class="col-2"></div>
+                        
+                            </div>
+                                <div class="content-text" style="font-size: 12px; margin-top: 0.1041666667in; color: #000000;">
                                     
                                     <p>Well done, keep it up!</p>
                                     <br/>
-                                    <p>Recommended by - <p style="font-size: 12px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
+                                    <p>Recommended by - <p style=" font-size: 12px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
                                 </div>
+                                <!--[if !vml]-->
+                                <img width="100" height="100" src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png"  class="" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
+                                <!--[endif]-->
                                 <br/>
-                                <div style="margin-right: 60px;">
-                                <img src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
-                                </div>
                                 <br/>
-                                <p style="margin-right: 50px;font-size: 11px;color: #000000;">www.texfasteners.com</p>
+                                <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
                                 <br/>
                             </div>
                         </div>
@@ -468,7 +489,7 @@ class HrReward(models.Model):
                     }
                     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                self.env['mail.mail'].sudo().create(mail_values)#.send()                
+                self.env['mail.mail'].sudo().create(mail_values).send()         
                 # try:
                 #     # template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
                 #     template = self.env.ref('hr_reward.mail_notification_hero_template', raise_if_not_found=True)

@@ -15,7 +15,7 @@
                             <t t-esc="message.record_name and message.record_name.replace('/','-') or ''"/>
                         </span>
                     </td><td valign="middle" align="right">
-                        <img t-att-src="'/logo.png?company=%s' % (company.id or 0)" style="padding: 0px; margin: 0px; height: 48px;" t-att-alt="'%s' % company.name"/>
+                        <img width="68.03" height="48" t-att-src="'/logo.png?company=%s' % (company.id or 0)" style="padding: 0px; margin: 0px; height: 48px;" t-att-alt="'%s' % company.name"/>
                     </td></tr>
                     <tr><td colspan="2" style="text-align:center;">
                       <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:4px 0px 32px 0px;"/>
@@ -26,44 +26,57 @@
         <tr>
             <td style="min-width: 590px;">
                 <!-- <t t-raw="message.body"/> -->
-
-                <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto;">
-                    <!--[if gte mso 9]>
-                    <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:400px;">
-                        <v:fill type="tile" src="https://taps.odoo.com/hr_reward/static/src/img/1.png" color="#F1F1F1"/>
-                    </v:rect>
-                    <![endif]-->                    
-                    <div class="background-image" style="background-image: url('https://taps.odoo.com/hr_reward/static/src/img/1.png); background-size: cover; background-position: center;color: #fff;text-align: center;">
+                <div class="card" style="border-radius: 0px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 590px; margin: 0 auto;">
+                    <div class="background-image" style="background-image: url('https://taps.odoo.com/hr_reward/static/src/img/1.png'); background-size: cover; background-position: center;color: #fff;text-align: center;">
                         <div class="container" style="padding: 25px 25px 25px 25px;">
-                            <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
-                                <br/>
-                                <br/>
-                                
-                                <img src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" alt="Company Logo" style="position: relative; width: 30%; margin-right: 50px;"/>
-                                <br/>
-                                <h3 class="dear-text" style="font-size: 14px; margin-top: 50px; color: #000000;">Dear, <span style="font-size: 16px; font-weight: bold; margin-top: 50px; color: #000000;"><t t-esc="employee_to_name"/></span></h3>
-                                <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 17px; margin-bottom: 0px; color: #000000;">You Are A<br/></h2><img src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" alt="Company Logo" style="position: relative; width: 50%;"/><br/>
-                                <br/>
-                                <div class="row">
-                                    <div class="col-2"></div>
-                                    <div class="col-8"><p style="font-size: 12px; color: #000000; text-align: center;">For <t t-esc="note"/></p></div>
-                                    <div class="col-2"></div>
-                                </div>
-                                <div class="content-text" style="font-size: 12px; margin-top: 10px; color: #000000;">
-                                    
-                                    <p>Well done, keep it up!</p>
+                        <div class="border-wrapper" style="border: 2px solid #000000;border-radius: 0pxpadding: 20px;position: relative;">
+                            <br/>
+                            <br/>
+                            <!--[if !vml]-->
+                            <img width="192" height="126" src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" class="" alt="Company Logo" style="position: relative; width: 30%;">
+                            <!--[endif]-->
+                            <br/>
+                            <p class="MsoNormal">
+                                <h3 class="dear-text" style="font-size: 14px; margin-top: 0.5208333333in; color: #000000;">Dear, 
+                                    <span style="font-size: 16px; font-weight: bold; margin-top: 0.5208333333in; color: #000000;">
+                                        ${ctx['employee_to_name']}
+                                    </span>
+                                </h3>
+                                <h2 class="you-text" style="font-size: 25px; font-weight: bold; margin-top: 0.1770833333in; margin-bottom: 0px; color: #000000;">
+                                    You Are A
                                     <br/>
-                                    <p>Recommended by - <p style=" font-size: 12px; font-weight: bold;"><t t-esc="submit_by_to_name"/></p></p>
-                                </div>
-                                <img src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;"/>
+                                </h2>
+                            </p>                                
+                            
+                            <!--[if !vml]-->
+                            <img width="300" height="112.07" src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" class="" alt="Company Logo" style="position: relative; width: 50%;">
+                            <!--[endif]-->
+                            <br/>
+                            <br/>
+                        <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8"><p style="font-size: 12px; color: #000000; text-align: center;">For ${ctx['note']}</p></div>
+                        <div class="col-2"></div>
+                    
+                        </div>
+                            <div class="content-text" style="font-size: 12px; margin-top: 0.1041666667in; color: #000000;">
+                                
+                                <p>Well done, keep it up!</p>
                                 <br/>
-                                <br/>
-                                <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
-                                <br/>
+                                <p>Recommended by - <p style=" font-size: 12px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
                             </div>
+                            <!--[if !vml]-->
+                            <img width="100" height="100" src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png"  class="" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
+                            <!--[endif]-->
+                            <br/>
+                            <br/>
+                            <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
+                            <br/>
                         </div>
                     </div>
                 </div>
+                    
+                </div>                
 
             </td>
         </tr>

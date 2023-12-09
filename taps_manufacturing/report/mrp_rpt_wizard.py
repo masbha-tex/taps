@@ -619,6 +619,9 @@ class MrpReportWizard(models.TransientModel):
             
             # items = datewise_outputs.mapped('fg_categ_type')
             # items = list(set(items))
+            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','!=','closed')])
+            
+            
             
             items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
             
@@ -636,20 +639,22 @@ class MrpReportWizard(models.TransientModel):
                 
                     
                 full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
+                first_day_of_m = full_date # first day of month
                 full_date = full_date.replace(day = day)
                 
                 all_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
                 
-                comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
+                comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and pr.date_order.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
 
                 if full_date.date() == in_pr.production_date.date():
                     comu_pcs = in_pr.production_till_date
 
                 cm_pcs = 0
+                cm_rel = sum(comu_released.mapped('product_uom_qty'))
                 if full_date.date() > in_pr.production_date.date():
                     comu_day_outputs = comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
-                    cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
-                    cm_rel = sum(cm_day_released.mapped('product_uom_qty'))
+                    # cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
+                    
                     cm_pcs = sum(comu_day_outputs.mapped('qty'))
                     comu_pcs = in_pr.production_till_date + cm_pcs
 
@@ -657,14 +662,23 @@ class MrpReportWizard(models.TransientModel):
                 
                 if comu_released:
                     comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
-                    total_qty = sum(comu_released.mapped('product_uom_qty'))
+                    total_qty = sum(comu_released.mapped('sale_order_line.product_uom_qty'))
                     price = round((comur_value / total_qty),4)
+                    
                     pending_pcs = total_qty - comu_pcs
 
+                
+                # running_orders = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
                 
                 invoiced = round((pack_pcs*price),2)
                 pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
+                if start_time.date() == full_date.date():
+                    pending_pcs = sum(running_orders.mapped('balance_qty'))
+                    vl = round(sum(running_orders.mapped('sale_order_line.price_subtotal')),2)
+                    _qty = sum(running_orders.mapped('sale_order_line.product_uom_qty'))
+                    price = round((vl / _qty),4)
+                    pending_usd = round((pending_pcs*price),2)
                 
 
                 pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
@@ -687,13 +701,13 @@ class MrpReportWizard(models.TransientModel):
                 
                 if full_date.date() == in_pr.production_date.date():
                     comu_inv = in_pr.invoice_till_date
-                    comur_value = in_pr.released_till_date
+                    # comur_value = in_pr.released_till_date
                     
                 if full_date.date() > in_pr.production_date.date():
                     cm_inv = price * cm_pcs
                     cmr_val = cm_rel * price
                     comu_inv = in_pr.invoice_till_date + cm_inv
-                    comur_value = in_pr.released_till_date + cmr_val
+                    # comur_value = in_pr.released_till_date + cmr_val
                 
                 order_data = []
                 order_data = [

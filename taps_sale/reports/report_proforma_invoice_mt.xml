@@ -372,6 +372,11 @@
 												<td rowspan="3" colspan="2">
 													<strong>
 														<span t-esc="line.product_template_id.generic_name"/>
+														<t t-if="line.product_template_id.image_1920">
+														  <br/>
+                                                          <br/>
+													<img t-if="line.product_template_id.image_1920" t-att-src="image_data_uri(line.product_template_id.image_1920)" style="height: 50px; width: 50px;"/>
+													</t>
 													</strong>
 												</td>
 												<td rowspan="1">
@@ -419,7 +424,7 @@
 												</td>
 												<td rowspan="3">
 													<strong>
-														<span t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}" /><span> $</span>
+														<span t-esc="line.price_unit" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span> $</span>
 													</strong>
 												</td>
 												<t t-if="dis== 1">
@@ -506,6 +511,7 @@
 											<td colspan="2">
 												<strong>
 													<span t-esc="line.product_template_id.generic_name"/>
+													
 												</strong>
 											</td>
 											<td colspan="5"/>
@@ -526,7 +532,7 @@
 											</t>
 											<td>
 												<strong>
-													<span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}" /> <span> $</span>
+													<span t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> <span> $</span>
 												</strong>
 											</td>
 											<t t-if="style == 1">
@@ -587,7 +593,7 @@
 									</t>
 									<td style="background-color: yellow">
 										<strong>
-											<span t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}" /><span> $</span>
+											<span t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span> $</span>
 										</strong>
 									</td>
 									<t t-if="style == 1">
@@ -717,7 +723,7 @@
 								<diV class="col-6">
 									<strong>TERMS AND CONDITION:</strong>
 									<br/>
-									<span>1) Inco terms/ delivery terms should be used “EXW".</span>
+									<span>1) Inco terms/ delivery terms should be used<![CDATA[&nbsp;]]><span style="font-size:10px;">  <t t-esc="o.incoterm.name"/></span>.</span>
 									<br/>
 									<span>2) Any kind of objection regarding quality should be clued-up within 15 days.</span>
 									<br/>

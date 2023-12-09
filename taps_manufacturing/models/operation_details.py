@@ -171,6 +171,7 @@ class OperationDetails(models.Model):
         string='State')
     revision_no = fields.Char(string='Revision No', store=True)
     closing_date = fields.Datetime(string='Closing Date', readonly=False)
+    return_qty = fields.Float(string='Return Qty', default=0.0, readonly=False)
     
     # @api.model
     # def action_unplan(self):
@@ -294,16 +295,22 @@ class OperationDetails(models.Model):
         a = 'a'
         return action
 
-
-
     def button_return(self):
-        # self.ensure_one()
+        self.ensure_one()
         self._check_company()
-        for s in self:
-            ope = self.env["operation.details"].search([('mrp_lines','=',int(s.mrp_lines)),('next_operation','=','Packing Output')])
-            if ope:
-                ope = ope.write({'actual_qty': ope.actual_qty + s.qty})
-        raise UserError((self.ids))
+        if self.next_operation != 'FG Packing':
+            raise UserError(('This is not for you'))
+            
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_return")
+        action["domain"] = [('default_id','in',self.mapped('id'))]
+        return action
+            
+        
+        # for s in self:
+        #     ope = self.env["operation.details"].search([('mrp_lines','=',int(s.mrp_lines)),('next_operation','=','Packing Output')])
+        #     if ope:
+        #         ope = ope.write({'actual_qty': ope.actual_qty + s.qty})
+        # raise UserError((self.ids))
         
     def button_group_output(self):
         for r in self:
@@ -1104,10 +1111,12 @@ class OperationDetails(models.Model):
             existing_qc = None
             if out.next_operation == 'Dyeing Output':
                 operation_of = 'qc'
+                
                 # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
                 # mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
                 # mrp_data = mrp_data.filtered(lambda pr: pr.shade == out.shade and pr.oa_id.id == out.oa_id.id)
                 # actual_qty = sum(mrp_data.mapped('tape_con'))
+                
                 tape_in_qc = self.env["operation.details"].search([('plan_id','=', out.plan_id)])
                 oa_ids = tape_in_qc.mapped('oa_id')
                 items = tape_in_qc.mapped('product_template_id')
@@ -1117,6 +1126,7 @@ class OperationDetails(models.Model):
                 m_order = self.env["manufacturing.order"].browse(m_lines)
                 
                 shades = m_order.mapped('shade')
+                
                 # raise UserError((shades))
                 # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
                 # mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
@@ -1125,6 +1135,7 @@ class OperationDetails(models.Model):
                 # shades = ','.join([str(i) for i in sorted(shades)])
                 # oa_ids = ','.join([str(i) for i in sorted(oa_ids)])
                 # oa_ids = [int(i) for i in sorted(oa_ids.split(','))]
+                
                 rest_qty = out.uotput_qty
                 while rest_qty > 0:
                     excessqty = 0

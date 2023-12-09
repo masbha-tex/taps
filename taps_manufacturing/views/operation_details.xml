@@ -54,7 +54,6 @@
                     <button name="button_requisition" type="object" string="Requisition"/>
                     <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
                     <button name="button_group_output" type="object" string="Group Output"/>
-                    <!-- <button name="button_return" type="object" string="Return"/> -->
                 </header>
                 <field name="name" readonly="1"/>
                 <field name="mrp_lines" invisible="1"/>
@@ -108,6 +107,7 @@
                 <field name="plan_remarks" readonly="1" force_save="1" optional="show"/>
                 <field name="revision_no" readonly="1" force_save="1" optional="show"/>
                 <field name="closing_date" readonly="1" force_save="1" optional="show"/>
+                <field name="return_qty" invisible="1"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>
                 <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
@@ -209,6 +209,7 @@
                 <!-- editable="top" -->
                 <header>
                     <button name="button_requisition" type="object" string="Requisition"/>
+                    <button name="button_return" type="object" string="Return"/>
                 </header>
                 <field name="name" readonly="1"/>
                 <field name="mrp_lines" invisible="1"/>

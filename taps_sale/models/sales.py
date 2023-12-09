@@ -2084,7 +2084,7 @@ class SaleOrderLine(models.Model):
         elif self.product_template_id.name == 'BRASS SNAP 100214454':
             self.logo='RALPH LAUREN WORKWEAR'
             self.finish_ref='TG-4117'
-        elif self.product_template_id.name == 'BRASS SNAP 100214454':
+        elif self.product_template_id.name == 'BRASS SNAP 100214447':
             self.logo='WAVY POLO R.LAUREN'
             self.finish_ref='TG-4117'
         
