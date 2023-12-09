@@ -664,7 +664,6 @@ class MrpReportWizard(models.TransientModel):
                     comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
                     total_qty = sum(comu_released.mapped('sale_order_line.product_uom_qty'))
                     price = round((comur_value / total_qty),4)
-                    
                     pending_pcs = total_qty - comu_pcs
 
                 
@@ -677,8 +676,9 @@ class MrpReportWizard(models.TransientModel):
                     pending_pcs = sum(running_orders.mapped('balance_qty'))
                     vl = round(sum(running_orders.mapped('sale_order_line.price_subtotal')),2)
                     _qty = sum(running_orders.mapped('sale_order_line.product_uom_qty'))
-                    price = round((vl / _qty),4)
-                    pending_usd = round((pending_pcs*price),2)
+                    if _qty > 0:
+                        price = round((vl / _qty),4)
+                        pending_usd = round((pending_pcs*price),2)
                 
 
                 pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
