@@ -668,7 +668,7 @@ class MrpReportWizard(models.TransientModel):
                     pending_pcs = total_qty - comu_pcs
 
                 
-                # running_orders = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
+                running_orders = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
                 
                 invoiced = round((pack_pcs*price),2)
                 pending_usd = round((pending_pcs*price),2)
