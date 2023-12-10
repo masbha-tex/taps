@@ -85,6 +85,8 @@
                 <field name="submit_by"/>
                 <filter name="issue_date" date="issue_date"/>
                 <group string="Group By">
+                    <filter name="criteria_id" context="{'group_by': 'criteria_id'}"/>
+                    <filter name="title_ids" context="{'group_by': 'title_ids'}"/>
                     <filter name="submit_by" context="{'group_by': 'submit_by'}"/>
                     <filter name="employee_id" context="{'group_by': 'employee_id'}"/>
                     <filter name="issue_date" context="{'group_by': 'issue_date'}"/>
@@ -92,8 +94,8 @@
                 <searchpanel>
                     <field name="company_id" enable_counters="1"/>
                     <field name="state" enable_counters="1"/>
-                    <!-- <field name="r_type" enable_counters="1"/> -->
                     <field name="criteria_id" enable_counters="1"/>
+                    <field name="title_ids" enable_counters="1"/>
                     <field name="department_id" enable_counters="1"/>
                 </searchpanel>
             </search>

@@ -23,8 +23,8 @@ class HrReward(models.Model):
             ('Approved', 'Approved'),
             # ('Cancel', 'Cancel'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
-    criteria_id = fields.Many2one('reward.criteria', required=True, string='Scope')
-    title_ids = fields.Many2one('reward.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")    
+    criteria_id = fields.Many2one('reward.criteria', required=True, string='Title')
+    title_ids = fields.Many2one('reward.title', string='Scope', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")    
     details = fields.Html('Reward For', tracking=True)
 
     # @api.model
@@ -306,7 +306,7 @@ class HrReward(models.Model):
                         'author_id': self.env.user.partner_id.id,
                         'model': None,
                         'res_id': None,
-                        'subject': 'Raise a new R &amp; R for %s' % employee.display_name,
+                        'subject': 'Raise a new R & R for %s' % employee.display_name,
                         'body_html': body,
                         'attachment_ids': attachment,                    
                         'auto_delete': True,

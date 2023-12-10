@@ -5,7 +5,7 @@
             <field name="name">reward.title.form</field>
             <field name="model">reward.title</field>
             <field name="arch" type="xml">
-                <form string="R &amp; R Title">
+                <form string="R &amp; R Scope">
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <field name="active" invisible="1"/>
@@ -38,7 +38,7 @@
             <field name="name">reward.title.tree</field>
             <field name="model">reward.title</field>
             <field name="arch" type="xml">
-                <tree string="R &amp; R Title" sample="1">
+                <tree string="R &amp; R Scope" sample="1">
                     <field name="name"/>
                     <field name="criteria_id"/>
                     <field name="company_id" groups="base.group_multi_company" invisible="1"/>
@@ -86,7 +86,7 @@
         </record>
 
         <record id="action_reward_title" model="ir.actions.act_window">
-            <field name="name">R &amp; R Title</field>
+            <field name="name">R &amp; R Scope</field>
             <field name="res_model">reward.title</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="search_view_id" ref="view_reward_title_filter"/>
@@ -101,7 +101,7 @@
         </record>
         <menuitem
             id="menu_reward_title_tree"
-            name="Title"
+            name="Scope"
             action="action_reward_title"
             parent="hr_reward.menu_hr_reward_matrix"
             groups="hr.group_hr_manager"

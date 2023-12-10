@@ -20,7 +20,7 @@ class MrpReportWizard(models.TransientModel):
     
     # is_company = fields.Boolean(readonly=False, default=False)
     
-    report_type = fields.Selection([('pir', 'PI Report'),('pis', 'PI Summary'),('dpr', 'Daily Production Report'),], string='Report Type', required=True, help='Report Type', default='pir')
+    report_type = fields.Selection([('pir', 'PI Report'),('pis', 'PI Summary'),('dpr', 'Daily Production Report'),('dpcl', 'Daily Production Closed')], string='Report Type', required=True, help='Report Type', default='pir')
     
     date_from = fields.Date('Date from', readonly=False)
     date_to = fields.Date('Date to', readonly=False)
@@ -68,7 +68,9 @@ class MrpReportWizard(models.TransientModel):
         if self.report_type == "dpr":
             data = {'month_list': self.month_list}
             return self.daily_pr_xls_template(self, data=data)
-        # else:
+        if self.report_type == "dpcl":
+            data = {'month_list': self.month_list}
+            return self.daily_closed_xls_template(self, data=data)
         #     raise UserError(('This Report is Under Construction'))
 
 
@@ -776,3 +778,224 @@ class MrpReportWizard(models.TransientModel):
             'target': 'self',
         }
 
+    def daily_closed_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
+        month_ = None
+        if data.get('month_list'):
+            month_ = data.get('month_list')
+        year = datetime.today().year
+        
+        daily_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing')])
+        daily_outputs = daily_outputs.filtered(lambda pr: pr.action_date.month == int(month_) and pr.action_date.year == year)#.sorted(key=lambda pr: pr.sequence)
+        
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        
+        column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
+        
+        _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        merge_format = workbook.add_format({'align': 'top'})
+        merge_format_ = workbook.add_format({'align': 'bottom'})
+
+        initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id)])
+
+        for day in self.iterate_days(year, int(month_)):
+            comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day <= day)
+            datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day == day)
+            report_name = day
+
+            sheet = workbook.add_worksheet(('%s' % (report_name)))
+            
+            sheet.write(0, 0, "PRODUCT", column_style)
+            sheet.write(0, 1, "PACKING PCS", column_style)
+            sheet.write(0, 2, "INVOICE USD", column_style)
+            sheet.write(0, 3, "PENDING PCS", column_style)
+            sheet.write(0, 4, "PENDING USD", column_style)
+            sheet.write(0, 5, "COMULATIVE PRODUCTION", column_style)
+            sheet.write(0, 6, "COMULATIVE INVOICING", column_style)
+            sheet.write(0, 7, "TODAY RELEASED", column_style)
+            sheet.write(0, 8, "COMULATIVE RELEASED", column_style)
+            sheet.write(0, 9, "PENDING OA", column_style)
+
+            sheet.set_column(0, 0, 20)
+            sheet.set_column(1, 1, 15)
+            sheet.set_column(2, 2, 15)
+            sheet.set_column(3, 3, 15)
+            sheet.set_column(4, 4, 15)
+            sheet.set_column(5, 5, 15)
+            sheet.set_column(6, 6, 15)
+            sheet.set_column(7, 7, 15)
+            sheet.set_column(8, 8, 15)
+            sheet.set_column(9, 9, 15)
+            
+            # items = datewise_outputs.mapped('fg_categ_type')
+            # items = list(set(items))
+            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','!=','closed')])
+            
+            
+            
+            items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
+            
+            report_data = []
+            closed_ids = 0
+            for item in items:
+                comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
+                itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
+                comu_pcs = sum(comu_outputs.mapped('qty'))
+                pack_pcs = sum(itemwise_outputs.mapped('qty'))
+                # invoiced = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
+                #sum(order.qty * order. for order in itemwise_outputs)
+
+                in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
+                
+                    
+                full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
+                first_day_of_m = full_date # first day of month
+                full_date = full_date.replace(day = day)
+                
+                all_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
+                
+                comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and pr.date_order.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
+
+                if full_date.date() == in_pr.production_date.date():
+                    comu_pcs = in_pr.production_till_date
+
+                cm_pcs = 0
+                cm_rel = sum(comu_released.mapped('product_uom_qty'))
+                if full_date.date() > in_pr.production_date.date():
+                    comu_day_outputs = comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
+                    # cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
+                    
+                    cm_pcs = sum(comu_day_outputs.mapped('qty'))
+                    comu_pcs = in_pr.production_till_date + cm_pcs
+
+                price = total_qty = comur_value = pending_pcs = 0
+                
+                if comu_released:
+                    comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
+                    total_qty = sum(comu_released.mapped('sale_order_line.product_uom_qty'))
+                    price = round((comur_value / total_qty),4)
+                    pending_pcs = total_qty - comu_pcs
+
+                
+                item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
+                
+                invoiced = round((pack_pcs*price),2)
+                pending_usd = round((pending_pcs*price),2)
+                comu_inv = round((comu_pcs*price),2)
+
+
+                pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
+                
+                pending_ids = 0
+                
+                if pending_oa:
+                    oa_ids = pending_oa.mapped('oa_id')
+                    pending_ids = len(oa_ids)
+                
+                if start_time.date() == full_date.date():
+                    # raise UserError((start_time.date(),full_date.date()))
+                    pending_pcs = sum(item_run_ord.mapped('balance_qty'))
+                    oa_ids = item_run_ord.mapped('oa_id')
+                    pending_ids = len(oa_ids)
+                    # pending_ids = sum(item_run_ord.mapped('balance_qty'))
+                    
+                    vl = round(sum(item_run_ord.mapped('sale_order_line.price_subtotal')),2)
+                    _qty = sum(item_run_ord.mapped('sale_order_line.product_uom_qty'))
+                    if _qty > 0 and pending_pcs > 0:
+                        price = round((vl / _qty),4)
+                        pending_usd = round((pending_pcs*price),2)
+
+                closed_oa = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and  pr.closing_date != False)
+                if closed_oa:
+                    closed_oa = closed_oa.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+                
+                if closed_oa:
+                    oa_ids = closed_oa.mapped('oa_id')
+                    closed_ids += len(oa_ids)
+                
+                today_released = all_released.filtered(lambda pr: pr.date_order.date() == full_date.date())
+                tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
+                
+                if full_date.date() == in_pr.production_date.date():
+                    comu_inv = in_pr.invoice_till_date
+                    # comur_value = in_pr.released_till_date
+                    
+                if full_date.date() > in_pr.production_date.date():
+                    cm_inv = price * cm_pcs
+                    cmr_val = cm_rel * price
+                    comu_inv = in_pr.invoice_till_date + cm_inv
+                    # comur_value = in_pr.released_till_date + cmr_val
+                
+                order_data = []
+                order_data = [
+                    item.name,
+                    pack_pcs,
+                    round(invoiced,0),
+                    pending_pcs,
+                    round(pending_usd,0),
+                    comu_pcs,
+                    round(comu_inv,0),
+                    round(tr_value,0),
+                    round(comur_value,0),
+                    pending_ids,
+                    ]
+                report_data.append(order_data)
+            
+            row = 1
+            
+            for line in report_data:
+                col = 0
+                for l in line:
+                    sheet.write(row, col, l, format_label_1)
+                    col += 1
+                row += 1
+
+            sheet.write(row, 0, 'Total Order Close :', format_label_1)
+            sheet.write(row, 1, closed_ids, format_label_1)
+            sheet.write(row, 2, '', format_label_1)
+            sheet.write(row, 3, '', format_label_1)
+            sheet.write(row, 4, '', format_label_1)
+            sheet.write(row, 5, '', format_label_1)
+            sheet.write(row, 6, '', format_label_1)
+            sheet.write(row, 7, '', format_label_1)
+            sheet.write(row, 8, '', format_label_1)
+            sheet.write(row, 9, '', format_label_1)
+            row += 1    
+            sheet.write(row, 0, 'TOTAL', row_style)
+            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
+            sheet.write(row, 2, '=SUM(C{0}:C{1})'.format(1, row), row_style)
+            sheet.write(row, 3, '=SUM(D{0}:D{1})'.format(1, row), row_style)
+            sheet.write(row, 4, '=SUM(E{0}:E{1})'.format(1, row), row_style)
+            sheet.write(row, 5, '=SUM(F{0}:F{1})'.format(1, row), row_style)
+            sheet.write(row, 6, '=SUM(G{0}:G{1})'.format(1, row), row_style)
+            sheet.write(row, 7, '=SUM(H{0}:H{1})'.format(1, row), row_style)
+            sheet.write(row, 8, '=SUM(I{0}:I{1})'.format(1, row), row_style)
+            sheet.write(row, 9, '=SUM(J{0}:J{1})'.format(1, row), row_style)
+
+            # if start_time.day == day and start_time.month == int(month_):
+            #     sheet.Activate()
+        # raise UserError(())
+        # workbook.active =  start_time.day  
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Daily Production Report')),
+            'target': 'self',
+        }

@@ -9,10 +9,10 @@ class Title(models.Model):
     _inherit = ['mail.thread']
     _rec_name = 'name'
 
-    name = fields.Char(string="Title", required=True, index=True, translate=True)
+    name = fields.Char(string="Scope", required=True, index=True, translate=True)
     active = fields.Boolean('Active', default=True)
     company_id = fields.Many2one('res.company', string='Company')
-    criteria_id = fields.Many2one('reward.criteria', string='Scope')
+    criteria_id = fields.Many2one('reward.criteria', string='Title')
     description = fields.Text('Content', help='Add content description here...')
 
     _sql_constraints = [

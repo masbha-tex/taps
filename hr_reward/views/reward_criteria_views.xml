@@ -5,7 +5,7 @@
             <field name="name">reward.criteria.form</field>
             <field name="model">reward.criteria</field>
             <field name="arch" type="xml">
-                <form string="criteria">
+                <form string="R &amp; R Title">
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <field name="active" invisible="1"/>
@@ -31,7 +31,7 @@
             <field name="name">reward.criteria.tree</field>
             <field name="model">reward.criteria</field>
             <field name="arch" type="xml">
-                <tree string="Criteria" sample="1">
+                <tree string="R &amp; R Title" sample="1">
                     <field name="name"/>
                     <field name="title_ids"/>
                     <field name="company_id" groups="base.group_multi_company" invisible="1"/>
@@ -43,7 +43,7 @@
             <field name="name">reward.criteria.search</field>
             <field name="model">reward.criteria</field>
             <field name="arch" type="xml">
-                <search string="Reward Criteria">
+                <search string="R &amp; R Title">
                     <field name="name" string="Training Criteria"/>
                     <field name="title_ids" />
                     <separator/>
@@ -92,7 +92,7 @@
         </record>
 
         <record id="reward_criteria_kanban_action" model="ir.actions.act_window">
-            <field name="name">R &amp; R Scope</field>
+            <field name="name">R &amp; R Title</field>
             <field name="res_model">reward.criteria</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="view_reward_criteria_filter"/>
@@ -106,7 +106,7 @@
             </field>
         </record>
         <record id="reward_criteria_tree_action" model="ir.actions.act_window">
-            <field name="name">R &amp; R Scope</field>
+            <field name="name">R &amp; R Title</field>
             <field name="res_model">reward.criteria</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="search_view_id" ref="view_reward_criteria_filter"/>
@@ -121,7 +121,7 @@
         </record>
         <menuitem
             id="menu_reward_criteria_tree"
-            name="Scope"
+            name="Title"
             action="reward_criteria_tree_action"
             parent="hr_reward.menu_hr_reward_matrix"
             groups="hr.group_hr_manager"
