@@ -669,27 +669,33 @@ class MrpReportWizard(models.TransientModel):
                 invoiced = round((pack_pcs*price),2)
                 pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
-                if start_time.date() == full_date.date():
-                    # raise UserError((start_time.date(),full_date.date()))
-                    pending_pcs = sum(item_run_ord.mapped('balance_qty'))
-                    vl = round(sum(item_run_ord.mapped('sale_order_line.price_subtotal')),2)
-                    _qty = sum(item_run_ord.mapped('sale_order_line.product_uom_qty'))
-                    if _qty > 0 and pending_pcs > 0:
-                        price = round((vl / _qty),4)
-                        pending_usd = round((pending_pcs*price),2)
-                
+
 
                 pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
-
-                closed_oa = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and  pr.closing_date != False)
-                if closed_oa:
-                    closed_oa = closed_oa.filtered(lambda pr: pr.closing_date.date() == full_date.date())
                 
                 pending_ids = 0
                 
                 if pending_oa:
                     oa_ids = pending_oa.mapped('oa_id')
                     pending_ids = len(oa_ids)
+                
+                if start_time.date() == full_date.date():
+                    # raise UserError((start_time.date(),full_date.date()))
+                    pending_pcs = sum(item_run_ord.mapped('balance_qty'))
+                    oa_ids = item_run_ord.mapped('oa_id')
+                    pending_ids = len(oa_ids)
+                    # pending_ids = sum(item_run_ord.mapped('balance_qty'))
+                    
+                    vl = round(sum(item_run_ord.mapped('sale_order_line.price_subtotal')),2)
+                    _qty = sum(item_run_ord.mapped('sale_order_line.product_uom_qty'))
+                    if _qty > 0 and pending_pcs > 0:
+                        price = round((vl / _qty),4)
+                        pending_usd = round((pending_pcs*price),2)
+
+                closed_oa = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and  pr.closing_date != False)
+                if closed_oa:
+                    closed_oa = closed_oa.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+                
                 if closed_oa:
                     oa_ids = closed_oa.mapped('oa_id')
                     closed_ids += len(oa_ids)

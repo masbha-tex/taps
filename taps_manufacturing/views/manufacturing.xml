@@ -15,7 +15,7 @@
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="sizemm"/>
-                <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;',0.0),('state','!=','closed')]"/>
+                <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;',0.0),('state','not in',('closed','cancel'))]"/>
                 <separator/>
                 <filter string="Order Date" name="action_date_filter" date="date_order"/>
                 <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>

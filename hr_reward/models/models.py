@@ -153,15 +153,14 @@ class HrReward(models.Model):
     thanku_template = fields.Html('Thank you Template', default=""" 
                     <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_reward/static/src/img/th.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
                        
-                    
-                        <p style="font-size: 12px; font-weight: bold; margin-top: 210px; color: #000000; text-align: left;  margin-left: 100px;">${ctx['employee_to_name']}</p><br/>
+                        <p style="font-size: 14px; font-weight: bold; margin-top: 180px; color: #000000; text-align: left;  margin-left: 120px;">${ctx['employee_to_name']}</p><br/>
                         <div class="row">
                         <div class="col-7">
-                        <p style="font-size: 9px; color: #000000; text-align: left; margin-left: 30px; ">${ctx['note']}</p>
+                        <p style="font-size: 12px; color: #000000; text-align: left; margin-left: 30px; margin-right:250px;">${ctx['note']}</p>
                         </div>
                         </div>
                         <br/>
-                        <p style="font-size: 10px; color: #000000; text-align: left;  margin-left: 50px;">Recommended by - ${ctx['submit_by_to_name']}</p>
+                        <p style="font-size: 13px; color: #000000; text-align: left;  margin-left: 70px;">Recommended by - ${ctx['submit_by_to_name']}</p>
                         <br/>
                         <br/>
                     </div>
@@ -170,18 +169,18 @@ class HrReward(models.Model):
     kudos_template = fields.Html('Kudos Template', default=""" 
                     <div class="card" style="position: relative; width: 680px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_reward/static/src/img/Ku.jpg');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
                        
-                        <p style="font-size: 12px; font-weight: bold; margin-top: 260px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p><br/>
+                        <p style="font-size: 13px; font-weight: bold; margin-top: 260px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p><br/>
                         <div class="row">
                             <div class="col-2"></div>
-                            <div class="col-8"><p style="font-size: 9px; color: #000000; text-align: center;">${ctx['note']}</p></div>
+                            <div class="col-8"><p style="font-size: 11px; color: #000000; text-align: center; margin-left: 30px; margin-right: 30px;">${ctx['note']}</p></div>
                             <div class="col-2"></div>
                         
                         </div>
                         <br/>
-                        <p style="font-size: 10px; color: #000000; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
+                        <p style="font-size: 12px; color: #000000; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
                         <br/>
                         <br/>
-                    </div> left: 0px; 
+                    </div> 
                     """)
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
