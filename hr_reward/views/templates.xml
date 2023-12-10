@@ -33,7 +33,7 @@
                             <br/>
                             <br/>
                             <!--[if !vml]-->
-                            <img width="192" height="126" src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" class="" alt="Company Logo" style="position: relative; width: 30%;">
+                            <img width="192" height="126" src="https://taps.odoo.com/hr_reward/static/src/img/logo_tex_tiny.png" class="" alt="Company Logo" style="position: relative; width: 30%;"/>
                             <!--[endif]-->
                             <br/>
                             <p class="MsoNormal">
@@ -49,7 +49,7 @@
                             </p>                                
                             
                             <!--[if !vml]-->
-                            <img width="300" height="112.07" src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" class="" alt="Company Logo" style="position: relative; width: 50%;">
+                            <img width="300" height="112.07" src="https://taps.odoo.com/hr_reward/static/src/img/hero.png" class="" alt="Company Logo" style="position: relative; width: 50%;"/>
                             <!--[endif]-->
                             <br/>
                             <br/>
@@ -66,15 +66,15 @@
                                 <p>Recommended by - <p style=" font-size: 12px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
                             </div>
                             <!--[if !vml]-->
-                            <img width="100" height="100" src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png"  class="" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
+                            <img width="100" height="100" src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png"  class="" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;"/>
                             <!--[endif]-->
                             <br/>
                             <br/>
                             <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
                             <br/>
                         </div>
+                        </div>
                     </div>
-                </div>
                     
                 </div>                
 

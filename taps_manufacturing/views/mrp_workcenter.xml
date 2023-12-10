@@ -19,6 +19,25 @@
                 </p>
             </field>
         </record>
+        
+        <record id="action_mt_operations" model="ir.actions.act_window">
+            <field name="name">Production</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">operation.details</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_mt_operation_tree"/>
+            <field name="search_view_id" ref="view_mrp_operatin_details_search"/>
+            <field name="domain">[('operation_of', 'in', ('plan','input','lot','output','req','qc'))]</field>
+            <field name="context">{'search_default_work_center': active_id}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No work orders to do!
+                </p><p>
+                    Work orders are operations to do as part of a manufacturing order.
+                    Operations are defined in the bill of materials or added in the manufacturing order directly.
+                </p>
+            </field>
+        </record>
 
 
             <!-- <field name="domain">[('work_center', 'in', active_ids)]</field> -->

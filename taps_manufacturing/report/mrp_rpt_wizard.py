@@ -27,10 +27,7 @@ class MrpReportWizard(models.TransientModel):
     
     month_list = fields.Selection('_get_month_list', 'Month') #, default=lambda self: self._get_month_list()
 
-
     file_data = fields.Binary(readonly=True, attachment=False)
-
-
     
 
     @staticmethod
@@ -673,10 +670,11 @@ class MrpReportWizard(models.TransientModel):
                 pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
                 if start_time.date() == full_date.date():
+                    raise UserError((start_time.date(),full_date.date()))
                     pending_pcs = sum(running_orders.mapped('balance_qty'))
                     vl = round(sum(running_orders.mapped('sale_order_line.price_subtotal')),2)
                     _qty = sum(running_orders.mapped('sale_order_line.product_uom_qty'))
-                    if _qty > 0:
+                    if _qty > 0 and pending_pcs > 0:
                         price = round((vl / _qty),4)
                         pending_usd = round((pending_pcs*price),2)
                 

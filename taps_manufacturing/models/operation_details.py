@@ -120,6 +120,9 @@ class OperationDetails(models.Model):
         ('Done', 'Done')],
         string='Next Operation', help="Next Operation")
     mr_req = fields.Many2one('stock.picking', 'Requisitions', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+
+
+
     
     @api.depends('qty', 'done_qty')
     def get_balance(self):
@@ -167,6 +170,7 @@ class OperationDetails(models.Model):
         ('partial', 'Partial'),
         ('done', 'Done'),
         ('hold', 'Hold'),
+        ('cancel', 'Cancelled'),
         ('closed', 'Closed')],
         string='State')
     revision_no = fields.Char(string='Revision No', store=True)

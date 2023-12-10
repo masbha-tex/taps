@@ -72,7 +72,8 @@
                 <form string="CCR FORM" multi_edit="1" sample="1">
                     <header>
                         <button name="action_justify" type="object" string="Justify"/>
-                        <button name="action_take" type="object" string="Take Action"/>
+                        <button name="action_notjustify" type="object" string="Not Justify" context="{'active_id':id}"/>
+                        <button name="action_take" type="object" string="Take Action" context="{'active_id':id}"/>
                         <button name="action_cancel" type="object" string="Cancel"/>
                         <button name="action_draft" type="object" string="Set To Draft"  attrs="{'invisible': [('states', 'not in', ['cancel'])]}"/>
                         <button name="action_close" type="object" string="Close" attrs="{'invisible': [('states', 'in', ['done' ,'cancel'])]}"/>
@@ -133,7 +134,8 @@
                         <group>
                             
                             <group attrs="{'invisible': [('states', 'not in', ['just'])]}">
-                                <field name="currective_action"/>
+                                <field name="corrective_action"/>
+                                <field name="cap_closing_date"/>
                             </group>
                             <group attrs="{'invisible': [('states', 'not in', ['just'])]}">
                                 <field name="preventive_action"/>
@@ -145,9 +147,14 @@
                         </div>
                         <group>
                             <field name="justification" widget="radio" nolabel="1"/>
+                            <field name="reason"/>
                         </group>
                     </sheet>
-                    
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
     </record>

@@ -252,7 +252,7 @@
         <field name="name">mt.fg.packing.tree</field>
         <field name="model">operation.details</field>
         <field name="arch" type="xml" >
-            <tree string="FG Packing" create="false" delete ="false" editable="top"> 
+            <tree string="MT FG Packing" create="false" delete ="false" editable="top"> 
                 <!-- editable="top" -->
                 <header>
                     <button name="button_requisition" type="object" string="Requisition"/>
@@ -487,10 +487,10 @@
     </record>
     
     <record id="action_mt_fg_packing" model="ir.actions.act_window">
-        <field name="name">FG Packing</field>
+        <field name="name">MT FG Packing</field>
         <field name="res_model">operation.details</field>
         <field name="view_mode">tree</field>
-        <field name="view_id" ref="view_mt_fg_packing_tree" />
+        <field name="view_id" ref="view_mt_fg_packing_tree"/>
         <field name="domain">[('next_operation','=','FG Packing')]</field>
         <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
         <field name="context">{'search_default_packing': 1}</field>
@@ -533,6 +533,12 @@
     <menuitem id="menu_fg_packing" 
               name="FG Packing" 
               action="action_fg_packing" 
+              parent="mrp.menu_mrp_manufacturing"
+              sequence="7"/>
+
+    <menuitem id="menu_mt_fg_packing" 
+              name="MT FG Packing" 
+              action="action_mt_fg_packing"
               parent="mrp.menu_mrp_manufacturing"
               sequence="7"/>
 

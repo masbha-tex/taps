@@ -184,6 +184,8 @@ class MrpWoProductivity(models.Model):
     
     def action_work_order(self):
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_operations")
+        if self.env.company.id == 3:
+            action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mt_operations")
         return action
 
     def _compute_mrorder_count(self):

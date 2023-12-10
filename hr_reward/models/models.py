@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-new
-
+import subprocess, base64
+import tempfile
+import os
+import imgkit
+from html2image import Html2Image
 from odoo import models, fields, api, _ 
 from odoo.tools import html2plaintext, plaintext2html, is_html_empty, email_normalize
 from odoo.exceptions import ValidationError, UserError
@@ -166,24 +170,79 @@ class HrReward(models.Model):
                     """)
 
     kudos_template = fields.Html('Kudos Template', default=""" 
-                    <div class="card" style="position: relative; width: 680px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_reward/static/src/img/Ku.jpg');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
-                       
-                        <p style="font-size: 12px; font-weight: bold; margin-top: 260px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p><br/>
-                        <div class="row">
-                            <div class="col-2"></div>
-                            <div class="col-8"><p style="font-size: 9px; color: #000000; text-align: center;">${ctx['note']}</p></div>
-                            <div class="col-2"></div>
-                        
-                        </div>
-                        <br/>
-                        <p style="font-size: 10px; color: #000000; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
-                        <br/>
-                        <br/>
-                    </div>
+                    <div class="card">
+
+        <img src="https://taps.odoo.com/hr_reward/static/src/img/Ku.jpg" alt="Company Logo" style="position: absolute; z-index: 1; width: 100%; top: 0px; left: 0px;"/>
+        <p style="position: absolute; z-index: 2; width: 100%; color: #000000; top: 50px; top: 0px; left: 0px; text-align: center;"> Dear, ${ctx['employee_to_name']}</p>
+        <br/>
+        <p style="position: absolute; z-index: 2; width: 100%; color: #000000; top: 80px; top: 0px; left: 0px; text-align: center;">${ctx['note']}</p>
+        <br/>
+        <br/>
+        <p style="position: absolute; z-index: 2; width: 100%; color: #000000; top: 110px; top: 0px;x left: 0px; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
+        
+
+    </div>
                     """)
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
     attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
+
+    def html_to_image(self, html_content):
+        try:
+            with tempfile.NamedTemporaryFile(mode='w+b', delete=False, suffix='.html') as temp_html_file:
+                if isinstance(html_content, bytes):
+                    temp_html_file.write(html_content)
+                elif isinstance(html_content, str):
+                    temp_html_file.write(html_content.encode('utf-8'))
+                else:
+                    raise ValueError('html_content must be either bytes or str')
+                temp_html_path = temp_html_file.name
+    
+            # Set the output image path
+            temp_image_path = os.path.join(tempfile.gettempdir(), 'output.jpeg')
+    
+            # Run wkhtmltoimage
+            process = subprocess.Popen(
+                # ['wkhtmltoimage', '--format', 'jpeg', temp_html_path, temp_image_path],
+                ['wkhtmltoimage', '--format', 'jpeg', '--width', '590', temp_html_path, temp_image_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            _, error = process.communicate()
+    
+            # if process.returncode != 0:
+            #     raise ValidationError(f'Error during HTML to Image conversion: {error.decode("utf-8")}')
+    
+            # Read the resulting image data
+            with open(temp_image_path, 'rb') as image_file:
+                image_data = image_file.read()
+    
+            # Remove temporary files
+            os.remove(temp_html_path)
+            os.remove(temp_image_path)
+    
+            return image_data
+        except Exception as e:
+            raise ValidationError(f'Exception during HTML to Image conversion: {str(e)}')
+    # def html_to_image(self, html_content):
+    #     # Make sure html_content is a string
+    #     if not isinstance(html_content, str):
+    #         html_content = str(html_content)
+
+    #     try:
+    #         process = subprocess.Popen(
+    #             ['wkhtmltoimage', '--format', 'jpeg', '-'],
+    #             stdin=subprocess.PIPE,
+    #             stdout=subprocess.PIPE,
+    #             stderr=subprocess.PIPE,
+    #         )
+
+    #         # Convert string to bytes before passing it to communicate
+    #         image_data, _ = process.communicate(input=html_content.encode('utf-8'))
+
+    #         return image_data
+    #     except Exception as e:
+    #         raise ValidationError(f"Error converting HTML to image: {e}") 
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -443,8 +502,18 @@ class HrReward(models.Model):
                 body_thanku = RenderMixin._render_template(self.thanku_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_kudos = RenderMixin._render_template(self.kudos_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
+
+                image_data = self.html_to_image(body_hero)
+                # Save the image data to a file for inspection
+                with open('/home/odoo/src/user/hr_reward/hero.jpeg', 'wb') as f:
+                    f.write(image_data)
+                base64_encoded_image = base64.b64encode(image_data).decode('utf-8')
+
+                # Include the base64-encoded image in the HTML body
+                # body_with_image = f"<img src='data:image/png;base64,{base64_encoded_image}'/>"                
+                
                 if self.criteria_id.name == 'HERO':
-                    body = f"{body_hero}<br/>{body_sig}"
+                    body = f"<img width='590' src='data:image/jpeg;base64,{base64_encoded_image}'/><br/>{body_sig}"
                 elif self.criteria_id.name == 'KUDOS':
                     body = f"{body_kudos}<br/>{body_sig}"
                 elif self.criteria_id.name == 'THANK YOU':
@@ -488,6 +557,12 @@ class HrReward(models.Model):
                         'company': self.env.company,
                     }
                     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+
+
+                    # hti = Html2Image()
+                    # css = 'body {background: white;}'
+                    # bodys = hti.screenshot(html_str=self.env['mail.render.mixin']._replace_local_links(body), css_str=css, save_as='output.png')
+                    
                     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
                 self.env['mail.mail'].sudo().create(mail_values).send()         
                 # try:

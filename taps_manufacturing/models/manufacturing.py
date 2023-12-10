@@ -177,6 +177,7 @@ class ManufacturingOrder(models.Model):
         ('partial', 'Partial'),
         ('done', 'Done'),
         ('hold', 'Hold'),
+        ('cancel', 'Cancelled'),
         ('closed', 'Closed')],
         string='State')
     revision_no = fields.Char(string='Revision No', store=True)

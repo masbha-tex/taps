@@ -16,7 +16,7 @@
                     </script> -->
                     <group>
                         <group>
-                            <field name="currective_action"/>
+                            <field name="corrective_action"/>
                             <field name="cap_closing_date"/>
                             
                         </group>
@@ -28,6 +28,28 @@
                     <footer>
                         <button name="action_capa" string="Save" type="object" class="oe_highlight"/>
                         <button name="action_capa" string="Save and Close" type="object" class="oe_highlight"/>
+                        <button name="cancel" string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="sale_ccr_wizard_form_notjustify" model="ir.ui.view">
+            <field name="name">sale.ccr.wizard.notjustify.form</field>
+            <field name="model">sale.ccr.wizard.notjustify</field>
+            <field name="priority" eval="11"/>
+            <field name="arch" type="xml">
+                <form string="Not Justify">
+                    
+                    <group>
+                        <group>
+                            <field name="reason"/>
+                            
+                            
+                        </group>
+                        
+                    </group>
+                    <footer>
+                        <button name="action_notjustify" string="Save" type="object" class="oe_highlight"/>
                         <button name="cancel" string="Cancel" special="cancel"/>
                     </footer>
                 </form>

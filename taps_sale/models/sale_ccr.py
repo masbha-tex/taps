@@ -74,6 +74,7 @@ class SaleCcr(models.Model):
         
 
     name = fields.Char(string='CCR Reference', required=True, copy=False, index=True, readonly=True,  default=lambda self: _('New'))
+    company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     oa_number = fields.Many2one('sale.order', string='OA Number')
     customer = fields.Many2one('res.partner',related = 'oa_number.partner_id', string='Customer')
     buyer = fields.Many2one('res.partner',related = 'oa_number.buyer_name', string='Buyer')
@@ -87,8 +88,9 @@ class SaleCcr(models.Model):
     replacement_quantity = fields.Float(string='Replacement Quantity')
     replacement_value = fields.Float(string='Replacement Value')
     analysis_activity = fields.Text(string='Analysis Activity')
-    currective_action = fields.Text(string='Currective Action')
+    corrective_action = fields.Text(string='Corrective Action')
     preventive_action = fields.Text(string='Preventive Action')
+    cap_closing_date = fields.Date(string='Cap Closing Date')
     sale_order_line_id = fields.Many2many('sale.order.line', string="Sale Order Line")
     fg_product = fields.Many2one('product.template',string="Fg Products", domain="[['categ_id.complete_name','ilike','ALL / FG']]")
     finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
@@ -99,6 +101,7 @@ class SaleCcr(models.Model):
     company_id = fields.Many2one(related='oa_number.company_id', string='Company', store=True, readonly=True, index=True)
     invoice_reference = fields.Char(string='Invoice Ref.')
     report_date = fields.Date(string='Report Date', default= date.today())
+    reason = fields.Char(string="Reason for Not Justified")
     # justification_level = fields.Selection(
     #     [('justified','Justified'),
     #      ('notjustified','Not Justified')],
@@ -143,10 +146,14 @@ class SaleCcr(models.Model):
         self.write({'justification': 'Justified'})
         return {}
     def action_take(self):
+        
         compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form').id
         ctx = dict(self.env.context)
+        
+        # raise UserError((self.id))
         ctx.update({
             'default_cap_closing_date': date.today(),
+            
         })
         return {
             'type': 'ir.actions.act_window',
@@ -156,4 +163,20 @@ class SaleCcr(models.Model):
             'view_id': compose_form_id,
             'target': 'new',
             'context': ctx,
+        }
+    def action_notjustify(self):
+        
+        compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form_notjustify').id
+        
+        
+        # raise UserError((self.id))
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'name' : 'Not Justify Form',
+            'res_model': 'sale.ccr.wizard.notjustify',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
         }

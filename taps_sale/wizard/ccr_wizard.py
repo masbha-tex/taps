@@ -21,14 +21,36 @@ class CcrWizard(models.TransientModel):
     _name = 'sale.ccr.wizard'
     _description = 'CCR Wizard'
 
-    currective_action = fields.Text(string='Currective Action')
+    
+    corrective_action = fields.Text(string='Currective Action')
     preventive_action = fields.Text(string='Preventive Action')
     cap_closing_date = fields.Date(string="CAP Closing", default=date.today())
 
+
+    
     def action_capa(self):
+        # raise UserError((self.env.context.get('active_id')))
+        ccr = self.env['sale.ccr'].sudo().search([('id', '=', self.env.context.get('active_id'))])
+        ccr.update({'corrective_action': self.corrective_action,'preventive_action': self.preventive_action,'cap_closing_date':self.cap_closing_date,'states':'just'})
         return {}
 
     def cancel(self):
         return {}
+
+
+class CcrWizardnot(models.TransientModel):
+    _name = 'sale.ccr.wizard.notjustify'
+    _description = 'CCR Wizard Not Justify'
+    
+    reason = fields.Char(string="Reason for Not justify")
+
+    def action_notjustify(self):
+        ccr = self.env['sale.ccr'].sudo().search([('id', '=', self.env.context.get('active_id'))])
+        ccr.update({'reason': self.reason,'states': 'nonjust'})
+        return {}
+
+    def cancel(self):
+        return {}
+        
 
 

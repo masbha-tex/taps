@@ -42,7 +42,13 @@ class SalesXlsx(models.AbstractModel):
         items = self.env['fg.category'].search([('active','=',True)]).sorted(key=lambda pr: pr.sequence)
 
         for item in items:
-            sa_orders = sale_orders.filtered(lambda pr: pr.order_line.product_template_id.fg_categ_type == item.name)
+            sale_order_lines = self.env['sale.order.line'].search([('order_id','in',sale_orders.ids)])
+            sa_orders = None
+            if sale_order_lines:
+                sale_order_lines = sale_order_lines.filtered(lambda pr: pr.product_template_id.fg_categ_type == item.name)
+                sa_orders = self.env['sale.order'].browse(sale_order_lines.order_id.ids)
+            # self.env['sale.order'].browse(sale_order_lines.oa_id.ids)
+            # sale_orders.filtered(lambda pr: pr.id in sale_order_lines.oa_id.ids)
             if sa_orders:
                 row_rang = 1
                 _range = 0
