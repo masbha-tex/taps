@@ -77,7 +77,7 @@ class MrpReportWizard(models.TransientModel):
         # domain = []
         # if data.get('date_from'):
         #     domain.append(('date_from', '=', data.get('date_from'))) 
-        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','!=','closed')])
+        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel'))])
         if data.get('date_from'):
             if data.get('date_to'):
                 running_orders = running_orders.filtered(lambda pr: pr.date_order.date() >= data.get('date_from') and pr.date_order.date() <= data.get('date_to'))
@@ -717,13 +717,13 @@ class MrpReportWizard(models.TransientModel):
                 order_data = [
                     item.name,
                     pack_pcs,
-                    invoiced,
+                    round(invoiced,0),
                     pending_pcs,
-                    pending_usd,
+                    round(pending_usd,0),
                     comu_pcs,
-                    comu_inv,
-                    tr_value,
-                    comur_value,
+                    round(comu_inv,0),
+                    round(tr_value,0),
+                    round(comur_value,0),
                     pending_ids,
                     ]
                 report_data.append(order_data)

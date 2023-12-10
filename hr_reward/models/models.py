@@ -126,22 +126,22 @@ class HrReward(models.Model):
                                 <br/>
                             <div class="row">
                             <div class="col-2"></div>
-                            <div class="col-8"><p style="font-size: 12px; color: #000000; text-align: center;">For ${ctx['note']}</p></div>
+                            <div class="col-8"><p style="font-size: 15px; color: #000000; text-align: center; margin-left: 40px; margin-right: 40px;">For ${ctx['note']}</p></div>
                             <div class="col-2"></div>
                         
                             </div>
-                                <div class="content-text" style="font-size: 12px; margin-top: 0.1041666667in; color: #000000;">
+                                <div class="content-text" style="font-size: 15px; margin-top: 0.1041666667in; color: #000000;">
                                     
                                     <p>Well done, keep it up!</p>
                                     <br/>
-                                    <p>Recommended by - <p style=" font-size: 12px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
+                                    <p>Recommended by - <p style=" font-size: 15px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
                                 </div>
                                 <!--[if !vml]-->
                                 <img width="100" height="100" src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png"  class="" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
                                 <!--[endif]-->
                                 <br/>
                                 <br/>
-                                <p style="font-size: 11px;color: #000000;">www.texfasteners.com</p>
+                                <p style="font-size: 12px;color: #000000;">www.texfasteners.com</p>
                                 <br/>
                             </div>
                         </div>
@@ -153,14 +153,13 @@ class HrReward(models.Model):
     thanku_template = fields.Html('Thank you Template', default=""" 
                     <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_reward/static/src/img/th.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
                        
-                        <p style="font-size: 14px; font-weight: bold; margin-top: 180px; color: #000000; text-align: left;  margin-left: 120px;">${ctx['employee_to_name']}</p><br/>
+                        <p style="font-size: 18px; font-weight: bold; margin-top: 205px; color: #000000; text-align: left;  margin-left: 93px;">${ctx['employee_to_name']}</p>
                         <div class="row">
                         <div class="col-7">
-                        <p style="font-size: 12px; color: #000000; text-align: left; margin-left: 30px; margin-right:250px;">${ctx['note']}</p>
+                        <p style="font-size: 15px; color: #000000; text-align: center; margin-left: 30px; margin-right:250px;">${ctx['note']}</p>
                         </div>
                         </div>
-                        <br/>
-                        <p style="font-size: 13px; color: #000000; text-align: left;  margin-left: 70px;">Recommended by - ${ctx['submit_by_to_name']}</p>
+                        <p style="font-size: 16px; color: #000000; text-align: left;  margin-left: 70px;">Recommended by - ${ctx['submit_by_to_name']}</p>
                         <br/>
                         <br/>
                     </div>
@@ -169,17 +168,16 @@ class HrReward(models.Model):
     kudos_template = fields.Html('Kudos Template', default=""" 
                     <div class="card" style="position: relative; width: 680px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_reward/static/src/img/Ku.jpg');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
                        
-                        <p style="font-size: 13px; font-weight: bold; margin-top: 260px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p><br/>
+                        <p style="font-size: 18px; font-weight: bold; margin-top: 260px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p>
                         <div class="row">
                             <div class="col-2"></div>
-                            <div class="col-8"><p style="font-size: 11px; color: #000000; text-align: center; margin-left: 30px; margin-right: 30px;">${ctx['note']}</p></div>
+                            <div class="col-8"><p style="font-size: 15px; color: #000000; text-align: center; margin-left: 90px; margin-right: 90px;">${ctx['note']}</p></div>
                             <div class="col-2"></div>
                         
                         </div>
+                        <p style="font-size: 16px; color: #000000; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
                         <br/>
-                        <p style="font-size: 12px; color: #000000; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
-                        <br/>
-                        <br/>
+                        
                     </div> 
                     """)
     
@@ -282,126 +280,7 @@ class HrReward(models.Model):
                     'recipient_users': employee.user_id,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
                 }
-                sig = """
-                <div style="margin:0px;padding: 0px;line-height: 1.2;">
-                	<p class="MsoNormals">Regards,<o:p/>
-                	</p>
-                	<br>
-                		<p class="MsoNormal" style="margin:0px;padding: 0px;line-height: 1.2;">
-                			<b>
-                				<span style="margin:0px;padding: 0px;line-height: 1.2;">${(object.employee_id.name or '')| safe}<o:p/>
-                				</span>
-                			</b>
-                		</p>
-                		<p class="MsoNormal">
-                			<span style="margin:0px;padding: 0px;line-height: 1.2;">${(object.employee_id.job_id.name or '')| safe}<o:p/>
-                			</span>
-                		</p>
-                		<p class="MsoNormal">
-                			<span style="margin: 0;padding: 0px; line-height: 1.2;font-size:10.0pt;color:#1F497D;mso-ligatures:
-                none">
-                				<!--[if gte vml 1]><v:shapetype id="_x0000_t75" coordsize="21600,21600"
-                 o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe" filled="f"
-                 stroked="f">
-                 <v:stroke joinstyle="miter"/>
-                 <v:formulas>
-                  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
-                  <v:f eqn="sum @0 1 0"/>
-                  <v:f eqn="sum 0 0 @1"/>
-                  <v:f eqn="prod @2 1 2"/>
-                  <v:f eqn="prod @3 21600 pixelWidth"/>
-                  <v:f eqn="prod @3 21600 pixelHeight"/>
-                  <v:f eqn="sum @0 0 1"/>
-                  <v:f eqn="prod @6 1 2"/>
-                  <v:f eqn="prod @7 21600 pixelWidth"/>
-                  <v:f eqn="sum @8 21600 0"/>
-                  <v:f eqn="prod @7 21600 pixelHeight"/>
-                  <v:f eqn="sum @10 21600 0"/>
-                 </v:formulas>
-                 <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
-                 <o:lock v:ext="edit" aspectratio="t"/>
-                </v:shapetype><v:shape id="Picture_x0020_7" o:spid="_x0000_i1025" type="#_x0000_t75"
-                 alt="" style='width:46pt;height:33pt'>
-                 <v:imagedata src="file:///C:/Users/ADNANA~1/AppData/Local/Temp/msohtmlclip1/01/clip_image001.png"
-                  o:href="cid:image008.png@01D9F15F.259E0380"/>
-                </v:shape><![endif]-->
-                				<!--[if !vml]-->
-                				<img width="61" height="44" src="https://taps.odoo.com/web/image/29734-c2a26318/tex%20logo%20.jpg" style="height: 0.458in; width: 0.638in;" v:shapes="Picture_x0020_7" class="" data-original-title="" title="" aria-describedby="tooltip397716" alt="">
-                					<!--[endif]-->
-                				</span>
-                				<!--[if gte vml 1]><v:shape id="Picture_x0020_8"
-                 o:spid="_x0000_i1026" type="#_x0000_t75" alt="Description: Flag Bangladesh Animated Flag Gif | Bangladesh flag, Flag gif, Bangladesh"
-                 style='width:32pt;height:16.5pt;visibility:visible;mso-wrap-style:square'>
-                 <v:imagedata src="file:///C:/Users/ADNANA~1/AppData/Local/Temp/msohtmlclip1/01/clip_image003.gif"
-                  o:title=" Flag Bangladesh Animated Flag Gif | Bangladesh flag, Flag gif, Bangladesh"/>
-                </v:shape><![endif]-->
-                				<!--[if !vml]-->
-                				<img width="43" height="22" src="https://media.tenor.com/n663MZEi16YAAAAC/flag-waving-flag.gif" alt="Description: Flag Bangladesh Animated Flag Gif | Bangladesh flag, Flag gif, Bangladesh" v:shapes="Picture_x0020_8" class="" style="" data-original-title="" title="" aria-describedby="tooltip361198">
-                					<!--[endif]-->
-                				</p>
-                				<p class="MsoNormal" style="margin: 0; line-height: 1.2;font-size:10.0pt;color:black">
-                					<b>
-                						<span style="margin: 0; line-height: 1.2;font-size:10.0pt;color:black">
-                							<a href="http://www.texfasteners.com/" style="margin: 0; line-height: 1.2;">www.texfasteners.com</a>
-                						</span>
-                					</b>
-                				</p>
-                				<p class="MsoNormal">
-                					<span style="margin: 0; line-height: 1.2;font-size:10.0pt;color:black">Plot 180, 264
-                &amp; 274, Adamjee EPZ, Adamjee Nagar,<o:p/>
-                					</span>
-                				</p>
-                				<p class="MsoNormal">
-                					<span style="margin: 0; line-height: 1.2;font-size:10.0pt;color:black">Siddirgonj,
-                Narayngonj - 1431, Bangladesh.<o:p/>
-                					</span>
-                				</p>
-                				<p class="MsoNormal">
-                					<span style="margin: 0; line-height: 1.2;font-size:10.0pt;color:black">Office: +88 02
-                997744454<o:p/>
-                					</span>
-                				</p>
-                				<p class="MsoNormal">
-                					<span style="margin: 0; line-height: 1.2;font-size: 10pt; color: black; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">Cell:
-                ${(object.employee_id.mobile or '')| safe}<o:p/>
-                					</span>
-                				</p>
-                				<p class="MsoNormal" style="margin: 0; line-height: 1.2;">
-                					<b>
-                						<i>
-                							<span lang="EN-GB" style="margin: 0; line-height: 1.2;font-size:10.0pt;font-family:
-                				Wingdings;color:black;mso-ansi-language:EN-GB">*</span>
-                						</i>
-                					</b>
-                					<b>
-                						<i>
-                							<span lang="EN-GB" style="margin: 0; line-height: 1.2;font-size:10.0pt;color:black;mso-ansi-language:EN-GB">&nbsp;</span>
-                						</i>
-                					</b>
-                					<b>
-                						<span lang="EN-GB" style="margin: 0; line-height: 1.2;font-size:10.0pt;color:black;mso-ansi-language:EN-GB">
-                							<a href="mailto:${(object.employee_id.email or '')| safe}">
-                								<span style="margin: 0; line-height: 1.2;color:black">${(object.employee_id.email or '')| safe}<o:p/></span>
-                							</a>
-                						</span>
-                					</b>
-                				</p>
-                				<br>
-                					<p class="MsoNormal">
-                						<span lang="EN-IN" style="margin: 0; line-height: 1.2;font-size:8.0pt;font-family:&quot;Courier New&quot;;
-                color:black;mso-ansi-language:EN-IN">
-                							<a href="https://youtu.be/iVgAzSbYmDc" style="">
-                								<b>
-                									<span style="margin: 0; line-height: 1.2;font-family: Arial, sans-serif; color: black;">Check Out Our Style Story for 2023-24</span>
-                								</b>
-                							</a>
-                							<o:p/>
-                						</span>
-                					</p>
-                					<p/>
-                					<p/>
-                				</div>        
-                """ 
+
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                 subject = RenderMixin._render_template('Reward and Recognition', 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
@@ -415,7 +294,7 @@ class HrReward(models.Model):
                     mailto = ','.join([email.email for email in matrix.next_user if email])
                 matrix_cc = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
                 if matrix_cc:
-                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email])
+                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email])+','+employee.parent_id.email
                 if matrix or matrix_cc:
                     
                     # raise UserError((self.env['hr.reward.matrix']))
@@ -427,7 +306,7 @@ class HrReward(models.Model):
                         'author_id': self.env.user.partner_id.id,
                         'model': None,
                         'res_id': None,
-                        'subject': 'Raise a new reward for %s' % employee.display_name,
+                        'subject': 'Raise a new R &amp; R for %s' % employee.display_name,
                         'body_html': body,
                         'attachment_ids': attachment,                    
                         'auto_delete': True,
@@ -449,7 +328,7 @@ class HrReward(models.Model):
                         }
                         body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                         mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                    self.env['mail.mail'].sudo().create(mail_values)#.send()
+                    self.env['mail.mail'].sudo().create(mail_values).send()
                 else:
                     raise UserError(('Maybe forget to add Email Matrix like..EMAILTO, EMAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
                 
@@ -462,10 +341,8 @@ class HrReward(models.Model):
             }
         }
         
-        # raise UserError((effect)))
             
     def action_closed(self):
-        # raise UserError(('goodbye'))
         if self.state == 'Submit':
             self.issue_date = fields.Date.today()
             self.state = 'Approved'
@@ -488,24 +365,13 @@ class HrReward(models.Model):
                 }
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                 subject = RenderMixin._render_template('Rewarded', 'hr.reward', reward.ids, post_process=True)[reward.id]
-                # body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
-    
-                # body = """
-                #     <div style="margin:0px;padding: 0px;">
-                #     <p>Dear Concern,</p>
-                #     <p>Your Employee Reward has been closed</p>
-                #     </div>
-                #         """
+
                 body_closed = RenderMixin._render_template(self.closed_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_hero = RenderMixin._render_template(self.hero_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_thanku = RenderMixin._render_template(self.thanku_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_kudos = RenderMixin._render_template(self.kudos_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
-
-
-
-                # Include the base64-encoded image in the HTML body
-                # body_with_image = f"<img src='data:image/png;base64,{base64_encoded_image}'/>"                
+        
                 
                 if self.criteria_id.name == 'HERO':
                     image_data = self.html_to_image(body_hero)
@@ -531,33 +397,28 @@ class HrReward(models.Model):
                     body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_thanku}'/><br/>{body_sig}"            
                     # body = f"{body_thanku}<br/>{body_sig}"
                 # post the message
-                matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
+                matrix = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILFO')], limit=1)
                 if matrix:
-                    mailto = ','.join([email.email for email in matrix.next_user if email])
-                matrix_cc = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', False)], limit=1)
+                    mailfo = ','.join([email.email for email in matrix.next_user if email])
+                matrix_cc = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
                 if matrix_cc:
-                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email]) +','+employee.parent_id.email
+                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email])+','+employee.parent_id.email+','+employee.parent_id.parent_id.email
                 attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
-                email_to_list = []
-                email_to_list.append(self.employee_id.email)
-                email_to_list.append(self.submit_by.email)
-                email_to = ','.join(email_to_list)
                 
                 mail_values = {
                     # 'email_from': self.env.user.email_formatted,
-                    'email_from': self.env.user.email_formatted,
+                    'email_from': mailfo,
                     'author_id': self.env.user.partner_id.id,
                     'model': None,
                     'res_id': None,
-                    'subject': '%s reward has been approved' % employee.display_name,
+                    'subject': 'Congratulations!! %s for Achieving "%s" Card' % (employee.name, self.criteria_id.name),
                     'body_html': body,
                     'attachment_ids': attachment,
                     'auto_delete': True,
-                    'email_to': email_to,
+                    'email_to': self.employee_id.email or self.submit_by.email or '',
                     'email_cc': mailcc or '',
                 
                 }
-                # raise UserError((mail_values['email_to']))
                 try:
                     template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
                 except ValueError:
@@ -569,35 +430,10 @@ class HrReward(models.Model):
                         'company': self.env.company,
                     }
                     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
-
-
-                    # hti = Html2Image()
-                    # css = 'body {background: white;}'
-                    # bodys = hti.screenshot(html_str=self.env['mail.render.mixin']._replace_local_links(body), css_str=css, save_as='output.png')
-                    
+                  
                     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
                 self.env['mail.mail'].sudo().create(mail_values).send()         
-                # try:
-                #     # template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
-                #     template = self.env.ref('hr_reward.mail_notification_hero_template', raise_if_not_found=True)
-                # except ValueError:
-                #     _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
-                # else:
-                #     template_ctx = {
-                #         'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=employee.display_name)),
-                #         'model_description': self.env['ir.model']._get('hr.reward').display_name,
-                #         'company': self.env.company,
-                #         'employee_to_name': employee.name,
-                #         'submit_by_to_name': self.submit_by.name,
-                #         'recipient_users': employee.user_id,
-                #         'note': html2plaintext(self.details) if not is_html_empty(self.details) else '',
-                #         'date': self.issue_date,
-                #         'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
-                #         'image_url': '/hr_reward/static/src/img/logo_tex_tiny.png',
-                #     }
-                #     body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
-                #     mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                # self.env['mail.mail'].sudo().create(mail_values)#.send()
+
       
         return {
             'effect': {
@@ -626,38 +462,30 @@ class HrReward(models.Model):
                 }
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                 subject = RenderMixin._render_template('Refused', 'hr.reward', reward.ids, post_process=True)[reward.id]
-                # body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
-    
-                # body = """
-                #     <div style="margin:0px;padding: 0px;">
-                #     <p>Dear Concern,</p>
-                #     <p>Your Employee Reward has been closed</p>
-                #     </div>
-                #         """
                 body_closed = RenderMixin._render_template(self.refused_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
                 
                 body = f"{body_closed}<br/>{body_sig}"
                 # post the message
-                matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
+                matrix = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILFO')], limit=1)
                 if matrix:
-                    mailto = ','.join([email.email for email in matrix.next_user if email])
-                matrix_cc = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', False)], limit=1)
+                    mailfo = ','.join([email.email for email in matrix.next_user if email])
+                matrix_cc = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
                 if matrix_cc:
-                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email]) +','+employee.parent_id.email
+                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email])+','+employee.parent_id.email
                 attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
                     
                 mail_values = {
                     # 'email_from': self.env.user.email_formatted,
-                    'email_from': self.env.user.email_formatted,
+                    'email_from': mailfo,
                     'author_id': self.env.user.partner_id.id,
                     'model': None,
                     'res_id': None,
-                    'subject': '%s reward has been refused' % employee.display_name,
+                    'subject': '%s R &amp; R has been refused' % employee.display_name,
                     'body_html': body,
                     'attachment_ids': attachment,
                     'auto_delete': True,
-                    'email_to': self.submit_by.email,
+                    'email_to': self.employee_id.email or self.submit_by.email or '',
                     'email_cc': mailcc or ''
                 
                 }
@@ -719,5 +547,3 @@ class HrEmployee(models.Model):
 		Reward = self.env['hr.reward']
 		self.reward_count = Reward.search_count([('employee_id','=',self.id)])
 
-
-# gsggu
