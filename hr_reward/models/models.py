@@ -376,23 +376,23 @@ class HrReward(models.Model):
                 if self.criteria_id.name == 'HERO':
                     image_data = self.html_to_image(body_hero)
                     # Save the image data to a file for inspection
-                    with open('/home/odoo/src/user/hr_reward/static/src/img/hero.jpeg', 'wb') as f:
-                        f.write(image_data)
+                    # with open('/home/odoo/src/user/hr_reward/static/src/img/hero.jpeg', 'wb') as f:
+                    #     f.write(image_data)
                     body_hero = base64.b64encode(image_data).decode('utf-8')                    
                     body = f"<img width='590' height='750' src='data:image/jpeg;base64,{body_hero}'/><br/>{body_sig}"
                 elif self.criteria_id.name == 'KUDOS':
                     image_data = self.html_to_image(body_kudos)
                     # Save the image data to a file for inspection
-                    with open('/home/odoo/src/user/hr_reward/static/src/img/kudos.jpeg', 'wb') as f:
-                        f.write(image_data)
+                    # with open('/home/odoo/src/user/hr_reward/static/src/img/kudos.jpeg', 'wb') as f:
+                    #     f.write(image_data)
                     body_kudos = base64.b64encode(image_data).decode('utf-8')                    
                     body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_kudos}'/><br/>{body_sig}"                    
                     # body = f"{body_kudos}<br/>{body_sig}"
                 elif self.criteria_id.name == 'THANK YOU':
                     image_data = self.html_to_image(body_thanku)
                     # Save the image data to a file for inspection
-                    with open('/home/odoo/src/user/hr_reward/static/src/img/thanku.jpeg', 'wb') as f:
-                        f.write(image_data)
+                    # with open('/home/odoo/src/user/hr_reward/static/src/img/thanku.jpeg', 'wb') as f:
+                    #     f.write(image_data)
                     body_thanku = base64.b64encode(image_data).decode('utf-8')                    
                     body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_thanku}'/><br/>{body_sig}"            
                     # body = f"{body_thanku}<br/>{body_sig}"

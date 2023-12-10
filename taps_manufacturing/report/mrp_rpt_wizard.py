@@ -785,9 +785,6 @@ class MrpReportWizard(models.TransientModel):
             month_ = data.get('month_list')
         year = datetime.today().year
         
-        daily_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing')])
-        daily_outputs = daily_outputs.filtered(lambda pr: pr.action_date.month == int(month_) and pr.action_date.year == year)#.sorted(key=lambda pr: pr.sequence)
-        
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         
@@ -798,17 +795,8 @@ class MrpReportWizard(models.TransientModel):
         row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        merge_format = workbook.add_format({'align': 'top'})
-        merge_format_ = workbook.add_format({'align': 'bottom'})
-
-        initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id)])
-
+        all_released = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False)])
+        all_items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
         for day in self.iterate_days(year, int(month_)):
             comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day <= day)
             datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day == day)
@@ -838,85 +826,26 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(8, 8, 15)
             sheet.set_column(9, 9, 15)
             
-            # items = datewise_outputs.mapped('fg_categ_type')
-            # items = list(set(items))
-            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','!=','closed')])
             
-            
-            
-            items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
             
             report_data = []
             closed_ids = 0
-            for item in items:
-                comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
-                itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
-                comu_pcs = sum(comu_outputs.mapped('qty'))
-                pack_pcs = sum(itemwise_outputs.mapped('qty'))
-                # invoiced = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
-                #sum(order.qty * order. for order in itemwise_outputs)
 
-                in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
-                
-                    
+            
+            
+            all_released = all_released.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+            
+            
+            items = all_items.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+            
+            for item in items:
                 full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
                 first_day_of_m = full_date # first day of month
                 full_date = full_date.replace(day = day)
                 
-                all_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
-                
-                comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and pr.date_order.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
-
-                if full_date.date() == in_pr.production_date.date():
-                    comu_pcs = in_pr.production_till_date
-
-                cm_pcs = 0
-                cm_rel = sum(comu_released.mapped('product_uom_qty'))
-                if full_date.date() > in_pr.production_date.date():
-                    comu_day_outputs = comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
-                    # cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
-                    
-                    cm_pcs = sum(comu_day_outputs.mapped('qty'))
-                    comu_pcs = in_pr.production_till_date + cm_pcs
-
-                price = total_qty = comur_value = pending_pcs = 0
-                
-                if comu_released:
-                    comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
-                    total_qty = sum(comu_released.mapped('sale_order_line.product_uom_qty'))
-                    price = round((comur_value / total_qty),4)
-                    pending_pcs = total_qty - comu_pcs
+                # closed_oa
 
                 
-                item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
-                
-                invoiced = round((pack_pcs*price),2)
-                pending_usd = round((pending_pcs*price),2)
-                comu_inv = round((comu_pcs*price),2)
-
-
-                pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
-                
-                pending_ids = 0
-                
-                if pending_oa:
-                    oa_ids = pending_oa.mapped('oa_id')
-                    pending_ids = len(oa_ids)
-                
-                if start_time.date() == full_date.date():
-                    # raise UserError((start_time.date(),full_date.date()))
-                    pending_pcs = sum(item_run_ord.mapped('balance_qty'))
-                    oa_ids = item_run_ord.mapped('oa_id')
-                    pending_ids = len(oa_ids)
-                    # pending_ids = sum(item_run_ord.mapped('balance_qty'))
-                    
-                    vl = round(sum(item_run_ord.mapped('sale_order_line.price_subtotal')),2)
-                    _qty = sum(item_run_ord.mapped('sale_order_line.product_uom_qty'))
-                    if _qty > 0 and pending_pcs > 0:
-                        price = round((vl / _qty),4)
-                        pending_usd = round((pending_pcs*price),2)
-
-                closed_oa = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and  pr.closing_date != False)
                 if closed_oa:
                     closed_oa = closed_oa.filtered(lambda pr: pr.closing_date.date() == full_date.date())
                 
