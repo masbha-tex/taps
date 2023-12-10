@@ -664,16 +664,16 @@ class MrpReportWizard(models.TransientModel):
                     pending_pcs = total_qty - comu_pcs
 
                 
-                running_orders = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
+                item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
                 
                 invoiced = round((pack_pcs*price),2)
                 pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
                 if start_time.date() == full_date.date():
-                    raise UserError((start_time.date(),full_date.date()))
-                    pending_pcs = sum(running_orders.mapped('balance_qty'))
-                    vl = round(sum(running_orders.mapped('sale_order_line.price_subtotal')),2)
-                    _qty = sum(running_orders.mapped('sale_order_line.product_uom_qty'))
+                    # raise UserError((start_time.date(),full_date.date()))
+                    pending_pcs = sum(item_run_ord.mapped('balance_qty'))
+                    vl = round(sum(item_run_ord.mapped('sale_order_line.price_subtotal')),2)
+                    _qty = sum(item_run_ord.mapped('sale_order_line.product_uom_qty'))
                     if _qty > 0 and pending_pcs > 0:
                         price = round((vl / _qty),4)
                         pending_usd = round((pending_pcs*price),2)

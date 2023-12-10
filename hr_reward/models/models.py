@@ -2,8 +2,6 @@
 import subprocess, base64
 import tempfile
 import os
-import imgkit
-from html2image import Html2Image
 from odoo import models, fields, api, _ 
 from odoo.tools import html2plaintext, plaintext2html, is_html_empty, email_normalize
 from odoo.exceptions import ValidationError, UserError
@@ -170,18 +168,20 @@ class HrReward(models.Model):
                     """)
 
     kudos_template = fields.Html('Kudos Template', default=""" 
-                    <div class="card">
-
-        <img src="https://taps.odoo.com/hr_reward/static/src/img/Ku.jpg" alt="Company Logo" style="position: absolute; z-index: 1; width: 100%; top: 0px; left: 0px;"/>
-        <p style="position: absolute; z-index: 2; width: 100%; color: #000000; top: 50px; top: 0px; left: 0px; text-align: center;"> Dear, ${ctx['employee_to_name']}</p>
-        <br/>
-        <p style="position: absolute; z-index: 2; width: 100%; color: #000000; top: 80px; top: 0px; left: 0px; text-align: center;">${ctx['note']}</p>
-        <br/>
-        <br/>
-        <p style="position: absolute; z-index: 2; width: 100%; color: #000000; top: 110px; top: 0px;x left: 0px; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
-        
-
-    </div>
+                    <div class="card" style="position: relative; width: 680px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_reward/static/src/img/Ku.jpg');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
+                       
+                        <p style="font-size: 12px; font-weight: bold; margin-top: 260px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p><br/>
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8"><p style="font-size: 9px; color: #000000; text-align: center;">${ctx['note']}</p></div>
+                            <div class="col-2"></div>
+                        
+                        </div>
+                        <br/>
+                        <p style="font-size: 10px; color: #000000; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
+                        <br/>
+                        <br/>
+                    </div> left: 0px; 
                     """)
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
@@ -503,21 +503,34 @@ class HrReward(models.Model):
                 body_kudos = RenderMixin._render_template(self.kudos_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
 
-                image_data = self.html_to_image(body_hero)
-                # Save the image data to a file for inspection
-                with open('/home/odoo/src/user/hr_reward/hero.jpeg', 'wb') as f:
-                    f.write(image_data)
-                base64_encoded_image = base64.b64encode(image_data).decode('utf-8')
+
 
                 # Include the base64-encoded image in the HTML body
                 # body_with_image = f"<img src='data:image/png;base64,{base64_encoded_image}'/>"                
                 
                 if self.criteria_id.name == 'HERO':
-                    body = f"<img width='590' src='data:image/jpeg;base64,{base64_encoded_image}'/><br/>{body_sig}"
+                    image_data = self.html_to_image(body_hero)
+                    # Save the image data to a file for inspection
+                    with open('/home/odoo/src/user/hr_reward/static/src/img/hero.jpeg', 'wb') as f:
+                        f.write(image_data)
+                    body_hero = base64.b64encode(image_data).decode('utf-8')                    
+                    body = f"<img width='590' height='750' src='data:image/jpeg;base64,{body_hero}'/><br/>{body_sig}"
                 elif self.criteria_id.name == 'KUDOS':
-                    body = f"{body_kudos}<br/>{body_sig}"
+                    image_data = self.html_to_image(body_kudos)
+                    # Save the image data to a file for inspection
+                    with open('/home/odoo/src/user/hr_reward/static/src/img/kudos.jpeg', 'wb') as f:
+                        f.write(image_data)
+                    body_kudos = base64.b64encode(image_data).decode('utf-8')                    
+                    body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_kudos}'/><br/>{body_sig}"                    
+                    # body = f"{body_kudos}<br/>{body_sig}"
                 elif self.criteria_id.name == 'THANK YOU':
-                    body = f"{body_thanku}<br/>{body_sig}"
+                    image_data = self.html_to_image(body_thanku)
+                    # Save the image data to a file for inspection
+                    with open('/home/odoo/src/user/hr_reward/static/src/img/thanku.jpeg', 'wb') as f:
+                        f.write(image_data)
+                    body_thanku = base64.b64encode(image_data).decode('utf-8')                    
+                    body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_thanku}'/><br/>{body_sig}"            
+                    # body = f"{body_thanku}<br/>{body_sig}"
                 # post the message
                 matrix = self.env['hr.reward.matrix'].sudo().search([('company_id', '=', employee.company_id.id)], limit=1)
                 if matrix:
