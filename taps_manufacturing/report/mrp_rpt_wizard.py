@@ -592,8 +592,15 @@ class MrpReportWizard(models.TransientModel):
             comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day <= day)
             datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day == day)
             report_name = day
-
+            
+            full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
+            first_day_of_m = full_date # first day of month
+            full_date = full_date.replace(day = day)
+            
             sheet = workbook.add_worksheet(('%s' % (report_name)))
+            if start_time.date() == full_date.date():
+                sheet.activate()
+                
             sheet.write(0, 0, "PRODUCT", column_style)
             sheet.write(0, 1, "PACKING PCS", column_style)
             sheet.write(0, 2, "INVOICE USD", column_style)
@@ -635,11 +642,6 @@ class MrpReportWizard(models.TransientModel):
                 #sum(order.qty * order. for order in itemwise_outputs)
 
                 in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
-                
-                    
-                full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
-                first_day_of_m = full_date # first day of month
-                full_date = full_date.replace(day = day)
                 
                 all_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
                 
@@ -804,6 +806,9 @@ class MrpReportWizard(models.TransientModel):
             full_date = full_date.replace(day = day)
 
             sheet = workbook.add_worksheet(('%s' % (report_name)))
+
+            if start_time.date() == full_date.date():
+                sheet.activate()
             
             report_data = []
             closed_ids = 0
@@ -815,12 +820,13 @@ class MrpReportWizard(models.TransientModel):
             if datewise_released:
                 # item_list = ','.join([str(i) for i in datewise_released.fg_categ_type])
                 item_list = datewise_released.mapped('fg_categ_type')
-                item_list = [str(i) for i in sorted(item_list.split(','))]
+                # item_list = [str(i) for i in sorted(item_list.split(','))]
                 # raise UserError((item_list))
                 items = all_items.filtered(lambda pr: pr.name in (item_list))
                 items = items.sorted(key=lambda pr: pr.sequence)
                 cl_num = 0
                 for item in items:
+                    # raise UserError(('item_list'))
                     sheet.write(0, cl_num, item.name, column_style)
                     sheet.set_column(cl_num, cl_num, 20)
                     cl_num += 1
