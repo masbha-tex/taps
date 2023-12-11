@@ -577,11 +577,8 @@ class MrpReportWizard(models.TransientModel):
         row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '$#,##0'})
         
-        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         merge_format = workbook.add_format({'align': 'top'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
@@ -737,7 +734,10 @@ class MrpReportWizard(models.TransientModel):
             for line in report_data:
                 col = 0
                 for l in line:
-                    sheet.write(row, col, l, format_label_1)
+                    if col in (2,4,6,7,8):
+                        sheet.write(row, col, l, format_label_2)
+                    else:
+                        sheet.write(row, col, l, format_label_1)
                     col += 1
                 row += 1
 
@@ -842,10 +842,7 @@ class MrpReportWizard(models.TransientModel):
                 
                     row = 1
                     for line in report_data:
-                        col = 0
-                        for l in line:
-                            sheet.write(row, col, l, format_label_1)
-                            col += 1
+                        sheet.write(row, cl_num, line[0], format_label_1)
                         row += 1
 
         workbook.close()

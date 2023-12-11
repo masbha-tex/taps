@@ -183,11 +183,13 @@
         </record>
 
     
-    <menuitem id="sale_ccr_view_menu"
+    <menuitem 
+            id="sale_ccr_view_menu"
             name="CCR"
             parent="sale.sale_menu_root"
             sequence="6"/>
-    <menuitem id="sale_ccr_view_new_menu"
+    <menuitem 
+            id="sale_ccr_view_new_menu"
             name="NEW CCR"
             parent="taps_sale.sale_ccr_view_menu"
             action = "action_sale_ccr"

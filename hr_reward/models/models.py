@@ -126,7 +126,7 @@ class HrReward(models.Model):
                                 <br/>
                             <div class="row">
                             <div class="col-2"></div>
-                            <div class="col-8"><p style="font-size: 15px; color: #000000; text-align: center; margin-left: 40px; margin-right: 40px;">For ${ctx['note']}</p></div>
+                            <div class="col-8"><p style="font-size: 15px; color: #0000CC; text-align: center; margin-left: 40px; margin-right: 40px;"> ${ctx['note']}</p></div>
                             <div class="col-2"></div>
                         
                             </div>
@@ -134,7 +134,7 @@ class HrReward(models.Model):
                                     
                                     <p>Well done, keep it up!</p>
                                     <br/>
-                                    <p>Recommended by - <p style=" font-size: 15px; font-weight: bold;">${ctx['submit_by_to_name']}</p></p>
+                                    <p style="color: #7F7F7F; text-align: center;">Recommended by - <p style="color: #7F7F7F; text-align: center; font-size: 15px; font-weight: bold;"><i>${ctx['submit_by_to_name']}</i></p></p>
                                 </div>
                                 <!--[if !vml]-->
                                 <img width="100" height="100" src="https://taps.odoo.com/hr_reward/static/src/img/3865076.png"  class="" style="max-width: 100px; margin-left: auto; margin-right: auto; position: relative; top: 10px;">
@@ -153,13 +153,13 @@ class HrReward(models.Model):
     thanku_template = fields.Html('Thank you Template', default=""" 
                     <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_reward/static/src/img/th.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
                        
-                        <p style="font-size: 18px; font-weight: bold; margin-top: 205px; color: #000000; text-align: left;  margin-left: 93px;">${ctx['employee_to_name']}</p>
+                        <p style="font-size: 18px; font-weight: bold; margin-top: 205px; color: #000000; text-align: left;  margin-left: 96px;">${ctx['employee_to_name']}</p>
                         <div class="row">
                         <div class="col-7">
-                        <p style="font-size: 15px; color: #000000; text-align: center; margin-left: 30px; margin-right:250px;">${ctx['note']}</p>
+                        <p style="font-size: 15px; color: #0000CC; text-align: center; margin-left: 30px; margin-right:250px;">${ctx['note']}</p>
                         </div>
                         </div>
-                        <p style="font-size: 16px; color: #000000; text-align: left;  margin-left: 70px;">Recommended by - ${ctx['submit_by_to_name']}</p>
+                        <p style="font-size: 16px; color: #7F7F7F; text-align: left;  margin-left: 70px;">Recommended by - <i style="font-size: 16px; color: #7F7F7F; text-align: center;">${ctx['submit_by_to_name']}</i></p>
                         <br/>
                         <br/>
                     </div>
@@ -171,11 +171,11 @@ class HrReward(models.Model):
                         <p style="font-size: 18px; font-weight: bold; margin-top: 260px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p>
                         <div class="row">
                             <div class="col-2"></div>
-                            <div class="col-8"><p style="font-size: 15px; color: #000000; text-align: center; margin-left: 90px; margin-right: 90px;">${ctx['note']}</p></div>
+                            <div class="col-8"><p style="font-size: 15px; color: #0000CC; text-align: center; margin-left: 90px; margin-right: 90px;">${ctx['note']}</p></div>
                             <div class="col-2"></div>
                         
                         </div>
-                        <p style="font-size: 16px; color: #000000; text-align: center;">Recommended by - ${ctx['submit_by_to_name']}</p>
+                        <p style="font-size: 16px; color: #7F7F7F; text-align: center;">Recommended by - <i style="font-size: 16px; color: #7F7F7F; text-align: center;">${ctx['submit_by_to_name']}</i></p>
                         <br/>
                         
                     </div> 
@@ -411,7 +411,7 @@ class HrReward(models.Model):
                     'author_id': self.env.user.partner_id.id,
                     'model': None,
                     'res_id': None,
-                    'subject': 'Congratulations!! %s for Achieving "%s" Card' % (employee.name, self.criteria_id.name),
+                    'subject': 'Congratulations!! %s for achieving recognition of "%s"' % (employee.name, self.criteria_id.name),
                     'body_html': body,
                     'attachment_ids': attachment,
                     'auto_delete': True,

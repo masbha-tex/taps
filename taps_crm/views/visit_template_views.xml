@@ -1,0 +1,223 @@
+<odoo>
+    <record id="crm_visit_template_view_form" model="ir.ui.view">
+            <field name="name">crm.visit.purpose.form</field>
+            <field name="model">crm.visit.purpose</field>
+            <field name="arch" type="xml">
+                <form string="Visit purpose">
+                    <field name="name"/>
+                </form>
+            </field>
+    </record>
+    <record model="ir.actions.act_window" id="crm_visit_purpose_action">
+            <field name="name">Customer Visit Purpose</field>
+            <field name="res_model">crm.visit.purpose</field>
+            <field name="view_mode">tree,kanban,form</field>
+    </record>
+            
+
+    
+    <record id="crm_visit_template_view_form" model="ir.ui.view">
+            <field name="name">crm.visit.form</field>
+            <field name="model">crm.visit</field>
+            <field name="arch" type="xml">
+                <form class="o_lead_opportunity_form">
+                    <header>
+                        <field name="stages" widget="statusbar" statusbar_visible="draft,done"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="text-center alert alert-primary oe_edit_only" role="alert">
+                        <field name="name"/>
+                        </div>
+                        <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="buyer"/>
+                            <field name="concern"/>
+                            <field name="designation"/>
+                            <field name="mobile"/>
+                            
+                        </group>
+                        <group>
+                            <field name="product"/>
+                            <field name="visit_purpose"/>
+                            <field name="visit_outcome"/>
+                            <field name="action"/>
+                        </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="user_id"/>
+                            </group>
+                            <group>
+                                <field name="team_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+    <record id="crm_visit_template_view_list" model="ir.ui.view">
+            <field name="name">crm.visit.list</field>
+            <field name="model">crm.visit</field>
+            <field name="arch" type="xml">
+                <tree class="o_lead_opportunity_form">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="buyer"/>
+                    <field name="concern"/>
+                    <field name="designation"/>
+                    <field name="mobile"/>
+                    <field name="product"/>
+                    <field name="visit_purpose"/>
+                    <field name="visit_outcome"/>
+                    <field name="action"/>
+                    <field name="user_id"/>
+                    <field name="team_id"/>
+                    
+                </tree>
+            </field>
+        </record>
+    <record id="quick_create_visit_form" model="ir.ui.view">
+            <field name="name">crm.visit.form.quick_create</field>
+            <field name="model">crm.visit</field>
+            <field name="priority">1000</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="partner_id" widget="res_partner_many2one"
+                            string='Customer'
+                            />
+                        <field name="buyer"/>
+                        <field name="concern" invisible="1"/>
+                        <field name="designation" invisible="1"/>
+                        <field name="mobile" invisible="1"/>
+                        <field name="product"/>
+                        <field name="visit_purpose"/>
+                        <field name="visit_outcome"/>
+                        <field name="action"/>
+                        <field name="user_id" invisible="1"/>
+                        <field name="team_id" invisible="1"/>
+                        <!-- <field name="email_from" string="Email" /> -->
+                        <!-- <field name="phone" string="Phone" /> -->
+                        <!-- <label for="expected_revenue"/> -->
+                        <!-- <div class="o_row">
+                            <field name="expected_revenue" class="oe_inline mr-5" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                            <field name="priority" class="oe_inline" nolabel="1" widget="priority"/>
+                        </div>
+                        <div class="o_row">
+                            <field name="recurring_revenue" class="oe_inline pr-4" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                            <field name="recurring_plan" class="oe_inline" placeholder="E.g. Monthly"
+                                   attrs="{'required': [('recurring_revenue', '!=', 0)]}" options="{'no_create': True, 'no_open': True}"/>
+                        </div>
+                        <field name="company_currency" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="user_id" invisible="1"/>
+                        <field name="team_id" invisible="1"/>
+                        <field name="type" invisible="1"/>
+                        <field name="partner_name" invisible="1"/>
+                        <field name="contact_name" invisible="1"/>
+                        <field name="country_id" invisible="1"/>
+                        <field name="state_id" invisible="1"/>
+                        <field name="city" invisible="1"/>
+                        <field name="street" invisible="1"/>
+                        <field name="street2" invisible="1"/>
+                        <field name="zip" invisible="1"/>
+                        <field name="mobile" invisible="1"/>
+                        <field name="website" invisible="1"/>
+                        <field name="function" invisible="1"/>
+                        <field name="title" invisible="1"/> -->
+                    </group>
+                </form>
+            </field>
+        </record>
+    <record id="crm_visit_kanban_view" model="ir.ui.view">
+            <field name="name">crm.visit.kanban</field>
+            <field name="model">crm.visit</field>
+            <!-- <field name="priority" eval="1"/> -->
+            <field name="arch" type="xml">
+                <kanban default_group_by="stages" class="o_kanban_small_column" on_create="quick_create" quick_create_view="taps_crm.quick_create_visit_form"
+                    archivable="false" sample="1">
+                    <!-- <field name="stage_id" options='{"group_by_tooltip": {"requirements": "Description"}}'/> -->
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="buyer"/>
+                    <field name="concern"/>
+                    <field name="designation"/>
+                    <field name="mobile"/>
+                    <field name="product"/>
+                    <field name="visit_purpose"/>
+                    <field name="visit_outcome"/>
+                    <field name="action"/>
+                    <field name="user_id"/>
+                    <field name="team_id" />
+                    <!-- <progressbar field="stages"/> -->
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_content oe_kanban_global_click">
+                                <div>
+                                    <strong class="o_kanban_record_title"><span><field name="name"/></span></strong>
+                                </div>
+                                <div>
+                                    <span class="o_kanban_record_subtitle"><field name="partner_id"/></span>
+                                </div>
+                                <div>
+                                  <field name="product"/>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <!-- <field name="priority" widget="priority"/> -->
+                                        <div class="o_kanban_inline_block">
+                                            <field name="action" widget="kanban_activity"/>
+                                        </div>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+    <record model="ir.actions.act_window" id="crm_visit_action">
+            <field name="name">Customer Visit</field>
+            <field name="res_model">crm.visit</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <!-- <field name="domain">['|', ('type','=','lead'), ('type','=',False)]</field> -->
+            <!-- <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/> -->
+            <!-- <field name="context">{
+                    'default_type':'lead',
+                    'search_default_type': 'lead',
+                    'search_default_to_process':1,
+                } -->
+            <!-- </field> -->
+        </record>
+
+
+    <menuitem
+        id="crm_menu_visit"
+        name="VISIT"
+        parent="crm.crm_menu_root"
+        action="taps_crm.crm_visit_action"
+        sequence="-1"/>
+    <menuitem
+        id="menu_crm_config_lead_inherit"
+        name="Customer Visit"
+        parent="crm.crm_menu_config"
+        sequence="50"
+        groups="sales_team.group_sale_manager"/>
+    <menuitem
+        id="crm_menu_visit_purpose"
+        name="Visit Purpose"
+        parent="taps_crm.menu_crm_config_lead_inherit"
+        action="taps_crm.crm_visit_purpose_action"
+        sequence="-1"/>
+    
+</odoo>
