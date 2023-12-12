@@ -45,14 +45,14 @@
                             <field name="concern"/>
                             <field name="designation"/>
                             <field name="mobile"/>
-                            
+                            <field name="visit_date"/>
                         </group>
                         <group>
-                            <field name="product" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="product" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}"/>
                             <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="visit_outcome"/>
                             <field name="action"/>
-                            <field name="visit_date"/>
+                            
                         </group>
                         </group>
                         <group>
@@ -85,12 +85,13 @@
                     <field name="concern"/>
                     <field name="designation"/>
                     <field name="mobile"/>
-                    <field name="product"/>
+                    <field name="product"  widget="many2many_tags" options="{'color_field': 'color'}"/>
                     <field name="visit_purpose"/>
                     <field name="visit_outcome"/>
                     <field name="action"/>
                     <field name="user_id"/>
                     <field name="team_id"/>
+                    <field name="stages" decoration-success="stages == 'done'" decoration-info="stages == 'to draft'" decoration-warning="stages == 'cancel'" widget="badge" optional="show"/>
                     <field name="company_id" invisible="1"/>
                     
                 </tree>

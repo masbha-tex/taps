@@ -38,10 +38,10 @@ class CustomerVisit(models.Model):
     concern = fields.Char(string="Concern")
     designation = fields.Char(string="Designation")
     mobile = fields.Char(string="Mobile")
-    product = fields.Many2one('crm.tag', string="Product")
+    product = fields.Many2many('crm.tag', string="Product")
     visit_purpose = fields.Many2one('crm.visit.purpose',string="Visit Purpose")
-    visit_outcome = fields.Char(string="Visit Outcome")
-    action = fields.Char(string="Action")
+    visit_outcome = fields.Text(string="Visit Outcome")
+    action = fields.Text(string="Action")
     user_id = fields.Many2one('res.users', string='Salesperson', index=True, tracking=True, default=lambda self: self.env.user)
     visit_date = fields.Date(string='Date', tracking=True, default=date.today())
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
@@ -53,6 +53,7 @@ class CustomerVisit(models.Model):
         ('done', 'Done'),
         ('cancel', 'Cancel'),], 
         string='Status', copy=False, index=True, tracking=2, default='draft')
+    color = fields.Integer('Color Index', default=0)
 
 
     @api.model
