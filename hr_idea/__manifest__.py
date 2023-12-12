@@ -13,12 +13,17 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
+        'data/ir_sequence.xml',
         'views/views.xml',
+        'views/idea_email_matrix_views.xml',
+        'views/idea_criteria_views.xml',
+        # 'views/idea_title_views.xml',
         'views/templates.xml',
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+    'qweb': [],      
+    'images': [],    
+    'license': 'AGPL-3',
+    'installable': True,
+    'application': True,
 }

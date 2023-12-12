@@ -22,35 +22,45 @@
             <field name="arch" type="xml">
                 <form class="o_lead_opportunity_form">
                     <header>
-                        <field name="stages" widget="statusbar" statusbar_visible="draft,done"/>
+                        <button name="action_done" string="Visited" type="object" attrs="{'invisible': [('stages', 'not in', ['draft'])]}"/>
+                        <button name="action_set_draft" string="Set To Draft" type="object" attrs="{'invisible': [('stages', 'not in', ['cancel'])]}"/>
+                        <button name="action_cancel" string="Cancel" type="object" ttrs="{'invisible': [('stages', 'in', ['cancel'])]}"/>
+                        <field name="stages" widget="statusbar" statusbar_visible="draft,done,cancel"/>
                     </header>
                     
                     <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <br/>
                         <div class="text-center alert alert-primary oe_edit_only" role="alert">
-                        <field name="name"/>
+                        <field name="description" placeholder="Description ..."/>
                         </div>
                         <group>
                         <group>
-                            <field name="partner_id"/>
-                            <field name="buyer"/>
+                            <field name="partner_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]"/>
                             <field name="concern"/>
                             <field name="designation"/>
                             <field name="mobile"/>
                             
                         </group>
                         <group>
-                            <field name="product"/>
-                            <field name="visit_purpose"/>
+                            <field name="product" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="visit_outcome"/>
                             <field name="action"/>
+                            <field name="visit_date"/>
                         </group>
                         </group>
                         <group>
                             <group>
-                                <field name="user_id"/>
+                                <field name="user_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             </group>
                             <group>
-                                <field name="team_id"/>
+                                <field name="team_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             </group>
                         </group>
                     </sheet>
@@ -68,6 +78,8 @@
             <field name="arch" type="xml">
                 <tree class="o_lead_opportunity_form">
                     <field name="name"/>
+                    <field name="description"/>
+                    <field name="visit_date"/>
                     <field name="partner_id"/>
                     <field name="buyer"/>
                     <field name="concern"/>
@@ -79,6 +91,7 @@
                     <field name="action"/>
                     <field name="user_id"/>
                     <field name="team_id"/>
+                    <field name="company_id" invisible="1"/>
                     
                 </tree>
             </field>
@@ -92,17 +105,17 @@
                     <group>
                         <field name="partner_id" widget="res_partner_many2one"
                             string='Customer'
-                            />
-                        <field name="buyer"/>
+                             options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
+                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]"/>
                         <field name="concern" invisible="1"/>
                         <field name="designation" invisible="1"/>
                         <field name="mobile" invisible="1"/>
-                        <field name="product"/>
-                        <field name="visit_purpose"/>
+                        <field name="product" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="visit_outcome"/>
                         <field name="action"/>
-                        <field name="user_id" invisible="1"/>
-                        <field name="team_id" invisible="1"/>
+                        <field name="user_id" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="team_id" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <!-- <field name="email_from" string="Email" /> -->
                         <!-- <field name="phone" string="Phone" /> -->
                         <!-- <label for="expected_revenue"/> -->
@@ -143,7 +156,7 @@
             <field name="arch" type="xml">
                 <kanban default_group_by="stages" class="o_kanban_small_column" on_create="quick_create" quick_create_view="taps_crm.quick_create_visit_form"
                     archivable="false" sample="1">
-                    <!-- <field name="stage_id" options='{"group_by_tooltip": {"requirements": "Description"}}'/> -->
+                    <!-- <field name="stages" options='{"group_by_tooltip": {"requirements": "stages"}}'/> -->
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="buyer"/>

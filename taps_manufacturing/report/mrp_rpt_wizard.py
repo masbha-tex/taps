@@ -829,14 +829,15 @@ class MrpReportWizard(models.TransientModel):
                     # raise UserError(('item_list'))
                     sheet.write(0, cl_num, item.name, column_style)
                     sheet.set_column(cl_num, cl_num, 20)
-                    cl_num += 1
                     
                     closed_oa = datewise_released.filtered(lambda pr: pr.fg_categ_type == item.name)
                     if closed_oa:
                         order_data = []
-                        for oa in closed_oa:
+                        closed_oa = closed_oa.mapped('oa_id')
+                        sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
+                        for oa in sale_orders:
                             order_data = [
-                                oa.oa_id.name,
+                                oa.name,
                                 ]
                             report_data.append(order_data)
                 
@@ -844,6 +845,8 @@ class MrpReportWizard(models.TransientModel):
                     for line in report_data:
                         sheet.write(row, cl_num, line[0], format_label_1)
                         row += 1
+                    
+                    cl_num += 1
 
         workbook.close()
         output.seek(0)

@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_idea_hr_idea,hr_idea.hr_idea,model_hr_idea_hr_idea,base.group_user,1,1,1,1
+access_hr_idea,hr_idea,model_hr_idea,base.group_user,1,1,1,1
+access_hr_idea_matrix,hr_idea_matrix,model_hr_idea_matrix,base.group_user,1,1,1,1 
+access_idea_title,idea_title,model_idea_title,base.group_user,1,1,1,1 
+access_idea_criteria,idea_criteria,model_idea_criteria,base.group_user,1,1,1,1 

@@ -15,7 +15,7 @@ class HrIdea(models.Model):
     employee_id = fields.Many2one('hr.employee', "Submit By", tracking=True, required=True)
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
-    # submit_by = fields.Many2one('hr.employee',"Recommended By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
+    submit_by = fields.Many2one('hr.employee',"Recommended By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
     issue_date = fields.Date('Issue date', readonly=True) #default=fields.Date.today()
     state = fields.Selection([
             ('draft', 'Draft'),
@@ -26,18 +26,6 @@ class HrIdea(models.Model):
     # title_ids = fields.Many2one('idea.title', string='Scope', tracking=True, required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")    
     details = fields.Char('Idea', size=300, tracking=True)
     # details = fields.Html('Reward For', tracking=True)
-
-    # @api.model
-    # def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-    #     if not args:
-    #         args = []
-    #     if name:
-    #         course_ids = self._search([('name', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
-    #         if not course_ids:
-    #             course_ids = self._search([('title_ids', operator, name)] + args, limit=limit, access_rights_uid=name_get_uid)
-    #     else:
-    #         course_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
-    #     return course_ids #models.lazy_name_get(self.browse(course_ids).with_user(name_get_uid))
 
     submit_template = fields.Html('Submit Template', default="""
                     <div style="margin:0px;padding: 0px;">
@@ -58,7 +46,7 @@ class HrIdea(models.Model):
                     <div style="margin:0px;padding: 0px;">
                     <span>Dear Concern,</span>
                     <br>
-                    <span>Your Employee Idea has been Approved</span>
+                    <span>Your Idea has been Approved</span>
                     <br>
                     <br>
                     
@@ -281,7 +269,7 @@ class HrIdea(models.Model):
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                 subject = RenderMixin._render_template('Rewarded', 'hr.idea', idea.ids, post_process=True)[idea.id]
 
-                body_closed = RenderMixin._render_template(self.closed_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                # body_closed = RenderMixin._render_template(self.closed_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
                 body_kudos = RenderMixin._render_template(self.kudos_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
         

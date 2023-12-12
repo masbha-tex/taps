@@ -39,12 +39,12 @@
                         </group>
                         <group>
                             <!-- <field name="r_type" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
-                            <!-- <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
+                            <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="issue_date" attrs="{'invisible': [('state', '!=', 'Approved')]}"/>
                         </group>                       
                     </group>
                     <group colspan="2" col="2">
-                        <field name="details" placeholder="Details of Misconduct..." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="details" placeholder="Share your idea....." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                     </group>                    
                 </sheet>
                 <div class="oe_chatter">
@@ -103,12 +103,12 @@
 
 
     <record model="ir.actions.act_window" id="action_hr_idea">
-        <field name="name">idea</field>
+        <field name="name">Idea Box</field>
         <field name="res_model">hr.idea</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-	<menuitem name="R &amp; R" parent="hr.menu_hr_root" id="menu_hr_idea" sequence="5" action="action_hr_idea"/>
+	<menuitem name="Idea Box" parent="hr.menu_hr_root" id="menu_hr_idea" sequence="5" action="action_hr_idea"/>
 
 <!-- Add Complaint Count to Employee Form-->
      <record id="act_hr_employee_2_hr_idea" model="ir.actions.act_window">
