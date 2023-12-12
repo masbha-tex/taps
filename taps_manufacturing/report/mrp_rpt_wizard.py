@@ -713,16 +713,47 @@ class MrpReportWizard(models.TransientModel):
                     # comur_value = in_pr.released_till_date + cmr_val
                 
                 order_data = []
+                
+                invoiced = round(invoiced,0),
+                pending_usd = round(pending_usd,0),
+                comu_inv = round(comu_inv,0),
+                tr_value = round(tr_value,0),
+                comur_value = round(comur_value,0),
+                
+                if start_time.date() < full_date.date():
+                    invoiced = pending_usd = comu_inv = tr_value = comur_value = pack_pcs = pending_pcs = comu_pcs = pending_ids = ''
+
+                else:
+                    if pack_pcs == 0:
+                        pack_pcs = ''
+                    if pending_pcs == 0:
+                        pending_pcs,
+                    if comu_pcs == 0:
+                        comu_pcs = ''
+                    if pending_ids == 0:
+                        pending_ids = ''
+    
+                    if invoiced == 0:
+                        invoiced = ''
+                    if pending_usd == 0:
+                        pending_usd,
+                    if comu_inv == 0:
+                        comu_inv = ''
+                    if tr_value == 0:
+                        tr_value = ''    
+                    if comur_value == 0:
+                        comur_value = ''            
+                
                 order_data = [
                     item.name,
                     pack_pcs,
-                    round(invoiced,0),
+                    invoiced,
                     pending_pcs,
-                    round(pending_usd,0),
+                    pending_usd,
                     comu_pcs,
-                    round(comu_inv,0),
-                    round(tr_value,0),
-                    round(comur_value,0),
+                    comu_inv,
+                    tr_value,
+                    comur_value,
                     pending_ids,
                     ]
                 report_data.append(order_data)
@@ -825,6 +856,7 @@ class MrpReportWizard(models.TransientModel):
                 cl_num = 0
                 for item in items:
                     # raise UserError(('item_list'))
+                    report_data = []
                     sheet.write(0, cl_num, item.name, column_style)
                     sheet.set_column(cl_num, cl_num, 20)
                     

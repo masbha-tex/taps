@@ -104,13 +104,14 @@
             <field name="arch" type="xml">
                 <form>
                     <group>
+                        <field name="description" />
                         <field name="partner_id" widget="res_partner_many2one"
                             string='Customer'
                              options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
                         <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]"/>
-                        <field name="concern" invisible="1"/>
-                        <field name="designation" invisible="1"/>
-                        <field name="mobile" invisible="1"/>
+                        <field name="concern" />
+                        <field name="designation" />
+                        <field name="mobile" />
                         <field name="product" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="visit_outcome"/>
@@ -204,7 +205,7 @@
             <field name="name">crm.visit.graph.view</field>
             <field name="model">crm.visit</field>
             <field name="arch" type="xml">
-                <graph string="Customer Visit" sample="1">
+                <graph string="Customer Visit" sample="1" type="bar">
                     <field name="team_id" type="row"/>
                     <field name="visit_date" interval="month" type="row"/>
                     <field name="color" invisible="1"/>

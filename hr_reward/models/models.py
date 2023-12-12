@@ -287,7 +287,7 @@ class HrReward(models.Model):
                 body_submit = RenderMixin._render_template(self.submit_template, 'hr.reward', reward.ids, post_process=True)[reward.id]
                 # body_sig = RenderMixin._render_template(sig, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
-                body = f"{body}<br/>{body_submit}<br/>{body_sig}"
+                body = f"{body}<br/>{body_submit}"
                 # post the message
                 matrix = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILTO')], limit=1)
                 if matrix:
@@ -379,14 +379,14 @@ class HrReward(models.Model):
                     # with open('/home/odoo/src/user/hr_reward/static/src/img/hero.jpeg', 'wb') as f:
                     #     f.write(image_data)
                     body_hero = base64.b64encode(image_data).decode('utf-8')                    
-                    body = f"<img width='590' height='750' src='data:image/jpeg;base64,{body_hero}'/><br/>{body_sig}"
+                    body = f"<img width='590' height='750' src='data:image/jpeg;base64,{body_hero}'/>"
                 elif self.criteria_id.name == 'KUDOS':
                     image_data = self.html_to_image(body_kudos)
                     # Save the image data to a file for inspection
                     # with open('/home/odoo/src/user/hr_reward/static/src/img/kudos.jpeg', 'wb') as f:
                     #     f.write(image_data)
                     body_kudos = base64.b64encode(image_data).decode('utf-8')                    
-                    body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_kudos}'/><br/>{body_sig}"                    
+                    body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_kudos}'/>"                    
                     # body = f"{body_kudos}<br/>{body_sig}"
                 elif self.criteria_id.name == 'THANK YOU':
                     image_data = self.html_to_image(body_thanku)
@@ -394,7 +394,7 @@ class HrReward(models.Model):
                     # with open('/home/odoo/src/user/hr_reward/static/src/img/thanku.jpeg', 'wb') as f:
                     #     f.write(image_data)
                     body_thanku = base64.b64encode(image_data).decode('utf-8')                    
-                    body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_thanku}'/><br/>{body_sig}"            
+                    body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_thanku}'/>"            
                     # body = f"{body_thanku}<br/>{body_sig}"
                 # post the message
                 matrix = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILFO')], limit=1)

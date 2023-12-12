@@ -135,20 +135,34 @@ class SaleOrder(models.Model):
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     
     
-    # def action_confirmation_wizard(self):
-    #     view = self.env.ref('taps_sale.view_oa_update_confirmation')
+    def action_confirmation_wizard(self):
+        view = self.env.ref('taps_sale.view_oa_update_confirmation')
+        return {
+            'name': _('Confirm?'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'oa.update.confirmation',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': 'new',
+            'context': {'default_id': self.id},#dict(self.env.context, default_id = self.id),
+        }
+
+    # def _action_generate_backorder_wizard(self, show_transfers=False):
+    #     view = self.env.ref('stock.view_backorder_confirmation')
     #     return {
-    #         'name': _('Confirm?'),
+    #         'name': _('Create Backorder?'),
     #         'type': 'ir.actions.act_window',
     #         'view_mode': 'form',
-    #         'res_model': 'oa.update.confirmation',
+    #         'res_model': 'stock.backorder.confirmation',
     #         'views': [(view.id, 'form')],
     #         'view_id': view.id,
     #         'target': 'new',
-    #         'context': {'default_id': self.id},#dict(self.env.context, default_id = self.id),
-    #     }
+    #         'context': dict(self.env.context, default_show_transfers=show_transfers, default_pick_ids=[(4, p.id) for p in self]),
+    #     }    
 
     def write(self, values):
+        # return pickings_to_backorder.action_confirmation_wizard(show_transfers=self._should_show_transfers())
         if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
             # if values.get('is_hold'):
             operation = self.env['operation.details'].search([('oa_id','=', self.id)])

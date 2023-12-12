@@ -577,6 +577,8 @@
 				<t t-set="grand_total_value5" t-value="0.0"/>
 				<t t-set="grand_total_qty6" t-value="0.0"/>
 				<t t-set="grand_total_value6" t-value="0.0"/>
+                <t t-set="grand_total_qothers" t-value="0.0"/>
+                <t t-set="grand_total_vothers" t-value="0.0"/>
 				
 				<t t-set="dhaka_total_qty" t-value="0.0"/>
 				<t t-set="chattogram_total_qty" t-value="0.0"/>
@@ -585,7 +587,7 @@
 				<t t-set="chattogram_total_value" t-value="0.0"/>
 				<t t-set="overseas_total_value" t-value="0.0"/>
 				<p style="font-size:16px">
-          Metal Trims Order Release of  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> in details is given below:</p>
+          Daily Order Release of  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/> in details is given below:</p>
 				<br/>
     			<br/>
 			  
@@ -615,7 +617,7 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="'ALLOY' in line.product_template_id.name"> 
@@ -715,7 +717,7 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="('SHANK' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
@@ -815,7 +817,7 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="('SNAP' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
@@ -914,7 +916,7 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="('RIVET' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
@@ -1013,7 +1015,7 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="('EYELET' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
@@ -1087,7 +1089,105 @@
 					</tbody>
 				</table>
 			  <br/>
-			  
+                <table class=" table table-sm  o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: avoid ! important;">
+					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
+						<strong>OTHERS</strong>
+					</caption>
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th style="border: 1px solid white" colspan="2">Sales Person</th>
+							<th style="border: 1px solid white">Date</th>
+							<th style="border: 1px solid white" colspan="2">Customer</th>
+							<th style="border: 1px solid white">Buyer</th>
+							<th style="border: 1px solid white">SL</th>
+							<th style="border: 1px solid white" colspan="2">Product</th>
+							<th style="border: 1px solid white">Finish</th>
+							<th style="border: 1px solid white">PI No</th>
+							<th style="border: 1px solid white">OA No</th>
+							<th style="border: 1px solid white">Size(mm)</th>
+							<th style="border: 1px solid white">Qty(Gross)</th>
+							<th style="border: 1px solid white">Value($)</th>
+							<th style="border: 1px solid white">Avg_Price($)/Gross</th>
+							<th style="border: 1px solid white">P_Terms</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="sl" t-value="0"/>
+						<t t-foreach="env['sale.order'].search([('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+							<t t-set="sl" t-value="sl+1"/>
+							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
+							 <t t-if="('ALLOY' not in line.product_template_id.name) and ('SHANK' not in line.product_template_id.name) and ('SNAP' not in line.product_template_id.name) and ('RIVET' not in line.product_template_id.name) and ('EYELET' not in line.product_template_id.name)"> 
+								<tr style="border: 1px solid black">
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.sale_representative.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
+									</td>
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="order.partner_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.buyer_name.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										
+										<t t-esc="sl"/>
+									</td>
+									<td colspan="2" style="border: 1px solid black">
+										<t t-esc="line.product_template_id.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="line.finish"/>
+									</td>
+									
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.pi_number"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.name"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="line.sizemm"/>
+											
+										
+									
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="line.product_uom_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_qothers" t-value="grand_total_qothers+line.product_uom_qty"/>
+										
+										
+										
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+										<t t-set="grand_total_vothers" t-value="grand_total_vothers+line.price_subtotal"/>
+										
+										
+										
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.avg_price" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order.order_ref.payment_term_id.name"/>
+									</td>
+									
+								</tr>
+								</t>
+						  </t>
+						</t>
+						<tr style="border: 1px solid black">
+						  <td class="text-right" style="border: 1px solid black;" colspan="13">TOTAL</td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_qothers" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black"><t t-esc="grand_total_vothers" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+						  <td style="border: 1px solid black" colspan="2"/>
+						</tr>
+					</tbody>
+				</table>
+			  <br/>
 			  <table class=" table table-sm  o_main_table p-0 m-0" style="font-size:10px;table-layout: fixed ! important;page-break-inside: avoid ! important;">
 					<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
 						<strong>REVISED OA</strong>
@@ -1113,7 +1213,7 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', True),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('is_revised', '=', True),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 
@@ -1255,8 +1355,19 @@
 								</td>
 								
 							</tr>
-							<tr>
+                            <tr>
 								<td style="border: 1px solid black" class="font-weight-bold">6</td>
+								<td style="border: 1px solid black" class="font-weight-bold">OTHERS</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_qothers" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+								</td>
+								<td style="border: 1px solid black" class="text-right font-weight-bold">
+									<t t-esc="grand_total_vothers" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+								</td>
+								
+							</tr>
+							<tr>
+								<td style="border: 1px solid black" class="font-weight-bold">7</td>
 								<td style="border: 1px solid black" class="font-weight-bold">REVISED OA</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
 									<t t-esc="grand_total_qty6" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
@@ -1270,10 +1381,10 @@
 								<td style="border: 1px solid black" colspan="2" class="text-center font-weight-bold">GRAND TOTAL</td>
 								
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_qty1+grand_total_qty2+grand_total_qty3+grand_total_qty4+grand_total_qty5+grand_total_qty6" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									<t t-esc="grand_total_qty1+grand_total_qty2+grand_total_qty3+grand_total_qty4+grand_total_qty5+grand_total_qty6+grand_total_qothers" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								<td style="border: 1px solid black" class="text-right font-weight-bold">
-									<t t-esc="grand_total_value1+grand_total_value2+grand_total_value3+grand_total_value4+grand_total_value5+grand_total_value6" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+									<t t-esc="grand_total_value1+grand_total_value2+grand_total_value3+grand_total_value4+grand_total_value5+grand_total_value6+grand_total_vothers" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 								</td>
 								
 							</tr>
