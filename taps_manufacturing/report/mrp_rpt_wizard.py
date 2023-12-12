@@ -622,9 +622,7 @@ class MrpReportWizard(models.TransientModel):
             
             # items = datewise_outputs.mapped('fg_categ_type')
             # items = list(set(items))
-            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','!=','closed')])
-            
-            
+            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel'))])
             
             items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
             

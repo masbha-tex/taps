@@ -58,7 +58,7 @@
 				</xpath>
 				<xpath expr="//field[@name='validity_date']" position="before">
 					<label for="is_revised" invisible='1'/>
-					<div name="reminder" class="o_row" title="Need to revise this Sale Order?" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}">
+					<div name="reminder" class="o_row" title="Need to revise this Sale Order?" attrs="{'invisible': ['|',['sales_type','=',False],['sales_type','=','oldsa']]}">
 						<field name="is_revised"/>
 						<span>Revision</span>
 						<div class="o_row oe_inline" attrs="{'invisible': [('is_revised', '=', False)]}">
@@ -84,12 +84,12 @@
 					<field name="pi_date" attrs="{'invisible': [['company_id','=', 3],'|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="revised_date" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
                     <field name="brand" attrs="{'invisible': ['|','|','|','|',['sales_type','=','oa'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','sa'],['company_id','in', (1,2)]]}"/>
-                    <field name="usage" attrs="{'invisible': ['|','|',['sales_type','=','sale'],['sales_type','=','oa'],['sales_type','=',False]]}"/>
-                    <field name="supply_chain" attrs="{'invisible': ['|',['sales_type','=','oa'],['sales_type','=',False]]}"/>
-                    <field name="priority" attrs="{'invisible': [['sales_type','=','sale']]}"/>
-                    <field name="washing_type" attrs="{'invisible': [['sales_type','=','sale']]}"/>
-                    <field name="bcd_part_finish" attrs="{'invisible': [['sales_type','=','sale']]}"/>
-                    <field name="metal_detection" attrs="{'invisible': [['sales_type','=','sale']]}"/>
+                    <field name="usage" attrs="{'invisible': ['|','|','|',['sales_type','=','sale'],['sales_type','=','oa'],['sales_type','=',False],['company_id','in', (1,2,4)]]}"/>
+                    <field name="supply_chain" attrs="{'invisible': ['|','|',['sales_type','=','oa'],['sales_type','=',False],['company_id','in', (1,2,4)]]}"/>
+                    <field name="priority" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2,4)]]}"/>
+                    <field name="washing_type" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2,4)]]}"/>
+                    <field name="bcd_part_finish" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2,4)]]}"/>
+                    <field name="metal_detection" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2,4)]]}"/>
 				</xpath>
 				<xpath expr="//field[@name='validity_date']" position="attributes">
 					<attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']], 'readonly': [['state','not in',['draft','sent']]]}</attribute>

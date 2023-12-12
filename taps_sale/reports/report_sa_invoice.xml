@@ -40,6 +40,10 @@
 							<h2 class="mt15" style="font-size: 16px">
 								<span style="color: Black">SA # TZBD- <t t-esc="o.name"/>
 								</span>
+                                <t t-if="o.is_revised == True">
+										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
+										</span>
+									</t>
 							</h2>
 						</div>
 						<br/>
