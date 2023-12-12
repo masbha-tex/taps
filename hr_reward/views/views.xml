@@ -41,7 +41,8 @@
                         <group>
                             <!-- <field name="r_type" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
                             <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                            <field name="issue_date" attrs="{'invisible': [('state', '!=', 'Approved')]}"/>
+                            <field name="issue_date" attrs="{}"/>
+                            <!-- {'invisible': [('state', '!=', 'Approved')]} -->
                         </group>                       
                     </group>
                     <group colspan="2" col="2">

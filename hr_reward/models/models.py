@@ -16,7 +16,7 @@ class HrReward(models.Model):
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
     submit_by = fields.Many2one('hr.employee',"Recommended By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
-    issue_date = fields.Date('Issue date', readonly=True) #default=fields.Date.today()
+    issue_date = fields.Date('Issue date') #default=fields.Date.today(), readonly=True
     state = fields.Selection([
             ('draft', 'Draft'),
             ('Submit', 'Submit'),

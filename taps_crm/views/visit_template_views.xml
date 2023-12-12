@@ -200,10 +200,27 @@
                 </kanban>
             </field>
         </record>
+    <record id="crm_customer_visit_view_graph" model="ir.ui.view">
+            <field name="name">crm.visit.graph.view</field>
+            <field name="model">crm.visit</field>
+            <field name="arch" type="xml">
+                <graph string="Customer Visit" sample="1">
+                    <field name="team_id" type="row"/>
+                    <field name="visit_date" interval="month" type="row"/>
+                    <field name="color" invisible="1"/>
+                </graph>
+            </field>
+        </record>
+    <record id="crm_customer_visit_action_dashboard_graph" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="taps_crm.crm_customer_visit_view_graph"/>
+            <!-- <field name="act_window_id" ref="crm_enterprise.crm_opportunity_action_dashboard"/> -->
+    </record>
     <record model="ir.actions.act_window" id="crm_visit_action">
             <field name="name">Customer Visit</field>
             <field name="res_model">crm.visit</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <!-- <field name="domain">['|', ('type','=','lead'), ('type','=',False)]</field> -->
             <!-- <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/> -->
             <!-- <field name="context">{

@@ -20,7 +20,7 @@ class MrpReportWizard(models.TransientModel):
     
     # is_company = fields.Boolean(readonly=False, default=False)
     
-    report_type = fields.Selection([('pir', 'PI Report'),('pis', 'PI Summary'),('dpr', 'Daily Production Report'),('dpcl', 'Daily Production Closed')], string='Report Type', required=True, help='Report Type', default='pir')
+    report_type = fields.Selection([('pir', 'PI Report'),('pis', 'PI Summary'),('dpr', 'Daily Production Report'),('dppr', 'Packing Production Report'),('dpcl', 'Daily Production Closed')], string='Report Type', required=True, help='Report Type', default='pir')
     
     date_from = fields.Date('Date from', readonly=False)
     date_to = fields.Date('Date to', readonly=False)
@@ -831,7 +831,7 @@ class MrpReportWizard(models.TransientModel):
                     closed_oa = datewise_released.filtered(lambda pr: pr.fg_categ_type == item.name)
                     if closed_oa:
                         order_data = []
-                        closed_oa = closed_oa.mapped('oa_id')
+                        # closed_oa = closed_oa.mapped('oa_id')
                         sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
                         for oa in sale_orders:
                             order_data = [
