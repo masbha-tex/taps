@@ -640,7 +640,7 @@ class MrpReportWizard(models.TransientModel):
 
                 in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
                 
-                all_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name)])
+                all_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name),('state','!=','cancel')])
                 
                 comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and pr.date_order.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
 
