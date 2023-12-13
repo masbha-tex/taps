@@ -673,6 +673,12 @@ class MrpReportWizard(models.TransientModel):
 
                 pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or pr.closing_date.date() > full_date.date())))
 
+
+                query = """select count(distinct a.oa_id) from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id where date(s.date_order) <= %s and (a.closing_date is null or date(a.closing_date) > %s and a.fg_categ_type = %s;"""
+                
+                get = self._cr.execute(query, (full_date.date(),full_date.date(),item.name))
+
+                
                 # pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) ) ))
                 
                 pending_ids = 0

@@ -49,10 +49,10 @@ class CustomerVisit(models.Model):
         'crm.team', string='Sales Team', index=True, tracking=True,
         compute='_compute_team_id', readonly=False, store=True)
     stages = fields.Selection([
-        ('draft', 'Draft'),
-        ('done', 'Done'),
-        ('cancel', 'Cancel'),], 
-        string='Status', copy=False, index=True, tracking=2, default='draft')
+        ('1_draft', 'Draft'),
+        ('2_done', 'Done'),
+        ('9_cancel', 'Cancel'),], 
+        string='Status', copy=False, index=True, tracking=2, default='1_draft')
     color = fields.Integer('Color Index', default=0)
 
 
@@ -85,9 +85,9 @@ class CustomerVisit(models.Model):
 
 
     def action_done(self):
-        self.write({'stages': 'done'})
+        self.write({'stages': '2_done'})
 
     def action_cancel(self):
-        self.write({'stages': 'cancel'})
+        self.write({'stages': '9_cancel'})
     def action_set_draft(self):
-        self.write({'stages': 'draft'})
+        self.write({'stages': '1_draft'})

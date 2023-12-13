@@ -17,16 +17,14 @@ class HrIdea(models.Model):
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
     image_128 = fields.Image(related='employee_id.image_128', related_sudo=False)
     image_1920 = fields.Image(related='employee_id.image_1920', related_sudo=False)
-    # submit_by = fields.Many2one('hr.employee',"Recommended By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
     issue_date = fields.Date('Issue date', readonly=True) #default=fields.Date.today()
     state = fields.Selection([
             ('draft', 'Draft'),
             ('Submit', 'Submit'),
             ('Validate', 'Validate'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
-    criteria_id = fields.Many2one('idea.criteria', required=True, tracking=True, string='Scope')
-    # title_ids = fields.Many2one('idea.title', string='Scope', tracking=True, required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")    
-    details = fields.Char('Idea', size=300, tracking=True)
+    criteria_id = fields.Many2one('idea.criteria', required=True, tracking=True, string='Scope')    
+    details = fields.Char('Idea', size=200, tracking=True)
     # details = fields.Html('Reward For', tracking=True)
     priority = fields.Selection([
             ('1', 'Very Low'),

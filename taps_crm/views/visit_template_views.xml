@@ -22,10 +22,10 @@
             <field name="arch" type="xml">
                 <form class="o_lead_opportunity_form">
                     <header>
-                        <button name="action_done" string="Visited" type="object" attrs="{'invisible': [('stages', 'not in', ['draft'])]}"/>
-                        <button name="action_set_draft" string="Set To Draft" type="object" attrs="{'invisible': [('stages', 'not in', ['cancel'])]}"/>
-                        <button name="action_cancel" string="Cancel" type="object" ttrs="{'invisible': [('stages', 'in', ['cancel'])]}"/>
-                        <field name="stages" widget="statusbar" statusbar_visible="draft,done,cancel"/>
+                        <button name="action_done" string="Visited" type="object" attrs="{'invisible': [('stages', 'not in', ['1_draft'])]}"/>
+                        <button name="action_set_draft" string="Set To Draft" type="object" attrs="{'invisible': [('stages', 'not in', ['9_cancel'])]}"/>
+                        <button name="action_cancel" string="Cancel" type="object" ttrs="{'invisible': [('stages', 'in', ['9_cancel'])]}"/>
+                        <field name="stages" widget="statusbar" statusbar_visible="1_draft,2_done,9_cancel"/>
                     </header>
                     
                     <sheet>
@@ -36,31 +36,31 @@
                         </div>
                         <br/>
                         <div class="text-center alert alert-primary oe_edit_only" role="alert">
-                        <field name="description" placeholder="Description ..."/>
+                        <field name="description" placeholder="Description ..." attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                         </div>
                         <group>
                         <group>
-                            <field name="partner_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
-                            <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
-                            <field name="concern" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
-                            <field name="designation" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
-                            <field name="mobile" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
-                            <field name="visit_date" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="partner_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                            <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'readonly': [['stages', 'in', ('2_done','(9_cancel')]]}"/>
+                            <field name="concern" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                            <field name="designation" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                            <field name="mobile" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                            <field name="visit_date" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                         </group>
                         <group>
-                            <field name="product" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
-                            <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
-                            <field name="visit_outcome" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
-                            <field name="action" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="product" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                            <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                            <field name="visit_outcome" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                            <field name="action" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             
                         </group>
                         </group>
                         <group>
                             <group>
-                                <field name="user_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                                <field name="user_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             </group>
                             <group>
-                                <field name="team_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                                <field name="team_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             </group>
                         </group>
                     </sheet>
@@ -91,7 +91,7 @@
                     <field name="action"/>
                     <field name="user_id"/>
                     <field name="team_id"/>
-                    <field name="stages" decoration-success="stages == 'done'" decoration-info="stages == 'to draft'" decoration-warning="stages == 'cancel'" widget="badge" optional="show"/>
+                    <field name="stages" decoration-success="stages == '2_done'" decoration-info="stages == '1_draft'" decoration-warning="stages == '9_cancel'" widget="badge" optional="show"/>
                     <field name="company_id" invisible="1"/>
                     
                 </tree>
@@ -112,7 +112,7 @@
                         <field name="concern" />
                         <field name="designation" />
                         <field name="mobile" />
-                        <field name="product" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="product" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}" widget="many2many_tags"/>
                         <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="visit_outcome"/>
                         <field name="action"/>
