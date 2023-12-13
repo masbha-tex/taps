@@ -64,7 +64,7 @@
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",
              "static/src/xml/sale_reporting_dashboard.xml",
-             "static/src/xml/confirmation_box.xml",
+             # "static/src/xml/confirmation_box.xml",
             ],
     # only loaded in demonstration mode
     'installable': True,
