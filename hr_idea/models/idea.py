@@ -15,7 +15,7 @@ class HrIdea(models.Model):
     employee_id = fields.Many2one('hr.employee', "Submit By", tracking=True, required=True)
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
-    submit_by = fields.Many2one('hr.employee',"Recommended By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
+    # submit_by = fields.Many2one('hr.employee',"Recommended By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
     issue_date = fields.Date('Issue date', readonly=True) #default=fields.Date.today()
     state = fields.Selection([
             ('draft', 'Draft'),
@@ -26,6 +26,12 @@ class HrIdea(models.Model):
     # title_ids = fields.Many2one('idea.title', string='Scope', tracking=True, required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")    
     details = fields.Char('Idea', size=300, tracking=True)
     # details = fields.Html('Reward For', tracking=True)
+    priority = fields.Selection([
+            ('1', 'Very Low'),
+            ('2', 'Low'),
+            ('3', 'Medium'),
+            ('4', 'High'),
+            ('5', 'Very High')], 'Priority', tracking=True)
 
     submit_template = fields.Html('Submit Template', default="""
                     <div style="margin:0px;padding: 0px;">
@@ -156,16 +162,16 @@ class HrIdea(models.Model):
             self.employee_id -= invalid_partners
             return {'warning': warning}
             
-    @api.onchange('submit_by')
-    def _onchange_submit_by(self):
-        invalid_partners = self.submit_by.filtered(lambda partner: not partner.private_email)
-        if invalid_partners:
-            warning = {
-                'title': 'Invalid "Recommended By" Email',
-                'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
-            }
-            self.submit_by -= invalid_partners
-            return {'warning': warning}               
+    # @api.onchange('submit_by')
+    # def _onchange_submit_by(self):
+    #     invalid_partners = self.submit_by.filtered(lambda partner: not partner.private_email)
+    #     if invalid_partners:
+    #         warning = {
+    #             'title': 'Invalid "Recommended By" Email',
+    #             'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
+    #         }
+    #         self.submit_by -= invalid_partners
+    #         return {'warning': warning}               
 
     
     def action_submit(self):
@@ -205,7 +211,7 @@ class HrIdea(models.Model):
                     
                     mail_values = {
                         # 'email_from': self.env.user.email_formatted,
-                        'email_from': self.submit_by.email,
+                        'email_from': self.employee_id.email,
                         'author_id': self.env.user.partner_id.id,
                         'model': None,
                         'res_id': None,
@@ -259,7 +265,7 @@ class HrIdea(models.Model):
                     continue
                 ctx = {
                     'employee_to_name': employee.name,
-                    'submit_by_to_name': self.submit_by.name,
+                    # 'submit_by_to_name': self.submit_by.name,
                     'recipient_users': employee.user_id,
                     'note': html2plaintext(self.details) if not is_html_empty(self.details) else '',
                     'date': self.issue_date,
@@ -302,7 +308,7 @@ class HrIdea(models.Model):
                     'body_html': body,
                     'attachment_ids': attachment,
                     'auto_delete': True,
-                    'email_to': self.employee_id.email or self.submit_by.email or '',
+                    'email_to': self.employee_id.email or '',
                     'email_cc': mailcc or '',
                 
                 }
@@ -372,7 +378,7 @@ class HrIdea(models.Model):
                     'body_html': body,
                     'attachment_ids': attachment,
                     'auto_delete': True,
-                    'email_to': self.employee_id.email or self.submit_by.email or '',
+                    'email_to': self.employee_id.email or '',
                     'email_cc': mailcc or ''
                 
                 }

@@ -714,35 +714,35 @@ class MrpReportWizard(models.TransientModel):
                 
                 order_data = []
                 
-                invoiced = round(invoiced,0),
-                pending_usd = round(pending_usd,0),
-                comu_inv = round(comu_inv,0),
-                tr_value = round(tr_value,0),
-                comur_value = round(comur_value,0),
+                invoiced = round(invoiced,0)
+                pending_usd = round(pending_usd,0)
+                comu_inv = round(comu_inv,0)
+                tr_value = round(tr_value,0)
+                comur_value = round(comur_value,0)
                 
                 if start_time.date() < full_date.date():
-                    invoiced = pending_usd = comu_inv = tr_value = comur_value = pack_pcs = pending_pcs = comu_pcs = pending_ids = ''
+                    invoiced = pending_usd = comu_inv = tr_value = comur_value = pack_pcs = pending_pcs = comu_pcs = pending_ids = None
 
                 else:
                     if pack_pcs == 0:
-                        pack_pcs = ''
+                        pack_pcs = None
                     if pending_pcs == 0:
                         pending_pcs,
                     if comu_pcs == 0:
-                        comu_pcs = ''
+                        comu_pcs = None
                     if pending_ids == 0:
-                        pending_ids = ''
+                        pending_ids = None
     
                     if invoiced == 0:
-                        invoiced = ''
+                        invoiced = None
                     if pending_usd == 0:
                         pending_usd,
                     if comu_inv == 0:
-                        comu_inv = ''
+                        comu_inv = None
                     if tr_value == 0:
-                        tr_value = ''    
+                        tr_value = None    
                     if comur_value == 0:
-                        comur_value = ''            
+                        comur_value = None
                 
                 order_data = [
                     item.name,

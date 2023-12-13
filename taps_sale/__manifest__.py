@@ -60,9 +60,11 @@
         'wizard/sales_report_wizard.xml',
         'wizard/oa_update_confirm.xml',
         'wizard/ccr_wizard.xml',
+        'wizard/order_modification_warning.xml',
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",
              "static/src/xml/sale_reporting_dashboard.xml",
+             "static/src/xml/confirmation_box.xml",
             ],
     # only loaded in demonstration mode
     'installable': True,

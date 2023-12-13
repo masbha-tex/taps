@@ -207,8 +207,9 @@
             <field name="arch" type="xml">
                 <graph string="Customer Visit" sample="1" type="bar">
                     <field name="team_id" type="row"/>
-                    <field name="visit_date" interval="month" type="row"/>
+                    <field name="visit_date" interval="year" type="row"/>
                     <field name="color" invisible="1"/>
+                    <field name="visit_date" type="measure" string="Lead"/>
                 </graph>
             </field>
         </record>

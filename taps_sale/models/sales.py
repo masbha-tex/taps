@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from functools import partial
 from itertools import groupby
 
-from odoo import api, fields, models, SUPERUSER_ID, _
+from odoo import api, fields, models, SUPERUSER_ID, _, exceptions
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
@@ -18,6 +18,8 @@ from decimal import Decimal, ROUND_HALF_UP
 import decimal
 from werkzeug.urls import url_encode
 import logging
+from odoo.tools.profiler import profile
+from odoo.exceptions import RedirectWarning
 _logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):
@@ -135,32 +137,6 @@ class SaleOrder(models.Model):
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     
     
-    def action_confirmation_wizard(self):
-        view = self.env.ref('taps_sale.view_oa_update_confirmation')
-        return {
-            'name': _('Confirm?'),
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_model': 'oa.update.confirmation',
-            'views': [(view.id, 'form')],
-            'view_id': view.id,
-            'target': 'new',
-            'context': {'default_id': self.id},#dict(self.env.context, default_id = self.id),
-        }
-
-    # def _action_generate_backorder_wizard(self, show_transfers=False):
-    #     view = self.env.ref('stock.view_backorder_confirmation')
-    #     return {
-    #         'name': _('Create Backorder?'),
-    #         'type': 'ir.actions.act_window',
-    #         'view_mode': 'form',
-    #         'res_model': 'stock.backorder.confirmation',
-    #         'views': [(view.id, 'form')],
-    #         'view_id': view.id,
-    #         'target': 'new',
-    #         'context': dict(self.env.context, default_show_transfers=show_transfers, default_pick_ids=[(4, p.id) for p in self]),
-    #     }    
-
     def write(self, values):
         # return pickings_to_backorder.action_confirmation_wizard(show_transfers=self._should_show_transfers())
         if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
@@ -173,21 +149,28 @@ class SaleOrder(models.Model):
         
         result = super(SaleOrder, self).write(values)
         return result
-    
 
-        # raise UserError((view.id))
-        # return {
-        #     'name': _('Confirm?'),
-        #     'view_mode': 'form',
-        #     'res_model': 'oa.update.confirmation',
-        #     'view_id': self.env.ref('taps_sale.view_oa_update_confirmation').id,
-        #     'type': 'ir.actions.act_window',
-        #     'context': {'default_id': self.id},
-        #     'target': 'new'
-        # }
+    # def write(self, values):
+    #     def confirm_callback():
+    #         raise exceptions.UserError(('Confirmed!'))
+    #     def cancel_callback():
+    #         raise exceptions.UserError(('Cancelled!'))
 
-    # def set_update_confirm(self):
-    #     raise UserError(('osuhfejf'))
+    #     return {
+    #         'type': 'ir.actions.client',
+    #         'tag': 'confirmation_box',
+    #         'name': 'confirmation',
+    #         'params': {
+    #             'title': 'Hold Confirmation',
+    #             'subtitle': 'Are you sure you want to hold this order?',
+    #             'confirm_callback': 'web.confirmation_boxes["confirmation"]._onClickConfirm',
+    #             'cancel_callback': 'web.confirmation_boxes["confirmation"]._onClickCancel',
+    #         }
+    #     }
+        
+    #     result = super(SaleOrder, self).write(values)
+    #     return result
+ 
 
     def action_cancel(self):
         # if self.state == "sale" and self.sales_type == "oa":
@@ -215,10 +198,8 @@ class SaleOrder(models.Model):
             self.hs_code= "9606.22.00"
             if self.buyer_name.name == "RALPH LAUREN":
                 self.brand = "POLO"
-        
             
         # raise UserError((self.company_id.id))
-            
         
         
     def action_copy(self):

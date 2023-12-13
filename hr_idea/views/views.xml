@@ -28,23 +28,26 @@
                     </div>
                     <field name="name"/>
                     <div class="oe_title">
-                        <label for="employee_id" class="oe_edit_only" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                        <h1><field name="employee_id" placeholder="e.g. Employee Name" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create':true, 'no_open':true}"/></h1>
+                        <h1><field name="priority" widget="priority"/></h1>
+                    </div>
+                    <div class="oe_title">
+                        <label for="details" class="oe_edit_only" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <h1><field name="details" placeholder="Share your idea....." attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create':true, 'no_open':true}"/></h1>
                     </div>
                     <group>
                         <group>
                             <field name="criteria_id" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <!-- <field name="title_ids" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
-                            
+                            <field name="employee_id" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         </group>
                         <group>
                             <!-- <field name="r_type" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
-                            <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            
                             <field name="issue_date" attrs="{'invisible': [('state', '!=', 'Approved')]}"/>
                         </group>                       
                     </group>
                     <group colspan="2" col="2">
-                        <field name="details" placeholder="Share your idea....." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <!-- <field name="details" placeholder="Share your idea....." attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
                     </group>                    
                 </sheet>
                 <div class="oe_chatter">
@@ -63,11 +66,13 @@
         <field name="arch" type="xml">
             <tree string="Idea Box" sample="1">
                 <field name="name"/>
-                <field name="employee_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="details"/>
+                <!-- <field name="employee_id"/> -->
                 <!-- <field name="r_type" widget="selection"/> -->
                 <field name="criteria_id"/>
-                <field name="details" optional="hide"/>
-                <field name="submit_by" options="{'no_create':true, 'no_open':true}"/>
+                <!-- <field name="details" optional="hide"/> -->
+                <field name="employee_id" options="{'no_create':true, 'no_open':true}"/>
                 <field name="issue_date"/>
                 <!-- <field name="state" optional="show" widget="badge" decoration-success="state == 'approved' or state == 'done'" decoration-bf="1" options="{'color_field': 'color'}"/>   -->
                 <field name="state" widget="badge" decoration-success="state == 'Approved'" decoration-warning="state == 'Submit'" decoration-danger="state == 'Refused'" decoration-info="state == 'draft'"/>  
@@ -81,12 +86,12 @@
         <field name="arch" type="xml">
             <search>
                 <field name="employee_id"/>
-                <field name="submit_by"/>
+                <!-- <field name="submit_by"/> -->
                 <filter name="issue_date" date="issue_date"/>
                 <group string="Group By">
                     <filter name="criteria_id" context="{'group_by': 'criteria_id'}"/>
                     <!-- <filter name="title_ids" context="{'group_by': 'title_ids'}"/> -->
-                    <filter name="submit_by" context="{'group_by': 'submit_by'}"/>
+                    <!-- <filter name="submit_by" context="{'group_by': 'submit_by'}"/> -->
                     <filter name="employee_id" context="{'group_by': 'employee_id'}"/>
                     <filter name="issue_date" context="{'group_by': 'issue_date'}"/>
                 </group>

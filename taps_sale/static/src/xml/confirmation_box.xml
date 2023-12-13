@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="taps_sale.ConfirmationBox">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title"><t t-esc="widget.title"/></h4>
+        </div>
+        <div class="modal-body">
+            <p><t t-esc="widget.subtitle"/></p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary o_confirm">Confirm</button>
+            <button type="button" class="btn btn-default o_cancel">Cancel</button>
+        </div>
+    </t>
+</templates>

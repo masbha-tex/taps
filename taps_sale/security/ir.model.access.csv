@@ -18,3 +18,4 @@ access_sale_ccr_type,access_sale_ccr_type,model_sale_ccr_type,base.group_user,1,
 access_sale_ccr_old,access_sale_ccr_old,model_sale_ccr_old,base.group_user,1,1,1,1
 access_sale_ccr_wizard,access_sale_ccr_wizard,model_sale_ccr_wizard,base.group_user,1,1,1,1
 access_sale_ccr_wizard_notjustify,access_sale_ccr_wizard_notjustify,model_sale_ccr_wizard_notjustify,base.group_user,1,1,1,1
+access_sale_modify_confirm,access_oa_modification_confirmation,model_oa_modification_confirmation,base.group_user,1,1,1,1
