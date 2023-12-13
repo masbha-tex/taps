@@ -139,6 +139,7 @@ class SaleOrder(models.Model):
     
     def write(self, values):
         # return pickings_to_backorder.action_confirmation_wizard(show_transfers=self._should_show_transfers())
+        state = self.state
         if 'is_hold' in values and self.state == "sale" and self.sales_type == "oa":
             # if values.get('is_hold'):
             operation = self.env['operation.details'].search([('oa_id','=', self.id)])
@@ -148,6 +149,8 @@ class SaleOrder(models.Model):
                 mrp_update = mrp.write({'state':'hold'})
         
         result = super(SaleOrder, self).write(values)
+        if state == 'sale' and self.sales_type == 'oa':
+            self.generate_m_order()
         return result
 
     # def write(self, values):
@@ -1203,7 +1206,8 @@ class SaleOrder(models.Model):
             mrp_lines = None
             sale_lines = None
             mrp_id = None
-            
+            state = 'waiting'
+            # if self.state 
             if exist_mrp:
                 m_order = exist_mrp.filtered(lambda mo: mo.sale_order_line.id == products.id)
                 if m_order:
@@ -1249,7 +1253,7 @@ class SaleOrder(models.Model):
             # shade = text.splitlines()
             
             if can_create == True:
-                mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':'waiting','revision_no':self.revised_no,'logo':products.logo,'logoref':products.logoref,'logo_type':products.logo_type,'style':products.style,'gmt':products.gmt,'shapefin':products.shapefin,'b_part':products.b_part,'c_part':products.c_part,'d_part':products.d_part,'finish_ref':products.finish_ref,'product_code':products.product_code,'shape':products.shape,'back_part':products.back_part})
+                mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'oa_total_balance':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'logo':products.logo,'logoref':products.logoref,'logo_type':products.logo_type,'style':products.style,'gmt':products.gmt,'shapefin':products.shapefin,'b_part':products.b_part,'c_part':products.c_part,'d_part':products.d_part,'finish_ref':products.finish_ref,'product_code':products.product_code,'shape':products.shape,'back_part':products.back_part})
                 
                 mrp_lines = str(mrp_.id)
                 sale_lines = str(products.id)
@@ -1285,7 +1289,7 @@ class SaleOrder(models.Model):
                                                             'pack_qty':0,
                                                             'fr_pcs_pack':0,
                                                             'capacity':0,
-                                                            'state':'waiting',
+                                                            'state':state,
                                                             'move_line':None,
                                                             'logo':products.logo,
                                                             'logoref':products.logoref,

@@ -14,10 +14,12 @@
 					<field name="state" widget="statusbar"/>
 				</header>
 				<sheet>
+                    <field name="active" invisible="1"/>   
                     <widget name="web_ribbon" title="Refused" bg_color="bg-danger"
                             attrs="{'invisible': [('state', '!=', 'Refused')]}"/>
-                    <widget name="web_ribbon" title="Validate" bg_color="bg-success"
-                            attrs="{'invisible': [('state', '!=', 'Validate')]}"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-success"
+                            attrs="{'invisible': [('active', '!=', 'True')]}"/>
+                                         
                     <div class="oe_button_box" name="button_box">
                         <button name="action_get_attachment_view"
                             class="oe_stat_button"
@@ -30,10 +32,6 @@
                     <div class="oe_title">
                         <h1><field name="priority" widget="priority" groups="hr.group_hr_manager"/></h1>
                     </div>
-                    <div class="oe_title">
-                        <label for="details" class="oe_edit_only" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                        <h1><field name="details" placeholder="Share your idea..... in 250 characters" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create':true, 'no_open':true}"/></h1>
-                    </div>
                     <group>
                         <group>
                             <field name="criteria_id" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
@@ -43,7 +41,12 @@
                             
                             <field name="issue_date" attrs="{'invisible': [('state', '!=', 'Validate')]}"/>
                         </group>                       
-                    </group>                   
+                    </group>                      
+                    <div class="oe_title">
+                        <label for="details" class="oe_edit_only" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <h1><field name="details" placeholder="Share your idea..... in 250 characters" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create':true, 'no_open':true}"/></h1>
+                    </div>
+                 
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" options="{'open_attachments': True}"/>
@@ -116,6 +119,7 @@
         <field name="model">hr.idea</field>
         <field name="arch" type="xml">
             <search>
+                <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
                 <field name="employee_id"/>
                 <field name="criteria_id"/>
                 <filter name="issue_date" date="issue_date"/>
@@ -146,7 +150,7 @@
     <record model="ir.actions.act_window" id="action_hr_idea">
         <field name="name">Idea Box</field>
         <field name="res_model">hr.idea</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">kanban,tree,form</field>
     </record>
 
 	<menuitem name="Idea Box" parent="hr.menu_hr_root" id="menu_hr_idea" sequence="5" action="action_hr_idea"/>
@@ -155,7 +159,7 @@
      <record id="act_hr_employee_2_hr_idea" model="ir.actions.act_window">
 		<field name="res_model">hr.idea</field>
 		<field name="name">idea</field>
-		<field name="view_mode">tree,form</field>
+		<field name="view_mode">kanban,tree,form</field>
 		<field name="context">{'search_default_employee_id': [active_id]}</field>
      </record>
 	

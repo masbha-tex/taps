@@ -11,7 +11,8 @@ class HrIdea(models.Model):
     _description = 'Idea Box'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New')) 
+    name = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
+    active = fields.Boolean('Active', default=True)
     employee_id = fields.Many2one('hr.employee', "Submit By", tracking=True, required=True, default=lambda self: self.env.user.employee_id)
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
@@ -33,56 +34,6 @@ class HrIdea(models.Model):
             ('4', 'Three Star'),
             ('5', 'Four Star'),
             ('6', 'Five Star')], 'Priority', tracking=True, default='1')
-
-    submit_template = fields.Html('Submit Template', default="""
-                    <div style="margin:0px;padding: 0px;">
-                    
-                    <br>
-                    			% if ctx.get('recipient_users'):
-                    			Here is the link of That Idea:
-                    			<p style="margin:16px 0px 16px 0px;">
-                    				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
-                    		View Idea
-                    	</a>
-                    			</p>
-                    			% endif
-                    </div>
-                        """ )
-
-    refused_template = fields.Html('Refused Template', default="""
-                    <div style="margin:0px;padding: 0px;">
-                    <span>Dear ${ctx['employee_to_name']},</span>
-                    <br/>
-                    <span>Your Idea has been Refused</span>
-                    <br>
-                    <br>
-                    
-                    <br>
-                    		
-                    			% if ctx.get('recipient_users'):
-                    			Here is the link:
-                    			<p style="margin:16px 0px 16px 0px;">
-                    				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
-                    		View Refused
-                    	</a>
-                    			</p>
-                    			% endif
-                    </div>
-                        """ )
-
-    idea_template = fields.Html('Thank you Template', default=""" 
-                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('https://taps-testing-10495661.dev.odoo.com/hr_idea/static/src/img/idea.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
-                       
-                        <p style="font-size: 18px; font-weight: bold; margin-top: 250px; color: #000000; text-align: left;  margin-left: 325px;">${ctx['employee_to_name']}</p>
-                        <div class="row">
-                        <div class="col-7">
-                        <p style="font-size: 15px; color: #0000CC; text-align: center; margin-left: 265px; margin-right:25px;">${ctx['note']}</p>
-                        </div>
-                        </div>
-                        
-                        <br/>
-                    </div>
-                    """)
 
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
@@ -152,23 +103,18 @@ class HrIdea(models.Model):
                 # if not employee.email or not self.env.user.email:
                 #     continue
                 template_submit = self.env.ref('hr_idea.mail_idea_submit_template', raise_if_not_found=True)
-                # template_validate = self.env.ref('hr_idea.mail_idea_validate_template', raise_if_not_found=True)
-                # template_refused = self.env.ref('hr_idea.mail_idea_refused_template', raise_if_not_found=True)
                 ctx = {
                     'employee_to_name': employee.display_name,
                     'recipient_users': employee.user_id,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.idea', idea.id),
                 }
+                _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
 
-                RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
-                subject = RenderMixin._render_template('Idea Box', 'hr.idea', idea.ids, post_process=True)[idea.id]
-                
+                RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)                
                 body = RenderMixin._render_template(mail_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
-                # body_submit = RenderMixin._render_template(template_submit, 'hr.idea', idea.ids, post_process=True)[idea.id]
-                _body = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
-                body_submit = self.env['mail.render.mixin']._replace_local_links(_body)
-                
-                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
+                body_submit = RenderMixin._render_template(_template_submit, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                                
+                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
                 body = f"{body}<br/>{body_submit}"
                 # post the message
                 matrix = self.env['hr.idea.matrix'].sudo().search([('name', '=', 'MAILTO')], limit=1)
@@ -197,7 +143,6 @@ class HrIdea(models.Model):
                         'email_cc': mailcc or '',
                     
                     }
-                    # raise UserError((mail_values['mail_values']))
                     try:
                         template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
                     except ValueError:
@@ -229,35 +174,27 @@ class HrIdea(models.Model):
             self.issue_date = fields.Date.today()
             self.state = 'Validate'
         for idea in self:
-            idea_mail_template = idea.closed_template
+            template_validate = self.env.ref('hr_idea.mail_idea_validate_template', raise_if_not_found=True)
             mapped_data = {
-                **{idea.employee_id: idea_mail_template}
+                **{idea.employee_id: template_validate}
             }
             for employee, mail_template in mapped_data.items():
-                if not employee.email or not self.env.user.email:
-                    continue
+                # if not employee.email or not self.env.user.email:
+                #     continue
                 ctx = {
                     'employee_to_name': employee.name,
-                    # 'submit_by_to_name': self.submit_by.name,
                     'recipient_users': employee.user_id,
                     'note': html2plaintext(self.details) if not is_html_empty(self.details) else '',
                     'date': self.issue_date,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.idea', idea.id),
-                    'image_url': 'https://taps-testing-10495661.dev.odoo.com/hr_idea/static/src/img/idea.png',
                 }
+                _template_validate = mail_template._render(ctx, engine='ir.qweb', minimal_qcontext=True)                
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
-                subject = RenderMixin._render_template('Rewarded', 'hr.idea', idea.ids, post_process=True)[idea.id]
 
-                body_idea = RenderMixin._render_template(self.idea_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
-                # body_idea = RenderMixin._render_template(hr_idea.mail_idea_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                body_idea = RenderMixin._render_template(_template_validate, 'hr.idea', idea.ids, post_process=True)[idea.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
-        
-                
 
                 image_data = self.html_to_image(body_idea)
-                # Save the image data to a file for inspection
-                # with open('/home/odoo/src/user/hr_reward/static/src/img/kudos.jpeg', 'wb') as f:
-                #     f.write(image_data)
                 body_idea = base64.b64encode(image_data).decode('utf-8')                    
                 body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_idea}'/><br/>"                    
                 # body = f"{body_idea}<br/>{body_sig}"
@@ -314,21 +251,21 @@ class HrIdea(models.Model):
             self.issue_date = fields.Date.today()
             self.state = 'Refused'
         for idea in self:
-            idea_mail_template = idea.refused_template
+            template_refused = self.env.ref('hr_idea.mail_idea_refused_template', raise_if_not_found=True)
             mapped_data = {
-                **{idea.employee_id: idea_mail_template}
+                **{idea.employee_id: template_refused}
             }
             for employee, mail_template in mapped_data.items():
-                if not employee.email or not self.env.user.email:
-                    continue
+                # if not employee.email or not self.env.user.email:
+                #     continue
                 ctx = {
                     'employee_to_name': employee.name,
                     'recipient_users': employee.user_id,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.idea', idea.id),
                 }
+                _template_refused = mail_template._render(ctx, engine='ir.qweb', minimal_qcontext=True)   
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
-                subject = RenderMixin._render_template('Refused', 'hr.idea', idea.ids, post_process=True)[idea.id]
-                body_closed = RenderMixin._render_template(self.refused_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                body_closed = RenderMixin._render_template(_template_refused, 'hr.idea', idea.ids, post_process=True)[idea.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
                 
                 body = f"{body_closed}<br/>"
@@ -355,7 +292,6 @@ class HrIdea(models.Model):
                     'email_cc': mailcc or ''
                 
                 }
-                # raise UserError((mail_values['email_to']))
                 try:
                     template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
                 except ValueError:
@@ -401,15 +337,4 @@ class HrIdea(models.Model):
             'default_res_id': self.id,
         }
         return res
-
-
-
-class HrEmployee(models.Model):
-	_inherit="hr.employee"
-	
-	idea_count = fields.Integer(compute='_compute_idea_count', store=False, string='Idea')
-	
-	def _compute_idea_count(self):
-		Idea = self.env['hr.idea']
-		self.idea_count = Idea.search_count([('employee_id','=',self.id)])
 

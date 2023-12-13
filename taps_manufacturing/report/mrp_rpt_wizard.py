@@ -572,7 +572,7 @@ class MrpReportWizard(models.TransientModel):
         
         column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
         
-        _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        _row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
         
         row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -810,13 +810,13 @@ class MrpReportWizard(models.TransientModel):
             row += 1    
             sheet.write(row, 0, 'TOTAL', row_style)
             sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
-            sheet.write(row, 2, '=SUM(C{0}:C{1})'.format(1, row), row_style)
+            sheet.write(row, 2, '=SUM(C{0}:C{1})'.format(1, row), _row_style)
             sheet.write(row, 3, '=SUM(D{0}:D{1})'.format(1, row), row_style)
-            sheet.write(row, 4, '=SUM(E{0}:E{1})'.format(1, row), row_style)
+            sheet.write(row, 4, '=SUM(E{0}:E{1})'.format(1, row), _row_style)
             sheet.write(row, 5, '=SUM(F{0}:F{1})'.format(1, row), row_style)
-            sheet.write(row, 6, '=SUM(G{0}:G{1})'.format(1, row), row_style)
-            sheet.write(row, 7, '=SUM(H{0}:H{1})'.format(1, row), row_style)
-            sheet.write(row, 8, '=SUM(I{0}:I{1})'.format(1, row), row_style)
+            sheet.write(row, 6, '=SUM(G{0}:G{1})'.format(1, row), _row_style)
+            sheet.write(row, 7, '=SUM(H{0}:H{1})'.format(1, row), _row_style)
+            sheet.write(row, 8, '=SUM(I{0}:I{1})'.format(1, row), _row_style)
             sheet.write(row, 9, '=SUM(J{0}:J{1})'.format(1, row), row_style)
 
             # if start_time.day == day and start_time.month == int(month_):

@@ -15,10 +15,11 @@
 					<field name="state" widget="statusbar"/>
 				</header>
 				<sheet>
+                    <field name="active" invisible="1"/>   
                     <widget name="web_ribbon" title="Refused" bg_color="bg-danger"
                             attrs="{'invisible': [('state', '!=', 'Refused')]}"/>
-                    <widget name="web_ribbon" title="Approved" bg_color="bg-success"
-                            attrs="{'invisible': [('state', '!=', 'Approved')]}"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-success"
+                            attrs="{'invisible': [('active', '!=', 'True')]}"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_get_attachment_view"
                             class="oe_stat_button"
@@ -82,6 +83,7 @@
         <field name="model">hr.reward</field>
         <field name="arch" type="xml">
             <search>
+                <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
                 <field name="employee_id"/>
                 <field name="submit_by"/>
                 <filter name="issue_date" date="issue_date"/>
