@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-new
+5# -*- coding: utf-8 -*-new
 import subprocess, base64
 import tempfile
 import os
@@ -24,14 +24,15 @@ class HrIdea(models.Model):
             ('Validate', 'Validate'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
     criteria_id = fields.Many2one('idea.criteria', required=True, tracking=True, string='Scope')    
-    details = fields.Char('Idea', size=200, tracking=True)
+    details = fields.Char('Idea', size=250, tracking=True)
     # details = fields.Html('Reward For', tracking=True)
     priority = fields.Selection([
-            ('1', 'Very Low'),
-            ('2', 'Low'),
-            ('3', 'Medium'),
-            ('4', 'High'),
-            ('5', 'Very High')], 'Priority', tracking=True)
+            ('1', 'No Star'),
+            ('2', 'One Star'),
+            ('3', 'Two Star'),
+            ('4', 'Three Star'),
+            ('5', 'Four Star'),
+            ('6', 'Five Star')], 'Priority', tracking=True, default='1')
 
     submit_template = fields.Html('Submit Template', default="""
                     <div style="margin:0px;padding: 0px;">
@@ -47,27 +48,6 @@ class HrIdea(models.Model):
                     			% endif
                     </div>
                         """ )
-    
-    closed_template = fields.Html('Closed Template', default="""
-                    <div style="margin:0px;padding: 0px;">
-                    <span>Dear Concern,</span>
-                    <br>
-                    <span>Your Idea has been Approved</span>
-                    <br>
-                    <br>
-                    
-                    <br>
-                    		
-                    			% if ctx.get('recipient_users'):
-                    			Here is the link of your Idea:
-                    			<p style="margin:16px 0px 16px 0px;">
-                    				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
-                    		View Idea
-                    	</a>
-                    			</p>
-                    			% endif
-                    </div>
-                        """ ) 
 
     refused_template = fields.Html('Refused Template', default="""
                     <div style="margin:0px;padding: 0px;">
@@ -171,6 +151,9 @@ class HrIdea(models.Model):
             for employee, mail_template in mapped_data.items():
                 # if not employee.email or not self.env.user.email:
                 #     continue
+                template_submit = self.env.ref('hr_idea.mail_idea_submit_template', raise_if_not_found=True)
+                # template_validate = self.env.ref('hr_idea.mail_idea_validate_template', raise_if_not_found=True)
+                # template_refused = self.env.ref('hr_idea.mail_idea_refused_template', raise_if_not_found=True)
                 ctx = {
                     'employee_to_name': employee.display_name,
                     'recipient_users': employee.user_id,
@@ -179,11 +162,14 @@ class HrIdea(models.Model):
 
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                 subject = RenderMixin._render_template('Idea Box', 'hr.idea', idea.ids, post_process=True)[idea.id]
-                body = RenderMixin._render_template(self.details, 'hr.idea', idea.ids, post_process=True)[idea.id]
-                body_submit = RenderMixin._render_template(self.submit_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                
+                body = RenderMixin._render_template(mail_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                # body_submit = RenderMixin._render_template(template_submit, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                _body = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
+                body_submit = self.env['mail.render.mixin']._replace_local_links(_body)
                 
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
-                body = f"{body}<br/>{body_submit}<br/>{body_sig}"
+                body = f"{body}<br/>{body_submit}"
                 # post the message
                 matrix = self.env['hr.idea.matrix'].sudo().search([('name', '=', 'MAILTO')], limit=1)
                 if matrix:

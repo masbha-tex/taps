@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Idea Box",
-    'summary': """Reward and Recognition Managment""",
+    'summary': """Idea Share Managment""",
     'author': "Reazul",
-    'website': "http://www.odoo.com",
-    'category': 'Generic Modules/Reward and Recognition',
+    # 'website': "http://www.odoo.com",
+    'category': 'Generic Modules/Idea Box',
     'version': '0.1',
     'description': '',
 

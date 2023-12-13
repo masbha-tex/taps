@@ -1,15 +1,49 @@
 <odoo>
     <data>
-            <template id="mail_idea_template">
-           <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('https://taps-testing-10495661.dev.odoo.com/hr_idea/static/src/img/idea.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">     
-                <p style="font-size: 18px; font-weight: bold; margin-top: 250px; color: #000000; text-align: left;  margin-left: 390px;">${ctx['employee_to_name']}</p>
+        <template id="mail_idea_validate_template">
+           <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('https://taps-testing-10495661.dev.odoo.com/hr_idea/static/src/img/idea.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">                       
+                <p style="font-size: 18px; font-weight: bold; margin-top: 250px; color: #000000; text-align: left;  margin-left: 325px;">${ctx['employee_to_name']}</p>
                 <div class="row">
                     <div class="col-7">
-                        <p style="font-size: 15px; color: #0000CC; text-align: center; margin-left: 300px; margin-right:40px;">${ctx['note']}</p>
+                        <p style="font-size: 15px; color: #0000CC; text-align: center; margin-left: 265px; margin-right:25px;">${ctx['note']}</p>
                     </div>
                 </div>
                 <br/>
             </div>
         </template>
+        <template id="mail_idea_submit_template">
+            <div style="margin:0px;padding: 0px;">
+            
+                <br/>
+                % if ctx.get('recipient_users'):
+                Here is the link of That Idea:
+                <p style="margin:16px 0px 16px 0px;">
+                    <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+            View Idea
+                </a>
+                </p>
+                % endif
+            </div>
+        </template>
+        <template id="mail_idea_refused_template">
+            <div style="margin:0px;padding: 0px;">
+                <span>Dear ${ctx['employee_to_name']},</span>
+                <br/>
+                <span>Your Idea has been Refused</span>
+                <br/>
+                <br/>
+                
+                <br/>
+                        
+                            % if ctx.get('recipient_users'):
+                            Here is the link:
+                            <p style="margin:16px 0px 16px 0px;">
+                                <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+                        View Refused
+                            </a>
+                            </p>
+                            % endif
+            </div>
+        </template>        
     </data>
 </odoo>

@@ -206,7 +206,7 @@
             <field name="model">crm.visit</field>
             <field name="priority">1000</field>
             <field name="arch" type="xml">
-                <graph string="Customer Visit Graph" sample="1" type="bar">
+                <graph string="Customer Visit Graph" sample="1" type="bar" stacked="1">
                     <field name="team_id" type="row"/>
                     <field name="visit_date" interval="month"/>
                     <field name="color" invisible="1"/>
