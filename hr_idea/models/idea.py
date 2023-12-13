@@ -12,17 +12,19 @@ class HrIdea(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New')) 
-    employee_id = fields.Many2one('hr.employee', "Submit By", tracking=True, required=True)
+    employee_id = fields.Many2one('hr.employee', "Submit By", tracking=True, required=True, default=lambda self: self.env.user.employee_id)
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
+    image_128 = fields.Image(related='employee_id.image_128', related_sudo=False)
+    image_1920 = fields.Image(related='employee_id.image_1920', related_sudo=False)
     # submit_by = fields.Many2one('hr.employee',"Recommended By", required=True, default=lambda self: self.env.user.employee_id, tracking=True)
     issue_date = fields.Date('Issue date', readonly=True) #default=fields.Date.today()
     state = fields.Selection([
             ('draft', 'Draft'),
             ('Submit', 'Submit'),
-            ('Approved', 'Approved'),
+            ('Validate', 'Validate'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
-    criteria_id = fields.Many2one('idea.criteria', required=True, tracking=True, string='Title')
+    criteria_id = fields.Many2one('idea.criteria', required=True, tracking=True, string='Scope')
     # title_ids = fields.Many2one('idea.title', string='Scope', tracking=True, required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")    
     details = fields.Char('Idea', size=300, tracking=True)
     # details = fields.Html('Reward For', tracking=True)
@@ -38,7 +40,7 @@ class HrIdea(models.Model):
                     
                     <br>
                     			% if ctx.get('recipient_users'):
-                    			Here is the link of your Idea:
+                    			Here is the link of That Idea:
                     			<p style="margin:16px 0px 16px 0px;">
                     				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
                     		View Idea
@@ -71,8 +73,8 @@ class HrIdea(models.Model):
 
     refused_template = fields.Html('Refused Template', default="""
                     <div style="margin:0px;padding: 0px;">
-                    <span>Dear Concern,</span>
-                    <br>
+                    <span>Dear ${ctx['employee_to_name']},</span>
+                    <br/>
                     <span>Your Idea has been Refused</span>
                     <br>
                     <br>
@@ -80,7 +82,7 @@ class HrIdea(models.Model):
                     <br>
                     		
                     			% if ctx.get('recipient_users'):
-                    			Here is the link of your Refused:
+                    			Here is the link:
                     			<p style="margin:16px 0px 16px 0px;">
                     				<a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
                     		View Refused
@@ -88,7 +90,21 @@ class HrIdea(models.Model):
                     			</p>
                     			% endif
                     </div>
-                        """ ) 
+                        """ )
+
+    idea_template = fields.Html('Thank you Template', default=""" 
+                    <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('https://taps-testing-10495661.dev.odoo.com/hr_idea/static/src/img/idea.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
+                       
+                        <p style="font-size: 18px; font-weight: bold; margin-top: 250px; color: #000000; text-align: left;  margin-left: 325px;">${ctx['employee_to_name']}</p>
+                        <div class="row">
+                        <div class="col-7">
+                        <p style="font-size: 15px; color: #0000CC; text-align: center; margin-left: 265px; margin-right:25px;">${ctx['note']}</p>
+                        </div>
+                        </div>
+                        
+                        <br/>
+                    </div>
+                    """)
 
     
     next_user = fields.Many2one('res.users', ondelete='set null', string="Next User", index=True, tracking=True)
@@ -131,25 +147,7 @@ class HrIdea(models.Model):
             return image_data
         except Exception as e:
             raise ValidationError(f'Exception during HTML to Image conversion: {str(e)}')
-    # def html_to_image(self, html_content):
-    #     # Make sure html_content is a string
-    #     if not isinstance(html_content, str):
-    #         html_content = str(html_content)
 
-    #     try:
-    #         process = subprocess.Popen(
-    #             ['wkhtmltoimage', '--format', 'jpeg', '-'],
-    #             stdin=subprocess.PIPE,
-    #             stdout=subprocess.PIPE,
-    #             stderr=subprocess.PIPE,
-    #         )
-
-    #         # Convert string to bytes before passing it to communicate
-    #         image_data, _ = process.communicate(input=html_content.encode('utf-8'))
-
-    #         return image_data
-    #     except Exception as e:
-    #         raise ValidationError(f"Error converting HTML to image: {e}") 
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -161,17 +159,7 @@ class HrIdea(models.Model):
             }
             self.employee_id -= invalid_partners
             return {'warning': warning}
-            
-    # @api.onchange('submit_by')
-    # def _onchange_submit_by(self):
-    #     invalid_partners = self.submit_by.filtered(lambda partner: not partner.private_email)
-    #     if invalid_partners:
-    #         warning = {
-    #             'title': 'Invalid "Recommended By" Email',
-    #             'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
-    #         }
-    #         self.submit_by -= invalid_partners
-    #         return {'warning': warning}               
+                      
 
     
     def action_submit(self):
@@ -195,6 +183,7 @@ class HrIdea(models.Model):
                 subject = RenderMixin._render_template('Idea Box', 'hr.idea', idea.ids, post_process=True)[idea.id]
                 body = RenderMixin._render_template(self.details, 'hr.idea', idea.ids, post_process=True)[idea.id]
                 body_submit = RenderMixin._render_template(self.submit_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id] 
                 body = f"{body}<br/>{body_submit}<br/>{body_sig}"
                 # post the message
@@ -215,7 +204,7 @@ class HrIdea(models.Model):
                         'author_id': self.env.user.partner_id.id,
                         'model': None,
                         'res_id': None,
-                        'subject': 'Raise a new R & R for %s' % employee.display_name,
+                        'subject': 'Raise a new Idea by %s' % employee.display_name,
                         'body_html': body,
                         'attachment_ids': attachment,                    
                         'auto_delete': True,
@@ -254,7 +243,7 @@ class HrIdea(models.Model):
     def action_closed(self):
         if self.state == 'Submit':
             self.issue_date = fields.Date.today()
-            self.state = 'Approved'
+            self.state = 'Validate'
         for idea in self:
             idea_mail_template = idea.closed_template
             mapped_data = {
@@ -270,24 +259,24 @@ class HrIdea(models.Model):
                     'note': html2plaintext(self.details) if not is_html_empty(self.details) else '',
                     'date': self.issue_date,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.idea', idea.id),
-                    'image_url': 'hr_idea/static/src/img/logo_tex_tiny.png',
+                    'image_url': 'https://taps-testing-10495661.dev.odoo.com/hr_idea/static/src/img/idea.png',
                 }
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                 subject = RenderMixin._render_template('Rewarded', 'hr.idea', idea.ids, post_process=True)[idea.id]
 
-                # body_closed = RenderMixin._render_template(self.closed_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
-                body_kudos = RenderMixin._render_template(self.kudos_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                body_idea = RenderMixin._render_template(self.idea_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
+                # body_idea = RenderMixin._render_template(hr_idea.mail_idea_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
         
                 
 
-                image_data = self.html_to_image(body_kudos)
+                image_data = self.html_to_image(body_idea)
                 # Save the image data to a file for inspection
                 # with open('/home/odoo/src/user/hr_reward/static/src/img/kudos.jpeg', 'wb') as f:
                 #     f.write(image_data)
-                body_kudos = base64.b64encode(image_data).decode('utf-8')                    
-                body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_kudos}'/><br/>{body_sig}"                    
-                # body = f"{body_kudos}<br/>{body_sig}"
+                body_idea = base64.b64encode(image_data).decode('utf-8')                    
+                body = f"<img width='590' height='393' src='data:image/jpeg;base64,{body_idea}'/><br/>"                    
+                # body = f"{body_idea}<br/>{body_sig}"
                 
                 # post the message
                 matrix = self.env['hr.idea.matrix'].sudo().search([('name', '=', 'MAILFO')], limit=1)
@@ -304,7 +293,7 @@ class HrIdea(models.Model):
                     'author_id': self.env.user.partner_id.id,
                     'model': None,
                     'res_id': None,
-                    'subject': 'Congratulations!! %s for Achieving "%s" Card' % (employee.name, self.criteria_id.name),
+                    'subject': 'Congratulations!! Your submitted Idea has been validated',
                     'body_html': body,
                     'attachment_ids': attachment,
                     'auto_delete': True,
@@ -331,7 +320,7 @@ class HrIdea(models.Model):
         return {
             'effect': {
                 'fadeout': 'slow',
-                'message': 'Idea Approved',
+                'message': 'Idea Validate',
                 'type': 'rainbow_man',
             }
         }
@@ -349,7 +338,7 @@ class HrIdea(models.Model):
                 if not employee.email or not self.env.user.email:
                     continue
                 ctx = {
-                    'employee_to_name': employee.display_name,
+                    'employee_to_name': employee.name,
                     'recipient_users': employee.user_id,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.idea', idea.id),
                 }
@@ -358,7 +347,7 @@ class HrIdea(models.Model):
                 body_closed = RenderMixin._render_template(self.refused_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
                 body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]                
                 
-                body = f"{body_closed}<br/>{body_sig}"
+                body = f"{body_closed}<br/>"
                 # post the message
                 matrix = self.env['hr.idea.matrix'].sudo().search([('name', '=', 'MAILFO')], limit=1)
                 if matrix:
@@ -374,7 +363,7 @@ class HrIdea(models.Model):
                     'author_id': self.env.user.partner_id.id,
                     'model': None,
                     'res_id': None,
-                    'subject': '%s R &amp; R has been refused' % employee.display_name,
+                    'subject': 'Your submitted Idea has not been validated',
                     'body_html': body,
                     'attachment_ids': attachment,
                     'auto_delete': True,

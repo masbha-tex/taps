@@ -20,7 +20,7 @@ class MrpReportWizard(models.TransientModel):
     
     # is_company = fields.Boolean(readonly=False, default=False)
     
-    report_type = fields.Selection([('pir', 'PI Report'),('pis', 'PI Summary'),('dpr', 'Daily Production Report'),('dppr', 'Packing Production Report'),('dpcl', 'Daily Production Closed')], string='Report Type', required=True, help='Report Type', default='pir')
+    report_type = fields.Selection([('pir', 'PI File'),('pis', 'PI Summary'),('dpr', 'Invoice'),('dppr', 'Packing Production Report'),('dpcl', 'Production Report (FG)')], string='Report Type', required=True, help='Report Type', default='pir')
     
     date_from = fields.Date('Date from', readonly=False)
     date_to = fields.Date('Date to', readonly=False)
@@ -564,8 +564,8 @@ class MrpReportWizard(models.TransientModel):
             month_ = data.get('month_list')
         year = datetime.today().year
         
-        daily_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing')])
-        daily_outputs = daily_outputs.filtered(lambda pr: pr.action_date.month == int(month_) and pr.action_date.year == year)#.sorted(key=lambda pr: pr.sequence)
+        all_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing')])
+        daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.month == int(month_) and pr.action_date.year == year)#.sorted(key=lambda pr: pr.sequence)
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -577,7 +577,7 @@ class MrpReportWizard(models.TransientModel):
         row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '$#,##0'})
+        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
         
         
         merge_format = workbook.add_format({'align': 'top'})
@@ -640,6 +640,7 @@ class MrpReportWizard(models.TransientModel):
                 
                 all_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name),('state','!=','cancel')])
                 
+                
                 comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and pr.date_order.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
 
                 if full_date.date() == in_pr.production_date.date():
@@ -670,13 +671,23 @@ class MrpReportWizard(models.TransientModel):
                 comu_inv = round((comu_pcs*price),2)
 
 
-                pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) )))
+                pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or pr.closing_date.date() > full_date.date())))
+
+                # pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) ) ))
                 
                 pending_ids = 0
                 
                 if pending_oa:
                     oa_ids = pending_oa.mapped('oa_id')
+                    pending_oa_ids = pending_oa.mapped('oa_id.id')
+                    pending_oa_ids = ','.join([str(i) for i in sorted(pending_oa_ids)])
+                    pending_oa_ids = [int(i) for i in sorted(pending_oa_ids.split(','))]
+                    qty = sum(pending_oa.mapped('product_uom_qty'))
                     pending_ids = len(oa_ids)
+                    _outputs = all_outputs.filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
+                    doneqty = sum(_outputs.mapped('qty'))
+                    pending_pcs = qty - doneqty
+                    pending_usd = round((pending_pcs * price),2)
                 
                 if start_time.date() == full_date.date():
                     # raise UserError((start_time.date(),full_date.date()))
@@ -805,7 +816,7 @@ class MrpReportWizard(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Daily Production Report')),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Invoice')),
             'target': 'self',
         }
 
@@ -887,6 +898,6 @@ class MrpReportWizard(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Daily Production Closed')),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Production Report (FG)')),
             'target': 'self',
         }

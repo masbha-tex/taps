@@ -5,14 +5,14 @@
             <field name="name">idea.criteria.form</field>
             <field name="model">idea.criteria</field>
             <field name="arch" type="xml">
-                <form string="Idea Box Title">
+                <form string="Idea Box Scope">
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <field name="active" invisible="1"/>
                         <div class="oe_button_box" name="button_box"/>
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only"/>
-                            <h1><field name="name" placeholder="e.g. Idea Box Title"/></h1>
+                            <h1><field name="name" placeholder="e.g. Idea Box Scope"/></h1>
                         </div>
                         <group>
                             <group>
@@ -31,7 +31,7 @@
             <field name="name">idea.criteria.tree</field>
             <field name="model">idea.criteria</field>
             <field name="arch" type="xml">
-                <tree string="Idea Box Title" sample="1">
+                <tree string="Idea Box Scope" sample="1">
                     <field name="name"/>
                     <!-- <field name="title_ids"/> -->
                     <field name="company_id" groups="base.group_multi_company" invisible="1"/>
@@ -43,8 +43,8 @@
             <field name="name">idea.criteria.search</field>
             <field name="model">idea.criteria</field>
             <field name="arch" type="xml">
-                <search string="Idea Box Title">
-                    <field name="name" string="Title"/>
+                <search string="Idea Box Scope">
+                    <field name="name" string="Scope"/>
                     <!-- <field name="title_ids" /> -->
                     <separator/>
                     <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
@@ -92,36 +92,36 @@
         </record>
 
         <record id="idea_criteria_kanban_action" model="ir.actions.act_window">
-            <field name="name">Idea Box Title</field>
+            <field name="name">Idea Box Scope</field>
             <field name="res_model">idea.criteria</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="view_idea_criteria_filter"/>
             <field name="help" type="html">
               <p class="o_view_nocontent_smiling_face">
-                Create a new idea Criteria
+                Create a new Idea Box Scope
               </p><p>
                 Odoo's idea structure is used to manage all idea Criteria
-                related to employees by idea Title: employee, etc.
+                related to employees by idea Scope: employee, etc.
               </p>
             </field>
         </record>
         <record id="idea_criteria_tree_action" model="ir.actions.act_window">
-            <field name="name">Idea Box Title</field>
+            <field name="name">Idea Box Scope</field>
             <field name="res_model">idea.criteria</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="search_view_id" ref="view_idea_criteria_filter"/>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Create a new Training Criteria
+                    Create a new Idea Box Scope
                 </p><p>
                     Odoo's LMS structure is used to manage all Training Criteria
-                    related to employees by Training Title: employee, etc.
+                    related to employees by Idea Box Scope: employee, etc.
                 </p>
             </field>
         </record>
         <menuitem
             id="menu_idea_criteria_tree"
-            name="Idea Box Title"
+            name="Idea Box Scope"
             action="idea_criteria_tree_action"
             parent="hr_idea.menu_hr_idea_matrix"
             groups="hr.group_hr_manager"

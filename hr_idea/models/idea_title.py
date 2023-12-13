@@ -9,7 +9,7 @@ class Title(models.Model):
     _inherit = ['mail.thread']
     _rec_name = 'name'
 
-    name = fields.Char(string="Scope", required=True, index=True, translate=True)
+    name = fields.Char(string="Idea Title", required=True, index=True, translate=True)
     active = fields.Boolean('Active', default=True)
     company_id = fields.Many2one('res.company', string='Company')
     criteria_id = fields.Many2one('idea.criteria', string='Title')

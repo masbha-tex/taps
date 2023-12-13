@@ -40,27 +40,27 @@
                         </div>
                         <group>
                         <group>
-                            <field name="partner_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]"/>
-                            <field name="concern"/>
-                            <field name="designation"/>
-                            <field name="mobile"/>
-                            <field name="visit_date"/>
+                            <field name="partner_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="concern" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="designation" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="mobile" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="visit_date" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
                         </group>
                         <group>
-                            <field name="product" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}"/>
-                            <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="visit_outcome"/>
-                            <field name="action"/>
+                            <field name="product" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="visit_outcome" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
+                            <field name="action" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
                             
                         </group>
                         </group>
                         <group>
                             <group>
-                                <field name="user_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="user_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
                             </group>
                             <group>
-                                <field name="team_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="team_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('done','cancel')]]}"/>
                             </group>
                         </group>
                     </sheet>
@@ -204,25 +204,72 @@
     <record id="crm_customer_visit_view_graph" model="ir.ui.view">
             <field name="name">crm.visit.graph.view</field>
             <field name="model">crm.visit</field>
+            <field name="priority">1000</field>
             <field name="arch" type="xml">
-                <graph string="Customer Visit" sample="1" type="bar">
+                <graph string="Customer Visit Graph" sample="1" type="bar">
                     <field name="team_id" type="row"/>
-                    <field name="visit_date" interval="year" type="row"/>
+                    <field name="visit_date" interval="month"/>
                     <field name="color" invisible="1"/>
-                    <field name="visit_date" type="measure" string="Lead"/>
+                    <!-- <field name="visit_date" type="measure" string="Lead"/> -->
                 </graph>
             </field>
         </record>
-    <record id="crm_customer_visit_action_dashboard_graph" model="ir.actions.act_window.view">
+    <record id="crm_customer_visit_view_graph_user_wise" model="ir.ui.view">
+            <field name="name">crm.visit.graph.view.user.wise</field>
+            <field name="model">crm.visit</field>
+            <field name="priority">999</field>
+            <field name="arch" type="xml">
+                <graph string="Customer Visit Graph User Wise" sample="1" type="bar">
+                    <field name="user_id" type="row"/>
+                    <field name="visit_date" interval="month"/>
+                    <field name="color" invisible="1"/>
+                    <!-- <field name="visit_date" type="measure" string="Lead"/> -->
+                </graph>
+            </field>
+        </record>
+    <record id="crm_customer_visit_view_pivot" model="ir.ui.view">
+         <field name="name">crm.visit.pivot.view</field>
+         <field name="model">crm.visit</field>
+         <field name="arch" type="xml">
+             <pivot string="Customer Visit Pivot" disable_linking="True" sample="1">
+                 <field name="team_id" type="row" />
+                 <field name="user_id" type="row" />
+                 <field name="visit_date" interval="year" type="col"/>
+                 <field name="visit_date" interval="month" type="col"/>
+                 <!-- <field name="price_subtotal" type="measure"/> -->
+             </pivot>
+         </field>
+    </record>
+    
+    <!-- <record id="crm_customer_visit_graph_action" model="ir.actions.act_window.view">
             <field name="sequence" eval="3"/>
             <field name="view_mode">graph</field>
             <field name="view_id" ref="taps_crm.crm_customer_visit_view_graph"/>
-            <!-- <field name="act_window_id" ref="crm_enterprise.crm_opportunity_action_dashboard"/> -->
-    </record>
+    </record> -->
+    <record id="crm_customer_visit_action_dashboard" model="ir.ui.view">
+            <field name="name">crm.visit.view.dashboard</field>
+            <field name="model">crm.visit</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <dashboard sample="1">
+                    <group>
+                        <view type="graph" ref="taps_crm.crm_customer_visit_view_graph"/>
+                        <!-- <view type="graph" ref="taps_crm.crm_customer_visit_view_graph_user_wise"/> -->
+                    </group>
+                    <!-- <group>
+                            <widget name="pie_chart" title="Sales Teams" attrs="{'groupby': 'team_id'}"/>
+                            <widget name="pie_chart" title="Medium" attrs="{'groupby': 'team_id'}"/>
+                        </group> -->
+                    <group>
+                        <view type="pivot" ref="taps_crm.crm_customer_visit_view_pivot"/>
+                    </group>
+                </dashboard>
+            </field>
+        </record>
     <record model="ir.actions.act_window" id="crm_visit_action">
             <field name="name">Customer Visit</field>
             <field name="res_model">crm.visit</field>
-            <field name="view_mode">tree,kanban,form,graph</field>
+            <field name="view_mode">tree,kanban,form,dashboard</field>
             <!-- <field name="domain">['|', ('type','=','lead'), ('type','=',False)]</field> -->
             <!-- <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/> -->
             <!-- <field name="context">{

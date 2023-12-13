@@ -16,8 +16,8 @@
 				<sheet>
                     <widget name="web_ribbon" title="Refused" bg_color="bg-danger"
                             attrs="{'invisible': [('state', '!=', 'Refused')]}"/>
-                    <widget name="web_ribbon" title="Approved" bg_color="bg-success"
-                            attrs="{'invisible': [('state', '!=', 'Approved')]}"/>
+                    <widget name="web_ribbon" title="Validate" bg_color="bg-success"
+                            attrs="{'invisible': [('state', '!=', 'Validate')]}"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_get_attachment_view"
                             class="oe_stat_button"
@@ -28,7 +28,7 @@
                     </div>
                     <field name="name"/>
                     <div class="oe_title">
-                        <h1><field name="priority" widget="priority"/></h1>
+                        <h1><field name="priority" widget="priority" groups="hr.group_hr_manager"/></h1>
                     </div>
                     <div class="oe_title">
                         <label for="details" class="oe_edit_only" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
@@ -37,18 +37,13 @@
                     <group>
                         <group>
                             <field name="criteria_id" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                            <!-- <field name="title_ids" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
                             <field name="employee_id" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                         </group>
                         <group>
-                            <!-- <field name="r_type" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
                             
-                            <field name="issue_date" attrs="{'invisible': [('state', '!=', 'Approved')]}"/>
+                            <field name="issue_date" attrs="{'invisible': [('state', '!=', 'Validate')]}"/>
                         </group>                       
-                    </group>
-                    <group colspan="2" col="2">
-                        <!-- <field name="details" placeholder="Share your idea....." attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
-                    </group>                    
+                    </group>                   
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" options="{'open_attachments': True}"/>
@@ -66,17 +61,53 @@
         <field name="arch" type="xml">
             <tree string="Idea Box" sample="1">
                 <field name="name"/>
-                <field name="priority" widget="priority"/>
+                <field name="priority" widget="priority" groups="hr.group_hr_manager"/>
                 <field name="details"/>
-                <!-- <field name="employee_id"/> -->
-                <!-- <field name="r_type" widget="selection"/> -->
                 <field name="criteria_id"/>
                 <!-- <field name="details" optional="hide"/> -->
                 <field name="employee_id" options="{'no_create':true, 'no_open':true}"/>
                 <field name="issue_date"/>
-                <!-- <field name="state" optional="show" widget="badge" decoration-success="state == 'approved' or state == 'done'" decoration-bf="1" options="{'color_field': 'color'}"/>   -->
-                <field name="state" widget="badge" decoration-success="state == 'Approved'" decoration-warning="state == 'Submit'" decoration-danger="state == 'Refused'" decoration-info="state == 'draft'"/>  
+                <field name="state" widget="badge" decoration-success="state == 'Validate'" decoration-warning="state == 'Submit'" decoration-danger="state == 'Refused'" decoration-info="state == 'draft'"/>  
             </tree>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="view_hr_idea_kanban">
+        <field name="name">hr.idea.kanban</field>
+        <field name="model">hr.idea</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="details"/>
+                <field name="priority" widget="priority" groups="hr.group_hr_manager"/>
+                
+                   <templates>
+                       <t t-name="kanban-box">
+                       <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_hr_kanban_record">
+                        <field name="image_128" widget="image" class="o_kanban_image_fill_left" options="{'zoom': true, 'zoom_delay': 1000, 'background': true, 'preventClicks': false}"/>
+                            <div class="oe_kanban_details">
+                               <div class="o_kanban_record_top">
+                                   <div class="o_kanban_record_headings">
+                                       <strong class="o_kanban_record_title">
+                                            <field name="employee_id" placeholder="Employee's Name"/>
+                                       </strong>
+                                                                       
+                                   </div>
+                               </div>
+                               <field name="state" widget="badge" decoration-success="state == 'Validate'" decoration-warning="state == 'Submit'" decoration-danger="state == 'Refused'" decoration-info="state == 'draft'"/> 
+                               <ul>
+                                   <li class="o_text_overflow"><field name="details"/></li>
+                               </ul>
+                                <div>
+                                	<field name="priority" widget="priority" groups="hr.group_hr_manager"/>
+                                </div> 
+                           </div>
+                       </div>
+                       </t>
+                   </templates>
+            </kanban>
         </field>
     </record>
 
@@ -86,20 +117,19 @@
         <field name="arch" type="xml">
             <search>
                 <field name="employee_id"/>
-                <!-- <field name="submit_by"/> -->
+                <field name="criteria_id"/>
                 <filter name="issue_date" date="issue_date"/>
                 <group string="Group By">
                     <filter name="criteria_id" context="{'group_by': 'criteria_id'}"/>
-                    <!-- <filter name="title_ids" context="{'group_by': 'title_ids'}"/> -->
-                    <!-- <filter name="submit_by" context="{'group_by': 'submit_by'}"/> -->
                     <filter name="employee_id" context="{'group_by': 'employee_id'}"/>
+                    <filter name="priority" context="{'group_by': 'priority'}"/>
                     <filter name="issue_date" context="{'group_by': 'issue_date'}"/>
                 </group>
                 <searchpanel>
                     <field name="company_id" enable_counters="1"/>
                     <field name="state" enable_counters="1"/>
+                    <field name="priority" enable_counters="1"/>
                     <field name="criteria_id" enable_counters="1"/>
-                    <!-- <field name="title_ids" enable_counters="1"/> -->
                     <field name="department_id" enable_counters="1"/>
                 </searchpanel>
             </search>
@@ -110,7 +140,7 @@
     <record model="ir.actions.act_window" id="action_hr_idea">
         <field name="name">Idea Box</field>
         <field name="res_model">hr.idea</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,kanban</field>
     </record>
 
 	<menuitem name="Idea Box" parent="hr.menu_hr_root" id="menu_hr_idea" sequence="5" action="action_hr_idea"/>

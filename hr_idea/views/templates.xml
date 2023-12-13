@@ -1,18 +1,14 @@
 <odoo>
     <data>
-    <template id="mail_idea_template">
-
-        <div class="card" style="position: relative; width: 680px; height: 426px; overflow: hidden; background-image: url('https://taps.odoo.com/hr_idea/static/src/img/idea.jpeg');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">
-                       
-             <!-- <p style="font-size: 18px; font-weight: bold; margin-top: 260px; color: #000000; text-align: center;">${ctx['employee_to_name']}</p> -->
-             <div class="row">
-                 <div class="col-2"></div>
-                 <div class="col-8"><p style="font-size: 15px; color: #000000; text-align: center; margin-left: 90px; margin-right: 90px;">${ctx['note']}</p></div>
-                 <div class="col-2"></div>
-             </div>
-             <p style="font-size: 16px; color: #000000; text-align: center;">Submited by - ${ctx['employee_to_name']}</p>
-             <br/>
-                        
+        <template id="mail_idea_template">
+           <div class="card" style="position: relative; width: 637px; height: 426px; overflow: hidden; background-image: url('https://taps-testing-10495661.dev.odoo.com/hr_idea/static/src/img/idea.png');  background-size: cover; color: #fff; text-align: center;padding: 30px;bottom: 0px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); ">     
+                <p style="font-size: 18px; font-weight: bold; margin-top: 250px; color: #000000; text-align: left;  margin-left: 390px;">${ctx['employee_to_name']}</p>
+                <div class="row">
+                    <div class="col-7">
+                        <p style="font-size: 15px; color: #0000CC; text-align: center; margin-left: 300px; margin-right:40px;">${ctx['note']}</p>
+                    </div>
+                </div>
+                <br/>
             </div>
         </template>
     </data>
