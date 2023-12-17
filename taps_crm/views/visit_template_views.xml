@@ -358,7 +358,7 @@
     <record id="visit_action_dashboard_list" model="ir.actions.act_window">
         <field name="name">Visit List</field>
         <field name="res_model">crm.visit</field>
-        <field name="view_mode">tree,kanban</field>
+        <field name="view_mode">tree,kanban,form,dashboard,graph,pivot</field>
         <field name="view_id" ref="taps_crm.crm_visit_template_view_list"/>
         <field name="search_view_id" ref="taps_crm.view_crm_customer_visit_filter"/>
         <field name="target">main</field>
@@ -373,7 +373,7 @@
     <record id="visit_action_dashboard_kanban" model="ir.actions.act_window">
         <field name="name">Visit Kanban</field>
         <field name="res_model">crm.visit</field>
-        <field name="view_mode">tree,kanban</field>
+        <field name="view_mode">tree,kanban,form,dashboard,graph,pivot</field>
         <field name="view_id" ref="taps_crm.crm_visit_kanban_view"/>
         <field name="search_view_id" ref="taps_crm.view_crm_customer_visit_filter"/>
         <field name="target">main</field>

@@ -103,7 +103,7 @@ class CustomerVisit(models.Model):
         result['jamuna'] = visit.search_count([('team_id.name', '=', 'JAMUNA')])
         result['halda'] = visit.search_count([('team_id.name', '=', 'HALDA')])
         result['turag'] = visit.search_count([('team_id.name', '=', 'TURAG')])
-        result['total'] = visit.search_count([])
+        result['total'] = visit.search_count([('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
         # raise UserError((result['brahmaputra']))
         
         return result
