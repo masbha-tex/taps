@@ -68,7 +68,7 @@
                                 শিক্ষানবীশ পর্যায় সফলভাবে
                                 সম্পন্ন না করার কারনে কতৃপক্ষ আপনার চাকুরীর শিক্ষানবীশ কাল আরও ০৩ (তিন) মাস বর্ধিতকরন
                                 করেছে, যাহা 
-                                <strong t-esc="employee.joining_date.strftime('%d-%m-%Y')"/>
+                                <strong t-esc="(employee.joining_date+relativedelta(months=3)).strftime('%d-%m-%Y')"/>
                                 ইং তারিখ
                                 হতে কার্যকরি।)
                             </div>

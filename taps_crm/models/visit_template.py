@@ -56,6 +56,59 @@ class CustomerVisit(models.Model):
     color = fields.Integer('Color Index', default=0)
 
 
+
+    @api.model
+    def retrieve_dashboard(self):
+        """ This function returns the values to populate the custom dashboard in
+            the purchase order views.
+        """
+        
+        self.check_access_rights('read')
+        povalue = 0
+        # raise UserError(('hi'))
+        result = {
+            'marketing': 0,#all_to_send
+            'brahmaputra': 0,#all_waiting
+            'meghna': 0,#all_late
+            
+            'shitalakha': 0,
+            'karnaphuli': 0,
+            'padma': 0,
+            'teesta': 0,
+            'sangu': 0,#all_avg_order_value
+            'jamuna': 0,#all_avg_days_to_purchase
+            'halda': 0,#all_total_last_7_days
+            'turag': 0,#all_sent_rfqs
+            'total': 0,
+            
+        }
+
+        # currency = self.env.company.currency_id
+        # result['company'] = self.env.company.id
+        current_datetime = date.today()
+
+
+        first_date_of_current_month = current_datetime.replace(day=1)
+        last_date_of_current_month = first_date_of_current_month + relativedelta(day=31)
+       
+        visit = self.env['crm.visit'].search([('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['marketig'] = visit.search_count([('team_id.name', '=', 'MARKETING')])
+        result['brahmaputra'] = visit.search_count([('team_id.name', '=', 'BRAHMAPUTRA')])
+        result['meghna'] = visit.search_count([('team_id.name', '=', 'MEGHNA')])
+        result['shitalakha'] = visit.search_count([('team_id.name', '=', 'SHITALAKHA')])
+        result['karnaphuli'] = visit.search_count([('team_id.name', '=', 'KARNAPHULI')])
+        result['padma'] = visit.search_count([('team_id.name', '=', 'PADMA')])
+        result['teesta'] = visit.search_count([('team_id.name', '=', 'TEESTA')])
+        result['sangu'] = visit.search_count([('team_id.name', '=', 'SANGU')])
+        result['jamuna'] = visit.search_count([('team_id.name', '=', 'JAMUNA')])
+        result['halda'] = visit.search_count([('team_id.name', '=', 'HALDA')])
+        result['turag'] = visit.search_count([('team_id.name', '=', 'TURAG')])
+        result['total'] = visit.search_count([])
+        # raise UserError((result['brahmaputra']))
+        
+        return result
+
+
     @api.model
     def create(self, vals):
         if 'company_id' in vals:

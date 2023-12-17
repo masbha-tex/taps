@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <!-- This template is for a table at the top of purchase views that shows some KPIs. -->
+    <t t-name="taps_crm.VisitDashboard">
+        <div class="o_visit_dashboard container">
+        <div class="row">
+            <div class="col-sm-12">
+            <table class="table table-responsive table-sm">
+                
+                <thead>
+                    <tr>
+                        <!-- <td class="o_text">
+                            <div>Team</div>
+                        </td> -->
+                        <td  class="col-1 o_main o_dashboard_action" title="Marketing" name="taps_crm.visit_action_dashboard" context='{"search_default_marketing": true}'>
+                            <a href="#"><t t-esc="values['marketing']"/><br/>Marketing</a>
+                        </td>
+                        <td   class="col-1 o_main o_dashboard_action" title="Brahmaputra" name="taps_crm.visit_action_dashboard" context='{"search_default_brahmaputra": true}'>
+                            <a href="#"><t t-esc="values['brahmaputra']"/><br/>Brahmaputra</a>
+                        </td>
+                        <td  class="col-1 o_main o_dashboard_action" title="Meghna" name="taps_crm.visit_action_dashboard" context='{"search_default_meghna": true}'>
+                            <a href="#"><t t-esc="values['meghna']"/><br/>Meghna</a>
+                        </td>
+                        <td  class="col-1 o_main o_dashboard_action" title="Shitalakha" name="taps_crm.visit_action_dashboard" context='{"search_default_shitalakha": true}'>
+                            <a href="#"><t t-esc="values['shitalakha']"/><br/>Shitalakha</a>
+                        </td>
+                        <td  class="col-1 o_main o_dashboard_action" title="Karnaphuli" name="taps_crm.visit_action_dashboard" context='{"search_default_karnaphuli": true}'>
+                            <a href="#"><t t-esc="values['karnaphuli']"/><br/>Karnaphuli</a>
+                        </td>
+                        <td   class="col-1 o_main o_dashboard_action" title="Padma" name="taps_crm.visit_action_dashboard" context='{"search_default_padma": true}'>
+                            <a href="#"><t t-esc="values['padma']"/><br/>Padma</a>
+                        </td>
+                        <td  class="col-1 o_main o_dashboard_action" title="Teesta" name="taps_crm.visit_action_dashboard" context='{"search_default_teesta": true}'>
+                            <a href="#"><t t-esc="values['teesta']"/><br/>Teesta</a>
+                        </td>
+                        <td   class="col-1 o_main o_dashboard_action" title="Sangu" name="taps_crm.visit_action_dashboard" context='{"search_default_sangu": true}'>
+                            <a href="#"><t t-esc="values['sangu']"/><br/>Sangu</a>
+                        </td>
+                        <td   class="col-1 o_main o_dashboard_action" title="Jamuna" name="taps_crm.visit_action_dashboard" context='{"search_default_jamuna": true}'>
+                            <a href="#"><t t-esc="values['jamuna']"/><br/>Jamuna</a>
+                        </td>
+                        <td  class="col-1 o_main o_dashboard_action" title="Halda" name="taps_crm.visit_action_dashboard" context='{"search_default_halda": true}'>
+                            <a href="#"><t t-esc="values['halda']"/><br/>Halda</a>
+                        </td>
+                        <td  class="col-1 o_main o_dashboard_action" title="Turag" name="taps_crm.visit_action_dashboard" context='{"search_default_turag": true}'>
+                            <a href="#"><t t-esc="values['turag']"/><br/>Turag</a>
+                        </td>
+                        <td style="background-color:#774373" class="col-1 o_main o_dashboard_action" title="Total" name="taps_crm.visit_action_dashboard" context='{"search_default_total": true}'>
+                            <a href="#"><t t-esc="values['total']"/><br/>Total</a>
+                        </td>
+                    </tr>
+                </thead>
+            </table></div>
+
+            
+        </div></div>
+    </t>
+</templates>

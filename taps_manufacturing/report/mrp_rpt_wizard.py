@@ -71,8 +71,14 @@ class MrpReportWizard(models.TransientModel):
         if self.report_type == "dpcl":
             data = {'month_list': self.month_list}
             return self.daily_closed_xls_template(self, data=data)
-        #     raise UserError(('This Report is Under Construction'))
-
+        if self.report_type == "dppr":
+            if self.date_from == False or self.date_to == False:
+                raise UserError(('Select From and To date'))
+            elif self.date_from > self.date_to:
+                raise UserError(('From date must be less then To date'))
+            else:
+                data = {'date_from': self.date_from,'date_to': self.date_to}
+                return self.packing_xls_template(self, data=data)
 
     def pi_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
@@ -140,6 +146,8 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
            
             sheet = workbook.add_worksheet(('%s' % (report_name)))
+            
+            sheet.freeze_panes(1, 0)
             
             sheet.write(0, 0, "CUSTOMER NAME", column_style)
             sheet.write(0, 1, "PRODUCT", column_style)
@@ -499,6 +507,7 @@ class MrpReportWizard(models.TransientModel):
             
             report_name = item.name
             sheet = workbook.add_worksheet(('%s' % (report_name)))
+            sheet.freeze_panes(1, 0)
             
             sheet.write(0, 0, "OA ID", column_style)
             sheet.write(0, 1, "PI NO", column_style)
@@ -595,6 +604,7 @@ class MrpReportWizard(models.TransientModel):
             full_date = full_date.replace(day = day)
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
+            sheet.freeze_panes(1, 0)
             if start_time.date() == full_date.date():
                 sheet.activate()
                 
@@ -915,5 +925,93 @@ class MrpReportWizard(models.TransientModel):
         return {
             'type': 'ir.actions.act_url',
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Production Report (FG)')),
+            'target': 'self',
+        }
+
+    def packing_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
+        
+        all_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing')])
+        all_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= data.get('date_from') and pr.action_date.date() <= data.get('date_to'))
+        
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        
+        column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
+        
+        _row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
+        
+        row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'vcenter', 'align': 'center', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
+            
+        items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI'),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.sequence)
+        
+        report_data = []
+        
+        for item in items:
+            report_data = []
+            itemwise_outputs = all_outputs.filtered(lambda pr: pr.fg_categ_type == item.name).sorted(key=lambda pr: pr.action_date)
+            if itemwise_outputs:
+                sheet = workbook.add_worksheet(('%s' % (item.name)))
+                sheet.freeze_panes(1, 0)
+                
+                sheet.write(0, 0, "DATE", column_style)
+                sheet.write(0, 1, "OA", column_style)
+                sheet.write(0, 2, "SHADE", column_style)
+                sheet.write(0, 3, "SIZE", column_style)
+                sheet.write(0, 4, "QTY", column_style)
+                sheet.write(0, 5, "PACKET", column_style)
+                sheet.write(0, 6, "REMARK", column_style)
+                sheet.write(0, 7, "PAGE NO", column_style)
+                sheet.write(0, 8, "TABLE", column_style)
+    
+                sheet.set_column(0, 0, 15)
+                sheet.set_column(1, 1, 15)
+                sheet.set_column(2, 2, 25)
+                # sheet.set_column(3, 3, 15)
+                # sheet.set_column(4, 4, 15)
+                # sheet.set_column(5, 5, 15)
+                # sheet.set_column(6, 6, 15)
+                # sheet.set_column(7, 7, 15)
+                # sheet.set_column(8, 8, 15)
+                
+                order_data = []
+                for i in itemwise_outputs:
+                    size = i.sizein
+                    if size == 'N/A':
+                        size == i.sizecm
+                    order_data = [
+                        i.action_date.strftime("%d-%b-%Y"),
+                        i.oa_id.name,
+                        i.shade,
+                        size,
+                        i.qty,
+                        i.pack_qty,
+                        '',
+                        '',
+                        '',
+                        ]
+                    report_data.append(order_data)
+            row = 1
+            for line in report_data:
+                col = 0
+                for l in line:
+                    sheet.write(row, col, l, format_label_1)
+                    col += 1
+                row += 1
+
+        
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Packing Production Report')),
             'target': 'self',
         }

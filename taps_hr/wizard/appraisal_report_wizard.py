@@ -1288,7 +1288,7 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.write(5, 7, 'Apr', column_product_style)
             worksheet.write(5, 8, 'May', column_product_style)
             worksheet.write(5, 9, 'Jun', column_product_style)
-            worksheet.write(5, 10,'Q1', column_product_style)
+            worksheet.write(5, 10, 'Q1', column_product_style)
             worksheet.write(5, 11, 'Jul', column_product_style)
             worksheet.write(5, 12, 'Aug', column_product_style)
             worksheet.write(5, 13, 'Sep', column_product_style)
@@ -1296,7 +1296,7 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.write(5, 15, 'Oct', column_product_style)
             worksheet.write(5, 16, 'Nov', column_product_style)
             worksheet.write(5, 17, 'Dec', column_product_style)
-            worksheet.write(5, 18,'Q3', column_product_style)
+            worksheet.write(5, 18, 'Q3', column_product_style)
             worksheet.write(5, 19, 'Jan', column_product_style)
             worksheet.write(5, 20, 'Feb', column_product_style)
             worksheet.write(5, 21, 'Mar', column_product_style)
@@ -2058,6 +2058,9 @@ class HeadwisePDFReport(models.TransientModel):
                 round(edata.baseline,2),
                 round(edata.target,2),
                 (edata.weight/100),
+                edata.y_a_ytd,
+                edata.y_ytd,
+                "",
                 "",
                 "",
                 "",
@@ -2076,14 +2079,14 @@ class HeadwisePDFReport(models.TransientModel):
             report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
             report_column_style_2.set_text_wrap()
             report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '0.00%'})
-            worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+            worksheet.merge_range('A1:K1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
     
             report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
     #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-            worksheet.merge_range('A2:H2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
-            worksheet.merge_range('A3:H3', ('KPI objective with Action Plan'), report_small_title_style)
+            worksheet.merge_range('A2:K2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+            worksheet.merge_range('A3:K3', ('KPI objective with Action Plan'), report_small_title_style)
             worksheet.merge_range('A4:E4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
-            worksheet.merge_range('F4:H4', "",report_title_style)
+            worksheet.merge_range('F4:K4', "",report_title_style)
             # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
     #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
             
@@ -2100,8 +2103,9 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.set_column(0,0,3)
             worksheet.set_column(1,1,50)
             worksheet.set_column(2,3,8)
-            worksheet.set_column(4,4,9.44)
-            worksheet.set_column(5,7,20)
+            worksheet.set_column(4,6,10)
+            worksheet.set_column(7,8,20)
+            worksheet.set_column(9,10,14)
             
             
             
@@ -2110,24 +2114,25 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.write(4, 2, 'Baseline', column_product_style)
             worksheet.write(4, 3, 'Target', column_product_style)
             worksheet.write(4, 4, 'Weight', column_product_style)
-            worksheet.write(4, 5, 'Last Month Achieved', column_product_style)
-            worksheet.write(4, 6, 'Current Monthly Plan', column_product_style)
-            worksheet.write(4, 7, 'Actions', column_product_style)
+            worksheet.write(4, 5, 'ACVD YTD', column_product_style)
+            worksheet.write(4, 6, 'Weight YTD', column_product_style)
+            worksheet.write(4, 7, 'Last Month Achieved', column_product_style)
+            worksheet.write(4, 8, 'Current Monthly Plan', column_product_style)
+            worksheet.write(4, 9, 'Actions', column_product_style)
+            worksheet.write(4, 10, 'Timeline', column_product_style)
             col = 0
             row=5
             
             grandtotal = 0
-    #         grandtotal2 = 0
+            grandtotal2 = 0
     #         grandtotal3 = 0
             
             slnumber = 0
             for line in report_data:
                 # raise UserError((line[8],emp.id))
                 # slnumber=0
-                
-                
-                
-                if line[8] == emp.id:
+
+                if line[11] == emp.id:
                     slnumber += 1
                     col=0
                     for l in line:
@@ -2157,7 +2162,12 @@ class HeadwisePDFReport(models.TransientModel):
                             grandtotal = grandtotal+l
                             # format = workbook.add_format({'num_format': num_formats})
                             worksheet.write(row, col, l, report_column_style_3)
-                        elif col==8:
+                        elif col==6:
+                            grandtotal2 = grandtotal2+l
+                            # format = workbook.add_format({'num_format': num_formats})
+                            worksheet.write(row, col, l/100, report_column_style_3)
+                        
+                        elif col==11:
                             break
                         else:
                             worksheet.write(row, col, l, report_column_style_2)
@@ -2173,8 +2183,11 @@ class HeadwisePDFReport(models.TransientModel):
                     worksheet.write(row, 3, '', report_small_title_style)
                     worksheet.write(row, 4, round(grandtotal,2), report_small_title_style)
                     worksheet.write(row, 5, '', report_small_title_style)
-                    worksheet.write(row, 6, '', report_small_title_style)
+                    worksheet.write(row, 6, round(grandtotal2,2)/100, report_small_title_style)
                     worksheet.write(row, 7, '', report_small_title_style)
+                    worksheet.write(row, 8, '', report_small_title_style)
+                    worksheet.write(row, 9, '', report_small_title_style)
+                    worksheet.write(row, 10, '', report_small_title_style)
                     #raise UserError((datefrom,dateto,bankname,categname))
             
         workbook.close()

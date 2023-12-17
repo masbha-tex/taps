@@ -58,7 +58,7 @@ var ExtendFormController = FormController.include({
                     context: self.context,
                 }).then(function (result) {
               
-                    self.do_notify('Success', result[0]['date_from']);
+                    self.do_notify('warning', result[0]['date_from']);
                     
                 });
                 

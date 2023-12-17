@@ -173,25 +173,62 @@ class SaleOrder(models.Model):
         
     #     result = super(SaleOrder, self).write(values)
     #     return result
- 
 
+    cancel_confirm = True
+    def cancel_confirm (self, confirm = None):
+        if confirm:
+            cancel_warning = self._show_cancel_wizard()
+            if cancel_warning:
+                return {
+                    'name': _('Cancel Sales Order'),
+                    'view_mode': 'form',
+                    'res_model': 'sale.order.cancel',
+                    'view_id': self.env.ref('sale.sale_order_cancel_view_form').id,
+                    'type': 'ir.actions.act_window',
+                    'context': {'default_order_id': self.id},
+                    'target': 'new'
+                }
+            return self._action_cancel()
+        
     def action_cancel(self):
-        # if self.state == "sale" and self.sales_type == "oa":
-        #     mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
-        #     if mrp:
-        #         raise UserError(('You can not cancel, this OA is in plan'))
-        cancel_warning = self._show_cancel_wizard()
-        if cancel_warning:
-            return {
-                'name': _('Cancel Sales Order'),
-                'view_mode': 'form',
-                'res_model': 'sale.order.cancel',
-                'view_id': self.env.ref('sale.sale_order_cancel_view_form').id,
-                'type': 'ir.actions.act_window',
-                'context': {'default_order_id': self.id},
-                'target': 'new'
-            }
-        return self._action_cancel()
+        if self.state == "sale" and self.sales_type == "oa":
+            mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
+            if mrp:
+                return {
+                    'name': _('Cancel Warning'),
+                    'view_mode': 'form',
+                    'res_model': 'oa.modification.confirmation',
+                    'view_id': self.env.ref('taps_sale.view_modification_confirmation').id,
+                    'type': 'ir.actions.act_window',
+                    'context': {'default_order_id': self.id},
+                    'target': 'new'
+                }
+            else:
+                cancel_warning = self._show_cancel_wizard()
+                if cancel_warning:
+                    return {
+                        'name': _('Cancel Sales Order'),
+                        'view_mode': 'form',
+                        'res_model': 'sale.order.cancel',
+                        'view_id': self.env.ref('sale.sale_order_cancel_view_form').id,
+                        'type': 'ir.actions.act_window',
+                        'context': {'default_order_id': self.id},
+                        'target': 'new'
+                    }
+                return self._action_cancel()
+        else:
+            cancel_warning = self._show_cancel_wizard()
+            if cancel_warning:
+                return {
+                    'name': _('Cancel Sales Order'),
+                    'view_mode': 'form',
+                    'res_model': 'sale.order.cancel',
+                    'view_id': self.env.ref('sale.sale_order_cancel_view_form').id,
+                    'type': 'ir.actions.act_window',
+                    'context': {'default_order_id': self.id},
+                    'target': 'new'
+                }
+            return self._action_cancel()
 
 
     
@@ -228,9 +265,6 @@ class SaleOrder(models.Model):
         for record in docs:
             # record.is_selected = False
             record.unlink()
-            
-            
-    
         
             
     # def action_send_card(self,id):
@@ -1202,17 +1236,19 @@ class SaleOrder(models.Model):
         for products in self.order_line:
             can_create = True
             op_can_create = True
-            
             mrp_lines = None
             sale_lines = None
             mrp_id = None
             state = 'waiting'
-            # if self.state 
+            if self.is_hold:
+                state = 'hold'
+            if self.state == 'cancel':
+                state = 'cancel'
             if exist_mrp:
                 m_order = exist_mrp.filtered(lambda mo: mo.sale_order_line.id == products.id)
                 if m_order:
                     can_create = False
-                    mrp_update = m_order.update({'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'revision_no':self.revised_no,'logo':products.logo,'logoref':products.logoref,'logo_type':products.logo_type,'style':products.style,'gmt':products.gmt,'shapefin':products.shapefin,'b_part':products.b_part,'c_part':products.c_part,'d_part':products.d_part,'finish_ref':products.finish_ref,'product_code':products.product_code,'shape':products.shape,'back_part':products.back_part})
+                    mrp_update = m_order.update({'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty,'remarks':products.order_id.remarks,'revision_no':self.revised_no,'logo':products.logo,'logoref':products.logoref,'logo_type':products.logo_type,'style':products.style,'gmt':products.gmt,'shapefin':products.shapefin,'b_part':products.b_part,'c_part':products.c_part,'d_part':products.d_part,'finish_ref':products.finish_ref,'product_code':products.product_code,'shape':products.shape,'back_part':products.back_part,'state':state})
                     mrp_lines = str(m_order.id)
                     sale_lines = str(products.id)
                     mrp_id = m_order.id

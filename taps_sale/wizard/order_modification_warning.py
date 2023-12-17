@@ -33,10 +33,10 @@ class OrderModificationConfirmation(models.TransientModel):
     #             pick_id._log_less_quantities_than_expected(moves_to_log)
 
     def process(self):
-        return True
+        return self.order_id.cancel_confirm(True)
 
     def process_cancel(self):
-        return False
+        return self.order_id.cancel_confirm(False)
 
     def cancel(self):
         return False
