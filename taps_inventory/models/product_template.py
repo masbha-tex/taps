@@ -174,11 +174,7 @@ class IncludeCateTypeInPT(models.Model):
         ('Rivet','Rivet'),
         ('Eyelet','Eyelet'),
         ('Snap Button','Snap Button'),
-        ('Rivet','Rivet'),
         ('Shank Button','Shank Button'), 
-        ('Rivet','Rivet'), 
-        ('Shank Button','Shank Button'), 
-        ('Snap Button','Snap Button')
         ],string='FG Category', store=True, readonly=False, copy=False)
 
     pack_qty = fields.Float(string="Qty/Pack", copy=True, default=0.0)

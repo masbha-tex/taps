@@ -1323,16 +1323,19 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(0, 0, "DATE", column_style)
                 sheet.write(0, 1, "OA", column_style)
                 sheet.write(0, 2, "SHADE", column_style)
-                sheet.write(0, 3, "SIZE", column_style)
-                sheet.write(0, 4, "QTY", column_style)
-                sheet.write(0, 5, "PACKET", column_style)
-                sheet.write(0, 6, "REMARK", column_style)
-                sheet.write(0, 7, "PAGE NO", column_style)
-                sheet.write(0, 8, "TABLE", column_style)
+                sheet.write(0, 3, "TZP", column_style)
+                sheet.write(0, 4, "STOPPER", column_style)
+                sheet.write(0, 5, "SIZE", column_style)
+                sheet.write(0, 6, "QTY", column_style)
+                sheet.write(0, 7, "PACKET", column_style)
+                sheet.write(0, 8, "REMARK", column_style)
+                sheet.write(0, 9, "PAGE NO", column_style)
+                sheet.write(0, 10, "TABLE", column_style)
     
                 sheet.set_column(0, 0, 15)
                 sheet.set_column(1, 1, 15)
                 sheet.set_column(2, 2, 25)
+                sheet.set_column(2, 3, 25)
                 # sheet.set_column(3, 3, 15)
                 # sheet.set_column(4, 4, 15)
                 # sheet.set_column(5, 5, 15)
@@ -1342,14 +1345,24 @@ class MrpReportWizard(models.TransientModel):
                 
                 order_data = []
                 for i in itemwise_outputs:
-                    size = i.sizein
-                    if size == 'N/A':
-                        size == i.sizecm
+                    order_data = []
+                    slider = stopper = sizes = None
+                    
+                    sizes = i.sizein
+                    if sizes == "N/A":
+                        sizes = i.sizecm
+                    
+                    slider = i.slidercodesfg.split("TZP-",1)[1]
+                    if i.mrp_line.topbottom:
+                        stopper = i.mrp_line.topbottom
+                    
                     order_data = [
                         i.action_date.strftime("%d-%b-%Y"),
                         i.oa_id.name,
                         i.shade,
-                        size,
+                        slider,
+                        stopper,
+                        sizes,
                         i.qty,
                         i.pack_qty,
                         '',
