@@ -92,7 +92,7 @@ class CustomerVisit(models.Model):
         last_date_of_current_month = first_date_of_current_month + relativedelta(day=31)
        
         visit = self.env['crm.visit'].search([('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
-        result['marketig'] = visit.search_count([('team_id.name', '=', 'MARKETING')])
+        result['marketing'] = visit.search_count([('team_id.name', '=', 'MARKETING')])
         result['brahmaputra'] = visit.search_count([('team_id.name', '=', 'BRAHMAPUTRA')])
         result['meghna'] = visit.search_count([('team_id.name', '=', 'MEGHNA')])
         result['shitalakha'] = visit.search_count([('team_id.name', '=', 'SHITALAKHA')])
