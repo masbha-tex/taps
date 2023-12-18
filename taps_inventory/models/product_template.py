@@ -169,8 +169,17 @@ class IncludeCateTypeInPT(models.Model):
         ('Plastic #5 OE', 'Plastic #5 OE'),
         ('Plastic #8 CE', 'Plastic #8 CE'),
         ('Plastic #8 OE', 'Plastic #8 OE'),
-        ('Others', 'Others')
-    ],string='FG Category', store=True, readonly=False, copy=False)
+        ('Others', 'Others'),
+        ('Alloy','Alloy'),
+        ('Rivet','Rivet'),
+        ('Eyelet','Eyelet'),
+        ('Snap Button','Snap Button'),
+        ('Rivet','Rivet'),
+        ('Shank Button','Shank Button'), 
+        ('Rivet','Rivet'), 
+        ('Shank Button','Shank Button'), 
+        ('Snap Button','Snap Button')
+        ],string='FG Category', store=True, readonly=False, copy=False)
 
     pack_qty = fields.Float(string="Qty/Pack", copy=True, default=0.0)
     #description_purchase = fields.Text('Purchase Description', related='pur_description', translate=True)

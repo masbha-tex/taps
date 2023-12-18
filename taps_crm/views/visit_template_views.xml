@@ -76,7 +76,7 @@
             <field name="name">crm.visit.list</field>
             <field name="model">crm.visit</field>
             <field name="arch" type="xml">
-                <tree class="o_lead_opportunity_form" js_class="taps_crm_visit_tree_dashboard_upload">
+                <tree class="o_lead_opportunity_form custom_list_class" js_class="taps_crm_visit_tree_dashboard_upload">
                     <field name="name"/>
                     <field name="description"/>
                     <field name="visit_date"/>
