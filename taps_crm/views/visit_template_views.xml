@@ -227,18 +227,18 @@
                         help="Visit that are made by Me "/>
         
                     <separator/>
-                    <filter string="Marketing" name="marketing" domain="[('team_id.name', '=', 'MARKETING')]"/>
-                    <filter string="Brahmaputra" name="brahmaputra" domain="[('team_id.name', '=', 'BRAHMAPUTRA')]"/>
-                    <filter string="Meghna" name="meghna" domain="[('team_id.name', '=', 'MEGHNA')]"/>
-                    <filter string="Shitalakha" name="shitalakha" domain="[('team_id.name', '=', 'SHITALAKHA')]"/>
-                    <filter string="Karnaphuli" name="karnaphuli" domain="[('team_id.name', '=', 'KARNAPHULI')]"/>
-                    <filter string="Padma" name="padma" domain="[('team_id.name', '=', 'PADMA')]"/>
-                    <filter string="Teesta" name="teesta" domain="[('team_id.name', '=', 'TEESTA')]"/>
-                    <filter string="Sangu" name="sangu" domain="[('team_id.name', '=', 'SANGU')]"/>
-                    <filter string="Jamuna" name="jamuna" domain="[('team_id.name', '=', 'JAMUNA')]"/>
-                    <filter string="Halda" name="halda" domain="[('team_id.name', '=', 'HALDA')]"/>
-                    <filter string="Turag" name="turag" domain="[('team_id.name', '=', 'TURAG')]"/>
-                    <filter string="Total" name="total"/>
+                    <filter string="Marketing" name="marketing" domain="[('team_id.name', '=', 'MARKETING'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Brahmaputra" name="brahmaputra" domain="[('team_id.name', '=', 'BRAHMAPUTRA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Meghna" name="meghna" domain="[('team_id.name', '=', 'MEGHNA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Shitalakhya" name="shitalakhya" domain="[('team_id.name', '=', 'SHITALAKHYA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Karnaphuli" name="karnaphuli" domain="[('team_id.name', '=', 'KARNAPHULI'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Padma" name="padma" domain="[('team_id.name', '=', 'PADMA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Teesta" name="teesta" domain="[('team_id.name', '=', 'TEESTA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Sangu" name="sangu" domain="[('team_id.name', '=', 'SANGU'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Jamuna" name="jamuna" domain="[('team_id.name', '=', 'JAMUNA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Halda" name="halda" domain="[('team_id.name', '=', 'HALDA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Turag" name="turag" domain="[('team_id.name', '=', 'TURAG'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Total" name="total" domain="[('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
                     <separator/>
                     <!-- <filter string="Creation Date" name="creation_date" date="create_date"/> -->
                     <!-- <filter string="Closed Date" name="close_date" date="date_closed"/> -->

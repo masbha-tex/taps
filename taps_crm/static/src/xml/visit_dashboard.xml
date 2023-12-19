@@ -22,7 +22,7 @@
                             <a href="#"><t t-esc="values['meghna']"/><br/>Meghna</a>
                         </td>
                         <td  class="col-1 o_main o_dashboard_action" title="Shitalakha" name="taps_crm.visit_action_dashboard" context='{"search_default_shitalakha": true}'>
-                            <a href="#"><t t-esc="values['shitalakha']"/><br/>Shitalakha</a>
+                            <a href="#"><t t-esc="values['shitalakhya']"/><br/>Shitalakha</a>
                         </td>
                         <td  class="col-1 o_main o_dashboard_action" title="Karnaphuli" name="taps_crm.visit_action_dashboard" context='{"search_default_karnaphuli": true}'>
                             <a href="#"><t t-esc="values['karnaphuli']"/><br/>Karnaphuli</a>

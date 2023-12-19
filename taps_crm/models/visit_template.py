@@ -71,7 +71,7 @@ class CustomerVisit(models.Model):
             'brahmaputra': 0,#all_waiting
             'meghna': 0,#all_late
             
-            'shitalakha': 0,
+            'shitalakhya': 0,
             'karnaphuli': 0,
             'padma': 0,
             'teesta': 0,
@@ -90,19 +90,21 @@ class CustomerVisit(models.Model):
 
         first_date_of_current_month = current_datetime.replace(day=1)
         last_date_of_current_month = first_date_of_current_month + relativedelta(day=31)
+        # raise UserError((last_date_of_current_month))
        
         visit = self.env['crm.visit'].search([('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
-        result['marketing'] = visit.search_count([('team_id.name', '=', 'MARKETING')])
-        result['brahmaputra'] = visit.search_count([('team_id.name', '=', 'BRAHMAPUTRA')])
-        result['meghna'] = visit.search_count([('team_id.name', '=', 'MEGHNA')])
-        result['shitalakha'] = visit.search_count([('team_id.name', '=', 'SHITALAKHA')])
-        result['karnaphuli'] = visit.search_count([('team_id.name', '=', 'KARNAPHULI')])
-        result['padma'] = visit.search_count([('team_id.name', '=', 'PADMA')])
-        result['teesta'] = visit.search_count([('team_id.name', '=', 'TEESTA')])
-        result['sangu'] = visit.search_count([('team_id.name', '=', 'SANGU')])
-        result['jamuna'] = visit.search_count([('team_id.name', '=', 'JAMUNA')])
-        result['halda'] = visit.search_count([('team_id.name', '=', 'HALDA')])
-        result['turag'] = visit.search_count([('team_id.name', '=', 'TURAG')])
+        
+        result['marketing'] = visit.search_count([('team_id.name', '=', 'MARKETING'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['brahmaputra'] = visit.search_count([('team_id.name', '=', 'BRAHMAPUTRA'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['meghna'] = visit.search_count([('team_id.name', '=', 'MEGHNA'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['shitalakhya'] = visit.search_count([('team_id.name', '=', 'SHITALAKHYA'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['karnaphuli'] = visit.search_count([('team_id.name', '=', 'KARNAPHULI'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['padma'] = visit.search_count([('team_id.name', '=', 'PADMA'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['teesta'] = visit.search_count([('team_id.name', '=', 'TEESTA'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['sangu'] = visit.search_count([('team_id.name', '=', 'SANGU'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['jamuna'] = visit.search_count([('team_id.name', '=', 'JAMUNA'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['halda'] = visit.search_count([('team_id.name', '=', 'HALDA'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
+        result['turag'] = visit.search_count([('team_id.name', '=', 'TURAG'),('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
         result['total'] = visit.search_count([('visit_date', '>=', first_date_of_current_month),('visit_date', '<=', last_date_of_current_month)])
         # raise UserError((result['brahmaputra']))
         
