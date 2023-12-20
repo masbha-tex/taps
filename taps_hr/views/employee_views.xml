@@ -58,6 +58,9 @@
                 <field name="relationship_id" options='{"no_create":true}'/>
                 
             </field>
+            <!-- <group string="Relationship Status">
+                <field name="relationship_id" options='{"no_create":true}'/>
+            </group> -->
             <field name="study_school" position="after">
                 <field name="passing_year"/>
                 <field name="result"/>
