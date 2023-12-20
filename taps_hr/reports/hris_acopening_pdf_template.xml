@@ -32,7 +32,6 @@
                           <span t-esc="bank"/><br/>
                           Dhaka.<br/>  
                         </p>
-                        <br/>
 
                         <p>
                           <div>
@@ -71,6 +70,11 @@ His/Her particular information are given below:
                               <tr style="border: 1px solid black;">
                                 <th colspan="2" style="border: 1px solid black;">Employee ID</th>
                                 <td style="border: 1px solid black;"><span t-esc="employee.emp_id"/></td>
+                                <td colspan="2" style="border: 1px solid black;"/>
+                              </tr>
+                              <tr style="border: 1px solid black;">
+                                <th colspan="2" style="border: 1px solid black; vertical-align : middle;">NID</th>
+                                <td style="border: 1px solid black;"><t t-esc="employee.identification_id"/></td>
                                 <td colspan="2" style="border: 1px solid black;"/>
                               </tr>
 <!--                                <tr style="border: 1px solid black;">
@@ -149,7 +153,6 @@ His/Her particular information are given below:
                             </table>
                           </div>
                         </p>
-                        <br/>
                         <br/>
                         <br/>
                         <p><div style="font-size:12px">

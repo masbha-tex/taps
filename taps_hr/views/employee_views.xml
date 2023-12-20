@@ -55,6 +55,7 @@
                 <field name="blood_group"/>
                 <field name="religion"/>
                 <field name="tax_identification_number"/>
+                <field name="relationship_id" options='{"no_create":true}'/>
                 
             </field>
             <field name="study_school" position="after">
@@ -123,6 +124,7 @@
                 <field name="employee_group"/>
                 <field name="risk" optional="hide"/>
                 <field name="impact" optional="hide"/>
+                <!-- <field name="performance" optional="hide"/> -->
                 <xpath expr="//field[@name='department_id']" position="move"/>
                 <xpath expr="//field[@name='job_id']" position="move"/>
                 <field name="joining_date"/>

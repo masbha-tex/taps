@@ -1351,8 +1351,12 @@ class MrpReportWizard(models.TransientModel):
                     sizes = i.sizein
                     if sizes == "N/A":
                         sizes = i.sizecm
-                    
-                    slider = i.slidercodesfg.split("TZP-",1)[1]
+
+                    findslider = i.slidercodesfg.find("TZP ")
+                    if findslider > 0:
+                        slider = i.slidercodesfg.split("TZP ",1)[1]
+                    else:
+                        slider = i.slidercodesfg.split("TZP-",1)[1]
                     if i.mrp_line.topbottom:
                         stopper = i.mrp_line.topbottom
                     

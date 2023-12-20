@@ -21,6 +21,7 @@ class HrEmployeePrivate(models.Model):
     fathers_name = fields.Char(string="Father's Name", store=True, tracking=True)
     mothers_name = fields.Char(string="Mother's Name", store=True, tracking=True)
     marriage_date = fields.Date(string='Date of Marriages', store=True, tracking=True)
+    relationship_id = fields.Many2one('hr.employee', "Relation With", tracking=True)
     
     street = fields.Char(string="Road/street", tracking=True)
     street2 = fields.Char(string="Village", tracking=True)
@@ -52,7 +53,10 @@ class HrEmployeePrivate(models.Model):
     'hr.employee.category', 'employee_category_rel',
     'emp_id', 'category_id', groups="hr.group_hr_user",
     string='Tags')
-    category = fields.Selection(store=True, related = 'contract_id.category', string="Category", related_sudo=False, help='Category of the Employee')      
+    category = fields.Selection(store=True, related = 'contract_id.category', string="Category", related_sudo=False, help='Category of the Employee') 
+    # performance = fields.Selection(selection=[
+    #     ('skilled', 'SKILLED'),
+    #     ('unskilled', 'UNSKILLED')], string="Performance Rated", tracking=True, help="What would be the performance of this employee?" )
     risk = fields.Selection(selection=[
         ('1', 'Low-Risk'),
         ('2', 'Medium-Risk'),

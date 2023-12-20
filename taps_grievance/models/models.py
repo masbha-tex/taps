@@ -13,6 +13,7 @@ class HrGrievance(models.Model):
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)    
     type = fields.Many2one('hr.grievance.type', "Type of Misconduct", help="This is the type by which the complaint was received.", tracking=True, store=True)
+    # category = fields.Many2one(store=True, related = 'employee_id.category_ids')
     action_taken = fields.Many2one('hr.grievance.action.taken', "Action to be Taken", tracking=True, help="This is the type by which the Action to be Taken was received.", store=True)
     final_action_taken = fields.Many2one('hr.grievance.final.action.taken', "Final Action", tracking=True,help="This is the type by which the Final Action was received.", store=True)
     details = fields.Html('Details of Misconduct', tracking=True, default="""

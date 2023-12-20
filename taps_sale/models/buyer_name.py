@@ -2,6 +2,7 @@ import logging
 from odoo import api, fields, tools, models, _
 from odoo.exceptions import UserError, ValidationError
 
+from fuzzywuzzy import fuzz
 
 class BuyerName(models.Model):
     _name = 'sale.buyer'
@@ -75,9 +76,28 @@ class ResPartner(models.Model):
         is_supplier = search_partner_mode == 'supplier'
         is_buyer = search_partner_mode == 'buyer'
         is_brand = search_partner_mode == 'brand'
+        # raise UserError((vals_list))
+        # if is_customer:
+        #     exists = self.env['res.partner'].search([('customer_rank', '>=', 1)])
+        # if is_buyer:
+        #     exists = self.env['res.partner'].search([('buyer_rank', '>=', 1)])
+        # if is_brand:
+        #     exists = self.env['res.partner'].search([('brand_rank', '>=', 1)])
+        
+            
+            
+            
         if search_partner_mode:
             for vals in vals_list:
                 if is_customer and 'customer_rank' not in vals:
+                    # for record in exists:
+                    #     # mapping_table = str.maketrans({'LIMITED':'','.':''})
+                    #     list = ['LIMITED','.']
+                    #     translation_table = str.maketrans({char: None for char in ''.join(list)})
+                    #     output_string = vals['name'].translate(translation_table)
+                        
+                    #     raise UserError((output_string))
+                        
                     vals['customer_rank'] = 1
                 elif is_supplier and 'supplier_rank' not in vals:
                     vals['supplier_rank'] = 1
