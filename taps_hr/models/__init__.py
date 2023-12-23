@@ -2,6 +2,7 @@
 
 from . import attendance
 from . import employee_group
+from . import employee_relation
 from . import employee
 from . import work_entry
 from . import contract

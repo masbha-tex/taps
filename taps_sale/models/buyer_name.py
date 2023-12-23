@@ -2,7 +2,7 @@ import logging
 from odoo import api, fields, tools, models, _
 from odoo.exceptions import UserError, ValidationError
 
-from fuzzywuzzy import fuzz
+
 
 class BuyerName(models.Model):
     _name = 'sale.buyer'
@@ -16,12 +16,20 @@ class ResPartner(models.Model):
 
     buyer_rank = fields.Integer(default=0, copy=False)
     brand_rank = fields.Integer(default=0, copy=False)
+    customer_group_rank = fields.Integer(default=0, copy=False)
     sale_representative = fields.Many2one('sale.representative', string="Sale Representative")
-    related_buyer = fields.Many2one('res.partner', string="Related Buyer")
-    related_customer = fields.Many2one('res.partner', string="Related Customer")
-    contact_person = fields.Char(string="Contact Person")
+    related_buyer = fields.Many2many('res.partner', relation='partner_related_buyer_rel',column1='partner_id',column2='buyer_id',string="Related Buyer")
+    related_customer = fields.Many2many('res.partner', relation='partner_related_customer_rel',column1='partner_id',column2='customer_id',string="Related Customer")
+    contact_person = fields.Char(string="Contact Name", help="Contact Person Name")
     contact_mobile = fields.Char(string="Contact Person's Mobile")
-    
+    group = fields.Many2one('res.partner', string="Group")
+    brand = fields.Many2one('res.partner', string="Brand")
+    delivery_address = fields.Text(string="Delivery Address")
+    billing_address = fields.Text(string="Billing Address")
+    swift_code = fields.Char(string="Swift Code", index=True, help="The Swift Code Number.")
+    bond_license = fields.Char(string="Bond License", index=True, help="The Bond License Number.")
+    incoterms = fields.Many2one('account.incoterms', string="Incoterms")
+
     property_account_receivable_id = fields.Many2one(
         'account.account',
         string='Account Receivable',
@@ -76,35 +84,133 @@ class ResPartner(models.Model):
         is_supplier = search_partner_mode == 'supplier'
         is_buyer = search_partner_mode == 'buyer'
         is_brand = search_partner_mode == 'brand'
+        is_customer_group = search_partner_mode == 'customer_group'
         # raise UserError((vals_list))
-        # if is_customer:
-        #     exists = self.env['res.partner'].search([('customer_rank', '>=', 1)])
-        # if is_buyer:
-        #     exists = self.env['res.partner'].search([('buyer_rank', '>=', 1)])
-        # if is_brand:
-        #     exists = self.env['res.partner'].search([('brand_rank', '>=', 1)])
+        if is_supplier:
+            exists = self.env['res.partner'].search([('supplier_rank', '>=', 1)])
+        if is_customer:
+            exists = self.env['res.partner'].search([('customer_rank', '>=', 1)])
+        if is_buyer:
+            exists = self.env['res.partner'].search([('buyer_rank', '>=', 1)])
+        if is_brand:
+            exists = self.env['res.partner'].search([('brand_rank', '>=', 1)])
+        if is_customer_group:
+            exists = self.env['res.partner'].search([('customer_group_rank', '>=', 1)])
         
             
             
             
         if search_partner_mode:
+            list = ['limited','ltd','co','mpany', '.',',',' ','(',')']
+            duplicate = 0
+            duplicate_name = ''
             for vals in vals_list:
                 if is_customer and 'customer_rank' not in vals:
-                    # for record in exists:
-                    #     # mapping_table = str.maketrans({'LIMITED':'','.':''})
-                    #     list = ['LIMITED','.']
-                    #     translation_table = str.maketrans({char: None for char in ''.join(list)})
-                    #     output_string = vals['name'].translate(translation_table)
+                    output_string = vals['name'].lower()
+                    for record in exists:
+                        # mapping_table = str.maketrans({'LIMITED':'','.':''})
                         
-                    #     raise UserError((output_string))
                         
-                    vals['customer_rank'] = 1
+                        if record.name:
+                            check_string = record.name.lower()
+                        for word in list:
+                             
+                            output_string = output_string.replace(word,'')
+                            check_string = check_string.replace(word,'')
+                            # raise UserError((record.name.lower()))
+                            if record.name and (check_string == output_string):
+                                duplicate_name = record.name
+                                duplicate = 1
+                    # raise UserError((duplicate))
+                    if duplicate == 1:
+                        raise UserError((duplicate_name + " is already exist."))
+                    else:
+                        vals['customer_rank'] = 1
                 elif is_supplier and 'supplier_rank' not in vals:
-                    vals['supplier_rank'] = 1
+                    output_string = vals['name'].lower()
+                    for record in exists:
+                        # mapping_table = str.maketrans({'LIMITED':'','.':''})
+                        
+                        
+                        if record.name:
+                            check_string = record.name.lower()
+                        for word in list:
+                             
+                            output_string = output_string.replace(word,'')
+                            check_string = check_string.replace(word,'')
+                            # raise UserError((record.name.lower()))
+                            if record.name and (check_string == output_string):
+                                duplicate_name = record.name
+                                duplicate = 1
+                    # raise UserError((duplicate))
+                    if duplicate == 1:
+                        raise UserError((duplicate_name + " is already exist."))
+                    else:
+                        vals['supplier_rank'] = 1
                 elif is_buyer and 'buyer_rank' not in vals:
-                    vals['buyer_rank'] = 1
+                    output_string = vals['name'].lower()
+                    for record in exists:
+                        # mapping_table = str.maketrans({'LIMITED':'','.':''})
+                        
+                        
+                        if record.name:
+                            check_string = record.name.lower()
+                        for word in list:
+                             
+                            output_string = output_string.replace(word,'')
+                            check_string = check_string.replace(word,'')
+                            # raise UserError((record.name.lower()))
+                            if record.name and (check_string == output_string):
+                                duplicate_name = record.name
+                                duplicate = 1
+                    # raise UserError((duplicate))
+                    if duplicate == 1:
+                        raise UserError((duplicate_name + " is already exist."))
+                    else:
+                        vals['buyer_rank'] = 1
                 elif is_brand and 'brand_rank' not in vals:
-                    vals['brand_rank'] = 1
+                    output_string = vals['name'].lower()
+                    for record in exists:
+                        # mapping_table = str.maketrans({'LIMITED':'','.':''})
+                        
+                        
+                        if record.name:
+                            check_string = record.name.lower()
+                        for word in list:
+                             
+                            output_string = output_string.replace(word,'')
+                            check_string = check_string.replace(word,'')
+                            # raise UserError((record.name.lower()))
+                            if record.name and (check_string == output_string):
+                                duplicate_name = record.name
+                                duplicate = 1
+                    # raise UserError((duplicate))
+                    if duplicate == 1:
+                        raise UserError((duplicate_name + " is already exist."))
+                    else:
+                        vals['brand_rank'] = 1
+                elif is_customer_group and 'customer_group_rank' not in vals:
+                    output_string = vals['name'].lower()
+                    for record in exists:
+                        # mapping_table = str.maketrans({'LIMITED':'','.':''})
+                        
+                        
+                        if record.name:
+                            check_string = record.name.lower()
+                        for word in list:
+                             
+                            output_string = output_string.replace(word,'')
+                            check_string = check_string.replace(word,'')
+                            # raise UserError((record.name.lower()))
+                            if record.name and (check_string == output_string):
+                                duplicate_name = record.name
+                                duplicate = 1
+                    # raise UserError((duplicate))
+                    if duplicate == 1:
+                        raise UserError((duplicate_name + " is already exist."))
+                    else:
+                        vals['customer_group_rank'] = 1        
+                    
         return super().create(vals_list)
 
 

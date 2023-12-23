@@ -265,6 +265,9 @@
                 <xpath expr="//tree" position="attributes">
                     <attribute name="js_class">sale_tree_dashboard_upload</attribute>
                 </xpath>
+                <xpath expr="//tree//field[@name='amount_total']" position="after">
+                    <field name="rmc"/>
+                </xpath>
                 
                     
             </field>

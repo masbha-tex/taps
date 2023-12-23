@@ -1034,13 +1034,13 @@ class MrpReportWizard(models.TransientModel):
                     comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
                     total_qty = sum(comu_released.mapped('sale_order_line.product_uom_qty'))
                     price = round((comur_value / total_qty),4)
-                    pending_pcs = total_qty - comu_pcs
+                    # pending_pcs = total_qty - comu_pcs
 
                 
                 item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
                 
                 invoiced = round((pack_pcs*price),2)
-                pending_usd = round((pending_pcs*price),2)
+                # pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
 
 
@@ -1126,8 +1126,9 @@ class MrpReportWizard(models.TransientModel):
                 else:
                     if pack_pcs == 0:
                         pack_pcs = None
-                    if pending_pcs == 0:
-                        pending_pcs,
+                    if pending_pcs <= 0:
+                        pending_pcs = None,
+                        pending_usd = None,
                     if comu_pcs == 0:
                         comu_pcs = None
                     if pending_ids == 0:
@@ -1135,8 +1136,8 @@ class MrpReportWizard(models.TransientModel):
     
                     if invoiced == 0:
                         invoiced = None
-                    if pending_usd == 0:
-                        pending_usd,
+                    # if pending_usd == 0:
+                    #     pending_usd = None,
                     if comu_inv == 0:
                         comu_inv = None
                     if tr_value == 0:

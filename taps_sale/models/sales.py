@@ -135,7 +135,12 @@ class SaleOrder(models.Model):
     closing_date = fields.Date(string='Closing Date')
     pr_delivery_date = fields.Date(string='Product Delivery Date')
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
-    
+    rmc = fields.Float(compute='_compute_rmc', string='RMC')
+
+
+    def _compute_rmc(self):
+        self.rmc = 0.0
+        
     
     def write(self, values):
         # return pickings_to_backorder.action_confirmation_wizard(show_transfers=self._should_show_transfers())

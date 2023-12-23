@@ -66,6 +66,7 @@ class HrEmployeePrivate(models.Model):
         ('2', 'Medium-Impact'),
         ('3', 'High-Impact')], string="Impact", tracking=True, help="What would be the impact of this employee leaving?" )
     employee_group = fields.Many2one('hr.employee.group', string="Group", help="What would be the group of this employee?")
+    employee_relation = fields.Many2one('hr.employee.relation', tracking=True, string="Relation", help="What would be the relation of this employee?")
     religion = fields.Selection(selection=[
         ('Islam', 'Islam'),
         ('Hinduism', 'Hinduism'),

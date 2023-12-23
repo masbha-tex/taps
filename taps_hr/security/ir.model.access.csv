@@ -13,3 +13,4 @@ access_hr_appraisal_goal_acvd,hr.appraisal.goal.acvd,model_hr_appraisal_goal_acv
 access_hr_appraisal_goal_acvd_line,hr.appraisal.goal.acvd.line,model_hr_appraisal_goal_acvd_line,base.group_user,1,1,1,1
 access_hr_appraisal_meeting_event_wizard,meeting.event.wizard,model_meeting_event_wizard,base.group_user,1,1,1,1
 access_hr_employee_group,access_hr_employee_group,model_hr_employee_group,hr.group_hr_user,1,1,1,1
+access_hr_employee_relation,access_hr_employee_relation,model_hr_employee_relation,hr.group_hr_user,1,1,1,1

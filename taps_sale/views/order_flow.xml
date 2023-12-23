@@ -73,10 +73,12 @@
 <!--         <field name="context">{'search_default_saleorder_group':1, 'search_default_oa_group':1}</field> -->
         <field name="search_view_id" ref="view_sale_order_flow_search" />
     </record>
+    
 
     <menuitem id="menu_sale_order_flow" 
-              name="Sale Order Flow" 
-              action="action_sale_order_flow" 
-              parent="sale.menu_sale_report"
-              sequence="27"/>
+              name="Sale Order Flow"
+              action="action_sale_order_flow"
+              parent="sale.sale_menu_root"
+              groups="sales_team.group_sale_salesman_all_leads"
+              sequence="7"/>
 </odoo>    

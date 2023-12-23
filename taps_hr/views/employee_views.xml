@@ -55,9 +55,17 @@
                 <field name="blood_group"/>
                 <field name="religion"/>
                 <field name="tax_identification_number"/>
-                <field name="relationship_id" options='{"no_create":true}'/>
+                <!-- <field name="relationship_id" options='{"no_create":true}'/> -->
                 
             </field>
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='personal_information']/group[1]" position="after">
+                <group name="relationship_status" string="Relationship Status">
+                    <field name="relationship_id" options='{"no_create":true}'/>
+                    <field name="employee_relation" options='{"no_create":true}'/>
+                    
+                </group>
+            </xpath>
+            
             <!-- <group string="Relationship Status">
                 <field name="relationship_id" options='{"no_create":true}'/>
             </group> -->
@@ -204,6 +212,7 @@
             <xpath expr="//search[1]/searchpanel[1]/field[@name='company_id']" position="after">
                 <field name="category" icon="fa-users" enable_counters="1"/>
                 <field name="employee_group" icon="fa-users" enable_counters="1"/>
+                <!-- <field name="employee_group" icon="fa-users" enable_counters="1"/> -->
             </xpath>            
          </field>
     </record>    
