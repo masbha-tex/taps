@@ -105,7 +105,20 @@
                         <field name="email" widget="email" context="{'gravatar_image': True}"/>
                         <field name="bank_id"/>
                         <field name="account_number"/>
+                        <!-- <field name="performance_rated"/> -->
                     </group>
+                    <!-- <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='personal_information']/group[1]" position="after">
+                        <group name="performance_status" string="Performance Status">
+                            <field name="performance_rated"/>
+                            
+                        </group>
+                    
+                    </xpath> -->
+                    <xpath expr="//form[1]/sheet[1]/notebook[1]" position="after">
+                        <group name="performance_status" string="Performance Status">
+                            <field name="performance_rated"/>
+                        </group>
+                    </xpath>
                 </page>
             </xpath>
         </field>

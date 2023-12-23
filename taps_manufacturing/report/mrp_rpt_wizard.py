@@ -1028,7 +1028,7 @@ class MrpReportWizard(models.TransientModel):
                     cm_pcs = sum(comu_day_outputs.mapped('qty'))
                     comu_pcs = in_pr.production_till_date + cm_pcs
 
-                price = total_qty = comur_value = pending_pcs = 0
+                price = total_qty = comur_value = pending_pcs = pending_usd = 0
                 
                 if comu_released:
                     comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
