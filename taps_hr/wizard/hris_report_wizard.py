@@ -526,7 +526,7 @@ class HRISPDFReport(models.TransientModel):
                 domain.append(('category_ids.id', 'in',(25,42,43)))            
             
         
-        domain.append(('active', 'in',(False)))
+        domain.append(('active', '=', False))
         # datefrom = data.get('date_from')
         # dateto = data.get('date_to')
         #raise UserError((domain))
@@ -554,28 +554,28 @@ class HRISPDFReport(models.TransientModel):
         emp_data = []
         slnumber=0
         for edata in docs:
-            if edata.employee_relation:
-                slnumber = slnumber+1
-                emp_data = [
-                    slnumber,
-                    edata.emp_id,
-                    edata.name,
-                    edata.company_id,
-                    edata.category_ids,
-                    edata.department_id,
-                    edata.department_id.name,
-                    edata.job_id,
-                    edata.grade,
-                    edata.joining_date,
-                    edata.resign_date,
-                    edata.service_length,
-                    edata.gender,
-                    '',
-                    edata.performance_rated,
-                    edata.departure_reason,
-                    '',
-                ]
-                report_data.append(emp_data)     
+            # if edata.resign_date:
+            slnumber = slnumber+1
+            emp_data = [
+                slnumber,
+                edata.emp_id,
+                edata.name,
+                edata.company_id,
+                edata.category_ids,
+                edata.department_id,
+                edata.department_id.name,
+                edata.job_id,
+                edata.grade,
+                edata.joining_date,
+                edata.resign_date,
+                edata.service_length,
+                edata.gender,
+                '',
+                # edata.performance_rated,
+                # edata.departure_reason,
+                '',
+            ]
+            report_data.append(emp_data)     
         
         
         output = io.BytesIO()
@@ -585,7 +585,7 @@ class HRISPDFReport(models.TransientModel):
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
         report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF'})
         worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
-        worksheet.merge_range('A2:H2', 'Employee Relationship Status', report_title_style2)
+        worksheet.merge_range('A2:H2', 'Employee Resign Data', report_title_style2)
 
         report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True})
         report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'bg_color': '#714B62', 'font_color':'#FFFFFF','left': True,'bold': True, 'top': True, 'right': True, 'bottom': True})
@@ -625,28 +625,25 @@ class HRISPDFReport(models.TransientModel):
         row=3
         
         # grandtotal = 0
-        for line in report_data:
-            col = 0
-            for l in line:
-                if l.active == False:
-                    if col == 4:
-                        worksheet.write(row, col, l, report_small_title_style2)
-                        col+=1
-                    elif (col in (0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16)):
-                        worksheet.write(row, col, l, report_small_title_style)
-                        col+=1
-                row+=1
+        # for line in report_data:
+        #     col = 0
+        #     for l in line:
+        #         if col == 4:
+        #             worksheet.write(row, col, l, report_small_title_style2)
+        #             col+=1
+        #         elif (col in (0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16)):
+        #             worksheet.write(row, col, l, report_small_title_style)
+        #             col+=1
+        #     row+=1
 
 
         
-        # for line in report_data:
-        #     col=0
-        #     for l in line:
-        #         if col>4:
-        #             grandtotal = grandtotal+l
-        #         worksheet.write(row, col, l)
-        #         col+=1
-        #     row+=1
+        for line in report_data:
+            col=0
+            for l in line:
+                worksheet.write(row, col, '', report_small_title_style)
+                col+=1
+            row+=1
         
         #worksheet.write(4, 0, 'SL.', column_product_style)
         #raise UserError((row+1))

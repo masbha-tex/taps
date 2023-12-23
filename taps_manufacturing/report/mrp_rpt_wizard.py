@@ -1029,12 +1029,13 @@ class MrpReportWizard(models.TransientModel):
                     comu_pcs = in_pr.production_till_date + cm_pcs
 
                 price = total_qty = comur_value = pending_pcs = pending_usd = 0
+                # pending_usd = 0.0
                 
                 if comu_released:
                     comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
                     total_qty = sum(comu_released.mapped('sale_order_line.product_uom_qty'))
                     price = round((comur_value / total_qty),4)
-                    # pending_pcs = total_qty - comu_pcs
+                    pending_pcs = total_qty - comu_pcs
 
                 
                 item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
@@ -1115,6 +1116,8 @@ class MrpReportWizard(models.TransientModel):
                 order_data = []
                 
                 invoiced = round(invoiced,0)
+                # if pending_usd == None:
+                #     raise UserError((pending_usd))
                 pending_usd = round(pending_usd,0)
                 comu_inv = round(comu_inv,0)
                 tr_value = round(tr_value,0)
@@ -1127,8 +1130,8 @@ class MrpReportWizard(models.TransientModel):
                     if pack_pcs == 0:
                         pack_pcs = None
                     if pending_pcs <= 0:
-                        pending_pcs = None,
-                        pending_usd = None,
+                        pending_pcs,
+                        pending_usd,
                     if comu_pcs == 0:
                         comu_pcs = None
                     if pending_ids == 0:
@@ -1136,8 +1139,6 @@ class MrpReportWizard(models.TransientModel):
     
                     if invoiced == 0:
                         invoiced = None
-                    # if pending_usd == 0:
-                    #     pending_usd = None,
                     if comu_inv == 0:
                         comu_inv = None
                     if tr_value == 0:
@@ -1160,7 +1161,6 @@ class MrpReportWizard(models.TransientModel):
                 report_data.append(order_data)
             
             row = 1
-            
             for line in report_data:
                 col = 0
                 for l in line:
