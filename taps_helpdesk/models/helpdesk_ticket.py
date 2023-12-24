@@ -45,11 +45,11 @@ class tapsHelpdeskTicket(models.Model):
 
     def _compute_ccr(self):
         # raise UserError((self))
-        # for order in self:
-        #     pickings = order.order_line.mapped('move_ids.picking_id')
-        #     order.picking_ids = pickings
-        #     order.picking_count = len(pickings)
-        return {}
+        for order in self:
+            ccr = self.env['sale.ccr'].search(['ticket_id', '=', self.id])
+            order.ccr_ids = ccr
+            order.ccr_count = len(ccr)
+        # return {}
         
     # def action_view_picking(self):
     #     """ This function returns an action that display existing picking orders of given purchase order ids. When only one found, show the picking immediately.

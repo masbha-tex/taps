@@ -21,7 +21,8 @@
                 <button type="object"
                     name="create_view_ccr"
                     class="oe_stat_button"
-                    icon="fa-truck" >
+                    icon="fa fa-thumbs-o-down"
+                    aria-hidden="true">
                     <field name="ccr_count" widget="statinfo" string="Ccr" />
                     <field name="ccr_ids" invisible="1"/>
                 </button>
