@@ -491,13 +491,11 @@ class HRISPDFReport(models.TransientModel):
     def resign_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
         domain = []
-        
-#         if data.get('bank_id')==False:
-#             domain.append(('code', '=', data.get('report_type')))
-        # if data.get('date_from'):
-        #     domain.append(('date_from', '>=', data.get('date_from')))
-        # if data.get('date_to'):
-        #     domain.append(('date_to', '<=', data.get('date_to')))
+                 
+        if data.get('date_from'):
+            domain.append(('resign_date', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('resign_date', '<=', data.get('date_to')))
         if data.get('mode_company_id'):
             #str = re.sub("[^0-9]","",data.get('mode_company_id'))
             domain.append(('company_id.id', '=', data.get('mode_company_id')))
@@ -530,11 +528,16 @@ class HRISPDFReport(models.TransientModel):
         # datefrom = data.get('date_from')
         # dateto = data.get('date_to')
         #raise UserError((domain))
-        docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
+        # docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
+
+        docs = self.env['hr.employee'].search(domain).sorted(key=lambda r: r.resign_date or '', reverse=False)
+        
+        # docs = docs.sorted(key = 'date_to', reverse=False)
+        # docs1 = self.env['hr.contract'].search(domain).sorted(key = 'id', reverse=False)
         # docs1 = self.env['hr.employee.relation'].search(domain)
         #raise UserError((docs.id))
         # datefrom = data.get('date_from')
-        # dateto = data.get('date_to')
+        dateto = data.get('date_to')
         # bankname = self.bank_id.name
         categname=[]
         if self.employee_type =='staff':
@@ -547,50 +550,54 @@ class HRISPDFReport(models.TransientModel):
             categname='C-Staffs'
         if self.employee_type =='cworker':
             categname='C-Workers'
-            
+
         
-        #raise UserError((datefrom,dateto,bankname,categname))
         report_data = []
         emp_data = []
         slnumber=0
         for edata in docs:
-            # if edata.resign_date:
+            status = ''
+            if edata.resign_date > edata.probation_date:
+                status = 'CONFIRMED'
+            else:
+                status = 'NOT CONFIRMED'
+            # if 
             slnumber = slnumber+1
             emp_data = [
                 slnumber,
                 edata.emp_id,
                 edata.name,
-                edata.company_id,
-                edata.category_ids,
-                edata.department_id,
+                edata.company_id.name,
+                edata.category_ids.name,
+                edata.department_id.parent_id.name,
                 edata.department_id.name,
-                edata.job_id,
+                edata.job_id.name,
                 edata.grade,
                 edata.joining_date,
                 edata.resign_date,
                 edata.service_length,
                 edata.gender,
-                '',
-                # edata.performance_rated,
-                # edata.departure_reason,
-                '',
+                edata.contract_id.wage,
+                edata.performance_rated,
+                edata.departure_reason,
+                status,
             ]
             report_data.append(emp_data)     
-        
+    
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet(('Resign Employee'))
 
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
-        report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF'})
+        report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF', })
         worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
         worksheet.merge_range('A2:H2', 'Employee Resign Data', report_title_style2)
 
-        report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True})
-        report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'bg_color': '#714B62', 'font_color':'#FFFFFF','left': True,'bold': True, 'top': True, 'right': True, 'bottom': True})
+        report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+        report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': 'd-mmm-yy'})
 #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-        # worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+        # worksheet.merge_range('I2:J2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style2)
         # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
 #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
         
@@ -603,12 +610,14 @@ class HRISPDFReport(models.TransientModel):
         
         worksheet.set_column(0, 0, 5)
         worksheet.set_column(1, 1, 7)
-        worksheet.set_column(2, 2, 23)
-        worksheet.set_column(3, 3, 26)
-        worksheet.set_column(4, 4, 22)
-        worksheet.set_column(5, 5, 7)
-        worksheet.set_column(6, 6, 23)
-        worksheet.set_column(7, 7, 26)
+        worksheet.set_column(2, 2, 30)
+        worksheet.set_column(3, 4, 18)
+        worksheet.set_column(5, 7, 26)
+        worksheet.set_column(8, 8, 8)
+        worksheet.set_column(9, 10, 12)
+        worksheet.set_column(11, 11, 23)
+        worksheet.set_column(12, 12, 8)
+        worksheet.set_column(13, 16, 20)
         
         # worksheet.set_row(2, 20)
         
@@ -616,34 +625,47 @@ class HRISPDFReport(models.TransientModel):
         worksheet.write(2, 0, 'SL.', column_product_style)
         worksheet.write(2, 1, 'ID', column_product_style)        
         worksheet.write(2, 2, 'Name', column_product_style)
-        worksheet.write(2, 3, 'Section', column_product_style)
-        worksheet.write(2, 4, 'Relation', column_product_style)
-        worksheet.write(2, 5, 'ID', column_product_style)
-        worksheet.write(2, 6, 'Name', column_product_style)
-        worksheet.write(2, 7, 'Section', column_product_style)
+        worksheet.write(2, 3, 'Unit', column_product_style)
+        worksheet.write(2, 4, 'Category', column_product_style)
+        worksheet.write(2, 5, 'Department', column_product_style)
+        worksheet.write(2, 6, 'Section', column_product_style)
+        worksheet.write(2, 7, 'Designation', column_product_style)
+        worksheet.write(2, 8, 'Grade', column_product_style)
+        worksheet.write(2, 9, 'Joining Date', column_product_style)
+        worksheet.write(2, 10, 'Resign Date', column_product_style)
+        worksheet.write(2, 11, 'Service Length', column_product_style)
+        worksheet.write(2, 12, 'Gender', column_product_style)
+        worksheet.write(2, 13, 'Last Draw Salary', column_product_style)
+        worksheet.write(2, 14, 'Performance Rated', column_product_style)
+        worksheet.write(2, 15, 'Reason For Leave', column_product_style)
+        worksheet.write(2, 16, 'Confirmation Status', column_product_style)
+        
         col = 0
         row=3
         
         # grandtotal = 0
-        # for line in report_data:
-        #     col = 0
-        #     for l in line:
-        #         if col == 4:
-        #             worksheet.write(row, col, l, report_small_title_style2)
-        #             col+=1
-        #         elif (col in (0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16)):
-        #             worksheet.write(row, col, l, report_small_title_style)
-        #             col+=1
-        #     row+=1
+        for line in report_data:
+            col = 0
+            for l in line:
+                if col == 9:
+                    worksheet.write(row, col, l, report_small_title_style2)
+                    col+=1
+                elif col == 10:
+                    worksheet.write(row, col, l, report_small_title_style2)
+                    col+=1 
+                elif (col in (0,1,2,3,4,5,6,7,8,11,12,13,14,15,16)):
+                    worksheet.write(row, col, l, report_small_title_style)
+                    col+=1
+            row+=1
 
 
         
-        for line in report_data:
-            col=0
-            for l in line:
-                worksheet.write(row, col, '', report_small_title_style)
-                col+=1
-            row+=1
+        # for line in report_data:
+        #     col=0
+        #     for l in line:
+        #         worksheet.write(row, col, l, report_small_title_style)
+        #         col+=1
+        #     row+=1
         
         #worksheet.write(4, 0, 'SL.', column_product_style)
         #raise UserError((row+1))

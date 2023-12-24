@@ -522,7 +522,6 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(0, 6, "OA DATE", column_style)
             sheet.write(0, 7, "Production DATE", column_style)
             sheet.write(0, 8, "DETAILS", column_style)
-            #sheet.write(1, 9, "DELIVERY DATE", column_style)
             sheet.write(0, 9, "SHADE", column_style)
             sheet.write(0, 10, "SIZE(INCH)", column_style)
             sheet.write(0, 11, "SIZE(CM)", column_style)
@@ -536,6 +535,7 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(0, 19, "H-BOTTOM/KG", column_style)
             sheet.write(0, 20, "U-TOP/KG", column_style)
             sheet.write(0, 21, "SALESPERSON", column_style)
+            sheet.write(0, 22, "CLOSE DATE", column_style)
 
             sheet.set_column(0, 0, 20)
             sheet.set_column(1, 1, 30)
@@ -571,7 +571,7 @@ class MrpReportWizard(models.TransientModel):
                 oa_num = ''
                 remarks = ''
                 create_date = ''
-                expected_date = ''
+                closing_date = ''
                 for x,o_data in enumerate(docs):
                     # slnumber = slnumber+1 orders.buyer_name.name,
                     if x == 0:
@@ -580,14 +580,14 @@ class MrpReportWizard(models.TransientModel):
                         oa_num = orders.name
                         remarks = orders.remarks
                         create_date = orders.create_date.strftime("%d-%m-%Y")
-                        expected_date = ''#orders.expected_date.strftime("%d-%m-%Y")
+                        closing_date = orders.closing_date.strftime("%d-%m-%Y")
                     else:
                         customer = ''
                         pi_num = ''
                         oa_num = ''
                         remarks = ''
                         create_date = ''
-                        expected_date = ''
+                        closing_date = ''
                     
                     pr_name = o_data.product_template_id.name
                     if o_data.numberoftop:
@@ -626,7 +626,6 @@ class MrpReportWizard(models.TransientModel):
                         create_date,
                         '',
                         remarks,
-                        #expected_date,
                         shade,
                         sizein,
                         sizecm,
@@ -639,8 +638,8 @@ class MrpReportWizard(models.TransientModel):
                         o_data.slider_con,
                         o_data.botomwire_con,
                         o_data.topwire_con,
-                        #o_data.pinbox_con,
                         orders.sale_representative.name,
+                        closing_date,
                     ]
                     report_data.append(order_data)
                 if _range > 0:
@@ -1035,7 +1034,7 @@ class MrpReportWizard(models.TransientModel):
                     comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
                     total_qty = sum(comu_released.mapped('sale_order_line.product_uom_qty'))
                     price = round((comur_value / total_qty),4)
-                    pending_pcs = total_qty - comu_pcs
+                    # pending_pcs = total_qty - comu_pcs
 
                 
                 item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
@@ -1045,39 +1044,47 @@ class MrpReportWizard(models.TransientModel):
                 comu_inv = round((comu_pcs*price),2)
 
 
-                pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or pr.closing_date.date() > full_date.date())))
+                
+                not_closed_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date != True))
+                                                      
+                al_closed_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date == True and pr.closing_date.date() > full_date.date()))
 
-
-                query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id where date(s.date_order) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
-                self.env.cr.execute(query, (full_date.date(),full_date.date(),item.name))
-                get_pending = self.env.cr.fetchone()
-
+                get_pending = not_closed_oa + al_closed_oa
+                # if get_pendings:
+                #     raise UserError(('yes'))
+                                                     
+                # query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id where date(s.date_order) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
+                # self.env.cr.execute(query, (full_date.date(),full_date.date(),item.name))
+                # get_pending = self.env.cr.fetchone()
+                
                 
                 # pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) ) ))
                 
                 pending_ids = 0
                 
-                if len(get_pending) > 1:
+                if get_pending:#len(get_pending) > 1
                     # raise UserError((get_pending[0],get_pending[1],get_pending[3]))
                     # oa_ids = pending_oa.mapped('oa_id')
                     pending_oa_ids = None
-                    pending_oa_ids = get_pending[3]
-                    if pending_oa_ids:
-                        pending_oa_ids = set(get_pending[3])
-                        #pending_oa.mapped('oa_id.id')
-                        pending_oa_ids = ','.join([str(i) for i in sorted(pending_oa_ids)])
-                        pending_oa_ids = [int(i) for i in sorted(pending_oa_ids.split(','))]
-                    # raise UserError((pending_oa_ids))
-                        pending_ids = get_pending[0]
-                        qty = get_pending[1]#sum(pending_oa.mapped('product_uom_qty'))
-                        price = get_pending[2]
-                        
-                        _outputs = all_outputs.filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
-                        if _outputs:
-                            # raise UserError(('fefef'))
-                            doneqty = sum(_outputs.mapped('qty'))
-                            pending_pcs = qty - doneqty
-                            pending_usd = round((pending_pcs * price),2)
+                    # pending_oa_ids = get_pending[3]
+                    # if pending_oa_ids:
+                    pending_oa_ids = get_pending.mapped('oa_id.id') #set(get_pending[3])
+                    #
+                    # pending_oa_ids = ','.join([str(i) for i in sorted(pending_oa_ids)])
+                    # pending_oa_ids = [int(i) for i in sorted(pending_oa_ids.split(','))]
+                # raise UserError((pending_oa_ids))
+                    pending_ids = len(pending_oa_ids)#get_pending[0]
+                    qty = sum(get_pending.mapped('product_uom_qty'))#get_pending[1]#
+                    val = round(sum(get_pending.mapped('sale_order_line.price_subtotal')),2)
+                    if qty > 0:
+                        price = round(val/qty,2)
+                    
+                    _outputs = all_outputs.filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in get_pending.oa_id.ids))
+                    if _outputs:
+                        # raise UserError(('fefef'))
+                        doneqty = sum(_outputs.mapped('qty'))
+                        pending_pcs = qty - doneqty
+                        pending_usd = round((pending_pcs * price),2)
                 
                 if start_time.date() == full_date.date():
                     # raise UserError((start_time.date(),full_date.date()))
@@ -1105,13 +1112,13 @@ class MrpReportWizard(models.TransientModel):
                 
                 if full_date.date() == in_pr.production_date.date():
                     comu_inv = in_pr.invoice_till_date
-                    # comur_value = in_pr.released_till_date
+                    comur_value = in_pr.released_till_date
                     
                 if full_date.date() > in_pr.production_date.date():
                     cm_inv = price * cm_pcs
                     cmr_val = cm_rel * price
                     comu_inv = in_pr.invoice_till_date + cm_inv
-                    # comur_value = in_pr.released_till_date + cmr_val
+                    comur_value = in_pr.released_till_date + cmr_val
                 
                 order_data = []
                 

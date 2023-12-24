@@ -140,6 +140,17 @@ class SaleOrder(models.Model):
 
     def _compute_rmc(self):
         self.rmc = 0.0
+        # for rec in self:
+        #     if rec.company_id == 1:
+        #         tc = rec.mapped('order_line.tape_con')
+        #         sc = rec.mapped('order_line.slider_con')
+        #         topc = rec.mapped('order_line.topwire_con')
+        #         botc = rec.mapped('order_line.botomwire_con')
+        #         wc = rec.mapped('order_line.wire_con')
+        #         pc = rec.mapped('order_line.pinbox_con')
+        #         if tc:
+                    
+                    
         
     
     def write(self, values):

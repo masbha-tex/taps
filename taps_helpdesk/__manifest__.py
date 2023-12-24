@@ -20,13 +20,14 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale','web_studio','sales_team','helpdesk'],
+    'depends': ['base', 'sale','web_studio','sales_team','helpdesk','taps_sale'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'views/help_desk_team_views.xml',
         'views/templates.xml',
+        'views/helpdesk_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

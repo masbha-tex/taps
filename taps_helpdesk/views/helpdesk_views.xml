@@ -1,0 +1,25 @@
+<odoo>
+  <data>
+      <record id="helpdesk_ticket_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <header>
+                <button name="create_view_ccr" string="Create Ccr" type="object" class="oe_highlight" groups="helpdesk.group_helpdesk_user" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False]),('stage_id', '!=', 'new')]}"/>
+            </header>
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="oa_number" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])]}" domain="[('sales_type','=', 'oa'),('state', '=', 'sale')]" />
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="buyer" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])]}"/>
+            </xpath>
+            <xpath expr="//field[@name='email_cc']" position="after">
+                <field name="complain" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])]}"/>
+            </xpath>
+        </field>
+      </record>
+        
+            
+  </data>
+</odoo>
