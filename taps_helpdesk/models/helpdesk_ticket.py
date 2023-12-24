@@ -15,7 +15,8 @@ class tapsHelpdeskTicket(models.Model):
     oa_number = fields.Many2one('sale.order', string='Oa Number')
     buyer = fields.Many2one('res.partner', string='Buyer')
     complain = fields.Text(string='Detail Complaint')
-
+    ccr_count = fields.Integer(compute='_compute_ccr', string='Ccr count', default=0, store=True)
+    ccr_ids = fields.Many2many('sale.ccr', compute='_compute_ccr', string='Ccr', copy=False, store=True)
 
     def name_get(self):
         result = []
@@ -33,11 +34,22 @@ class tapsHelpdeskTicket(models.Model):
         # return {}
 
     def create_view_ccr(self):
-        result = self.env["ir.actions.actions"]._for_xml_id('taps_sale.action_sale_ccr_type')
+        result = self.env["ir.actions.actions"]._for_xml_id('taps_sale.action_sale_ccr')
+        
+        result['context'] = {'default_oa_number': self.oa_number.id, 'default_ticket_id' : self.id}
+        # raise UserError((result['context']))
         res = self.env.ref('taps_sale.view_sale_ccr_form', False)
         form_view = [(res and res.id or False, 'form')]
         result['views'] = form_view 
         return result
+
+    def _compute_ccr(self):
+        # raise UserError((self))
+        # for order in self:
+        #     pickings = order.order_line.mapped('move_ids.picking_id')
+        #     order.picking_ids = pickings
+        #     order.picking_count = len(pickings)
+        return {}
         
     # def action_view_picking(self):
     #     """ This function returns an action that display existing picking orders of given purchase order ids. When only one found, show the picking immediately.

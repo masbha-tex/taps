@@ -41,7 +41,8 @@ class HRISPDFReport(models.TransientModel):
 #         ('leave',	'Leave Form'),
         ('retentionincentive',	'Retention Incentive'),
         ('employeerelation', 'Employee Relationship'),
-        ('employeeresign', 'Employee Resign Data'),],
+        ('employeeresign', 'Employee Resign Data'),
+        ('employeejoining', 'Employee Joining Data'),],
         string='Report Type', required=True, default='employee_profile',
         help='By HRIS Report')
     
@@ -309,6 +310,8 @@ class HRISPDFReport(models.TransientModel):
             return self.relationship_xls_template(self, data=data)
         if self.report_type == 'employeeresign':
             return self.resign_xls_template(self, data=data)
+        if self.report_type == 'employeejoining':
+            return self.joining_xls_template(self, data=data)
         # if self.report_type == 'employeerelationmatrix':
         #     return self.relationship_matrix_xls_template(self, data=data)
         else:
@@ -561,7 +564,7 @@ class HRISPDFReport(models.TransientModel):
                 status = 'CONFIRMED'
             else:
                 status = 'NOT CONFIRMED'
-            # if 
+          
             slnumber = slnumber+1
             emp_data = [
                 slnumber,
@@ -603,8 +606,10 @@ class HRISPDFReport(models.TransientModel):
         
         column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF'})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
+        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+
+        worksheet.freeze_panes(3, 5)
 
         # set the width od the column
         
@@ -646,18 +651,235 @@ class HRISPDFReport(models.TransientModel):
         # grandtotal = 0
         for line in report_data:
             col = 0
+            # wei = None
             for l in line:
                 if col == 9:
                     worksheet.write(row, col, l, report_small_title_style2)
                     col+=1
                 elif col == 10:
                     worksheet.write(row, col, l, report_small_title_style2)
-                    col+=1 
+                    col+=1
+                # elif col == 15 and (l == False):
+                #     worksheet.write(row, col, '', report_small_title_style)
+                #     col+=1
+                # elif col == 15 and (l != ''):
+                #     worksheet.write(row, col, l, report_small_title_style)
+                #     col+=1
                 elif (col in (0,1,2,3,4,5,6,7,8,11,12,13,14,15,16)):
                     worksheet.write(row, col, l, report_small_title_style)
                     col+=1
             row+=1
+            
+        worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(4, row), column_issued_style)
 
+        
+        # for line in report_data:
+        #     col=0
+        #     for l in line:
+        #         worksheet.write(row, col, l, report_small_title_style)
+        #         col+=1
+        #     row+=1
+        
+        #worksheet.write(4, 0, 'SL.', column_product_style)
+        #raise UserError((row+1))
+        # worksheet.write(row, 4, 'Grand Total', report_small_title_style)
+        # worksheet.write(row, 5, round(grandtotal), report_small_title_style)
+        #raise UserError((datefrom,dateto,bankname,categname))
+        workbook.close()
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Resign Employee')),
+            'target': 'self',
+        }    
+
+
+    def joining_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
+        domain = []
+                 
+        if data.get('date_from'):
+            domain.append(('resign_date', '>=', data.get('date_from')))
+        if data.get('date_to'):
+            domain.append(('resign_date', '<=', data.get('date_to')))
+        if data.get('mode_company_id'):
+            #str = re.sub("[^0-9]","",data.get('mode_company_id'))
+            domain.append(('company_id.id', '=', data.get('mode_company_id')))
+        if data.get('department_id'):
+            #str = re.sub("[^0-9]","",data.get('department_id'))
+            domain.append(('department_id.id', '=', data.get('department_id')))
+        if data.get('category_id'):
+            #str = re.sub("[^0-9]","",data.get('category_id'))
+            domain.append(('category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('id', '=', data.get('employee_id')))
+        if data.get('bank_id'):
+            #str = re.sub("[^0-9]","",data.get('employee_id'))
+            domain.append(('bank_account_id.bank_id', '=', data.get('bank_id')))
+        if data.get('employee_type'):
+            if data.get('employee_type')=='staff':
+                domain.append(('category_ids.id', 'in',(15,21,31)))
+            if data.get('employee_type')=='expatriate':
+                domain.append(('category_ids.id', 'in',(16,22,32)))
+            if data.get('employee_type')=='worker':
+                domain.append(('category_ids.id', 'in',(20,30)))
+            if data.get('employee_type')=='cstaff':
+                domain.append(('category_ids.id', 'in',(26,44,47)))
+            if data.get('employee_type')=='cworker':
+                domain.append(('category_ids.id', 'in',(25,42,43)))            
+            
+        
+        domain.append(('active', '=', False))
+        # datefrom = data.get('date_from')
+        # dateto = data.get('date_to')
+        #raise UserError((domain))
+        # docs = self.env['hr.employee'].search(domain).sorted(key = 'id', reverse=False)
+
+        docs = self.env['hr.employee'].search(domain).sorted(key=lambda r: r.resign_date or '', reverse=False)
+        
+        # docs = docs.sorted(key = 'date_to', reverse=False)
+        # docs1 = self.env['hr.contract'].search(domain).sorted(key = 'id', reverse=False)
+        # docs1 = self.env['hr.employee.relation'].search(domain)
+        #raise UserError((docs.id))
+        # datefrom = data.get('date_from')
+        dateto = data.get('date_to')
+        # bankname = self.bank_id.name
+        categname=[]
+        if self.employee_type =='staff':
+            categname='Staffs'
+        if self.employee_type =='expatriate':
+            categname='Expatriates'
+        if self.employee_type =='worker':
+            categname='Workers'
+        if self.employee_type =='cstaff':
+            categname='C-Staffs'
+        if self.employee_type =='cworker':
+            categname='C-Workers'
+
+        
+        report_data = []
+        emp_data = []
+        slnumber=0
+        for edata in docs:
+            status = ''
+            if edata.resign_date > edata.probation_date:
+                status = 'CONFIRMED'
+            else:
+                status = 'NOT CONFIRMED'
+          
+            slnumber = slnumber+1
+            emp_data = [
+                slnumber,
+                edata.emp_id,
+                edata.name,
+                edata.company_id.name,
+                edata.category_ids.name,
+                edata.department_id.parent_id.name,
+                edata.department_id.name,
+                edata.job_id.name,
+                edata.grade,
+                edata.joining_date,
+                edata.resign_date,
+                edata.service_length,
+                edata.gender,
+                edata.contract_id.wage,
+                edata.performance_rated,
+                edata.departure_reason,
+                status,
+            ]
+            report_data.append(emp_data)     
+    
+        
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet(('Resign Employee'))
+
+        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
+        report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF', })
+        worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+        worksheet.merge_range('A2:H2', 'Employee Resign Data', report_title_style2)
+
+        report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+        report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': 'd-mmm-yy'})
+#         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+        # worksheet.merge_range('I2:J2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style2)
+        # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+#         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        
+        column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF'})
+        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
+        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+
+        worksheet.freeze_panes(3, 5)
+
+        # set the width od the column
+        
+        worksheet.set_column(0, 0, 5)
+        worksheet.set_column(1, 1, 7)
+        worksheet.set_column(2, 2, 30)
+        worksheet.set_column(3, 4, 18)
+        worksheet.set_column(5, 7, 26)
+        worksheet.set_column(8, 8, 8)
+        worksheet.set_column(9, 10, 12)
+        worksheet.set_column(11, 11, 23)
+        worksheet.set_column(12, 12, 8)
+        worksheet.set_column(13, 16, 20)
+        
+        # worksheet.set_row(2, 20)
+        
+        
+        worksheet.write(2, 0, 'SL.', column_product_style)
+        worksheet.write(2, 1, 'ID', column_product_style)        
+        worksheet.write(2, 2, 'Name', column_product_style)
+        worksheet.write(2, 3, 'Unit', column_product_style)
+        worksheet.write(2, 4, 'Category', column_product_style)
+        worksheet.write(2, 5, 'Department', column_product_style)
+        worksheet.write(2, 6, 'Section', column_product_style)
+        worksheet.write(2, 7, 'Designation', column_product_style)
+        worksheet.write(2, 8, 'Grade', column_product_style)
+        worksheet.write(2, 9, 'Joining Date', column_product_style)
+        worksheet.write(2, 10, 'Resign Date', column_product_style)
+        worksheet.write(2, 11, 'Service Length', column_product_style)
+        worksheet.write(2, 12, 'Gender', column_product_style)
+        worksheet.write(2, 13, 'Last Draw Salary', column_product_style)
+        worksheet.write(2, 14, 'Performance Rated', column_product_style)
+        worksheet.write(2, 15, 'Reason For Leave', column_product_style)
+        worksheet.write(2, 16, 'Confirmation Status', column_product_style)
+        
+        col = 0
+        row=3
+        
+        # grandtotal = 0
+        for line in report_data:
+            col = 0
+            # wei = None
+            for l in line:
+                if col == 9:
+                    worksheet.write(row, col, l, report_small_title_style2)
+                    col+=1
+                elif col == 10:
+                    worksheet.write(row, col, l, report_small_title_style2)
+                    col+=1
+                # elif col == 15 and (l == False):
+                #     worksheet.write(row, col, '', report_small_title_style)
+                #     col+=1
+                # elif col == 15 and (l != ''):
+                #     worksheet.write(row, col, l, report_small_title_style)
+                #     col+=1
+                elif (col in (0,1,2,3,4,5,6,7,8,11,12,13,14,15,16)):
+                    worksheet.write(row, col, l, report_small_title_style)
+                    col+=1
+            row+=1
+            
+        worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(4, row), column_issued_style)
 
         
         # for line in report_data:

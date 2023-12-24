@@ -116,6 +116,7 @@ class SaleCcr(models.Model):
         ('cancel', 'Cancelled'),
         ], string='Status', readonly=True, copy=False, index=True, tracking=5, default='draft')
 
+    ticket_id = fields.Many2one('helpdesk.ticket', string='Ticket Number')
 
     @api.model
     def create(self, vals):

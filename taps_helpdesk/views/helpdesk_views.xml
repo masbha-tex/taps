@@ -17,6 +17,15 @@
             <xpath expr="//field[@name='email_cc']" position="after">
                 <field name="complain" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])]}"/>
             </xpath>
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button type="object"
+                    name="create_view_ccr"
+                    class="oe_stat_button"
+                    icon="fa-truck" >
+                    <field name="ccr_count" widget="statinfo" string="Ccr" />
+                    <field name="ccr_ids" invisible="1"/>
+                </button>
+            </xpath>
         </field>
       </record>
         

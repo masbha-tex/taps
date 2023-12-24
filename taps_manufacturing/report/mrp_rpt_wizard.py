@@ -935,7 +935,7 @@ class MrpReportWizard(models.TransientModel):
             month_ = data.get('month_list')
         year = datetime.today().year
         
-        all_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing')])
+        all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing')])
         daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.month == int(month_) and pr.action_date.year == year)#.sorted(key=lambda pr: pr.sequence)
         
         output = io.BytesIO()
@@ -1010,7 +1010,7 @@ class MrpReportWizard(models.TransientModel):
 
                 in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
                 
-                all_released = self.env['manufacturing.order'].search([('fg_categ_type','=',item.name),('state','!=','cancel')])
+                all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','!=','cancel')])
                 
                 
                 comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and pr.date_order.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
@@ -1045,9 +1045,9 @@ class MrpReportWizard(models.TransientModel):
 
 
                 
-                not_closed_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date != True))
+                not_closed_oa = all_released.sudo().filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date != True))
                                                       
-                al_closed_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date == True and pr.closing_date.date() > full_date.date()))
+                al_closed_oa = all_released.sudo().filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date == True and pr.closing_date.date() > full_date.date()))
 
                 get_pending = not_closed_oa + al_closed_oa
                 # if get_pendings:
@@ -1068,8 +1068,8 @@ class MrpReportWizard(models.TransientModel):
                     pending_oa_ids = None
                     # pending_oa_ids = get_pending[3]
                     # if pending_oa_ids:
-                    pending_oa_ids = get_pending.mapped('oa_id.id') #set(get_pending[3])
-                    #
+                    pending_oa_ids = set(get_pending.mapped('oa_id.id')) #set(get_pending[3])
+                    # raise UserError((pending_oa_ids))
                     # pending_oa_ids = ','.join([str(i) for i in sorted(pending_oa_ids)])
                     # pending_oa_ids = [int(i) for i in sorted(pending_oa_ids.split(','))]
                 # raise UserError((pending_oa_ids))
@@ -1079,7 +1079,7 @@ class MrpReportWizard(models.TransientModel):
                     if qty > 0:
                         price = round(val/qty,2)
                     
-                    _outputs = all_outputs.filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in get_pending.oa_id.ids))
+                    _outputs = all_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in get_pending.oa_id.ids))
                     if _outputs:
                         # raise UserError(('fefef'))
                         doneqty = sum(_outputs.mapped('qty'))
