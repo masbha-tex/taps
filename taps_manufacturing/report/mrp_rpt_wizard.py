@@ -957,13 +957,14 @@ class MrpReportWizard(models.TransientModel):
         initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id)])
 
         for day in self.iterate_days(year, int(month_)):
-            comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day <= day)
+            
             datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day == day)
             report_name = day
             
             full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
             first_day_of_m = full_date # first day of month
             full_date = full_date.replace(day = day)
+            comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() <= full_date.date())
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
             sheet.freeze_panes(1, 0)
@@ -1023,8 +1024,9 @@ class MrpReportWizard(models.TransientModel):
                 if full_date.date() > in_pr.production_date.date():
                     comu_day_outputs = comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
                     # cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
-                    
-                    cm_pcs = sum(comu_day_outputs.mapped('qty'))
+                    if comu_day_outputs:
+                        cm_pcs = sum(comu_day_outputs.mapped('qty'))
+                        
                     comu_pcs = in_pr.production_till_date + cm_pcs
 
                 price = total_qty = comur_value = pending_pcs = pending_usd = 0
