@@ -1002,9 +1002,9 @@ class MrpReportWizard(models.TransientModel):
             report_data = []
             closed_ids = 0
             for item in items:
-                comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
+                items_comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
-                comu_pcs = sum(comu_outputs.mapped('qty'))
+                comu_pcs = sum(items_comu_outputs.mapped('qty'))
                 pack_pcs = sum(itemwise_outputs.mapped('qty'))
                 # invoiced = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
                 #sum(order.qty * order. for order in itemwise_outputs)
@@ -1022,7 +1022,7 @@ class MrpReportWizard(models.TransientModel):
                 cm_pcs = 0
                 cm_rel = sum(comu_released.mapped('product_uom_qty'))
                 if full_date.date() > in_pr.production_date.date():
-                    comu_day_outputs = comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
+                    comu_day_outputs = items_comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
                     # cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
                     if comu_day_outputs:
                         cm_pcs = sum(comu_day_outputs.mapped('qty'))
