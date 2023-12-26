@@ -70,6 +70,9 @@ class HrEmployeePrivate(models.Model):
     performance_rated = fields.Selection(selection=[
         ('SKILLED', 'SKILLED'),
         ('UNSKILLED', 'UNSKILLED')], string="Performance Rated", tracking=True, help="How likely is it that this employee will Perform?" )
+    replacement_new = fields.Selection(selection=[
+        ('NEWHEAD', 'NEW HEAD'),
+        ('REPLACEMENT', 'REPLACEMENT')], string="New Head Or Replacement", tracking=True, help="How likely is it that this employee is new or replaced?" )
     religion = fields.Selection(selection=[
         ('Islam', 'Islam'),
         ('Hinduism', 'Hinduism'),

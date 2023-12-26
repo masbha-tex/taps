@@ -114,6 +114,7 @@ class SaleCcr(models.Model):
     ca_lead = fields.Date(string='CA Lead')
     pa_lead = fields.Date(string='PA Lead')
     total_lead = fields.Date(string='Total Lead')
+    cost = fields.Float(string='Cost')
 
     states = fields.Selection([
         ('draft', 'Draft'),
@@ -145,6 +146,10 @@ class SaleCcr(models.Model):
     def action_draft(self):
         self.write({'states': 'draft'})
         return {}
+    def action_assign_quality(self):
+        self.write({'states': 'inter'})
+        return {}
+    
     def action_close(self):
         self.write({'states': 'done'})
         return {}
@@ -153,12 +158,15 @@ class SaleCcr(models.Model):
         return {}
 
     def action_justify(self):
-        self.write({'states': 'just'})
-        self.write({'justification': 'Justified'})
+        if not self.ccr_type or not self.department_id or not self.analysis_activity:
+            raise UserError(("You Cannot leave empty any of the the fields: Ccr Type, Resp. Department and Analysis Activity"))
+        else:
+            self.write({'states': 'just'})
+            self.write({'justification': 'Justified'})
         return {}
-    def action_take(self):
         
-        compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form').id
+    def action_corrective(self):
+        compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form_ca').id
         ctx = dict(self.env.context)
         
         # raise UserError((self.id))
@@ -169,12 +177,33 @@ class SaleCcr(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
-            'res_model': 'sale.ccr.wizard',
+            'res_model': 'sale.ccr.wizard.ca',
             'views': [(compose_form_id, 'form')],
             'view_id': compose_form_id,
             'target': 'new',
             'context': ctx,
         }
+
+    def action_preventive(self):
+        compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form_pa').id
+        ctx = dict(self.env.context)
+        
+        # raise UserError((self.id))
+        ctx.update({
+            'default_pa_closing_date': date.today(),
+            
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'sale.ccr.wizard.pa',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context': ctx,
+        }
+
+    
     def action_notjustify(self):
         
         compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form_notjustify').id

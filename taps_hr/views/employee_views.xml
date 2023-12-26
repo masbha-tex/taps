@@ -55,9 +55,13 @@
                 <field name="blood_group"/>
                 <field name="religion"/>
                 <field name="tax_identification_number"/>
-                <!-- <field name="relationship_id" options='{"no_create":true}'/> -->
+                <field name="replacement_new"/>
                 
             </field>
+
+            <!-- <field name="km_home_work" position="after">
+                <field name="replacement_new"/>
+            </field> -->
             <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='personal_information']/group[1]" position="after">
                 <group name="relationship_status" string="Relationship Status">
                     <field name="relationship_id" options='{"no_create":true}'/>

@@ -18,7 +18,7 @@ class Contract(models.Model):
         res = super(Contract, self).write(vals)
         if vals.get('date_start'):
             for employee in self.employee_id.resume_line_ids.filtered(lambda c: not c.date_end):
-                employee.name = employee.company_id.street
+                employee.name = self.company_id.street
                 employee.date_start = vals.get('date_start') or self.date_start
         if vals.get('date_end'):
             for employee in self.employee_id.resume_line_ids.filtered(lambda c: not c.date_end):

@@ -80,9 +80,11 @@
             <field name="arch" type="xml">
                 <form string="CCR FORM" multi_edit="1" sample="1">
                     <header>
+                        <button name="action_assign_quality" type="object" string="Assign Quality"/>
                         <button name="action_justify" type="object" string="Justify"/>
                         <button name="action_notjustify" type="object" string="Not Justify" context="{'active_id':id}"/>
-                        <button name="action_take" type="object" string="Take Action" context="{'active_id':id}"/>
+                        <button name="action_corrective" type="object" string="Take Corrective Action" context="{'active_id':id}"/>
+                        <button name="action_preventive" type="object" string="Take Preventive Action" context="{'active_id':id}"/>
                         <button name="action_cancel" type="object" string="Cancel"/>
                         <button name="action_draft" type="object" string="Set To Draft"  attrs="{'invisible': [('states', 'not in', ['cancel'])]}"/>
                         <button name="action_close" type="object" string="Close" attrs="{'invisible': [('states', 'in', ['done' ,'cancel'])]}"/>
@@ -135,7 +137,7 @@
                             <group>
                                 <field name="ccr_type"/>
                                 <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                                <field name="replacement_quantity"/>
+                                
                             </group>
                             <group>
                                 <field name="analysis_activity"/>
@@ -159,6 +161,9 @@
                             
                             <group string="CORRECTIVE ACTION" attrs="{'invisible': [('states', 'not in', ['just'])]}">
                                 <field name="corrective_action"/>
+                                <field name="after_sales"/>
+                                <field name="replacement_quantity"/>
+                                <field name="cost"/>
                                 <field name="ca_closing_date"/>
                             </group>
                             <group string="PREVENTIVE ACTION" attrs="{'invisible': [('states', 'not in', ['just'])]}">

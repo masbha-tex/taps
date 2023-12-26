@@ -189,7 +189,7 @@ class MrpWoProductivity(models.Model):
         return action
 
     def _compute_mrorder_count(self):
-        mrpWorkorder = self.env['operation.details'].search([])
+        mrpWorkorder = self.env['operation.details'].search([('company_id','=',self.env.company.id),('state','not in',('done','closed'))])
         # mrpWorkorder
         for wc in self:
             operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of in ('plan','input') and op.state not in ('done','closed'))

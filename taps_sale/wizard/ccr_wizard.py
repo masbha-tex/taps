@@ -17,26 +17,49 @@ import decimal
 from werkzeug.urls import url_encode
 import logging
 
-class CcrWizard(models.TransientModel):
-    _name = 'sale.ccr.wizard'
-    _description = 'CCR Wizard'
+class CcrWizardCa(models.TransientModel):
+    _name = 'sale.ccr.wizard.ca'
+    _description = 'Take Corrective Action'
 
     
     corrective_action = fields.Text(string='Currective Action')
-    preventive_action = fields.Text(string='Preventive Action')
     ca_closing_date = fields.Date(string="CA Closing", default=date.today())
+    after_sales = fields.Selection([
+        ('replace', 'Replacement'),
+        ('rework', 'Rework'),
+    ], string="After sales Service")
+    replacement_quantity = fields.Float(string="Quantity")
+    cost = fields.Float(string="Cost")
 
-
-    
-    def action_capa(self):
+    def action_corrective(self):
         # raise UserError((self.env.context.get('active_id')))
-        ccr = self.env['sale.ccr'].sudo().search([('id', '=', self.env.context.get('active_id'))])
-        ccr.update({'corrective_action': self.corrective_action,'preventive_action': self.preventive_action,'ca_closing_date':self.ca_closing_date,'states':'just'})
+        ccr = self.env['sale.ccr'].search([('id', '=', self.env.context.get('active_id'))])
+        ccr.update({
+            'corrective_action': self.corrective_action,
+            'ca_closing_date':self.ca_closing_date,
+            'after_sales': self.after_sales,
+            'replacement_quantity': self.replacement_quantity,
+            'cost' : self.cost,
+            'states':'ca'})
         return {}
 
     def cancel(self):
         return {}
+        
+class CcrWizardPa(models.TransientModel):
+    _name = 'sale.ccr.wizard.pa'
+    _description = 'Take Preventive Action'
 
+    preventive_action = fields.Text(string='Preventive Action')
+    pa_closing_date = fields.Date(string="PA Closing", default=date.today())
+
+    def action_preventive(self):
+        # raise UserError((self.env.context.get('active_id')))
+        ccr = self.env['sale.ccr'].search([('id', '=', self.env.context.get('active_id'))])
+        ccr.update({
+            'preventive_action': self.preventive_action,
+            'states':'pa'})
+        return {}
 
 class CcrWizardnot(models.TransientModel):
     _name = 'sale.ccr.wizard.notjustify'

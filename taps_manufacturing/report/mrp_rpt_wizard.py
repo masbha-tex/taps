@@ -1044,8 +1044,6 @@ class MrpReportWizard(models.TransientModel):
                 invoiced = round((pack_pcs*price),2)
                 # pending_usd = round((pending_pcs*price),2)
                 comu_inv = round((comu_pcs*price),2)
-
-
                 
                 # not_closed_oa = all_released.sudo().filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date != True))
                                                       
@@ -1055,10 +1053,9 @@ class MrpReportWizard(models.TransientModel):
                 # if get_pendings:
                 #     raise UserError(('yes'))
                                                      
-                query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id where date(s.date_order) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
+                query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id where a.state not in ('cancel') and date(s.date_order) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
                 self.env.cr.execute(query, (full_date.date(),full_date.date(),item.name))
                 get_pending = self.env.cr.fetchone()
-                
                 
                 # pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) ) ))
                 
@@ -1081,9 +1078,11 @@ class MrpReportWizard(models.TransientModel):
                         # if qty > 0:
                         price = get_pending[2]#round(val/qty,2)
                         
+                        pending_pcs = qty
+                        pending_usd = round((pending_pcs * price),2)
+                        
                         _outputs = all_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
                         if _outputs:
-                            # raise UserError(('fefef',pending_oa_ids))
                             doneqty = sum(_outputs.mapped('qty'))
                             pending_pcs = qty - doneqty
                             pending_usd = round((pending_pcs * price),2)

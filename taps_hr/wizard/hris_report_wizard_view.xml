@@ -35,6 +35,11 @@
                         'required': [('mode_type', '=', 'emptype')],
                         'invisible': [('mode_type', '!=','emptype')]
                         }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="company_all" attrs="{
+                            'required': [('mode_type', '=', 'companyall')],
+                            'invisible': [('mode_type', '!=','companyall')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
+
                         <field name="bank_id"/>                         
                     </group>
                 </group>

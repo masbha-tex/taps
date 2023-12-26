@@ -60,10 +60,11 @@ class PackingReturn(models.TransientModel):
         
         query = """update operation_details set done_qty = done_qty - %s,balance_qty = balance_qty + %s,ac_balance_qty = ac_balance_qty + %s,state = 'waiting' where oa_id = %s and next_operation = 'Packing Output' and mrp_lines = %s; 
 update manufacturing_order set done_qty = done_qty - %s,balance_qty = balance_qty + %s where oa_id = %s and id = %s;
-update manufacturing_order set oa_total_balance = oa_total_balance + %s,closing_date = null, state = 'partial' where oa_id = %s;"""
+update manufacturing_order set oa_total_balance = oa_total_balance + %s where oa_id = %s;
+update manufacturing_order set closing_date = case when oa_total_balance > 0 then null else closing_date end, state = case when oa_total_balance > 0 then 'partial' else state end where oa_id = %s;"""
 
         
-        self._cr.execute(query, (return_qty, return_qty,return_qty,oa_id,mrplines,return_qty,return_qty,oa_id,mrp_id,return_qty,oa_id))
+        self._cr.execute(query, (return_qty, return_qty,return_qty,oa_id,mrplines,return_qty,return_qty,oa_id,mrp_id,return_qty,oa_id,oa_id))
         # raise UserError((query))
         
         pack_return = production.update({'qty': qty_exist, 'return_qty':production.return_qty + return_qty,'pack_qty':pack_qty,'fr_pcs_pack': fraction_pc_of_pack})

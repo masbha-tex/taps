@@ -49,6 +49,7 @@ class HRISPDFReport(models.TransientModel):
     mode_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
+        ('companyall', 'By All Company'),
         ('department', 'By Department'),
         ('category', 'By Employee Tag'),
         ('emptype', 'By Employee Type')],
@@ -83,7 +84,11 @@ class HRISPDFReport(models.TransientModel):
         ('night', 'Night Shift')
     ], string='Shift Type', index=True, store=True, copy=True)     
     
-    file_data = fields.Binary(readonly=True, attachment=False)   
+    file_data = fields.Binary(readonly=True, attachment=False)
+
+    company_all = fields.Selection([
+        ('allcompany', 'TEX ZIPPERS (BD) LIMITED')],
+        string='All Company', required=False) 
 
     @api.depends('date_from')
     def _compute_from_date(self):
@@ -267,6 +272,7 @@ class HRISPDFReport(models.TransientModel):
                     'department_id': False, 
                     'category_id': False, 
                     'employee_id': False, 
+                    'company_all': False,
                     'report_type': self.report_type,
                     'bank_id': self.bank_id.id,
                     'types': self.types,
@@ -278,7 +284,8 @@ class HRISPDFReport(models.TransientModel):
                     'mode_company_id': False, 
                     'department_id': self.department_id.id, 
                     'category_id': False, 
-                    'employee_id': False, 
+                    'employee_id': False,
+                    'company_all': False,
                     'report_type': self.report_type,
                     'bank_id': self.bank_id.id,
                     'types': self.types,
@@ -290,7 +297,8 @@ class HRISPDFReport(models.TransientModel):
                     'mode_company_id': False, 
                     'department_id': False, 
                     'category_id': self.category_id.id, 
-                    'employee_id': False, 
+                    'employee_id': False,
+                    'company_all': False,
                     'report_type': self.report_type,
                     'bank_id': self.bank_id.id,
                     'types': self.types,
@@ -302,10 +310,23 @@ class HRISPDFReport(models.TransientModel):
                     'department_id': False, 
                     'category_id': False, 
                     'employee_id': False, 
+                    'company_all': False,
                     'report_type': self.report_type,
                     'bank_id': self.bank_id.id,
                     'types': self.types,
-                    'employee_type': self.employee_type}    
+                    'employee_type': self.employee_type}
+        if self.mode_type == "companyall":
+            data = {'date_from': self.date_from, 
+                    'date_to': self.date_to, 
+                    'mode_company_id': False, 
+                    'department_id': False, 
+                    'category_id': False, 
+                    'employee_id': False, 
+                    'company_all': self.company_all,
+                    'report_type': self.report_type,
+                    'bank_id': self.bank_id.id,
+                    'types': self.types,
+                    'employee_type': self.employee_type}
         if self.report_type == 'employeerelation':
             return self.relationship_xls_template(self, data=data)
         if self.report_type == 'employeeresign':
@@ -354,7 +375,10 @@ class HRISPDFReport(models.TransientModel):
             if data.get('employee_type')=='cstaff':
                 domain.append(('category_ids.id', 'in',(26,44,47)))
             if data.get('employee_type')=='cworker':
-                domain.append(('category_ids.id', 'in',(25,42,43)))            
+                domain.append(('category_ids.id', 'in',(25,42,43)))
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('company_id.id', 'in',(1,2,3,4))) 
             
         
         domain.append(('active', 'in',(True)))
@@ -524,7 +548,11 @@ class HRISPDFReport(models.TransientModel):
             if data.get('employee_type')=='cstaff':
                 domain.append(('category_ids.id', 'in',(26,44,47)))
             if data.get('employee_type')=='cworker':
-                domain.append(('category_ids.id', 'in',(25,42,43)))            
+                domain.append(('category_ids.id', 'in',(25,42,43)))
+
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('company_id.id', 'in',(1,2,3)))
             
         
         domain.append(('active', '=', False))
@@ -539,7 +567,7 @@ class HRISPDFReport(models.TransientModel):
         # docs1 = self.env['hr.contract'].search(domain).sorted(key = 'id', reverse=False)
         # docs1 = self.env['hr.employee.relation'].search(domain)
         #raise UserError((docs.id))
-        # datefrom = data.get('date_from')
+        datefrom = data.get('date_from')
         dateto = data.get('date_to')
         # bankname = self.bank_id.name
         categname=[]
@@ -602,15 +630,15 @@ class HRISPDFReport(models.TransientModel):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet(('Resign Employee'))
 
-        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
-        report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF', })
-        worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+        report_title_style = workbook.add_format({'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
+        report_title_style2 = workbook.add_format({'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+        worksheet.merge_range('A1:Q1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
         # sum_formula_wage = '=SUM(P{0}:P{1})'.format(4,report_data + 3)
         # worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED - Total Wage: {}'.format(sum_formula_wage), report_title_style)
 
-    
-        # worksheet.merge_range('A2:H2', 'Employee Resign Data', report_title_style2)
-        worksheet.merge_range('A2:H2', 'Employee Resign Data - Total Employees: {}'.format(slnumber), report_title_style2)
+        worksheet.merge_range('A2:Q2', 'Employee Resign Data - Total Employees: {}'.format(slnumber), report_title_style2)
+        # worksheet.merge_range('A3:Q3', '', report_title_style2)
+        worksheet.merge_range('A3:Q3', 'From: {} To: {}'.format(datefrom, dateto), report_title_style2)
 
         report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': 'd-mmm-yy'})
@@ -619,14 +647,14 @@ class HRISPDFReport(models.TransientModel):
         # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
 #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
         
-        column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF'})
+        column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
         column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
         merge_format_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF'})
         merge_format_.set_text_wrap()
 
-        worksheet.freeze_panes(3, 5)
+        worksheet.freeze_panes(4, 5)
 
         # set the width od the column
         
@@ -644,26 +672,26 @@ class HRISPDFReport(models.TransientModel):
         # worksheet.set_row(2, 20)
         
         
-        worksheet.write(2, 0, 'SL.', column_product_style)
-        worksheet.write(2, 1, 'ID', column_product_style)        
-        worksheet.write(2, 2, 'Name', column_product_style)
-        worksheet.write(2, 3, 'Unit', column_product_style)
-        worksheet.write(2, 4, 'Category', column_product_style)
-        worksheet.write(2, 5, 'Department', column_product_style)
-        worksheet.write(2, 6, 'Section', column_product_style)
-        worksheet.write(2, 7, 'Designation', column_product_style)
-        worksheet.write(2, 8, 'Grade', column_product_style)
-        worksheet.write(2, 9, 'Joining Date', column_product_style)
-        worksheet.write(2, 10, 'Resign Date', column_product_style)
-        worksheet.write(2, 11, 'Service Length', column_product_style)
-        worksheet.write(2, 12, 'Gender', column_product_style)
-        worksheet.write(2, 13, 'Last Draw Salary', column_product_style)
-        worksheet.write(2, 14, 'Performance Rated', column_product_style)
-        worksheet.write(2, 15, 'Reason For Leave', column_product_style)
-        worksheet.write(2, 16, 'Confirmation Status', column_product_style)
+        worksheet.write(3, 0, 'SL.', column_product_style)
+        worksheet.write(3, 1, 'ID', column_product_style)        
+        worksheet.write(3, 2, 'Name', column_product_style)
+        worksheet.write(3, 3, 'Unit', column_product_style)
+        worksheet.write(3, 4, 'Category', column_product_style)
+        worksheet.write(3, 5, 'Department', column_product_style)
+        worksheet.write(3, 6, 'Section', column_product_style)
+        worksheet.write(3, 7, 'Designation', column_product_style)
+        worksheet.write(3, 8, 'Grade', column_product_style)
+        worksheet.write(3, 9, 'Joining Date', column_product_style)
+        worksheet.write(3, 10, 'Resign Date', column_product_style)
+        worksheet.write(3, 11, 'Service Length', column_product_style)
+        worksheet.write(3, 12, 'Gender', column_product_style)
+        worksheet.write(3, 13, 'Last Draw Salary', column_product_style)
+        worksheet.write(3, 14, 'Performance Rated', column_product_style)
+        worksheet.write(3, 15, 'Reason For Leave', column_product_style)
+        worksheet.write(3, 16, 'Confirmation Status', column_product_style)
         
         col = 0
-        row=3
+        row=4
         
         # grandtotal = 0
         for line in report_data:
@@ -687,11 +715,13 @@ class HRISPDFReport(models.TransientModel):
                     col+=1
             row+=1
           
-        worksheet.write(row, 1, row-3, column_issued_style)
-        worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(4, row), column_issued_style)
+        worksheet.write(row, 1, row-4, column_issued_style)
+        worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(5, row), column_issued_style)
         row+=2
 
-
+        # if allcompany == 
+        
+        # all_emp = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
         all_workers = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
         all_staffs = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
         workercount = len(all_workers)
@@ -719,7 +749,25 @@ class HRISPDFReport(models.TransientModel):
         c_female_staff_cost = sum(c_female_staff.mapped('contract_id.wage'))
         nc_male_staff_cost = sum(nc_male_staff.mapped('contract_id.wage'))
         nc_female_staff_cost = sum(nc_female_staff.mapped('contract_id.wage'))
+        #worker
+        w_wages_sum = sum([*c_male_workers.mapped('contract_id.wage'),*c_female_workers.mapped('contract_id.wage'),*nc_male_workers.mapped('contract_id.wage'),*nc_female_workers.mapped('contract_id.wage')])
+        #staff
+        s_wages_sum = sum([c_male_staff_cost,c_female_staff_cost,nc_male_staff_cost,nc_female_staff_cost])
+        #all
+        
+        # wages_sum = sum([c_male_staff_cost,c_female_staff_cost,nc_male_staff_cost,nc_female_staff_cost,c_male_workers_cost,c_female_workers_cost,nc_male_workers_cost,nc_female_workers_cost])
+        # wages_sum = sum([all_emp])
+        # worksheet.write('N2', wages_sum, report_title_style2)
 
+        #worker
+        worksheet.write(row, 1, workercount, column_product_style)
+        worksheet.write(row, 2, 'WORKERS SUMMARY', merge_format_)
+        worksheet.write(row, 3, w_wages_sum, column_product_style)
+        #staff
+        worksheet.write(row, 5, staffcount, column_product_style)
+        worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
+        worksheet.write(row, 7, s_wages_sum, column_product_style)
+        row+=1
         #worker
         worksheet.write(row, 1, 'No. of Head')
         worksheet.write(row, 3,'Salary Cost')
@@ -729,12 +777,12 @@ class HRISPDFReport(models.TransientModel):
         row+=1
         #worker
         worksheet.write(row, 1, workercount, column_product_style)
-        worksheet.write(row, 2, 'WORKERS SUMMARY', merge_format_)
-        worksheet.write(row, 3, '', column_product_style)
+        worksheet.write(row, 2, 'Zipper SUMMARY', merge_format_)
+        worksheet.write(row, 3, w_wages_sum, column_product_style)
         #staff
         worksheet.write(row, 5, staffcount, column_product_style)
-        worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
-        worksheet.write(row, 7,'', column_product_style)
+        worksheet.write(row, 6, 'Zipper SUMMARY', merge_format_)
+        worksheet.write(row, 7, s_wages_sum, column_product_style)
         row+=1
         #worker
         worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
@@ -772,6 +820,120 @@ class HRISPDFReport(models.TransientModel):
         worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
         worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
         row+=1
+
+#Metal_Trims
+
+        worksheet.write(row, 1, 'No. of Head')
+        worksheet.write(row, 3,'Salary Cost')
+        #staff
+        worksheet.write(row, 5, 'No. of Head')
+        worksheet.write(row, 7,'Salary Cost')
+        row+=1
+        #worker
+        worksheet.write(row, 1, workercount, column_product_style)
+        worksheet.write(row, 2, 'Metal Trim SUMMARY', merge_format_)
+        worksheet.write(row, 3, w_wages_sum, column_product_style)
+        #staff
+        worksheet.write(row, 5, staffcount, column_product_style)
+        worksheet.write(row, 6, 'Metal Trim SUMMARY', merge_format_)
+        worksheet.write(row, 7, s_wages_sum, column_product_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Confirmed - Male', report_small_title_style)
+        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Confirmed - Male', report_small_title_style)
+        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Confirmed - Female', report_small_title_style)
+        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Confirmed - Female', report_small_title_style)
+        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Non Confirmed - Male', report_small_title_style)
+        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Non Confirmed - Male', report_small_title_style)
+        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Non Confirmed - Female', report_small_title_style)
+        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
+        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
+        row+=1
+
+#Head Office
+
+        worksheet.write(row, 1, 'No. of Head')
+        worksheet.write(row, 3,'Salary Cost')
+        #staff
+        worksheet.write(row, 5, 'No. of Head')
+        worksheet.write(row, 7,'Salary Cost')
+        row+=1
+        #worker
+        worksheet.write(row, 1, workercount, column_product_style)
+        worksheet.write(row, 2, 'HO SUMMARY', merge_format_)
+        worksheet.write(row, 3, w_wages_sum, column_product_style)
+        #staff
+        worksheet.write(row, 5, staffcount, column_product_style)
+        worksheet.write(row, 6, 'HO SUMMARY', merge_format_)
+        worksheet.write(row, 7, s_wages_sum, column_product_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Confirmed - Male', report_small_title_style)
+        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Confirmed - Male', report_small_title_style)
+        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Confirmed - Female', report_small_title_style)
+        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Confirmed - Female', report_small_title_style)
+        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Non Confirmed - Male', report_small_title_style)
+        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Non Confirmed - Male', report_small_title_style)
+        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Non Confirmed - Female', report_small_title_style)
+        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
+        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
+        row+=1
+
+
+
+
+
+        
         # worksheet.merge_range(row, 1, row, 3, 'Objective / Score', merge_format_)
         # row=5
         
@@ -835,7 +997,11 @@ class HRISPDFReport(models.TransientModel):
             if data.get('employee_type')=='cstaff':
                 domain.append(('category_ids.id', 'in',(26,44,47)))
             if data.get('employee_type')=='cworker':
-                domain.append(('category_ids.id', 'in',(25,42,43)))            
+                domain.append(('category_ids.id', 'in',(25,42,43))) 
+
+        if data.get('company_all'):
+            if data.get('company_all')=='allcompany':
+                domain.append(('company_id.id', 'in',(1,2,3)))
             
         
         domain.append(('active', '=', True))
@@ -850,7 +1016,7 @@ class HRISPDFReport(models.TransientModel):
         # docs1 = self.env['hr.contract'].search(domain).sorted(key = 'id', reverse=False)
         # docs1 = self.env['hr.employee.relation'].search(domain)
         #raise UserError((docs.id))
-        # datefrom = data.get('date_from')
+        datefrom = data.get('date_from')
         dateto = data.get('date_to')
         # bankname = self.bank_id.name
         categname=[]
@@ -882,6 +1048,11 @@ class HRISPDFReport(models.TransientModel):
             else:
                 age = ''
 
+            if edata.replacement_new:
+                replacement = edata.replacement_new
+            else:
+                replacement = ''
+
             if edata.study_field:
                 study = edata.study_field
             else:
@@ -909,7 +1080,7 @@ class HRISPDFReport(models.TransientModel):
                 age,
                 edata.contract_id.wage,
                 study,
-                '',
+                replacement,
                 edata.marital,
                 email,
                 edata.mobile,
@@ -922,11 +1093,13 @@ class HRISPDFReport(models.TransientModel):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet(('Joining Employee'))
 
-        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
-        report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF', })
-        worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+        report_title_style = workbook.add_format({'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
+        report_title_style2 = workbook.add_format({'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF'})
+        report_title_style3 = workbook.add_format({'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF', 'num_format': 'd-mmm-yy'})
+        worksheet.merge_range('A1:S1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
         # worksheet.merge_range('A2:H2', 'Employee Joining Data', report_title_style2)
-        worksheet.merge_range('A2:H2', 'Employee Resign Data - Total Employees: {}'.format(slnumber), report_title_style2)
+        worksheet.merge_range('A2:S2', 'Employee Resign Data - Total Employees: {}'.format(slnumber), report_title_style2)
+        worksheet.merge_range('A3:S3', 'From: {} To: {}'.format(datefrom, dateto), report_title_style3)
 
         report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': 'd-mmm-yy'})
@@ -939,6 +1112,9 @@ class HRISPDFReport(models.TransientModel):
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
         column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+
+        merge_format_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF'})
+        merge_format_.set_text_wrap()
 
         worksheet.freeze_panes(3, 5)
 
@@ -962,28 +1138,28 @@ class HRISPDFReport(models.TransientModel):
         # worksheet.set_row(2, 20)
         
         
-        worksheet.write(2, 0, 'SL.', column_product_style)
-        worksheet.write(2, 1, 'ID', column_product_style)        
-        worksheet.write(2, 2, 'Name', column_product_style)
-        worksheet.write(2, 3, 'Unit', column_product_style)
-        worksheet.write(2, 4, 'Category', column_product_style)
-        worksheet.write(2, 5, 'Department', column_product_style)
-        worksheet.write(2, 6, 'Section', column_product_style)
-        worksheet.write(2, 7, 'Designation', column_product_style)
-        worksheet.write(2, 8, 'Grade', column_product_style)
-        worksheet.write(2, 9, 'Joining Date', column_product_style)
-        worksheet.write(2, 10, 'Gender', column_product_style)
-        worksheet.write(2, 11, 'Date of Birth', column_product_style)
-        worksheet.write(2, 12, 'Age', column_product_style)
-        worksheet.write(2, 13, 'Gross Salary', column_product_style)
-        worksheet.write(2, 14, 'Academic Qualifications', column_product_style)
-        worksheet.write(2, 15, 'Replacement / New Head', column_product_style)
-        worksheet.write(2, 16, 'Marital Status', column_product_style)
-        worksheet.write(2, 17, 'Email', column_product_style)
-        worksheet.write(2, 18, 'Mobile Number', column_product_style)
+        worksheet.write(3, 0, 'SL.', column_product_style)
+        worksheet.write(3, 1, 'ID', column_product_style)        
+        worksheet.write(3, 2, 'Name', column_product_style)
+        worksheet.write(3, 3, 'Unit', column_product_style)
+        worksheet.write(3, 4, 'Category', column_product_style)
+        worksheet.write(3, 5, 'Department', column_product_style)
+        worksheet.write(3, 6, 'Section', column_product_style)
+        worksheet.write(3, 7, 'Designation', column_product_style)
+        worksheet.write(3, 8, 'Grade', column_product_style)
+        worksheet.write(3, 9, 'Joining Date', column_product_style)
+        worksheet.write(3, 10, 'Gender', column_product_style)
+        worksheet.write(3, 11, 'Date of Birth', column_product_style)
+        worksheet.write(3, 12, 'Age', column_product_style)
+        worksheet.write(3, 13, 'Gross Salary', column_product_style)
+        worksheet.write(3, 14, 'Academic Qualifications', column_product_style)
+        worksheet.write(3, 15, 'Replacement / New Head', column_product_style)
+        worksheet.write(3, 16, 'Marital Status', column_product_style)
+        worksheet.write(3, 17, 'Email', column_product_style)
+        worksheet.write(3, 18, 'Mobile Number', column_product_style)
         
         col = 0
-        row=3
+        row=4
         
         # grandtotal = 0
         for line in report_data:
@@ -1006,8 +1182,217 @@ class HRISPDFReport(models.TransientModel):
                     worksheet.write(row, col, l, report_small_title_style)
                     col+=1
             row+=1
-            
-        worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(4, row), column_issued_style)
+
+        worksheet.write(row, 1, row-4, column_issued_style)
+        worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(5, row), column_issued_style)
+
+
+        row+=2
+
+        # # all_emp = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
+        all_workers = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
+        all_staffs = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
+        workercount = len(all_workers)
+        staffcount = len(all_staffs)
+          
+
+        c_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+        c_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+        
+        nc_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+        nc_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+
+        c_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+        c_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+        
+        nc_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+        nc_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+
+        c_male_workers_cost = sum(c_male_workers.mapped('contract_id.wage'))
+        c_female_workers_cost = sum(c_female_workers.mapped('contract_id.wage'))
+        nc_male_workers_cost = sum(nc_male_workers.mapped('contract_id.wage'))
+        nc_female_workers_cost = sum(nc_female_workers.mapped('contract_id.wage'))
+
+        c_male_staff_cost = sum(c_male_staff.mapped('contract_id.wage'))
+        c_female_staff_cost = sum(c_female_staff.mapped('contract_id.wage'))
+        nc_male_staff_cost = sum(nc_male_staff.mapped('contract_id.wage'))
+        nc_female_staff_cost = sum(nc_female_staff.mapped('contract_id.wage'))
+        #worker
+        w_wages_sum = sum([*c_male_workers.mapped('contract_id.wage'),*c_female_workers.mapped('contract_id.wage'),*nc_male_workers.mapped('contract_id.wage'),*nc_female_workers.mapped('contract_id.wage')])
+        #staff
+        s_wages_sum = sum([c_male_staff_cost,c_female_staff_cost,nc_male_staff_cost,nc_female_staff_cost])
+        #all
+
+        #worker
+        worksheet.write(row, 1, workercount, column_product_style)
+        worksheet.write(row, 2, 'WORKERS SUMMARY', merge_format_)
+        worksheet.write(row, 3, w_wages_sum, column_product_style)
+        #staff
+        worksheet.write(row, 5, staffcount, column_product_style)
+        worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
+        worksheet.write(row, 7, s_wages_sum, column_product_style)
+        row+=1
+
+        #worker
+        worksheet.write(row, 1, 'No. of Head')
+        worksheet.write(row, 3,'Salary Cost')
+        #staff
+        worksheet.write(row, 5, 'No. of Head')
+        worksheet.write(row, 7,'Salary Cost')
+        row+=1
+        #worker
+        worksheet.write(row, 1, workercount, column_product_style)
+        worksheet.write(row, 2, 'Zipper SUMMARY', merge_format_)
+        worksheet.write(row, 3, w_wages_sum, column_product_style)
+        #staff
+        worksheet.write(row, 5, staffcount, column_product_style)
+        worksheet.write(row, 6, 'Zipper SUMMARY', merge_format_)
+        worksheet.write(row, 7, s_wages_sum, column_product_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
+        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
+        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
+        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
+        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
+        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
+        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
+        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
+        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
+        row+=1
+
+#metal Trims
+        #worker
+        worksheet.write(row, 1, 'No. of Head')
+        worksheet.write(row, 3,'Salary Cost')
+        #staff
+        worksheet.write(row, 5, 'No. of Head')
+        worksheet.write(row, 7,'Salary Cost')
+        row+=1
+        #worker
+        worksheet.write(row, 1, workercount, column_product_style)
+        worksheet.write(row, 2, 'Metal Trims SUMMARY', merge_format_)
+        worksheet.write(row, 3, w_wages_sum, column_product_style)
+        #staff
+        worksheet.write(row, 5, staffcount, column_product_style)
+        worksheet.write(row, 6, 'Metal Trims SUMMARY', merge_format_)
+        worksheet.write(row, 7, s_wages_sum, column_product_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
+        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
+        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
+        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
+        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
+        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
+        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
+        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
+        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
+        row+=1
+
+#Head Office
+        #worker
+        worksheet.write(row, 1, 'No. of Head')
+        worksheet.write(row, 3,'Salary Cost')
+        #staff
+        worksheet.write(row, 5, 'No. of Head')
+        worksheet.write(row, 7,'Salary Cost')
+        row+=1
+        #worker
+        worksheet.write(row, 1, workercount, column_product_style)
+        worksheet.write(row, 2, 'HO SUMMARY', merge_format_)
+        worksheet.write(row, 3, w_wages_sum, column_product_style)
+        #staff
+        worksheet.write(row, 5, staffcount, column_product_style)
+        worksheet.write(row, 6, 'HO SUMMARY', merge_format_)
+        worksheet.write(row, 7, s_wages_sum, column_product_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
+        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
+        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
+        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
+        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
+        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
+        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
+        row+=1
+        #worker
+        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
+        worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
+        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
+        #staff
+        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
+        worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
+        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
+        row+=1
 
         
         # for line in report_data:

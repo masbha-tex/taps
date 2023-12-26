@@ -151,6 +151,7 @@ class SaleOrder(models.Model):
                 rmc = 0
                 allrm = self.env['product.product'].sudo().search([('default_code','ilike', 'R_'),('product_tmpl_id.company_id','=',self.env.company.id)])
                 if tc:
+                    # allrm
                     a = ''
                     # raise UserE
                     # rmc = tc
