@@ -75,7 +75,7 @@ class SaleCcr(models.Model):
 
     name = fields.Char(string='CCR Reference', required=True, copy=False, index=True, readonly=True,  default=lambda self: _('New'))
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
-    oa_number = fields.Many2one('sale.order', string='OA Number')
+    oa_number = fields.Many2one('sale.order', string='OA Number', readonly=True)
     customer = fields.Many2one('res.partner',related = 'oa_number.partner_id', string='Customer')
     buyer = fields.Many2one('res.partner',related = 'oa_number.buyer_name', string='Buyer')
     pi_number = fields.Many2one('sale.order', related = 'oa_number.order_ref',string='PI Number')
@@ -90,7 +90,10 @@ class SaleCcr(models.Model):
     analysis_activity = fields.Text(string='Analysis Activity')
     corrective_action = fields.Text(string='Corrective Action')
     preventive_action = fields.Text(string='Preventive Action')
-    cap_closing_date = fields.Date(string='Cap Closing Date')
+    non_justify_action = fields.Text(string='Action')
+    ca_closing_date = fields.Date(string='CA Closing Date')
+    pa_closing_date = fields.Date(string='PA Closing Date')
+    closing_date = fields.Date(string='Closing Date')
     sale_order_line_id = fields.Many2many('sale.order.line', string="Sale Order Line")
     fg_product = fields.Many2one('product.template',string="Fg Products", domain="[['categ_id.complete_name','ilike','ALL / FG']]")
     finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
@@ -100,23 +103,27 @@ class SaleCcr(models.Model):
     team_leader = fields.Many2one(related ='sale_representative.leader', string='Team Leader')
     company_id = fields.Many2one(related='oa_number.company_id', string='Company', store=True, readonly=True, index=True)
     invoice_reference = fields.Char(string='Invoice Ref.')
-    report_date = fields.Date(string='Report Date', default= date.today())
+    report_date = fields.Date(string='Report Date', default= date.today(), readonly=True)
     reason = fields.Char(string="Reason for Not Justified")
     # justification_level = fields.Selection(
     #     [('justified','Justified'),
     #      ('notjustified','Not Justified')],
     #     'State', store=True)
     justification = fields.Char('Justification Status', readonly=True)
+    after_sales = fields.Char('After Sales Service', readonly=True)
 
     states = fields.Selection([
         ('draft', 'Draft'),
+        ('inter', 'Intermediate'),
         ('just', 'Justified'),
         ('nonjust', 'Non justified'),
+        ('ca', 'CA'),
+        ('pa', 'PA'),
         ('done', 'Closed'),
         ('cancel', 'Cancelled'),
         ], string='Status', readonly=True, copy=False, index=True, tracking=5, default='draft')
 
-    ticket_id = fields.Many2one('helpdesk.ticket', string='Ticket Number')
+    ticket_id = fields.Many2one('helpdesk.ticket', string='Ticket Number', readonly=True)
 
     @api.model
     def create(self, vals):
@@ -153,7 +160,7 @@ class SaleCcr(models.Model):
         
         # raise UserError((self.id))
         ctx.update({
-            'default_cap_closing_date': date.today(),
+            'default_ca_closing_date': date.today(),
             
         })
         return {

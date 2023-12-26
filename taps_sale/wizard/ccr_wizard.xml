@@ -17,7 +17,7 @@
                     <group>
                         <group>
                             <field name="corrective_action"/>
-                            <field name="cap_closing_date"/>
+                            <field name="ca_closing_date"/>
                             
                         </group>
                         <group>

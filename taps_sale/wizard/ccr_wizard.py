@@ -24,14 +24,14 @@ class CcrWizard(models.TransientModel):
     
     corrective_action = fields.Text(string='Currective Action')
     preventive_action = fields.Text(string='Preventive Action')
-    cap_closing_date = fields.Date(string="CAP Closing", default=date.today())
+    ca_closing_date = fields.Date(string="CA Closing", default=date.today())
 
 
     
     def action_capa(self):
         # raise UserError((self.env.context.get('active_id')))
         ccr = self.env['sale.ccr'].sudo().search([('id', '=', self.env.context.get('active_id'))])
-        ccr.update({'corrective_action': self.corrective_action,'preventive_action': self.preventive_action,'cap_closing_date':self.cap_closing_date,'states':'just'})
+        ccr.update({'corrective_action': self.corrective_action,'preventive_action': self.preventive_action,'ca_closing_date':self.ca_closing_date,'states':'just'})
         return {}
 
     def cancel(self):

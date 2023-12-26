@@ -12,11 +12,22 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 class tapsHelpdeskTicket(models.Model):
     _inherit = 'helpdesk.ticket'
 
+    
+
     oa_number = fields.Many2one('sale.order', string='Oa Number')
     buyer = fields.Many2one('res.partner', string='Buyer')
     complain = fields.Text(string='Detail Complaint')
-    ccr_count = fields.Integer(compute='_compute_ccr', string='Ccr count', default=0, store=True)
-    ccr_ids = fields.Many2many('sale.ccr', compute='_compute_ccr', string='Ccr', copy=False, store=True)
+    ccr_count = fields.Integer(compute='_compute_ccr_number', string='Ccr count', store=True)
+    ccr_ids = fields.Many2many('sale.ccr', compute='_compute_ccr_number', string='Ccr', copy=False, store=True)
+
+    @api.onchange('ccr_ids')
+    def _compute_ccr_number(self):
+        
+        for order in self:
+            ccr = order.env['sale.ccr'].search([('ticket_id', '=', self.id)])
+            order.ccr_ids = ccr
+            # raise UserError((len(ccr)))
+            order.ccr_count = len(ccr)
 
     def name_get(self):
         result = []
@@ -35,21 +46,41 @@ class tapsHelpdeskTicket(models.Model):
 
     def create_view_ccr(self):
         result = self.env["ir.actions.actions"]._for_xml_id('taps_sale.action_sale_ccr')
+        # action_sale_ccr
         
         result['context'] = {'default_oa_number': self.oa_number.id, 'default_ticket_id' : self.id}
-        # raise UserError((result['context']))
-        res = self.env.ref('taps_sale.view_sale_ccr_form', False)
-        form_view = [(res and res.id or False, 'form')]
-        result['views'] = form_view 
+        
+        ccr_ids = self.env['sale.ccr'].search([('ticket_id', '=', self.id)])
+        
+        if  len(ccr_ids) >= 1:
+            
+            result['domain'] = "[('id','in',%s)]" % (ccr_ids.ids)
+            # raise UserError((len(ccr_ids)))
+            self._compute_ccr_number()
+        elif not ccr_ids or len(ccr_ids) == 0:
+            
+            res = self.env.ref('taps_sale.view_sale_ccr_form', False)
+            # raise UserError((res))
+            
+            form_view = [(res and res.id or False, 'form')]
+            if 'views' in result:
+                result['views'] = form_view + [(state,view) for state,view in result['views'] if view != 'form']
+                
+                
+            else:
+                
+                result['views'] = form_view
+                
+            result['res_id'] = ccr_ids.id
+            self._compute_ccr_number()
+        # raise UserError(((result['res_id'])))
+        # res = self.env.ref('taps_sale.view_sale_ccr_form', False)
+        # form_view = [(res and res.id or False, 'form')]
+        # result['views'] = form_view 
+        
         return result
 
-    def _compute_ccr(self):
-        # raise UserError((self))
-        for order in self:
-            ccr = self.env['sale.ccr'].search(['ticket_id', '=', self.id])
-            order.ccr_ids = ccr
-            order.ccr_count = len(ccr)
-        # return {}
+    
         
     # def action_view_picking(self):
     #     """ This function returns an action that display existing picking orders of given purchase order ids. When only one found, show the picking immediately.

@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
         <field name="arch" type="xml">
             <header>
-                <button name="create_view_ccr" string="Create Ccr" type="object" class="oe_highlight" groups="helpdesk.group_helpdesk_user" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False]),('stage_id', '!=', 'new')]}"/>
+                <button name="create_view_ccr" string="Create Ccr" type="object" class="oe_highlight" groups="helpdesk.group_helpdesk_user" attrs="{'invisible': ['&amp;', '|',('ticket_type_id', 'in', [1,2,False]),('stage_id', '!=', 'new'),('ccr_count', '>', 0)]}"/>
             </header>
             <xpath expr="//field[@name='partner_id']" position="before">
                 <field name="oa_number" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])]}" domain="[('sales_type','=', 'oa'),('state', '=', 'sale')]" />

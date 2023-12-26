@@ -52,7 +52,7 @@
             <field name="name">sale.ccr.tree</field>
             <field name="model">sale.ccr</field>
             <field name="arch" type="xml">
-                <tree string="CCR TREE" multi_edit="1" sample="1">
+                <tree string="CCR TREE" multi_edit="1" sample="1" create="false">
                     <field name="name"/>
                     <field name="oa_number"/>
                     <field name="customer"/>
@@ -88,7 +88,7 @@
                         <button name="action_close" type="object" string="Close" attrs="{'invisible': [('states', 'in', ['done' ,'cancel'])]}"/>
                         <!-- <button name="action_draft" states="cancel" type="object" string="Set to Draft"/> -->
                         
-                        <field name="states" widget="statusbar" statusbar_visible="draft,done"/>
+                        <field name="states" widget="statusbar" statusbar_visible="draft,inter,just,nonjust,ca,pa,done,cancel"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -96,11 +96,16 @@
                                 <field name="name" />
                             </h1>
                         </div>
-                        <br/>
-                        <div class="oe_title">
-                                <h2 style="color: #E54F6D">DETAILS INFORMATION</h2>
+                        <div class="float-right">
+                            <h1>
+                                <field name="ticket_id" />
+                            </h1>
                         </div>
-                        <group>
+                        <br/>
+                        <!-- <div class="oe_title">
+                                <h2 style="color: #E54F6D">DETAILS INFORMATION</h2>
+                        </div> -->
+                        <group string="DETAILS INFORMATION">
                         
                         <group>
                             <field name="oa_number" domain="[('sales_type','=', 'oa')]"/>
@@ -110,25 +115,59 @@
                             <field name="order_quantity"/>
                             <field name="rejected_quantity"/>
                             <field name="sale_order_line_id" invisible="1"/>
+                            
+                            
+                        </group>
+                        <group>
+                            <!-- <field name="ccr_type"/> -->
                             <field name="fg_product"/>
                             <field name="finish"/>
-                            
-                        </group>
-                        <group>
-                            <field name="ccr_type"/>
                             <field name="complaint"/>
-                            <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="replacement_quantity"/>
+                            <!-- <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/> -->
+                            <!-- <field name="replacement_quantity"/> -->
                             <field name="invoice_reference"/>
                             <field name="report_date"/>
-                            <field name="analysis_activity"/>
+                            <!-- <field name="analysis_activity"/> -->
                         </group>
                             
                         </group>
-                        <div class="oe_title">
+                        <group string="Quality">
+                            <group>
+                                <field name="ccr_type"/>
+                                <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="replacement_quantity"/>
+                            </group>
+                            <group>
+                                <field name="analysis_activity"/>
+                            </group>
+                        </group>
+                        <!-- <div class="oe_title">
                                 <h2 style="color: #E54F6D">SALES</h2>
-                        </div>
+                        </div> -->
+                        
+                        <group string="Justification Status">
+                            <group>
+                                <field name="justification" widget="radio" nolabel="1"/>
+                                <field name="reason"/>
+                            </group>
+                            <group>
+                                
+                                <field name="non_justify_action"/>
+                            </group>
+                        </group>
                         <group>
+                            
+                            <group string="CORRECTIVE ACTION" attrs="{'invisible': [('states', 'not in', ['just'])]}">
+                                <field name="corrective_action"/>
+                                <field name="ca_closing_date"/>
+                            </group>
+                            <group string="PREVENTIVE ACTION" attrs="{'invisible': [('states', 'not in', ['just'])]}">
+                                <field name="preventive_action"/>
+                                <field name="pa_closing_date"/>
+                            </group>
+                            
+                        </group>
+                        <group string="SALES">
                             <group>
                                 <field name="sale_representative"/>
                                 <field name="team"/>
@@ -137,27 +176,7 @@
                                 <field name="team_leader"/>
                             </group>
                         </group>
-                        <div class="oe_title" attrs="{'invisible': [('states', 'not in', ['just'])]}">
-                                <h2 style="color: #E54F6D">CAPA</h2>
-                        </div>
-                        <group>
-                            
-                            <group attrs="{'invisible': [('states', 'not in', ['just'])]}">
-                                <field name="corrective_action"/>
-                                <field name="cap_closing_date"/>
-                            </group>
-                            <group attrs="{'invisible': [('states', 'not in', ['just'])]}">
-                                <field name="preventive_action"/>
-                            </group>
-                            
-                        </group>
-                        <div class="oe_title">
-                                <h2 style="color: #E54F6D">JUSTIFICATION</h2>
-                        </div>
-                        <group>
-                            <field name="justification" widget="radio" nolabel="1"/>
-                            <field name="reason"/>
-                        </group>
+                        
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids"/>

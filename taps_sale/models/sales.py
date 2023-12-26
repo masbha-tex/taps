@@ -140,15 +140,22 @@ class SaleOrder(models.Model):
 
     def _compute_rmc(self):
         self.rmc = 0.0
-        # for rec in self:
-        #     if rec.company_id == 1:
-        #         tc = rec.mapped('order_line.tape_con')
-        #         sc = rec.mapped('order_line.slider_con')
-        #         topc = rec.mapped('order_line.topwire_con')
-        #         botc = rec.mapped('order_line.botomwire_con')
-        #         wc = rec.mapped('order_line.wire_con')
-        #         pc = rec.mapped('order_line.pinbox_con')
-        #         if tc:
+        for rec in self:
+            if rec.company_id == 1:
+                tc = sum(rec.mapped('order_line.tape_con'))
+                sc = sum(rec.mapped('order_line.slider_con'))
+                topc = sum(rec.mapped('order_line.topwire_con'))
+                botc = sum(rec.mapped('order_line.botomwire_con'))
+                wc = sum(rec.mapped('order_line.wire_con'))
+                pc = sum(rec.mapped('order_line.pinbox_con'))
+                rmc = 0
+                allrm = self.env['product.product'].sudo().search([('default_code','ilike', 'R_'),('product_tmpl_id.company_id','=',self.env.company.id)])
+                if tc:
+                    a = ''
+                    # raise UserE
+                    # rmc = tc
+                    
+                    
                     
                     
         
@@ -1261,6 +1268,8 @@ class SaleOrder(models.Model):
             if self.state == 'cancel':
                 state = 'cancel'
             if exist_mrp:
+                if exist_mrp[0].state == 'closed':
+                    state = 'closed'
                 m_order = exist_mrp.filtered(lambda mo: mo.sale_order_line.id == products.id)
                 if m_order:
                     can_create = False
