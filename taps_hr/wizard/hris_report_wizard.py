@@ -692,8 +692,8 @@ class HRISPDFReport(models.TransientModel):
         row+=2
 
 
-        all_workers = docs.filtered(lambda x: x.category_ids.name == 'Worker' or 'Z-Worker' or 'B-Worker' or 'C-Zipper Worker' or 'C-Button Worker' or 'C-Worker')
-        all_staffs = docs.filtered(lambda x: x.category_ids.name == 'Staff' or 'B-Staff' or 'Z-Staff' or 'Z-Expatriate' or 'Expatriate' or 'B-Expatriate' or 'C-Button Staff' or 'C-Zipper Staff' or 'C-Staff')
+        all_workers = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
+        all_staffs = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
         workercount = len(all_workers)
         staffcount = len(all_staffs)
           
@@ -734,7 +734,7 @@ class HRISPDFReport(models.TransientModel):
         #staff
         worksheet.write(row, 5, staffcount, column_product_style)
         worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
-        worksheet.write(row, 7,'Salary Cost', column_product_style)
+        worksheet.write(row, 7,'', column_product_style)
         row+=1
         #worker
         worksheet.write(row, 1, len(c_male_workers), report_small_title_style)

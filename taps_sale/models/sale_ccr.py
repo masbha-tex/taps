@@ -111,6 +111,9 @@ class SaleCcr(models.Model):
     #     'State', store=True)
     justification = fields.Char('Justification Status', readonly=True)
     after_sales = fields.Char('After Sales Service', readonly=True)
+    ca_lead = fields.Date(string='CA Lead')
+    pa_lead = fields.Date(string='PA Lead')
+    total_lead = fields.Date(string='Total Lead')
 
     states = fields.Selection([
         ('draft', 'Draft'),

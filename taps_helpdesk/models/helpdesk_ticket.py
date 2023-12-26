@@ -20,7 +20,7 @@ class tapsHelpdeskTicket(models.Model):
     ccr_count = fields.Integer(compute='_compute_ccr_number', string='Ccr count', store=True)
     ccr_ids = fields.Many2many('sale.ccr', compute='_compute_ccr_number', string='Ccr', copy=False, store=True)
 
-    @api.onchange('ccr_ids')
+    
     def _compute_ccr_number(self):
         
         for order in self:
