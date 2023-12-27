@@ -87,7 +87,7 @@ class SaleCcr(models.Model):
     replacement_return_qty = fields.Float(string='Replacement Return Quantity')
     replacement_quantity = fields.Float(string='Replacement Quantity')
     replacement_value = fields.Float(string='Replacement Value')
-    analysis_activity = fields.Text(string='Analysis Activity')
+    analysis_activity = fields.Text(string='Probable Root Cause/Analysis')
     corrective_action = fields.Text(string='Corrective Action')
     preventive_action = fields.Text(string='Preventive Action')
     non_justify_action = fields.Text(string='Action')
@@ -95,7 +95,7 @@ class SaleCcr(models.Model):
     pa_closing_date = fields.Date(string='PA Closing Date')
     closing_date = fields.Date(string='Closing Date')
     sale_order_line_id = fields.Many2many('sale.order.line', string="Sale Order Line")
-    fg_product = fields.Many2one('product.template',string="Fg Products", domain="[['categ_id.complete_name','ilike','ALL / FG']]")
+    fg_product = fields.Many2one('product.template',string="Products/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]" )
     finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
     # slider = fields.Char(string="Slider")
     sale_representative = fields.Many2one('sale.representative', related = 'oa_number.sale_representative', string='Sale Representative')
@@ -111,9 +111,9 @@ class SaleCcr(models.Model):
     #     'State', store=True)
     justification = fields.Char('Justification Status', readonly=True)
     after_sales = fields.Char('After Sales Service', readonly=True)
-    ca_lead = fields.Date(string='CA Lead')
-    pa_lead = fields.Date(string='PA Lead')
-    total_lead = fields.Date(string='Total Lead')
+    ca_lead = fields.Char(string='CA Lead', compute='_compute_ca_lead')
+    pa_lead = fields.Char(string='PA Lead', compute='_compute_pa_lead')
+    total_lead = fields.Char(string='Total Lead', compute='_compute_total_lead')
     cost = fields.Float(string='Cost')
 
     states = fields.Selection([
@@ -128,6 +128,67 @@ class SaleCcr(models.Model):
         ], string='Status', readonly=True, copy=False, index=True, tracking=5, default='draft')
 
     ticket_id = fields.Many2one('helpdesk.ticket', string='Ticket Number', readonly=True)
+
+    last_approver = fields.Many2one(
+        string="Last Approver",
+        comodel_name="res.users",
+        compute="_compute_last_approver",
+    )
+    
+    last_approve_date = fields.Date(string="Last Approve Date")
+
+
+    def _compute_ca_lead(self):
+        for record in self:
+            if record.report_date and record.ca_closing_date:
+                d1=datetime.strptime(str(record.ca_closing_date),'%Y-%m-%d')
+                d2=datetime.strptime(str(record.report_date),'%Y-%m-%d')
+                record.ca_lead = str((d1-d2).days) + " days"
+            else: 
+                record.ca_lead = '0 days'
+
+    def _compute_pa_lead(self):
+        for record in self:
+            if record.ca_closing_date and record.pa_closing_date:
+                d1=datetime.strptime(str(record.pa_closing_date),'%Y-%m-%d')
+                d2=datetime.strptime(str(record.ca_closing_date),'%Y-%m-%d')
+                record.pa_lead = str((d1-d2).days) + " days"
+            else: 
+                record.pa_lead = '0 days'
+                
+    def _compute_total_lead(self):
+        for record in self:
+            if record.justification == 'Justified':
+                if record.pa_closing_date and record.last_approve_date:
+                    d1=datetime.strptime(str(record.last_approve_date),'%Y-%m-%d')
+                    d2=datetime.strptime(str(record.pa_closing_date),'%Y-%m-%d')
+                    record.total_lead = str((d1-d2).days) + " days"
+                else:
+                    record.total_lead = '0 days'
+            elif record.justification == 'Not Justified':
+                if record.report_date and record.last_approve_date:
+                    d1=datetime.strptime(str(record.last_approve_date),'%Y-%m-%d')
+                    d2=datetime.strptime(str(record.report_date),'%Y-%m-%d')
+                    record.total_lead = str((d1-d2).days) + " days"
+                else:
+                    record.total_lead = '0 days'
+            else:
+                record.total_lead = '0 days'
+                
+
+    def _compute_last_approver(self):
+        domain = ['&', '&', ('model', '=', 'sale.ccr'), ('res_id', 'in', self.ids), ('approved', '=', 'True')]
+        # create dictionary of purchase.order res_id: last approver user_id
+        groups = self.env['studio.approval.entry'].sudo().read_group(domain, ['ids:array_agg(id)'], ['res_id'])
+        ccr_last_approver = {i['res_id']: max(i['ids']) for i in groups}
+        # User = self.env['res.users']
+        Entry = self.env['studio.approval.entry']
+        for rec in self:
+            if rec.id in ccr_last_approver:
+                rec.last_approver = Entry.browse(ccr_last_approver[rec.id]).user_id
+                rec.last_approve_date = date.today()
+            else:
+                False
 
     @api.model
     def create(self, vals):

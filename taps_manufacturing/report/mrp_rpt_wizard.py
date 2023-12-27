@@ -87,7 +87,7 @@ class MrpReportWizard(models.TransientModel):
         # domain = []
         # if data.get('date_from'):
         #     domain.append(('date_from', '=', data.get('date_from'))) 
-        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel'))])
+        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
         if data.get('date_from'):
             if data.get('date_to'):
                 running_orders = running_orders.filtered(lambda pr: pr.date_order.date() >= data.get('date_from') and pr.date_order.date() <= data.get('date_to'))
@@ -251,7 +251,7 @@ class MrpReportWizard(models.TransientModel):
                     if sizecm == 'N/A':
                         sizecm = ''
                     
-                    m_order = self.env['manufacturing.order'].search([('sale_order_line','=',o_data.id)])
+                    m_order = self.env['manufacturing.order'].search([('sale_order_line','=',o_data.id),('company_id','=',self.env.company.id)])
                     ready_qty = sum(m_order.mapped('done_qty'))
                     # raise UserError((o_data.id,ready_qty))
                     balance_qty = o_data.product_uom_qty - ready_qty
@@ -466,7 +466,7 @@ class MrpReportWizard(models.TransientModel):
 
     def closed_pi_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
-        closed_orders = self.env['manufacturing.order'].search([('oa_id','!=',None),('state','=','closed'),('closing_date','!=',None)])
+        closed_orders = self.env['manufacturing.order'].search([('oa_id','!=',None),('state','=','closed'),('closing_date','!=',None),('company_id','=',self.env.company.id)])
         closed_orders = closed_orders.filtered(lambda pr: pr.closing_date.date() >= data.get('date_from') and pr.closing_date.date() <= data.get('date_to'))
                 
         output = io.BytesIO()
@@ -612,7 +612,7 @@ class MrpReportWizard(models.TransientModel):
                     if sizecm == 'N/A':
                         sizecm = ''
                     
-                    m_order = self.env['manufacturing.order'].search([('sale_order_line','=',o_data.id)])
+                    m_order = self.env['manufacturing.order'].search([('sale_order_line','=',o_data.id),('company_id','=',self.env.company.id)])
                     ready_qty = sum(m_order.mapped('done_qty'))
                     # raise UserError((o_data.id,ready_qty))
                     balance_qty = o_data.product_uom_qty - ready_qty
@@ -826,7 +826,7 @@ class MrpReportWizard(models.TransientModel):
     
     def pis_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
-        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','!=','closed')])
+        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','!=','closed'),('company_id','=',self.env.company.id)])
         if data.get('date_from'):
             if data.get('date_to'):
                 running_orders = running_orders.filtered(lambda pr: pr.date_order.date() >= data.get('date_from') and pr.date_order.date() <= data.get('date_to'))
@@ -883,7 +883,7 @@ class MrpReportWizard(models.TransientModel):
             for orders in sale_orders:
                 # docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
                 create_date = orders.create_date.strftime("%d-%m-%Y")
-                m_order = self.env['manufacturing.order'].search([('oa_id','=',orders.id)])
+                m_order = self.env['manufacturing.order'].search([('oa_id','=',orders.id),('company_id','=',self.env.company.id)])
                 ready_qty = sum(m_order.mapped('done_qty'))
                 balance_qty = orders.total_product_qty - ready_qty
                 order_data = []
@@ -935,7 +935,7 @@ class MrpReportWizard(models.TransientModel):
             month_ = data.get('month_list')
         year = datetime.today().year
         
-        all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing')])
+        all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
         daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.month == int(month_) and pr.action_date.year == year)#.sorted(key=lambda pr: pr.sequence)
         
         output = io.BytesIO()
@@ -995,7 +995,7 @@ class MrpReportWizard(models.TransientModel):
             
             # items = datewise_outputs.mapped('fg_categ_type')
             # items = list(set(items))
-            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel'))])
+            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
             
             items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
             
@@ -1011,10 +1011,10 @@ class MrpReportWizard(models.TransientModel):
 
                 in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
                 
-                all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','!=','cancel')])
+                all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','!=','cancel'),('company_id','=',self.env.company.id)])
                 
                 
-                comu_released = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and pr.date_order.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
+                comu_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
 
                 if full_date.date() == in_pr.production_date.date():
                     comu_pcs = in_pr.production_till_date
@@ -1053,9 +1053,10 @@ class MrpReportWizard(models.TransientModel):
                 # if get_pendings:
                 #     raise UserError(('yes'))
                                                      
-                query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id where a.state not in ('cancel') and date(s.date_order) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
-                self.env.cr.execute(query, (full_date.date(),full_date.date(),item.name))
+                query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id and a.company_id = s.company_id where a.company_id = %s and a.state not in ('cancel') and date(s.create_date) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
+                self.env.cr.execute(query, (self.env.company.id,full_date.date(),full_date.date(),item.name))
                 get_pending = self.env.cr.fetchone()
+
                 
                 # pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) ) ))
                 
@@ -1080,7 +1081,7 @@ class MrpReportWizard(models.TransientModel):
                         
                         pending_pcs = qty
 
-                        pending_orders = self.env['manufacturing.order'].search([('oa_id','in',(pending_oa_ids))])
+                        pending_orders = self.env['manufacturing.order'].search([('oa_id','in',(pending_oa_ids)),('company_id','=',self.env.company.id)])
                         if pending_orders:
                             vl = round(sum(pending_orders.mapped('sale_order_line.price_subtotal')),2)
                             _qty = sum(pending_orders.mapped('sale_order_line.product_uom_qty'))
@@ -1107,7 +1108,7 @@ class MrpReportWizard(models.TransientModel):
                 #         price = round((vl / _qty),4)
                 #         pending_usd = round((pending_pcs*price),2)
 
-                closed_oa = all_released.filtered(lambda pr: pr.date_order.date() <= full_date.date() and  pr.closing_date != False)
+                closed_oa = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and  pr.closing_date != False)
                 if closed_oa:
                     closed_oa = closed_oa.filtered(lambda pr: pr.closing_date.date() == full_date.date())
                 
@@ -1115,7 +1116,7 @@ class MrpReportWizard(models.TransientModel):
                     oa_ids = closed_oa.mapped('oa_id')
                     closed_ids += len(oa_ids)
                 
-                today_released = all_released.filtered(lambda pr: pr.date_order.date() == full_date.date())
+                today_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() == full_date.date())
                 tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
                 
                 if full_date.date() == in_pr.production_date.date():
@@ -1242,7 +1243,7 @@ class MrpReportWizard(models.TransientModel):
         row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        all_released = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False)])
+        all_released = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id','=',self.env.company.id)])
         all_items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
         for day in self.iterate_days(year, int(month_)):
             report_name = day
@@ -1310,7 +1311,7 @@ class MrpReportWizard(models.TransientModel):
     def packing_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
         
-        all_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing')])
+        all_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
         all_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= data.get('date_from') and pr.action_date.date() <= data.get('date_to'))
         
         output = io.BytesIO()

@@ -420,9 +420,11 @@ class HRISPDFReport(models.TransientModel):
                     edata.relationship_id.emp_id,
                     edata.relationship_id.name,
                     edata.relationship_id.department_id.name,
+                    
                 ]
                 report_data.append(emp_data)     
         
+#Retationship
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -498,6 +500,63 @@ class HRISPDFReport(models.TransientModel):
         # worksheet.write(row, 4, 'Grand Total', report_small_title_style)
         # worksheet.write(row, 5, round(grandtotal), report_small_title_style)
         #raise UserError((datefrom,dateto,bankname,categname))
+
+#worksheet_1 
+        
+        # worksheet1 = workbook.add_worksheet(('Relationship Matrix'))
+
+        # report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
+        # report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF'})
+        # worksheet1.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+        # worksheet1.merge_range('A2:H2', 'Employee Relationship Martix', report_title_style2)
+
+        # report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True})
+        # report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'bg_color': '#714B62', 'font_color':'#FFFFFF','left': True,'bold': True, 'top': True, 'right': True, 'bottom': True})
+
+        
+        # column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF'})
+        # column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
+        # column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
+        # row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+
+        # # set the width od the column
+        
+        # worksheet1.set_column(0, 0, 5)
+        # worksheet1.set_column(1, 1, 7)
+        # worksheet1.set_column(2, 2, 23)
+        # worksheet1.set_column(3, 3, 26)
+        # worksheet1.set_column(4, 4, 22)
+        # worksheet1.set_column(5, 5, 7)
+        # worksheet1.set_column(6, 6, 23)
+        # worksheet1.set_column(7, 7, 26)
+        
+        # # worksheet.set_row(2, 20)
+        
+        
+        # worksheet1.write(2, 0, 'ALL', column_product_style)
+        # worksheet1.write(2, 1, 'ID', column_product_style)        
+        # worksheet1.write(2, 2, 'Name', column_product_style)
+        # worksheet1.write(2, 3, 'Section', column_product_style)
+        # worksheet1.write(2, 4, 'Relation', column_product_style)
+        # worksheet1.write(2, 5, 'ID', column_product_style)
+        # worksheet1.write(2, 6, 'Name', column_product_style)
+        # worksheet1.write(2, 7, 'Section', column_product_style)
+        # col = 0
+        # row=3
+        
+        # # grandtotal = 0
+        # for line in report_data:
+        #     col = 0
+        #     for l in line:
+        #         if col == 4:
+        #             worksheet1.write(row, col, l, report_small_title_style2)
+        #             col+=1
+        #         elif (col in (0,1,2,3,5,6,7)):
+        #             worksheet1.write(row, col, l, report_small_title_style)
+        #             col+=1
+        #     row+=1
+
+        
         workbook.close()
         xlsx_data = output.getvalue()
         #raise UserError(('sfrgr'))
@@ -719,217 +778,378 @@ class HRISPDFReport(models.TransientModel):
         worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(5, row), column_issued_style)
         row+=2
 
-        # if allcompany == 
+        #allcompany == 
+        if data.get('company_all'):
+
+            all_workers = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
+            all_staffs = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
+            workercount = len(all_workers)
+            staffcount = len(all_staffs)
+            
+            workerwage = sum(all_workers.mapped('contract_id.wage'))
+            staffwage = sum(all_staffs.mapped('contract_id.wage'))
+            #worker
+            worksheet.write(row, 1, workercount, column_product_style)
+            worksheet.write(row, 2, 'WORKERS SUMMARY', merge_format_)
+            worksheet.write(row, 3, workerwage, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount, column_product_style)
+            worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
+            worksheet.write(row, 7, staffwage, column_product_style)
+            row+=1
+    
+     #Zipper      
+            
+            all_workers_z = docs.filtered(lambda x: x.category_ids.name in ('Z-Worker'))
+            all_staffs_z = docs.filtered(lambda x: x.category_ids.name in ('Z-Staff', 'Z-Expatriate'))
+            workercount_z = len(all_workers_z)
+            staffcount_z = len(all_staffs_z)
+              
+    
+            c_male_workers_z = all_workers_z.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
+            c_female_workers_z = all_workers_z.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
+            
+            nc_male_workers_z = all_workers_z.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
+            nc_female_workers_z = all_workers_z.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
+    
+            c_male_staff_z = all_staffs_z.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
+            c_female_staff_z = all_staffs_z.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
+            
+            nc_male_staff_z = all_staffs_z.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
+            nc_female_staff_z = all_staffs_z.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
+    
+            c_male_workers_cost_z = sum(c_male_workers_z.mapped('contract_id.wage'))
+            c_female_workers_cost_z = sum(c_female_workers_z.mapped('contract_id.wage'))
+            nc_male_workers_cost_z = sum(nc_male_workers_z.mapped('contract_id.wage'))
+            nc_female_workers_cost_z = sum(nc_female_workers_z.mapped('contract_id.wage'))
+    
+            c_male_staff_cost_z = sum(c_male_staff_z.mapped('contract_id.wage'))
+            c_female_staff_cost_z = sum(c_female_staff_z.mapped('contract_id.wage'))
+            nc_male_staff_cost_z = sum(nc_male_staff_z.mapped('contract_id.wage'))
+            nc_female_staff_cost_z = sum(nc_female_staff_z.mapped('contract_id.wage'))
+            #worker
+            w_wages_sum_z = sum([*c_male_workers_z.mapped('contract_id.wage'),*c_female_workers_z.mapped('contract_id.wage'),*nc_male_workers_z.mapped('contract_id.wage'),*nc_female_workers_z.mapped('contract_id.wage')])
+            #staff
+            s_wages_sum_z = sum([c_male_staff_cost_z,c_female_staff_cost_z,nc_male_staff_cost_z,nc_female_staff_cost_z])
+            #all
+            
+            # wages_sum = sum([c_male_staff_cost,c_female_staff_cost,nc_male_staff_cost,nc_female_staff_cost,c_male_workers_cost,c_female_workers_cost,nc_male_workers_cost,nc_female_workers_cost])
+            # wages_sum = sum([all_emp])
+            # worksheet.write('N2', wages_sum, report_title_style2)
+    
+            
+            #worker
+            worksheet.write(row, 1, 'No. of Head')
+            worksheet.write(row, 3,'Salary Cost')
+            #staff
+            worksheet.write(row, 5, 'No. of Head')
+            worksheet.write(row, 7,'Salary Cost')
+            row+=1
+            #worker
+            worksheet.write(row, 1, workercount_z, column_product_style)
+            worksheet.write(row, 2, 'Zipper SUMMARY', merge_format_)
+            worksheet.write(row, 3, w_wages_sum_z, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount_z, column_product_style)
+            worksheet.write(row, 6, 'Zipper SUMMARY', merge_format_)
+            worksheet.write(row, 7, s_wages_sum_z, column_product_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_male_workers_z), report_small_title_style)
+            worksheet.write(row, 2, 'Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 3, c_male_workers_cost_z, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_male_staff_z), report_small_title_style)
+            worksheet.write(row, 6, 'Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 7, c_male_staff_cost_z, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_female_workers_z), report_small_title_style)
+            worksheet.write(row, 2, 'Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 3, c_female_workers_cost_z, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_female_staff_z), report_small_title_style)
+            worksheet.write(row, 6, 'Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 7, c_female_staff_cost_z, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_male_workers_z), report_small_title_style)
+            worksheet.write(row, 2, 'Non Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 3, nc_male_workers_cost_z, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_male_staff_z), report_small_title_style)
+            worksheet.write(row, 6, 'Non Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 7, nc_male_staff_cost_z, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_female_workers_z), report_small_title_style)
+            worksheet.write(row, 2, 'Non Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 3, nc_female_workers_cost_z, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_female_staff_z), report_small_title_style)
+            worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 7, nc_female_staff_cost_z, report_small_title_style)
+            row+=1
+    
+    #Metal_Trims
+    
+            all_workers_m = docs.filtered(lambda x: x.category_ids.name in ('B-Worker'))
+            all_staffs_m = docs.filtered(lambda x: x.category_ids.name in ('B-Staff', 'B-Expatriate'))
+            workercount_m = len(all_workers_m)
+            staffcount_m = len(all_staffs_m)
+              
+    
+            c_male_workers_m = all_workers_m.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
+            c_female_workers_m = all_workers_m.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
+            
+            nc_male_workers_m = all_workers_m.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
+            nc_female_workers_m = all_workers_m.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
+    
+            c_male_staff_m = all_staffs_m.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
+            c_female_staff_m = all_staffs_m.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
+            
+            nc_male_staff_m = all_staffs_m.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
+            nc_female_staff_m = all_staffs_m.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
+    
+            c_male_workers_cost_m = sum(c_male_workers_m.mapped('contract_id.wage'))
+            c_female_workers_cost_m = sum(c_female_workers_m.mapped('contract_id.wage'))
+            nc_male_workers_cost_m = sum(nc_male_workers_m.mapped('contract_id.wage'))
+            nc_female_workers_cost_m = sum(nc_female_workers_m.mapped('contract_id.wage'))
+    
+            c_male_staff_cost_m = sum(c_male_staff_m.mapped('contract_id.wage'))
+            c_female_staff_cost_m = sum(c_female_staff_m.mapped('contract_id.wage'))
+            nc_male_staff_cost_m = sum(nc_male_staff_m.mapped('contract_id.wage'))
+            nc_female_staff_cost_m = sum(nc_female_staff_m.mapped('contract_id.wage'))
+            #worker
+            w_wages_sum_m = sum([*c_male_workers_m.mapped('contract_id.wage'),*c_female_workers_m.mapped('contract_id.wage'),*nc_male_workers_m.mapped('contract_id.wage'),*nc_female_workers_m.mapped('contract_id.wage')])
+            
+            #staff
+            s_wages_sum_m = sum([c_male_staff_cost_m,c_female_staff_cost_m,nc_male_staff_cost_m,nc_female_staff_cost_m])
+    
+            
+    
+            worksheet.write(row, 1, 'No. of Head')
+            worksheet.write(row, 3,'Salary Cost')
+            #staff
+            worksheet.write(row, 5, 'No. of Head')
+            worksheet.write(row, 7,'Salary Cost')
+            row+=1
+            #worker
+            worksheet.write(row, 1, workercount_m, column_product_style)
+            worksheet.write(row, 2, 'Metal Trim SUMMARY', merge_format_)
+            worksheet.write(row, 3, w_wages_sum_m, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount_m, column_product_style)
+            worksheet.write(row, 6, 'Metal Trim SUMMARY', merge_format_)
+            worksheet.write(row, 7, s_wages_sum_m, column_product_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_male_workers_m), report_small_title_style)
+            worksheet.write(row, 2, 'Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 3, c_male_workers_cost_m, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_male_staff_m), report_small_title_style)
+            worksheet.write(row, 6, 'Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 7, c_male_staff_cost_m, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_female_workers_m), report_small_title_style)
+            worksheet.write(row, 2, 'Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 3, c_female_workers_cost_m, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_female_staff_m), report_small_title_style)
+            worksheet.write(row, 6, 'Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 7, c_female_staff_cost_m, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_male_workers_m), report_small_title_style)
+            worksheet.write(row, 2, 'Non Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 3, nc_male_workers_cost_m, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_male_staff_m), report_small_title_style)
+            worksheet.write(row, 6, 'Non Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 7, nc_male_staff_cost_m, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_female_workers_m), report_small_title_style)
+            worksheet.write(row, 2, 'Non Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 3, nc_female_workers_cost_m, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_female_staff_m), report_small_title_style)
+            worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 7, nc_female_staff_cost_m, report_small_title_style)
+            row+=1
+    
+    #Head Office
+    
+            all_workers_h = docs.filtered(lambda x: x.category_ids.name in ('Worker'))
+            all_staffs_h = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'Expatriate'))
+            workercount_h = len(all_workers_h)
+            staffcount_h = len(all_staffs_h)
+              
+    
+            c_male_workers_h = all_workers_h.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
+            c_female_workers_h = all_workers_h.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
+            
+            nc_male_workers_h = all_workers_h.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
+            nc_female_workers_h = all_workers_h.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
+    
+            c_male_staff_h = all_staffs_h.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
+            c_female_staff_h = all_staffs_h.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
+            
+            nc_male_staff_h = all_staffs_h.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
+            nc_female_staff_h = all_staffs_h.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
+    
+            c_male_workers_cost_h = sum(c_male_workers_h.mapped('contract_id.wage'))
+            c_female_workers_cost_h = sum(c_female_workers_h.mapped('contract_id.wage'))
+            nc_male_workers_cost_h = sum(nc_male_workers_h.mapped('contract_id.wage'))
+            nc_female_workers_cost_h = sum(nc_female_workers_h.mapped('contract_id.wage'))
+    
+            c_male_staff_cost_h = sum(c_male_staff_h.mapped('contract_id.wage'))
+            c_female_staff_cost_h = sum(c_female_staff_h.mapped('contract_id.wage'))
+            nc_male_staff_cost_h = sum(nc_male_staff_h.mapped('contract_id.wage'))
+            nc_female_staff_cost_h = sum(nc_female_staff_h.mapped('contract_id.wage'))
+            #worker
+            w_wages_sum_h = sum([*c_male_workers_h.mapped('contract_id.wage'),*c_female_workers_h.mapped('contract_id.wage'),*nc_male_workers_h.mapped('contract_id.wage'),*nc_female_workers_h.mapped('contract_id.wage')])
+            #staff
+            s_wages_sum_h = sum([c_male_staff_cost_h,c_female_staff_cost_h,nc_male_staff_cost_h,nc_female_staff_cost_h])
+            
+    
+            worksheet.write(row, 1, 'No. of Head')
+            worksheet.write(row, 3,'Salary Cost')
+            #staff
+            worksheet.write(row, 5, 'No. of Head')
+            worksheet.write(row, 7,'Salary Cost')
+            row+=1
+            #worker
+            worksheet.write(row, 1, workercount_h, column_product_style)
+            worksheet.write(row, 2, 'HO SUMMARY', merge_format_)
+            worksheet.write(row, 3, w_wages_sum_h, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount_h, column_product_style)
+            worksheet.write(row, 6, 'HO SUMMARY', merge_format_)
+            worksheet.write(row, 7, s_wages_sum_h, column_product_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_male_workers_h), report_small_title_style)
+            worksheet.write(row, 2, 'Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 3, c_male_workers_cost_h, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_male_staff_h), report_small_title_style)
+            worksheet.write(row, 6, 'Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 7, c_male_staff_cost_h, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_female_workers_h), report_small_title_style)
+            worksheet.write(row, 2, 'Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 3, c_female_workers_cost_h, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_female_staff_h), report_small_title_style)
+            worksheet.write(row, 6, 'Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 7, c_female_staff_cost_h, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_male_workers_h), report_small_title_style)
+            worksheet.write(row, 2, 'Non Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 3, nc_male_workers_cost_h, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_male_staff_h), report_small_title_style)
+            worksheet.write(row, 6, 'Non Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 7, nc_male_staff_cost_h, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_female_workers_h), report_small_title_style)
+            worksheet.write(row, 2, 'Non Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 3, nc_female_workers_cost_h, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_female_staff_h), report_small_title_style)
+            worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 7, nc_female_staff_cost_h, report_small_title_style)
+            row+=1
+        else:
+            all_workers = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
+            all_staffs = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
+            workercount = len(all_workers)
+            staffcount = len(all_staffs)
+            
+            c_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
+            c_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
+            
+            nc_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
+            nc_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
+    
+            c_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
+            c_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
+            
+            nc_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
+            nc_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
+    
+            c_male_workers_cost = sum(c_male_workers.mapped('contract_id.wage'))
+            c_female_workers_cost = sum(c_female_workers.mapped('contract_id.wage'))
+            nc_male_workers_cost = sum(nc_male_workers.mapped('contract_id.wage'))
+            nc_female_workers_cost = sum(nc_female_workers.mapped('contract_id.wage'))
+    
+            c_male_staff_cost = sum(c_male_staff.mapped('contract_id.wage'))
+            c_female_staff_cost = sum(c_female_staff.mapped('contract_id.wage'))
+            nc_male_staff_cost = sum(nc_male_staff.mapped('contract_id.wage'))
+            nc_female_staff_cost = sum(nc_female_staff.mapped('contract_id.wage'))
+            #worker
+            w_wages_sum = sum([*c_male_workers.mapped('contract_id.wage'),*c_female_workers.mapped('contract_id.wage'),*nc_male_workers.mapped('contract_id.wage'),*nc_female_workers.mapped('contract_id.wage')])
+            #staff
+            s_wages_sum = sum([c_male_staff_cost,c_female_staff_cost,nc_male_staff_cost,nc_female_staff_cost])
+            
+            worksheet.write(row, 1, 'No. of Head')
+            worksheet.write(row, 3,'Salary Cost')
+            #staff
+            worksheet.write(row, 5, 'No. of Head')
+            worksheet.write(row, 7,'Salary Cost')
+            row+=1
+            #worker
+            worksheet.write(row, 1, workercount, column_product_style)
+            worksheet.write(row, 2, 'WORKER SUMMARY', merge_format_)
+            worksheet.write(row, 3, w_wages_sum, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount, column_product_style)
+            worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
+            worksheet.write(row, 7, s_wages_sum, column_product_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
+            worksheet.write(row, 2, 'Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
+            worksheet.write(row, 6, 'Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
+            worksheet.write(row, 2, 'Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
+            worksheet.write(row, 6, 'Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
+            worksheet.write(row, 2, 'Non Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
+            worksheet.write(row, 6, 'Non Confirmed - Male', report_small_title_style)
+            worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
+            worksheet.write(row, 2, 'Non Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
+            worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
+            worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
+            row+=1
         
-        # all_emp = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
-        all_workers = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
-        all_staffs = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
-        workercount = len(all_workers)
-        staffcount = len(all_staffs)
-          
-
-        c_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
-        c_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
-        
-        nc_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
-        nc_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
-
-        c_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.resign_date > x.probation_date)
-        c_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.resign_date > x.probation_date)
-        
-        nc_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.resign_date <= x.probation_date)
-        nc_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
-
-        c_male_workers_cost = sum(c_male_workers.mapped('contract_id.wage'))
-        c_female_workers_cost = sum(c_female_workers.mapped('contract_id.wage'))
-        nc_male_workers_cost = sum(nc_male_workers.mapped('contract_id.wage'))
-        nc_female_workers_cost = sum(nc_female_workers.mapped('contract_id.wage'))
-
-        c_male_staff_cost = sum(c_male_staff.mapped('contract_id.wage'))
-        c_female_staff_cost = sum(c_female_staff.mapped('contract_id.wage'))
-        nc_male_staff_cost = sum(nc_male_staff.mapped('contract_id.wage'))
-        nc_female_staff_cost = sum(nc_female_staff.mapped('contract_id.wage'))
-        #worker
-        w_wages_sum = sum([*c_male_workers.mapped('contract_id.wage'),*c_female_workers.mapped('contract_id.wage'),*nc_male_workers.mapped('contract_id.wage'),*nc_female_workers.mapped('contract_id.wage')])
-        #staff
-        s_wages_sum = sum([c_male_staff_cost,c_female_staff_cost,nc_male_staff_cost,nc_female_staff_cost])
-        #all
-        
-        # wages_sum = sum([c_male_staff_cost,c_female_staff_cost,nc_male_staff_cost,nc_female_staff_cost,c_male_workers_cost,c_female_workers_cost,nc_male_workers_cost,nc_female_workers_cost])
-        # wages_sum = sum([all_emp])
-        # worksheet.write('N2', wages_sum, report_title_style2)
-
-        #worker
-        worksheet.write(row, 1, workercount, column_product_style)
-        worksheet.write(row, 2, 'WORKERS SUMMARY', merge_format_)
-        worksheet.write(row, 3, w_wages_sum, column_product_style)
-        #staff
-        worksheet.write(row, 5, staffcount, column_product_style)
-        worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
-        worksheet.write(row, 7, s_wages_sum, column_product_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, 'No. of Head')
-        worksheet.write(row, 3,'Salary Cost')
-        #staff
-        worksheet.write(row, 5, 'No. of Head')
-        worksheet.write(row, 7,'Salary Cost')
-        row+=1
-        #worker
-        worksheet.write(row, 1, workercount, column_product_style)
-        worksheet.write(row, 2, 'Zipper SUMMARY', merge_format_)
-        worksheet.write(row, 3, w_wages_sum, column_product_style)
-        #staff
-        worksheet.write(row, 5, staffcount, column_product_style)
-        worksheet.write(row, 6, 'Zipper SUMMARY', merge_format_)
-        worksheet.write(row, 7, s_wages_sum, column_product_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Non Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Non Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Non Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
-        row+=1
-
-#Metal_Trims
-
-        worksheet.write(row, 1, 'No. of Head')
-        worksheet.write(row, 3,'Salary Cost')
-        #staff
-        worksheet.write(row, 5, 'No. of Head')
-        worksheet.write(row, 7,'Salary Cost')
-        row+=1
-        #worker
-        worksheet.write(row, 1, workercount, column_product_style)
-        worksheet.write(row, 2, 'Metal Trim SUMMARY', merge_format_)
-        worksheet.write(row, 3, w_wages_sum, column_product_style)
-        #staff
-        worksheet.write(row, 5, staffcount, column_product_style)
-        worksheet.write(row, 6, 'Metal Trim SUMMARY', merge_format_)
-        worksheet.write(row, 7, s_wages_sum, column_product_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Non Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Non Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Non Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
-        row+=1
-
-#Head Office
-
-        worksheet.write(row, 1, 'No. of Head')
-        worksheet.write(row, 3,'Salary Cost')
-        #staff
-        worksheet.write(row, 5, 'No. of Head')
-        worksheet.write(row, 7,'Salary Cost')
-        row+=1
-        #worker
-        worksheet.write(row, 1, workercount, column_product_style)
-        worksheet.write(row, 2, 'HO SUMMARY', merge_format_)
-        worksheet.write(row, 3, w_wages_sum, column_product_style)
-        #staff
-        worksheet.write(row, 5, staffcount, column_product_style)
-        worksheet.write(row, 6, 'HO SUMMARY', merge_format_)
-        worksheet.write(row, 7, s_wages_sum, column_product_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Non Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Non Confirmed - Male', report_small_title_style)
-        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Non Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Non Confirmed - Female', report_small_title_style)
-        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
-        row+=1
-
-
 
 
 
@@ -1002,7 +1222,7 @@ class HRISPDFReport(models.TransientModel):
         if data.get('company_all'):
             if data.get('company_all')=='allcompany':
                 domain.append(('company_id.id', 'in',(1,2,3)))
-            
+        com_all = data.get('company_all')
         
         domain.append(('active', '=', True))
         # datefrom = data.get('date_from')
@@ -1098,7 +1318,7 @@ class HRISPDFReport(models.TransientModel):
         report_title_style3 = workbook.add_format({'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF', 'num_format': 'd-mmm-yy'})
         worksheet.merge_range('A1:S1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
         # worksheet.merge_range('A2:H2', 'Employee Joining Data', report_title_style2)
-        worksheet.merge_range('A2:S2', 'Employee Resign Data - Total Employees: {}'.format(slnumber), report_title_style2)
+        worksheet.merge_range('A2:S2', 'Employee Joining Data - Total Employees: {}'.format(slnumber), report_title_style2)
         worksheet.merge_range('A3:S3', 'From: {} To: {}'.format(datefrom, dateto), report_title_style3)
 
         report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
@@ -1189,210 +1409,386 @@ class HRISPDFReport(models.TransientModel):
 
         row+=2
 
-        # # all_emp = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
-        all_workers = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
-        all_staffs = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
-        workercount = len(all_workers)
-        staffcount = len(all_staffs)
-          
+        #allcompany == 
+        if data.get('company_all'):
+            # raise UserError (('hi'))
 
-        c_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
-        c_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+            all_workers = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
+            all_staffs = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
+            workercount = len(all_workers)
+            staffcount = len(all_staffs)
+            
+            workerwage = sum(all_workers.mapped('contract_id.wage'))
+            staffwage = sum(all_staffs.mapped('contract_id.wage'))
+            #worker
+            worksheet.write(row, 1, workercount, column_product_style)
+            worksheet.write(row, 2, 'WORKERS SUMMARY', merge_format_)
+            worksheet.write(row, 3, workerwage, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount, column_product_style)
+            worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
+            worksheet.write(row, 7, staffwage, column_product_style)
+            row+=1
+    
+     #Zipper      
+            
+    
+            # # all_emp = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
+            all_workers_z = docs.filtered(lambda x: x.category_ids.name in ('Z-Worker'))
+            all_staffs_z = docs.filtered(lambda x: x.category_ids.name in ('Z-Staff', 'Z-Expatriate'))
+            workercount_z = len(all_workers_z)
+            staffcount_z = len(all_staffs_z)
+              
+    
+            c_male_workers_z = all_workers_z.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+            c_female_workers_z = all_workers_z.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+            
+            nc_male_workers_z = all_workers_z.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+            nc_female_workers_z = all_workers_z.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+    
+            c_male_staff_z = all_staffs_z.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+            c_female_staff_z = all_staffs_z.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+            
+            nc_male_staff_z = all_staffs_z.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+            nc_female_staff_z = all_staffs_z.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+    
+            c_male_workers_cost_z = sum(c_male_workers_z.mapped('contract_id.wage'))
+            c_female_workers_cost_z = sum(c_female_workers_z.mapped('contract_id.wage'))
+            nc_male_workers_cost_z = sum(nc_male_workers_z.mapped('contract_id.wage'))
+            nc_female_workers_cost_z = sum(nc_female_workers_z.mapped('contract_id.wage'))
+    
+            c_male_staff_cost_z = sum(c_male_staff_z.mapped('contract_id.wage'))
+            c_female_staff_cost_z = sum(c_female_staff_z.mapped('contract_id.wage'))
+            nc_male_staff_cost_z = sum(nc_male_staff_z.mapped('contract_id.wage'))
+            nc_female_staff_cost_z = sum(nc_female_staff_z.mapped('contract_id.wage'))
+            #worker
+            w_wages_sum_z = sum([*c_male_workers_z.mapped('contract_id.wage'),*c_female_workers_z.mapped('contract_id.wage'),*nc_male_workers_z.mapped('contract_id.wage'),*nc_female_workers_z.mapped('contract_id.wage')])
+            #staff
+            s_wages_sum_z = sum([c_male_staff_cost_z,c_female_staff_cost_z,nc_male_staff_cost_z,nc_female_staff_cost_z])
+            #all
+    
+            #worker
+    
+            row+=1
+    
+            #worker
+            worksheet.write(row, 1, 'No. of Head')
+            worksheet.write(row, 3,'Salary Cost')
+            #staff
+            worksheet.write(row, 5, 'No. of Head')
+            worksheet.write(row, 7,'Salary Cost')
+            row+=1
+            #worker
+            worksheet.write(row, 1, workercount_z, column_product_style)
+            worksheet.write(row, 2, 'Zipper SUMMARY', merge_format_)
+            worksheet.write(row, 3, w_wages_sum_z, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount_z, column_product_style)
+            worksheet.write(row, 6, 'Zipper SUMMARY', merge_format_)
+            worksheet.write(row, 7, s_wages_sum_z, column_product_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_male_workers_z), report_small_title_style)
+            worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
+            worksheet.write(row, 3, c_male_workers_cost_z, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_male_staff_z), report_small_title_style)
+            worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
+            worksheet.write(row, 7, c_male_staff_cost_z, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_female_workers_z), report_small_title_style)
+            worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
+            worksheet.write(row, 3, c_female_workers_cost_z, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_female_staff_z), report_small_title_style)
+            worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
+            worksheet.write(row, 7, c_female_staff_cost_z, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_male_workers_z), report_small_title_style)
+            worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
+            worksheet.write(row, 3, nc_male_workers_cost_z, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_male_staff_z), report_small_title_style)
+            worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
+            worksheet.write(row, 7, nc_male_staff_cost_z, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_female_workers_z), report_small_title_style)
+            worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
+            worksheet.write(row, 3, nc_female_workers_cost_z, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_female_staff_z), report_small_title_style)
+            worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
+            worksheet.write(row, 7, nc_female_staff_cost_z, report_small_title_style)
+            row+=1
+    
+    #metal Trims
+    
+            all_workers_m = docs.filtered(lambda x: x.category_ids.name in ('B-Worker'))
+            all_staffs_m = docs.filtered(lambda x: x.category_ids.name in ('B-Staff','B-Expatriate'))
+            workercount_m = len(all_workers_m)
+            staffcount_m = len(all_staffs_m)
+              
+    
+            c_male_workers_m = all_workers_m.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+            c_female_workers_m = all_workers_m.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+            
+            nc_male_workers_m = all_workers_m.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+            nc_female_workers_m = all_workers_m.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+    
+            c_male_staff_m = all_staffs_m.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+            c_female_staff_m = all_staffs_m.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+            
+            nc_male_staff_m = all_staffs_m.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+            nc_female_staff_m = all_staffs_m.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+    
+            c_male_workers_cost_m = sum(c_male_workers_m.mapped('contract_id.wage'))
+            c_female_workers_cost_m = sum(c_female_workers_m.mapped('contract_id.wage'))
+            nc_male_workers_cost_m = sum(nc_male_workers_m.mapped('contract_id.wage'))
+            nc_female_workers_cost_m = sum(nc_female_workers_m.mapped('contract_id.wage'))
+    
+            c_male_staff_cost_m = sum(c_male_staff_m.mapped('contract_id.wage'))
+            c_female_staff_cost_m = sum(c_female_staff_m.mapped('contract_id.wage'))
+            nc_male_staff_cost_m = sum(nc_male_staff_m.mapped('contract_id.wage'))
+            nc_female_staff_cost_m = sum(nc_female_staff_m.mapped('contract_id.wage'))
+            #worker
+            w_wages_sum_m = sum([*c_male_workers_m.mapped('contract_id.wage'),*c_female_workers_m.mapped('contract_id.wage'),*nc_male_workers_m.mapped('contract_id.wage'),*nc_female_workers_m.mapped('contract_id.wage')])
+            #staff
+            s_wages_sum_m = sum([c_male_staff_cost_m,c_female_staff_cost_m,nc_male_staff_cost_m,nc_female_staff_cost_m])
+    
+            
+            #worker
+            worksheet.write(row, 1, 'No. of Head')
+            worksheet.write(row, 3,'Salary Cost')
+            #staff
+            worksheet.write(row, 5, 'No. of Head')
+            worksheet.write(row, 7,'Salary Cost')
+            row+=1
+            #worker
+            worksheet.write(row, 1, workercount_m, column_product_style)
+            worksheet.write(row, 2, 'Metal Trims SUMMARY', merge_format_)
+            worksheet.write(row, 3, w_wages_sum_m, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount_m, column_product_style)
+            worksheet.write(row, 6, 'Metal Trims SUMMARY', merge_format_)
+            worksheet.write(row, 7, s_wages_sum_m, column_product_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_male_workers_m), report_small_title_style)
+            worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
+            worksheet.write(row, 3, c_male_workers_cost_m, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_male_staff_m), report_small_title_style)
+            worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
+            worksheet.write(row, 7, c_male_staff_cost_m, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_female_workers_m), report_small_title_style)
+            worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
+            worksheet.write(row, 3, c_female_workers_cost_m, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_female_staff_m), report_small_title_style)
+            worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
+            worksheet.write(row, 7, c_female_staff_cost_m, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_male_workers_m), report_small_title_style)
+            worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
+            worksheet.write(row, 3, nc_male_workers_cost_m, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_male_staff_m), report_small_title_style)
+            worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
+            worksheet.write(row, 7, nc_male_staff_cost_m, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_female_workers_m), report_small_title_style)
+            worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
+            worksheet.write(row, 3, nc_female_workers_cost_m, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_female_staff_m), report_small_title_style)
+            worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
+            worksheet.write(row, 7, nc_female_staff_cost_m, report_small_title_style)
+            row+=1
+    
+    #Head Office
+    
+            all_workers_h = docs.filtered(lambda x: x.category_ids.name in ('Worker'))
+            all_staffs_h = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'Expatriate'))
+            workercount_h = len(all_workers_h)
+            staffcount_h = len(all_staffs_h)
+              
+    
+            c_male_workers_h = all_workers_h.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+            c_female_workers_h = all_workers_h.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+            
+            nc_male_workers_h = all_workers_h.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+            nc_female_workers_h = all_workers_h.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+    
+            c_male_staff_h = all_staffs_h.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+            c_female_staff_h = all_staffs_h.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+            
+            nc_male_staff_h = all_staffs_h.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+            nc_female_staff_h = all_staffs_h.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+    
+            c_male_workers_cost_h = sum(c_male_workers_h.mapped('contract_id.wage'))
+            c_female_workers_cost_h = sum(c_female_workers_h.mapped('contract_id.wage'))
+            nc_male_workers_cost_h = sum(nc_male_workers_h.mapped('contract_id.wage'))
+            nc_female_workers_cost_h = sum(nc_female_workers_h.mapped('contract_id.wage'))
+    
+            c_male_staff_cost_h = sum(c_male_staff_h.mapped('contract_id.wage'))
+            c_female_staff_cost_h = sum(c_female_staff_h.mapped('contract_id.wage'))
+            nc_male_staff_cost_h = sum(nc_male_staff_h.mapped('contract_id.wage'))
+            nc_female_staff_cost_h = sum(nc_female_staff_h.mapped('contract_id.wage'))
+            #worker
+            w_wages_sum_h = sum([*c_male_workers_h.mapped('contract_id.wage'),*c_female_workers_h.mapped('contract_id.wage'),*nc_male_workers_h.mapped('contract_id.wage'),*nc_female_workers_h.mapped('contract_id.wage')])
+            #staff
+            s_wages_sum_h = sum([c_male_staff_cost_h,c_female_staff_cost_h,nc_male_staff_cost_h,nc_female_staff_cost_h])
+    
+            
+            #worker
+            worksheet.write(row, 1, 'No. of Head')
+            worksheet.write(row, 3,'Salary Cost')
+            #staff
+            worksheet.write(row, 5, 'No. of Head')
+            worksheet.write(row, 7,'Salary Cost')
+            row+=1
+            #worker
+            worksheet.write(row, 1, workercount_h, column_product_style)
+            worksheet.write(row, 2, 'HO SUMMARY', merge_format_)
+            worksheet.write(row, 3, w_wages_sum_h, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount_h, column_product_style)
+            worksheet.write(row, 6, 'HO SUMMARY', merge_format_)
+            worksheet.write(row, 7, s_wages_sum_h, column_product_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_male_workers_h), report_small_title_style)
+            worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
+            worksheet.write(row, 3, c_male_workers_cost_h, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_male_staff_h), report_small_title_style)
+            worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
+            worksheet.write(row, 7, c_male_staff_cost_h, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_female_workers_h), report_small_title_style)
+            worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
+            worksheet.write(row, 3, c_female_workers_cost_h, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_female_staff_h), report_small_title_style)
+            worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
+            worksheet.write(row, 7, c_female_staff_cost_h, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_male_workers_h), report_small_title_style)
+            worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
+            worksheet.write(row, 3, nc_male_workers_cost_h, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_male_staff_h), report_small_title_style)
+            worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
+            worksheet.write(row, 7, nc_male_staff_cost_h, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_female_workers_h), report_small_title_style)
+            worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
+            worksheet.write(row, 3, nc_female_workers_cost_h, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_female_staff_h), report_small_title_style)
+            worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
+            worksheet.write(row, 7, nc_female_staff_cost_h, report_small_title_style)
+            row+=1
+            
+        else:
+            all_workers = docs.filtered(lambda x: x.category_ids.name in ('Worker', 'Z-Worker', 'B-Worker', 'C-Zipper Worker', 'C-Button Worker', 'C-Worker'))
+            all_staffs = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
+            workercount = len(all_workers)
+            staffcount = len(all_staffs)
+              
+    
+            c_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+            c_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+            
+            nc_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+            nc_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+    
+            c_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
+            c_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
+            
+            nc_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
+            nc_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
+    
+            c_male_workers_cost = sum(c_male_workers.mapped('contract_id.wage'))
+            c_female_workers_cost = sum(c_female_workers.mapped('contract_id.wage'))
+            nc_male_workers_cost = sum(nc_male_workers.mapped('contract_id.wage'))
+            nc_female_workers_cost = sum(nc_female_workers.mapped('contract_id.wage'))
+    
+            c_male_staff_cost = sum(c_male_staff.mapped('contract_id.wage'))
+            c_female_staff_cost = sum(c_female_staff.mapped('contract_id.wage'))
+            nc_male_staff_cost = sum(nc_male_staff.mapped('contract_id.wage'))
+            nc_female_staff_cost = sum(nc_female_staff.mapped('contract_id.wage'))
+            #worker
+            w_wages_sum = sum([*c_male_workers.mapped('contract_id.wage'),*c_female_workers.mapped('contract_id.wage'),*nc_male_workers.mapped('contract_id.wage'),*nc_female_workers.mapped('contract_id.wage')])
+            #staff
+            s_wages_sum = sum([c_male_staff_cost,c_female_staff_cost,nc_male_staff_cost,nc_female_staff_cost])
+            #all
+            
+    
+            #worker
+            worksheet.write(row, 1, 'No. of Head')
+            worksheet.write(row, 3,'Salary Cost')
+            #staff
+            worksheet.write(row, 5, 'No. of Head')
+            worksheet.write(row, 7,'Salary Cost')
+            row+=1
+            #worker
+            worksheet.write(row, 1, workercount, column_product_style)
+            worksheet.write(row, 2, 'WORKERS SUMMARY', merge_format_)
+            worksheet.write(row, 3, w_wages_sum, column_product_style)
+            #staff
+            worksheet.write(row, 5, staffcount, column_product_style)
+            worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
+            worksheet.write(row, 7, s_wages_sum, column_product_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
+            worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
+            worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
+            worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
+            worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
+            worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
+            worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
+            worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
+            worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
+            worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
+            worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
+            worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
+            worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
+            row+=1
+            #worker
+            worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
+            worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
+            worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
+            #staff
+            worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
+            worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
+            worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
+            row+=1
         
-        nc_male_workers = all_workers.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
-        nc_female_workers = all_workers.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
-
-        c_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'NEWHEAD')
-        c_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'NEWHEAD')
-        
-        nc_male_staff = all_staffs.filtered(lambda x: x.gender == 'male' and x.replacement_new == 'REPLACEMENT')
-        nc_female_staff = all_staffs.filtered(lambda x: x.gender == 'female' and x.replacement_new == 'REPLACEMENT')
-
-        c_male_workers_cost = sum(c_male_workers.mapped('contract_id.wage'))
-        c_female_workers_cost = sum(c_female_workers.mapped('contract_id.wage'))
-        nc_male_workers_cost = sum(nc_male_workers.mapped('contract_id.wage'))
-        nc_female_workers_cost = sum(nc_female_workers.mapped('contract_id.wage'))
-
-        c_male_staff_cost = sum(c_male_staff.mapped('contract_id.wage'))
-        c_female_staff_cost = sum(c_female_staff.mapped('contract_id.wage'))
-        nc_male_staff_cost = sum(nc_male_staff.mapped('contract_id.wage'))
-        nc_female_staff_cost = sum(nc_female_staff.mapped('contract_id.wage'))
-        #worker
-        w_wages_sum = sum([*c_male_workers.mapped('contract_id.wage'),*c_female_workers.mapped('contract_id.wage'),*nc_male_workers.mapped('contract_id.wage'),*nc_female_workers.mapped('contract_id.wage')])
-        #staff
-        s_wages_sum = sum([c_male_staff_cost,c_female_staff_cost,nc_male_staff_cost,nc_female_staff_cost])
-        #all
-
-        #worker
-        worksheet.write(row, 1, workercount, column_product_style)
-        worksheet.write(row, 2, 'WORKERS SUMMARY', merge_format_)
-        worksheet.write(row, 3, w_wages_sum, column_product_style)
-        #staff
-        worksheet.write(row, 5, staffcount, column_product_style)
-        worksheet.write(row, 6, 'STAFF SUMMARY', merge_format_)
-        worksheet.write(row, 7, s_wages_sum, column_product_style)
-        row+=1
-
-        #worker
-        worksheet.write(row, 1, 'No. of Head')
-        worksheet.write(row, 3,'Salary Cost')
-        #staff
-        worksheet.write(row, 5, 'No. of Head')
-        worksheet.write(row, 7,'Salary Cost')
-        row+=1
-        #worker
-        worksheet.write(row, 1, workercount, column_product_style)
-        worksheet.write(row, 2, 'Zipper SUMMARY', merge_format_)
-        worksheet.write(row, 3, w_wages_sum, column_product_style)
-        #staff
-        worksheet.write(row, 5, staffcount, column_product_style)
-        worksheet.write(row, 6, 'Zipper SUMMARY', merge_format_)
-        worksheet.write(row, 7, s_wages_sum, column_product_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
-        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
-        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
-        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
-        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
-        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
-        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
-        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
-        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
-        row+=1
-
-#metal Trims
-        #worker
-        worksheet.write(row, 1, 'No. of Head')
-        worksheet.write(row, 3,'Salary Cost')
-        #staff
-        worksheet.write(row, 5, 'No. of Head')
-        worksheet.write(row, 7,'Salary Cost')
-        row+=1
-        #worker
-        worksheet.write(row, 1, workercount, column_product_style)
-        worksheet.write(row, 2, 'Metal Trims SUMMARY', merge_format_)
-        worksheet.write(row, 3, w_wages_sum, column_product_style)
-        #staff
-        worksheet.write(row, 5, staffcount, column_product_style)
-        worksheet.write(row, 6, 'Metal Trims SUMMARY', merge_format_)
-        worksheet.write(row, 7, s_wages_sum, column_product_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
-        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
-        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
-        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
-        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
-        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
-        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
-        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
-        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
-        row+=1
-
-#Head Office
-        #worker
-        worksheet.write(row, 1, 'No. of Head')
-        worksheet.write(row, 3,'Salary Cost')
-        #staff
-        worksheet.write(row, 5, 'No. of Head')
-        worksheet.write(row, 7,'Salary Cost')
-        row+=1
-        #worker
-        worksheet.write(row, 1, workercount, column_product_style)
-        worksheet.write(row, 2, 'HO SUMMARY', merge_format_)
-        worksheet.write(row, 3, w_wages_sum, column_product_style)
-        #staff
-        worksheet.write(row, 5, staffcount, column_product_style)
-        worksheet.write(row, 6, 'HO SUMMARY', merge_format_)
-        worksheet.write(row, 7, s_wages_sum, column_product_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'New Head - Male', report_small_title_style)
-        worksheet.write(row, 3, c_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'New Head - Male', report_small_title_style)
-        worksheet.write(row, 7, c_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(c_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'New Head - Female', report_small_title_style)
-        worksheet.write(row, 3, c_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(c_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'New Head - Female', report_small_title_style)
-        worksheet.write(row, 7, c_female_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_male_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Replacement Head - Male', report_small_title_style)
-        worksheet.write(row, 3, nc_male_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_male_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Replacement Head - Male', report_small_title_style)
-        worksheet.write(row, 7, nc_male_staff_cost, report_small_title_style)
-        row+=1
-        #worker
-        worksheet.write(row, 1, len(nc_female_workers), report_small_title_style)
-        worksheet.write(row, 2, 'Replacement Head - Female', report_small_title_style)
-        worksheet.write(row, 3, nc_female_workers_cost, report_small_title_style)
-        #staff
-        worksheet.write(row, 5, len(nc_female_staff), report_small_title_style)
-        worksheet.write(row, 6, 'Replacement Head - Female', report_small_title_style)
-        worksheet.write(row, 7, nc_female_staff_cost, report_small_title_style)
-        row+=1
+            
 
         
         # for line in report_data:

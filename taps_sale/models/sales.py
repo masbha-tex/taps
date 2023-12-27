@@ -139,22 +139,39 @@ class SaleOrder(models.Model):
 
 
     def _compute_rmc(self):
-        self.rmc = 0.0
         for rec in self:
-            if rec.company_id == 1:
-                tc = sum(rec.mapped('order_line.tape_con'))
-                sc = sum(rec.mapped('order_line.slider_con'))
-                topc = sum(rec.mapped('order_line.topwire_con'))
-                botc = sum(rec.mapped('order_line.botomwire_con'))
-                wc = sum(rec.mapped('order_line.wire_con'))
-                pc = sum(rec.mapped('order_line.pinbox_con'))
-                rmc = 0
-                allrm = self.env['product.product'].sudo().search([('default_code','ilike', 'R_'),('product_tmpl_id.company_id','=',self.env.company.id)])
-                if tc:
-                    # allrm
-                    a = ''
-                    # raise UserE
-                    # rmc = tc
+            rmc_val = 0
+            # if rec.company_id.id == 1 and rec.state == 'sale':
+            #     tc = sum(rec.mapped('order_line.tape_con'))
+            #     sc = sum(rec.mapped('order_line.slider_con'))
+            #     topc = sum(rec.mapped('order_line.topwire_con'))
+            #     botc = sum(rec.mapped('order_line.botomwire_con'))
+            #     wc = sum(rec.mapped('order_line.wire_con'))
+            #     pc = sum(rec.mapped('order_line.pinbox_con'))
+            #     rmc = 0
+            #     all_rm = self.env['product.product'].sudo().search([('default_code','ilike', 'R_'),('product_tmpl_id.company_id','=',self.env.company.id)])
+                
+            #     if tc:
+            #         rm_pro = self.env['product.template'].sudo().search([('name','=', rec.order_line[0].dyedtape)])
+            #         if rm_pro:
+            #             bom_pro = self.env['mrp.bom.line'].sudo().search([('bom_id.product_tmpl_id','=', rm_pro[0].id),('product_id.default_code','ilike','R_')])
+            #             if bom_pro:
+            #                 # raise UserError((bom_pro[0].product_id))
+            #                 st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', bom_pro[0].product_id.id)],order='id desc',limit=1)
+            #                 if st_price:
+            #                     price = st_price.unit_price
+            #                     # raise UserError((tc * price))
+            #                     rmc_val = tc * price
+                # if sc:
+                #     findslider = rec.order_line[0].slidercodesfg.find("TZP ")
+                #     if findslider > 0:
+                #         slider = i.slidercodesfg.split("TZP ",1)[1]
+                #     else:
+                #         slider = i.slidercodesfg.split("TZP-",1)[1]
+                #     # rm_pro = all_rm.sudo().filtered([('name','ilike', slider),('name','ilike', 'TZP')])
+                #     rm_pro = all_rm.filtered(lambda pr: pr.product_tmpl_id.name.ilike(slider) and pr.product_tmpl_id.name.ilike('TZP'))
+                    
+            rec.rmc = rmc_val
                     
                     
                     

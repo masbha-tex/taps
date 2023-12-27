@@ -56,6 +56,11 @@
                     <field name="name"/>
                     <field name="oa_number"/>
                     <field name="customer"/>
+                    <field name="last_approver"/>
+                    <field name="last_approve_date"/>
+                    <field name="ca_lead"/>
+                    <field name="pa_lead"/>
+                    <field name="total_lead"/>
                     <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
                 </tree>
             </field>
@@ -80,14 +85,14 @@
             <field name="arch" type="xml">
                 <form string="CCR FORM" multi_edit="1" sample="1">
                     <header>
-                        <button name="action_assign_quality" type="object" string="Assign Quality"/>
-                        <button name="action_justify" type="object" string="Justify"/>
-                        <button name="action_notjustify" type="object" string="Not Justify" context="{'active_id':id}"/>
-                        <button name="action_corrective" type="object" string="Take Corrective Action" context="{'active_id':id}"/>
-                        <button name="action_preventive" type="object" string="Take Preventive Action" context="{'active_id':id}"/>
+                        <button name="action_assign_quality" type="object" string="Assign Quality" attrs="{'invisible': [('states', 'not in', ['draft'])]}"/>
+                        <button name="action_justify" type="object" string="Justify" attrs= "{'invisible': [('states', 'not in', ['inter'])]}"/>
+                        <button name="action_notjustify" type="object" string="Not Justify" context="{'active_id':id}" attrs= "{'invisible': [('states', 'not in', ['inter'])]}"/>
+                        <button name="action_corrective" type="object" string="Take Corrective Action" context="{'active_id':id}" attrs= "{'invisible': [('states', 'not in', ['just'])]}"/>
+                        <button name="action_preventive" type="object" string="Take Preventive Action" context="{'active_id':id}" attrs= "{'invisible': [('states', 'not in', ['ca'])]}"/>
                         <button name="action_cancel" type="object" string="Cancel"/>
                         <button name="action_draft" type="object" string="Set To Draft"  attrs="{'invisible': [('states', 'not in', ['cancel'])]}"/>
-                        <button name="action_close" type="object" string="Close" attrs="{'invisible': [('states', 'in', ['done' ,'cancel'])]}"/>
+                        <button name="action_close" type="object" string="Close" attrs="{'invisible': [('states', 'not in', ['pa' ,'nonjust'])]}"/>
                         <!-- <button name="action_draft" states="cancel" type="object" string="Set to Draft"/> -->
                         
                         <field name="states" widget="statusbar" statusbar_visible="draft,inter,just,nonjust,ca,pa,done,cancel"/>
@@ -159,14 +164,14 @@
                         </group>
                         <group>
                             
-                            <group string="CORRECTIVE ACTION" attrs="{'invisible': [('states', 'not in', ['just'])]}">
+                            <group string="CORRECTIVE ACTION" >
                                 <field name="corrective_action"/>
                                 <field name="after_sales"/>
                                 <field name="replacement_quantity"/>
                                 <field name="cost"/>
                                 <field name="ca_closing_date"/>
                             </group>
-                            <group string="PREVENTIVE ACTION" attrs="{'invisible': [('states', 'not in', ['just'])]}">
+                            <group string="PREVENTIVE ACTION" >
                                 <field name="preventive_action"/>
                                 <field name="pa_closing_date"/>
                             </group>
