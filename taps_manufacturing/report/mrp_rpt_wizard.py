@@ -1124,6 +1124,9 @@ class MrpReportWizard(models.TransientModel):
                     comur_value = in_pr.released_till_date
                     
                 if full_date.date() > in_pr.production_date.date():
+                    comu_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() > in_pr.production_date.date())
+                    if comu_released:
+                        cm_rel = sum(comu_released.mapped('product_uom_qty'))
                     cm_inv = price * cm_pcs
                     cmr_val = cm_rel * price
                     comu_inv = in_pr.invoice_till_date + cm_inv

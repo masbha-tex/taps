@@ -12,8 +12,10 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 class tapsHelpdeskTicket(models.Model):
     _inherit = 'helpdesk.ticket'
 
-    
-
+    def _compute_default_ticket_type(self):
+        return self.env['helpdesk.ticket.type'].search([('name', '=', 'Customer Complaint')], limit=1).id
+        
+    ticket_type_id = fields.Many2one('helpdesk.ticket.type', string="Ticket Type" , default=_compute_default_ticket_type)
     oa_number = fields.Many2one('sale.order', string='Oa Number')
     buyer = fields.Many2one('res.partner', string='Buyer')
     complain = fields.Text(string='Detail Complaint')
@@ -21,6 +23,7 @@ class tapsHelpdeskTicket(models.Model):
     ccr_ids = fields.Many2many('sale.ccr', compute='_compute_ccr_number', string='Ccr', copy=False, store=True)
 
     
+        
     def _compute_ccr_number(self):
         
         for order in self:

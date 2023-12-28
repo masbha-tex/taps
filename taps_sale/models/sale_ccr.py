@@ -85,14 +85,14 @@ class SaleCcr(models.Model):
     complaint = fields.Text(string='Complaint/Defeat')
     department_id = fields.Many2one('hr.department', string='Resp. Department')
     replacement_return_qty = fields.Float(string='Replacement Return Quantity')
-    replacement_quantity = fields.Float(string='Replacement Quantity')
+    replacement_quantity = fields.Float(string='Replacement Quantity', readonly=True)
     replacement_value = fields.Float(string='Replacement Value')
     analysis_activity = fields.Text(string='Probable Root Cause/Analysis')
-    corrective_action = fields.Text(string='Corrective Action')
-    preventive_action = fields.Text(string='Preventive Action')
-    non_justify_action = fields.Text(string='Action to be taken')
-    ca_closing_date = fields.Date(string='CA Closing Date')
-    pa_closing_date = fields.Date(string='PA Closing Date')
+    corrective_action = fields.Text(string='Corrective Action', readonly=True)
+    preventive_action = fields.Text(string='Preventive Action',readonly=True)
+    non_justify_action = fields.Text(string='Action to be taken',readonly=True)
+    ca_closing_date = fields.Date(string='CA Closing Date',readonly=True)
+    pa_closing_date = fields.Date(string='PA Closing Date',readonly=True)
     closing_date = fields.Date(string='Closing Date')
     sale_order_line_id = fields.Many2many('sale.order.line', string="Sale Order Line")
     fg_product = fields.Many2one('product.template',string="Product Type/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]" )
@@ -104,7 +104,7 @@ class SaleCcr(models.Model):
     company_id = fields.Many2one(related='oa_number.company_id', string='Company', store=True, readonly=True, index=True)
     invoice_reference = fields.Char(string='Invoice Ref.')
     report_date = fields.Date(string='Report Date', default= date.today(), readonly=True)
-    reason = fields.Text(string="Reason for Not Justified")
+    reason = fields.Text(string="Reason for Not Justified", readonly=True)
     # justification_level = fields.Selection(
     #     [('justified','Justified'),
     #      ('notjustified','Not Justified')],
@@ -114,7 +114,7 @@ class SaleCcr(models.Model):
     ca_lead = fields.Char(string='CA Lead', compute='_compute_ca_lead')
     pa_lead = fields.Char(string='PA Lead', compute='_compute_pa_lead')
     total_lead = fields.Char(string='Total Lead', compute='_compute_total_lead')
-    cost = fields.Float(string='Cost')
+    cost = fields.Float(string='Cost', readonly=True)
 
     states = fields.Selection([
         ('draft', 'Draft'),
@@ -175,22 +175,29 @@ class SaleCcr(models.Model):
                 
     def _compute_total_lead(self):
         for record in self:
-            if record.justification == 'Justified':
-                if record.pa_closing_date and record.last_approve_date:
-                    d1=datetime.strptime(str(record.last_approve_date),'%Y-%m-%d')
-                    d2=datetime.strptime(str(record.pa_closing_date),'%Y-%m-%d')
-                    record.total_lead = str((d1-d2).days) + " days"
-                else:
-                    record.total_lead = '0 days'
-            elif record.justification == 'Not Justified':
-                if record.report_date and record.last_approve_date:
-                    d1=datetime.strptime(str(record.last_approve_date),'%Y-%m-%d')
-                    d2=datetime.strptime(str(record.report_date),'%Y-%m-%d')
-                    record.total_lead = str((d1-d2).days) + " days"
-                else:
-                    record.total_lead = '0 days'
-            else:
+            if record.report_date and record.last_approve_date:
+                d1=datetime.strptime(str(record.last_approve_date),'%Y-%m-%d')
+                d2=datetime.strptime(str(record.report_date),'%Y-%m-%d')
+                record.total_lead = str((d1-d2).days) + " days"
+            else: 
                 record.total_lead = '0 days'
+        # for record in self:
+        #     if record.justification == 'Justified':
+        #         if record.pa_closing_date and record.last_approve_date:
+        #             d1=datetime.strptime(str(record.last_approve_date),'%Y-%m-%d')
+        #             d2=datetime.strptime(str(record.pa_closing_date),'%Y-%m-%d')
+        #             record.total_lead = str((d1-d2).days) + " days"
+        #         else:
+        #             record.total_lead = '0 days'
+        #     elif record.justification == 'Not Justified':
+        #         if record.report_date and record.last_approve_date:
+        #             d1=datetime.strptime(str(record.last_approve_date),'%Y-%m-%d')
+        #             d2=datetime.strptime(str(record.report_date),'%Y-%m-%d')
+        #             record.total_lead = str((d1-d2).days) + " days"
+        #         else:
+        #             record.total_lead = '0 days'
+        #     else:
+        #         record.total_lead = '0 days'
                 
 
     def _compute_last_approver(self):
@@ -254,7 +261,7 @@ class SaleCcr(models.Model):
             self.write({'states': 'inter'})
     
     def action_close(self):
-        self._compute_last_approver()
+        # self._compute_last_approver()
         self.write({'states': 'done'})
         return {}
 

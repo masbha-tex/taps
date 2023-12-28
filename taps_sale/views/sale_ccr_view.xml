@@ -138,7 +138,7 @@
                         </group>
                             
                         </group>
-                        <group string="Quality">
+                        <group string="Quality" attrs= "{'invisible': [('states', '=', 'draft')]}">
                             <group>
                                 <field name="ccr_type"/>
                                 <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
