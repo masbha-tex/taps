@@ -90,12 +90,12 @@ class SaleCcr(models.Model):
     analysis_activity = fields.Text(string='Probable Root Cause/Analysis')
     corrective_action = fields.Text(string='Corrective Action')
     preventive_action = fields.Text(string='Preventive Action')
-    non_justify_action = fields.Text(string='Action')
+    non_justify_action = fields.Text(string='Action to be taken')
     ca_closing_date = fields.Date(string='CA Closing Date')
     pa_closing_date = fields.Date(string='PA Closing Date')
     closing_date = fields.Date(string='Closing Date')
     sale_order_line_id = fields.Many2many('sale.order.line', string="Sale Order Line")
-    fg_product = fields.Many2one('product.template',string="Products/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]" )
+    fg_product = fields.Many2one('product.template',string="Product Type/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]" )
     finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
     # slider = fields.Char(string="Slider")
     sale_representative = fields.Many2one('sale.representative', related = 'oa_number.sale_representative', string='Sale Representative')
@@ -104,7 +104,7 @@ class SaleCcr(models.Model):
     company_id = fields.Many2one(related='oa_number.company_id', string='Company', store=True, readonly=True, index=True)
     invoice_reference = fields.Char(string='Invoice Ref.')
     report_date = fields.Date(string='Report Date', default= date.today(), readonly=True)
-    reason = fields.Char(string="Reason for Not Justified")
+    reason = fields.Text(string="Reason for Not Justified")
     # justification_level = fields.Selection(
     #     [('justified','Justified'),
     #      ('notjustified','Not Justified')],
@@ -132,11 +132,28 @@ class SaleCcr(models.Model):
     last_approver = fields.Many2one(
         string="Last Approver",
         comodel_name="res.users",
-        compute="_compute_last_approver",
+        compute='_compute_last_approver'
+        # default=lambda self: self.env.user.id
+        
+        
     )
     
     last_approve_date = fields.Date(string="Last Approve Date")
 
+    def show_notification(self):
+        
+        notification = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': ('Your Custom Title'),
+                'message': 'Your Custom Message',
+                'type':'success',  #types: success,warning,danger,info
+                'sticky': True,  #True/False will display for few seconds if false
+            },
+        }
+        # raise UserError((notification))
+        return notification
 
     def _compute_ca_lead(self):
         for record in self:
@@ -178,17 +195,20 @@ class SaleCcr(models.Model):
 
     def _compute_last_approver(self):
         domain = ['&', '&', ('model', '=', 'sale.ccr'), ('res_id', 'in', self.ids), ('approved', '=', 'True')]
+        
         # create dictionary of purchase.order res_id: last approver user_id
         groups = self.env['studio.approval.entry'].sudo().read_group(domain, ['ids:array_agg(id)'], ['res_id'])
         ccr_last_approver = {i['res_id']: max(i['ids']) for i in groups}
         # User = self.env['res.users']
+        # docs = self.env['sale.ccr'].search(['id', 'in', 'draft'])
         Entry = self.env['studio.approval.entry']
         for rec in self:
             if rec.id in ccr_last_approver:
                 rec.last_approver = Entry.browse(ccr_last_approver[rec.id]).user_id
                 rec.last_approve_date = date.today()
             else:
-                False
+                # raise UserError((Entry))
+                rec.last_approver = False
 
     @api.model
     def create(self, vals):
@@ -208,10 +228,33 @@ class SaleCcr(models.Model):
         self.write({'states': 'draft'})
         return {}
     def action_assign_quality(self):
-        self.write({'states': 'inter'})
-        return {}
+        if self.rejected_quantity < 1 or not self.fg_product or not self.finish or not self.complaint or not self.invoice_reference:
+            raise UserError(("You Cannot leave empty any of the following fields: \n -Rejected Quantity, \n -Product Type/Code, \n -Complain/Defeat, Invoice Ref. \n Kindly fill up all the fields and then assign to Quality"))
+            
+        else:
+            
+            # self.show_notification()
+            
+            post_vars = {
+                       'subject': "CCR",
+                       'body': "@" + self.env.user.partner_id.name,
+                       'partner_ids': [self.env.user.partner_id.id],  # Where "4" adds the ID to the list of followers, and "19" is the partner ID
+                    }
+            
+            res=self.env['mail.message'].create({
+                'model': self._name,
+                'res_id': self.id,
+                'message_type': 'comment',
+                'subtype_id': self.env.ref('mail.mt_comment').id,
+                'subject': post_vars.get('subject'),
+                'body': post_vars.get('body'),
+                'partner_ids': post_vars.get('partner_ids'),
+            })
+            # raise UserError((res['partner_ids']))
+            self.write({'states': 'inter'})
     
     def action_close(self):
+        self._compute_last_approver()
         self.write({'states': 'done'})
         return {}
 
@@ -220,7 +263,7 @@ class SaleCcr(models.Model):
 
     def action_justify(self):
         if not self.ccr_type or not self.department_id or not self.analysis_activity:
-            raise UserError(("You Cannot leave empty any of the the fields: Ccr Type, Resp. Department and Analysis Activity"))
+            raise UserError(("You Cannot leave empty any of the the fields: \n -Ccr Type, \n -Resp. Department and \n -Probable Root Cause/Analysis"))
         else:
             self.write({'states': 'just'})
             self.write({'justification': 'Justified'})
@@ -266,18 +309,21 @@ class SaleCcr(models.Model):
 
     
     def action_notjustify(self):
-        
-        compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form_notjustify').id
+        if not self.ccr_type or not self.department_id or not self.analysis_activity:
+            raise UserError(("You Cannot leave empty any of the the fields: \n -Ccr Type, \n -Resp. Department and \n -Probable Root Cause/Analysis"))
+
+        else:
+            compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form_notjustify').id
         
         
         # raise UserError((self.id))
         
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'name' : 'Not Justify Form',
-            'res_model': 'sale.ccr.wizard.notjustify',
-            'views': [(compose_form_id, 'form')],
-            'view_id': compose_form_id,
-            'target': 'new',
-        }
+            return {
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'name' : 'Not Justify Form',
+                'res_model': 'sale.ccr.wizard.notjustify',
+                'views': [(compose_form_id, 'form')],
+                'view_id': compose_form_id,
+                'target': 'new',
+            }

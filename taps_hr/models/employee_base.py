@@ -51,6 +51,7 @@ class HrEmployeeBase(models.AbstractModel):
         ('presence_absent', 'Absent'),
         ('presence_to_define', 'To define'),
         ('presence_undetermined', 'Undetermined')], compute='_compute_presence_icon')
+    relationship_id = fields.Many2one('hr.employee', "Relation With", tracking=True)
 
     @api.depends('user_id.im_status')
     def _compute_presence_state(self):

@@ -795,4 +795,8 @@ class HrEmployeePublic(models.Model):
     employee_group = fields.Many2one('hr.employee.group', readonly=True)
     religion = fields.Char(readonly=True)
     tax_identification_number = fields.Char(readonly=True)
+    employee_relation = fields.Char(readonly=True)
+    performance_rated = fields.Char(readonly=True)
+    replacement_new = fields.Char(readonly=True)
+    relationship_id = fields.Char(readonly=True)
     

@@ -594,7 +594,7 @@
 												</t>
 												<td class="text-right o_price_total" style="vertical-align:middle;border-top: 1px solid black;border-bottom: 1px solid black; background-color: white ! important">
 													<span>
-														<t t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														<t t-esc="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 4}"/>
 													</span>
 												</td>
 											</t>

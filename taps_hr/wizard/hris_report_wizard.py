@@ -444,16 +444,16 @@ class HRISPDFReport(models.TransientModel):
         
         column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF'})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
         row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+
+        worksheet.freeze_panes(3, 0)
 
         # set the width od the column
         
         worksheet.set_column(0, 0, 5)
         worksheet.set_column(1, 1, 7)
         worksheet.set_column(2, 2, 23)
-        worksheet.set_column(3, 3, 26)
-        worksheet.set_column(4, 4, 22)
+        worksheet.set_column(3, 4, 26)
         worksheet.set_column(5, 5, 7)
         worksheet.set_column(6, 6, 23)
         worksheet.set_column(7, 7, 26)
@@ -495,56 +495,239 @@ class HRISPDFReport(models.TransientModel):
         #         col+=1
         #     row+=1
         
-        #worksheet.write(4, 0, 'SL.', column_product_style)
-        #raise UserError((row+1))
+        # worksheet.write(4, 0, 'SL.', column_product_style)
+        # raise UserError((row+1))
         # worksheet.write(row, 4, 'Grand Total', report_small_title_style)
         # worksheet.write(row, 5, round(grandtotal), report_small_title_style)
-        #raise UserError((datefrom,dateto,bankname,categname))
+        # raise UserError((datefrom,dateto,bankname,categname))
 
 #worksheet_1 
         
-        # worksheet1 = workbook.add_worksheet(('Relationship Matrix'))
+        worksheet1 = workbook.add_worksheet(('Relationship Matrix'))
 
-        # report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
-        # report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF'})
-        # worksheet1.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
-        # worksheet1.merge_range('A2:H2', 'Employee Relationship Martix', report_title_style2)
+        report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
+        report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF'})
+        worksheet1.merge_range('A1:J1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+        worksheet1.merge_range('A2:J2', 'Employee Relationship Martix', report_title_style2)
+        
 
-        # report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True})
-        # report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'bg_color': '#714B62', 'font_color':'#FFFFFF','left': True,'bold': True, 'top': True, 'right': True, 'bottom': True})
+        report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True})
+        report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'bg_color': '#714B62', 'font_color':'#FFFFFF','left': True,'bold': True, 'top': True, 'right': True, 'bottom': True})
 
         
-        # column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF'})
-        # column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-        # column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12})
-        # row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+        column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF'})
+        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
+        column_issued_style = workbook.add_format({'text_wrap':True,'align': 'center', 'bold': True, 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter', 'bg_color': '#EDEDED', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+        column_issued_style1 = workbook.add_format({'text_wrap':True,'align': 'center', 'bold': True, 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter', 'bg_color': '#714B62', 'font_color':'#FFFFFF', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+        column_issued_style2 = workbook.add_format({'text_wrap':True,'align': 'center', 'font_size': 11,'left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
 
-        # # set the width od the column
+
+        worksheet1.merge_range('E3:G3', 'Employees are in Same Unit', column_issued_style)
+        worksheet1.merge_range('H3:I3', 'Employees are in Other Unit', column_issued_style)
+
+        # set the width od the column
+        
+        worksheet1.set_column(0, 0, 12)
+        worksheet1.set_column(1, 1, 7)
+        worksheet1.set_column(2, 2, 30)
+        worksheet1.set_column(3, 3, 7)
+        worksheet1.set_column(4, 9, 15)
+        
+        # worksheet.set_row(2, 20)
+
+        # set the width od the merge_range (row_num, col_num, row_num, col_num, '', column_style)
+
+        worksheet1.merge_range(2, 0, 3, 0, 'ALL',column_issued_style1)
+        worksheet1.merge_range(2, 1, 3, 2, 'Relation Defined',column_issued_style)
+        worksheet1.merge_range(2, 3, 3, 3, 'No',column_issued_style)
+        worksheet1.merge_range(2, 9, 3, 9, 'Remarks',column_issued_style)
+
+        #title
+        
+        worksheet1.write(3, 0, 'ALL', column_issued_style1)
+        worksheet1.write(3, 1, '', column_issued_style)        
+        worksheet1.write(3, 2, 'Relation Defined', column_issued_style)
+        worksheet1.write(3, 3, 'No', column_issued_style)
+        worksheet1.write(3, 4, 'Same Section', column_issued_style)
+        worksheet1.write(3, 5, 'Other Section', column_issued_style)
+        worksheet1.write(3, 6, 'Direct reporting', column_issued_style)
+        worksheet1.write(3, 7, 'Unit', column_issued_style)
+        worksheet1.write(3, 8, 'Direct reporting', column_issued_style)
+        worksheet1.write(3, 9, 'Remarks', column_issued_style)
+
+        worksheet1.write(4, 1, '1', column_issued_style2)
+        worksheet1.write(5, 1, '2', column_issued_style2)
+        worksheet1.write(6, 1, '3', column_issued_style2)
+        worksheet1.write(7, 1, '4', column_issued_style2)
+        worksheet1.write(8, 1, '5', column_issued_style2)
+        worksheet1.write(9, 1, '6', column_issued_style2)
+        # worksheet1.write(10, 2, '7', column_issued_style2)
+
+        worksheet1.write(4, 2, 'Spouse', column_issued_style2)
+        worksheet1.write(5, 2, 'Brother to Brother/Sister', column_issued_style2)
+        worksheet1.write(6, 2, 'Parents/In law to Son/Daughter', column_issued_style2)
+        worksheet1.write(7, 2, 'Uncle to Nephew/Niece', column_issued_style2)
+        worksheet1.write(8, 2, 'Cousin Brother/Sister', column_issued_style2)
+        worksheet1.write(9, 2, 'Brother In-Law/Sister In-Law', column_issued_style2)
+
+        worksheet1.write(4, 3, '', column_issued_style2)
+        worksheet1.write(5, 3, '', column_issued_style2)
+        worksheet1.write(6, 3, '', column_issued_style2)
+        worksheet1.write(7, 3, '', column_issued_style2)
+        worksheet1.write(8, 3, '', column_issued_style2)
+        worksheet1.write(9, 3, '', column_issued_style2)
+
+        worksheet1.write(4, 4, '', column_issued_style2)
+        worksheet1.write(5, 4, '', column_issued_style2)
+        worksheet1.write(6, 4, '', column_issued_style2)
+        worksheet1.write(7, 4, '', column_issued_style2)
+        worksheet1.write(8, 4, '', column_issued_style2)
+        worksheet1.write(9, 4, '', column_issued_style2)
+
+        worksheet1.write(4, 5, '', column_issued_style2)
+        worksheet1.write(5, 5, '', column_issued_style2)
+        worksheet1.write(6, 5, '', column_issued_style2)
+        worksheet1.write(7, 5, '', column_issued_style2)
+        worksheet1.write(8, 5, '', column_issued_style2)
+        worksheet1.write(9, 5, '', column_issued_style2)
+
+        worksheet1.write(4, 6, '', column_issued_style2)
+        worksheet1.write(5, 6, '', column_issued_style2)
+        worksheet1.write(6, 6, '', column_issued_style2)
+        worksheet1.write(7, 6, '', column_issued_style2)
+        worksheet1.write(8, 6, '', column_issued_style2)
+        worksheet1.write(9, 6, '', column_issued_style2)
+
+        worksheet1.write(4, 7, '', column_issued_style2)
+        worksheet1.write(5, 7, '', column_issued_style2)
+        worksheet1.write(6, 7, '', column_issued_style2)
+        worksheet1.write(7, 7, '', column_issued_style2)
+        worksheet1.write(8, 7, '', column_issued_style2)
+        worksheet1.write(9, 7, '', column_issued_style2)
+
+        worksheet1.write(4, 8, '', column_issued_style2)
+        worksheet1.write(5, 8, '', column_issued_style2)
+        worksheet1.write(6, 8, '', column_issued_style2)
+        worksheet1.write(7, 8, '', column_issued_style2)
+        worksheet1.write(8, 8, '', column_issued_style2)
+        worksheet1.write(9, 8, '', column_issued_style2)
+
+        worksheet1.write(4, 9, '', column_issued_style2)
+        worksheet1.write(5, 9, '', column_issued_style2)
+        worksheet1.write(6, 9, '', column_issued_style2)
+        worksheet1.write(7, 9, '', column_issued_style2)
+        worksheet1.write(8, 9, '', column_issued_style2)
+        worksheet1.write(9, 9, '', column_issued_style2)
+
+        worksheet1.merge_range('E13:G13', 'Employees are in Same Unit', column_issued_style)
+        worksheet1.merge_range('H13:I13', 'Employees are in Other Unit', column_issued_style)
+
+        # set the width od the column
         
         # worksheet1.set_column(0, 0, 5)
         # worksheet1.set_column(1, 1, 7)
-        # worksheet1.set_column(2, 2, 23)
-        # worksheet1.set_column(3, 3, 26)
-        # worksheet1.set_column(4, 4, 22)
-        # worksheet1.set_column(5, 5, 7)
-        # worksheet1.set_column(6, 6, 23)
-        # worksheet1.set_column(7, 7, 26)
+        # worksheet1.set_column(2, 2, 25)
+        # worksheet1.set_column(3, 3, 7)
+        # worksheet1.set_column(4, 9, 15)
         
-        # # worksheet.set_row(2, 20)
+        # worksheet.set_row(2, 20)
+
+        # set the width od the merge_range (row_num, col_num, row_num, col_num, '', column_style)
+
+        worksheet1.merge_range(12, 0, 13, 0, 'BUTTON - WORKER',column_issued_style1)
+        worksheet1.merge_range(12, 1, 13, 2, 'Relation Defined',column_issued_style)
+        worksheet1.merge_range(12, 3, 13, 3, 'No',column_issued_style)
+        worksheet1.merge_range(12, 9, 13, 9, 'Remarks',column_issued_style)
+
+        #title
+        
+        worksheet1.write(13, 0, 'ALL', column_issued_style1)
+        worksheet1.write(13, 1, '', column_issued_style)        
+        worksheet1.write(13, 2, 'Relation Defined', column_issued_style)
+        worksheet1.write(13, 3, 'No', column_issued_style)
+        worksheet1.write(13, 4, 'Same Section', column_issued_style)
+        worksheet1.write(13, 5, 'Other Section', column_issued_style)
+        worksheet1.write(13, 6, 'Direct reporting', column_issued_style)
+        worksheet1.write(13, 7, 'Unit', column_issued_style)
+        worksheet1.write(13, 8, 'Direct reporting', column_issued_style)
+        worksheet1.write(13, 9, 'Remarks', column_issued_style)
+
+        worksheet1.write(14, 1, '1', column_issued_style2)
+        worksheet1.write(14, 1, '2', column_issued_style2)
+        worksheet1.write(14, 1, '3', column_issued_style2)
+        worksheet1.write(14, 1, '4', column_issued_style2)
+        worksheet1.write(14, 1, '5', column_issued_style2)
+        worksheet1.write(14, 1, '6', column_issued_style2)
+        # worksheet1.write(10, 2, '7', column_issued_style2)
+
+        worksheet1.write(15, 2, 'Spouse', column_issued_style2)
+        worksheet1.write(15, 2, 'Brother to Brother/Sister', column_issued_style2)
+        worksheet1.write(15, 2, 'Parents/In law to Son/Daughter', column_issued_style2)
+        worksheet1.write(15, 2, 'Uncle to Nephew/Niece', column_issued_style2)
+        worksheet1.write(15, 2, 'Cousin Brother/Sister', column_issued_style2)
+        worksheet1.write(15, 2, 'Brother In-Law/Sister In-Law', column_issued_style2)
+
+        worksheet1.write(16, 3, '', column_issued_style2)
+        worksheet1.write(16, 3, '', column_issued_style2)
+        worksheet1.write(16, 3, '', column_issued_style2)
+        worksheet1.write(16, 3, '', column_issued_style2)
+        worksheet1.write(16, 3, '', column_issued_style2)
+        worksheet1.write(16, 3, '', column_issued_style2)
+
+        worksheet1.write(17, 4, '', column_issued_style2)
+        worksheet1.write(17, 4, '', column_issued_style2)
+        worksheet1.write(17, 4, '', column_issued_style2)
+        worksheet1.write(17, 4, '', column_issued_style2)
+        worksheet1.write(17, 4, '', column_issued_style2)
+        worksheet1.write(17, 4, '', column_issued_style2)
+
+        worksheet1.write(18, 5, '', column_issued_style2)
+        worksheet1.write(18, 5, '', column_issued_style2)
+        worksheet1.write(18, 5, '', column_issued_style2)
+        worksheet1.write(18, 5, '', column_issued_style2)
+        worksheet1.write(18, 5, '', column_issued_style2)
+        worksheet1.write(18, 5, '', column_issued_style2)
+
+        worksheet1.write(19, 6, '', column_issued_style2)
+        worksheet1.write(19, 6, '', column_issued_style2)
+        worksheet1.write(19, 6, '', column_issued_style2)
+        worksheet1.write(19, 6, '', column_issued_style2)
+        worksheet1.write(19, 6, '', column_issued_style2)
+        worksheet1.write(19, 6, '', column_issued_style2)
+
+        worksheet1.write(20, 7, '', column_issued_style2)
+        worksheet1.write(20, 7, '', column_issued_style2)
+        worksheet1.write(20, 7, '', column_issued_style2)
+        worksheet1.write(20, 7, '', column_issued_style2)
+        worksheet1.write(20, 7, '', column_issued_style2)
+        worksheet1.write(20, 7, '', column_issued_style2)
+
+        worksheet1.write(21, 8, '', column_issued_style2)
+        worksheet1.write(21, 8, '', column_issued_style2)
+        worksheet1.write(21, 8, '', column_issued_style2)
+        worksheet1.write(21, 8, '', column_issued_style2)
+        worksheet1.write(21, 8, '', column_issued_style2)
+        worksheet1.write(21, 8, '', column_issued_style2)
+
+        worksheet1.write(22, 9, '', column_issued_style2)
+        worksheet1.write(22, 9, '', column_issued_style2)
+        worksheet1.write(22, 9, '', column_issued_style2)
+        worksheet1.write(22, 9, '', column_issued_style2)
+        worksheet1.write(22, 9, '', column_issued_style2)
+        worksheet1.write(22, 9, '', column_issued_style2)
+
+        
+
+
+        
+        col = 0
+        row=3
+
         
         
-        # worksheet1.write(2, 0, 'ALL', column_product_style)
-        # worksheet1.write(2, 1, 'ID', column_product_style)        
-        # worksheet1.write(2, 2, 'Name', column_product_style)
-        # worksheet1.write(2, 3, 'Section', column_product_style)
-        # worksheet1.write(2, 4, 'Relation', column_product_style)
-        # worksheet1.write(2, 5, 'ID', column_product_style)
-        # worksheet1.write(2, 6, 'Name', column_product_style)
-        # worksheet1.write(2, 7, 'Section', column_product_style)
-        # col = 0
-        # row=3
+        # grandtotal = 0
         
-        # # grandtotal = 0
         # for line in report_data:
         #     col = 0
         #     for l in line:
@@ -1328,7 +1511,7 @@ class HRISPDFReport(models.TransientModel):
         # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
 #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
         
-        column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF'})
+        column_product_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
         column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
         row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})

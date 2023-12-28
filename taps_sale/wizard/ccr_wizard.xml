@@ -59,8 +59,9 @@
                     <group>
                         <group>
                             <field name="reason"/>
-                            
-                            
+                        </group>
+                        <group>
+                            <field name="non_justify_action"/>
                         </group>
                         
                     </group>

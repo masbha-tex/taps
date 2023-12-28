@@ -48,7 +48,11 @@ class tapsHelpdeskTicket(models.Model):
         result = self.env["ir.actions.actions"]._for_xml_id('taps_sale.action_sale_ccr')
         # action_sale_ccr
         
-        result['context'] = {'default_oa_number': self.oa_number.id, 'default_ticket_id' : self.id}
+        result['context'] = {
+            'default_oa_number': self.oa_number.id, 
+            'default_ticket_id' : self.id, 
+            'default_complaint': self.complain,
+        }
         
         ccr_ids = self.env['sale.ccr'].search([('ticket_id', '=', self.id)])
         

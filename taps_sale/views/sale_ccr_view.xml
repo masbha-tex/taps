@@ -155,23 +155,23 @@
                         <group string="Justification Status">
                             <group>
                                 <field name="justification" widget="radio" nolabel="1"/>
-                                <field name="reason"/>
+                                <field name="reason" attrs= "{'invisible': [('justification', '=', 'Justified')]}"/>
                             </group>
                             <group>
                                 
-                                <field name="non_justify_action"/>
+                                <field name="non_justify_action" attrs= "{'invisible': [('justification', '=', 'Justified')]}"/>
                             </group>
                         </group>
                         <group>
                             
-                            <group string="CORRECTIVE ACTION" >
+                            <group string="CORRECTIVE ACTION" attrs= "{'invisible': [('justification', '=', 'Not Justified')]}">
                                 <field name="corrective_action"/>
                                 <field name="after_sales"/>
                                 <field name="replacement_quantity"/>
                                 <field name="cost"/>
                                 <field name="ca_closing_date"/>
                             </group>
-                            <group string="PREVENTIVE ACTION" >
+                            <group string="PREVENTIVE ACTION" attrs= "{'invisible': [('justification', '=', 'Not Justified')]}">
                                 <field name="preventive_action"/>
                                 <field name="pa_closing_date"/>
                             </group>
