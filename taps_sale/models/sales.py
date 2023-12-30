@@ -2252,15 +2252,16 @@ class SaleOrderLine(models.Model):
         return result
 
     def _check_mrp (self):
-        
         if self.order_id.sales_type == 'oa':
-            mrp_ope = self.env['operation.details'].search([('company_id', '=', self.env.company.id),('oa_id', '=', self.order_id.id)])
+            mrp_ope = self.env['operation.details'].search([('company_id', '=', self.env.company.id),('oa_id', '=', self.order_id.id),('done_qty', '>', 0)])
             
-            exist_ope = mrp_ope.filtered(lambda op: str(self.id) in op.sale_lines)
-            if exist_ope:
-                return True
-            else:
-                return False
+            for li in self.ids:
+                exist_ope = mrp_ope.filtered(lambda op: str(li) in op.sale_lines)
+                if exist_ope:
+                    # raise UserError((self.ids))
+                    return True
+                else:
+                    return False
         else:
             return False
         
