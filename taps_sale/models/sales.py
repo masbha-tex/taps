@@ -2251,9 +2251,24 @@ class SaleOrderLine(models.Model):
         result = super(SaleOrderLine, self).write(values)
         return result
 
+    def _check_mrp (self):
+        
+        if self.order_id.sales_type == 'oa':
+            mrp_ope = self.env['operation.details'].search([('company_id', '=', self.env.company.id),('oa_id', '=', self.order_id.id)])
+            
+            exist_ope = mrp_ope.filtered(lambda op: str(self.id) in op.sale_lines)
+            if exist_ope:
+                return True
+            else:
+                return False
+        else:
+            return False
+        
     def unlink(self):
         if self._check_line_unlink():
             raise UserError(_('You can not remove an order line once the sales order is confirmed.\nYou should rather set the quantity to 0.'))
+        elif self._check_mrp():
+            raise UserError(_('You can not remove an order line once the OA is in Production.\nYou should rather update the data'))
         else:
             all_line = self.env['sale.order.line'].search([('order_id', '=', self.mapped('order_id').id),('id', 'not in', self.mapped('id'))])
         if all_line:
