@@ -179,9 +179,9 @@ class HrContract(models.Model):
                 contract.medical = (contract.wage*0.10)
                 #return {'domain':{'adjustment_type': [('is_deduction','=',False)]}}
             if contract.category == 'worker':
-                contract.basic = (contract.wage-1450)/1.5
-                contract.houseRent = ((contract.wage-1450)/1.5)*0.50
-                contract.medical = 1450.00
+                contract.basic = (contract.wage-2375)/1.5
+                contract.houseRent = ((contract.wage-2375)/1.5)*0.50
+                contract.medical = 2375.00
             if contract.category == 'expatriate':
                 contract.basic = contract.wage*0.60
                 contract.houseRent = (contract.wage*0.30)
