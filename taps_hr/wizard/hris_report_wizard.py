@@ -554,6 +554,53 @@ class HRISPDFReport(models.TransientModel):
         no = 1
         docs
 
+        report_data = []
+        emp_data = []
+        slnumber=0
+        company = None
+        for a in range(4):
+            if a == 0:
+                company = 'All'
+                rel_data = docs.filtered(lambda x: x.category_ids.name not in ('C-Zipper Worker', 'C-Button Worker', 'C-Worker', 'C-Button Staff', 'C-Zipper Staff', 'C-Staff'))
+            if a == 1:
+                company = 'BUTTON WORKER'
+                rel_data = docs.filtered(lambda x: x.category_ids.name in ('B-Worker'))
+            if a == 2:
+                company = 'ZIPPER WORKER'
+                rel_data = docs.filtered(lambda x: x.category_ids.name in ('Z-Worker'))
+            if a == 3:
+                company = 'STAFFS'
+                rel_data = docs.filtered(lambda x: x.category_ids.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate'))
+                
+            for i in range(6):
+                if i == 0:
+                    rel_rw_data = rel_data.filtered(lambda x: x.employee_relation.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate'))
+                if i == 0:
+                    rel_rw_data = ''
+                if i == 0:
+                    rel_rw_data = ''
+                if i == 0:
+                    rel_rw_data = ''
+                if i == 0:
+                    rel_rw_data = ''
+                if i == 0:
+                    rel_rw_data = ''
+                if i == 0:
+                    rel_rw_data = ''
+                
+                emp_data = [
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                    ]
+                report_data.append(emp_data)
+        
         # for i in range(6):
             
         for i in range(43)[:2]:

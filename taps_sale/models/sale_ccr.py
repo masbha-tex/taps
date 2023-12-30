@@ -244,7 +244,7 @@ class SaleCcr(models.Model):
             
             post_vars = {
                        'subject': "CCR",
-                       'body': "@" + self.env.user.partner_id.name,
+                       'body': self.env.user.partner_id.name,
                        'partner_ids': [self.env.user.partner_id.id],  # Where "4" adds the ID to the list of followers, and "19" is the partner ID
                     }
             
