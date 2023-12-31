@@ -1426,20 +1426,9 @@ class MrpReportWizard(models.TransientModel):
         # domain = []
         # if data.get('date_from'):
         #     domain.append(('date_from', '=', data.get('date_from'))) 
-        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
-        if data.get('date_from'):
-            if data.get('date_to'):
-                running_orders = running_orders.filtered(lambda pr: pr.date_order.date() >= data.get('date_from') and pr.date_order.date() <= data.get('date_to'))
-            else:
-                running_orders = running_orders.filtered(lambda pr: pr.date_order.date() == data.get('date_from'))
-                
-        # running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None)])
-        m_orders = running_orders.search([('revision_no','=',None)])
+        docs = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
+
         
-        rev_orders = running_orders - m_orders
-        
-        m_orders = running_orders
-        # oa_total_balance revision_no
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
 
@@ -1447,84 +1436,69 @@ class MrpReportWizard(models.TransientModel):
         sheet = workbook.add_worksheet("PI PENDING MT EXCEL")
         column_style = workbook.add_format({'bold': True, 'font_size': 12})
         
-        row_style = workbook.add_format({'font_size': 12, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'center', 'text_wrap':True})#
+        row_style = workbook.add_format({'font_size': 12, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'vcenter', 'text_wrap':False})
 
         sheet.write(0, 0, "OA", column_style)
-        sheet.write(0, 1, "EDD", column_style)
-        sheet.write(0, 2, "OA DATE", column_style)
-        sheet.write(0, 3, "PI", column_style)
-        sheet.write(0, 4, "CUSTOMER ", column_style)
-        sheet.write(0, 5, "BUYER", column_style)
-        sheet.write(0, 6, "STATUS", column_style)
-        sheet.write(0, 7, "LOGO", column_style)
-        sheet.write(0, 8, "ITEMS", column_style)
-        sheet.write(0, 9, "SIZE", column_style)
-        sheet.write(0, 10, "MATERIAL( ALLOY / BRASS)", column_style)
-        sheet.write(0, 11, "ITEM CATEGORY", column_style)
-        sheet.write(0, 12, "FINISH", column_style)
-        sheet.write(0, 13, "FINISH CATEGORY", column_style)
-        sheet.write(0, 14, "B PART", column_style)
-        sheet.write(0, 15, "QTY", column_style)
-        sheet.write(0, 16, "PENDING", column_style)
+        sheet.write(0, 1, "OA DATE", column_style)
+        sheet.write(0, 2, "CUSTOMER ", column_style)
+        sheet.write(0, 3, "BUYER", column_style)
+        sheet.write(0, 4, "LOGO", column_style)
+        sheet.write(0, 5, "SIZE", column_style)
+        #sheet.write(0, 6, "MATERIAL( ALLOY / BRASS)", column_style)
+        sheet.write(0, 6, "FINISH", column_style)
+        sheet.write(0, 7, "B PART", column_style)
+        sheet.write(0, 8, "QTY", column_style)
+        sheet.write(0, 9, "READY", column_style)
+        sheet.write(0, 10, "PENDING", column_style)
         col = 0
         row = 1
-        
 
-        all_orders = None
-        if item.name == 'Revised PI':
-            all_orders = self.env['sale.order.line'].browse(rev_orders.sale_order_line.ids)
-        else:
-            all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
-            all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item.name)
+        #docs = self.env['sale.order.line'].browse(running_orders.sale_order_line.ids).sorted(key=lambda pr: pr.order_id and pr.id)
+
         
-        sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
-        docs = self.env['sale.order.line'].search([('order_id', 'in', sale_orders.ids)]).sorted(key=lambda pr: pr.order_id and pr.id)
         for o_data in docs:
             col = 0
             for l in range(17):
                 if col == 0:
-                    sheet.write(row, col, o_data.order_id.name, row_style)
+                    sheet.write(row, col, o_data.oa_id.name, row_style)
+                #elif col == 1:
+                    #sheet.write(row, col, o_data.order_id.expected_date.strftime("%d/%m/%Y"), row_style)
                 elif col == 1:
-                    sheet.write(row, col, o_data.order_id.expected_date.strftime("%d/%m/%Y"), row_style)
+                    sheet.write(row, col, o_data.oa_id.create_date.strftime("%d/%m/%Y"), row_style)
+                #elif col == 3:
+                    #sheet.write(row, col, o_data.order_id.order_ref.pi_number, row_style)
                 elif col == 2:
-                    sheet.write(row, col, o_data.order_id.create_date.strftime("%d/%m/%Y"), row_style)
+                    sheet.write(row, col, o_data.oa_id.partner_id.name, row_style)
                 elif col == 3:
-                    sheet.write(row, col, o_data.order_id.order_ref.pi_number, row_style)
+                    sheet.write(row, col, o_data.oa_id.buyer_name.name, row_style)
+                #elif col == 4:
+                    #sheet.write(row, col, '', row_style)
                 elif col == 4:
-                    sheet.write(row, col, o_data.order_id.partner_id.name, row_style)
-                elif col == 5:
-                    sheet.write(row, col, o_data.order_id.buyer_name.name, row_style)
-                elif col == 6:
-                    sheet.write(row, col, '', row_style)
-                elif col == 7:
                     if o_data.logo:
                         sheet.write(row, col, o_data.logo, row_style)
                     else:
                         sheet.write(row, col, '', row_style)
-                elif col == 8:
-                    sheet.write(row, col, o_data.product_template_id.name, row_style)
-                elif col == 9:
+                elif col == 5:
                     sheet.write(row, col, o_data.sizemm, row_style)
-                elif col == 10:
-                    sheet.write(row, col, '', row_style)
-                elif col == 11:
-                    sheet.write(row, col, '', row_style)
-                elif col == 12:
+                elif col == 6:
                     if o_data.finish:
                         sheet.write(row, col, o_data.finish, row_style)
                     else:
                         sheet.write(row, col,'', row_style)
-                elif col == 13:
-                    sheet.write(row, col, '', row_style)
-                elif col == 14:
+                    sheet.write(row, col, o_data.product_template_id.name, row_style)
+                elif col == 7:
                     if o_data.b_part:
                         sheet.write(row, col, o_data.b_part, row_style)
                     else:
                         sheet.write(row, col, '', row_style)
-                elif col == 15:
+                elif col == 8:
                     sheet.write(row, col, o_data.product_uom_qty, row_style)
-                elif col == 16:
-                    sheet.write(row, col, o_data.product_uom_qty, row_style)
+                elif col == 9:
+                    sheet.write(row, col, o_data.done_qty , row_style)
+                elif col == 10:
+                    sheet.write(row, col, o_data.balance_qty , row_style)
+
+                #sheet.set_column(0, 0, 15)
                 col += 1
             row += 1
 
