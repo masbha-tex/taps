@@ -958,15 +958,16 @@ class MrpReportWizard(models.TransientModel):
         merge_format_ = workbook.add_format({'align': 'bottom'})
 
         initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id)])
-
+        
+        all_closed = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id','=',self.env.company.id)])
         for day in self.iterate_days(year, int(month_)):
-            
-            datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.day == day)
             report_name = day
             
             full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
             first_day_of_m = full_date # first day of month
             full_date = full_date.replace(day = day)
+            
+            datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
             comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() <= full_date.date())
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
@@ -995,16 +996,46 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(7, 7, 15)
             sheet.set_column(8, 8, 15)
             sheet.set_column(9, 9, 15)
-            
+
+            closed_ids = 0
             # items = datewise_outputs.mapped('fg_categ_type')
             # items = list(set(items))
             running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+
+            daily_closed_oa = None
+            if all_closed:
+                daily_closed_oa = all_closed.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+            
+            if daily_closed_oa:
+                oa_ids = daily_closed_oa.mapped('oa_id')
+                closed_ids = len(oa_ids)
             
             items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
             
             report_data = []
-            closed_ids = 0
+            
+            closed_col = 11
             for item in items:
+                itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == item.name)
+                closed_row = 1
+                if itemwise_closed:
+                    closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
+                    if item.name == 'Metal #4 CE':
+                        sheet.merge_range(0, closed_col, 0, closed_col+1, '', merge_format)
+                    sheet.write(0, closed_col, item.name, column_style)
+                    # sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
+                    c_col = closed_col
+                    for oa in closed_oa_list:
+                        if closed_row == 23:
+                            closed_row = 1
+                            c_col += 1
+                        sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
+                        closed_row += 1
+                    if item.name == 'Metal #4 CE':
+                        closed_col += 2
+                    else:
+                        closed_col += 1
+                    
                 items_comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 comu_pcs = sum(items_comu_outputs.mapped('qty'))
@@ -1111,13 +1142,8 @@ class MrpReportWizard(models.TransientModel):
                 #         price = round((vl / _qty),4)
                 #         pending_usd = round((pending_pcs*price),2)
 
-                closed_oa = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and  pr.closing_date != False)
-                if closed_oa:
-                    closed_oa = closed_oa.filtered(lambda pr: pr.closing_date.date() == full_date.date())
-                
-                if closed_oa:
-                    oa_ids = closed_oa.mapped('oa_id')
-                    closed_ids += len(oa_ids)
+
+
                 
                 today_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() == full_date.date())
                 tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
@@ -1426,12 +1452,10 @@ class MrpReportWizard(models.TransientModel):
         # domain = []
         # if data.get('date_from'):
         #     domain.append(('date_from', '=', data.get('date_from'))) 
-        docs = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
-
+        docs = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('balance_qty','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-
 
         sheet = workbook.add_worksheet("PI PENDING MT EXCEL")
         column_style = workbook.add_format({'bold': True, 'font_size': 12})

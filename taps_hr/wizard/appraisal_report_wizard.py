@@ -2055,6 +2055,7 @@ class HeadwisePDFReport(models.TransientModel):
             emp_data = [
                 slnumber,
                 edata.name,
+                edata.description,
                 round(edata.baseline,2),
                 round(edata.target,2),
                 (edata.weight/100),
@@ -2079,14 +2080,14 @@ class HeadwisePDFReport(models.TransientModel):
             report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
             report_column_style_2.set_text_wrap()
             report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '0.00%'})
-            worksheet.merge_range('A1:K1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+            worksheet.merge_range('A1:L1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
     
             report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
     #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-            worksheet.merge_range('A2:K2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
-            worksheet.merge_range('A3:K3', ('KPI objective with Action Plan'), report_small_title_style)
+            worksheet.merge_range('A2:L2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
+            worksheet.merge_range('A3:L3', ('KPI objective with Action Plan'), report_small_title_style)
             worksheet.merge_range('A4:E4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
-            worksheet.merge_range('F4:K4', "",report_title_style)
+            worksheet.merge_range('F4:L4', "",report_title_style)
             # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
     #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
             
@@ -2099,27 +2100,30 @@ class HeadwisePDFReport(models.TransientModel):
             
             percent_format = workbook.add_format({"num_format": "0%"})
     
+
+            worksheet.freeze_panes(5, 0)
             
             worksheet.set_column(0,0,3)
             worksheet.set_column(1,1,50)
-            worksheet.set_column(2,3,8)
-            worksheet.set_column(4,6,10)
-            worksheet.set_column(7,8,20)
-            worksheet.set_column(9,10,14)
+            worksheet.set_column(2,2,17)
+            worksheet.set_column(3,7,10)
+            worksheet.set_column(8,9,20)
+            worksheet.set_column(10,11,14)
             
             
             
             worksheet.write(4, 0, 'SL.', column_product_style)
-            worksheet.write(4, 1, 'Objectives', column_product_style)        
-            worksheet.write(4, 2, 'Baseline', column_product_style)
-            worksheet.write(4, 3, 'Target', column_product_style)
-            worksheet.write(4, 4, 'Weight', column_product_style)
-            worksheet.write(4, 5, 'ACVD YTD', column_product_style)
-            worksheet.write(4, 6, 'Weight YTD', column_product_style)
-            worksheet.write(4, 7, 'Last Month Achieved', column_product_style)
-            worksheet.write(4, 8, 'Current Monthly Plan', column_product_style)
-            worksheet.write(4, 9, 'Actions', column_product_style)
-            worksheet.write(4, 10, 'Timeline', column_product_style)
+            worksheet.write(4, 1, 'Objectives', column_product_style)
+            worksheet.write(4, 2, 'Description', column_product_style)
+            worksheet.write(4, 3, 'Baseline', column_product_style)
+            worksheet.write(4, 4, 'Target', column_product_style)
+            worksheet.write(4, 5, 'Weight', column_product_style)
+            worksheet.write(4, 6, 'ACVD YTD', column_product_style)
+            worksheet.write(4, 7, 'Weight YTD', column_product_style)
+            worksheet.write(4, 8, 'Last Month Achieved', column_product_style)
+            worksheet.write(4, 9, 'Current Monthly Plan', column_product_style)
+            worksheet.write(4, 10, 'Actions', column_product_style)
+            worksheet.write(4, 11, 'Timeline', column_product_style)
             col = 0
             row=5
             
@@ -2131,63 +2135,129 @@ class HeadwisePDFReport(models.TransientModel):
             for line in report_data:
                 # raise UserError((line[8],emp.id))
                 # slnumber=0
-
-                if line[11] == emp.id:
-                    slnumber += 1
-                    col=0
-                    for l in line:
-                        if col == 1:
-                            etype = l[:1]
-                        if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style_2)  
-                        elif col == 2:
+                if line[2] != 'Strategic Projects' and line[2]:
+                    if line[12] == emp.id:
+                        slnumber += 1
+                        col=0
+                        for l in line:
+                            if col == 1:
+                                etype = l[:1]
+                            if col == 0:
+                                worksheet.write(row, col, slnumber, report_column_style_2)  
+                            elif col == 3:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)                    
+                            elif col == 4:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)
+                            elif col==5:
+                                grandtotal = grandtotal+l
+                                # format = workbook.add_format({'num_format': num_formats})
+                                worksheet.write(row, col, l, report_column_style_3)
+                            elif col==7:
+                                grandtotal2 = grandtotal2+l
+                                # format = workbook.add_format({'num_format': num_formats})
+                                worksheet.write(row, col, l/100, report_column_style_3)
                             
-                            if etype == '%':
-                                # raise UserError((etype))
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
+                            elif col==12:
+                                break
                             else:
-                                # raise UserError((etype))
-                                worksheet.write(row, col, l, report_column_style_2)                    
-                        elif col == 3:
-                            
-                            if etype == '%':
-                                # raise UserError((etype))
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                # raise UserError((etype))
                                 worksheet.write(row, col, l, report_column_style_2)
-                        elif col==4:
-                            grandtotal = grandtotal+l
-                            # format = workbook.add_format({'num_format': num_formats})
-                            worksheet.write(row, col, l, report_column_style_3)
-                        elif col==6:
-                            grandtotal2 = grandtotal2+l
-                            # format = workbook.add_format({'num_format': num_formats})
-                            worksheet.write(row, col, l/100, report_column_style_3)
+                            col+=1
+                        row+=1
                         
-                        elif col==11:
-                            break
-                        else:
-                            worksheet.write(row, col, l, report_column_style_2)
-                        col+=1
-                    row+=1
-                    
-            
+                
+                        #worksheet.write(4, 0, 'SL.', column_product_style)
+                        #raise UserError((row+1))
+                    worksheet.write(row, 0, '', report_small_title_style)
+                    worksheet.write(row, 1, 'Grand Total', report_small_title_style)
+                    worksheet.write(row, 2, '', report_small_title_style)
+                    worksheet.write(row, 3, '', report_small_title_style)
+                    worksheet.write(row, 4, '', report_small_title_style)
+                    worksheet.write(row, 5, round(grandtotal,2), report_small_title_style)
+                    worksheet.write(row, 6, '', report_small_title_style)
+                    worksheet.write(row, 7, round(grandtotal2,2)/100, report_small_title_style)
+                    worksheet.write(row, 8, '', report_small_title_style)
+                    worksheet.write(row, 9, '', report_small_title_style)
+                    worksheet.write(row, 10, '', report_small_title_style)
+                    worksheet.write(row, 11, '', report_small_title_style)
+            row+=1            
+            worksheet.merge_range(row, 0, row, 11, 'Strategic Projects', column_product_style)
+            row+=1 
+            grandtotal_ = 0
+            grandtotal2_ = 0
+            for line in report_data:       
+                if line[2] == 'Strategic Projects':
+                    if line[12] == emp.id:
+                        slnumber += 1
+                        col=0
+                        for l in line:
+                            if col == 1:
+                                etype = l[:1]
+                            if col == 0:
+                                worksheet.write(row, col, slnumber, report_column_style_2)  
+                            elif col == 3:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)                    
+                            elif col == 4:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)
+                            elif col==5:
+                                grandtotal = grandtotal_+l
+                                # format = workbook.add_format({'num_format': num_formats})
+                                worksheet.write(row, col, l, report_column_style_3)
+                            elif col==7:
+                                grandtotal2 = grandtotal2+l
+                                # format = workbook.add_format({'num_format': num_formats})
+                                worksheet.write(row, col, l/100, report_column_style_3)
+                            
+                            elif col==12:
+                                break
+                            else:
+                                worksheet.write(row, col, l, report_column_style_2)
+                            col+=1
+                        row+=1
+                        
+                
                     #worksheet.write(4, 0, 'SL.', column_product_style)
                     #raise UserError((row+1))
                     worksheet.write(row, 0, '', report_small_title_style)
                     worksheet.write(row, 1, 'Grand Total', report_small_title_style)
                     worksheet.write(row, 2, '', report_small_title_style)
                     worksheet.write(row, 3, '', report_small_title_style)
-                    worksheet.write(row, 4, round(grandtotal,2), report_small_title_style)
-                    worksheet.write(row, 5, '', report_small_title_style)
-                    worksheet.write(row, 6, round(grandtotal2,2)/100, report_small_title_style)
-                    worksheet.write(row, 7, '', report_small_title_style)
+                    worksheet.write(row, 4, '', report_small_title_style)
+                    worksheet.write(row, 5, round(grandtotal_,2), report_small_title_style)
+                    worksheet.write(row, 6, '', report_small_title_style)
+                    worksheet.write(row, 7, round(grandtotal2_,2)/100, report_small_title_style)
                     worksheet.write(row, 8, '', report_small_title_style)
                     worksheet.write(row, 9, '', report_small_title_style)
                     worksheet.write(row, 10, '', report_small_title_style)
+                    worksheet.write(row, 11, '', report_small_title_style)
+                        
                     #raise UserError((datefrom,dateto,bankname,categname))
             
         workbook.close()
