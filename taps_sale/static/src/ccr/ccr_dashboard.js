@@ -190,7 +190,7 @@ var CcrKanbanDashboardRenderer = KanbanRenderer.extend({
     },
 });
 
-var SaleKanbanDashboardModel = KanbanModel.extend({
+var CcrKanbanDashboardModel = KanbanModel.extend({
     /**
      * @override
      */
@@ -232,8 +232,8 @@ var SaleKanbanDashboardModel = KanbanModel.extend({
     _loadDashboard: function (super_def) {
         var self = this;
         var dashboard_def = this._rpc({
-            model: 'sale.order',
-            method: 'retrieve_dashboard',
+            model: 'sale.ccr',
+            method: 'retrieve_dashboard_ccr',
         });
         return Promise.all([super_def, dashboard_def]).then(function(results) {
             var id = results[0];
@@ -244,7 +244,7 @@ var SaleKanbanDashboardModel = KanbanModel.extend({
     },
 });
 
-var SaleKanbanDashboardController = KanbanController.extend({
+var CcrKanbanDashboardController = KanbanController.extend({
     custom_events: _.extend({}, KanbanController.prototype.custom_events, {
         dashboard_open_action: '_onDashboardOpenAction',
     }),
@@ -259,24 +259,24 @@ var SaleKanbanDashboardController = KanbanController.extend({
     },
 });
 
-var SaleKanbanDashboardView = KanbanView.extend({
+var CcrKanbanDashboardView = KanbanView.extend({
     config: _.extend({}, KanbanView.prototype.config, {
-        Model: SaleKanbanDashboardModel,
-        Renderer: SaleKanbanDashboardRenderer,
-        Controller: SaleKanbanDashboardController,
+        Model: CcrKanbanDashboardModel,
+        Renderer: CcrKanbanDashboardRenderer,
+        Controller: CcrKanbanDashboardController,
     }),
 });
 
-view_registry.add('sale_tree_dashboard_upload', SaleListDashboardView);
-view_registry.add('sale_kanban', SaleKanbanDashboardView);
+view_registry.add('ccr_tree_dashboard_upload', CcrListDashboardView);
+// view_registry.add('ccr_kanban', CcrKanbanDashboardView);
 
 return {
-    SaleListDashboardModel: SaleListDashboardModel,
-    SaleListDashboardRenderer: SaleListDashboardRenderer,
-    SaleListDashboardController: SaleListDashboardController,
-    SaleKanbanDashboardModel: SaleKanbanDashboardModel,
-    SaleKanbanDashboardRenderer: SaleKanbanDashboardRenderer,
-    SaleKanbanDashboardController: SaleKanbanDashboardController
+    CcrListDashboardModel: CcrListDashboardModel,
+    CcrListDashboardRenderer: CcrListDashboardRenderer,
+    CcrListDashboardController: CcrListDashboardController,
+    CcrKanbanDashboardModel: CcrKanbanDashboardModel,
+    CcrKanbanDashboardRenderer: CcrKanbanDashboardRenderer,
+    CcrKanbanDashboardController: CcrKanbanDashboardController
 };
 
 });

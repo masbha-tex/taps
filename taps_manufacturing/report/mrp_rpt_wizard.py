@@ -22,12 +22,34 @@ class MrpReportWizard(models.TransientModel):
     
     report_type = fields.Selection([('pir', 'PI File'),('pic', 'Closed PI'),('pis', 'PI Summary'),('dpr', 'Invoice'),('dppr', 'Packing Production Report'),('dpcl', 'Production Report (FG)')], string='Report Type', required=True, help='Report Type', default='pir')
     
-    date_from = fields.Date('Date from', readonly=False)
-    date_to = fields.Date('Date to', readonly=False)
+    date_from = fields.Date('Date from', readonly=False, default=lambda self: self._compute_from_date())
+    date_to = fields.Date('Date to', readonly=False, default=lambda self: self._compute_to_date())
     
     month_list = fields.Selection('_get_month_list', 'Month') #, default=lambda self: self._get_month_list()
 
     file_data = fields.Binary(readonly=True, attachment=False)
+
+
+
+    # date_from = fields.Date('Date from', required=True, readonly=False, default=lambda self: self._compute_from_date())
+    # date_to = fields.Date('Date to', required=True, readonly=False, default=lambda self: self._compute_to_date())
+    # export = fields.Selection([
+    #     ('single', 'Single Sheet'),
+    #     ('multiple', 'Multiple Sheet')],
+    #     string='Export Mode')
+
+    @api.depends('date_from')
+    def _compute_from_date(self):
+        dt_from = fields.datetime.now().replace(day = 1)
+        return dt_from
+
+    @api.depends('date_to')
+    def _compute_to_date(self):
+        last_day_of_month = calendar.monthrange(fields.datetime.now().year, fields.datetime.now().month)[1]
+        # raise UserError((last_day_of_month))
+        dt_to = fields.datetime.now().replace(day = last_day_of_month)
+        return dt_to
+
     
 
     @staticmethod
@@ -69,10 +91,10 @@ class MrpReportWizard(models.TransientModel):
             data = {'date_from': self.date_from,'date_to': self.date_to}
             return self.pis_xls_template(self, data=data)
         if self.report_type == "dpr":
-            data = {'month_list': self.month_list}
+            data = {'month_list': self.month_list,'date_from': self.date_from,'date_to': self.date_to}
             return self.daily_pr_xls_template(self, data=data)
         if self.report_type == "dpcl":
-            data = {'month_list': self.month_list}
+            data = {'month_list': self.month_list,'date_from': self.date_from,'date_to': self.date_to}
             return self.daily_closed_xls_template(self, data=data)
         if self.report_type in ("dppr", "pic"):
             if self.date_from == False or self.date_to == False:
@@ -934,12 +956,17 @@ class MrpReportWizard(models.TransientModel):
     def daily_pr_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
         month_ = None
-        if data.get('month_list'):
-            month_ = data.get('month_list')
-        year = datetime.today().year
+        if data.get('date_from'):
+            month_ = int(data.get('date_from').month)#data.get('month_list')
+            year = int(data.get('date_from').year)#datetime.today().year
+            _day = int(data.get('date_from').day)
+
+        # raise UserError((int(month_),int(data.get('date_from').month)))
+        # f_date = data.get('date_from')
+        # t_date = data.get('date_to')
         
         all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
-        daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.month == int(month_) and pr.action_date.year == year)#.sorted(key=lambda pr: pr.sequence)
+        daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= data.get('date_from') and pr.action_date.date() <= data.get('date_from'))#.sorted(key=lambda pr: pr.sequence)
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -963,7 +990,7 @@ class MrpReportWizard(models.TransientModel):
         for day in self.iterate_days(year, int(month_)):
             report_name = day
             
-            full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
+            full_date = fields.datetime.now().replace(day = _day).replace(month = int(month_)).replace(year = year)
             first_day_of_m = full_date # first day of month
             full_date = full_date.replace(day = day)
             
@@ -1262,9 +1289,10 @@ class MrpReportWizard(models.TransientModel):
     def daily_closed_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
         month_ = None
-        if data.get('month_list'):
-            month_ = data.get('month_list')
-        year = datetime.today().year
+        if data.get('date_from'):
+            month_ = int(data.get('date_from').month)#data.get('month_list')
+            year = int(data.get('date_from').year)#datetime.today().year
+            _day = int(data.get('date_from').day)
 
 
         output = io.BytesIO()
@@ -1281,7 +1309,7 @@ class MrpReportWizard(models.TransientModel):
         for day in self.iterate_days(year, int(month_)):
             report_name = day
             
-            full_date = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
+            full_date = fields.datetime.now().replace(day = _day).replace(month = int(month_)).replace(year = year)
             full_date = full_date.replace(day = day)
 
             sheet = workbook.add_worksheet(('%s' % (report_name)))

@@ -137,7 +137,12 @@ class SaleOrder(models.Model):
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     rmc = fields.Float(compute='_compute_rmc', string='RMC')
 
-
+    # def _compute_hs_code(self):
+    #     if self.company_id.id == 1:
+    #         self.hs_code = '9607.11.00'
+    #     else:
+    #         self.hs_code = ''
+        
     def _compute_rmc(self):
         for rec in self:
             rmc_val = 0

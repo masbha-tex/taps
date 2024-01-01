@@ -140,6 +140,32 @@ class SaleCcr(models.Model):
     
     last_approve_date = fields.Date(string="Last Approve Date")
 
+    @api.model
+    def retrieve_dashboard_ccr(self):
+        """ This function returns the values to populate the custom dashboard in
+            the purchase order views.
+        """
+        
+        self.check_access_rights('read')
+        povalue = 0
+        # raise UserError(('hi'))
+        result = {
+            'regular': 0,#all_to_send
+            'block': 0,#all_waiting
+            'replacement': 0,#all_late
+            
+            'samplepi': 0,
+            'sa': 0,
+            'pi': 0,
+            'oa': 0,
+            'budget_value': 0,#all_avg_order_value
+            'expense_value': 0,#all_avg_days_to_purchase
+            'expense_percent': 0,#all_total_last_7_days
+            'due_amount': 0,#all_sent_rfqs
+            
+        }
+        return result
+
     def show_notification(self):
         
         notification = {

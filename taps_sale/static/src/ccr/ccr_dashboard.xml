@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <!-- This template is for a table at the top of purchase views that shows some KPIs. -->
+    <t t-name="sale.CcrDashboard">
+        <div class="o_ccr_dashboard container">
+            <div class="row">
+            <div class="col-sm-6">
+            <table class="table table-sm">
+                <!-- thead needed to avoid list view rendering error for some reason -->
+                <thead>
+                    <tr>
+                    <!-- can't use th tag due to list rendering error when no values in list... -->
+                        
+                        <td  class="o_main o_dashboard_action" title="Quality" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_sample_pi": true}'>
+                            <a href="#"><t t-esc="values['samplepi']"/><br/>Quality</a>
+                        </td>
+                        <td class="o_main o_dashboard_action" title="CA" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_block": true}'>
+                            <a href="#"><t t-esc="values['block']"/><br/>CA</a>
+                        </td>
+                        <td   class="o_main o_dashboard_action" title="PA" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
+                            <a href="#"><t t-esc="values['replacement']"/><br/>PA</a>
+                        </td>
+                        <td   class="o_main o_dashboard_action" title="Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
+                            <a href="#"><t t-esc="values['replacement']"/><br/>Justified</a>
+                        </td>
+                        <td  class="o_main o_dashboard_action" title="Not Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
+                            <a href="#"><t t-esc="values['replacement']"/><br/>Not Justified</a>
+                        </td>
+                        <td  class="o_main o_dashboard_action" title="Not Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
+                            <a href="#"><t t-esc="values['replacement']"/><br/>Closed</a>
+                        </td>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="background-color:#774373" colspan="3" class="o_main o_dashboard_action" title="Not Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
+                            <a href="#"><t t-esc="values['replacement']"/><br/>Rework or Replacement QTY</a>
+                        </td>
+                        <td style="background-color:#774373" colspan="3" class="o_main o_dashboard_action" title="Not Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
+                            <a href="#"><t t-esc="values['replacement']"/><br/>Rework or Replacement Value</a>
+                        </td>
+                        
+                    </tr>
+                </tbody>
+                
+            </table></div>
+
+            <div class="col-sm-6">
+                <table class="table table-sm">
+                <!-- thead needed to avoid list view rendering error for some reason -->
+                <thead>
+                    <tr>
+                    <!-- can't use th tag due to list rendering error when no values in list... -->
+                        <td class="o_text">
+                            <div>Pending</div>
+                        </td>
+                        <td style="background-color:#255D83" class="o_main o_dashboard_action" title="Quality" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_sample_pi": true}'>
+                            <a href="#"><t t-esc="values['samplepi']"/><br/>HOD Production</a>
+                        </td>
+                        <td style="background-color:#774373"  class="o_main o_dashboard_action" title="CA" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_block": true}'>
+                            <a href="#"><t t-esc="values['block']"/><br/>HOD Sales</a>
+                        </td>
+                        <td style="background-color:#422466"  class="o_main o_dashboard_action" title="PA" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
+                            <a href="#"><t t-esc="values['replacement']"/><br/>CEO</a>
+                        </td>
+                        
+                        
+                    </tr>
+                </thead>
+                
+            </table>
+            </div>
+        </div>
+        </div>
+    </t>
+</templates>

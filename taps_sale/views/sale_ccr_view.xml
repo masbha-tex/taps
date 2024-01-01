@@ -52,16 +52,23 @@
             <field name="name">sale.ccr.tree</field>
             <field name="model">sale.ccr</field>
             <field name="arch" type="xml">
-                <tree string="CCR TREE" multi_edit="1" sample="1" create="false">
+                <tree string="CCR TREE" multi_edit="1" sample="1" create="false" js_class="ccr_tree_dashboard_upload">
                     <field name="name"/>
                     <field name="oa_number"/>
                     <field name="customer"/>
+                    <field name="buyer"/>
+                    <field name="invoice_reference"/>
+                    <field name="justification"  decoration-success="justification == 'Justified'"  decoration-danger="justification == 'Not Justified'"/>
+                    <field name="after_sales" decoration-info ="after_sales=='replace'" decoration-warning ="after_sales=='rework'"/>
+                    <field name="replacement_quantity"/>
+                    <field name="cost"/>
                     <field name="last_approver"/>
                     <field name="last_approve_date"/>
                     <field name="ca_lead"/>
                     <field name="pa_lead"/>
                     <field name="total_lead"/>
                     <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
+                    <field name="states" decoration-success="states == 'done'" decoration-info="states == 'draft'" decoration-warning="states == 'cancel'" widget="badge" optional="show"/>
                 </tree>
             </field>
     </record>
@@ -210,6 +217,35 @@
                 </p>
             </field>
         </record>
+
+    <record id="ccr_action_dashboard_list" model="ir.actions.act_window">
+        <field name="name">CCR</field>
+        <field name="res_model">sale.ccr</field>
+        <field name="view_mode">form,tree,kanban,pivot,graph,activity</field>
+        <field name="view_id" ref="taps_sale.view_sale_ccr_tree"/>
+        <!-- <field name="search_view_id" ref="sale.view_sales_order_filter"/> -->
+        <field name="target">main</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No Order to display
+            </p>
+        </field>
+        </record>
+
+    <!-- Dashboard action buttons: End in Kanban view-->
+    <!-- <record id="ccr_action_dashboard_kanban" model="ir.actions.act_window">
+        <field name="name">CCR</field>
+        <field name="res_model">sale.ccr</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="sale.view_sale_order_kanban"/>
+        <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        <field name="target">main</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No Order to display
+            </p>
+        </field>
+    </record> -->
 
     
     <menuitem 

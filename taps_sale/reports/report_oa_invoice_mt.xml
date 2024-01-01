@@ -722,15 +722,14 @@
 						</div>
 					</div>
 					<div class="row mt-2 mb-2" style="font-size: 10px">
-						<div class="col-4 text-center">
-				    SS IS MANDATORY IF ANY CONSTRAINS ARISE THEN TAKE APPROVAL FROM QUALITY TO USE BRASS.
-				  </div>
-						<div class="col-4 text-center">
-							<t t-if="o.buyer_name">
+						<div class="col-6 text-center">
+                            <t t-if="o.buyer_name">
 				    ALL KIND OF TEST MUST BE PASS AS PER "<span t-esc="o.buyer_name.name"/>" REQUIREMENTS.
 				    </t>
-						</div>
-						<div class="col-4 text-center">
+				    
+        				  </div>
+						
+						<div class="col-6 text-center">
 				    IF FIND ANY MISMATCH BETWEEN OA &amp; SAMPLE, DON'T PRODUCTION.URGENTLY CONTACT WITH CSD.
 				  </div>
 					</div>
