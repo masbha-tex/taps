@@ -961,12 +961,12 @@ class MrpReportWizard(models.TransientModel):
             year = int(data.get('date_from').year)#datetime.today().year
             _day = int(data.get('date_from').day)
 
-        # raise UserError((int(month_),int(data.get('date_from').month)))
+        # raise UserError((int(month_),data.get('date_from').date()))
         # f_date = data.get('date_from')
         # t_date = data.get('date_to')
         
         all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
-        daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= data.get('date_from') and pr.action_date.date() <= data.get('date_from'))#.sorted(key=lambda pr: pr.sequence)
+        daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= data.get('date_from') and pr.action_date.date() <= data.get('date_to'))#.sorted(key=lambda pr: pr.sequence)
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
