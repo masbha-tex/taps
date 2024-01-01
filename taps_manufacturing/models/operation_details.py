@@ -387,7 +387,8 @@ class OperationDetails(models.Model):
         warehouse_id = picking_types.warehouse_id.id
         
         # raise UserError((self.env.user.partner_id.id,self.env.company.id,self.env.user.user_id))
-        pick = self.env["stock.picking"].create({'move_type':'direct',
+        pick = self.env["stock.picking"].create({'priority':'1',
+                                                 'move_type':'direct',
                                                  'state':'draft',
                                                  'scheduled_date':datetime.now(),
                                                  'location_id':locationid,
@@ -403,6 +404,13 @@ class OperationDetails(models.Model):
                                                  'x_studio_oa_no':oa_list,
                                                  'note':finish
                                                  })
+        
+        st_app_entry = self.env["studio.approval.entry"].create({'rule_id':19,
+                                                       'model':'stock.picking',
+                                                       'method':'action_confirm',
+                                                       'res_id':pick.id,
+                                                       'approved':True,
+                                                       })
         if product_line:
             for prod in product_line:
                 ope = operation.create({'mrp_lines':mrp_lines,
@@ -468,8 +476,11 @@ class OperationDetails(models.Model):
                                                        'picking_type_id':pic_typeid,
                                                        'reference':pick.name
                                                        })
-        return pick.id
             
+        return pick.id
+
+
+    # id,name,user_id,rule_id,model,method,action_id,res_id,approved,create_uid,create_date,write_uid,write_date
     
     def set_lot(self,active_model,ope_id,lot_line):
         if lot_line:
