@@ -182,6 +182,7 @@ class ManufacturingOrder(models.Model):
         string='State')
     revision_no = fields.Char(string='Revision No', store=True)
     closing_date = fields.Datetime(string='Closing Date', readonly=False)
+    sale_line_of_top = fields.Integer(string='Sale Line of Top', store=True, readonly=True)
 
     # @api.constrains('company_id')
     # def _check_company_id(self):

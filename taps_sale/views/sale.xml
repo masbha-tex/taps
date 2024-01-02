@@ -16,6 +16,8 @@
 					<field name="sales_type" attrs="{'readonly':[('state','=','sale')]}"/>
                     <field name="pi_type" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']],'readonly':[('state','=','sale')] }"/>
                     <field name="cause_of_replacement" attrs="{'invisible': ['|',['pi_type','=','regular'],['pi_type','=','block']]}"/>
+                    
+                    
 				</xpath>
 				<xpath expr="//field[@name='partner_invoice_id']" position="attributes">
 					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]]}</attribute>
@@ -107,6 +109,8 @@
 				<xpath expr="//field[@name='sales_type']" position="after">
 					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')]}" domain="[('state','=','sale'),'|',('sales_type','=','oldsale'),('sales_type','=','sale')]" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}"/>
 					<field name="sample_ref" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','oa']]}" widget="many2many_tags" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}" domain="[('state','=','sale'),'|',('sales_type','=','oldsa'),('sales_type','=','sample')]"/>
+                    <field name="earlier_ref" attrs="{'required': [('sales_type', '=', 'oa')], 'invisible': [('sales_type', '!=', 'oa')]}"/>
+                    
 				</xpath>
                 <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_template_id']" position="attributes">
     <attribute name="domain">[('categ_id.complete_name', 'ilike', 'ALL / FG')]</attribute>

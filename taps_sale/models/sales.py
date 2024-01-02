@@ -24,11 +24,6 @@ _logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
-
-
-
-    
-
     
     priority_sales = fields.Selection(
         [('0', 'Normal'), ('1', 'Urgent')], 'Priority Sales', default='0', index=True)
@@ -141,9 +136,9 @@ class SaleOrder(models.Model):
     pr_delivery_date = fields.Date(string='Product Delivery Date')
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     rmc = fields.Float(compute='_compute_rmc', string='RMC')
+    earlier_ref = fields.Char(string='Earlier Ref')
 
-    
-        
+
     def _compute_rmc(self):
         for rec in self:
             rmc_val = 0
@@ -296,8 +291,6 @@ class SaleOrder(models.Model):
     
     @api.onchange('buyer_name')
     def buyer_name_change(self):
-        if self.company_id.id == 1:
-            self.hs_code = "9607.11.00"
         if self.company_id.id == 3:
             self.hs_code= "9606.22.00"
             if self.buyer_name.name == "RALPH LAUREN":
@@ -1298,6 +1291,8 @@ class SaleOrder(models.Model):
         w_centers = self.env['mrp.workcenter'].search([('company_id','=',self.company_id.id),('name','=','Packing')])
         w_center = w_centers.id
         for products in self.order_line:
+            # sale_line_of_top
+            # COIL 3 SLIDER, COIL 5 SLIDER
             can_create = True
             op_can_create = True
             mrp_lines = None

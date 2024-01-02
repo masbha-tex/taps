@@ -116,6 +116,7 @@
                         <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="visit_outcome"/>
                         <field name="action"/>
+                        <field name="visit_date"/>
                         <field name="user_id" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="team_id" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <!-- <field name="email_from" string="Email" /> -->
@@ -171,6 +172,7 @@
                     <field name="action"/>
                     <field name="user_id"/>
                     <field name="team_id" />
+                    <field name="visit_date" />
                     <!-- <progressbar field="stages"/> -->
                     <templates>
                         <t t-name="kanban-box">

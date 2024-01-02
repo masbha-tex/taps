@@ -120,10 +120,8 @@ class OperationDetails(models.Model):
         ('Done', 'Done')],
         string='Next Operation', help="Next Operation")
     mr_req = fields.Many2one('stock.picking', 'Requisitions', check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-
-
-
     
+
     @api.depends('qty', 'done_qty')
     def get_balance(self):
         for s in self:
@@ -177,6 +175,7 @@ class OperationDetails(models.Model):
     closing_date = fields.Datetime(string='Closing Date', readonly=False)
     return_qty = fields.Float(string='Return Qty', default=0.0, readonly=False)
     
+    sale_line_of_top = fields.Integer(string='Sale Line of Top', store=True, readonly=True)
     # @api.model
     # def action_unplan(self):
     #     if self.state == 'waiting':
