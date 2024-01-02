@@ -129,18 +129,18 @@ class MrpReportWizard(models.TransientModel):
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         
-        column_style = workbook.add_format({'bold': True, 'font_size': 11})
+        column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
         
         _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,})
         
         merge_format = workbook.add_format({'align': 'top'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
@@ -207,8 +207,16 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(3, 3, 20)
             sheet.set_column(4, 4, 20)
             sheet.set_column(5, 5, 20)
+            sheet.set_column(6, 6, 20)
+            sheet.set_column(7, 7, 0)
             sheet.set_column(8, 8, 40)
-            sheet.set_column(9, 9, 40)
+            sheet.set_column(10, 10, 11)
+            sheet.set_column(11, 11, 11)
+            sheet.set_column(12, 12, 15)
+            sheet.set_column(13, 13, 15)
+            sheet.set_column(14, 14, 15)
+            sheet.set_column(14, 20, 12)
+            sheet.set_row(0, 30)
 
             
             row_rang = 1
@@ -241,7 +249,7 @@ class MrpReportWizard(models.TransientModel):
                     if x == 0:
                         customer = "\n".join([orders.partner_id.name,"\n",orders.payment_term_id.name])
                         pi_num = orders.order_ref.pi_number
-                        oa_num = orders.name
+                        oa_num = int(orders.name.replace('OA',''))
                         remarks = orders.remarks
                         create_date = orders.create_date.strftime("%d-%m-%Y")
                         expected_date = ''#orders.expected_date.strftime("%d-%m-%Y")
@@ -537,7 +545,7 @@ class MrpReportWizard(models.TransientModel):
             sheet = workbook.add_worksheet(('%s' % (report_name)))
             
             sheet.freeze_panes(1, 0)
-            
+                                
             sheet.write(0, 0, "CUSTOMER NAME", column_style)
             sheet.write(0, 1, "PRODUCT", column_style)
             sheet.write(0, 2, "SLIDER CODE", column_style)
@@ -570,6 +578,8 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(5, 5, 20)
             sheet.set_column(8, 8, 40)
             sheet.set_column(9, 9, 40)
+            sheet.set_column(15, 21, 0)
+            
 
             
             row_rang = 1
@@ -834,6 +844,7 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 19, '')
             sheet.write(row+1, 20, '')
             sheet.write(row+1, 21, '')
+            
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -984,7 +995,7 @@ class MrpReportWizard(models.TransientModel):
         merge_format = workbook.add_format({'align': 'top'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
 
-        initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id)])
+        initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id),('production_date','>=',data.get('date_from'))])#&gt;
         
         all_closed = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id','=',self.env.company.id)])
         for day in self.iterate_days(year, int(month_)):
@@ -1077,18 +1088,19 @@ class MrpReportWizard(models.TransientModel):
                 
                 comu_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
 
-                if full_date.date() == in_pr.production_date.date():
-                    comu_pcs = in_pr.production_till_date
-
-                cm_pcs = 0
-                cm_rel = sum(comu_released.mapped('product_uom_qty'))
-                if full_date.date() > in_pr.production_date.date():
-                    comu_day_outputs = items_comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
-                    # cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
-                    if comu_day_outputs:
-                        cm_pcs = sum(comu_day_outputs.mapped('qty'))
-                        
-                    comu_pcs = in_pr.production_till_date + cm_pcs
+                if in_pr:
+                    if full_date.date() == in_pr.production_date.date():
+                        comu_pcs = in_pr.production_till_date
+    
+                    cm_pcs = 0
+                    cm_rel = sum(comu_released.mapped('product_uom_qty'))
+                    if full_date.date() > in_pr.production_date.date():
+                        comu_day_outputs = items_comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
+                        # cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
+                        if comu_day_outputs:
+                            cm_pcs = sum(comu_day_outputs.mapped('qty'))
+                            
+                        comu_pcs = in_pr.production_till_date + cm_pcs
 
                 price = total_qty = comur_value = pending_pcs = pending_usd = 0
                 # pending_usd = 0.0
@@ -1174,20 +1186,20 @@ class MrpReportWizard(models.TransientModel):
                 
                 today_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() == full_date.date())
                 tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
-                
-                if full_date.date() == in_pr.production_date.date():
-                    comu_inv = in_pr.invoice_till_date
-                    comur_value = in_pr.released_till_date
-                    
-                if full_date.date() > in_pr.production_date.date():
-                    cmr_val = 0
-                    comu_released_ = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() > in_pr.production_date.date())
-                    if comu_released_:
-                        cmr_val = round(sum(comu_released_.mapped('sale_order_line.price_subtotal')),2)
-                        # sum(comu_released.mapped('product_uom_qty'))
-                    cm_inv = price * cm_pcs
-                    comu_inv = in_pr.invoice_till_date + cm_inv
-                    comur_value = in_pr.released_till_date + cmr_val
+                if in_pr:
+                    if full_date.date() == in_pr.production_date.date():
+                        comu_inv = in_pr.invoice_till_date
+                        comur_value = in_pr.released_till_date
+                        
+                    if full_date.date() > in_pr.production_date.date():
+                        cmr_val = 0
+                        comu_released_ = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() > in_pr.production_date.date())
+                        if comu_released_:
+                            cmr_val = round(sum(comu_released_.mapped('sale_order_line.price_subtotal')),2)
+                            # sum(comu_released.mapped('product_uom_qty'))
+                        cm_inv = price * cm_pcs
+                        comu_inv = in_pr.invoice_till_date + cm_inv
+                        comur_value = in_pr.released_till_date + cmr_val
                 
                 order_data = []
                 

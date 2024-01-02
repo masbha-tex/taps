@@ -123,6 +123,8 @@ class SaleCcr(models.Model):
         ('nonjust', 'Non justified'),
         ('ca', 'CA'),
         ('pa', 'PA'),
+        ('man', 'Manufacturing'),
+        ('toclose', 'To Close'),
         ('done', 'Closed'),
         ('cancel', 'Cancelled'),
         ], string='Status', readonly=True, copy=False, index=True, tracking=5, default='draft')
@@ -132,38 +134,61 @@ class SaleCcr(models.Model):
     last_approver = fields.Many2one(
         string="Last Approver",
         comodel_name="res.users",
-        compute='_compute_last_approver'
         # default=lambda self: self.env.user.id
         
         
     )
     
-    last_approve_date = fields.Date(string="Last Approve Date")
+    # last_approve_date = fields.Date(string="Last Approve Date")
+
+    
 
     @api.model
     def retrieve_dashboard_ccr(self):
         """ This function returns the values to populate the custom dashboard in
             the purchase order views.
         """
-        
+        total_qty=0
+        total_value=0.0
         self.check_access_rights('read')
         povalue = 0
         # raise UserError(('hi'))
         result = {
-            'regular': 0,#all_to_send
-            'block': 0,#all_waiting
-            'replacement': 0,#all_late
+            'quality': 0,#all_to_send
+            'ca': 0,#all_waiting
+            'pa': 0,#all_late
             
-            'samplepi': 0,
-            'sa': 0,
-            'pi': 0,
-            'oa': 0,
-            'budget_value': 0,#all_avg_order_value
-            'expense_value': 0,#all_avg_days_to_purchase
-            'expense_percent': 0,#all_total_last_7_days
-            'due_amount': 0,#all_sent_rfqs
+            'justified': 0,
+            'notjustified': 0,
+            'closed': 0,
+            'production': 0,
+            'sales': 0,#all_avg_order_value
+            'ceo': 0,#all_avg_days_to_purchase
+            'total_qty': 0,#all_total_last_7_days
+            'total_value': 0,#all_sent_rfqs
             
         }
+        ccr = self.env['sale.ccr'].search([])
+        for rec in self.env['sale.ccr'].search([('states','=','done')]):
+            if rec.replacement_quantity and rec.cost:
+                total_qty += rec.replacement_quantity
+                total_value += rec.cost
+            
+        
+        result['quality'] = ccr.search_count([('states', '=', 'inter')])
+        result['ca'] = ccr.search_count([('states', '=', 'just')])
+        result['pa'] = ccr.search_count([('states', '=', 'ca')])
+        result['justified'] = ccr.search_count([('states', '=', 'done'),('justification', '=', 'Justified')])
+        result['notjustified'] = ccr.search_count([('states', '=', 'done'),('justification', '=', 'Not Justified')])
+        result['closed'] = ccr.search_count([('states', '=', 'done')])
+        result['production'] = ccr.search_count([['states', 'in', ['pa','nonjust']]])
+        result['sales'] = ccr.search_count([('last_approver', '=', 20)])
+        result['ceo'] = ccr.search_count([('last_approver', '=', 88)])
+        
+        result['total_qty'] = total_qty
+        result['total_value'] = total_value
+        # raise UserError((result['notjustified']))
+        
         return result
 
     def show_notification(self):
@@ -180,6 +205,8 @@ class SaleCcr(models.Model):
         }
         # raise UserError((notification))
         return notification
+
+    
 
     def _compute_ca_lead(self):
         for record in self:
@@ -201,8 +228,8 @@ class SaleCcr(models.Model):
                 
     def _compute_total_lead(self):
         for record in self:
-            if record.report_date and record.last_approve_date:
-                d1=datetime.strptime(str(record.last_approve_date),'%Y-%m-%d')
+            if record.report_date and record.closing_date:
+                d1=datetime.strptime(str(record.closing_date),'%Y-%m-%d')
                 d2=datetime.strptime(str(record.report_date),'%Y-%m-%d')
                 record.total_lead = str((d1-d2).days) + " days"
             else: 
@@ -226,22 +253,22 @@ class SaleCcr(models.Model):
         #         record.total_lead = '0 days'
                 
 
-    def _compute_last_approver(self):
-        domain = ['&', '&', ('model', '=', 'sale.ccr'), ('res_id', 'in', self.ids), ('approved', '=', 'True')]
+    # def _compute_last_approver(self):
+    #     domain = ['&', '&', ('model', '=', 'sale.ccr'), ('res_id', 'in', self.ids), ('approved', '=', 'True')]
         
-        # create dictionary of purchase.order res_id: last approver user_id
-        groups = self.env['studio.approval.entry'].sudo().read_group(domain, ['ids:array_agg(id)'], ['res_id'])
-        ccr_last_approver = {i['res_id']: max(i['ids']) for i in groups}
-        # User = self.env['res.users']
-        # docs = self.env['sale.ccr'].search(['id', 'in', 'draft'])
-        Entry = self.env['studio.approval.entry']
-        for rec in self:
-            if rec.id in ccr_last_approver:
-                rec.last_approver = Entry.browse(ccr_last_approver[rec.id]).user_id
-                rec.last_approve_date = date.today()
-            else:
-                # raise UserError((Entry))
-                rec.last_approver = False
+    #     # create dictionary of purchase.order res_id: last approver user_id
+    #     groups = self.env['studio.approval.entry'].sudo().read_group(domain, ['ids:array_agg(id)'], ['res_id'])
+    #     ccr_last_approver = {i['res_id']: max(i['ids']) for i in groups}
+    #     # User = self.env['res.users']
+    #     # docs = self.env['sale.ccr'].search(['id', 'in', 'draft'])
+    #     Entry = self.env['studio.approval.entry']
+    #     for rec in self:
+    #         if rec.id in ccr_last_approver:
+    #             rec.last_approver = Entry.browse(ccr_last_approver[rec.id]).user_id
+    #             rec.last_approve_date = date.today()
+    #         else:
+    #             # raise UserError((Entry))
+    #             rec.last_approver = False
 
     @api.model
     def create(self, vals):
@@ -285,11 +312,68 @@ class SaleCcr(models.Model):
             })
             # raise UserError((res['partner_ids']))
             self.write({'states': 'inter'})
+
+
+
+    def action_manufacturing(self):
+        # raise UserError((self._uid))
+        if self._uid == 20:
+            self.write({'states': 'man', 'last_approver': self._uid})
+            
+        else:
+            notification = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': ('Warning'),
+                'message': 'Only Mr. Nitish Bassi Can Approve This',
+                'type':'warning',  #types: success,warning,danger,info
+                'sticky': False,  #True/False will display for few seconds if false
+                    },
+                        }
+            return notification
+    def action_sales(self):
+        if self._uid == 88:
+            self.write({'states': 'toclose', 'last_approver': self._uid})
+        #     ccr_link = f'<a href="/web#id={self.id}&view_type=form&model=sale.ccr">{self.name}</a>'
+        #     notification_message = f'A new CCR has been waiting for your approval: {self.name} '
+        #     self.env['ir.notification'].create({
+        #     'user_id': user_id,
+        #     'message': notification_message,
+        #     'res_partner_id': self.partner_id.id,
+        #     'notification_type': 'inbox',
+        # })
+        else:
+            notification = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': ('Warning'),
+                'message': 'Only Mr. Alamgir Shohag Can Approve This',
+                'type':'warning',  #types: success,warning,danger,info
+                'sticky': False,  #True/False will display for few seconds if false
+                    },
+                        }
+            return notification
     
     def action_close(self):
         # self._compute_last_approver()
-        self.write({'states': 'done'})
-        return {}
+        if self._uid == 17:
+            self.write({'states': 'done', 'closing_date':date.today()})
+
+        else:
+            notification = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': ('Warning'),
+                'message': 'Only Deepakkumar Mukundkumar Shah Can Approve This',
+                'type':'warning',  #types: success,warning,danger,info
+                'sticky': False,  #True/False will display for few seconds if false
+                    },
+                        }
+            return notification
+        
 
     def action_smart_button(self):
         return {}

@@ -162,19 +162,20 @@ class SaleOrder(models.Model):
                             if st_price:
                                 price = st_price.unit_price
                                 rmc_val += (tc * price)
-                if sc:
-                    slider = None
-                    findslider = rec.order_line[0].slidercodesfg.find("TZP ")
-                    if findslider > 0:
-                        slider = rec.order_line[0].slidercodesfg.split("TZP ",1)[1]
-                    else:
-                        slider = rec.order_line[0].slidercodesfg.split("TZP-",1)[1]
-                    rm_pro = all_rm.search([('product_tmpl_id.name','ilike', slider),('product_tmpl_id.name','ilike', 'TZP')],order='id desc',limit=1)
-                    if rm_pro:
-                        st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', rm_pro.id)],order='id desc',limit=1)
-                        if st_price:
-                            price = st_price.unit_price
-                            rmc_val += (sc * price)
+                # if sc:
+                #     slider = None
+                #     if rec.order_line[0].slidercodesfg:
+                #         findslider = rec.order_line[0].slidercodesfg.find("TZP ")
+                #         if findslider > 0:
+                #             slider = rec.order_line[0].slidercodesfg.split("TZP ",1)[1]
+                #         else:
+                #             slider = rec.order_line[0].slidercodesfg.split("TZP-",1)[1]
+                #         rm_pro = all_rm.search([('product_tmpl_id.name','ilike', slider),('product_tmpl_id.name','ilike', 'TZP')],order='id desc',limit=1)
+                #         if rm_pro:
+                #             st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', rm_pro.id)],order='id desc',limit=1)
+                #             if st_price:
+                #                 price = st_price.unit_price
+                #                 rmc_val += (sc * price)
                 if wc:
                     st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', 23805)],order='id desc',limit=1)
                     if st_price:
@@ -207,7 +208,9 @@ class SaleOrder(models.Model):
         
         result = super(SaleOrder, self).write(values)
         if state == 'sale' and self.sales_type == 'oa':
-            self.generate_m_order()
+            operation = self.env['operation.details'].search([('oa_id','=', self.id)])
+            if operation:
+                self.generate_m_order()
         return result
 
     # def write(self, values):
@@ -291,6 +294,8 @@ class SaleOrder(models.Model):
     
     @api.onchange('buyer_name')
     def buyer_name_change(self):
+        if self.company_id.id == 1:
+            self.hs_code= "9607.11.00"
         if self.company_id.id == 3:
             self.hs_code= "9606.22.00"
             if self.buyer_name.name == "RALPH LAUREN":
@@ -1283,11 +1288,11 @@ class SaleOrder(models.Model):
             # if self.company_id.id == 1:
             self.generate_m_order()
         return True
-
+        
 
     def generate_m_order(self):
-        exist_mrp = self.env['manufacturing.order'].search([('oa_id','=',self.id)])
-        operation = self.env['operation.details'].search([('oa_id','=',self.id)])
+        exist_mrp = self.env['manufacturing.order'].search([('oa_id','=',self.id),('company_id','=',self.company_id.id)])
+        operation = self.env['operation.details'].search([('oa_id','=',self.id),('company_id','=',self.company_id.id)])
         w_centers = self.env['mrp.workcenter'].search([('company_id','=',self.company_id.id),('name','=','Packing')])
         w_center = w_centers.id
         for products in self.order_line:
@@ -1303,6 +1308,63 @@ class SaleOrder(models.Model):
                 state = 'hold'
             if self.state == 'cancel':
                 state = 'cancel'
+            if products.product_id.product_tmpl_id.name in ('METAL 5 SLIDER','METAL 4 SLIDER'):
+                if products.numberoftop:
+                    num_of_top = 1
+                    if products.numberoftop == 'Double':
+                        num_of_top = 2
+                    top = exist_mrp.filtered(lambda mo: mo.sale_line_of_top == products.id)
+                    qty = products.product_uom_qty * num_of_top
+                    if top:
+                        top_update = top.update({'product_uom_qty':qty,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'oa_total_qty':products.order_id.total_product_qty + qty ,'remarks':products.order_id.remarks,'revision_no':self.revised_no,'state':state})
+                        
+                        ope_top_update = op.update({'shade':products.shade,
+                                                'shade_ref':products.shade_ref,
+                                                'finish':products.finish,
+                                                'slidercodesfg':products.slidercodesfg,
+                                                'top':products.ptopfinish,
+                                                'bottom':products.pbotomfinish,
+                                                'pinbox':products.ppinboxfinish,
+                                                'actual_qty':qty,
+                                                'qty':qty,
+                                                'revision_no':self.revised_no
+                                                })
+                    
+                    else:
+                        top_create = self.env['manufacturing.order'].create({'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'product_id':129294,'product_template_id':127303,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'oa_total_qty':products.order_id.total_product_qty + qty,'oa_total_balance':products.order_id.total_product_qty + qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'sale_line_of_top':products.id})
+                        
+                        ope_top_create = self.env['operation.details'].create({'name':'','mrp_lines':mrp_lines,
+                                                            'mrp_line':mrp_id,
+                                                            'parent_id':None,
+                                                            'oa_id':products.order_id.id,
+                                                            'buyer_name':products.order_id.buyer_name.name,
+                                                            'product_id':129294,#125308,#
+                                                            'product_template_id':127303,#126982,#
+                                                            'action_date':self.date_order,
+                                                            'shade':products.shade,
+                                                            'shade_ref':products.shade_ref,
+                                                            'finish':products.finish,
+                                                            'slidercodesfg':products.slidercodesfg,
+                                                            'top':products.ptopfinish,
+                                                            'bottom':products.pbotomfinish,
+                                                            'pinbox':products.ppinboxfinish,
+                                                            'operation_of':'output',
+                                                            'work_center':w_center,
+                                                            'operation_by':self.env.user.name,
+                                                            'based_on':'Lot Code',
+                                                            'next_operation':'Packing Output',
+                                                            'actual_qty':qty,
+                                                            'qty':qty,
+                                                            'pack_qty':0,
+                                                            'fr_pcs_pack':0,
+                                                            'capacity':0,
+                                                            'state':state,
+                                                            'move_line':None,
+                                                            'sale_line_of_top':products.id
+                                                            })
+
+            
+            
             if exist_mrp:
                 if exist_mrp[0].state == 'closed':
                     state = 'closed'
@@ -1402,7 +1464,21 @@ class SaleOrder(models.Model):
                                                             'shape':products.shape,
                                                             'back_part':products.back_part
                                                             })
-            
+        
+        current_mrp = self.env['manufacturing.order'].search([('oa_id','=',self.id),('company_id','=',self.company_id.id)])
+        e_operation = self.env['operation.details'].search([('oa_id','=',self.id),('done_qty','=',0),('next_operation','=','Packing Output')])
+        delete_operation = e_operation.filtered(lambda sol: sol.sale_order_line == True and sol.sale_order_line not in current_mrp.sale_order_line.ids)
+        
+        delete_top_operation = delete_operation.filtered(lambda sol: sol.sale_line_of_top == True and sol.sale_line_of_top not in current_mrp.sale_order_line.ids)
+        if delete_operation:
+            delete_operation.unlik()
+            # for i in delete_operation:
+            #     _unlink = delete_operation.unlik()
+        if delete_top_operation:
+            delete_top_operation.unlik()
+            # for j in delete_top_operation:
+            #     _unlink = j.unlik()
+        
     # def manuf_values(self,seq,id,oa,company):
     #     values = 
     #     return values

@@ -12,6 +12,7 @@ class ApprovalEntry(models.Model):
         if model_name == 'purchase.order':
             user_ = self.env['res.users'].search([('id','=',vals['user_id'])])
             po = self.env['purchase.order'].search([('id', '=', vals['res_id'])]).write({'last_approver':vals['user_id'],'x_studio_last_confirmation':user_.display_name})
+
         
         entry = super().create(vals)
         return entry

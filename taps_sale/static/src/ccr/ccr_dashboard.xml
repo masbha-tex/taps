@@ -11,14 +11,14 @@
                     <tr>
                     <!-- can't use th tag due to list rendering error when no values in list... -->
                         
-                        <td  class="o_main o_dashboard_action" title="Quality" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_sample_pi": true}'>
-                            <a href="#"><t t-esc="values['samplepi']"/><br/>Quality</a>
+                        <td  class="o_main o_dashboard_action" title="Quality" name="taps_sale.ccr_action_dashboard" context='{"search_default_quality_pending": true}'>
+                            <a href="#"><t t-esc="values['quality']"/><br/>Quality</a>
                         </td>
-                        <td class="o_main o_dashboard_action" title="CA" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_block": true}'>
-                            <a href="#"><t t-esc="values['block']"/><br/>CA</a>
+                        <td class="o_main o_dashboard_action" title="CA" name="taps_sale.ccr_action_dashboard" context='{"search_default_ca_pending": true}'>
+                            <a href="#"><t t-esc="values['ca']"/><br/>CA Pending</a>
                         </td>
-                        <td   class="o_main o_dashboard_action" title="PA" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
-                            <a href="#"><t t-esc="values['replacement']"/><br/>PA</a>
+                        <td   class="o_main o_dashboard_action" title="PA" name="taps_sale.ccr_action_dashboard" context='{"search_default_pa_pending": true}'>
+                            <a href="#"><t t-esc="values['pa']"/><br/>PA Pending</a>
                         </td>
                         
                         
@@ -26,14 +26,14 @@
                 </thead>
                 <thead>
                     <tr>
-                        <td   class="o_main o_dashboard_action" title="Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
-                            <a href="#"><t t-esc="values['replacement']"/><br/>Justified</a>
+                        <td   class="o_main o_dashboard_action" title="Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_closed_justified": true}'>
+                            <a href="#"><t t-esc="values['justified']"/><br/>Justified</a>
                         </td>
-                        <td  class="o_main o_dashboard_action" title="Not Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
-                            <a href="#"><t t-esc="values['replacement']"/><br/>Not Justified</a>
+                        <td  class="o_main o_dashboard_action" title="Not Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_closed_notjustified": true}'>
+                            <a href="#"><t t-esc="values['notjustified']"/><br/>Not Justified</a>
                         </td>
-                        <td  class="o_main o_dashboard_action" title="Not Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
-                            <a href="#"><t t-esc="values['replacement']"/><br/>Closed</a>
+                        <td  class="o_main o_dashboard_action" title="Not Justified" name="taps_sale.ccr_action_dashboard" context='{"search_default_closed_ccr": true}'>
+                            <a href="#"><t t-esc="values['closed']"/><br/>Closed</a>
                         </td>
                     </tr>
                 </thead>
@@ -49,14 +49,14 @@
                         <td class="o_text">
                             <!-- <div>Pending</div> -->
                         </td>
-                        <td style="background-color:#255D83" class="o_main o_dashboard_action" title="Quality" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_sample_pi": true}'>
-                            <a href="#"><t t-esc="values['samplepi']"/><br/>HOD Production</a>
+                        <td style="background-color:#422466" class="o_main o_dashboard_action" title="Quality" name="taps_sale.ccr_action_dashboard" context='{"search_default_production_pending": true}'>
+                            <a href="#"><t t-esc="values['production']"/><br/>HOD Production</a>
                         </td>
-                        <td style="background-color:#774373"  class="o_main o_dashboard_action" title="CA" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_block": true}'>
-                            <a href="#"><t t-esc="values['block']"/><br/>HOD Sales</a>
+                        <td style="background-color:#422466"  class="o_main o_dashboard_action" title="CA" name="taps_sale.ccr_action_dashboard" context='{"search_default_sales_pending": true}'>
+                            <a href="#"><t t-esc="values['sales']"/><br/>HOD Sales</a>
                         </td>
-                        <td style="background-color:#422466"  class="o_main o_dashboard_action" title="PA" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_replacement": true}'>
-                            <a href="#"><t t-esc="values['replacement']"/><br/>CEO</a>
+                        <td style="background-color:#422466"  class="o_main o_dashboard_action" title="PA" name="taps_sale.ccr_action_dashboard" context='{"search_default_ceo_pending": true}'>
+                            <a href="#"><t t-esc="values['ceo']"/><br/>CEO</a>
                         </td>
                         
                         
@@ -71,11 +71,11 @@
                             <div>Total Replacement<br/>or Rework 
                             </div>
                         </td>
-                        <td style="background-color:#255D83" class="o_main o_dashboard_action" title="Quality" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_sample_pi": true}'>
-                            <a href="#"><t t-esc="values['samplepi']"/><br/>Qty(Pcs)</a>
+                        <td style="background-color:#422466" class="o_main o_dashboard_action" title="Quality" name="taps_sale.ccr_action_dashboard" context='{"search_default_closed_ccr": true}'>
+                            <a href="#"><t t-esc="values['total_qty']"/><br/>Qty(Pcs)</a>
                         </td>
-                        <td style="background-color:#774373"  class="o_main o_dashboard_action" title="CA" name="taps_sale.ccr_action_dashboard" context='{"search_default_all_block": true}'>
-                            <a href="#"><t t-esc="values['block']"/><br/>Value($)</a>
+                        <td style="background-color:#422466"  class="o_main o_dashboard_action" title="CA" name="taps_sale.ccr_action_dashboard" context='{"search_default_closed_ccr": true}'>
+                            <a href="#"><t t-esc="values['total_value']"/><br/>Value($)</a>
                         </td>
                         
                     </tr>

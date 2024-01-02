@@ -38,7 +38,7 @@
     
     <menuitem id="taps_sale.menu_all_sale_report"
               name="Sale Report Wizard"
-              sequence="3"
+              sequence="4"
               action="all_sale_report"
               parent="sale.sale_menu_root" />  
     

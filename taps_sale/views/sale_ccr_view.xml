@@ -30,6 +30,37 @@
                 </page> -->
             </field>
         </record>
+        <record id="view_sale_ccr_new_filter" model="ir.ui.view">
+            <field name="name">sale.ccr.search</field>
+            <field name="model">sale.ccr</field>
+            <field name="priority">15</field>
+            <field name="arch" type="xml">
+                <search string="Search New CCR">
+                    <field name="name" string="CCR" />
+                    <field name="oa_number" string="OA"/>
+                    <field name="customer" operator="child_of" string="Customer"/>
+                    <field name="buyer" string="Buyer"/>
+                    <field name="invoice_reference" string="Invoice"/>
+                    
+                    <!-- <field name="country_id"/> -->
+                    <!-- <field name="city"/> -->
+                    <!-- <field name="phone_mobile_search"/> -->
+                    <separator/>
+                    
+                    <filter string="Quality Pending" name="quality_pending" domain="[('states', '=', 'inter')]"/>
+                    <filter string="CA Pending" name="ca_pending" domain="[('states', '=', 'just')]"/>
+                    <filter string="PA Pending" name="pa_pending" domain="[('states', '=', 'ca')]"/>
+                    <filter string="Closed and Justified" name="closed_justified" domain="[('states', '=', 'done'),('justification','=','Justified')]"/>
+                    <filter string="Closed and Not Justified" name="closed_notjustified" domain="[('states', '=', 'done'),('justification','=','Not Justified')]"/>
+                    <filter string="Closed CCR" name="closed_ccr" domain="[('states', '=', 'done')]"/>
+                    
+                    <separator/>
+                    <filter string="Head Of Production-Pending" name="production_pending" domain="[['states', 'in', ['pa','nonjust']]]"/>
+                    <filter string="Head Of Sales-Pending" name="sales_pending" domain="[['last_approver', '=', 20]]"/>
+                    <filter string="CEO-Pending" name="ceo_pending" domain="[['last_approver', '=', 88]]"/>
+                </search>
+            </field>
+        </record>
         <record model="ir.rule" id="record_ccr_multi_company_rule">
             <field name="name">CCR</field>
             <field name="model_id" ref="model_sale_ccr"/>
@@ -63,7 +94,7 @@
                     <field name="replacement_quantity"/>
                     <field name="cost"/>
                     <field name="last_approver"/>
-                    <field name="last_approve_date"/>
+                    <field name="closing_date"/>
                     <field name="ca_lead"/>
                     <field name="pa_lead"/>
                     <field name="total_lead"/>
@@ -99,10 +130,12 @@
                         <button name="action_preventive" type="object" string="Take Preventive Action" context="{'active_id':id}" attrs= "{'invisible': [('states', 'not in', ['ca'])]}"/>
                         <button name="action_cancel" type="object" string="Cancel"/>
                         <button name="action_draft" type="object" string="Set To Draft"  attrs="{'invisible': [('states', 'not in', ['cancel'])]}"/>
-                        <button name="action_close" type="object" string="Close" attrs="{'invisible': [('states', 'not in', ['pa' ,'nonjust'])]}"/>
+                        <button name="action_manufacturing" type="object" string="HOD Manufacturing" attrs="{'invisible': [('states', 'not in', ['pa' ,'nonjust'])]}"/>
+                        <button name="action_sales" type="object" string="HOD Sales" attrs="{'invisible': [('states', 'not in', ['man'])]}"/>
+                        <button name="action_close" type="object" string="Close" attrs="{'invisible': [('states', 'not in', ['toclose'])]}"/>
                         <!-- <button name="action_draft" states="cancel" type="object" string="Set to Draft"/> -->
                         
-                        <field name="states" widget="statusbar" statusbar_visible="draft,inter,just,nonjust,ca,pa,done,cancel"/>
+                        <field name="states" widget="statusbar" statusbar_visible="draft,inter,just,nonjust,ca,pa,man,toclose,done,cancel"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -252,7 +285,7 @@
             id="sale_ccr_view_menu"
             name="CCR"
             parent="sale.sale_menu_root"
-            sequence="6"/>
+            sequence="3"/>
     <menuitem 
             id="sale_ccr_view_new_menu"
             name="NEW CCR"
