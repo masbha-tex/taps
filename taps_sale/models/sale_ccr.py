@@ -16,6 +16,8 @@ from decimal import Decimal, ROUND_HALF_UP
 import decimal
 from werkzeug.urls import url_encode
 import logging
+from urllib.parse import quote
+
 
 
 class ResPartner(models.Model):
@@ -335,25 +337,51 @@ class SaleCcr(models.Model):
     def action_sales(self):
         if self._uid == 88:
             self.write({'states': 'toclose', 'last_approver': self._uid})
-        #     ccr_link = f'<a href="/web#id={self.id}&view_type=form&model=sale.ccr">{self.name}</a>'
-        #     notification_message = f'A new CCR has been waiting for your approval: {self.name} '
-        #     self.env['ir.notification'].create({
-        #     'user_id': user_id,
-        #     'message': notification_message,
-        #     'res_partner_id': self.partner_id.id,
-        #     'notification_type': 'inbox',
-        # })
+            ccr_link = f'<a href="/web#id={self.id}&view_type=form&model=sale.ccr">{self.name}</a>'
+            notification_message = f'A new CCR has been waiting for your approval: {self.name} '
+            self.env['ir.notification'].create({
+            'user_id': self.env.user.id,
+            'message': notification_message,
+            'res_partner_id': self.env.user.partner_id.id,
+            'notification_type': 'inbox',
+        })
         else:
+            url_params = {
+                'id': self.id,
+                'view_type': 'form',
+                'model': 'sale.ccr',
+                }
+            
+            encoded_params = url_encode(url_params)
+            
+            # Encode the parameters
+            
+            
+            # Create the link
+            url_params = {
+                'id': self.id,
+                'view_type': 'form',
+                'model': 'sale.ccr',
+            }
+
+            # Encode the parameters
+            encoded_params = url_encode(url_params)
+
+            # Create the link with #
+            ccr_link = f'/web#{encoded_params}'
+
+            # Construct the warning notification
             notification = {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': ('Warning'),
-                'message': 'Only Mr. Alamgir Shohag Can Approve This',
-                'type':'warning',  #types: success,warning,danger,info
-                'sticky': False,  #True/False will display for few seconds if false
-                    },
-                        }
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Warning',
+                    'message': f'<a href="{ccr_link}">{self.name}</a>',
+                    'type': 'warning',
+                    'sticky': False,
+                },
+            }
+
             return notification
     
     def action_close(self):

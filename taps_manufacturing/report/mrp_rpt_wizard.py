@@ -1077,9 +1077,20 @@ class MrpReportWizard(models.TransientModel):
                 items_comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 comu_pcs = sum(items_comu_outputs.mapped('qty'))
+                price = comu_inv = 0
+                if comu_pcs > 0 :
+                    c_s_qty = round(sum(items_comu_outputs.mapped('sale_order_line.product_uom_qty')),2)
+                    c_s_value = round(sum(items_comu_outputs.mapped('sale_order_line.price_subtotal')),2)
+                    if c_s_qty>0:
+                        price = round((c_s_value/c_s_qty),4)
+                        comu_inv = round((comu_pcs*price),2)
+                
                 pack_pcs = sum(itemwise_outputs.mapped('qty'))
-                # invoiced = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
-                #sum(order.qty * order. for order in itemwise_outputs)
+                if pack_pcs > 0:
+                    _s_qty = round(sum(itemwise_outputs.mapped('sale_order_line.product_uom_qty')),2)
+                    _s_value = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
+                    if _s_qty > 0:
+                        price = round((_s_value/_s_qty),4)
 
                 in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
                 
@@ -1102,7 +1113,7 @@ class MrpReportWizard(models.TransientModel):
                             
                         comu_pcs = in_pr.production_till_date + cm_pcs
 
-                price = total_qty = comur_value = pending_pcs = pending_usd = 0
+                total_qty = comur_value = pending_pcs = pending_usd = 0
                 # pending_usd = 0.0
                 
                 if comu_released:
@@ -1116,7 +1127,7 @@ class MrpReportWizard(models.TransientModel):
                 
                 invoiced = round((pack_pcs*price),2)
                 # pending_usd = round((pending_pcs*price),2)
-                comu_inv = round((comu_pcs*price),2)
+                
                 
                 # not_closed_oa = all_released.sudo().filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date != True))
                                                       
