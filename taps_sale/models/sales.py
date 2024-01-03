@@ -1303,6 +1303,7 @@ class SaleOrder(models.Model):
             mrp_lines = None
             sale_lines = None
             mrp_id = None
+            qty = 0
             state = 'waiting'
             if self.is_hold:
                 state = 'hold'

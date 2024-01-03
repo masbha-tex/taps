@@ -319,7 +319,7 @@ class SaleCcr(models.Model):
 
     def action_manufacturing(self):
         # raise UserError((self._uid))
-        if self._uid == 20:
+        if self._uid == 19:
             self.write({'states': 'man', 'last_approver': self._uid})
             
         else:
@@ -334,17 +334,39 @@ class SaleCcr(models.Model):
                     },
                         }
             return notification
+            
     def action_sales(self):
-        if self._uid == 88:
+        if self._uid == 19:
+            # Update the record's state and last_approver
             self.write({'states': 'toclose', 'last_approver': self._uid})
+            
+            # Create a link to the record
             ccr_link = f'<a href="/web#id={self.id}&view_type=form&model=sale.ccr">{self.name}</a>'
-            notification_message = f'A new CCR has been waiting for your approval: {self.name} '
-            self.env['ir.notification'].create({
-            'user_id': self.env.user.id,
-            'message': notification_message,
-            'res_partner_id': self.env.user.partner_id.id,
-            'notification_type': 'inbox',
-        })
+            
+            # Create a notification message
+            notification_message = f'A new CCR has been waiting for your approval: {ccr_link}'
+            
+            # Find the specific user to notify
+            user_to_notify = self.env['res.users'].browse(19)  # Replace with the actual user ID
+            
+            # Create a mail.message for the notification
+            self.env['mail.message'].create({
+                'model': 'sale.ccr',  # Replace with the actual model name
+                'res_id': self.id,
+                'subject': 'Approval Notification',
+                'body': notification_message,
+                'author_id': self.env.user.partner_id.id,
+                'message_type': 'notification',
+                'partner_ids': [(4, user_to_notify.partner_id.id)],
+            })
+
+            channel = 'mail.channel_' + str(user_to_notify.partner_id.id)
+            self.env['bus.bus'].sendone(channel, {
+                'type': 'simple_notification',
+                'title': 'New Approval Request',
+                'message': notification_message,
+                'sticky': False,
+            })
         else:
             url_params = {
                 'id': self.id,
