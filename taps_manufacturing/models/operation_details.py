@@ -404,12 +404,6 @@ class OperationDetails(models.Model):
                                                  'note':finish
                                                  })
         
-        st_app_entry = self.env["studio.approval.entry"].create({'rule_id':19,
-                                                       'model':'stock.picking',
-                                                       'method':'action_confirm',
-                                                       'res_id':pick.id,
-                                                       'approved':True,
-                                                       })
         if product_line:
             for prod in product_line:
                 ope = operation.create({'mrp_lines':mrp_lines,
@@ -423,7 +417,7 @@ class OperationDetails(models.Model):
                                         'product_id':prod.product_id.id,
                                         'based_on':'process',
                                         'next_operation':'Issue',
-                                        'mr_req': pick.id,
+                                        'mr_req':pick.id,
                                         'qty':prod.product_qty
                                         })
     
@@ -443,6 +437,7 @@ class OperationDetails(models.Model):
                                                            'picking_type_id':pic_typeid,
                                                            'reference':pick.name
                                                            })
+                
         elif product_id:
             ope = operation.create({'mrp_lines':mrp_lines,
                                     'sale_lines':sale_lines,
@@ -455,7 +450,7 @@ class OperationDetails(models.Model):
                                     'product_id':product_id.id,
                                     'based_on':'process',
                                     'next_operation':'Issue',
-                                    'mr_req': pick.id,
+                                    'mr_req':pick.id,
                                     'qty':qty
                                     })
     
@@ -474,6 +469,13 @@ class OperationDetails(models.Model):
                                                        'procure_method':'make_to_stock',
                                                        'picking_type_id':pic_typeid,
                                                        'reference':pick.name
+                                                       })
+            
+        st_app_entry = self.env["studio.approval.entry"].create({'rule_id':19,
+                                                       'model':'stock.picking',
+                                                       'method':'action_confirm',
+                                                       'res_id':pick.id,
+                                                       'approved':True,
                                                        })
             
         return pick.id

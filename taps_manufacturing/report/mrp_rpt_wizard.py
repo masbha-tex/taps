@@ -315,6 +315,35 @@ class MrpReportWizard(models.TransientModel):
                         orders.sale_representative.name,
                     ]
                     report_data.append(order_data)
+                    _top = self.env['operation.details'].search([('sale_line_of_top','=',o_data.id),('company_id','=',self.env.company.id)])
+                    if _top:
+                        order_data = [
+                            customer,
+                            'TOP',
+                            slider,
+                            finish,
+                            pi_num,
+                            oa_num,
+                            create_date,
+                            '',
+                            remarks,
+                            #expected_date,
+                            shade,
+                            sizein,
+                            sizecm,
+                            _top.qty,
+                            _top.done_qty,
+                            _top.balance_qty,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            #o_data.pinbox_con,
+                            orders.sale_representative.name,
+                        ]
+                        report_data.append(order_data)
                 if _range > 0:
                     _range += 2
                 _range += len(report_data)
