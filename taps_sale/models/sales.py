@@ -1334,7 +1334,7 @@ class SaleOrder(models.Model):
                                                     })
                         
                         else:
-                            top_create = self.env['manufacturing.order'].create({'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'product_id':125308,'product_template_id':126982,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'oa_total_qty':products.order_id.total_product_qty + qty,'oa_total_balance':products.order_id.total_product_qty + qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'sale_line_of_top':products.id})
+                            top_create = self.env['manufacturing.order'].create({'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'product_id':129294,'product_template_id':127303,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'oa_total_qty':products.order_id.total_product_qty + qty,'oa_total_balance':products.order_id.total_product_qty + qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'sale_line_of_top':products.id})
                             m_line = str(top_create.id)
                             ope_top_create = self.env['operation.details'].create({'name':'','mrp_lines':m_line,
                                                                 'sale_lines':None,
@@ -1342,8 +1342,8 @@ class SaleOrder(models.Model):
                                                                 'parent_id':None,
                                                                 'oa_id':products.order_id.id,
                                                                 'buyer_name':products.order_id.buyer_name.name,
-                                                                'product_id':125308,#129294,#
-                                                                'product_template_id':126982,#127303,#
+                                                                'product_id':129294,#125308,#
+                                                                'product_template_id':127303,#126982,#
                                                                 'action_date':self.date_order,
                                                                 'shade':products.shade,
                                                                 'shade_ref':products.shade_ref,

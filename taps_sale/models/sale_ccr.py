@@ -368,7 +368,7 @@ class SaleCcr(models.Model):
             })
 
             self.env['mail.notification'].create({
-                    'res_partner_id': user_from_notify.partner_id.id,
+                    'res_partner_id': user_to_notify.partner_id.id,
                     'notification_type': 'email',  # or your desired notification type
                     'mail_message_id': notification.id,
                     'is_read': False,
