@@ -345,28 +345,42 @@ class SaleCcr(models.Model):
             
             # Create a notification message
             notification_message = f'A new CCR has been waiting for your approval: {ccr_link}'
-            
+            note_subtype_id = self.env['mail.message.subtype'].search([('name', '=', 'Note')], limit=1).id
+            # raise UserError((note_subtype_id))
             # Find the specific user to notify
-            user_to_notify = self.env['res.users'].browse(19)  # Replace with the actual user ID
-            
+            user_from_notify = self.env['res.users'].browse(19)
+            user_to_notify = self.env['res.users'].browse(6)# Replace with the actual user ID
+            reply_to_address = 'catchall@taps-testing-10495661.dev.odoo.com'
             # Create a mail.message for the notification
-            self.env['mail.message'].create({
+            notification=self.env['mail.message'].create({
                 'model': 'sale.ccr',  # Replace with the actual model name
                 'res_id': self.id,
                 'subject': 'Approval Notification',
                 'body': notification_message,
                 'author_id': self.env.user.partner_id.id,
-                'message_type': 'notification',
+                'message_type': 'user_notification',
                 'partner_ids': [(4, user_to_notify.partner_id.id)],
+                # 'notified_partner_ids': [(4, user_to_notify.partner_id.id)],
+                'reply_to' : reply_to_address,
+                'subtype_id' : note_subtype_id,
+                'is_internal' : True
+                
             })
 
-            channel = 'mail.channel_' + str(user_to_notify.partner_id.id)
-            self.env['bus.bus'].sendone(channel, {
-                'type': 'simple_notification',
-                'title': 'New Approval Request',
-                'message': notification_message,
-                'sticky': False,
-            })
+            self.env['mail.notification'].create({
+                    'res_partner_id': user_from_notify.partner_id.id,
+                    'notification_type': 'email',  # or your desired notification type
+                    'mail_message_id': notification.id,
+                    'is_read': False,
+                })
+    
+                # channel = 'mail.channel_' + str(user_to_notify.partner_id.id)
+            # self.env['bus.bus'].sendone(channel, {
+            #     'type': 'simple_notification',
+            #     'title': 'New Approval Request',
+            #     'message': notification_message,
+            #     'sticky': False,
+            # })
         else:
             url_params = {
                 'id': self.id,
