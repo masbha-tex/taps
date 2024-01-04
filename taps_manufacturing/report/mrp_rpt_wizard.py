@@ -45,9 +45,8 @@ class MrpReportWizard(models.TransientModel):
 
     @api.depends('date_to')
     def _compute_to_date(self):
-        last_day_of_month = calendar.monthrange(fields.datetime.now().year, fields.datetime.now().month)[1]
-        # raise UserError((last_day_of_month))
-        dt_to = fields.datetime.now().replace(day = last_day_of_month)
+        # last_day_of_month = calendar.monthrange(fields.datetime.now().year, fields.datetime.now().month)[1]
+        dt_to = fields.datetime.now()#.replace(day = last_day_of_month)
         return dt_to
 
     
@@ -1013,6 +1012,8 @@ class MrpReportWizard(models.TransientModel):
         
         column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
         
+        column_merge_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
+        
         _row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
         
         row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
@@ -1038,20 +1039,28 @@ class MrpReportWizard(models.TransientModel):
             comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() <= full_date.date())
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            sheet.freeze_panes(1, 0)
+            
+            
+            sheet.write(0, 0, "DATE :", column_style)
+            sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
+            sheet.write(0, 11, "DATE :", column_style)
+            # sheet.write(0, 12, full_date.date().strftime("%d-%b-%Y"), column_style)
+            sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
+            # sheet.write(0, 1, full_date.date(), column_style)
+            sheet.freeze_panes(2, 0)
             if start_time.date() == full_date.date():
                 sheet.activate()
                 
-            sheet.write(0, 0, "PRODUCT", column_style)
-            sheet.write(0, 1, "PACKING PCS", column_style)
-            sheet.write(0, 2, "INVOICE USD", column_style)
-            sheet.write(0, 3, "PENDING PCS", column_style)
-            sheet.write(0, 4, "PENDING USD", column_style)
-            sheet.write(0, 5, "COMULATIVE PRODUCTION", column_style)
-            sheet.write(0, 6, "COMULATIVE INVOICING", column_style)
-            sheet.write(0, 7, "TODAY RELEASED", column_style)
-            sheet.write(0, 8, "COMULATIVE RELEASED", column_style)
-            sheet.write(0, 9, "PENDING OA", column_style)
+            sheet.write(1, 0, "PRODUCT", column_style)
+            sheet.write(1, 1, "PACKING PCS", column_style)
+            sheet.write(1, 2, "INVOICE USD", column_style)
+            sheet.write(1, 3, "PENDING PCS", column_style)
+            sheet.write(1, 4, "PENDING USD", column_style)
+            sheet.write(1, 5, "COMULATIVE PRODUCTION", column_style)
+            sheet.write(1, 6, "COMULATIVE INVOICING", column_style)
+            sheet.write(1, 7, "TODAY RELEASED", column_style)
+            sheet.write(1, 8, "COMULATIVE RELEASED", column_style)
+            sheet.write(1, 9, "PENDING OA", column_style)
 
             sheet.set_column(0, 0, 20)
             sheet.set_column(1, 1, 15)
@@ -1088,8 +1097,8 @@ class MrpReportWizard(models.TransientModel):
                 if itemwise_closed:
                     closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
                     if item.name == 'Metal #4 CE':
-                        sheet.merge_range(0, closed_col, 0, closed_col+1, '', merge_format)
-                    sheet.write(0, closed_col, item.name, column_style)
+                        sheet.merge_range(1, closed_col, 1, closed_col+1, '', merge_format)
+                    sheet.write(1, closed_col, item.name, column_style)
                     # sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
                     c_col = closed_col
                     for oa in closed_oa_list:
@@ -1288,7 +1297,7 @@ class MrpReportWizard(models.TransientModel):
                     ]
                 report_data.append(order_data)
             
-            row = 1
+            row = 2
             for line in report_data:
                 col = 0
                 for l in line:
