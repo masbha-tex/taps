@@ -42,7 +42,7 @@
 								<tr>
 									<td>STYLE REF</td>
 									<td>
-										<span t-esc="o.order_id.style_ref"/>
+										<span class="text-break" t-esc="o.order_id.style_ref"/>
 									</td>
 								</tr>
 								<tr>

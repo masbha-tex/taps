@@ -46,7 +46,7 @@ class OperationDetails(models.Model):
     product_id = fields.Many2one('product.product', check_company=True, string='Product Id')  # Unrequired company
     product_template_id = fields.Many2one('product.template', string='Product', related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)], store=True)
     
-    fg_categ_type = fields.Selection(string='Item', related='product_template_id.fg_categ_type', store=True)
+    fg_categ_type = fields.Char(string='Item', related='product_template_id.fg_categ_type.name', store=True)
     
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', related='product_template_id.uom_id')
     

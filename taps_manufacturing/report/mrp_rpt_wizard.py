@@ -164,7 +164,7 @@ class MrpReportWizard(models.TransientModel):
                 all_orders = self.env['sale.order.line'].browse(rev_orders.sale_order_line.ids)
             else:
                 all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
-                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item.name)
+                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item.name)
             
             sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
@@ -563,7 +563,7 @@ class MrpReportWizard(models.TransientModel):
                 all_orders = self.env['sale.order.line'].browse(rev_orders.sale_order_line.ids)
             else:
                 all_orders = self.env['sale.order.line'].browse(closed_orders.sale_order_line.ids)
-                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item.name)
+                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item.name)
             
             sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
@@ -927,7 +927,7 @@ class MrpReportWizard(models.TransientModel):
                 all_orders = self.env['sale.order.line'].browse(rev_orders.sale_order_line.ids)
             else:
                 all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
-                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item.name)
+                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item.name)
             
             sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
@@ -1010,13 +1010,13 @@ class MrpReportWizard(models.TransientModel):
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         
-        column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
+        column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center', 'bg_color':'#8DB4E2'})
         
         column_merge_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
         
-        _row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
+        _row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
         
-        row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
@@ -1096,7 +1096,7 @@ class MrpReportWizard(models.TransientModel):
                 closed_row = 1
                 if itemwise_closed:
                     closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
-                    if item.name == 'Metal #4 CE':
+                    if item.name == 'M#4 CE':
                         sheet.merge_range(1, closed_col, 1, closed_col+1, '', merge_format)
                     sheet.write(1, closed_col, item.name, column_style)
                     # sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
@@ -1107,7 +1107,7 @@ class MrpReportWizard(models.TransientModel):
                             c_col += 1
                         sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
                         closed_row += 1
-                    if item.name == 'Metal #4 CE':
+                    if item.name == 'M#4 CE':
                         closed_col += 2
                     else:
                         closed_col += 1
@@ -1391,7 +1391,7 @@ class MrpReportWizard(models.TransientModel):
                 # item_list = [str(i) for i in sorted(item_list.split(','))]
                 # raise UserError((item_list))
                 items = all_items.filtered(lambda pr: pr.name in (item_list))
-                items = items.sorted(key=lambda pr: pr.sequence)
+                items = items.sorted(key=lambda pr: pr.sequence).replace('Plastic','P')
                 cl_num = 0
                 for item in items:
                     # raise UserError(('item_list'))

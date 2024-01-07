@@ -41,7 +41,7 @@ class ManufacturingOrder(models.Model):
     product_template_id = fields.Many2one(
         'product.template', string='Product',
         related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)])
-    fg_categ_type = fields.Selection(related='product_template_id.fg_categ_type', string='Item', store=True)
+    fg_categ_type = fields.Char(related='product_template_id.fg_categ_type.name', string='Item', store=True)
     product_uom = fields.Many2one('uom.uom', string='Unit', related='product_template_id.uom_id')
     product_uom_qty = fields.Float(string='Quantity', related='sale_order_line.product_uom_qty', digits='Product Unit of Measure', readonly=True, store=True)
     price_unit = fields.Float('Unit Price', related='sale_order_line.price_unit', digits='Product Price', default=0.0, readonly=True, store=True)

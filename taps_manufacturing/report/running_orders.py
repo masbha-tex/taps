@@ -39,7 +39,7 @@ class MrpRunningOrders(models.AbstractModel):
         
         for item in items:
             all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
-            all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type == item)
+            all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item)
             sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
             report_name = item

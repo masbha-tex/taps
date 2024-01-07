@@ -135,66 +135,9 @@ class SaleOrder(models.Model):
     closing_date = fields.Date(string='Closing Date')
     pr_delivery_date = fields.Date(string='Product Delivery Date')
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
-    rmc = fields.Float(compute='_compute_rmc', string='RMC')
+    rmc = fields.Float(compute='_compute_rmc', string='RMC', store=True)
     earlier_ref = fields.Char(string='Earlier Ref')
 
-
-    def _compute_rmc(self):
-        for rec in self:
-            rmc_val = 0
-            if rec.company_id.id == 1 and rec.state == 'sale':
-                tc = sum(rec.mapped('order_line.tape_con'))
-                sc = sum(rec.mapped('order_line.slider_con'))
-                topc = sum(rec.mapped('order_line.topwire_con'))
-                botc = sum(rec.mapped('order_line.botomwire_con'))
-                wc = sum(rec.mapped('order_line.wire_con'))
-                pc = sum(rec.mapped('order_line.pinbox_con'))
-                rmc = 0
-                all_rm = self.env['product.product'].sudo().search([('default_code','ilike', 'R_'),('product_tmpl_id.company_id','=',self.env.company.id)])
-                
-                if tc:
-                    rm_pro = self.env['product.template'].sudo().search([('name','=', rec.order_line[0].dyedtape)])
-                    if rm_pro:
-                        bom_pro = self.env['mrp.bom.line'].sudo().search([('bom_id.product_tmpl_id','=', rm_pro[0].id),('product_id.default_code','ilike','R_')])
-                        if bom_pro:
-                            # raise UserError((bom_pro[0].product_id))
-                            st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', bom_pro[0].product_id.id)],order='id desc',limit=1)
-                            if st_price:
-                                price = st_price.unit_price
-                                rmc_val += (tc * price)
-                # if sc:
-                #     slider = None
-                #     if rec.order_line[0].slidercodesfg:
-                #         findslider = rec.order_line[0].slidercodesfg.find("TZP ")
-                #         if findslider > 0:
-                #             slider = rec.order_line[0].slidercodesfg.split("TZP ",1)[1]
-                #         else:
-                #             slider = rec.order_line[0].slidercodesfg.split("TZP-",1)[1]
-                #         rm_pro = all_rm.search([('product_tmpl_id.name','ilike', slider),('product_tmpl_id.name','ilike', 'TZP')],order='id desc',limit=1)
-                #         if rm_pro:
-                #             st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', rm_pro.id)],order='id desc',limit=1)
-                #             if st_price:
-                #                 price = st_price.unit_price
-                #                 rmc_val += (sc * price)
-                if wc:
-                    st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', 23805)],order='id desc',limit=1)
-                    if st_price:
-                        price = st_price.unit_price
-                        rmc_val += (wc * price)
-                    # 23804 Brass wire M#4 (3.30 * 0.95) FLAT
-                    # 23805 M#4 BRASS WIRE DN+
-                    # 108985 M#4 SS WIRE FLAT (3.30 * 0.95)
-                    # 35849 M#4 WIRE ALUMINUM DN+
-
-
-                    
-            rec.rmc = rmc_val
-                    
-                    
-                    
-                    
-        
-    
     def write(self, values):
         # return pickings_to_backorder.action_confirmation_wizard(show_transfers=self._should_show_transfers())
         state = self.state
@@ -213,6 +156,10 @@ class SaleOrder(models.Model):
                 self.generate_m_order()
         return result
 
+    def _compute_rmc(self):
+        for rec in self:
+            rec.rmc = round(sum(rec.mapped('order_line.rmc')),2)
+        
     # def write(self, values):
     #     def confirm_callback():
     #         raise exceptions.UserError(('Confirmed!'))
@@ -1741,8 +1688,7 @@ class SaleOrderLine(models.Model):
     is_selected = fields.Boolean('Select',default=False)
     is_copied = fields.Boolean('Copied',default=False)
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
-
-    
+    rmc = fields.Float(string='RMC', store=True)
     
     def _inverse_compute_product_code(self):
         pass
@@ -2497,6 +2443,7 @@ class SaleOrderLine(models.Model):
 
         all_line = self.env['sale.order.line'].search([('order_id', '=', id)])
         if all_line:
+            all_rm = self.env['product.product'].sudo().search([('default_code','ilike', 'R_'),('product_tmpl_id.company_id','=',self.env.company.id)])
             for line in all_line:
                 if line.sizein == "N/A":
                     size_type = "cm"
@@ -2525,13 +2472,22 @@ class SaleOrderLine(models.Model):
                     wastage_wire = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Wire')])
                     wastage_pinbox = wastage_percent.search([('product_type', '=', formula.product_type),('material', '=', 'Pinbox')])
         
-                    con_tape = con_wire = con_slider = con_top = con_bottom = con_pinboc = 0       
+                    con_tape = con_wire = con_slider = con_top = con_bottom = con_pinboc = rmc_val = 0       
                     if formula.tape_python_compute:
                         con_tape = safe_eval(formula.tape_python_compute, {'s': size, 'g': line.gap})
                         if wastage_tape:
                             if wastage_tape.wastage>0:
                                 con_tape += (con_tape*wastage_tape.wastage)/100
                         line.tape_con = round(con_tape*line.product_uom_qty,4)
+                        if con_tape > 0:
+                            rm_pro = self.env['product.template'].sudo().search([('name','=', rec.order_line[0].dyedtape)])
+                            if rm_pro:
+                                bom_pro = self.env['mrp.bom.line'].sudo().search([('bom_id.product_tmpl_id','=', rm_pro[0].id),('product_id.default_code','ilike','R_')])
+                                if bom_pro:
+                                    st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', bom_pro[0].product_id.id)],order='id desc',limit=1)
+                                    if st_price:
+                                        price = st_price.unit_price
+                                        rmc_val += (con_tape * line.product_uom_qty * price)
         
                     if formula.wair_python_compute:
                         con_wire = safe_eval(formula.wair_python_compute, {'s': size})
@@ -2539,12 +2495,42 @@ class SaleOrderLine(models.Model):
                             if wastage_wire.wastage>0:
                                 con_wire += (con_wire*wastage_wire.wastage)/100
                         line.wire_con = round(con_wire*line.product_uom_qty,4)
+                        if con_wire > 0:
+                            pro_id = None
+                            if 'M#4' in line.product_id.product_tmpl_id.fg_categ_type.name:
+                                pro_id = 23805
+                            elif 'M#5' in line.product_id.product_tmpl_id.fg_categ_type.name:
+                                pro_id = 27617
+                            elif 'M#8' in line.product_id.product_tmpl_id.fg_categ_type.name:
+                                pro_id = 24045
+                            else:
+                                pro_id = 23804
+                            st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', pro_id)],order='id desc',limit=1)
+                            if st_price:
+                                price = st_price.unit_price
+                                rmc_val += (con_wire * line.product_uom_qty * price)
+                    
                     if formula.slider_python_compute:
                         con_slider = safe_eval(formula.slider_python_compute)
                         if wastage_slider:
                             if wastage_slider.wastage>0:
                                 con_slider += (con_slider*wastage_slider.wastage)/100
                         line.slider_con = round(con_slider*line.product_uom_qty,4)
+                        if con_slider > 0 and 'TZP' in line.slidercodesfg:
+                            slider = None
+                            if line.slidercodesfg:
+                                findslider = line.slidercodesfg.find("TZP ")
+                                if findslider > 0:
+                                    slider = line.slidercodesfg.split("TZP ",1)[1]
+                                else:
+                                    slider = line.slidercodesfg.split("TZP-",1)[1]
+                                rm_pro = all_rm.search([('product_tmpl_id.name','ilike', slider),('product_tmpl_id.name','ilike', 'TZP')],order='id desc',limit=1)
+                                if rm_pro:
+                                    st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', rm_pro.id)],order='id desc',limit=1)
+                                    if st_price:
+                                        price = st_price.unit_price
+                                        rmc_val += (con_slider * line.product_uom_qty * price)
+                    
                     if formula.twair_python_compute:
                         con_top = safe_eval(formula.twair_python_compute)
                         if wastage_top:
@@ -2569,6 +2555,22 @@ class SaleOrderLine(models.Model):
                             if wastage_pinbox.wastage>0:
                                 con_pinbox += (con_pinbox*wastage_pinbox.wastage)/100
                         line.pinbox_con = round(con_pinbox*line.product_uom_qty,4)
-
-
-        
+                        if con_pinbox > 0:
+                            pro_id = None
+                            if line.product_id.product_tmpl_id.id in (43541,43550):
+                                pro_id = 23923
+                            elif line.product_id.product_tmpl_id.id in (43544,43553):
+                                pro_id = 23922
+                            elif line.product_id.product_tmpl_id.id in (43568,43562,43559,43571):
+                                pro_id = 24047
+                            elif line.product_id.product_tmpl_id.id in (43624,125283,43615):
+                                pro_id = 24189
+                            elif line.product_id.product_tmpl_id.id in (43627,125216,125284,43618):
+                                pro_id = 24188
+                            if pro_id:
+                                st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', pro_id)],order='id desc',limit=1)
+                                if st_price:
+                                    price = st_price.unit_price
+                                    rmc_val += (con_pinbox * line.product_uom_qty * price)
+                                
+                    line.rmc = rmc_val
