@@ -26,7 +26,30 @@
             <xpath expr="//field[@name='partner_name']" position="attributes">
                 <attribute name="attrs">{'invisible': [['ticket_type_id','=',4]]}</attribute>
             </xpath>
-           
+            <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ticket_type_id']" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='oa_number']" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes" >
+                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+                <!-- <attribute name="attrs">{'readonly': True}</attribute> -->
+            </xpath>
+            <xpath expr="//field[@name='buyer']" position="attributes" >
+                <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+                <!-- <attribute name="attrs">{'readonly': True}</attribute> -->
+                <!-- <attribute name="force_save">1</attribute> -->
+            </xpath>
+            <!-- <xpath expr="//field[@name='partner_email']" position="attributes" >
+                <attribute name="attrs">{'readonly': True}</attribute>
+            </xpath> -->
             <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
                 <button type="object"
                     name="create_view_ccr"

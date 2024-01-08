@@ -1179,6 +1179,7 @@ class MrpReportWizard(models.TransientModel):
                 self.env.cr.execute(query, (self.env.company.id,full_date.date(),full_date.date(),item.name))
                 get_pending = self.env.cr.fetchone()
 
+                # _top = self.env['operation.details'].search([('sale_line_of_top','=',o_data.id),('company_id','=',self.env.company.id)])
                 
                 # pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) ) ))
                 
@@ -1210,6 +1211,14 @@ class MrpReportWizard(models.TransientModel):
                             price = round((vl / _qty),4)
                             
                         pending_usd = round((pending_pcs * price),2)
+
+                        if item.name == 'Others':
+                            all_top_outputs = self.env['operation.details'].sudo().search([('next_operation','=','Packing Output'),('company_id','=',self.env.company.id),('fg_categ_type','=',item.name),('oa_id.id','in',pending_oa_ids),('product_template_id.name','=','TOP')])
+                            if all_top_outputs:
+                                pending_pcs += sum(all_top_outputs.mapped('qty'))
+                                qty = pending_pcs
+                                # raise UserError((qty))
+                            # _top_outputs = all_top_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
                         
                         _outputs = all_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
                         if _outputs:

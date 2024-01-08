@@ -406,6 +406,7 @@ class OperationDetails(models.Model):
         
         if product_line:
             for prod in product_line:
+                raise UserError(('fe'))
                 ope = operation.create({'mrp_lines':mrp_lines,
                                         'sale_lines':sale_lines,
                                         'parent_ids':parent_ids,
@@ -471,7 +472,7 @@ class OperationDetails(models.Model):
                                                        'reference':pick.name
                                                        })
             
-        st_app_entry = self.env["studio.approval.entry"].create({'rule_id':19,
+        st_app_entry = self.env["studio.approval.entry"].sudo().create({'rule_id':19,
                                                        'model':'stock.picking',
                                                        'method':'action_confirm',
                                                        'res_id':pick.id,
