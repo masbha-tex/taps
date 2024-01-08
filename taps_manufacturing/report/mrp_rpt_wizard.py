@@ -1100,6 +1100,7 @@ class MrpReportWizard(models.TransientModel):
                         sheet.merge_range(1, closed_col, 1, closed_col+1, '', merge_format)
                     sheet.write(1, closed_col, item.name, column_style)
                     # sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
+                    a = ''
                     c_col = closed_col
                     for oa in closed_oa_list:
                         if closed_row == 23:

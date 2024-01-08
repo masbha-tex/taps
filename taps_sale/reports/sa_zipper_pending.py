@@ -45,7 +45,7 @@ class SalesXlsx(models.AbstractModel):
             sale_order_lines = self.env['sale.order.line'].search([('order_id','in',sale_orders.ids)])
             sa_orders = None
             if sale_order_lines:
-                sale_order_lines = sale_order_lines.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item.name)
+                sale_order_lines = sale_order_lines.filtered(lambda pr: pr.product_template_id.fg_categ_type == item.name)
                 sa_orders = self.env['sale.order'].browse(sale_order_lines.order_id.ids)
             # self.env['sale.order'].browse(sale_order_lines.oa_id.ids)
             # sale_orders.filtered(lambda pr: pr.id in sale_order_lines.oa_id.ids)
@@ -85,7 +85,7 @@ class SalesXlsx(models.AbstractModel):
         
                 for orders in sa_orders:
                     docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
-                    docs = sorted(docs, key=lambda r: r.product_template_id.fg_categ_type.name, reverse=False)
+                    docs = sorted(docs, key=lambda r: r.product_template_id.fg_categ_type, reverse=False)
                     
                     report_data = []
                     order_data = []
