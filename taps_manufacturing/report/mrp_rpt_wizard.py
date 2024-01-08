@@ -1093,7 +1093,7 @@ class MrpReportWizard(models.TransientModel):
             closed_col = 11
             for item in items:
                 itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == item.name)
-                closed_row = 1
+                closed_row = 2
                 if itemwise_closed:
                     closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
                     if item.name == 'M#4 CE':
@@ -1391,7 +1391,7 @@ class MrpReportWizard(models.TransientModel):
                 # item_list = [str(i) for i in sorted(item_list.split(','))]
                 # raise UserError((item_list))
                 items = all_items.filtered(lambda pr: pr.name in (item_list))
-                items = items.sorted(key=lambda pr: pr.sequence).replace('Plastic','P')
+                items = items.sorted(key=lambda pr: pr.sequence)
                 cl_num = 0
                 for item in items:
                     # raise UserError(('item_list'))

@@ -15,15 +15,17 @@
     You have been assigned to ${object.name}.<br />
     Kindly take necessary steps and proceed further.<br /><br/>
     Please, Click on "View CCR" for details information.
-    <div style="text-align: center; margin: 16px 0px 16px 0px;">
-        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
+
+
+    <div>
+        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#cids=${object.company_id.id}&amp;id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
     </div>
 
     
 
     Thank you,<br/><br/>
 
-    <p style="text-align: center; margin: 16px 0px 16px 0px;">This email has been generated automatically.</p>
+    <p>This email has been generated automatically.</p>
   
 </div>
 </field>
@@ -42,16 +44,16 @@
     
     ${object.name} , Need your approval for further procedure<br />
     Kindly click on "View CCR" and then click on "HOD MANUFACTURING" button.<br /><br/>
-    <div style="text-align: center; margin: 16px 0px 16px 0px;">
-        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
+    <div>
+        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#cids=${object.company_id.id}&amp;id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
     </div>
 
     
 
     Thank you,<br/><br/>
 
-    <p style="text-align: center; margin: 16px 0px 16px 0px;">Approval Matrix: Head Of Manufacturing --> Head Of Sales --> CEO</p>
-    <p style="text-align: center; margin: 16px 0px 16px 0px;">This email has been generated automatically.</p>
+    <p>Approval Matrix: Head Of Manufacturing --> Head Of Sales --> CEO</p>
+    <p>This email has been generated automatically.</p>
   
 </div>
 </field>
@@ -70,16 +72,16 @@
     
     ${object.name} , Need your approval for further procedure<br />
     Kindly click on "View CCR" and then click on "HOD SALES" button.<br /><br/>
-    <div style="text-align: center; margin: 16px 0px 16px 0px;">
-        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
+    <div>
+        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#cids=${object.company_id.id}&amp;id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
     </div>
 
     
 
     Thank you,<br/><br/>
 
-    <p style="text-align: center; margin: 16px 0px 16px 0px;">Approval Matrix: Head Of Manufacturing --> Head Of Sales --> CEO</p>
-    <p style="text-align: center; margin: 16px 0px 16px 0px;">This email has been generated automatically.</p>
+    <p>Approval Matrix: Head Of Manufacturing --> Head Of Sales --> CEO</p>
+    <p>This email has been generated automatically.</p>
   
 </div>
 </field>
@@ -98,17 +100,17 @@
     
     Need to close the ${object.name}<br />
     Kindly click on "View CCR" and then click on "Close" button to close the CCR.<br /><br/>
-    <div style="text-align: center; margin: 16px 0px 16px 0px;">
-        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
+    <div>
+        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#cids=${object.company_id.id}&amp;id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
     </div>
 
     
 
     Thank you,<br/><br/>
 
-    <p style="text-align: center; margin: 16px 0px 16px 0px;">Approval Matrix: Head Of Manufacturing --> Head Of Sales --> CEO</p> <br/> <br/>
+    <p>Approval Matrix: Head Of Manufacturing --> Head Of Sales --> CEO</p> <br/> <br/>
 
-    <p style="text-align: center; margin: 16px 0px 16px 0px;">This email has been generated automatically.</p>
+    <p>This email has been generated automatically.</p>
   
 </div>
 </field>

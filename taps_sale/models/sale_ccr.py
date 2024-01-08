@@ -311,17 +311,36 @@ class SaleCcr(models.Model):
             email_to = ','.join(email_to_list)
             email_from = ','.join(email_from_list)
             template_id = self.env.ref('taps_sale.ccr_assign_quality_email_template')
+            template_light = self.env.ref('mail.mail_notification_light')
             
-           
+
+            if template_id and template_light:
+                email_to = 'asraful.haque@texzipperbd.com'
+                email_subject = "Subject of your email"
             
-            if template_id:
-                template_id.write({
-                    'email_to': 'asraful.haque@texzipperbd.com',
+                # Render the content of the CCR template
+                ccr_content = self.env['mail.render.mixin']._render_template(template_id.body_html, 'sale.ccr', self.ids, post_process=True)
+            
+                # Include the CCR content in the body of the light template
+                email_body = f"{ccr_content}\n\nBody of your notification light email"
+            
+                # Create and send the email
+                mail_values = {
                     'email_from': 'asraful.haque@texzipperbd.com',
-                    'email_cc' : 'asraful.haque@texzipperbd.com',
-                })
+                    'email_to': email_to,
+                    'subject': email_subject,
+                    'body_html': email_body,
+                }
+                self.env['mail.mail'].sudo().create(mail_values)
+            
+            # if template_id:
+            #     template_id.write({
+            #         'email_to': 'asraful.haque@texzipperbd.com',
+            #         'email_from': 'asraful.haque@texzipperbd.com',
+            #         'email_cc' : 'asraful.haque@texzipperbd.com',
+            #     })
                 
-                template_id.send_mail(self.id, force_send=False)
+            #     template_id.send_mail(self.id, force_send=False)
 
 
 
