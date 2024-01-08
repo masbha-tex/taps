@@ -2480,7 +2480,7 @@ class SaleOrderLine(models.Model):
                                 con_tape += (con_tape*wastage_tape.wastage)/100
                         line.tape_con = round(con_tape*line.product_uom_qty,4)
                         if con_tape > 0:
-                            rm_pro = self.env['product.template'].sudo().search([('name','=', rec.order_line[0].dyedtape)])
+                            rm_pro = self.env['product.template'].sudo().search([('name','=', line.dyedtape)])
                             if rm_pro:
                                 bom_pro = self.env['mrp.bom.line'].sudo().search([('bom_id.product_tmpl_id','=', rm_pro[0].id),('product_id.default_code','ilike','R_')])
                                 if bom_pro:

@@ -14,12 +14,12 @@
     
     You have been assigned to ${object.name}.<br />
     Kindly take necessary steps and proceed further.<br /><br/>
-    Please, Click on "View CCR" for details information.
+    Please, Click on "View CCR" for details information.<br /><br/>
 
 
     <div>
         <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#cids=${object.company_id.id}&amp;id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
-    </div>
+    </div><br /><br/>
 
     
 
@@ -46,7 +46,7 @@
     Kindly click on "View CCR" and then click on "HOD MANUFACTURING" button.<br /><br/>
     <div>
         <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#cids=${object.company_id.id}&amp;id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
-    </div>
+    </div><br /><br/>
 
     
 
@@ -72,9 +72,10 @@
     
     ${object.name} , Need your approval for further procedure<br />
     Kindly click on "View CCR" and then click on "HOD SALES" button.<br /><br/>
+    
     <div>
         <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#cids=${object.company_id.id}&amp;id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
-    </div>
+    </div><br /><br/>
 
     
 
@@ -102,7 +103,7 @@
     Kindly click on "View CCR" and then click on "Close" button to close the CCR.<br /><br/>
     <div>
         <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#cids=${object.company_id.id}&amp;id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
-    </div>
+    </div><br /><br/>
 
     
 

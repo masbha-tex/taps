@@ -60,16 +60,23 @@ class CcrWizardPa(models.TransientModel):
             'preventive_action': self.preventive_action,
             'pa_closing_date' : self.pa_closing_date,
             'states':'pa'})
+        
+        email_from_list=[]
+        
+        if ccr.company_id.id == 1:
+            email_from_list.append('qa@bd.texfasteners.com')
+        if ccr.company_id.id == 3:
+            email_from_list.append('quality2.metaltrims@texzipperbd.com')
+            
         template_id = self.env.ref('taps_sale.ccr_assign_manufacturing_confirmation_template')
         if template_id:
             template_id.write({
-                'email_to': 'asraful.haque@texzipperbd.com',
-                'email_from': 'asraful.haque@texzipperbd.com',
+                'email_to': 'nitish.bassi@texzipperbd.com',
+                'email_from': email_from_list,
                 'email_cc' : 'asraful.haque@texzipperbd.com',
             })
             
             template_id.send_mail(ccr.id, force_send=False)
-
     def cancel(self):
         return {}
 
@@ -88,25 +95,19 @@ class CcrWizardnot(models.TransientModel):
             'justification' : 'Not Justified',
             'non_justify_action' : self.non_justify_action
                    })
-        # email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
-        # email_to_list=[]
-        # email_from_list=[]
-        # if self.company_id.id == 1:
-        #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
-        #     email_to_list.append('qa@bd.texfasteners.com')
-        #     email_from_list.append('csd.zipper@texzipperbd.com')
-        # if self.company_id.id == 3:
-        #     email_cc_list.append('kumar.abhishek@texzipperbd.com')
-        #     email_to_list.append('quality2.metaltrims@texzipperbd.com')
-        #     email_from_list.append('nasir.csd@texzipperbd.com')
-        # email_cc = ','.join(email_cc_list)
-        # email_to = ','.join(email_to_list)
-        # email_from = ','.join(email_from_list)
+        
+        email_from_list=[]
+        
+        if ccr.company_id.id == 1:
+            email_from_list.append('qa@bd.texfasteners.com')
+        if ccr.company_id.id == 3:
+            email_from_list.append('quality2.metaltrims@texzipperbd.com')
+            
         template_id = self.env.ref('taps_sale.ccr_assign_manufacturing_confirmation_template')
         if template_id:
             template_id.write({
-                'email_to': 'asraful.haque@texzipperbd.com',
-                'email_from': 'asraful.haque@texzipperbd.com',
+                'email_to': 'nitish.bassi@texzipperbd.com',
+                'email_from': email_from_list,
                 'email_cc' : 'asraful.haque@texzipperbd.com',
             })
             

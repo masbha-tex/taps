@@ -289,12 +289,14 @@ class SaleCcr(models.Model):
     def action_draft(self):
         self.write({'states': 'draft'})
         return {}
+        
     def action_assign_quality(self):
         if self.rejected_quantity < 1 or not self.fg_product or not self.finish or not self.complaint or not self.invoice_reference:
             raise UserError(("You Cannot leave empty any of the following fields: \n -Rejected Quantity, \n -Product Type/Code, \n -Complain/Defeat, Invoice Ref. \n Kindly fill up all the fields and then assign to Quality"))
             
         else:
             self.write({'states': 'inter'})
+            self.ticket_id.stage_id = 2
             email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
             email_to_list=[]
             email_from_list=[]
@@ -311,63 +313,42 @@ class SaleCcr(models.Model):
             email_to = ','.join(email_to_list)
             email_from = ','.join(email_from_list)
             template_id = self.env.ref('taps_sale.ccr_assign_quality_email_template')
-            template_light = self.env.ref('mail.mail_notification_light')
             
-
-            if template_id and template_light:
-                email_to = 'asraful.haque@texzipperbd.com'
-                email_subject = "Subject of your email"
-            
-                # Render the content of the CCR template
-                ccr_content = self.env['mail.render.mixin']._render_template(template_id.body_html, 'sale.ccr', self.ids, post_process=True)
-            
-                # Include the CCR content in the body of the light template
-                email_body = f"{ccr_content}\n\nBody of your notification light email"
-            
-                # Create and send the email
-                mail_values = {
-                    'email_from': 'asraful.haque@texzipperbd.com',
+            if template_id:
+                template_id.write({
                     'email_to': email_to,
-                    'subject': email_subject,
-                    'body_html': email_body,
-                }
-                self.env['mail.mail'].sudo().create(mail_values)
-            
-            # if template_id:
-            #     template_id.write({
-            #         'email_to': 'asraful.haque@texzipperbd.com',
-            #         'email_from': 'asraful.haque@texzipperbd.com',
-            #         'email_cc' : 'asraful.haque@texzipperbd.com',
-            #     })
+                    'email_from': email_from,
+                    'email_cc' : email_cc,
+                })
                 
-            #     template_id.send_mail(self.id, force_send=False)
+                template_id.send_mail(self.id, force_send=False)
 
 
 
     def action_manufacturing(self):
         # raise UserError((self._uid))
-        if self._uid == 19:
+        if self._uid == 20:
             self.write({'states': 'man', 'last_approver': self._uid})
-            email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
-            email_to_list=[]
-            email_from_list=[]
-            if self.company_id.id == 1:
-                email_cc_list.append('ranjeet.singh@texzipperbd.com')
-                email_to_list.append('qa@bd.texfasteners.com')
-                email_from_list.append('csd.zipper@texzipperbd.com')
-            if self.company_id.id == 3:
-                email_cc_list.append('kumar.abhishek@texzipperbd.com')
-                email_to_list.append('quality2.metaltrims@texzipperbd.com')
-                email_from_list.append('nasir.csd@texzipperbd.com')
+            # email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
+            # email_to_list=[]
+            # email_from_list=[]
+            # if self.company_id.id == 1:
+            #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
+            #     email_to_list.append('qa@bd.texfasteners.com')
+            #     email_from_list.append('csd.zipper@texzipperbd.com')
+            # if self.company_id.id == 3:
+            #     email_cc_list.append('kumar.abhishek@texzipperbd.com')
+            #     email_to_list.append('quality2.metaltrims@texzipperbd.com')
+            #     email_from_list.append('nasir.csd@texzipperbd.com')
 
-            email_cc = ','.join(email_cc_list)
-            email_to = ','.join(email_to_list)
-            email_from = ','.join(email_from_list)
+            # email_cc = ','.join(email_cc_list)
+            # email_to = ','.join(email_to_list)
+            # email_from = ','.join(email_from_list)
             template_id = self.env.ref('taps_sale.ccr_assign_sales_confirmation_template')
             if template_id:
                 template_id.write({
-                    'email_to': 'asraful.haque@texzipperbd.com',
-                    'email_from': 'asraful.haque@texzipperbd.com',
+                    'email_to': 'alamgir@texzipperbd.com',
+                    'email_from': 'nitish.bassi@texzipperbd.com',
                     'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
                 
@@ -387,29 +368,29 @@ class SaleCcr(models.Model):
             return notification
             
     def action_sales(self):
-        if self._uid == 19:
+        if self._uid == 88:
             # Update the record's state and last_approver
             self.write({'states': 'toclose', 'last_approver': self._uid})
-            email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
-            email_to_list=[]
-            email_from_list=[]
-            if self.company_id.id == 1:
-                email_cc_list.append('ranjeet.singh@texzipperbd.com')
-                email_to_list.append('qa@bd.texfasteners.com')
-                email_from_list.append('csd.zipper@texzipperbd.com')
-            if self.company_id.id == 3:
-                email_cc_list.append('kumar.abhishek@texzipperbd.com')
-                email_to_list.append('quality2.metaltrims@texzipperbd.com')
-                email_from_list.append('nasir.csd@texzipperbd.com')
+            # email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
+            # email_to_list=[]
+            # email_from_list=[]
+            # if self.company_id.id == 1:
+            #     email_cc_list.append('ranjeet.singh@texzipperbd.com')
+            #     email_to_list.append('qa@bd.texfasteners.com')
+            #     email_from_list.append('csd.zipper@texzipperbd.com')
+            # if self.company_id.id == 3:
+            #     email_cc_list.append('kumar.abhishek@texzipperbd.com')
+            #     email_to_list.append('quality2.metaltrims@texzipperbd.com')
+            #     email_from_list.append('nasir.csd@texzipperbd.com')
 
-            email_cc = ','.join(email_cc_list)
-            email_to = ','.join(email_to_list)
-            email_from = ','.join(email_from_list)
+            # email_cc = ','.join(email_cc_list)
+            # email_to = ','.join(email_to_list)
+            # email_from = ','.join(email_from_list)
             template_id = self.env.ref('taps_sale.ccr_assign_ceo_confirmation_template')
             if template_id:
                 template_id.write({
-                    'email_to': 'asraful.haque@texzipperbd.com',
-                    'email_from': 'asraful.haque@texzipperbd.com',
+                    'email_to': 'deepak.shah@bd.texfasteners.com',
+                    'email_from': 'alamgir@texzipperbd.com',
                     'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
                 
@@ -431,7 +412,7 @@ class SaleCcr(models.Model):
     
     def action_close(self):
         # self._compute_last_approver()
-        if self._uid == 19:
+        if self._uid == 17:
             self.write({'states': 'done', 'closing_date':date.today()})
             self.ticket_id.stage_id= 3
 

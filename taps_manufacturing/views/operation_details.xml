@@ -18,7 +18,7 @@
                 <field name="work_center"/>
                 <filter string="Ready" name="ready" domain="[('operation_of','in',('plan','input')),('state','!=','done'),('state','!=','closed'),('balance_qty','&gt;',0)]"/>
                 <filter string="Pending" name="progress" domain="[('operation_of','in',('lot','output')),('state','!=','done'),('next_operation','ilike','Output'),('state','!=','closed'),('balance_qty','&gt;',0)]"/>
-                <filter string="Done" name="quality" domain="[('operation_of','=','qc'),('state','!=','done'),('next_operation','ilike','Qc')]"/>
+                <filter string="Done" name="quality" domain="[('operation_of','=','qc'),('state','!=','done'),('next_operation','ilike','Qc'),('balance_qty','&gt;',0)]"/>
                 <filter string="Requisitions" name="requisitions" domain="[('mr_req','=',True)]"/>
                 <filter string="Packing" name="packing" domain="[('next_operation','=','FG Packing'),('state','!=','done'),('state','!=','closed')]"/>
                 <filter string="Delivery" name="delivery" domain="[('next_operation','=','Delivery'),('state','!=','done'),('state','!=','closed')]"/>
