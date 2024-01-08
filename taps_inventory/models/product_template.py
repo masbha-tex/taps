@@ -146,39 +146,6 @@ class IncludeCateTypeInPT(models.Model):
     gap_inch = fields.Float(string="GAP(inch)", copy=True, default=None)
     
     fg_categ_type = fields.Many2one('fg.category', check_company=True, string='FG Category', store=True, readonly=False, copy=False)
-    
-    # fg_categ_type = fields.Selection([
-    #     ('M#4 CE', 'M#4 CE'),
-    #     ('M#4 OE', 'M#4 OE'),
-    #     ('M#5 CE', 'M#5 CE'),
-    #     ('M#5 OE', 'M#5 OE'),
-    #     ('M#8 OE', 'M#8 OE'),
-    #     ('M#8 CE', 'M#8 CE'),
-    #     ('M#10 OE', 'M#10 OE'),
-    #     ('M#10 CE', 'M#10 CE'),
-    #     ('AL#4 CE', 'AL#4 CE'),
-    #     ('AL#5 CE', 'AL#5 CE'),
-    #     ('AL#5 OE', 'AL#5 OE'),
-    #     ('C#3 CE', 'C#3 CE'),
-    #     ('C#3 Inv CE', 'C#3 Inv CE'),
-    #     ('C#3 OE', 'C#3 OE'),
-    #     ('C#3 Inv OE', 'C#3 Inv OE'),
-    #     ('C#5 CE', 'C#5 CE'),
-    #     ('C#5 Inv CE', 'C#5 Inv CE'),
-    #     ('C#5 OE', 'C#5 OE'),
-    #     ('P#3 CE', 'P#3 CE'),
-    #     ('P#3 OE', 'P#3 OE'),
-    #     ('P#5 CE', 'P#5 CE'),
-    #     ('P#5 OE', 'P#5 OE'),
-    #     ('P#8 CE', 'P#8 CE'),
-    #     ('P#8 OE', 'P#8 OE'),
-    #     ('Others', 'Others'),
-    #     ('Alloy','Alloy'),
-    #     ('Rivet','Rivet'),
-    #     ('Eyelet','Eyelet'),
-    #     ('Snap Button','Snap Button'),
-    #     ('Shank Button','Shank Button'), 
-    #     ],string='FG Category', store=True, readonly=False, copy=False)
 
     pack_qty = fields.Float(string="Qty/Pack", copy=True, default=0.0)
     #description_purchase = fields.Text('Purchase Description', related='pur_description', translate=True)

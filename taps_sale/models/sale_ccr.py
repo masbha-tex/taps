@@ -294,26 +294,34 @@ class SaleCcr(models.Model):
             raise UserError(("You Cannot leave empty any of the following fields: \n -Rejected Quantity, \n -Product Type/Code, \n -Complain/Defeat, Invoice Ref. \n Kindly fill up all the fields and then assign to Quality"))
             
         else:
-            
-            # self.show_notification()
-            
-            post_vars = {
-                       'subject': "CCR",
-                       'body': self.env.user.partner_id.name,
-                       'partner_ids': [self.env.user.partner_id.id],  # Where "4" adds the ID to the list of followers, and "19" is the partner ID
-                    }
-            
-            res=self.env['mail.message'].create({
-                'model': self._name,
-                'res_id': self.id,
-                'message_type': 'comment',
-                'subtype_id': self.env.ref('mail.mt_comment').id,
-                'subject': post_vars.get('subject'),
-                'body': post_vars.get('body'),
-                'partner_ids': post_vars.get('partner_ids'),
-            })
-            # raise UserError((res['partner_ids']))
             self.write({'states': 'inter'})
+            email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
+            email_to_list=[]
+            email_from_list=[]
+            if self.company_id.id == 1:
+                email_cc_list.append('ranjeet.singh@texzipperbd.com')
+                email_to_list.append('qa@bd.texfasteners.com')
+                email_from_list.append('csd.zipper@texzipperbd.com')
+            if self.company_id.id == 3:
+                email_cc_list.append('kumar.abhishek@texzipperbd.com')
+                email_to_list.append('quality2.metaltrims@texzipperbd.com')
+                email_from_list.append('nasir.csd@texzipperbd.com')
+
+            email_cc = ','.join(email_cc_list)
+            email_to = ','.join(email_to_list)
+            email_from = ','.join(email_from_list)
+            template_id = self.env.ref('taps_sale.ccr_assign_quality_email_template')
+            
+           
+            
+            if template_id:
+                template_id.write({
+                    'email_to': 'asraful.haque@texzipperbd.com',
+                    'email_from': 'asraful.haque@texzipperbd.com',
+                    'email_cc' : 'asraful.haque@texzipperbd.com',
+                })
+                
+                template_id.send_mail(self.id, force_send=False)
 
 
 
@@ -321,6 +329,30 @@ class SaleCcr(models.Model):
         # raise UserError((self._uid))
         if self._uid == 19:
             self.write({'states': 'man', 'last_approver': self._uid})
+            email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
+            email_to_list=[]
+            email_from_list=[]
+            if self.company_id.id == 1:
+                email_cc_list.append('ranjeet.singh@texzipperbd.com')
+                email_to_list.append('qa@bd.texfasteners.com')
+                email_from_list.append('csd.zipper@texzipperbd.com')
+            if self.company_id.id == 3:
+                email_cc_list.append('kumar.abhishek@texzipperbd.com')
+                email_to_list.append('quality2.metaltrims@texzipperbd.com')
+                email_from_list.append('nasir.csd@texzipperbd.com')
+
+            email_cc = ','.join(email_cc_list)
+            email_to = ','.join(email_to_list)
+            email_from = ','.join(email_from_list)
+            template_id = self.env.ref('taps_sale.ccr_assign_sales_confirmation_template')
+            if template_id:
+                template_id.write({
+                    'email_to': 'asraful.haque@texzipperbd.com',
+                    'email_from': 'asraful.haque@texzipperbd.com',
+                    'email_cc' : 'asraful.haque@texzipperbd.com',
+                })
+                
+                template_id.send_mail(self.id, force_send=False)
             
         else:
             notification = {
@@ -339,91 +371,50 @@ class SaleCcr(models.Model):
         if self._uid == 19:
             # Update the record's state and last_approver
             self.write({'states': 'toclose', 'last_approver': self._uid})
-            
-            # Create a link to the record
-            ccr_link = f'<a href="/web#id={self.id}&view_type=form&model=sale.ccr">{self.name}</a>'
-            
-            # Create a notification message
-            notification_message = f'A new CCR has been waiting for your approval: {ccr_link}'
-            note_subtype_id = self.env['mail.message.subtype'].search([('name', '=', 'Note')], limit=1).id
-            # raise UserError((note_subtype_id))
-            # Find the specific user to notify
-            user_from_notify = self.env['res.users'].browse(19)
-            user_to_notify = self.env['res.users'].browse(6)# Replace with the actual user ID
-            reply_to_address = 'catchall@taps-testing-10495661.dev.odoo.com'
-            # Create a mail.message for the notification
-            notification=self.env['mail.message'].create({
-                'model': 'sale.ccr',  # Replace with the actual model name
-                'res_id': self.id,
-                'subject': 'Approval Notification',
-                'body': notification_message,
-                'author_id': self.env.user.partner_id.id,
-                'message_type': 'user_notification',
-                'partner_ids': [(4, user_to_notify.partner_id.id)],
-                # 'notified_partner_ids': [(4, user_to_notify.partner_id.id)],
-                'reply_to' : reply_to_address,
-                'subtype_id' : note_subtype_id,
-                'is_internal' : True
-                
-            })
+            email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
+            email_to_list=[]
+            email_from_list=[]
+            if self.company_id.id == 1:
+                email_cc_list.append('ranjeet.singh@texzipperbd.com')
+                email_to_list.append('qa@bd.texfasteners.com')
+                email_from_list.append('csd.zipper@texzipperbd.com')
+            if self.company_id.id == 3:
+                email_cc_list.append('kumar.abhishek@texzipperbd.com')
+                email_to_list.append('quality2.metaltrims@texzipperbd.com')
+                email_from_list.append('nasir.csd@texzipperbd.com')
 
-            self.env['mail.notification'].create({
-                    'res_partner_id': user_to_notify.partner_id.id,
-                    'notification_type': 'email',  # or your desired notification type
-                    'mail_message_id': notification.id,
-                    'is_read': False,
+            email_cc = ','.join(email_cc_list)
+            email_to = ','.join(email_to_list)
+            email_from = ','.join(email_from_list)
+            template_id = self.env.ref('taps_sale.ccr_assign_ceo_confirmation_template')
+            if template_id:
+                template_id.write({
+                    'email_to': 'asraful.haque@texzipperbd.com',
+                    'email_from': 'asraful.haque@texzipperbd.com',
+                    'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
-    
-                # channel = 'mail.channel_' + str(user_to_notify.partner_id.id)
-            # self.env['bus.bus'].sendone(channel, {
-            #     'type': 'simple_notification',
-            #     'title': 'New Approval Request',
-            #     'message': notification_message,
-            #     'sticky': False,
-            # })
+                
+                template_id.send_mail(self.id, force_send=False)
+            
+            
         else:
-            url_params = {
-                'id': self.id,
-                'view_type': 'form',
-                'model': 'sale.ccr',
-                }
-            
-            encoded_params = url_encode(url_params)
-            
-            # Encode the parameters
-            
-            
-            # Create the link
-            url_params = {
-                'id': self.id,
-                'view_type': 'form',
-                'model': 'sale.ccr',
-            }
-
-            # Encode the parameters
-            encoded_params = url_encode(url_params)
-
-            # Create the link with #
-            ccr_link = f'/web#{encoded_params}'
-
-            # Construct the warning notification
             notification = {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'Warning',
-                    'message': f'<a href="{ccr_link}">{self.name}</a>',
-                    'type': 'warning',
-                    'sticky': False,
-                },
-            }
-
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': ('Warning'),
+                'message': 'Only Alamgir Shohag Can Approve This',
+                'type':'warning',  #types: success,warning,danger,info
+                'sticky': False,  #True/False will display for few seconds if false
+                    },
+                        }
             return notification
     
     def action_close(self):
         # self._compute_last_approver()
-        if self._uid == 17:
+        if self._uid == 19:
             self.write({'states': 'done', 'closing_date':date.today()})
+            self.ticket_id.stage_id= 3
 
         else:
             notification = {
@@ -495,7 +486,7 @@ class SaleCcr(models.Model):
 
         else:
             compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form_notjustify').id
-        
+            
         
         # raise UserError((self.id))
         

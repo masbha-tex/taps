@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data noupdate="0">
+
+    <record id="ccr_assign_quality_email_template" model="mail.template">
+        <field name="name">CCR: ASSIGNING TO QUALITY DEPARTMENT</field>
+        <field name="model_id" ref="taps_sale.model_sale_ccr"/>
+        <field name="subject">${object.name}</field>
+        <field name="email_from"></field>
+        <field name="email_to"></field>
+        <field name="partner_to"></field>
+        <field name="body_html" type="xml">
+<div>
+    Dear Quality Team,<br /><br />
+    
+    You have been assigned to ${object.name}.<br />
+    Kindly take necessary steps and proceed further.<br /><br/>
+    Please, Click on "View CCR" for details information.
+    <div style="text-align: center; margin: 16px 0px 16px 0px;">
+        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
+    </div>
+
+    
+
+    Thank you,<br/><br/>
+
+    <p style="text-align: center; margin: 16px 0px 16px 0px;">This email has been generated automatically.</p>
+  
+</div>
+</field>
+</record>
+
+<record id="ccr_assign_manufacturing_confirmation_template" model="mail.template">
+        <field name="name">CCR: HOD MANUFACTURING APPROVAL</field>
+        <field name="model_id" ref="taps_sale.model_sale_ccr"/>
+        <field name="subject">"Approval for :" ${object.name}</field>
+        <field name="email_from"></field>
+        <field name="email_to"></field>
+        <field name="partner_to"></field>
+        <field name="body_html" type="xml">
+<div>
+    Dear Nitish Basi Sir,<br /><br />
+    
+    ${object.name} , Need your approval for further procedure<br />
+    Kindly click on "View CCR" and then click on "HOD MANUFACTURING" button.<br /><br/>
+    <div style="text-align: center; margin: 16px 0px 16px 0px;">
+        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
+    </div>
+
+    
+
+    Thank you,<br/><br/>
+
+    <p style="text-align: center; margin: 16px 0px 16px 0px;">Approval Matrix: Head Of Manufacturing --> Head Of Sales --> CEO</p>
+    <p style="text-align: center; margin: 16px 0px 16px 0px;">This email has been generated automatically.</p>
+  
+</div>
+</field>
+</record>
+
+<record id="ccr_assign_sales_confirmation_template" model="mail.template">
+        <field name="name">CCR: HOD SALES APPROVAL</field>
+        <field name="model_id" ref="taps_sale.model_sale_ccr"/>
+        <field name="subject">"Approval for :" ${object.name}</field>
+        <field name="email_from"></field>
+        <field name="email_to"></field>
+        <field name="partner_to"></field>
+        <field name="body_html" type="xml">
+<div>
+    Dear Alamgir Shohag,<br /><br />
+    
+    ${object.name} , Need your approval for further procedure<br />
+    Kindly click on "View CCR" and then click on "HOD SALES" button.<br /><br/>
+    <div style="text-align: center; margin: 16px 0px 16px 0px;">
+        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
+    </div>
+
+    
+
+    Thank you,<br/><br/>
+
+    <p style="text-align: center; margin: 16px 0px 16px 0px;">Approval Matrix: Head Of Manufacturing --> Head Of Sales --> CEO</p>
+    <p style="text-align: center; margin: 16px 0px 16px 0px;">This email has been generated automatically.</p>
+  
+</div>
+</field>
+</record>
+
+<record id="ccr_assign_ceo_confirmation_template" model="mail.template">
+        <field name="name">CCR: CEO APPROVAL</field>
+        <field name="model_id" ref="taps_sale.model_sale_ccr"/>
+        <field name="subject">"Approval for :" ${object.name}</field>
+        <field name="email_from"></field>
+        <field name="email_to"></field>
+        <field name="partner_to"></field>
+        <field name="body_html" type="xml">
+<div>
+    Dear CEO Sir,<br /><br />
+    
+    Need to close the ${object.name}<br />
+    Kindly click on "View CCR" and then click on "Close" button to close the CCR.<br /><br/>
+    <div style="text-align: center; margin: 16px 0px 16px 0px;">
+        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=sale.ccr">View CCR</a><br/><br/>
+    </div>
+
+    
+
+    Thank you,<br/><br/>
+
+    <p style="text-align: center; margin: 16px 0px 16px 0px;">Approval Matrix: Head Of Manufacturing --> Head Of Sales --> CEO</p> <br/> <br/>
+
+    <p style="text-align: center; margin: 16px 0px 16px 0px;">This email has been generated automatically.</p>
+  
+</div>
+</field>
+</record>
+
+    
+
+    
+</data>
+</odoo>

@@ -5,6 +5,7 @@
             <script type="text/javascript" src="/taps_sale/static/src/js/sale_dashboard.js"></script>
             <script type="text/javascript" src="/taps_sale/static/src/js/sale_reporting_dashboard.js"/>
             <script type="text/javascript" src="/taps_sale/static/src/ccr/ccr_dashboard.js"/>
+            <!-- <script type="text/javascript" src="/taps_sale/static/src/ccr/ccr_notification.js"/> -->
             <!-- <script type="text/javascript" src="/taps_sale/static/src/js/confirmation_box.js"/> -->
             <!-- <script type="text/javascript" src="/taps_sale/static/src/js/component.js"/> -->
             <link rel="stylesheet" type="text/scss" href="/taps_sale/static/src/scss/sale.scss"/>

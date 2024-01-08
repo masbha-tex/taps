@@ -80,6 +80,7 @@ class tapsHelpdeskTicket(models.Model):
                 
             result['res_id'] = ccr_ids.id
             self._compute_ccr_number()
+            self.stage_id = 2
         # raise UserError(((result['res_id'])))
         # res = self.env.ref('taps_sale.view_sale_ccr_form', False)
         # form_view = [(res and res.id or False, 'form')]
