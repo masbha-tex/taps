@@ -1231,8 +1231,6 @@ class SaleOrder(models.Model):
         if self.sales_type == 'oa':
             self.order_line.product_consumption(self.id)
             self.order_line.compute_shadewise_tape()
-            #self.generate_mrp()
-            # if self.company_id.id == 1:
             self.generate_m_order()
         return True
         
