@@ -240,7 +240,7 @@
 							<div class="col-auto col-2 mw-50 mb-2">
                                 <strong>SALESPERSON</strong>
 								<p>
-									<t t-esc="o.sale_representative.name"/>
+									<t t-esc="o.user_id.partner_id.name"/>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">

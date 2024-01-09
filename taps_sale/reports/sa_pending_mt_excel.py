@@ -167,7 +167,7 @@ class SalesXlsx(models.AbstractModel):
                     else:
                         sheet.write(row, col, '', row_style)
                 elif col == 29:
-                    sheet.write(row, col, o_data.order_id.sale_representative.name, row_style)
+                    sheet.write(row, col, o_data.order_id.user_id.partner_id.name, row_style)
                 col += 1
             row += 1
         # sheet.write(row, 15, '=SUM(P{0}:P{1})'.format(2, row), row_style)

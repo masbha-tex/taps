@@ -48,7 +48,7 @@
 								<tr>
 									<td>SALES PERSON</td>
 									<td>
-										<span t-esc="o.order_id.sale_representative.name"/>
+										<span t-esc="o.order_id.user_id.partner_id.name"/>
 									</td>
 								</tr>
 								<tr>

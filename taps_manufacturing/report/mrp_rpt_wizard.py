@@ -1088,7 +1088,7 @@ class MrpReportWizard(models.TransientModel):
             items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
             
             report_data = []
-            
+            others_value = 0
             # closed_col = 11
             for item in items:
                 # itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == item.name)
@@ -1291,7 +1291,8 @@ class MrpReportWizard(models.TransientModel):
                         tr_value = None    
                     if comur_value == 0:
                         comur_value = None
-                
+                if item.name == 'Others':
+                    others_value = invoiced
                 order_data = [
                     item.name,
                     pack_pcs,
@@ -1375,6 +1376,32 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row, 7, '=SUM(H{0}:H{1})'.format(1, row), _row_style)
             sheet.write(row, 8, '=SUM(I{0}:I{1})'.format(1, row), _row_style)
             sheet.write(row, 9, '=SUM(J{0}:J{1})'.format(1, row), row_style)
+            
+            others_item_config = self.env['others.item.config'].sudo().search([('company_id','=',self.env.company.id)])
+            row += 2
+            
+            sheet.write(row, 0, "DATE :", column_style)
+            sheet.write(row, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
+            row += 1
+            sheet.write(row, 0, 'OTHERS ITEM NAME', column_style)
+            sheet.write(row, 1, 'PACKED PCS', column_style)
+            sheet.write(row, 2, 'UNIT', column_style)
+            row += 1
+            others_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == 'Others')
+            for ot in others_item_config:
+                sheet.write(row, 0, ot.others_item, format_label_1)
+                others_itemwise = others_outputs.filtered(lambda pr: pr.product_template_id.id == ot.product_tmpl_id.id)
+                if others_itemwise:
+                    pac_pcs = sum(others_itemwise.mapped('qty'))
+                    sheet.write(row, 1, pac_pcs, format_label_1)
+                else:
+                    sheet.write(row, 1, '', format_label_1)
+                sheet.write(row, 2, ot.unit, format_label_1)
+                row += 1
+            sheet.write(row, 0, 'TOTAL', format_label_1)
+            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), format_label_1)
+            sheet.write(row+2, 0, 'TOTAL PRICE', format_label_2)
+            sheet.write(row+2, 1, others_value, format_label_1)
 
             # if start_time.day == day and start_time.month == int(month_):
             #     sheet.Activate()
@@ -1393,7 +1420,8 @@ class MrpReportWizard(models.TransientModel):
             'target': 'self',
         }
 
-    def daily_closed_xls_template(self, docids, data=None):
+    #FG Invoice start Here 
+    '''def daily_closed_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
         month_ = None
         if data.get('date_from'):
@@ -1475,7 +1503,183 @@ class MrpReportWizard(models.TransientModel):
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Production Report (FG)')),
             'target': 'self',
         }
+        
+        '''
+    #fg invoice new code start here 
+    def iterate_days(self, year, month):
+        # Get the number of days in the given month
+        _, last_day = calendar.monthrange(year, month)
+    
+        # Iterate over all days in the month
+        for day in range(1, last_day + 1):
+            yield day
 
+    def daily_closed_xls_template(self, docids, data=None):
+        start_time = fields.datetime.now()
+        month_ = None
+        if data.get('date_from'):
+            month_ = int(data.get('date_from').month)#data.get('month_list')
+            year = int(data.get('date_from').year)#datetime.today().year
+            _day = int(data.get('date_from').day)
+
+        # raise UserError((int(month_),data.get('date_from').date()))
+        # f_date = data.get('date_from')
+        # t_date = data.get('date_to')
+        
+        all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
+        daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= data.get('date_from') and pr.action_date.date() <= data.get('date_to'))#.sorted(key=lambda pr: pr.sequence)
+        
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        
+        column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center', 'bg_color':'#8DB4E2'})
+        
+        column_merge_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
+        
+        _row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
+        
+        row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
+        
+        
+        merge_format = workbook.add_format({'align': 'top'})
+        merge_format_ = workbook.add_format({'align': 'bottom'})
+
+        initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id),('production_date','>=',data.get('date_from'))])#&gt;
+        
+        all_closed = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id','=',self.env.company.id)])
+        for day in self.iterate_days(year, int(month_)):
+            report_name = day
+            
+            full_date = fields.datetime.now().replace(day = _day).replace(month = int(month_)).replace(year = year)
+            first_day_of_m = full_date # first day of month
+            full_date = full_date.replace(day = day)
+            
+            datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
+            
+            sheet = workbook.add_worksheet(('%s' % (report_name)))
+            
+            
+            sheet.write(0, 0, "DATE :", column_style)
+            sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
+            sheet.merge_range(0, 2, 0, 9, 'CLOSED ORDER', column_style)
+            sheet.freeze_panes(2, 0)
+            if start_time.date() == full_date.date():
+                sheet.activate()
+                
+            sheet.write(1, 0, "PRODUCT", column_style)
+            sheet.write(1, 1, "PACKING PCS", column_style)
+
+            sheet.set_column(0, 0, 20)
+            sheet.set_column(1, 1, 20)
+
+            closed_ids = 0
+            
+            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+
+            daily_closed_oa = None
+            if all_closed:
+                daily_closed_oa = all_closed.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+            
+            if daily_closed_oa:
+                oa_ids = daily_closed_oa.mapped('oa_id')
+                closed_ids = len(oa_ids)
+            
+            items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
+            
+            report_data = []
+            others_value = 0
+            # closed_col = 11
+            for item in items:
+                    
+                itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
+                
+                pack_pcs = sum(itemwise_outputs.mapped('qty'))
+                
+                order_data = []
+                
+                if start_time.date() < full_date.date():
+                    pack_pcs = None
+                else:
+                    if pack_pcs == 0:
+                        pack_pcs = None
+    
+                    #if invoiced == 0:
+                       # invoiced = None
+
+                #if item.name == 'Others':
+                    #others_value = invoiced
+                order_data = [
+                    item.name,
+                    pack_pcs,
+                    ]
+                report_data.append(order_data)
+            
+            row = 2
+            
+            closed_col = 11
+            for line in report_data:
+                col = 0
+                for l in line:
+                    sheet.write(row, col, l, format_label_1)
+                    col += 1
+                row += 1
+
+            sheet.write(row, 0, 'Total Order Close :', format_label_1)
+            sheet.write(row, 1, closed_ids, format_label_1)
+            row += 1    
+            sheet.write(row, 0, 'TOTAL', row_style)
+            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
+            
+            others_item_config = self.env['others.item.config'].sudo().search([('company_id','=',self.env.company.id)])
+            row += 2
+            
+            sheet.write(row, 0, "DATE :", column_style)
+            sheet.write(row, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
+            row += 1
+            sheet.write(row, 0, 'OTHERS ITEM NAME', column_style)
+            sheet.write(row, 1, 'PACKED PCS', column_style)
+            sheet.write(row, 2, 'UNIT', column_style)
+            row += 1
+            others_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == 'Others')
+            for ot in others_item_config:
+                sheet.write(row, 0, ot.others_item, format_label_2)
+                others_itemwise = others_outputs.filtered(lambda pr: pr.product_tmpl_id.id == ot.product_tmpl_id.id)
+                if others_itemwise:
+                    pac_pcs = sum(others_itemwise.mapped('qty'))
+                    sheet.write(row, 1, pac_pcs, format_label_2)
+                else:
+                    sheet.write(row, 1, '', format_label_2)
+                sheet.write(row, 2, ot.unit, format_label_2)
+                row += 1
+            sheet.write(row, 0, 'TOTAL', format_label_1)
+            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), row_style)
+            sheet.write(row+2, 0, 'TOTAL PRICE', format_label_1)
+            sheet.write(row+2, 1, others_value, row_style)
+
+        
+
+            # if start_time.day == day and start_time.month == int(month_):
+            #     sheet.Activate()
+        # raise UserError(())
+        # workbook.active =  start_time.day  
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Production Report (FG)')),
+            'target': 'self',
+        }
+
+    #fg invoice new code end here 
+    #daily production report start here
     def packing_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
         

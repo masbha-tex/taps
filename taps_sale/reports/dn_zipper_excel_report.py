@@ -94,7 +94,7 @@ class SalesXlsx(models.AbstractModel):
                 o_data.botomwire_con,
                 o_data.topwire_con,
                 #o_data.pinbox_con,
-                orders.sale_representative.name,
+                orders.user_id.partner_id.name,
             ]
             report_data.append(order_data)
 

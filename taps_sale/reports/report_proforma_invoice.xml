@@ -210,8 +210,8 @@
 							<div class="col-auto col-2 mw-50 mb-2">
 								<strong>SALESPERSON</strong>
 								<p>
-									<t t-if="o.sale_representative">
-										<t t-esc="o.sale_representative.name"/>
+									<t t-if="o.user_id">
+										<t t-esc="o.user_id.partner_id.name"/>
 									</t>
 								</p>
 							</div>

@@ -26,9 +26,16 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
 
 
+    user_id = fields.Many2one(
+        'res.users', string='Salesperson',  default=False,required=True,
+        domain="[('sale_team_id', '!=', False)]")
     # user_id = fields.Many2one(
-    #     'res.users', string='Salesperson', index=True, tracking=2, default=False,required=True,
-    #     domain=lambda self: "[('sale_team_id', '=', True)]")
+    #     'res.users', string='Salesperson',)
+
+    team_id = fields.Many2one(
+        'crm.team', 'Sales Team', default=False, check_company=True,  # Unrequired company
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    
     priority_sales = fields.Selection(
         [('0', 'Normal'), ('1', 'Urgent')], 'Priority Sales', default='0', index=True)
     buyer_name = fields.Many2one('res.partner', string='Buyer Name')
@@ -79,7 +86,7 @@ class SaleOrder(models.Model):
     # amount_in_word = num2words(amount_total, lang='en_IN')
     appr_weight = fields.Char(string='Approximate Weight')
     applicant_bank = fields.Text(string='Applicant Bank')
-    sale_representative = fields.Many2one('sale.representative', string='Sales Representative', required=True, default=None)
+    sale_representative = fields.Many2one('sale.representative', string='Sales Representative', default=None)
     is_revised = fields.Boolean('Revision', tracking=True)
     revised_no = fields.Selection([
             ('r1', 'R1'),
@@ -142,9 +149,54 @@ class SaleOrder(models.Model):
     rmc = fields.Float(compute='_compute_rmc', string='RMC', store=True)
     earlier_ref = fields.Char(string='Earlier Ref')
 
+   
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        """
+        Update the following fields when the partner is changed:
+        - Pricelist
+        - Payment terms
+        - Invoice address
+        - Delivery address
+        - Sales Team
+        """
+        if not self.partner_id:
+            
+            self.update({
+                'partner_invoice_id': False,
+                'partner_shipping_id': False,
+                'fiscal_position_id': False,
+                'user_id': False,
+                
+            })
+            
+            return
+
+        self = self.with_company(self.company_id)
+
+        addr = self.partner_id.address_get(['delivery', 'invoice'])
+        partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
+        values = {
+            'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+            'payment_term_id': self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False,
+            'partner_invoice_id': addr['invoice'],
+            'partner_shipping_id': addr['delivery'],
+        }
+        # user_id = partner_user.id
+        # if not self.env.context.get('not_self_saleperson'):
+        #     user_id = user_id or False
+        # if user_id and self.user_id.id != user_id:
+        #     values['user_id'] = user_id
+
+        if self.env['ir.config_parameter'].sudo().get_param('account.use_invoice_terms') and self.env.company.invoice_terms:
+            values['note'] = self.with_context(lang=self.partner_id.lang).env.company.invoice_terms
+        # if not self.env.context.get('not_self_saleperson') or not self.team_id:
+        #     values['team_id'] = self.env['crm.team'].with_context(
+        #         default_team_id=self.partner_id.team_id.id
+        #     )._get_default_team_id(domain=['|', ('company_id', '=', self.company_id.id), ('company_id', '=', False)], user_id=user_id)
+        self.update(values)
 
     
-
     def write(self, values):
         # return pickings_to_backorder.action_confirmation_wizard(show_transfers=self._should_show_transfers())
         state = self.state
@@ -716,7 +768,9 @@ class SaleOrder(models.Model):
                 'destination_port' : saleorder.order_ref.destination_port,
                 'origin_country' : saleorder.order_ref.origin_country,
                 'validity_period' : saleorder.order_ref.validity_period,
-                'sale_representative' : saleorder.order_ref.sale_representative.id
+                'sale_representative' : saleorder.order_ref.sale_representative.id,
+                'user_id' : saleorder.order_ref.user_id,
+                'team_id' : saleorder.order_ref.team_id,
             })
             
             orderline = self.env['sale.order.line'].search([('order_id', '=', saleorder.order_ref.id)]).sorted(key = 'sequence')
@@ -899,7 +953,9 @@ class SaleOrder(models.Model):
                     'destination_port' : saleorder.sample_ref[0].destination_port,
                     'origin_country' : saleorder.sample_ref[0].origin_country,
                     'validity_period' : saleorder.sample_ref[0].validity_period,
-                    'sale_representative' : saleorder.sample_ref[0].sale_representative.id
+                    'sale_representative' : saleorder.sample_ref[0].sale_representative.id,
+                    'user_id' : saleorder.sample_ref[0].user_id,
+                    'team_id' : saleorder.sample_ref[0].team_id,
                 })
             
             orderline_values = []
@@ -1165,50 +1221,6 @@ class SaleOrder(models.Model):
 #                         'consumption': production.consumption,
 #                     }]
 
-    @api.onchange('partner_id')
-    def onchange_partner_id(self):
-        """
-        Update the following fields when the partner is changed:
-        - Pricelist
-        - Payment terms
-        - Invoice address
-        - Delivery address
-        - Sales Team
-        """
-        if not self.partner_id:
-            self.update({
-                'partner_invoice_id': False,
-                'partner_shipping_id': False,
-                'fiscal_position_id': False,
-            })
-            return
-
-        self = self.with_company(self.company_id)
-
-        ptid = self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False
-        if self.order_ref:
-            ptid = self.order_ref.payment_term_id.id
-        addr = self.partner_id.address_get(['delivery', 'invoice'])
-        partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
-        values = {
-            'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
-            'payment_term_id': ptid,
-            'partner_invoice_id': addr['invoice'],
-            'partner_shipping_id': addr['delivery'],
-        }
-        user_id = partner_user.id
-        if not self.env.context.get('not_self_saleperson'):
-            user_id = user_id or self.env.context.get('default_user_id', self.env.uid)
-        if user_id and self.user_id.id != user_id:
-            values['user_id'] = user_id
-
-        if self.env['ir.config_parameter'].sudo().get_param('account.use_invoice_terms') and self.env.company.invoice_terms:
-            values['note'] = self.with_context(lang=self.partner_id.lang).env.company.invoice_terms
-        if not self.env.context.get('not_self_saleperson') or not self.team_id:
-            values['team_id'] = self.env['crm.team'].with_context(
-                default_team_id=self.partner_id.team_id.id
-            )._get_default_team_id(domain=['|', ('company_id', '=', self.company_id.id), ('company_id', '=', False)], user_id=user_id)
-        self.update(values)
 
 
     def action_confirm(self):

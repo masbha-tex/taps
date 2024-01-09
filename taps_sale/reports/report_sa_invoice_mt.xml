@@ -107,7 +107,7 @@
 										<strong>SALESPERSON</strong>
 									</div>
 									<p>
-										<span t-esc="o.sale_representative.name"/>
+										<span t-esc="o.user_id.partner_id.name"/>
 									</p>
 								</div>
 								<div class="col-auto col-2">
