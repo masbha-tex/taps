@@ -24,7 +24,11 @@ _logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
-    
+
+
+    # user_id = fields.Many2one(
+    #     'res.users', string='Salesperson', index=True, tracking=2, default=False,required=True,
+    #     domain=lambda self: "[('sale_team_id', '=', True)]")
     priority_sales = fields.Selection(
         [('0', 'Normal'), ('1', 'Urgent')], 'Priority Sales', default='0', index=True)
     buyer_name = fields.Many2one('res.partner', string='Buyer Name')
@@ -137,6 +141,9 @@ class SaleOrder(models.Model):
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     rmc = fields.Float(compute='_compute_rmc', string='RMC', store=True)
     earlier_ref = fields.Char(string='Earlier Ref')
+
+
+    
 
     def write(self, values):
         # return pickings_to_backorder.action_confirmation_wizard(show_transfers=self._should_show_transfers())
@@ -667,13 +674,13 @@ class SaleOrder(models.Model):
                 'pi_date': saleorder.order_ref.pi_date,
                 'validity_date': saleorder.order_ref.validity_date,
                 'require_signature': saleorder.order_ref.require_signature,
-                'require_payment': saleorder.order_ref.require_payment,
+                # 'require_payment': saleorder.order_ref.require_payment,
                 'partner_id': saleorder.order_ref.partner_id,
                 'partner_invoice_id': saleorder.order_ref.partner_invoice_id,
                 'partner_shipping_id': saleorder.order_ref.partner_shipping_id,
                 'pricelist_id': saleorder.order_ref.pricelist_id,
                 'currency_id': saleorder.order_ref.currency_id,
-                'invoice_status': saleorder.order_ref.invoice_status,
+                # 'invoice_status': saleorder.order_ref.invoice_status,
                 'invoice_details': saleorder.order_ref.invoice_details,
                 'delivery_details': saleorder.order_ref.delivery_details,
                 'note' : saleorder.order_ref.note,
@@ -719,8 +726,8 @@ class SaleOrder(models.Model):
                     'order_id':self.id,
                     'name':lines.name,
                     'sequence':lines.sequence,
-                    'invoice_lines':lines.invoice_lines,
-                    'invoice_status':lines.invoice_status,
+                    # 'invoice_lines':lines.invoice_lines,
+                    # 'invoice_status':lines.invoice_status,
                     'price_unit':lines.price_unit,
                     'price_subtotal':lines.price_subtotal,
                     'price_tax':lines.price_tax,
@@ -740,24 +747,24 @@ class SaleOrder(models.Model):
                     'product_custom_attribute_value_ids':lines.product_custom_attribute_value_ids,
                     'product_no_variant_attribute_value_ids':lines.product_no_variant_attribute_value_ids,
                     'qty_delivered_method':lines.qty_delivered_method,
-                    'qty_delivered':lines.qty_delivered,
-                    'qty_delivered_manual':lines.qty_delivered_manual,
-                    'qty_to_invoice':lines.qty_to_invoice,
-                    'qty_invoiced':lines.qty_invoiced,
-                    'untaxed_amount_invoiced':lines.untaxed_amount_invoiced,
-                    'untaxed_amount_to_invoice':lines.untaxed_amount_to_invoice,
+                    'qty_delivered':0,
+                    'qty_delivered_manual':0,
+                    'qty_to_invoice':0,
+                    'qty_invoiced':0,
+                    'untaxed_amount_invoiced':0,
+                    'untaxed_amount_to_invoice':0,
                     'salesman_id':lines.salesman_id,
                     'currency_id':lines.currency_id,
                     'company_id':lines.company_id,
                     'order_partner_id':lines.order_partner_id,
-                    'analytic_tag_ids':lines.analytic_tag_ids,
-                    'analytic_line_ids':lines.analytic_line_ids,
+                    # 'analytic_tag_ids':lines.analytic_tag_ids,
+                    # 'analytic_line_ids':lines.analytic_line_ids,
                     'is_expense':lines.is_expense,
                     'is_downpayment':lines.is_downpayment,
                     'state':lines.state,
                     'customer_lead':lines.customer_lead,
                     'display_type':lines.display_type,
-                    'id':lines.id,
+                    # 'id':lines.id,
                     'display_name':lines.display_name,
                     'create_uid':lines.create_uid,
                     'create_date':lines.create_date,
@@ -1224,8 +1231,8 @@ class SaleOrder(models.Model):
         context = self._context.copy()
         context.pop('default_name', None)
         
-        if self.sales_type == 'oa':
-            self.with_context(context)._action_confirm()
+        # if self.sales_type == 'oa':
+        self.with_context(context)._action_confirm()
         if self.env.user.has_group('sale.group_auto_done_setting'):
             self.action_done()
         if self.sales_type == 'oa':

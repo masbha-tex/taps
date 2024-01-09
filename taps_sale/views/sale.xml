@@ -39,10 +39,20 @@
 					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent']]]}</attribute>
 					<attribute name="invisible">1</attribute>
 				</xpath>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='team_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+                    <!-- <attribute name="attrs">{'readonly': [['state','in',['draft','sent','sale']]]}</attribute> -->
+                    <attribute name="force_save">1</attribute>
+                </xpath>
 				<xpath expr="//field[@name='sale_order_template_id']" position="after">
 					<field name="customer_ref" attrs="{'invisible': [['sales_type','=',False]]}"/>
 					<field name="style_ref"/>
 					<field name="sale_representative" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <!-- <field name="user_id" /> -->
+                    <!-- <field name="team_id" readonly="1" /> -->
 					<field name="garments" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2)]]}"/>
                     <field name="corrosions_test" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2)]]}"/>
                     <field name="assortment" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>

@@ -1043,10 +1043,9 @@ class MrpReportWizard(models.TransientModel):
             
             sheet.write(0, 0, "DATE :", column_style)
             sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
-            sheet.write(0, 11, "DATE :", column_style)
-            # sheet.write(0, 12, full_date.date().strftime("%d-%b-%Y"), column_style)
-            sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
-            # sheet.write(0, 1, full_date.date(), column_style)
+            # sheet.write(0, 11, "DATE :", column_style)
+            # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
+            sheet.merge_range(0, 11, 0, 17, 'CLOSED ORDER', column_style)
             sheet.freeze_panes(2, 0)
             if start_time.date() == full_date.date():
                 sheet.activate()
@@ -1090,28 +1089,28 @@ class MrpReportWizard(models.TransientModel):
             
             report_data = []
             
-            closed_col = 11
+            # closed_col = 11
             for item in items:
-                itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == item.name)
-                closed_row = 2
-                if itemwise_closed:
-                    closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
-                    if item.name == 'M#4 CE':
-                        sheet.merge_range(1, closed_col, 1, closed_col+1, '', merge_format)
-                    sheet.write(1, closed_col, item.name, column_style)
-                    # sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
-                    a = ''
-                    c_col = closed_col
-                    for oa in closed_oa_list:
-                        if closed_row == 23:
-                            closed_row = 1
-                            c_col += 1
-                        sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
-                        closed_row += 1
-                    if item.name == 'M#4 CE':
-                        closed_col += 2
-                    else:
-                        closed_col += 1
+                # itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == item.name)
+                # closed_row = 2
+                # if itemwise_closed:
+                #     closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
+                #     if item.name == 'M#4 CE':
+                #         sheet.merge_range(1, closed_col, 1, closed_col+1, '', merge_format)
+                #     sheet.write(1, closed_col, item.name, column_style)
+                #     # sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
+                #     a = ''
+                #     c_col = closed_col
+                #     for oa in closed_oa_list:
+                #         if closed_row == 23:
+                #             closed_row = 1
+                #             c_col += 1
+                #         sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
+                #         closed_row += 1
+                #     if item.name == 'M#4 CE':
+                #         closed_col += 2
+                #     else:
+                #         closed_col += 1
                     
                 items_comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
@@ -1308,7 +1307,44 @@ class MrpReportWizard(models.TransientModel):
                 report_data.append(order_data)
             
             row = 2
+            
+            closed_col = 11
             for line in report_data:
+                if ((line[1] or 0) + (line[3] or 0)) > 0:
+                    closed_row = 2
+                    itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == line[0])
+                    c_col = closed_col
+                    if line[0] == 'M#4 CE':
+                        sheet.merge_range(1, closed_col, 1, closed_col+1, line[0], column_style)
+                        closed_col += 2
+                    else:
+                        sheet.write(1, closed_col, line[0], column_style)
+                        closed_col += 1
+                    if itemwise_closed:
+                        closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
+                        if closed_oa_list:
+                            for index, oa in enumerate(closed_oa_list):
+                                if closed_row == 24:
+                                    closed_row = 1
+                                    c_col += 1
+                                sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
+                                closed_row += 1
+                    
+                    if closed_row < 24 and c_col == 11:
+                        for i in range(closed_row,25):
+                            sheet.write(closed_row, c_col, '', format_label_1)
+                            if closed_row == 24 and line[0] == 'M#4 CE':
+                                closed_row = 1
+                                c_col += 1
+                            closed_row += 1
+                        # for i in range(24)[:closed_row]:
+                        #     sheet.write(closed_row, c_col, '', format_label_1)
+                        #     closed_row += 1
+                    if closed_row < 24 and c_col != 11:
+                        for i in range(closed_row, 25):
+                            sheet.write(closed_row, c_col, '', format_label_1)
+                            closed_row += 1
+                    
                 col = 0
                 for l in line:
                     if col in (2,4,6,7,8):

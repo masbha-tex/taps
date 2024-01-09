@@ -25,3 +25,4 @@ access_mrp_group_output,mrp_group_output,model_mrp_group_output,base.group_user,
 access_mrp_return,mrp_return,model_mrp_return,base.group_user,1,1,1,1
 access_mrp_reports,mrp_report,model_mrp_report,base.group_user,1,1,1,1
 access_initial_production,initial_production,model_initial_production,base.group_user,1,1,1,1
+access_others_item_config,others_item_config,model_others_item_config,base.group_user,1,1,1,1
