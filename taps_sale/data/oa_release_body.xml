@@ -63,12 +63,12 @@
 					  <t t-set="grand_month_wise_qty" t-value="0"/>
 					  <t t-set="grand_day_wise_val" t-value="0"/>
 					  <t t-set="grand_month_wise_val" t-value="0"/>
-						<t t-foreach="com.env['sale.team'].search([])" t-as="team">
+						<t t-foreach="com.env['crm.team'].search([('name','!=', 'Sales')])" t-as="team">
 							<t t-set="day_wise_qty" t-value="0"/>
 							<t t-set="day_wise_val" t-value="0"/>
 							<t t-set="month_wise_qty" t-value="0"/>
 							<t t-set="month_wise_val" t-value="0"/>
-							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('team_id', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 								
 								<t t-if="com.id == 1">
 								  <t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>
@@ -82,7 +82,7 @@
 								</t>
 								
 							</t>
-							<t t-foreach="env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
+							<t t-foreach="env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
 								<t t-if="com.id == 1">
 								<t t-set="month_wise_qty" t-value="month_wise_qty+order_mtd.total_product_qty"/>
 								<t t-set="month_wise_val" t-value="month_wise_val+order_mtd.amount_total"/>
@@ -99,7 +99,7 @@
 							<tr>
 								<td style="border: 1px solid black" class="text-left">
 									<strong>
-										<t t-esc="team.team_name"/>
+										<t t-esc="team.name"/>
 									</strong>
 								</td>
 								<td style="border: 1px solid black" class="text-right">
@@ -202,12 +202,12 @@
 					  <t t-set="grand_month_wise_qty" t-value="0"/>
 					  <t t-set="grand_day_wise_val" t-value="0"/>
 					  <t t-set="grand_month_wise_val" t-value="0"/>
-						<t t-foreach="env['team.region'].search([])" t-as="region">
+						<t t-foreach="env['crm.team'].search([('name','!=', 'Sales')])" t-as="region">
 							<t t-set="day_wise_qty" t-value="0"/>
 							<t t-set="day_wise_val" t-value="0"/>
 							<t t-set="month_wise_qty" t-value="0"/>
 							<t t-set="month_wise_val" t-value="0"/>
-							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('sale_representative.region', '=', region.id),           ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),        ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),           ('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+							<t t-foreach="com.env['sale.order'].search([('company_id', '=', com.id),('sales_type', '=', 'oa'),('region', '=', region.id), ('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 								
 								<t t-if="com.id == 1">
 								  <t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>

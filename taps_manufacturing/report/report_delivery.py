@@ -28,11 +28,11 @@ class ReportDyePlan(models.AbstractModel):
 
         buyer = 'BUYER: '+del_ids[0].buyer_name
         customer = 'CUSTOMER: '+del_ids[0].partner_id.name
-        style_ref = 'STYLE REF: '+del_ids[0].oa_id.style_ref
-        invoice_no = 'INVOICE NO: '+del_ids[0].mrp_delivery.name
+        style_ref = 'STYLE REF: ' + (del_ids[0].oa_id.style_ref or '')
+        invoice_no = 'INVOICE NO: ' + (del_ids[0].mrp_delivery.name or '')
         oa_no = 'OA NO: '+del_ids[0].oa_id.name
-        po_no = 'PO NO: '+del_ids[0].oa_id.po_no
-        pi_no = 'PI NO: '+del_ids[0].oa_id.pi_number
+        po_no = 'PO NO: '+(del_ids[0].oa_id.po_no or '')
+        pi_no = 'PI NO: '+ (del_ids[0].oa_id.pi_number or '')
         item_name = del_ids[0].fg_categ_type + del_ids[0].finish + del_ids[0].slidercodesfg
         del_ids = del_ids.sorted(key = 'name')
         carton = del_ids.mapped('name')

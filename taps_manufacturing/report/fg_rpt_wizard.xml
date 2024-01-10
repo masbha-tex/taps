@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record model="ir.ui.view" id="mrp_report_wizard_view">
-        <field name="name">mrp.report.form.view</field>
-        <field name="model">mrp.report</field>
+    <record model="ir.ui.view" id="fg_report_wizard_view">
+        <field name="name">fg.report.form.view</field>
+        <field name="model">fg.report</field>
         <field name="arch" type="xml">
-            <form string="MRP Reports">
+            <form string="FG Reports">
                 <group>
                     <group>
                         <field name="report_type" string="Report Type"/>
@@ -24,15 +24,15 @@
         </field>
     </record>
     
-    <record id="mrp_reports" model="ir.actions.act_window">
-        <field name="name">MRP Reports</field>
-        <field name="res_model">mrp.report</field>
+    <record id="fg_reports" model="ir.actions.act_window">
+        <field name="name">FG Reports</field>
+        <field name="res_model">fg.report</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
-    <menuitem id="menu_mrp_reports"
-              name="MRP Reports"
-              sequence="12"
-              action="mrp_reports"
+    <menuitem id="menu_fg_reports"
+              name="FG Reports"
+              sequence="13"
+              action="fg_reports"
               parent="mrp.menu_mrp_reporting"/>
 </odoo>
