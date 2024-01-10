@@ -504,7 +504,7 @@ class SaleOrder(models.Model):
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
                 
            
-            rec.env['mail.mail'].sudo().create(mail_values)
+            rec.env['mail.mail'].sudo().create(mail_values).send()
 
     
     
@@ -590,7 +590,7 @@ class SaleOrder(models.Model):
                 body = template._render(template_ctx, engine='ir.qweb')
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
            
-            rec.env['mail.mail'].sudo().create(mail_values)
+            rec.env['mail.mail'].sudo().create(mail_values).send()
             
 
     @api.model
@@ -731,7 +731,8 @@ class SaleOrder(models.Model):
                 'pi_date': saleorder.order_ref.pi_date,
                 'validity_date': saleorder.order_ref.validity_date,
                 'require_signature': saleorder.order_ref.require_signature,
-                # 'require_payment': saleorder.order_ref.require_payment,
+                'require_payment': saleorder.order_ref.require_payment,
+                # 'payment_term_id': saleorder.payment_term_id.id,
                 'partner_id': saleorder.order_ref.partner_id,
                 'partner_invoice_id': saleorder.order_ref.partner_invoice_id,
                 'partner_shipping_id': saleorder.order_ref.partner_shipping_id,
