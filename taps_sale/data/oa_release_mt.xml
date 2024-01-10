@@ -83,7 +83,7 @@
 							 <t t-if="'ALLOY' in line.product_template_id.name"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -183,7 +183,7 @@
 							 <t t-if="('SHANK' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -283,7 +283,7 @@
 							 <t t-if="('SNAP' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -382,7 +382,7 @@
 							 <t t-if="('RIVET' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -481,7 +481,7 @@
 							 <t t-if="('EYELET' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -580,7 +580,7 @@
 							 <t t-if="('ALLOY' not in line.product_template_id.name) and ('SHANK' not in line.product_template_id.name) and ('SNAP' not in line.product_template_id.name) and ('RIVET' not in line.product_template_id.name) and ('EYELET' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -679,7 +679,7 @@
 							 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>

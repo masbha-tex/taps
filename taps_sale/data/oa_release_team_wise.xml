@@ -68,11 +68,11 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('sales_type', '=', 'oa'),('state', '=', 'sale'),('is_revised', '=', False),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('sales_type', '=', 'oa'),('state', '=', 'sale'),('is_revised', '=', False),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-if="'METAL' in order.order_line[0].product_template_id.name or 'ALUMINUM' in order.order_line[0].product_template_id.name">
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -178,11 +178,11 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('sales_type', '=', 'oa'),('state', '=', 'sale'),('is_revised', '=', False), (['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('sales_type', '=', 'oa'),('state', '=', 'sale'),('is_revised', '=', False), (['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-if=" 'COIL' in order.order_line[0].product_template_id.name">
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -291,11 +291,11 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('sales_type', '=', 'oa'),('state', '=', 'sale'),('is_revised', '=', False),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('sales_type', '=', 'oa'),('state', '=', 'sale'),('is_revised', '=', False),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-if="'PLASTIC' in order.order_line[0].product_template_id.name">
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -403,11 +403,11 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('sales_type', '=', 'oa'),('state', '=', 'sale'),('is_revised', '=', True),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('sales_type', '=', 'oa'),('state', '=', 'sale'),('is_revised', '=', True),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 1),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.max)))])" t-as="order">
 							
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -617,13 +617,13 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="'ALLOY' in line.product_template_id.name"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -717,13 +717,13 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="('SHANK' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -817,13 +817,13 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="('SNAP' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -916,13 +916,13 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="('RIVET' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -1015,13 +1015,13 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="('EYELET' in line.product_template_id.name) and ('ALLOY' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -1114,13 +1114,13 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('is_revised', '=', False),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 <t t-if="('ALLOY' not in line.product_template_id.name) and ('SHANK' not in line.product_template_id.name) and ('SNAP' not in line.product_template_id.name) and ('RIVET' not in line.product_template_id.name) and ('EYELET' not in line.product_template_id.name)"> 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>
@@ -1213,13 +1213,13 @@
 					</thead>
 					<tbody>
 						<t t-set="sl" t-value="0"/>
-						<t t-foreach="env['sale.order'].search([('sale_representative.team', '=', team_id),('is_revised', '=', True),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+						<t t-foreach="env['sale.order'].search([('team_id', '=', team_id),('is_revised', '=', True),('sales_type', '=', 'oa'),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('company_id', '=', 3),('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
 							<t t-set="sl" t-value="sl+1"/>
 							<t t-foreach="env['sale.order.line'].search([('order_id', '=', order.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
 							 
 								<tr style="border: 1px solid black">
 									<td colspan="2" style="border: 1px solid black">
-										<t t-esc="order.sale_representative.name"/>
+										<t t-esc="order.user_id.partner_id.name"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order.date_order.strftime('%d/%m/%y')"/>

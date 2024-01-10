@@ -50,6 +50,8 @@
         'report/mrp_lot_barcode.xml',
         'report/mrp_rpt_wizard.xml',
         'report/fg_rpt_wizard.xml',
+        'report/slipt_carton.xml',
+        'report/slipt_packing.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     'qweb': [

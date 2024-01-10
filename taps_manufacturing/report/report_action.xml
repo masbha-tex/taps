@@ -14,7 +14,7 @@
             <!-- <field name="print_report_name">(object.pi_number)</field> -->
         </record>
         <record id="action_fg_carton_slipt" model="ir.actions.report">
-            <field name="name">CARTON SLIPT</field>
+            <field name="name">FG Delivery Invoice</field>
             <field name="model">operation.details</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">taps_manufacturing.rpt_slpit_carton</field>
@@ -25,8 +25,8 @@
             <field name="default_print_option">print</field>
             <!-- <field name="print_report_name">(object.pi_number)</field> -->
         </record>
-        <record id="action_packing_carton_slipt" model="ir.actions.report">
-            <field name="name">PACKING SLIPT</field>
+        <record id="action_rpt_slipt_packing" model="ir.actions.report">
+            <field name="name"> PRODUCTION PACKING LABEL</field>
             <field name="model">operation.details</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">taps_manufacturing.rpt_slipt_packing</field>
@@ -64,8 +64,21 @@
             <!-- + (object.time.strftime('%d-%m-%Y')) -->
         </record>
 
+        <record id="action_report_fg_carton_label_xls" model="ir.actions.report">
+            <field name="name">FG Carton Label</field>
+            <field name="model">operation.details</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">taps_manufacturing.report_fg_carton_label_xls</field>
+            <field name="report_file">taps_manufacturing.report_fg_carton_label_xls</field>
+            <field name="binding_model_id" ref="model_operation_details"/>
+            <field name="binding_type">report</field>
+            <field name="default_print_option">print</field>
+            <field name="print_report_name">"FG Carton Label"</field>
+            <!-- + (object.time.strftime('%d-%m-%Y')) -->
+        </record>
+
         <record id="action_report_delivery_xls" model="ir.actions.report">
-            <field name="name">Delivery Order</field>
+            <field name="name">FG DELIVERY INVOICE</field>
             <field name="model">operation.details</field>
             <field name="report_type">xlsx</field>
             <field name="report_name">taps_manufacturing.report_delivery_xls</field>
@@ -73,7 +86,7 @@
             <field name="binding_model_id" ref="model_operation_details"/>
             <field name="binding_type">report</field>
             <field name="default_print_option">print</field>
-            <field name="print_report_name">"Delivery Order"</field>
+            <field name="print_report_name">"FG Carton Label"</field>
             <!-- + (object.time.strftime('%d-%m-%Y')) -->
         </record>
 

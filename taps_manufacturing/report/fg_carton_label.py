@@ -11,7 +11,7 @@ import math
 
 
 class ReportDyePlan(models.AbstractModel):
-    _name = 'report.taps_manufacturing.report_delivery_xls'
+    _name = 'report.taps_manufacturing.report_fg_carton_label_xls'
     _inherit = 'report.report_xlsx.abstract'
     _description = 'report for fg store'
     
@@ -155,16 +155,4 @@ class ReportDyePlan(models.AbstractModel):
             # if row == 8:
             #     break
 
-        row += 1
-        sheet.merge_range(row, 0, row, 8, 'DELIVERY SUMMARY',merge_format)
-        row += 1
-        sheet.merge_range(row, 0, row, 1, 'SHADE',merge_format)
-        sheet.write(row, 2,  'Size CM')
-        sheet.write(row, 3,  'OA  QTY')
-        sheet.write(row, 4,  '1ST DEL')
-        sheet.write(row, 5,  '2ND DEL')
-        sheet.write(row, 6,  '2ND DEL')
-        sheet.write(row, 7,  'SAMPLE')
-        sheet.write(row, 8,  'BALANCE')
 
-        

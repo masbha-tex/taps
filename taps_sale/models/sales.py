@@ -412,7 +412,7 @@ class SaleOrder(models.Model):
         
     
     def _action_daily_oa_release_email(self, com_id):
-        # raise UserError((com_id.company_id))
+        
         com = self.env['res.company'].search([('id', 'in', (com_id))])
         for rec in com: 
             subject = (rec.name)+' Unit Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
@@ -440,7 +440,7 @@ class SaleOrder(models.Model):
             
             
             
-           
+            
             if rec.id == 1:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
                 email_cc_list.append('ranjeet.singh@texzipperbd.com')
@@ -478,6 +478,7 @@ class SaleOrder(models.Model):
                 'email_to': email_to,
                 'email_cc': email_cc,
                 'attachment_ids': attachment,
+                'reply_to' : None,
                 
             }
             # raise UserError((mail_values['author_id'],self.env.user.partner_id.id))
@@ -496,9 +497,12 @@ class SaleOrder(models.Model):
                     'com' : rec,
                 }
                 
+                
                     
                 body = template._render(template_ctx, engine='ir.qweb')
+                # raise UserError((body))
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
+                
            
             rec.env['mail.mail'].sudo().create(mail_values)
 
@@ -507,10 +511,10 @@ class SaleOrder(models.Model):
     
     def _action_daily_oa_release_email_team_wise(self, team_id):
         
-        team = self.env['sale.team'].search([('id', 'in', (team_id))])
+        team = self.env['crm.team'].search([('id', 'in', (team_id))])
         # raise UserError((team))
         for rec in team: 
-            subject = (rec.team_name)+' Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
+            subject = (rec.name)+' Daily Released OA('+(datetime.now().strftime('%d %b, %Y'))+')'
             
             body = 'Hello'
             email_to_list = []
@@ -526,8 +530,8 @@ class SaleOrder(models.Model):
                 ]
             author_id=0
             
-            email_to_list.append(rec.team_leader.email)
-            email_cc_list.append(rec.team_leader.leader.email)
+            email_to_list.append(rec.user_id.login)
+            email_cc_list.append(rec.core_leader.login)
                 
     
             
@@ -536,7 +540,7 @@ class SaleOrder(models.Model):
             # report = report.with_context(ct)
             pdf_content, content_type = report.sudo()._render_qweb_pdf(res_ids=[rec.id], data={"team_id": rec.id})
             attachment = rec.env['ir.attachment'].sudo().create({
-                        'name': rec.team_name+' Daily OA Release('+(datetime.now().strftime('%d %b, %Y'))+')'+'.pdf',
+                        'name': rec.name+' Daily OA Release('+(datetime.now().strftime('%d %b, %Y'))+')'+'.pdf',
                         'type': 'binary',
                         'datas': base64.encodebytes(pdf_content),
                         'mimetype': 'application/pdf',
@@ -563,6 +567,7 @@ class SaleOrder(models.Model):
                 'email_to': email_to,
                 'email_cc': email_cc,
                 'attachment_ids' : attachment,
+                'reply_to': None,
                 
                 
             }
@@ -585,7 +590,7 @@ class SaleOrder(models.Model):
                 body = template._render(template_ctx, engine='ir.qweb')
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
            
-            rec.env['mail.mail'].sudo().create(mail_values).send()
+            rec.env['mail.mail'].sudo().create(mail_values)
             
 
     @api.model

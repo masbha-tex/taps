@@ -40,7 +40,7 @@
 							<t t-set="month_wise_val" t-value="0"/>
 							<t t-set="month_wise_qty_mt" t-value="0"/>
 							<t t-set="month_wise_val_mt" t-value="0"/>
-            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 1),('sales_type', '=', 'oa'),('state', '=', 'sale'),('sale_representative.team', '=', team.id),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 1),('sales_type', '=', 'oa'),('state', '=', 'sale'),('team_id', '=', team.id),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
                   
                   
                     <t t-set="day_wise_qty" t-value="day_wise_qty+order.total_product_qty"/>
@@ -50,14 +50,14 @@
                 
             </t>
             
-            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 1),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
+            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 1),('sales_type', '=', 'oa'),('team_id', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
 								
 							    <t t-set="month_wise_qty" t-value="month_wise_qty+order_mtd.total_product_qty"/>
 							    <t t-set="month_wise_val" t-value="month_wise_val+order_mtd.amount_total"/>
 						  
 						   
             </t>
-            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 3),('sales_type', '=', 'oa'),('state', '=', 'sale'),('sale_representative.team', '=', team.id),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
+            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 3),('sales_type', '=', 'oa'),('state', '=', 'sale'),('team_id', '=', team.id),(['pi_type', 'in', ['regular','replacement']]), ('date_order', '&gt;=', (datetime.datetime.combine((datetime.date.today()),datetime.time.min))),('date_order', '&lt;=', (datetime.datetime.combine((datetime.date.today()), datetime.time.max)))])" t-as="order">
                   
                   
                     
@@ -68,7 +68,7 @@
                 </t>
             </t>
             
-            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 3),('sales_type', '=', 'oa'),('sale_representative.team', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
+            <t t-foreach="team.env['sale.order'].search([('company_id', '=', 3),('sales_type', '=', 'oa'),('team_id', '=', team.id),('state', '=', 'sale'),(['pi_type', 'in', ['regular','replacement']]),('date_order','&gt;=',(datetime.datetime.now().replace(day=1, hour=0,minute=0))),('date_order','&lt;=',(datetime.datetime.now()))])" t-as="order_mtd">
 								
 							    
 						  <t t-foreach="team.env['sale.order.line'].search([('order_id','=',order_mtd.id),('product_template_id.name','!=', 'MOULD')])" t-as="line">
@@ -81,7 +81,7 @@
             <br/>
           <table class=" table table-sm  p-0 m-0" style="font-size:10px;table-layout: fixed ! important; width: 70%">  
           <caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
-						<strong><t t-esc="team.team_name"/></strong>
+						<strong><t t-esc="team.name"/></strong>
 					</caption>
           </table>
           <br/>
