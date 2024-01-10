@@ -86,7 +86,7 @@ class SaleOrder(models.Model):
     # amount_in_word = num2words(amount_total, lang='en_IN')
     appr_weight = fields.Char(string='Approximate Weight')
     applicant_bank = fields.Text(string='Applicant Bank')
-    sale_representative = fields.Many2one('sale.representative', string='Sales Representative', default=None)
+    sale_representative = fields.Many2one('sale.representative', string='Sales Representative', required=True, default=None)
     is_revised = fields.Boolean('Revision', tracking=True)
     revised_no = fields.Selection([
             ('r1', 'R1'),
@@ -768,9 +768,7 @@ class SaleOrder(models.Model):
                 'destination_port' : saleorder.order_ref.destination_port,
                 'origin_country' : saleorder.order_ref.origin_country,
                 'validity_period' : saleorder.order_ref.validity_period,
-                'sale_representative' : saleorder.order_ref.sale_representative.id,
-                'user_id' : saleorder.order_ref.user_id,
-                'team_id' : saleorder.order_ref.team_id,
+                'sale_representative' : saleorder.order_ref.sale_representative.id
             })
             
             orderline = self.env['sale.order.line'].search([('order_id', '=', saleorder.order_ref.id)]).sorted(key = 'sequence')
@@ -953,9 +951,7 @@ class SaleOrder(models.Model):
                     'destination_port' : saleorder.sample_ref[0].destination_port,
                     'origin_country' : saleorder.sample_ref[0].origin_country,
                     'validity_period' : saleorder.sample_ref[0].validity_period,
-                    'sale_representative' : saleorder.sample_ref[0].sale_representative.id,
-                    'user_id' : saleorder.sample_ref[0].user_id,
-                    'team_id' : saleorder.sample_ref[0].team_id,
+                    'sale_representative' : saleorder.sample_ref[0].sale_representative.id
                 })
             
             orderline_values = []
@@ -2506,7 +2502,7 @@ class SaleOrderLine(models.Model):
                                     st_price = self.env['stock.production.lot'].sudo().search([('product_id','=', bom_pro[0].product_id.id)],order='id desc',limit=1)
                                     if st_price:
                                         price = st_price.unit_price
-                                        rmc_val += (con_tape * line.product_uom_qty * price)
+                                        rmc_val += (con_tape * line.product_uom_qty * price) + (con_tape * line.product_uom_qty * 0.50)
         
                     if formula.wair_python_compute:
                         con_wire = safe_eval(formula.wair_python_compute, {'s': size})
@@ -2528,6 +2524,7 @@ class SaleOrderLine(models.Model):
                             if st_price:
                                 price = st_price.unit_price
                                 rmc_val += (con_wire * line.product_uom_qty * price)
+                                rmc_val += (line.tape_con + line.wire_con) * 0.80
                     
                     if formula.slider_python_compute:
                         con_slider = safe_eval(formula.slider_python_compute)
@@ -2549,6 +2546,7 @@ class SaleOrderLine(models.Model):
                                     if st_price:
                                         price = st_price.unit_price
                                         rmc_val += (con_slider * line.product_uom_qty * price)
+                                        rmc_val += (((line.slider_con * 2.08) / 1000) * 1.50)
                     
                     if formula.twair_python_compute:
                         con_top = safe_eval(formula.twair_python_compute)

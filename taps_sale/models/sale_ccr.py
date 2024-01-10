@@ -100,9 +100,9 @@ class SaleCcr(models.Model):
     fg_product = fields.Many2one('product.template',string="Product Type/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]" )
     finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
     # slider = fields.Char(string="Slider")
-    sale_representative = fields.Many2one('sale.representative', related = 'oa_number.sale_representative', string='Sale Representative')
-    team = fields.Many2one(related ='sale_representative.team', string='Team')
-    team_leader = fields.Many2one(related ='sale_representative.leader', string='Team Leader')
+    sale_representative = fields.Many2one('res.users', related = 'oa_number.user_id', string='Sale Representative')
+    team = fields.Many2one(related ='oa_number.team_id', string='Team')
+    # team_leader = fields.Many2one(related ='sale_representative.leader', string='Team Leader')
     company_id = fields.Many2one(related='oa_number.company_id', string='Company', store=True, readonly=True, index=True)
     invoice_reference = fields.Char(string='Invoice Ref.')
     report_date = fields.Date(string='Report Date', default= date.today(), readonly=True)
@@ -321,7 +321,7 @@ class SaleCcr(models.Model):
                     'email_cc' : email_cc,
                 })
                 
-                template_id.send_mail(self.id, force_send=False)
+                template_id.send_mail(self.id, force_send=True)
 
 
 
@@ -352,7 +352,7 @@ class SaleCcr(models.Model):
                     'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
                 
-                template_id.send_mail(self.id, force_send=False)
+                template_id.send_mail(self.id, force_send=True)
             
         else:
             notification = {
@@ -394,7 +394,7 @@ class SaleCcr(models.Model):
                     'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
                 
-                template_id.send_mail(self.id, force_send=False)
+                template_id.send_mail(self.id, force_send=True)
             
             
         else:

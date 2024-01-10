@@ -28,7 +28,8 @@
         # 'views/views.xml',
         'views/crm_views.xml',
         'views/visit_template_views.xml',
-        'views/assets.xml'
+        'views/assets.xml',
+        'views/crm_team_view.xml'
     ],
     # only loaded in demonstration mode
     'qweb': [

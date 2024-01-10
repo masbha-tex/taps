@@ -982,8 +982,7 @@ class MrpReportWizard(models.TransientModel):
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('PI Summary')),
             'target': 'self',
         }
-    
-
+    #packing invoice start here
     def iterate_days(self, year, month):
         # Get the number of days in the given month
         _, last_day = calendar.monthrange(year, month)
@@ -1421,91 +1420,7 @@ class MrpReportWizard(models.TransientModel):
         }
 
     #FG Invoice start Here 
-    '''def daily_closed_xls_template(self, docids, data=None):
-        start_time = fields.datetime.now()
-        month_ = None
-        if data.get('date_from'):
-            month_ = int(data.get('date_from').month)#data.get('month_list')
-            year = int(data.get('date_from').year)#datetime.today().year
-            _day = int(data.get('date_from').day)
-
-
-        output = io.BytesIO()
-        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
-        
-        _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
-        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        all_released = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id','=',self.env.company.id)])
-        all_items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
-        for day in self.iterate_days(year, int(month_)):
-            report_name = day
-            
-            full_date = fields.datetime.now().replace(day = _day).replace(month = int(month_)).replace(year = year)
-            full_date = full_date.replace(day = day)
-
-            sheet = workbook.add_worksheet(('%s' % (report_name)))
-
-            if start_time.date() == full_date.date():
-                sheet.activate()
-            
-            report_data = []
-            closed_ids = 0
-
-            # if all_released:
-            #     raise UserError((all_released[0].closing_date.date(),full_date.date()))
-            datewise_released = all_released.filtered(lambda pr: pr.closing_date.date() == full_date.date())
-
-            if datewise_released:
-                # item_list = ','.join([str(i) for i in datewise_released.fg_categ_type])
-                item_list = datewise_released.mapped('fg_categ_type')
-                # item_list = [str(i) for i in sorted(item_list.split(','))]
-                # raise UserError((item_list))
-                items = all_items.filtered(lambda pr: pr.name in (item_list))
-                items = items.sorted(key=lambda pr: pr.sequence)
-                cl_num = 0
-                for item in items:
-                    # raise UserError(('item_list'))
-                    report_data = []
-                    sheet.write(0, cl_num, item.name, column_style)
-                    sheet.set_column(cl_num, cl_num, 20)
-                    
-                    closed_oa = datewise_released.filtered(lambda pr: pr.fg_categ_type == item.name)
-                    if closed_oa:
-                        order_data = []
-                        # closed_oa = closed_oa.mapped('oa_id')
-                        sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
-                        for oa in sale_orders:
-                            order_data = [
-                                oa.name,
-                                ]
-                            report_data.append(order_data)
-                
-                    row = 1
-                    for line in report_data:
-                        sheet.write(row, cl_num, line[0], format_label_1)
-                        row += 1
-                    
-                    cl_num += 1
-
-        workbook.close()
-        output.seek(0)
-        xlsx_data = output.getvalue()
-        self.file_data = base64.encodebytes(xlsx_data)
-        end_time = fields.datetime.now()
-        
-        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
-        return {
-            'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Production Report (FG)')),
-            'target': 'self',
-        }
-        
-        '''
-    #fg invoice new code start here 
+    
     def iterate_days(self, year, month):
         # Get the number of days in the given month
         _, last_day = calendar.monthrange(year, month)
@@ -1558,12 +1473,14 @@ class MrpReportWizard(models.TransientModel):
             full_date = full_date.replace(day = day)
             
             datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
-            
+                        
             sheet = workbook.add_worksheet(('%s' % (report_name)))
             
             
             sheet.write(0, 0, "DATE :", column_style)
             sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
+            # sheet.write(0, 11, "DATE :", column_style)
+            # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
             sheet.merge_range(0, 2, 0, 9, 'CLOSED ORDER', column_style)
             sheet.freeze_panes(2, 0)
             if start_time.date() == full_date.date():
@@ -1573,10 +1490,11 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(1, 1, "PACKING PCS", column_style)
 
             sheet.set_column(0, 0, 20)
-            sheet.set_column(1, 1, 20)
+            sheet.set_column(1, 1, 15)
 
             closed_ids = 0
-            
+            # items = datewise_outputs.mapped('fg_categ_type')
+            # items = list(set(items))
             running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
 
             daily_closed_oa = None
@@ -1593,45 +1511,105 @@ class MrpReportWizard(models.TransientModel):
             others_value = 0
             # closed_col = 11
             for item in items:
-                    
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
+                price = comu_inv = 0
                 
                 pack_pcs = sum(itemwise_outputs.mapped('qty'))
+                if pack_pcs > 0:
+                    _s_qty = round(sum(itemwise_outputs.mapped('sale_order_line.product_uom_qty')),2)
+                    _s_value = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
+                    if _s_qty > 0:
+                        price = round((_s_value/_s_qty),4)
+                
+                
+                invoiced = round((pack_pcs*price),2)
+                
+                pending_ids = 0
+                #today_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() == full_date.date())    
                 
                 order_data = []
                 
+                invoiced = round(invoiced,0)
+                
                 if start_time.date() < full_date.date():
-                    pack_pcs = None
+                    invoiced = pack_pcs = None
+
                 else:
                     if pack_pcs == 0:
                         pack_pcs = None
     
-                    #if invoiced == 0:
-                       # invoiced = None
-
-                #if item.name == 'Others':
-                    #others_value = invoiced
+                    if invoiced == 0:
+                        invoiced = None
+                if item.name == 'Others':
+                    others_value = invoiced
                 order_data = [
                     item.name,
-                    pack_pcs,
+                    pack_pcs
                     ]
                 report_data.append(order_data)
             
             row = 2
             
-            closed_col = 11
+            closed_col = 2
             for line in report_data:
+                if (line[1] or 0) > 0:
+                    closed_row = 2
+                    itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == line[0])
+                    c_col = closed_col
+                    if line[0] == 'M#4 CE':
+                        sheet.merge_range(1, closed_col, 1, closed_col+1, line[0], column_style)
+                        closed_col += 2
+                    else:
+                        sheet.write(1, closed_col, line[0], column_style)
+                        closed_col += 1
+                    if itemwise_closed:
+                        closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
+                        if closed_oa_list:
+                            for index, oa in enumerate(closed_oa_list):
+                                if closed_row == 24:
+                                    closed_row = 1
+                                    c_col += 1
+                                sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
+                                closed_row += 1
+                    
+                    if closed_row < 24 and c_col == 11:
+                        for i in range(closed_row,25):
+                            sheet.write(closed_row, c_col, '', format_label_1)
+                            if closed_row == 24 and line[0] == 'M#4 CE':
+                                closed_row = 1
+                                c_col += 1
+                            closed_row += 1
+                        # for i in range(24)[:closed_row]:
+                        #     sheet.write(closed_row, c_col, '', format_label_1)
+                        #     closed_row += 1
+                    if closed_row < 24 and c_col != 11:
+                        for i in range(closed_row, 25):
+                            sheet.write(closed_row, c_col, '', format_label_1)
+                            closed_row += 1
+                    
                 col = 0
                 for l in line:
-                    sheet.write(row, col, l, format_label_1)
+                    if col in (2,4,6,7,8):
+                        sheet.write(row, col, l, format_label_2)
+                    else:
+                        sheet.write(row, col, l, format_label_1)
                     col += 1
                 row += 1
 
             sheet.write(row, 0, 'Total Order Close :', format_label_1)
             sheet.write(row, 1, closed_ids, format_label_1)
+            sheet.write(row, 2, '', format_label_1)
+            sheet.write(row, 3, '', format_label_1)
+            sheet.write(row, 4, '', format_label_1)
+            sheet.write(row, 5, '', format_label_1)
+            sheet.write(row, 6, '', format_label_1)
+            sheet.write(row, 7, '', format_label_1)
+            sheet.write(row, 8, '', format_label_1)
+            sheet.write(row, 9, '', format_label_1)
             row += 1    
             sheet.write(row, 0, 'TOTAL', row_style)
             sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
+
             
             others_item_config = self.env['others.item.config'].sudo().search([('company_id','=',self.env.company.id)])
             row += 2
@@ -1645,21 +1623,19 @@ class MrpReportWizard(models.TransientModel):
             row += 1
             others_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == 'Others')
             for ot in others_item_config:
-                sheet.write(row, 0, ot.others_item, format_label_2)
-                others_itemwise = others_outputs.filtered(lambda pr: pr.product_tmpl_id.id == ot.product_tmpl_id.id)
+                sheet.write(row, 0, ot.others_item, format_label_1)
+                others_itemwise = others_outputs.filtered(lambda pr: pr.product_template_id.id == ot.product_tmpl_id.id)
                 if others_itemwise:
                     pac_pcs = sum(others_itemwise.mapped('qty'))
-                    sheet.write(row, 1, pac_pcs, format_label_2)
+                    sheet.write(row, 1, pac_pcs, format_label_1)
                 else:
-                    sheet.write(row, 1, '', format_label_2)
-                sheet.write(row, 2, ot.unit, format_label_2)
+                    sheet.write(row, 1, '', format_label_1)
+                sheet.write(row, 2, ot.unit, format_label_1)
                 row += 1
             sheet.write(row, 0, 'TOTAL', format_label_1)
-            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), row_style)
-            sheet.write(row+2, 0, 'TOTAL PRICE', format_label_1)
-            sheet.write(row+2, 1, others_value, row_style)
-
-        
+            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), format_label_1)
+            sheet.write(row+2, 0, 'TOTAL PRICE', format_label_2)
+            sheet.write(row+2, 1, others_value, format_label_1)
 
             # if start_time.day == day and start_time.month == int(month_):
             #     sheet.Activate()
@@ -1678,7 +1654,8 @@ class MrpReportWizard(models.TransientModel):
             'target': 'self',
         }
 
-    #fg invoice new code end here 
+    #fg invoice  code end here 
+    
     #daily production report start here
     def packing_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()

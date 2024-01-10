@@ -220,10 +220,11 @@
                         <group string="SALES">
                             <group>
                                 <field name="sale_representative"/>
-                                <field name="team"/>
+                                
                             </group>
                             <group>
-                                <field name="team_leader"/>
+                                <field name="team"/>
+                                <!-- <field name="team_leader"/> -->
                             </group>
                         </group>
                         

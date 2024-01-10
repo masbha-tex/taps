@@ -76,7 +76,7 @@ class CcrWizardPa(models.TransientModel):
                 'email_cc' : 'asraful.haque@texzipperbd.com',
             })
             
-            template_id.send_mail(ccr.id, force_send=False)
+            template_id.send_mail(ccr.id, force_send=True)
     def cancel(self):
         return {}
 
@@ -111,7 +111,7 @@ class CcrWizardnot(models.TransientModel):
                 'email_cc' : 'asraful.haque@texzipperbd.com',
             })
             
-            template_id.send_mail(ccr.id, force_send=False)
+            template_id.send_mail(ccr.id, force_send=True)
         
 
     def cancel(self):

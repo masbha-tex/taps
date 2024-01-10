@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="crm_team_view_form_inherit" model="ir.ui.view">
+        <field name="name">crm.team.form</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="core_leader"/>
+                <field name="region"/>
+            </xpath>   
+        </field>
+        </record>
+        <record id="crm_team_view_tree_inherit" model="ir.ui.view">
+        <field name="name">crm.team.tree</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="sales_team.crm_team_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="core_leader"/>
+                <field name="region"/>
+            </xpath>   
+        </field>
+        </record>
+    </data>
+</odoo>
+    
