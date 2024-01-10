@@ -86,7 +86,7 @@ class SaleOrder(models.Model):
     # amount_in_word = num2words(amount_total, lang='en_IN')
     appr_weight = fields.Char(string='Approximate Weight')
     applicant_bank = fields.Text(string='Applicant Bank')
-    sale_representative = fields.Many2one('sale.representative', string='Sales Representative', required=True, default=None)
+    sale_representative = fields.Many2one('sale.representative', string='Sales Representative', required=False, default=None)
     is_revised = fields.Boolean('Revision', tracking=True)
     revised_no = fields.Selection([
             ('r1', 'R1'),
@@ -768,7 +768,10 @@ class SaleOrder(models.Model):
                 'destination_port' : saleorder.order_ref.destination_port,
                 'origin_country' : saleorder.order_ref.origin_country,
                 'validity_period' : saleorder.order_ref.validity_period,
-                'sale_representative' : saleorder.order_ref.sale_representative.id
+                'sale_representative' : saleorder.order_ref.sale_representative.id,
+                'user_id' : saleorder.order_ref.user_id,
+                'team_id' : saleorder.order_ref.team_id,
+                
             })
             
             orderline = self.env['sale.order.line'].search([('order_id', '=', saleorder.order_ref.id)]).sorted(key = 'sequence')
@@ -951,7 +954,9 @@ class SaleOrder(models.Model):
                     'destination_port' : saleorder.sample_ref[0].destination_port,
                     'origin_country' : saleorder.sample_ref[0].origin_country,
                     'validity_period' : saleorder.sample_ref[0].validity_period,
-                    'sale_representative' : saleorder.sample_ref[0].sale_representative.id
+                    'sale_representative' : saleorder.sample_ref[0].sale_representative.id,
+                    'user_id' : saleorder.sample_ref[0].user_id,
+                    'team_id' : saleorder.sample_ref[0].team_id,
                 })
             
             orderline_values = []

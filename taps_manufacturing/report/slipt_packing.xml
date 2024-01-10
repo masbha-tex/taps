@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<template id="slipt_packing">
+      <t t-call="web.basic_layout">
+        <div class="page">
+          <t t-foreach="docs" t-as="morder">
+            <table class="float-left mt-2 mb-2 ml-4 mr-4 pt-2 pb-2 pl-4 pr-4" style="width:290pt; height:150pt; border: 1pt solid black; border-collapse: separate; border-radius:8pt; margin:5pt;page-break-inside: avoid; table-layout: fixed ! important">
+                <tr><th align="center"><div align="center"><span>OA: </span><t t-esc="morder.oa_id.name"/></div></th></tr>
+                <tr><th align="center"><div align="center"><span>Item: </span><t t-esc="morder.fg_categ_type"/></div></th></tr>
+                <tr><td align="center"><div><span>Shade: </span><t t-esc="morder.shade"/></div></td></tr>
+                <tr><td align="center"><div><span>Finish: </span><t t-esc="morder.finish"/></div></td></tr>
+                <tr><td align="center"><div><span>Size: </span>
+                <t t-if="morder.sizecm and morder.sizecm != 'N/A'">
+                <span> <t t-esc="morder.sizecm"/> Cm</span>
+                </t>
+                <t t-if="morder.sizein and morder.sizein != 'N/A'">
+                <span> <t t-esc="morder.sizein"/> Inch</span>
+                </t>
+                </div></td></tr>
+                <tr><td align="center"><div><span>Machine: </span><t t-esc="morder.based_on"/></div></td></tr>
+                <tr><td align="center"><div><img alt="barcode" t-if="morder.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', morder.name, 400, 100)" style="max-height:40pt;" align="center"/><br/><t t-esc="morder.name"/></div></td></tr>
+            </table>
+          </t>
+        </div>
+      </t>
+	</template>
+</odoo>   
+    
