@@ -12,6 +12,9 @@
                 <!-- <field name="sizein" string="Size In"/>
                 <field name="sizecm" string="Size CM"/> -->
                 <group expand="0" string="Group By">
+                    <filter name="year_group" string="Yearly" domain="[]" context="{'group_by': 'date_order:year'}"/>
+                    <filter name="month_group" string="Monthly" domain="[]" context="{'group_by': 'date_order:month'}"/>
+                    <filter name="day_group" string="Daily" domain="[]" context="{'group_by': 'date_order:day'}"/>
                     <filter name="oa_group" string="OA" domain="[]" context="{'group_by': 'oa_id'}"/>
                     <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'fg_categ_type'}"/>
                     <filter name="product_group" string="Product" domain="[]" context="{'group_by': 'product_template_id'}"/>
@@ -36,7 +39,7 @@
         <field name="arch" type="xml" >
             <tree string="Sale Order rmc" create="false" delete="false" >
                 <field name="company_id" groups="base.group_multi_company"/>
-                <field name="sale_order_lines"/>
+                <field name="sale_order_lines" invisible="1"/>
                 <field name="oa_id"/>
                 <field name="partner_id"/>
                 <field name="buyer_name"/>
@@ -53,6 +56,7 @@
                 <field name="gap"/>
                 <field name="numberoftop"/>
                 <field name="ppinboxfinish"/>
+                <!-- <field name="price_unit"/> -->
                 <field name="price_subtotal" sum="Subtotal" decoration-bf="True"/>
                 <field name="rmc" sum="RMC" decoration-bf="True"/>
             </tree>
@@ -64,7 +68,7 @@
         <field name="res_model">sale.order.rmc</field>
         <field name="view_mode">tree</field>
         <!-- <field name="search_view_id" ref="view_sale_order_rmc_search" /> -->
-        <field name="context">{'search_default_oa_group':1, 'search_default_item_group':1, 'search_default_product_group':1}</field>
+        <field name="context">{'search_default_year_group':1, 'search_default_month_group':1, 'search_default_day_group':1, 'search_default_oa_group':1, 'search_default_item_group':1, 'search_default_product_group':1}</field>
     </record>
     
 

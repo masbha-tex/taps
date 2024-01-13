@@ -38,7 +38,7 @@ class SalarySheet(models.TransientModel):
         ('department', 'By Department'),
         ('category', 'By Employee Tag'),
         ('emptype', 'By Employee Type'),],
-        string='Report Mode', required=True, default='employee',
+        string='Report Mode', required=True, default='employees',
         help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')
     company_all = fields.Selection([
         ('allcompany', 'TEX ZIPPERS (BD) LIMITED')],
