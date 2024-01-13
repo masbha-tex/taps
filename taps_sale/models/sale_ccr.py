@@ -106,7 +106,7 @@ class SaleCcr(models.Model):
     # fg_product = fields.Many2one('product.template',string="Product Type/Code")
     # fg_product = fields.Many2one('product.template',string="Product Type/Code", default='_default_fg_product')
     fg_product = fields.Many2one('product.template',string="Product Type/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]")
-    related_product_id = fields.Many2one('product.product', string='Related Product', compute='_compute_related_product', store=True)
+    # related_product_id = fields.Many2one('product.product', string='Related Product', compute='_compute_related_product', store=True)
     finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
     # slider = fields.Char(string="Slider")
     sale_representative = fields.Many2one('res.users', related = 'oa_number.user_id', string='Sale Representative')
