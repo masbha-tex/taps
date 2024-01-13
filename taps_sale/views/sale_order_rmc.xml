@@ -39,7 +39,7 @@
         <field name="arch" type="xml" >
             <tree string="Sale Order rmc" create="false" delete="false" >
                 <field name="company_id" groups="base.group_multi_company"/>
-                <field name="sale_order_lines" invisible="1"/>
+                <field name="sale_order_lines"/>
                 <field name="oa_id"/>
                 <field name="partner_id"/>
                 <field name="buyer_name"/>
