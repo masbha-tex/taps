@@ -825,7 +825,7 @@ class SaleOrder(models.Model):
                     'state':lines.state,
                     'customer_lead':lines.customer_lead,
                     'display_type':lines.display_type,
-                    # 'id':lines.id,
+                    'id':lines.id,
                     'display_name':lines.display_name,
                     'create_uid':lines.create_uid,
                     'create_date':lines.create_date,
@@ -1655,7 +1655,6 @@ class SaleOrder(models.Model):
     
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
-
     
     topbottom = fields.Text(string='Top/Bottom', store=True)
     slidercode = fields.Text(string='Slider Code', store=True)

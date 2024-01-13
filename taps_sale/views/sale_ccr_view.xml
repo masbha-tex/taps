@@ -161,13 +161,14 @@
                             <field name="pi_number"/>
                             <field name="order_quantity"/>
                             <field name="rejected_quantity"/>
-                            <field name="sale_order_line_id" invisible="1"/>
+                            <!-- <field name="sale_order_line_id" invisible="1"/> -->
                             
                             
                         </group>
                         <group>
                             <!-- <field name="ccr_type"/> -->
                             <field name="fg_product"/>
+                            <!-- <field name="sale_order_line_id"/> -->
                             <field name="finish"/>
                             <field name="complaint"/>
                             <!-- <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/> -->

@@ -64,7 +64,7 @@ class GoogleSheetConnector(models.Model):
 
             # Create a DataFrame from the Odoo records
             data = {'ID': [order.id for order in sale_orders],
-                    'PRODUCT CATEGORY': [order.order_line[0].product_template_id.fg_categ_type for order in sale_orders],
+                    'PRODUCT CATEGORY': [order.order_line[0].product_id.product_tmp_id.fg_categ_type.name for order in sale_orders],
                     'OA NUMBER': [order.name for order in sale_orders],
                     'OA DATE': [order.date_order.date() for order in sale_orders],
                     'CUSTOMER': [order.partner_id.name for order in sale_orders],

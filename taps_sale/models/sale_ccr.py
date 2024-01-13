@@ -67,9 +67,15 @@ class SaleCcr(models.Model):
 
         
 
-    # @api.onchange('oa_number')
-    # def dynamic_selection_onchange(self, id):
-        
+    # @api.model
+    # def _default_fg_product(self):
+    #     raise UserError((self))
+    #     if self.oa_number:
+    #         sale_order_lines = self.oa_number.order_line.filtered(lambda line: line.product_id)
+    #         product_id = sale_order_lines and sale_order_lines[0].product_id.id or False
+    #         return product_id
+    #     else:
+    #         return False
 
     
     
@@ -96,8 +102,11 @@ class SaleCcr(models.Model):
     ca_closing_date = fields.Date(string='CA Closing Date',readonly=True)
     pa_closing_date = fields.Date(string='PA Closing Date',readonly=True)
     closing_date = fields.Date(string='Closing Date')
-    sale_order_line_id = fields.Many2many('sale.order.line', string="Sale Order Line")
-    fg_product = fields.Many2one('product.template',string="Product Type/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]" )
+    # sale_order_line_id = fields.Many2many(related='oa_number.order_line', string="Sale Order Line")
+    # fg_product = fields.Many2one('product.template',string="Product Type/Code")
+    # fg_product = fields.Many2one('product.template',string="Product Type/Code", default='_default_fg_product')
+    fg_product = fields.Many2one('product.template',string="Product Type/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]")
+    related_product_id = fields.Many2one('product.product', string='Related Product', compute='_compute_related_product', store=True)
     finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
     # slider = fields.Char(string="Slider")
     sale_representative = fields.Many2one('res.users', related = 'oa_number.user_id', string='Sale Representative')
@@ -143,8 +152,11 @@ class SaleCcr(models.Model):
     
     # last_approve_date = fields.Date(string="Last Approve Date")
 
+   
+
     
 
+        
     @api.model
     def retrieve_dashboard_ccr(self):
         """ This function returns the values to populate the custom dashboard in
@@ -280,9 +292,10 @@ class SaleCcr(models.Model):
             seq_date = None
             # seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
             vals['name'] = self.env['ir.sequence'].next_by_code('sale.ccr', sequence_date=seq_date) or _('New')
+        
         result = super(SaleCcr, self).create(vals)
         return result
-
+    
     def action_cancel(self):
         self.write({'states': 'cancel'})
         return {}
@@ -321,12 +334,13 @@ class SaleCcr(models.Model):
                     'email_cc' : email_cc,
                 })
                 
-                template_id.send_mail(self.id, force_send=True)
+                template_id.send_mail(self.id, force_send=False)
 
 
 
     def action_manufacturing(self):
         # raise UserError((self._uid))
+        # self._uid == 20
         if self._uid == 20:
             self.write({'states': 'man', 'last_approver': self._uid})
             # email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
@@ -352,7 +366,7 @@ class SaleCcr(models.Model):
                     'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
                 
-                template_id.send_mail(self.id, force_send=True)
+                template_id.send_mail(self.id, force_send=False)
             
         else:
             notification = {
@@ -368,6 +382,7 @@ class SaleCcr(models.Model):
             return notification
             
     def action_sales(self):
+        # self._uid == 88:
         if self._uid == 88:
             # Update the record's state and last_approver
             self.write({'states': 'toclose', 'last_approver': self._uid})
@@ -394,7 +409,7 @@ class SaleCcr(models.Model):
                     'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
                 
-                template_id.send_mail(self.id, force_send=True)
+                template_id.send_mail(self.id, force_send=False)
             
             
         else:
@@ -412,6 +427,7 @@ class SaleCcr(models.Model):
     
     def action_close(self):
         # self._compute_last_approver()
+        # self._uid == 17:
         if self._uid == 17:
             self.write({'states': 'done', 'closing_date':date.today()})
             self.ticket_id.stage_id= 3

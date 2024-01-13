@@ -16,9 +16,13 @@
                     <group>                    
                         <field name="holiday_type" string="Mode" groups="hr_holidays.group_hr_holidays_user"/>
                         <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'employees')],
+                        'invisible': [('holiday_type', '!=', 'employees')]
+                        }" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>
+                        <field name="employee_ids" groups="hr_holidays.group_hr_holidays_user" attrs="{
                         'required': [('holiday_type', '=', 'employee')],
                         'invisible': [('holiday_type', '!=', 'employee')]
-                        }" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>
+                        }" options="{'no_create': True, 'no_open': True}"/>
                         <field name="mode_company_id" string="Company" groups="hr_holidays.group_hr_holidays_user" attrs="{
                         'required': [('holiday_type', '=', 'company')],
                         'invisible': [('holiday_type', '!=', 'company')]

@@ -32,11 +32,12 @@ class SalarySheet(models.TransientModel):
     
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
+        ('employees', 'By Employees'),
         ('company', 'By Company'),
         ('companyall', 'By All Company'),
         ('department', 'By Department'),
         ('category', 'By Employee Tag'),
-        ('emptype', 'By Employee Type')],
+        ('emptype', 'By Employee Type'),],
         string='Report Mode', required=True, default='employee',
         help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')
     company_all = fields.Selection([
@@ -47,7 +48,12 @@ class SalarySheet(models.TransientModel):
         'res.bank',  string='Bank', readonly=False, ondelete="restrict", required=False)
     
     employee_id = fields.Many2many(
-        'hr.employee',  domain="['|', ('active', '=', False), ('active', '=', True)]", string='Employee', index=True, readonly=False, ondelete="restrict")    
+        'hr.employee',  domain="['|', ('active', '=', False), ('active', '=', True)]", string='Employees', index=True, readonly=False, ondelete="restrict")
+    
+    employee_ids = fields.Many2one(
+        'hr.employee', domain="['|', ('active', '=', False), ('active', '=', True)]",  string='Employee', index=True, readonly=False, ondelete="restrict")
+    
+    # employee_id = fields.Many2many(comodel_name='hr.employee', relation='all_employee_list',column1='id',column2='name', domain="['|', ('active', '=', False), ('active', '=', True)]", string='Employee', readonly=False, ondelete="restrict")
     
     category_id = fields.Many2one(
         'hr.employee.category',  string='Employee Tag', help='Category of Employee', readonly=False)
@@ -65,6 +71,8 @@ class SalarySheet(models.TransientModel):
         string='Employee Type', required=False)    
     
     file_data = fields.Binary(readonly=True, attachment=False)
+
+    employee_list = fields.Char(string="Emp List") 
 
     @api.depends('date_from')
     def _compute_from_date(self):
@@ -93,6 +101,21 @@ class SalarySheet(models.TransientModel):
                     holiday.department_id = self.env.user.employee_id.department_id
             else:
                 holiday.department_id = False
+
+    # @api.onchange('employee_id')
+    # def _onchange_employee_id(self):
+    #     empl = self.employee_id
+    #     emp = empl.mapped('id')
+    #     # raise UserError((self.employee_id))
+    #     self.employee_list = emp
+        # invalid_partners = self.employee_id#.filtered(lambda partner: not partner.private_email)
+        # if invalid_partners:
+        #     warning = {
+        #         'title': 'Invalid "Employee" Email',
+        #         'message': (("%s do not have emails. please set the emails from employee!") % invalid_partners.display_name),
+        #     }
+        #     self.employee_id -= invalid_partners
+        #     return {'warning': warning}
                 
     #@api.depends('holiday_type')
     def _compute_from_holiday_type(self):
@@ -127,10 +150,12 @@ class SalarySheet(models.TransientModel):
     # generate PDF report
     def action_print_report(self):
         if self.report_type:
-            if self.holiday_type == "employee":#employee company department category
-                #raise UserError((self.report_type))
-                empl = self.employee_id
-                emp = empl.mapped('id')
+            if self.holiday_type == "employees":#employee company department category
+                # raise UserError((self.report_type))
+                # employee_list = self.env['all.employee.list'].sudo().search([]).sorted(key = 'id')
+                employee_list = self.employee_id
+                emp = employee_list.mapped('id')
+                # raise UserError((employee_list))
                     
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
@@ -143,6 +168,26 @@ class SalarySheet(models.TransientModel):
                         'employee_type': False,
                         'company_all': self.company_all,
                         'is_company': self.is_company}
+                # raise UserError((empl, emp))
+            if self.holiday_type == "employee":#employee company department category
+                # raise UserError((self.report_type))
+                # employee_list = self.env['all.employee.list'].sudo().search([]).sorted(key = 'id')
+                employee_list = self.employee_ids
+                emp = employee_list.mapped('id')
+                # raise UserError((employee_list))
+                    
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': self.employee_ids.id,
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': self.company_all,
+                        'is_company': self.is_company}
+                # raise UserError((empl, emp))            
 
             if self.holiday_type == "company":
                 data = {'date_from': self.date_from, 
@@ -1462,7 +1507,7 @@ class PaySlipReportPDF(models.AbstractModel):
     
     def _get_report_values(self, docids, data=None):
         domain = []
-        #raise UserError(("pay_slip_pdf_template"))
+        # raise UserError((data.get('employee_id')))
         #if data.get('bank_id')==False:
             #domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
@@ -1500,7 +1545,7 @@ class PaySlipReportPDF(models.AbstractModel):
                 domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))    
         
         
-        
+        # raise UserError((domain))
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
         emplist = docs.mapped('employee_id.id')
         # friday_p = self.env['hr.attendance'].search([('employee_id', 'in', (emplist)),('attDate', '>=', data.get('date_from')),('attDate', '<=', data.get('date_to')),('inFlag', 'in', ('FP','HP'))])
@@ -1512,7 +1557,7 @@ class PaySlipReportPDF(models.AbstractModel):
                     lazy=False
                 )
         
-        # raise UserError((friday_p))
+        # raise UserError((emplist))
         common_data = []
         for res in friday_p:
             employee_id = res['employee_id'][0] if res.get('employee_id') else None
@@ -2280,7 +2325,7 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
     
     def _get_report_values(self, docids, data=None):
         domain = []
-        #raise UserError(("pay_slip_pdf_template"))
+        # raise UserError((data.get('employee_id')))
         #if data.get('bank_id')==False:
             #domain.append(('code', '=', data.get('report_type')))
         if data.get('date_from'):
@@ -2296,7 +2341,9 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
             #str = re.sub("[^0-9]","",data.get('category_id'))
             domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
-            domain.append(('employee_id', '=', data.get('employee_id')))
+            domain.append(('employee_id.id', 'in', data.get('employee_id')))
+        if data.get('employee_ids'):
+            domain.append(('employee_id.id', '=', data.get('employee_ids')))            
         if data.get('bank_id'):
             #str = re.sub("[^0-9]","",data.get('employee_id'))
             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
@@ -2318,7 +2365,7 @@ class FullAndFinalSettlementReportPDF(models.AbstractModel):
        
         domain.append(('struct_id.name', '=','F&F'))  
         # domain.append(('employee_id.active', 'in',(False,True)))
-        # raise UserError((data.get('employee_id')))
+        raise UserError((domain))
         att_obj = self.env['hr.attendance']
         docs = self.env['hr.payslip'].search(domain).sorted(key = 'employee_id', reverse=False)
         

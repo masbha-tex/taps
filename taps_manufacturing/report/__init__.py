@@ -6,3 +6,4 @@ from . import dy_qc_balance
 from . import mrp_rpt_wizard
 from . import fg_rpt_wizard
 from . import fg_carton_label
+from . import label_print_wizard

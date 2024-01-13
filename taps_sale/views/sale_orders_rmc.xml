@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_orders_rmc" model="ir.ui.view">
+        <field name="name">orders.rmc.search</field>
+        <field name="model">sale.orders.rmc</field>
+        <field name="arch" type="xml" >
+            <search string="RM &amp; Spare">
+                <filter string="OA Value" name="oa_value" domain="[('price_subtotal', '&gt;=', 0)]" />
+                <!-- <filter string="Spare" name="spare_stock" domain="[('product_id.categ_id.complete_name', 'ilike',
+                                                                  'All / Spare Parts')]" /> -->
+<!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
+                <separator/>
+                <field name="fg_categ_type" string="Item"/>
+                <group expand="0" string="Group By">
+                    <filter name="product_group" string="Product" domain="[]" context="{'group_by': 'product_template_id'}"/>
+                    <filter name="oa_group" string="Category" domain="[]" context="{'group_by': 'oa_id'}"/>
+                    <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'fg_categ_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record model="ir.rule" id="record_not_shared_multi_company_rule">
+        <field name="name">Non Shared Records:model</field>
+        <field name="model_id" ref="model_orders_rmc"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="view_orders_rmc_tree" model="ir.ui.view">
+        <field name="name">orders.rmc.tree</field>
+        <field name="model">sale.orders.rmc</field>
+        <field name="arch" type="xml" >
+            <tree string="Order wise RMC" create="false" delete="false" >
+                <field name="sale_order_lines" invisible="1"/>
+                <field name="oa_id"/>
+                <field name="partner_id"/>
+                <field name="buyer_name"/>
+                <field name="date_order"/>
+                <field name="closing_date"/>
+                <field name="product_template_id"/>
+                <field name="fg_categ_type"/>
+                <field name="product_uom"/>
+                <field name="product_uom_qty"/>
+                
+                <field name="slidercodesfg"/>
+                <field name="sizein"/>
+                <field name="sizecm"/>
+                <field name="gap"/>
+                <field name="numberoftop"/>
+                <field name="ppinboxfinish"/>
+                <field name="rmc" optional="show" sum="RMC" decoration-bf="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 'search_default_oa_value':1,  -->
+
+    <record id="action_orders_rmc" model="ir.actions.act_window">
+        <field name="name">Order wise RMC</field>
+        <field name="res_model">sale.orders.rmc</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'search_default_oa_group':1, 'search_default_item_group':1, 'search_default_product_group':1}</field>
+        <field name="search_view_id" ref="view_orders_rmc" />
+    </record>
+
+    <menuitem id="menu_orders_rmc_view"
+              name="Order wise RMC"
+              action="action_orders_rmc"
+              parent="sale.menu_sale_report"
+              sequence="18"/>
+</odoo>    

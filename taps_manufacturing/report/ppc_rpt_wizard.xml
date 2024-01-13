@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record model="ir.ui.view" id="mrp_report_wizard_view">
-        <field name="name">mrp.report.form.view</field>
-        <field name="model">mrp.report</field>
+    <record model="ir.ui.view" id="ppc_report_wizard_view">
+        <field name="name">ppc.report.form.view</field>
+        <field name="model">ppc.report</field>
         <field name="arch" type="xml">
-            <form string="MRP Reports">
+            <form string="PPC Reports">
                 <group>
                     <group>
+                        <field name="report_type" string="Report Type"/>
                         <field name="report_type" string="Report Type"/>
                         <field name="date_from"/>
                         <field name="date_to"/>

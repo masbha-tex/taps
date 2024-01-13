@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="label_print_wizard_view">
+        <field name="name">label.print.form.view</field>
+        <field name="model">label.print</field>
+        <field name="arch" type="xml">
+            <form string="Label Printing">
+                <group>
+                    <group>
+                        <field name="report_type" string="Report Type"/>
+                        <field name="oa_number"/>
+                        <field name="iteam"/>
+                        <field name="shade"/>
+                        <field name="finish"/>                        
+                        <field name="size"/>
+                        <field name="qty"/>
+                    </group>
+                    <group>
+                        <!-- <field name="Country_name" widget="selection"/> -->
+                        <field name="batch_lot"/>
+                        <field name="table_name" widget="selection"/>
+                        <field name="qc_person"/>
+                        <field name="pre_check_person"/>
+                        <field name="printing_person"/>
+                    </group>
+                </group>
+                <footer>
+                    <!-- <button string="Print" name="action_print_report" type="object" class="btn-primary"/> -->
+                    <button string="Download Excel" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="label_printing" model="ir.actions.act_window">
+        <field name="name">Label Printing</field>
+        <field name="res_model">label.print</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="menulabel_printing"
+              name="Label Printing"
+              sequence="14"
+              action="label_printing"
+              parent="mrp.menu_mrp_reporting"/>
+</odoo>

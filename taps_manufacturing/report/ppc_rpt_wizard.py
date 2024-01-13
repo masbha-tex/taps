@@ -13,14 +13,29 @@ import calendar
 _logger = logging.getLogger(__name__)
 
 
-class MrpReportWizard(models.TransientModel):
-    _name = 'mrp.report'
-    _description = 'MRP Reports'
+class PpcReportWizard(models.TransientModel):
+    _name = 'ppc.report'
+    _description = 'PPC Reports'
     _check_company_auto = True
     
     # is_company = fields.Boolean(readonly=False, default=False)
     
-    report_type = fields.Selection([('pir', 'PI File'),('pic', 'Closed PI'),('pis', 'PI Summary'),('dpr', 'Invoice'),('dppr', 'Packing Production Report'),('dpcl', 'Production Report (FG)')], string='Report Type', required=True, help='Report Type', default='pir')
+    report_category = fields.Selection([('pw','Product Wise Production Summery'),('bw','Buyer Wise Production Summery'),('cw','Customer Wise Production Summery'),('tw','Team Wise Production Summery'),('stw','Stopper Wise Production Summery'),('tzpw','TZP Wise Production Summery'),('oth','Others Report')])
+
+    if report_category == 'pw': # all product list 
+        report_type = fields.Selection([('all', 'All Iteam '),('m4', 'Metal 4'),('m5all', 'Metal 5 All'),('m5oe', 'Metal 5 Open END'),('m5ce', 'Metal 5 Close END'),('c3', 'Coil 3'),('c3inv', 'Coil 3 INVIABLE'),('c5all', 'Coil 5 All'),('c5oe', 'Coil 5 Open END'),('c5ce', 'Coil 5 Close END'),('p3', 'Plastic 3'),('p5all', 'Plastic 5 All'),('p5oe', 'Plastic 5 Open END'),('p5ce', 'Plastic 5 Close END'),('others', 'Others Iteam'), string='Report Type', required=True, help='Report Type', default='m4')
+    elif report_category == 'bw': #filtere running buyer list 
+        report_type = fields.Selection([('dmis', 'Dyeing MIS')], string='Report Type', required=True, help='Report Type', default='dmis')
+    elif report_category == 'cw':  #filtere running Customer list 
+        report_type = fields.Selection([('dmis', 'Dyeing MIS')], string='Report Type', required=True, help='Report Type', default='dmis')
+    elif report_category == 'tw':  #all sales team
+        report_type = fields.Selection([('dmis', 'Dyeing MIS')], string='Report Type', required=True, help='Report Type', default='dmis')
+    elif report_category == 'stw':   #all type stopper wise  
+        report_type = fields.Selection([('dmis', 'Dyeing MIS')], string='Report Type', required=True, help='Report Type', default='dmis')
+    elif report_category == 'tzpw': #slider wise   
+        report_type = fields.Selection([('dmis', 'Dyeing MIS')], string='Report Type', required=True, help='Report Type', default='dmis')
+    else #others report list
+        report_type = fields.Selection([('dmis', 'Dyeing MIS')], string='Report Type', required=True, help='Report Type', default='m4')
     
     date_from = fields.Date('Date from', readonly=False, default=lambda self: self._compute_from_date())
     date_to = fields.Date('Date to', readonly=False, default=lambda self: self._compute_to_date())
@@ -30,13 +45,6 @@ class MrpReportWizard(models.TransientModel):
     file_data = fields.Binary(readonly=True, attachment=False)
 
 
-
-    # date_from = fields.Date('Date from', required=True, readonly=False, default=lambda self: self._compute_from_date())
-    # date_to = fields.Date('Date to', required=True, readonly=False, default=lambda self: self._compute_to_date())
-    # export = fields.Selection([
-    #     ('single', 'Single Sheet'),
-    #     ('multiple', 'Multiple Sheet')],
-    #     string='Export Mode')
 
     @api.depends('date_from')
     def _compute_from_date(self):
@@ -125,7 +133,7 @@ class MrpReportWizard(models.TransientModel):
         
         rev_orders = running_orders - m_orders
         
-        m_orders = running_orders
+        m_orders = running_orders # all running Orders
         # oa_total_balance revision_no
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
