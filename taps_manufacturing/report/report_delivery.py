@@ -159,12 +159,49 @@ class ReportDyePlan(models.AbstractModel):
         sheet.merge_range(row, 0, row, 8, 'DELIVERY SUMMARY',merge_format)
         row += 1
         sheet.merge_range(row, 0, row, 1, 'SHADE',merge_format)
-        sheet.write(row, 2,  'Size CM')
-        sheet.write(row, 3,  'OA  QTY')
-        sheet.write(row, 4,  '1ST DEL')
-        sheet.write(row, 5,  '2ND DEL')
-        sheet.write(row, 6,  '2ND DEL')
-        sheet.write(row, 7,  'SAMPLE')
-        sheet.write(row, 8,  'BALANCE')
+        sheet.write(row, 2,  'Size CM', column_style)
+        sheet.write(row, 3,  'OA  QTY', column_style)
+        sheet.write(row, 4,  '1ST DEL', column_style)
+        sheet.write(row, 5,  '2ND DEL', column_style)
+        sheet.write(row, 6,  '2RD DEL', column_style)
+        sheet.write(row, 7,  'SAMPLE', column_style)
+        sheet.write(row, 8,  'BALANCE', column_style)
+        
+        mr = self.env["manufacturing.order"].search([('oa_id','=',del_ids[0].oa_id.id)]).sorted(key=lambda pr: pr.sizein and pr.shade)
+        shades = mr.mapped('shade')
+        
+        if mr:
+            for m in mr:
+                row += 1
+                delivered = self.env["operation.details"].search([('oa_id','=',del_ids[0].oa_id.id),('next_operation','=','Delivery'),('mrp_line','=',m.id)])
+                total_del = 0
+                del_dates = None
+                unique_dates = None
+                fst_del = snd_del = trd_del = 0
+                if delivered:
+                    total_del = sum(delivered.mapped('qty'))
+                    unique_dates = set(record.action_date.date() for record in delivered)
+                    # del_dates = delivered.mapped('action_date')
+                if unique_dates:
+                    num_unique_dates  = len(unique_dates)
+                    for dt in range(num_unique_dates):
+                        if dt == 0:
+                            fst_del = 0
+                        if dt == 1:
+                            snd_del = 0
+                        if dt >= 3:
+                            trd_del = 0
+                            
+                    # raise UserError((unique_dates[0]))
+                sheet.merge_range(row, 0, row, 1, m.shade, _row_style)    
+                # sheet.write(row, 1, m.shade, _row_style)
+                sheet.write(row, 2, m.sizecm, _row_style)
+                sheet.write(row, 3, m.product_uom_qty, _row_style)
+                sheet.write(row, 4, fst_del, _row_style)
+                sheet.write(row, 5, snd_del, _row_style)
+                sheet.write(row, 6, trd_del, _row_style)
+                sheet.write(row, 7, 0, _row_style)
+                sheet.write(row, 8, m.product_uom_qty - total_del, _row_style)
+            
 
         

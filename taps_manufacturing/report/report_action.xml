@@ -13,30 +13,6 @@
             <field name="default_print_option">print</field>
             <!-- <field name="print_report_name">(object.pi_number)</field> -->
         </record>
-        <record id="action_fg_carton_slipt" model="ir.actions.report">
-            <field name="name">FG Delivery Invoice</field>
-            <field name="model">operation.details</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_manufacturing.rpt_slpit_carton</field>
-            <field name="report_file">taps_manufacturing.rpt_slpit_carton</field>
-            <field name="binding_model_id" ref="model_operation_details"/>
-            <field name="binding_type">report</field>
-            <!-- <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/> -->
-            <field name="default_print_option">print</field>
-            <!-- <field name="print_report_name">(object.pi_number)</field> -->
-        </record>
-        <!-- <record id="action_rpt_slipt_packing" model="ir.actions.report"> -->
-            <!-- <field name="name"> PRODUCTION PACKING LABEL</field> -->
-            <!-- <field name="model">operation.details</field> -->
-            <!-- <field name="report_type">qweb-pdf</field> -->
-            <!-- <field name="report_name">taps_manufacturing.rpt_slipt_packing</field> -->
-            <!-- <field name="report_file">taps_manufacturing.rpt_slipt_packing</field> -->
-            <!-- <field name="binding_model_id" ref="model_operation_details"/> -->
-            <!-- <field name="binding_type">report</field> -->
-            <!-- <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/> -->
-            <!-- <field name="default_print_option">print</field> -->
-            <!-- <field name="print_report_name">(object.pi_number)</field> -->
-        <!-- </record> -->
 
         <record id="action_report_running_order_xls" model="ir.actions.report">
             <field name="name">Running Order Excel</field>
@@ -48,7 +24,6 @@
             <field name="binding_type">report</field>
             <field name="default_print_option">print</field>
             <field name="print_report_name">"Running Order"</field>
-            <!-- + (object.time.strftime('%d-%m-%Y')) -->
         </record>
 
         <record id="action_report_dye_plan_xls" model="ir.actions.report">
@@ -61,7 +36,6 @@
             <field name="binding_type">report</field>
             <field name="default_print_option">print</field>
             <field name="print_report_name">"Dyeing Plan"</field>
-            <!-- + (object.time.strftime('%d-%m-%Y')) -->
         </record>
 
         <record id="action_report_fg_carton_label_xls" model="ir.actions.report">
@@ -74,7 +48,6 @@
             <field name="binding_type">report</field>
             <field name="default_print_option">print</field>
             <field name="print_report_name">"FG Carton Label"</field>
-            <!-- + (object.time.strftime('%d-%m-%Y')) -->
         </record>
 
         <record id="action_report_delivery_xls" model="ir.actions.report">
@@ -86,7 +59,7 @@
             <field name="binding_model_id" ref="model_operation_details"/>
             <field name="binding_type">report</field>
             <field name="default_print_option">print</field>
-            <field name="print_report_name">"FG Carton Label"</field>
+            <field name="print_report_name">"FG DELIVERY INVOICE"</field>
             <!-- + (object.time.strftime('%d-%m-%Y')) -->
         </record>
 
@@ -100,7 +73,6 @@
             <field name="binding_type">report</field>
             <field name="default_print_option">print</field>
             <field name="print_report_name">"Painting Plan"</field>
-            <!-- + (object.time.strftime('%d-%m-%Y')) -->
         </record>
 
         <record id="action_report_qc_balance_xls" model="ir.actions.report">

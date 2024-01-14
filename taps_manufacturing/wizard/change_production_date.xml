@@ -8,12 +8,12 @@
                 <form string="change Production Date">
                     <group>
                         <group>
-                            <field name="oa_id"/>
+                            <!-- <field name="oa_id"/> 
                             <field name="item"/>
                             <field name="shade"/>
                             <field name="size"/>
-                            <field name="done_qty"/>
-                            <!-- <field name="return_qty"/> -->
+                            <field name="done_qty"/> 
+                            <field name="return_qty"/> -->
                             <field name="return_date"/>
                         </group>
                     </group>

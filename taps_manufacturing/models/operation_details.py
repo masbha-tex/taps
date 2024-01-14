@@ -662,7 +662,7 @@ class OperationDetails(models.Model):
             stock_move_line = self.env["stock.move.line"].search([('product_id','=',l.product_id.id),('reference','=',picking.name),('lot_id','=',l.move_line.lot_id.id)])
             stock_move_line.update({'qty_done':l.qty})
 
-        operation.update({'state':'done','mrp_delivery':picking.id,'total_weight':delivery.total_weight})
+        operation.update({'state':'done','mrp_delivery':picking.id,'total_weight':delivery.total_weight,'action_date':delivery.deliveri_date})
         if picking:
             # raise UserError(('grrgr'))
             picking.sudo().button_validate()
