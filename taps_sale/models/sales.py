@@ -148,8 +148,36 @@ class SaleOrder(models.Model):
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     rmc = fields.Float(compute='_compute_rmc', string='RMC', store=True)
     earlier_ref = fields.Char(string='Earlier Ref')
+    mockup_details = fields.Text(string= "Mockup Details")
+    is_mockup_needed = fields.Boolean(string="mockup required", default=False)
+    
 
-   
+    @api.onchange('order_line')
+    def onchange_mockup_update(self):
+        for line in self.order_line:
+            # raise UserError(('eiioi'))
+            if "TIPPING" in line.product_template_id.name:
+                self.is_mockup_needed= True
+                break
+            if "STOPPER" in line.product_template_id.name:
+                self.is_mockup_needed= True
+                break
+            if "RING PRONG SNAP" in line.product_template_id.name:
+                self.is_mockup_needed= True
+                break
+            if "PEARL PRONG SNAP" in line.product_template_id.name:
+                self.is_mockup_needed= True
+                break
+            if "BADGE" in line.product_template_id.name:
+                self.is_mockup_needed= True
+                break
+
+        
+
+                
+        
+        
+    
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         """
@@ -777,6 +805,7 @@ class SaleOrder(models.Model):
                 'sale_representative' : saleorder.order_ref.sale_representative.id,
                 'user_id' : saleorder.order_ref.user_id,
                 'team_id' : saleorder.order_ref.team_id,
+                'mockup_details' : saleorder.order_ref.mockup_details,
                 
             })
             
@@ -963,6 +992,7 @@ class SaleOrder(models.Model):
                     'sale_representative' : saleorder.sample_ref[0].sale_representative.id,
                     'user_id' : saleorder.sample_ref[0].user_id,
                     'team_id' : saleorder.sample_ref[0].team_id,
+                    'mockup_details' : saleorder.sample_ref[0].mockup_details,
                 })
             
             orderline_values = []

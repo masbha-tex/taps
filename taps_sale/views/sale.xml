@@ -67,6 +67,9 @@
                     <field name="sa_date" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsale']]}"/>
                     <field name="pi_date" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsa']]}"/>
 					<field name="applicant_bank" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','oldsa']]}"/>
+                    <field name="is_mockup_needed" invisible="1"/>
+                     <field name="mockup_details" attrs="{'required': [('is_mockup_needed', '=', True)]}"/>
+            
 				</xpath>
 				<xpath expr="//field[@name='validity_date']" position="before">
 					<label for="is_revised" invisible='1'/>
@@ -118,7 +121,7 @@
 				</xpath>
 				<xpath expr="//field[@name='sales_type']" position="after">
 					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')]}" domain="[('state','=','sale'),'|',('sales_type','=','oldsale'),('sales_type','=','sale')]" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}"/>
-					<field name="sample_ref" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','oa']]}" widget="many2many_tags" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}" domain="[('state','=','sale'),'|',('sales_type','=','oldsa'),('sales_type','=','sample')]"/>
+					<field name="sample_ref" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa'],['sales_type','=','oa']], 'required':[['sales_type', '=', 'sale'],['company_id', '=', 3]]}" widget="many2many_tags" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}" domain="[('state','=','sale'),'|',('sales_type','=','oldsa'),('sales_type','=','sample')]"/>
                     <field name="earlier_ref" attrs="{'required': [('sales_type', '=', 'oa')], 'invisible': [('sales_type', '!=', 'oa')]}"/>
                     
 				</xpath>

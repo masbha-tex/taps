@@ -102,11 +102,14 @@ class SaleCcr(models.Model):
     ca_closing_date = fields.Date(string='CA Closing Date',readonly=True)
     pa_closing_date = fields.Date(string='PA Closing Date',readonly=True)
     closing_date = fields.Date(string='Closing Date')
-    # sale_order_line_id = fields.Many2many(related='oa_number.order_line', string="Sale Order Line")
-    # fg_product = fields.Many2one('product.template',string="Product Type/Code")
-    # fg_product = fields.Many2one('product.template',string="Product Type/Code", default='_default_fg_product')
+    
     fg_product = fields.Many2one('product.template',string="Product Type/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]")
-    # related_product_id = fields.Many2one('product.product', string='Related Product', compute='_compute_related_product', store=True)
+    # fg_product = fields.Many2one(
+    #     'product.template',
+    #     string="Product Type/Code",
+        
+    #      # You can set a default value if needed
+    # )
     finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
     # slider = fields.Char(string="Slider")
     sale_representative = fields.Many2one('res.users', related = 'oa_number.user_id', string='Sale Representative')
@@ -152,7 +155,13 @@ class SaleCcr(models.Model):
     
     # last_approve_date = fields.Date(string="Last Approve Date")
 
-   
+    # def _default_domain(self):
+    #     order_products= self.oa_number.id
+    #     # raise UserError((order_products))
+    #     sale_order_line = self.env['sale.order.line'].search([('order_id', '=', order_products)])
+    #     id = sale_order_line.mapped('product_template_id')
+    #     # Your logic to calculate the domain goes here
+    #     return "[['id', 'in', id]]"
 
     
 
@@ -292,6 +301,7 @@ class SaleCcr(models.Model):
             seq_date = None
             # seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
             vals['name'] = self.env['ir.sequence'].next_by_code('sale.ccr', sequence_date=seq_date) or _('New')
+            raise UserError((vals['oa_number']))
         
         result = super(SaleCcr, self).create(vals)
         return result

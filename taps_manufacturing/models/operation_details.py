@@ -307,6 +307,17 @@ class OperationDetails(models.Model):
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_return")
         action["domain"] = [('default_id','in',self.mapped('id'))]
         return action
+
+
+    def button_change_packing_date(self):
+        self.ensure_one()
+        self._check_company()
+        if self.next_operation != 'FG Packing':
+            raise UserError(('This is not for you'))
+            
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.change_production_date")
+        action["domain"] = [('default_id','in',self.mapped('id'))]
+        return action        
             
         
         # for s in self:

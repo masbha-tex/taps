@@ -25,18 +25,18 @@
             <field name="default_print_option">print</field>
             <!-- <field name="print_report_name">(object.pi_number)</field> -->
         </record>
-        <record id="action_rpt_slipt_packing" model="ir.actions.report">
-            <field name="name"> PRODUCTION PACKING LABEL</field>
-            <field name="model">operation.details</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">taps_manufacturing.rpt_slipt_packing</field>
-            <field name="report_file">taps_manufacturing.rpt_slipt_packing</field>
-            <field name="binding_model_id" ref="model_operation_details"/>
-            <field name="binding_type">report</field>
+        <!-- <record id="action_rpt_slipt_packing" model="ir.actions.report"> -->
+            <!-- <field name="name"> PRODUCTION PACKING LABEL</field> -->
+            <!-- <field name="model">operation.details</field> -->
+            <!-- <field name="report_type">qweb-pdf</field> -->
+            <!-- <field name="report_name">taps_manufacturing.rpt_slipt_packing</field> -->
+            <!-- <field name="report_file">taps_manufacturing.rpt_slipt_packing</field> -->
+            <!-- <field name="binding_model_id" ref="model_operation_details"/> -->
+            <!-- <field name="binding_type">report</field> -->
             <!-- <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/> -->
-            <field name="default_print_option">print</field>
+            <!-- <field name="default_print_option">print</field> -->
             <!-- <field name="print_report_name">(object.pi_number)</field> -->
-        </record>
+        <!-- </record> -->
 
         <record id="action_report_running_order_xls" model="ir.actions.report">
             <field name="name">Running Order Excel</field>

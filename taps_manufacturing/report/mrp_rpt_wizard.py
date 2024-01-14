@@ -30,7 +30,6 @@ class MrpReportWizard(models.TransientModel):
     file_data = fields.Binary(readonly=True, attachment=False)
 
 
-
     # date_from = fields.Date('Date from', required=True, readonly=False, default=lambda self: self._compute_from_date())
     # date_to = fields.Date('Date to', required=True, readonly=False, default=lambda self: self._compute_to_date())
     # export = fields.Selection([
@@ -1094,27 +1093,6 @@ class MrpReportWizard(models.TransientModel):
             others_value = 0
             # closed_col = 11
             for item in items:
-                # itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == item.name)
-                # closed_row = 2
-                # if itemwise_closed:
-                #     closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
-                #     if item.name == 'M#4 CE':
-                #         sheet.merge_range(1, closed_col, 1, closed_col+1, '', merge_format)
-                #     sheet.write(1, closed_col, item.name, column_style)
-                #     # sale_orders = self.env['sale.order'].browse(closed_oa.oa_id.ids).sorted(key=lambda pr: pr.id)
-                #     a = ''
-                #     c_col = closed_col
-                #     for oa in closed_oa_list:
-                #         if closed_row == 23:
-                #             closed_row = 1
-                #             c_col += 1
-                #         sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
-                #         closed_row += 1
-                #     if item.name == 'M#4 CE':
-                #         closed_col += 2
-                #     else:
-                #         closed_col += 1
-                    
                 items_comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
                 comu_pcs = sum(items_comu_outputs.mapped('qty'))
@@ -1311,18 +1289,19 @@ class MrpReportWizard(models.TransientModel):
                 report_data.append(order_data)
             
             row = 2
-            
+            type_exists = []
             closed_col = 11
             for line in report_data:
-                if ((line[1] or 0) + (line[3] or 0)) > 0:
+                item_type = line[0].replace('CE','').replace('OE','')
+                if (((line[1] or 0) + (line[3] or 0)) > 0) and (item_type not in type_exists):
                     closed_row = 2
-                    itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == line[0])
+                    itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE','').replace('OE','') == item_type)
                     c_col = closed_col
                     if line[0] == 'M#4 CE':
-                        sheet.merge_range(1, closed_col, 1, closed_col+1, line[0], column_style)
+                        sheet.merge_range(1, closed_col, 1, closed_col+1, item_type, column_style)
                         closed_col += 2
                     else:
-                        sheet.write(1, closed_col, line[0], column_style)
+                        sheet.write(1, closed_col, item_type, column_style)
                         closed_col += 1
                     if itemwise_closed:
                         closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
@@ -1348,7 +1327,9 @@ class MrpReportWizard(models.TransientModel):
                         for i in range(closed_row, 25):
                             sheet.write(closed_row, c_col, '', format_label_1)
                             closed_row += 1
-                    
+                
+                if item_type not in type_exists:
+                    type_exists.append(item_type)
                 col = 0
                 for l in line:
                     if col in (2,4,6,7,8):
@@ -1357,7 +1338,7 @@ class MrpReportWizard(models.TransientModel):
                         sheet.write(row, col, l, format_label_1)
                     col += 1
                 row += 1
-
+            # raise UserError((type_exists))
             sheet.write(row, 0, 'Total Order Close :', format_label_1)
             sheet.write(row, 1, closed_ids, format_label_1)
             sheet.write(row, 2, '', format_label_1)
@@ -1553,18 +1534,20 @@ class MrpReportWizard(models.TransientModel):
                 report_data.append(order_data)
             
             row = 2
-            
+
+            type_exists = []
             closed_col = 2
             for line in report_data:
-                if (line[1] or 0) > 0:
+                item_type = line[0].replace('CE','').replace('OE','')
+                if item_type not in type_exists:#(line[1] or 0) > 0
                     closed_row = 2
-                    itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == line[0])
+                    itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE','').replace('OE','') == item_type)
                     c_col = closed_col
                     if line[0] == 'M#4 CE':
-                        sheet.merge_range(1, closed_col, 1, closed_col+1, line[0], column_style)
+                        sheet.merge_range(1, closed_col, 1, closed_col+1, item_type, column_style)
                         closed_col += 2
                     else:
-                        sheet.write(1, closed_col, line[0], column_style)
+                        sheet.write(1, closed_col, item_type, column_style)
                         closed_col += 1
                     if itemwise_closed:
                         closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
@@ -1590,7 +1573,8 @@ class MrpReportWizard(models.TransientModel):
                         for i in range(closed_row, 25):
                             sheet.write(closed_row, c_col, '', format_label_1)
                             closed_row += 1
-                    
+                if item_type not in type_exists:
+                    type_exists.append(item_type)    
                 col = 0
                 for l in line:
                     if col in (2,4,6,7,8):

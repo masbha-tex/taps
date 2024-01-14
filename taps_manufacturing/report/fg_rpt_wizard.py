@@ -15,7 +15,7 @@ _logger = logging.getLogger(__name__)
 
 class FgReportWizard(models.TransientModel):
     _name = 'fg.report'
-    _description = 'MRP Reports'
+    _description = 'FG Reports'
     _check_company_auto = True
     
     # is_company = fields.Boolean(readonly=False, default=False)

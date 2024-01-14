@@ -36,6 +36,7 @@
         'wizard/mrp_delivery.xml',
         'wizard/mrp_group_output.xml',
         'wizard/mrp_return.xml',
+        'wizard/change_production_date.xml',
         'views/assets.xml',
         'views/mrp_productivity.xml',
         'views/mrp_production.xml',

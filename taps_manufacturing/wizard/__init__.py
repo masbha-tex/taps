@@ -11,3 +11,4 @@ from . import mrp_qc_output
 from . import mrp_delivery
 from . import mrp_group_output
 from . import mrp_return
+from . import change_production_date
