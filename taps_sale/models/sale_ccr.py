@@ -312,15 +312,15 @@ class SaleCcr(models.Model):
             self.ticket_id.stage_id = 2
             email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
             email_to_list=[]
-            email_from_list=[]
+            email_from_list=['odoo@texzipperbd.com']
             if self.company_id.id == 1:
                 email_cc_list.append('ranjeet.singh@texzipperbd.com')
                 email_to_list.append('qa@bd.texfasteners.com')
-                email_from_list.append('csd.zipper@texzipperbd.com')
+                # email_from_list.append('csd.zipper@texzipperbd.com')
             if self.company_id.id == 3:
                 email_cc_list.append('kumar.abhishek@texzipperbd.com')
                 email_to_list.append('quality2.metaltrims@texzipperbd.com')
-                email_from_list.append('nasir.csd@texzipperbd.com')
+                # email_from_list.append('nasir.csd@texzipperbd.com')
 
             email_cc = ','.join(email_cc_list)
             email_to = ','.join(email_to_list)
@@ -362,7 +362,7 @@ class SaleCcr(models.Model):
             if template_id:
                 template_id.write({
                     'email_to': 'alamgir@texzipperbd.com',
-                    'email_from': 'nitish.bassi@texzipperbd.com',
+                    'email_from': 'odoo@texzipperbd.com',
                     'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
                 
@@ -405,7 +405,7 @@ class SaleCcr(models.Model):
             if template_id:
                 template_id.write({
                     'email_to': 'deepak.shah@bd.texfasteners.com',
-                    'email_from': 'alamgir@texzipperbd.com',
+                    'email_from': 'odoo@texzipperbd.com',
                     'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
                 

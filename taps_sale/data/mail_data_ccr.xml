@@ -40,7 +40,7 @@
         <field name="partner_to"></field>
         <field name="body_html" type="xml">
 <div>
-    Dear Nitish Basi Sir,<br /><br />
+    Dear Nitish Basi,<br /><br />
     
     ${object.name} , Need your approval for further procedure<br />
     Kindly click on "View CCR" and then click on "HOD MANUFACTURING" button.<br /><br/>
@@ -97,7 +97,7 @@
         <field name="partner_to"></field>
         <field name="body_html" type="xml">
 <div>
-    Dear CEO Sir,<br /><br />
+    Dear Deepakkumar Mukundkumar Shah,<br /><br />
     
     Need to close the ${object.name}<br />
     Kindly click on "View CCR" and then click on "Close" button to close the CCR.<br /><br/>

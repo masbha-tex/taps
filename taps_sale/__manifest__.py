@@ -57,7 +57,7 @@
         'views/action_reporting_dashboard.xml',
         'reports/report.xml',
         'views/order_flow.xml',
-        # 'views/sale_order_rmc.xml',
+        'views/sale_order_rmc.xml',
         'wizard/sales_report_wizard.xml',
         'wizard/oa_update_confirm.xml',
         'wizard/ccr_wizard.xml',

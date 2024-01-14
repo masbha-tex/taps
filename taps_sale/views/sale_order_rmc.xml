@@ -59,6 +59,7 @@
                 <!-- <field name="price_unit"/> -->
                 <field name="price_subtotal" sum="Subtotal" decoration-bf="True"/>
                 <field name="rmc" sum="RMC" decoration-bf="True"/>
+                <field name="percent" avg="Average Percent"/>
             </tree>
         </field>
     </record>
