@@ -61,12 +61,12 @@ class CcrWizardPa(models.TransientModel):
             'pa_closing_date' : self.pa_closing_date,
             'states':'pa'})
         
-        email_from_list=[]
+        email_from_list=['odoo@texzipperbd.com']
         
-        if ccr.company_id.id == 1:
-            email_from_list.append('qa@bd.texfasteners.com')
-        if ccr.company_id.id == 3:
-            email_from_list.append('quality2.metaltrims@texzipperbd.com')
+        # if ccr.company_id.id == 1:
+        #     email_from_list.append('qa@bd.texfasteners.com')
+        # if ccr.company_id.id == 3:
+        #     email_from_list.append('quality2.metaltrims@texzipperbd.com')
             
         template_id = self.env.ref('taps_sale.ccr_assign_manufacturing_confirmation_template')
         if template_id:
@@ -96,12 +96,12 @@ class CcrWizardnot(models.TransientModel):
             'non_justify_action' : self.non_justify_action
                    })
         
-        email_from_list=[]
+        email_from_list=['odoo@texzipperbd.com']
         
-        if ccr.company_id.id == 1:
-            email_from_list.append('qa@bd.texfasteners.com')
-        if ccr.company_id.id == 3:
-            email_from_list.append('quality2.metaltrims@texzipperbd.com')
+        # if ccr.company_id.id == 1:
+        #     email_from_list.append('qa@bd.texfasteners.com')
+        # if ccr.company_id.id == 3:
+        #     email_from_list.append('quality2.metaltrims@texzipperbd.com')
             
         template_id = self.env.ref('taps_sale.ccr_assign_manufacturing_confirmation_template')
         if template_id:

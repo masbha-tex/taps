@@ -1663,6 +1663,8 @@ class SaleOrder(models.Model):
                 ref = self.env['ir.sequence'].next_by_code('sale.order.oa', sequence_date=seq_date) or _('New')
                 vals['name'] = ref
                 vals['pi_number'] = ref.replace("OA", 'PI')
+                order_ref = self.env['sale.order'].sudo().search([('id', '=' , vals.get('order_ref'))])
+                vals['payment_term_id'] = order_ref.payment_term_id.id
                 
         # Makes sure partner_invoice_id', 'partner_shipping_id' and 'pricelist_id' are defined
         if any(f not in vals for f in ['partner_invoice_id', 'partner_shipping_id', 'pricelist_id']):

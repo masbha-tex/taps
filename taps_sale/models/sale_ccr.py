@@ -301,7 +301,6 @@ class SaleCcr(models.Model):
             seq_date = None
             # seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
             vals['name'] = self.env['ir.sequence'].next_by_code('sale.ccr', sequence_date=seq_date) or _('New')
-            raise UserError((vals['oa_number']))
         
         result = super(SaleCcr, self).create(vals)
         return result
@@ -314,13 +313,16 @@ class SaleCcr(models.Model):
         return {}
         
     def action_assign_quality(self):
-        if self.rejected_quantity < 1 or not self.fg_product or not self.finish or not self.complaint or not self.invoice_reference:
-            raise UserError(("You Cannot leave empty any of the following fields: \n -Rejected Quantity, \n -Product Type/Code, \n -Complain/Defeat, Invoice Ref. \n Kindly fill up all the fields and then assign to Quality"))
+        if not self.fg_product or not self.finish or not self.complaint or not self.invoice_reference:
+            raise UserError(("You Cannot leave empty any of the following fields:\n -Product Type/Code, \n -Complain/Defeat, Invoice Ref. \n Kindly fill up all the fields and then assign to Quality"))
             
         else:
             self.write({'states': 'inter'})
             self.ticket_id.stage_id = 2
-            email_cc_list=['alamgir@texzipperbd.com','nitish.bassi@texzipperbd.com']
+            email_cc_list=['alamgir@texzipperbd.com',
+                           'nitish.bassi@texzipperbd.com',
+                           self.ticket_id.create_uid.partner_id.email,
+                          ]
             email_to_list=[]
             email_from_list=['odoo@texzipperbd.com']
             if self.company_id.id == 1:
