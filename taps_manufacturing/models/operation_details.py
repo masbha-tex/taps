@@ -1340,7 +1340,7 @@ class OperationDetails(models.Model):
                                                             'fr_pcs_pack':fraction_pc_of_pack,
                                                             'capacity':pr_pac_qty,
                                                             'move_line':move_line,
-                                                            'price_unit':products.price_unit,
+                                                            'price_unit':out.price_unit,
                                                             })
             out.uotput_qty = 0
 

@@ -1173,7 +1173,7 @@ class MrpReportWizard(models.TransientModel):
                     pack_pcs = sum(itemwise_outputs.mapped('qty'))
                     
                     if pack_pcs > 0:
-                        invoiced = sum(pack.qty * pack.unit_price for pack in itemwise_outputs)
+                        invoiced = sum(pack.qty * pack.price_unit for pack in itemwise_outputs)
                         # _s_qty = round(sum(itemwise_outputs.mapped('sale_order_line.product_uom_qty')),2)
                         # _s_value = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
                         # if _s_qty > 0:
