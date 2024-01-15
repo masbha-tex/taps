@@ -15,12 +15,8 @@ class change_production_date(models.TransientModel):
     _check_company_auto = True
     
     oa_id = fields.Char(string='OA', readonly=True)
-    # item = fields.Char(string='Item', readonly=True)
-    # shade = fields.Text(string='Shade', readonly=True)
-    # size = fields.Char(string='Size', readonly=True)
-    # done_qty = fields.Float(string='Qty', digits='Product Unit of Measure', readonly=True)
-    #return_qty = fields.Float(string='Return Qty', default=0.0, digits='Product Unit of Measure',required=True,readonly=True)
-    return_date = fields.Datetime(string='New Action Date', required=True)
+    from_date = fields.Date(string='From Date')
+    production_date = fields.Datetime(string='Production Date', required=True)
     
     @api.model
     def default_get(self, fields_list):
@@ -28,63 +24,23 @@ class change_production_date(models.TransientModel):
         active_model = self.env.context.get("active_model")
         active_id = self.env.context.get("active_id")
         production = self.env["operation.details"].browse(active_id)
-        res["oa_id"] = production.oa_id.name
-        # res["item"] = production.fg_categ_type
-        # res["shade"] = production.shade
-        # res["size"] = production.sizecm
-        # res["action_date"] = production.action_date
-        # res["return_date"] = production.qty
-        # res["done_qty"] = production.qty
+        res["from_date"] = production[0].action_date.date()
         return res 
             
-    def done_return_date(self):
-        # if self.action_date < self.return_date:
-        #     raise UserError(('You can not Change this'))
-        #     return
+    def done_production_date(self):
+        if self.from_date <= self.production_date.date():
+            raise UserError(('You can not Change date to same or advance date'))
+            return
         mo_id = self.env.context.get("active_id")
         production = self.env["operation.details"].browse(mo_id)
         
-        oa_id = production.oa_id.id
-        oa = production.oa_id.name
-        # return_qty = self.return_qty
-        # qty_exist = production.qty - return_qty
+        mrp_data = self.env["manufacturing.order"].search([('oa_id','in',production.oa_id.ids)])#browse(mrp_lines)
         
-        mrp_lines = [int(id_str) for id_str in production.mrp_lines.split(',')]
-        mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
-        # pr_pac_qty = mrp_data.product_template_id.pack_qty
-        # pack_qty = production.pack_qty
-        # fraction_pc_of_pack = production.fr_pcs_pack
-        mrplines = production.mrp_lines
-        mrp_id = int(production.mrp_lines)
-        # if pr_pac_qty:
-        #     pack_qty = math.ceil(qty_exist/pr_pac_qty)
-        #     fraction_pc_of_pack = round((((qty_exist/pr_pac_qty) % 1)*pr_pac_qty),0)
-
-
-#         update operation_details set action_date='2024-01-13' where company_id=1 and next_operation='FG Packing' and date(action_date)='2024-01-14';
-# update manufacturing_order set closing_date = '2024-01-13' where company_id=1 and date(closing_date)='2024-01-14';
-
-# update sale_order set closing_date=a.closing_date 
-# from(
-# select distinct oa_id,closing_date
-# from manufacturing_order as a where closing_date is not null and date(closing_date)='2024-01-13' and company_id=1 
-# ) as a where sale_order.company_id=1 and a.oa_id=sale_order.id;
-        
-        query = """update operation_details set done_qty = done_qty - %s,balance_qty = balance_qty + %s,ac_balance_qty = ac_balance_qty + %s,state = 'waiting' where oa_id = %s and next_operation = 'Packing Output' and mrp_lines = %s; 
-update manufacturing_order set done_qty = done_qty - %s,balance_qty = balance_qty + %s where oa_id = %s and id = %s;
-update manufacturing_order set oa_total_balance = oa_total_balance + %s where oa_id = %s;
-update manufacturing_order set closing_date = case when oa_total_balance > 0 then null else closing_date end, state = case when oa_total_balance > 0 then 'partial' else state end where oa_id = %s;"""
-
-        
-        self._cr.execute(query, (return_date, return_qty,return_qty,oa_id,mrplines,return_qty,return_qty,oa_id,mrp_id,return_qty,oa_id,oa_id))
-        # raise UserError((query))
-        
-        pack_return = production.update({'qty': qty_exist, 'return_qty':production.return_qty + return_qty,'pack_qty':pack_qty,'fr_pcs_pack': fraction_pc_of_pack})
-
-        # stockmove_line = self.env["stock.move.line"].search([('origin','=',oa),('state','not in',('draft','done','cancel'))])
-        
-        # picking = self.env["stock.picking"].search([('origin','=',oa),('state','not in',('draft','done','cancel'))])
-        # if picking:
-        #     picking.action_assign()
+        change_date = production.update({'action_date': self.production_date})
+        # mrp_to_close = mrp_data.filtered(lambda pr: pr.closing_date.date() == production[0].action_date.date())
+        # if mrp_to_close:
+        #     change_closing_date = mrp_to_close.update({'closing_date': self.production_date})
+        #     sale_order = self.env["sale.order"].browse(change_closing_date.oa_id.ids)
+        #     change_sale_order_closing_date = sale_order.update({'closing_date': change_closing_date[0].closing_date})
         
         return

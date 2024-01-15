@@ -144,6 +144,7 @@ class OperationDetails(models.Model):
     actual_qty = fields.Float(string='OA Qty', readonly=True, store=True, group_operator="sum")
     ac_balance_qty = fields.Float(string='OA Balance', readonly=False, store=True, compute='get_ac_balance', group_operator="sum")
     qty = fields.Float(string='Qty', readonly=False)
+    price_unit = fields.Float('Unit Price', digits='Product Price', default=0.0, store=True)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
@@ -310,21 +311,21 @@ class OperationDetails(models.Model):
 
 
     def button_change_packing_date(self):
-        self.ensure_one()
+        # self.ensure_one()
         self._check_company()
-        if self.next_operation != 'FG Packing':
-            raise UserError(('This is not for you'))
+        for record in self:
+            if record.next_operation != 'FG Packing':
+                raise UserError(('This is not for you'))
+        unique_dates = set(record.action_date.date() for record in self)
+        if len(unique_dates) > 1:
+            raise UserError(('You can change date only for one date'))
             
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.change_production_date")
         action["domain"] = [('default_id','in',self.mapped('id'))]
         return action        
             
         
-        # for s in self:
-        #     ope = self.env["operation.details"].search([('mrp_lines','=',int(s.mrp_lines)),('next_operation','=','Packing Output')])
-        #     if ope:
-        #         ope = ope.write({'actual_qty': ope.actual_qty + s.qty})
-        # raise UserError((self.ids))
+       
         
     def button_group_output(self):
         for r in self:
@@ -1338,7 +1339,8 @@ class OperationDetails(models.Model):
                                                             'pack_qty':pack_qty,
                                                             'fr_pcs_pack':fraction_pc_of_pack,
                                                             'capacity':pr_pac_qty,
-                                                            'move_line':move_line
+                                                            'move_line':move_line,
+                                                            'price_unit':products.price_unit,
                                                             })
             out.uotput_qty = 0
 

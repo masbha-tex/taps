@@ -162,10 +162,7 @@ class SaleOrder(models.Model):
             if "STOPPER" in line.product_template_id.name:
                 self.is_mockup_needed= True
                 break
-            if "RING PRONG SNAP" in line.product_template_id.name:
-                self.is_mockup_needed= True
-                break
-            if "PEARL PRONG SNAP" in line.product_template_id.name:
+            if "PRONG SNAP" in line.product_template_id.name:
                 self.is_mockup_needed= True
                 break
             if "BADGE" in line.product_template_id.name:
@@ -451,7 +448,7 @@ class SaleOrder(models.Model):
                 'mudit.tandon@texfasteners.com',
                 'deepak.shah@bd.texfasteners.com',
                 ]
-            email_from_list = []
+            email_from_list = ['odoo@texzipperbd.com']
             email_cc_list = [
                 'shahid.hossain@texzipperbd.com',
                 'alamgir@texzipperbd.com',
@@ -473,12 +470,12 @@ class SaleOrder(models.Model):
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
                 email_cc_list.append('ranjeet.singh@texzipperbd.com')
                 email_cc_list.append('csd.zipper@texzipperbd.com')
-                email_from_list.append('csd.zipper@texzipperbd.com')
+                # email_from_list.append('csd.zipper@texzipperbd.com')
             if rec.id == 3:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release_mt', False)
                 email_cc_list.append('kumar.abhishek@texzipperbd.com')
                 email_cc_list.append('nasir.csd@texzipperbd.com')
-                email_from_list.append('nasir.csd@texzipperbd.com')
+                # email_from_list.append('nasir.csd@texzipperbd.com')
             pdf_content, content_type = report.sudo()._render_qweb_pdf()
             # author_list = ','.join(author_id)
             # raise UserError((pdf_content))
@@ -532,7 +529,7 @@ class SaleOrder(models.Model):
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
                 
            
-            rec.env['mail.mail'].sudo().create(mail_values).send()
+            rec.env['mail.mail'].sudo().create(mail_values)
 
     
     
@@ -548,7 +545,7 @@ class SaleOrder(models.Model):
             email_to_list = []
             email_to_list = []
             email_from_list = [
-                'asraful.haque@texzipperbd.com',
+                'odoo@texzipperbd.com',
             ]
             email_cc_list = [
                 # 'alamgir@texzipperbd.com',
@@ -618,7 +615,7 @@ class SaleOrder(models.Model):
                 body = template._render(template_ctx, engine='ir.qweb')
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
            
-            rec.env['mail.mail'].sudo().create(mail_values).send()
+            rec.env['mail.mail'].sudo().create(mail_values)
             
 
     @api.model
@@ -1411,7 +1408,8 @@ class SaleOrder(models.Model):
                                             'finish_ref':products.finish_ref,
                                             'product_code':products.product_code,
                                             'shape':products.shape,
-                                            'back_part':products.back_part
+                                            'back_part':products.back_part,
+                                            'price_unit':products.price_unit
                                             })
                 
             # text = products.shade
@@ -1468,7 +1466,8 @@ class SaleOrder(models.Model):
                                                             'finish_ref':products.finish_ref,
                                                             'product_code':products.product_code,
                                                             'shape':products.shape,
-                                                            'back_part':products.back_part
+                                                            'back_part':products.back_part,
+                                                            'price_unit':products.price_unit
                                                             })
 
         if state != 'cancel':

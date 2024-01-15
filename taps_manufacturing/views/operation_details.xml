@@ -107,6 +107,7 @@
                 <field name="plan_remarks" readonly="1" force_save="1" optional="show"/>
                 <field name="revision_no" readonly="1" force_save="1" optional="show"/>
                 <field name="closing_date" readonly="1" force_save="1" optional="show"/>
+                <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="return_qty" invisible="1"/>
                 <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/>
                 <field name="num_of_lots"/>
@@ -173,6 +174,7 @@
                 <field name="actual_qty" readonly="1" optional="show"/>
                 <field name="ac_balance_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="qty" readonly="1" optional="show"/>
+                <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="balance_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="uotput_qty" attrs="{'readonly': [('operation_of', 'not in', ('output','qc','lot'))]}" optional="show"/>
@@ -237,6 +239,7 @@
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1" optional="show"/>
+                <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="pack_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="fr_pcs_pack" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
@@ -293,6 +296,7 @@
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1" optional="show"/>
+                <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="pack_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="fr_pcs_pack" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
@@ -341,6 +345,7 @@
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1" optional="show"/>
+                <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="pack_qty" readonly="1" optional="show"/>
                 <field name="fr_pcs_pack" readonly="1" optional="show"/>
                 <field name="fg_done_qty" readonly="1" optional="show"/>
@@ -395,6 +400,7 @@
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1" optional="show"/>
+                <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="pack_qty" readonly="1" optional="show"/>
                 <field name="fr_pcs_pack" readonly="1" optional="show"/>
                 <field name="fg_done_qty" readonly="1" optional="show"/>
@@ -450,6 +456,7 @@
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
                 <field name="qty" readonly="1" optional="show"/>
+                <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="pack_qty" readonly="1" optional="show"/>
                 <field name="fr_pcs_pack" readonly="1" optional="show"/>
                 <field name="fg_done_qty" readonly="1" optional="show"/>

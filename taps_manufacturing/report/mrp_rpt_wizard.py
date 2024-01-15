@@ -48,7 +48,67 @@ class MrpReportWizard(models.TransientModel):
         dt_to = fields.datetime.now()#.replace(day = last_day_of_month)
         return dt_to
 
-    
+    def _action_send_email(self, com_id):
+        com = self.env['res.company'].search([('id', 'in', (com_id))])
+        for rec in com:
+            subject = (rec.name)+' Unit -Write your Report Name('+(datetime.now().strftime('%d %b, %Y'))+')'
+            
+            body = 'Dear All, \n Kindly see the attached ....'
+            email_to_list = []
+            # 'mudit.tandon@texfasteners.com',
+            # 'deepak.shah@bd.texfasteners.com',
+            email_to_list = [
+                'production@bd.texfasteners.com'
+                ]
+            email_from_list = ['odoo@texzipperbd.com']
+            email_cc_list = [
+                'shahid.hossain@texzipperbd.com',
+                ]
+             # 'alamgir@texzipperbd.com',
+             #    'nitish.bassi@texzipperbd.com',
+             #    'suranjan.kumar@texzipperbd.com',
+             #    'mirtunjoy.chatterjee@texzipperbd.com',
+             #    'abdur.rahman@texzipperbd.com',
+             #    'oa@bd.texfasteners.com',
+             #    'costing@texzipperbd.com',
+             #    'mis.mkt@texzipperbd.com',
+             #    'asraful.haque@texzipperbd.com',
+            author_id=0
+            
+               
+            # pdf_content, content_type = report.sudo()._render_qweb_pdf()
+            start_time = fields.datetime.now()
+        
+            data = {'date_from': start_time.date(),'date_to': start_time.date()}
+        
+            excel_content = report.sudo().daily_pr_xls_template(self, data=data)#_generate_excel_report()
+
+            attachment = rec.env['ir.attachment'].sudo().create({
+                'name': rec.name + ' Daily OA Release(' + (datetime.now().strftime('%d %b, %Y')) + ')' + '.xlsx',
+                'type': 'binary',
+                'datas': base64.encodebytes(excel_content),
+                'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'res_model': 'mrp.report',
+                'company_id': rec.id,
+            })
+            email_cc = ','.join(email_cc_list)
+            email_from = ','.join(email_from_list)
+            email_to = ','.join(email_to_list)
+            mail_values = {
+                'email_from': email_from,
+                'author_id': self.env.user.partner_id.id,
+                'model': None,
+                'res_id': None,
+                'subject': subject,
+                'body_html': body,
+                'auto_delete': True,
+                'email_to': email_to,
+                'email_cc': email_cc,
+                'attachment_ids': attachment,
+                'reply_to' : None,
+                
+            }
+            rec.env['mail.mail'].sudo().create(mail_values)
 
     @staticmethod
     def _get_year_list():
@@ -987,9 +1047,7 @@ class MrpReportWizard(models.TransientModel):
         }
     #packing invoice start here
     def iterate_days(self, year, month):
-        # Get the number of days in the given month
         _, last_day = calendar.monthrange(year, month)
-    
         # Iterate over all days in the month
         for day in range(1, last_day + 1):
             yield day
@@ -997,10 +1055,16 @@ class MrpReportWizard(models.TransientModel):
     def daily_pr_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
         month_ = None
+        _day = to_day = None
         if data.get('date_from'):
             month_ = int(data.get('date_from').month)#data.get('month_list')
             year = int(data.get('date_from').year)#datetime.today().year
             _day = int(data.get('date_from').day)
+        if data.get('date_to'):
+            to_day = int(data.get('date_to').day)
+            # month_ = int(data.get('date_from').month)#data.get('month_list')
+            # year = int(data.get('date_from').year)#datetime.today().year
+            
 
         # raise UserError((int(month_),data.get('date_from').date()))
         # f_date = data.get('date_from')
@@ -1030,362 +1094,366 @@ class MrpReportWizard(models.TransientModel):
         initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id),('production_date','>=',data.get('date_from'))])#&gt;
         
         all_closed = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id','=',self.env.company.id)])
+        # for day in self.iterate_days(year, int(month_)):
         for day in self.iterate_days(year, int(month_)):
-            report_name = day
-            
-            full_date = fields.datetime.now().replace(day = _day).replace(month = int(month_)).replace(year = year)
-            first_day_of_m = full_date # first day of month
-            full_date = full_date.replace(day = day)
-            
-            datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
-            comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() <= full_date.date())
-            
-            sheet = workbook.add_worksheet(('%s' % (report_name)))
-            
-            
-            sheet.write(0, 0, "DATE :", column_style)
-            sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
-            # sheet.write(0, 11, "DATE :", column_style)
-            # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
-            sheet.merge_range(0, 11, 0, 17, 'CLOSED ORDER', column_style)
-            sheet.freeze_panes(2, 0)
-            if start_time.date() == full_date.date():
-                sheet.activate()
+            if day >= _day and day <= to_day:
+                report_name = day
                 
-            sheet.write(1, 0, "PRODUCT", column_style)
-            sheet.write(1, 1, "PACKING PCS", column_style)
-            sheet.write(1, 2, "INVOICE USD", column_style)
-            sheet.write(1, 3, "PENDING PCS", column_style)
-            sheet.write(1, 4, "PENDING USD", column_style)
-            sheet.write(1, 5, "COMULATIVE PRODUCTION", column_style)
-            sheet.write(1, 6, "COMULATIVE INVOICING", column_style)
-            sheet.write(1, 7, "TODAY RELEASED", column_style)
-            sheet.write(1, 8, "COMULATIVE RELEASED", column_style)
-            sheet.write(1, 9, "PENDING OA", column_style)
-
-            sheet.set_column(0, 0, 20)
-            sheet.set_column(1, 1, 15)
-            sheet.set_column(2, 2, 15)
-            sheet.set_column(3, 3, 15)
-            sheet.set_column(4, 4, 15)
-            sheet.set_column(5, 5, 15)
-            sheet.set_column(6, 6, 15)
-            sheet.set_column(7, 7, 15)
-            sheet.set_column(8, 8, 15)
-            sheet.set_column(9, 9, 15)
-
-            closed_ids = 0
-            # items = datewise_outputs.mapped('fg_categ_type')
-            # items = list(set(items))
-            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
-
-            daily_closed_oa = None
-            if all_closed:
-                daily_closed_oa = all_closed.filtered(lambda pr: pr.closing_date.date() == full_date.date())
-            
-            if daily_closed_oa:
-                oa_ids = daily_closed_oa.mapped('oa_id')
-                closed_ids = len(oa_ids)
-            
-            items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
-            
-            report_data = []
-            others_value = 0
-            # closed_col = 11
-            for item in items:
-                items_comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
-                itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
-                comu_pcs = sum(items_comu_outputs.mapped('qty'))
-                price = comu_inv = 0
-                if comu_pcs > 0 :
-                    c_s_qty = round(sum(items_comu_outputs.mapped('sale_order_line.product_uom_qty')),2)
-                    c_s_value = round(sum(items_comu_outputs.mapped('sale_order_line.price_subtotal')),2)
-                    if c_s_qty>0:
-                        price = round((c_s_value/c_s_qty),4)
-                        comu_inv = round((comu_pcs*price),2)
+                full_date = fields.datetime.now().replace(day = _day).replace(month = int(month_)).replace(year = year)
+                first_day_of_m = full_date # first day of month
+                full_date = full_date.replace(day = day)
                 
-                pack_pcs = sum(itemwise_outputs.mapped('qty'))
-                if pack_pcs > 0:
-                    _s_qty = round(sum(itemwise_outputs.mapped('sale_order_line.product_uom_qty')),2)
-                    _s_value = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
-                    if _s_qty > 0:
-                        price = round((_s_value/_s_qty),4)
-
-                in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
+                datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
+                comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() <= full_date.date())
                 
-                all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','!=','cancel'),('company_id','=',self.env.company.id)])
+                sheet = workbook.add_worksheet(('%s' % (report_name)))
                 
                 
-                comu_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
-
-                if in_pr:
-                    if full_date.date() == in_pr.production_date.date():
-                        comu_pcs = in_pr.production_till_date
-    
-                    cm_pcs = 0
-                    cm_rel = sum(comu_released.mapped('product_uom_qty'))
-                    if full_date.date() > in_pr.production_date.date():
-                        comu_day_outputs = items_comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
-                        # cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
-                        if comu_day_outputs:
-                            cm_pcs = sum(comu_day_outputs.mapped('qty'))
-                            
-                        comu_pcs = in_pr.production_till_date + cm_pcs
-
-                total_qty = comur_value = pending_pcs = pending_usd = 0
-                # pending_usd = 0.0
-                
-                if comu_released:
-                    comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
-                    total_qty = sum(comu_released.mapped('sale_order_line.product_uom_qty'))
-                    price = round((comur_value / total_qty),4)
-                    # pending_pcs = total_qty - comu_pcs
-
-                
-                item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
-                
-                invoiced = round((pack_pcs*price),2)
-                # pending_usd = round((pending_pcs*price),2)
-                
-                
-                # not_closed_oa = all_released.sudo().filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date != True))
-                                                      
-                # al_closed_oa = all_released.sudo().filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date == True and pr.closing_date.date() > full_date.date()))
-
-                # get_pending = not_closed_oa + al_closed_oa
-                # if get_pendings:
-                #     raise UserError(('yes'))
-                                                     
-                query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id and a.company_id = s.company_id where a.company_id = %s and a.state not in ('cancel') and date(s.create_date) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
-                self.env.cr.execute(query, (self.env.company.id,full_date.date(),full_date.date(),item.name))
-                get_pending = self.env.cr.fetchone()
-
-                # _top = self.env['operation.details'].search([('sale_line_of_top','=',o_data.id),('company_id','=',self.env.company.id)])
-                
-                # pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) ) ))
-                
-                pending_ids = 0
-                
-                if len(get_pending) > 1: #get_pending:#
-                    # raise UserError((get_pending[0],get_pending[1],get_pending[3]))
-                    # oa_ids = pending_oa.mapped('oa_id')
-                    pending_oa_ids = None
-                    pending_oa_ids = get_pending[3]
-                    if pending_oa_ids:
-                        # pending_oa_ids = set(get_pending.mapped('oa_id.id')) #set(get_pending[3])
-                        # raise UserError((pending_oa_ids))
-                        pending_oa_ids = ','.join([str(i) for i in sorted(pending_oa_ids)])
-                        pending_oa_ids = [int(i) for i in sorted(pending_oa_ids.split(','))]
-                    # raise UserError((pending_oa_ids))
-                        pending_ids = get_pending[0]
-                        qty = get_pending[1]#sum(get_pending.mapped('product_uom_qty'))#
-                        # val = round(sum(get_pending.mapped('sale_order_line.price_subtotal')),2)
-                        # if qty > 0:
-                        price = get_pending[2]#round(val/qty,2)
-                        
-                        pending_pcs = qty
-
-                        pending_orders = self.env['manufacturing.order'].search([('oa_id','in',(pending_oa_ids)),('company_id','=',self.env.company.id)])
-                        if pending_orders:
-                            vl = round(sum(pending_orders.mapped('sale_order_line.price_subtotal')),2)
-                            _qty = sum(pending_orders.mapped('sale_order_line.product_uom_qty'))
-                            price = round((vl / _qty),4)
-                            
-                        pending_usd = round((pending_pcs * price),2)
-
-                        if item.name == 'Others':
-                            all_top_outputs = self.env['operation.details'].sudo().search([('next_operation','=','Packing Output'),('company_id','=',self.env.company.id),('fg_categ_type','=',item.name),('oa_id.id','in',pending_oa_ids),('product_template_id.name','=','TOP')])
-                            if all_top_outputs:
-                                pending_pcs += sum(all_top_outputs.mapped('qty'))
-                                qty = pending_pcs
-                                # raise UserError((qty))
-                            # _top_outputs = all_top_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
-                        
-                        _outputs = all_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
-                        if _outputs:
-                            doneqty = sum(_outputs.mapped('qty'))
-                            pending_pcs = qty - doneqty
-                            pending_usd = round((pending_pcs * price),2)
-                
-                # if start_time.date() == full_date.date():
-                #     # raise UserError((start_time.date(),full_date.date()))
-                #     pending_pcs = sum(item_run_ord.mapped('balance_qty'))
-                #     oa_ids = item_run_ord.mapped('oa_id')
-                #     pending_ids = len(oa_ids)
-                #     # pending_ids = sum(item_run_ord.mapped('balance_qty'))
+                sheet.write(0, 0, "DATE :", column_style)
+                sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
+                # sheet.write(0, 11, "DATE :", column_style)
+                # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
+                sheet.merge_range(0, 11, 0, 17, 'CLOSED ORDER', column_style)
+                sheet.freeze_panes(2, 0)
+                if start_time.date() == full_date.date():
+                    sheet.activate()
                     
-                #     vl = round(sum(item_run_ord.mapped('sale_order_line.price_subtotal')),2)
-                #     _qty = sum(item_run_ord.mapped('sale_order_line.product_uom_qty'))
-                #     if _qty > 0 and pending_pcs > 0:
-                #         price = round((vl / _qty),4)
-                #         pending_usd = round((pending_pcs*price),2)
-
-
-
+                sheet.write(1, 0, "PRODUCT", column_style)
+                sheet.write(1, 1, "PACKING PCS", column_style)
+                sheet.write(1, 2, "INVOICE USD", column_style)
+                sheet.write(1, 3, "PENDING PCS", column_style)
+                sheet.write(1, 4, "PENDING USD", column_style)
+                sheet.write(1, 5, "COMULATIVE PRODUCTION", column_style)
+                sheet.write(1, 6, "COMULATIVE INVOICING", column_style)
+                sheet.write(1, 7, "TODAY RELEASED", column_style)
+                sheet.write(1, 8, "COMULATIVE RELEASED", column_style)
+                sheet.write(1, 9, "PENDING OA", column_style)
+    
+                sheet.set_column(0, 0, 20)
+                sheet.set_column(1, 1, 15)
+                sheet.set_column(2, 2, 15)
+                sheet.set_column(3, 3, 15)
+                sheet.set_column(4, 4, 15)
+                sheet.set_column(5, 5, 15)
+                sheet.set_column(6, 6, 15)
+                sheet.set_column(7, 7, 15)
+                sheet.set_column(8, 8, 15)
+                sheet.set_column(9, 9, 15)
+    
+                closed_ids = 0
+                # items = datewise_outputs.mapped('fg_categ_type')
+                # items = list(set(items))
+                running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+    
+                daily_closed_oa = None
+                if all_closed:
+                    daily_closed_oa = all_closed.filtered(lambda pr: pr.closing_date.date() == full_date.date())
                 
-                today_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() == full_date.date())
-                tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
-                if in_pr:
-                    if full_date.date() == in_pr.production_date.date():
-                        comu_inv = in_pr.invoice_till_date
-                        comur_value = in_pr.released_till_date
+                if daily_closed_oa:
+                    oa_ids = daily_closed_oa.mapped('oa_id')
+                    closed_ids = len(oa_ids)
+                
+                items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
+                
+                report_data = []
+                others_value = 0
+                # closed_col = 11
+                for item in items:
+                    items_comu_outputs = comu_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
+                    itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
+                    comu_pcs = sum(items_comu_outputs.mapped('qty'))
+                    price = comu_inv = 0
+                    if comu_pcs > 0 :
+                        c_s_qty = round(sum(items_comu_outputs.mapped('sale_order_line.product_uom_qty')),2)
+                        c_s_value = round(sum(items_comu_outputs.mapped('sale_order_line.price_subtotal')),2)
+                        if c_s_qty>0:
+                            price = round((c_s_value/c_s_qty),4)
+                            comu_inv = round((comu_pcs*price),2)
+                    invoiced = 0
+                    pack_pcs = sum(itemwise_outputs.mapped('qty'))
+                    
+                    if pack_pcs > 0:
+                        invoiced = sum(pack.qty * pack.unit_price for pack in itemwise_outputs)
+                        # _s_qty = round(sum(itemwise_outputs.mapped('sale_order_line.product_uom_qty')),2)
+                        # _s_value = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
+                        # if _s_qty > 0:
+                        price = round((invoiced/pack_pcs),4)
+    
+                    in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
+                    
+                    all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','!=','cancel'),('company_id','=',self.env.company.id)])
+                    
+                    
+                    comu_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
+    
+                    if in_pr:
+                        if full_date.date() == in_pr.production_date.date():
+                            comu_pcs = in_pr.production_till_date
+        
+                        cm_pcs = 0
+                        cm_rel = sum(comu_released.mapped('product_uom_qty'))
+                        if full_date.date() > in_pr.production_date.date():
+                            comu_day_outputs = items_comu_outputs.filtered(lambda pr: pr.action_date.date() > in_pr.production_date.date() and pr.action_date.date() <= full_date.date())
+                            # cm_day_released = comu_released.filtered(lambda pr: pr.date_order.date() > in_pr.production_date.date())
+                            if comu_day_outputs:
+                                cm_pcs = sum(comu_day_outputs.mapped('qty'))
+                                
+                            comu_pcs = in_pr.production_till_date + cm_pcs
+    
+                    total_qty = comur_value = pending_pcs = pending_usd = 0
+                    # pending_usd = 0.0
+                    
+                    if comu_released:
+                        comur_value = round(sum(comu_released.mapped('sale_order_line.price_subtotal')),2)
+                        total_qty = sum(comu_released.mapped('sale_order_line.product_uom_qty'))
+                        price = round((comur_value / total_qty),4)
+                        # pending_pcs = total_qty - comu_pcs
+    
+                    
+                    item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
+                    # if invoiced == 0:
+                    #     invoiced = round((pack_pcs*price),2)
+                    # pending_usd = round((pending_pcs*price),2)
+                    
+                    
+                    # not_closed_oa = all_released.sudo().filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date != True))
+                                                          
+                    # al_closed_oa = all_released.sudo().filtered(lambda pr: (pr.date_order.date() <= full_date.date() and pr.closing_date == True and pr.closing_date.date() > full_date.date()))
+    
+                    # get_pending = not_closed_oa + al_closed_oa
+                    # if get_pendings:
+                    #     raise UserError(('yes'))
+                                                         
+                    query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id and a.company_id = s.company_id where a.company_id = %s and a.state not in ('cancel') and date(s.create_date) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
+                    self.env.cr.execute(query, (self.env.company.id,full_date.date(),full_date.date(),item.name))
+                    get_pending = self.env.cr.fetchone()
+    
+                    # _top = self.env['operation.details'].search([('sale_line_of_top','=',o_data.id),('company_id','=',self.env.company.id)])
+                    
+                    # pending_oa = all_released.filtered(lambda pr: (pr.date_order.date() <= full_date.date() and  (pr.closing_date != True or (getattr(pr.closing_date, 'date', lambda: None)() == True and pr.closing_date.date() > full_date.date()) ) ))
+                    
+                    pending_ids = 0
+                    
+                    if len(get_pending) > 1: #get_pending:#
+                        # raise UserError((get_pending[0],get_pending[1],get_pending[3]))
+                        # oa_ids = pending_oa.mapped('oa_id')
+                        pending_oa_ids = None
+                        pending_oa_ids = get_pending[3]
+                        if pending_oa_ids:
+                            # pending_oa_ids = set(get_pending.mapped('oa_id.id')) #set(get_pending[3])
+                            # raise UserError((pending_oa_ids))
+                            pending_oa_ids = ','.join([str(i) for i in sorted(pending_oa_ids)])
+                            pending_oa_ids = [int(i) for i in sorted(pending_oa_ids.split(','))]
+                        # raise UserError((pending_oa_ids))
+                            pending_ids = get_pending[0]
+                            qty = get_pending[1]#sum(get_pending.mapped('product_uom_qty'))#
+                            # val = round(sum(get_pending.mapped('sale_order_line.price_subtotal')),2)
+                            # if qty > 0:
+                            price = get_pending[2]#round(val/qty,2)
+                            
+                            pending_pcs = qty
+    
+                            pending_orders = self.env['manufacturing.order'].search([('oa_id','in',(pending_oa_ids)),('company_id','=',self.env.company.id)])
+                            if pending_orders:
+                                vl = round(sum(pending_orders.mapped('sale_order_line.price_subtotal')),2)
+                                _qty = sum(pending_orders.mapped('sale_order_line.product_uom_qty'))
+                                price = round((vl / _qty),4)
+                                
+                            pending_usd = round((pending_pcs * price),2)
+    
+                            if item.name == 'Others':
+                                all_top_outputs = self.env['operation.details'].sudo().search([('next_operation','=','Packing Output'),('company_id','=',self.env.company.id),('fg_categ_type','=',item.name),('oa_id.id','in',pending_oa_ids),('product_template_id.name','=','TOP')])
+                                if all_top_outputs:
+                                    pending_pcs += sum(all_top_outputs.mapped('qty'))
+                                    qty = pending_pcs
+                                    # raise UserError((qty))
+                                # _top_outputs = all_top_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
+                            
+                            _outputs = all_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
+                            if _outputs:
+                                doneqty = sum(_outputs.mapped('qty'))
+                                pending_pcs = qty - doneqty
+                                pending_usd = round((pending_pcs * price),2)
+                    
+                    # if start_time.date() == full_date.date():
+                    #     # raise UserError((start_time.date(),full_date.date()))
+                    #     pending_pcs = sum(item_run_ord.mapped('balance_qty'))
+                    #     oa_ids = item_run_ord.mapped('oa_id')
+                    #     pending_ids = len(oa_ids)
+                    #     # pending_ids = sum(item_run_ord.mapped('balance_qty'))
                         
-                    if full_date.date() > in_pr.production_date.date():
-                        cmr_val = 0
-                        comu_released_ = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() > in_pr.production_date.date())
-                        if comu_released_:
-                            cmr_val = round(sum(comu_released_.mapped('sale_order_line.price_subtotal')),2)
-                            # sum(comu_released.mapped('product_uom_qty'))
-                        cm_inv = price * cm_pcs
-                        comu_inv = in_pr.invoice_till_date + cm_inv
-                        comur_value = in_pr.released_till_date + cmr_val
-                
-                order_data = []
-                
-                invoiced = round(invoiced,0)
-                # if pending_usd == None:
-                #     raise UserError((pending_usd))
-                pending_usd = round(pending_usd,0)
-                comu_inv = round(comu_inv,0)
-                tr_value = round(tr_value,0)
-                comur_value = round(comur_value,0)
-                
-                if start_time.date() < full_date.date():
-                    invoiced = pending_usd = comu_inv = tr_value = comur_value = pack_pcs = pending_pcs = comu_pcs = pending_ids = None
-
-                else:
-                    if pack_pcs == 0:
-                        pack_pcs = None
-                    if pending_pcs <= 0:
+                    #     vl = round(sum(item_run_ord.mapped('sale_order_line.price_subtotal')),2)
+                    #     _qty = sum(item_run_ord.mapped('sale_order_line.product_uom_qty'))
+                    #     if _qty > 0 and pending_pcs > 0:
+                    #         price = round((vl / _qty),4)
+                    #         pending_usd = round((pending_pcs*price),2)
+    
+    
+    
+                    
+                    today_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() == full_date.date())
+                    tr_value = round(sum(today_released.mapped('sale_order_line.price_subtotal')),2)
+                    if in_pr:
+                        if full_date.date() == in_pr.production_date.date():
+                            comu_inv = in_pr.invoice_till_date
+                            comur_value = in_pr.released_till_date
+                            
+                        if full_date.date() > in_pr.production_date.date():
+                            cmr_val = 0
+                            comu_released_ = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() > in_pr.production_date.date())
+                            if comu_released_:
+                                cmr_val = round(sum(comu_released_.mapped('sale_order_line.price_subtotal')),2)
+                                # sum(comu_released.mapped('product_uom_qty'))
+                            cm_inv = price * cm_pcs
+                            comu_inv = in_pr.invoice_till_date + cm_inv
+                            comur_value = in_pr.released_till_date + cmr_val
+                    
+                    order_data = []
+                    
+                    invoiced = round(invoiced,0)
+                    # if pending_usd == None:
+                    #     raise UserError((pending_usd))
+                    pending_usd = round(pending_usd,0)
+                    comu_inv = round(comu_inv,0)
+                    tr_value = round(tr_value,0)
+                    comur_value = round(comur_value,0)
+                    
+                    if start_time.date() < full_date.date():
+                        invoiced = pending_usd = comu_inv = tr_value = comur_value = pack_pcs = pending_pcs = comu_pcs = pending_ids = None
+    
+                    else:
+                        if pack_pcs == 0:
+                            pack_pcs = None
+                        if pending_pcs <= 0:
+                            pending_pcs,
+                            pending_usd,
+                        if comu_pcs == 0:
+                            comu_pcs = None
+                        if pending_ids == 0:
+                            pending_ids = None
+        
+                        if invoiced == 0:
+                            invoiced = None
+                        if comu_inv == 0:
+                            comu_inv = None
+                        if tr_value == 0:
+                            tr_value = None    
+                        if comur_value == 0:
+                            comur_value = None
+                    if item.name == 'Others':
+                        others_value = invoiced
+                    order_data = [
+                        item.name,
+                        pack_pcs,
+                        invoiced,
                         pending_pcs,
                         pending_usd,
-                    if comu_pcs == 0:
-                        comu_pcs = None
-                    if pending_ids == 0:
-                        pending_ids = None
-    
-                    if invoiced == 0:
-                        invoiced = None
-                    if comu_inv == 0:
-                        comu_inv = None
-                    if tr_value == 0:
-                        tr_value = None    
-                    if comur_value == 0:
-                        comur_value = None
-                if item.name == 'Others':
-                    others_value = invoiced
-                order_data = [
-                    item.name,
-                    pack_pcs,
-                    invoiced,
-                    pending_pcs,
-                    pending_usd,
-                    comu_pcs,
-                    comu_inv,
-                    tr_value,
-                    comur_value,
-                    pending_ids,
-                    ]
-                report_data.append(order_data)
-            
-            row = 2
-            type_exists = []
-            closed_col = 11
-            for line in report_data:
-                item_type = line[0].replace('CE','').replace('OE','')
-                if (((line[1] or 0) + (line[3] or 0)) > 0) and (item_type not in type_exists):
-                    closed_row = 2
-                    itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE','').replace('OE','') == item_type)
-                    c_col = closed_col
-                    if line[0] == 'M#4 CE':
-                        sheet.merge_range(1, closed_col, 1, closed_col+1, item_type, column_style)
-                        closed_col += 2
-                    else:
-                        sheet.write(1, closed_col, item_type, column_style)
-                        closed_col += 1
-                    if itemwise_closed:
-                        closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
-                        if closed_oa_list:
-                            for index, oa in enumerate(closed_oa_list):
-                                if closed_row == 24:
+                        comu_pcs,
+                        comu_inv,
+                        tr_value,
+                        comur_value,
+                        pending_ids,
+                        ]
+                    report_data.append(order_data)
+                
+                row = 2
+                type_exists = []
+                closed_col = 11
+                for line in report_data:
+                    item_type = line[0].replace('CE','').replace('OE','')
+                    if (((line[1] or 0) + (line[3] or 0)) > 0) and (item_type not in type_exists):
+                        closed_row = 2
+                        itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE','').replace('OE','') == item_type)
+                        c_col = closed_col
+                        if line[0] == 'M#4 CE':
+                            sheet.merge_range(1, closed_col, 1, closed_col+1, item_type, column_style)
+                            closed_col += 2
+                        else:
+                            sheet.write(1, closed_col, item_type, column_style)
+                            closed_col += 1
+                        if itemwise_closed:
+                            closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
+                            if closed_oa_list:
+                                for index, oa in enumerate(closed_oa_list):
+                                    if closed_row == 24:
+                                        closed_row = 1
+                                        c_col += 1
+                                    sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
+                                    closed_row += 1
+                        
+                        if closed_row < 24 and c_col == 11:
+                            for i in range(closed_row,25):
+                                sheet.write(closed_row, c_col, '', format_label_1)
+                                if closed_row == 24 and line[0] == 'M#4 CE':
                                     closed_row = 1
                                     c_col += 1
-                                sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
+                                closed_row += 1
+                            # for i in range(24)[:closed_row]:
+                            #     sheet.write(closed_row, c_col, '', format_label_1)
+                            #     closed_row += 1
+                        if closed_row < 24 and c_col != 11:
+                            for i in range(closed_row, 25):
+                                sheet.write(closed_row, c_col, '', format_label_1)
                                 closed_row += 1
                     
-                    if closed_row < 24 and c_col == 11:
-                        for i in range(closed_row,25):
-                            sheet.write(closed_row, c_col, '', format_label_1)
-                            if closed_row == 24 and line[0] == 'M#4 CE':
-                                closed_row = 1
-                                c_col += 1
-                            closed_row += 1
-                        # for i in range(24)[:closed_row]:
-                        #     sheet.write(closed_row, c_col, '', format_label_1)
-                        #     closed_row += 1
-                    if closed_row < 24 and c_col != 11:
-                        for i in range(closed_row, 25):
-                            sheet.write(closed_row, c_col, '', format_label_1)
-                            closed_row += 1
+                    if item_type not in type_exists:
+                        type_exists.append(item_type)
+                    col = 0
+                    for l in line:
+                        if col in (2,4,6,7,8):
+                            sheet.write(row, col, l, format_label_2)
+                        else:
+                            sheet.write(row, col, l, format_label_1)
+                        col += 1
+                    row += 1
+                # raise UserError((type_exists))
+                sheet.write(row, 0, 'Total Order Close :', format_label_1)
+                sheet.write(row, 1, closed_ids, format_label_1)
+                sheet.write(row, 2, '', format_label_1)
+                sheet.write(row, 3, '', format_label_1)
+                sheet.write(row, 4, '', format_label_1)
+                sheet.write(row, 5, '', format_label_1)
+                sheet.write(row, 6, '', format_label_1)
+                sheet.write(row, 7, '', format_label_1)
+                sheet.write(row, 8, '', format_label_1)
+                sheet.write(row, 9, '', format_label_1)
+                row += 1    
+                sheet.write(row, 0, 'TOTAL', row_style)
+                sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
+                sheet.write(row, 2, '=SUM(C{0}:C{1})'.format(1, row), _row_style)
+                sheet.write(row, 3, '=SUM(D{0}:D{1})'.format(1, row), row_style)
+                sheet.write(row, 4, '=SUM(E{0}:E{1})'.format(1, row), _row_style)
+                sheet.write(row, 5, '=SUM(F{0}:F{1})'.format(1, row), row_style)
+                sheet.write(row, 6, '=SUM(G{0}:G{1})'.format(1, row), _row_style)
+                sheet.write(row, 7, '=SUM(H{0}:H{1})'.format(1, row), _row_style)
+                sheet.write(row, 8, '=SUM(I{0}:I{1})'.format(1, row), _row_style)
+                sheet.write(row, 9, '=SUM(J{0}:J{1})'.format(1, row), row_style)
                 
-                if item_type not in type_exists:
-                    type_exists.append(item_type)
-                col = 0
-                for l in line:
-                    if col in (2,4,6,7,8):
-                        sheet.write(row, col, l, format_label_2)
+                others_item_config = self.env['others.item.config'].sudo().search([('company_id','=',self.env.company.id)])
+                row += 2
+                
+                sheet.write(row, 0, "DATE :", column_style)
+                sheet.write(row, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
+                row += 1
+                sheet.write(row, 0, 'OTHERS ITEM NAME', column_style)
+                sheet.write(row, 1, 'PACKED PCS', column_style)
+                sheet.write(row, 2, 'UNIT', column_style)
+                row += 1
+                others_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == 'Others')
+                for ot in others_item_config:
+                    sheet.write(row, 0, ot.others_item, format_label_1)
+                    others_itemwise = others_outputs.filtered(lambda pr: pr.product_template_id.id == ot.product_tmpl_id.id)
+                    if others_itemwise:
+                        pac_pcs = sum(others_itemwise.mapped('qty'))
+                        sheet.write(row, 1, pac_pcs, format_label_1)
                     else:
-                        sheet.write(row, col, l, format_label_1)
-                    col += 1
-                row += 1
-            # raise UserError((type_exists))
-            sheet.write(row, 0, 'Total Order Close :', format_label_1)
-            sheet.write(row, 1, closed_ids, format_label_1)
-            sheet.write(row, 2, '', format_label_1)
-            sheet.write(row, 3, '', format_label_1)
-            sheet.write(row, 4, '', format_label_1)
-            sheet.write(row, 5, '', format_label_1)
-            sheet.write(row, 6, '', format_label_1)
-            sheet.write(row, 7, '', format_label_1)
-            sheet.write(row, 8, '', format_label_1)
-            sheet.write(row, 9, '', format_label_1)
-            row += 1    
-            sheet.write(row, 0, 'TOTAL', row_style)
-            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
-            sheet.write(row, 2, '=SUM(C{0}:C{1})'.format(1, row), _row_style)
-            sheet.write(row, 3, '=SUM(D{0}:D{1})'.format(1, row), row_style)
-            sheet.write(row, 4, '=SUM(E{0}:E{1})'.format(1, row), _row_style)
-            sheet.write(row, 5, '=SUM(F{0}:F{1})'.format(1, row), row_style)
-            sheet.write(row, 6, '=SUM(G{0}:G{1})'.format(1, row), _row_style)
-            sheet.write(row, 7, '=SUM(H{0}:H{1})'.format(1, row), _row_style)
-            sheet.write(row, 8, '=SUM(I{0}:I{1})'.format(1, row), _row_style)
-            sheet.write(row, 9, '=SUM(J{0}:J{1})'.format(1, row), row_style)
-            
-            others_item_config = self.env['others.item.config'].sudo().search([('company_id','=',self.env.company.id)])
-            row += 2
-            
-            sheet.write(row, 0, "DATE :", column_style)
-            sheet.write(row, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
-            row += 1
-            sheet.write(row, 0, 'OTHERS ITEM NAME', column_style)
-            sheet.write(row, 1, 'PACKED PCS', column_style)
-            sheet.write(row, 2, 'UNIT', column_style)
-            row += 1
-            others_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == 'Others')
-            for ot in others_item_config:
-                sheet.write(row, 0, ot.others_item, format_label_1)
-                others_itemwise = others_outputs.filtered(lambda pr: pr.product_template_id.id == ot.product_tmpl_id.id)
-                if others_itemwise:
-                    pac_pcs = sum(others_itemwise.mapped('qty'))
-                    sheet.write(row, 1, pac_pcs, format_label_1)
-                else:
-                    sheet.write(row, 1, '', format_label_1)
-                sheet.write(row, 2, ot.unit, format_label_1)
-                row += 1
-            sheet.write(row, 0, 'TOTAL', format_label_1)
-            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), format_label_1)
-            sheet.write(row+2, 0, 'TOTAL PRICE', format_label_2)
-            sheet.write(row+2, 1, others_value, format_label_1)
+                        sheet.write(row, 1, '', format_label_1)
+                    sheet.write(row, 2, ot.unit, format_label_1)
+                    row += 1
+                sheet.write(row, 0, 'TOTAL', format_label_1)
+                sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), format_label_1)
+                sheet.write(row+2, 0, 'TOTAL PRICE', format_label_2)
+                sheet.write(row+2, 1, others_value, format_label_1)
 
             # if start_time.day == day and start_time.month == int(month_):
             #     sheet.Activate()
@@ -1416,11 +1484,14 @@ class MrpReportWizard(models.TransientModel):
 
     def daily_closed_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
-        month_ = None
+        month_ = _day = to_day = None
         if data.get('date_from'):
             month_ = int(data.get('date_from').month)#data.get('month_list')
             year = int(data.get('date_from').year)#datetime.today().year
             _day = int(data.get('date_from').day)
+            
+        if data.get('date_to'):
+            to_day = int(data.get('date_to').day)
 
         # raise UserError((int(month_),data.get('date_from').date()))
         # f_date = data.get('date_from')
@@ -1450,180 +1521,182 @@ class MrpReportWizard(models.TransientModel):
         initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id),('production_date','>=',data.get('date_from'))])#&gt;
         
         all_closed = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id','=',self.env.company.id)])
+        
         for day in self.iterate_days(year, int(month_)):
-            report_name = day
-            
-            full_date = fields.datetime.now().replace(day = _day).replace(month = int(month_)).replace(year = year)
-            first_day_of_m = full_date # first day of month
-            full_date = full_date.replace(day = day)
-            
-            datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
-                        
-            sheet = workbook.add_worksheet(('%s' % (report_name)))
-            
-            
-            sheet.write(0, 0, "DATE :", column_style)
-            sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
-            # sheet.write(0, 11, "DATE :", column_style)
-            # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
-            sheet.merge_range(0, 2, 0, 9, 'CLOSED ORDER', column_style)
-            sheet.freeze_panes(2, 0)
-            if start_time.date() == full_date.date():
-                sheet.activate()
+            if day >= _day and day <= to_day:
+                report_name = day
                 
-            sheet.write(1, 0, "PRODUCT", column_style)
-            sheet.write(1, 1, "PACKING PCS", column_style)
-
-            sheet.set_column(0, 0, 20)
-            sheet.set_column(1, 1, 15)
-
-            closed_ids = 0
-            # items = datewise_outputs.mapped('fg_categ_type')
-            # items = list(set(items))
-            running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
-
-            daily_closed_oa = None
-            if all_closed:
-                daily_closed_oa = all_closed.filtered(lambda pr: pr.closing_date.date() == full_date.date())
-            
-            if daily_closed_oa:
-                oa_ids = daily_closed_oa.mapped('oa_id')
-                closed_ids = len(oa_ids)
-            
-            items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
-            
-            report_data = []
-            others_value = 0
-            # closed_col = 11
-            for item in items:
-                itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
-                price = comu_inv = 0
+                full_date = fields.datetime.now().replace(day = _day).replace(month = int(month_)).replace(year = year)
+                first_day_of_m = full_date # first day of month
+                full_date = full_date.replace(day = day)
                 
-                pack_pcs = sum(itemwise_outputs.mapped('qty'))
-                if pack_pcs > 0:
-                    _s_qty = round(sum(itemwise_outputs.mapped('sale_order_line.product_uom_qty')),2)
-                    _s_value = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
-                    if _s_qty > 0:
-                        price = round((_s_value/_s_qty),4)
+                datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
+                            
+                sheet = workbook.add_worksheet(('%s' % (report_name)))
                 
                 
-                invoiced = round((pack_pcs*price),2)
-                
-                pending_ids = 0
-                #today_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() == full_date.date())    
-                
-                order_data = []
-                
-                invoiced = round(invoiced,0)
-                
-                if start_time.date() < full_date.date():
-                    invoiced = pack_pcs = None
-
-                else:
-                    if pack_pcs == 0:
-                        pack_pcs = None
+                sheet.write(0, 0, "DATE :", column_style)
+                sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
+                # sheet.write(0, 11, "DATE :", column_style)
+                # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
+                sheet.merge_range(0, 2, 0, 9, 'CLOSED ORDER', column_style)
+                sheet.freeze_panes(2, 0)
+                if start_time.date() == full_date.date():
+                    sheet.activate()
+                    
+                sheet.write(1, 0, "PRODUCT", column_style)
+                sheet.write(1, 1, "PACKING PCS", column_style)
     
-                    if invoiced == 0:
-                        invoiced = None
-                if item.name == 'Others':
-                    others_value = invoiced
-                order_data = [
-                    item.name,
-                    pack_pcs
-                    ]
-                report_data.append(order_data)
-            
-            row = 2
-
-            type_exists = []
-            closed_col = 2
-            for line in report_data:
-                item_type = line[0].replace('CE','').replace('OE','')
-                if item_type not in type_exists:#(line[1] or 0) > 0
-                    closed_row = 2
-                    itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE','').replace('OE','') == item_type)
-                    c_col = closed_col
-                    if line[0] == 'M#4 CE':
-                        sheet.merge_range(1, closed_col, 1, closed_col+1, item_type, column_style)
-                        closed_col += 2
+                sheet.set_column(0, 0, 20)
+                sheet.set_column(1, 1, 15)
+    
+                closed_ids = 0
+                # items = datewise_outputs.mapped('fg_categ_type')
+                # items = list(set(items))
+                running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+    
+                daily_closed_oa = None
+                if all_closed:
+                    daily_closed_oa = all_closed.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+                
+                if daily_closed_oa:
+                    oa_ids = daily_closed_oa.mapped('oa_id')
+                    closed_ids = len(oa_ids)
+                
+                items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
+                
+                report_data = []
+                others_value = 0
+                # closed_col = 11
+                for item in items:
+                    itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item.name)
+                    price = comu_inv = 0
+                    
+                    pack_pcs = sum(itemwise_outputs.mapped('qty'))
+                    if pack_pcs > 0:
+                        _s_qty = round(sum(itemwise_outputs.mapped('sale_order_line.product_uom_qty')),2)
+                        _s_value = round(sum(itemwise_outputs.mapped('sale_order_line.price_subtotal')),2)
+                        if _s_qty > 0:
+                            price = round((_s_value/_s_qty),4)
+                    
+                    
+                    invoiced = round((pack_pcs*price),2)
+                    
+                    pending_ids = 0
+                    #today_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() == full_date.date())    
+                    
+                    order_data = []
+                    
+                    invoiced = round(invoiced,0)
+                    
+                    if start_time.date() < full_date.date():
+                        invoiced = pack_pcs = None
+    
                     else:
-                        sheet.write(1, closed_col, item_type, column_style)
-                        closed_col += 1
-                    if itemwise_closed:
-                        closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
-                        if closed_oa_list:
-                            for index, oa in enumerate(closed_oa_list):
-                                if closed_row == 24:
+                        if pack_pcs == 0:
+                            pack_pcs = None
+        
+                        if invoiced == 0:
+                            invoiced = None
+                    if item.name == 'Others':
+                        others_value = invoiced
+                    order_data = [
+                        item.name,
+                        pack_pcs
+                        ]
+                    report_data.append(order_data)
+                
+                row = 2
+    
+                type_exists = []
+                closed_col = 2
+                for line in report_data:
+                    item_type = line[0].replace('CE','').replace('OE','')
+                    if item_type not in type_exists:#(line[1] or 0) > 0
+                        closed_row = 2
+                        itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE','').replace('OE','') == item_type)
+                        c_col = closed_col
+                        if line[0] == 'M#4 CE':
+                            sheet.merge_range(1, closed_col, 1, closed_col+1, item_type, column_style)
+                            closed_col += 2
+                        else:
+                            sheet.write(1, closed_col, item_type, column_style)
+                            closed_col += 1
+                        if itemwise_closed:
+                            closed_oa_list = list(set(itemwise_closed.mapped('oa_id.name')))
+                            if closed_oa_list:
+                                for index, oa in enumerate(closed_oa_list):
+                                    if closed_row == 24:
+                                        closed_row = 1
+                                        c_col += 1
+                                    sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
+                                    closed_row += 1
+                        
+                        if closed_row < 24 and c_col == 11:
+                            for i in range(closed_row,25):
+                                sheet.write(closed_row, c_col, '', format_label_1)
+                                if closed_row == 24 and line[0] == 'M#4 CE':
                                     closed_row = 1
                                     c_col += 1
-                                sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
                                 closed_row += 1
-                    
-                    if closed_row < 24 and c_col == 11:
-                        for i in range(closed_row,25):
-                            sheet.write(closed_row, c_col, '', format_label_1)
-                            if closed_row == 24 and line[0] == 'M#4 CE':
-                                closed_row = 1
-                                c_col += 1
-                            closed_row += 1
-                        # for i in range(24)[:closed_row]:
-                        #     sheet.write(closed_row, c_col, '', format_label_1)
-                        #     closed_row += 1
-                    if closed_row < 24 and c_col != 11:
-                        for i in range(closed_row, 25):
-                            sheet.write(closed_row, c_col, '', format_label_1)
-                            closed_row += 1
-                if item_type not in type_exists:
-                    type_exists.append(item_type)    
-                col = 0
-                for l in line:
-                    if col in (2,4,6,7,8):
-                        sheet.write(row, col, l, format_label_2)
+                            # for i in range(24)[:closed_row]:
+                            #     sheet.write(closed_row, c_col, '', format_label_1)
+                            #     closed_row += 1
+                        if closed_row < 24 and c_col != 11:
+                            for i in range(closed_row, 25):
+                                sheet.write(closed_row, c_col, '', format_label_1)
+                                closed_row += 1
+                    if item_type not in type_exists:
+                        type_exists.append(item_type)    
+                    col = 0
+                    for l in line:
+                        if col in (2,4,6,7,8):
+                            sheet.write(row, col, l, format_label_2)
+                        else:
+                            sheet.write(row, col, l, format_label_1)
+                        col += 1
+                    row += 1
+    
+                sheet.write(row, 0, 'Total Order Close :', format_label_1)
+                sheet.write(row, 1, closed_ids, format_label_1)
+                sheet.write(row, 2, '', format_label_1)
+                sheet.write(row, 3, '', format_label_1)
+                sheet.write(row, 4, '', format_label_1)
+                sheet.write(row, 5, '', format_label_1)
+                sheet.write(row, 6, '', format_label_1)
+                sheet.write(row, 7, '', format_label_1)
+                sheet.write(row, 8, '', format_label_1)
+                sheet.write(row, 9, '', format_label_1)
+                row += 1    
+                sheet.write(row, 0, 'TOTAL', row_style)
+                sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
+    
+                
+                others_item_config = self.env['others.item.config'].sudo().search([('company_id','=',self.env.company.id)])
+                row += 2
+                
+                sheet.write(row, 0, "DATE :", column_style)
+                sheet.write(row, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
+                row += 1
+                sheet.write(row, 0, 'OTHERS ITEM NAME', column_style)
+                sheet.write(row, 1, 'PACKED PCS', column_style)
+                sheet.write(row, 2, 'UNIT', column_style)
+                row += 1
+                others_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == 'Others')
+                for ot in others_item_config:
+                    sheet.write(row, 0, ot.others_item, format_label_1)
+                    others_itemwise = others_outputs.filtered(lambda pr: pr.product_template_id.id == ot.product_tmpl_id.id)
+                    if others_itemwise:
+                        pac_pcs = sum(others_itemwise.mapped('qty'))
+                        sheet.write(row, 1, pac_pcs, format_label_1)
                     else:
-                        sheet.write(row, col, l, format_label_1)
-                    col += 1
-                row += 1
-
-            sheet.write(row, 0, 'Total Order Close :', format_label_1)
-            sheet.write(row, 1, closed_ids, format_label_1)
-            sheet.write(row, 2, '', format_label_1)
-            sheet.write(row, 3, '', format_label_1)
-            sheet.write(row, 4, '', format_label_1)
-            sheet.write(row, 5, '', format_label_1)
-            sheet.write(row, 6, '', format_label_1)
-            sheet.write(row, 7, '', format_label_1)
-            sheet.write(row, 8, '', format_label_1)
-            sheet.write(row, 9, '', format_label_1)
-            row += 1    
-            sheet.write(row, 0, 'TOTAL', row_style)
-            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
-
-            
-            others_item_config = self.env['others.item.config'].sudo().search([('company_id','=',self.env.company.id)])
-            row += 2
-            
-            sheet.write(row, 0, "DATE :", column_style)
-            sheet.write(row, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
-            row += 1
-            sheet.write(row, 0, 'OTHERS ITEM NAME', column_style)
-            sheet.write(row, 1, 'PACKED PCS', column_style)
-            sheet.write(row, 2, 'UNIT', column_style)
-            row += 1
-            others_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == 'Others')
-            for ot in others_item_config:
-                sheet.write(row, 0, ot.others_item, format_label_1)
-                others_itemwise = others_outputs.filtered(lambda pr: pr.product_template_id.id == ot.product_tmpl_id.id)
-                if others_itemwise:
-                    pac_pcs = sum(others_itemwise.mapped('qty'))
-                    sheet.write(row, 1, pac_pcs, format_label_1)
-                else:
-                    sheet.write(row, 1, '', format_label_1)
-                sheet.write(row, 2, ot.unit, format_label_1)
-                row += 1
-            sheet.write(row, 0, 'TOTAL', format_label_1)
-            sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), format_label_1)
-            sheet.write(row+2, 0, 'TOTAL PRICE', format_label_2)
-            sheet.write(row+2, 1, others_value, format_label_1)
+                        sheet.write(row, 1, '', format_label_1)
+                    sheet.write(row, 2, ot.unit, format_label_1)
+                    row += 1
+                sheet.write(row, 0, 'TOTAL', format_label_1)
+                sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), format_label_1)
+                sheet.write(row+2, 0, 'TOTAL PRICE', format_label_2)
+                sheet.write(row+2, 1, others_value, format_label_1)
 
             # if start_time.day == day and start_time.month == int(month_):
             #     sheet.Activate()
