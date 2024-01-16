@@ -22,7 +22,7 @@ class change_production_date(models.TransientModel):
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
         active_model = self.env.context.get("active_model")
-        active_id = self.env.context.get("active_id")
+        active_id = self.env.context.get("active_ids")
         production = self.env["operation.details"].browse(active_id)
         res["from_date"] = production[0].action_date.date()
         return res 
@@ -31,16 +31,18 @@ class change_production_date(models.TransientModel):
         if self.from_date <= self.production_date.date():
             raise UserError(('You can not Change date to same or advance date'))
             return
-        mo_id = self.env.context.get("active_id")
+        mo_id = self.env.context.get("active_ids")
         production = self.env["operation.details"].browse(mo_id)
+        mrp_data = self.env["manufacturing.order"].search([('oa_id','in',production.oa_id.ids),('closing_date','!=',False)])#browse(mrp_lines)
         
-        mrp_data = self.env["manufacturing.order"].search([('oa_id','in',production.oa_id.ids)])#browse(mrp_lines)
+        oa_list = mrp_data.mapped('oa_id')
         
         change_date = production.update({'action_date': self.production_date})
-        # mrp_to_close = mrp_data.filtered(lambda pr: pr.closing_date.date() == production[0].action_date.date())
-        # if mrp_to_close:
-        #     change_closing_date = mrp_to_close.update({'closing_date': self.production_date})
-        #     sale_order = self.env["sale.order"].browse(change_closing_date.oa_id.ids)
-        #     change_sale_order_closing_date = sale_order.update({'closing_date': change_closing_date[0].closing_date})
+        for oa in oa_list:
+            # raise UserError((oa.id))
+            last_packing = self.env["operation.details"].search([('next_operation','=','FG Packing'),('oa_id','=',oa.id)]).sorted(key=lambda pr: pr.action_date, reverse=True)[:1]
+            change_closing = mrp_data.filtered(lambda pr: pr.oa_id.id == oa.id)
+            change_cl_date = change_closing.update({'closing_date': last_packing.action_date})
+            sl_closing_date = self.env["sale.order"].browse(oa.id).update({'closing_date': last_packing.action_date})
         
         return

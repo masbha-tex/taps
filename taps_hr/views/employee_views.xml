@@ -152,6 +152,8 @@
                 <field name="employee_group"/>
                 <field name="risk" optional="hide"/>
                 <field name="impact" optional="hide"/>
+                <field name="employee_relation" optional="hide"/>
+                <field name="relationship_id" optional="hide"/>
                 <!-- <field name="performance" optional="hide"/> -->
                 <xpath expr="//field[@name='department_id']" position="move"/>
                 <xpath expr="//field[@name='job_id']" position="move"/>
@@ -229,6 +231,7 @@
             <xpath expr="//search[1]/searchpanel[1]/field[@name='company_id']" position="after">
                 <field name="category" icon="fa-users" enable_counters="1"/>
                 <field name="employee_group" icon="fa-users" enable_counters="1"/>
+                <field name="employee_relation" icon="fa-users" enable_counters="1"/>
                 <!-- <field name="employee_group" icon="fa-users" enable_counters="1"/> -->
             </xpath>            
          </field>

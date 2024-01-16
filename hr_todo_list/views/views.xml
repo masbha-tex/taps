@@ -2,8 +2,7 @@
 <odoo>
     <data>
         <!--search views-->
-        <record id='hr_todo_list.mail_activity_model_view_search'
-                model='ir.ui.view'>
+        <record id="hr_todo_list.mail_activity_model_view_search" model="ir.ui.view">
             <field name="name">mail.activity.model.search</field>
             <field name="model">mail.activity</field>
             <field name="arch" type="xml">

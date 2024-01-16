@@ -5,19 +5,28 @@
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form"/>
     <field name="arch" type="xml">
+        
         <xpath expr="//form[1]/sheet[1]/div[not(@name)][1]" position="after">
             <group name="Related Data" attrs="{'invisible': ['|',('company_type', '=', 'person'),('supplier_rank', '>', 0)]}">
               <group name="Group and Brand">
                 <field name="group" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('company_type', '=', 'person'),('supplier_rank', '>', 0),('buyer_rank', '>', 0),('brand_rank', '>', 0),('customer_group_rank', '>', 0)]}"/>
                 <field name="brand" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('company_type', '=', 'person'),('supplier_rank', '>', 0),('customer_rank', '>', 0),('brand_rank', '>', 0),('customer_group_rank', '>', 0)]}"/>
-                <field name="sale_representative"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
+                <!-- <field name="sale_representative"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/> -->
+                <field name="user_id" domain="[('share', '=', False)]"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
+                <field name="sourcing_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
               </group>
               <group name="related buyer and customer">
                   <field name="related_buyer"  widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person'),('buyer_rank', '>', 0)]}"/>
                 <field name="related_customer" domain="[('customer_rank','>', 0)]" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('brand_rank', '>', 0),('customer_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
+                <field name="sourcing_office" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
               </group>  
             </group>
         </xpath>
+        <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']/field[@name='user_id']" position="attributes">
+        <attribute name="attrs">{}</attribute>
+        <attribute name="invisible">1</attribute>
+        <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
+      </xpath>
         <xpath expr="//form" position="inside">
             <field name="supplier_rank" invisible="1"/>
             <field name="customer_rank" invisible="1"/>
@@ -26,12 +35,12 @@
             <field name="customer_group_rank" invisible="1"/>
         </xpath>
         <xpath expr="//field[@name='vat']" position="after">
-            <field name="swift_code" attrs="{'invisible': ['|',('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
-            <field name="bond_license" attrs="{'invisible': ['|',('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
+            <field name="swift_code" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('buyer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
+            <field name="bond_license" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('buyer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
             
         </xpath>
         <xpath expr="//field[@name='category_id']" position="after">
-            <field name="incoterms" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|',('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
+            <field name="incoterms" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('buyer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
         </xpath>
         <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]/group[2]/field[@name='function']" position="before">
             <field name="contact_person" attrs="{'invisible': ['|',('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>

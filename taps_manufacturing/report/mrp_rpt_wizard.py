@@ -4,12 +4,16 @@ import logging
 from odoo import models, fields, api
 from datetime import datetime, date, timedelta, time
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools.misc import xlsxwriter
+# from odoo.tools.misc import xlsxwriter
 from odoo.tools import format_date
 from dateutil.relativedelta import relativedelta
 import re
 import math
 import calendar
+from io import StringIO
+from io import BytesIO
+import xlsxwriter
+
 _logger = logging.getLogger(__name__)
 
 
@@ -49,66 +53,55 @@ class MrpReportWizard(models.TransientModel):
         return dt_to
 
     def _action_send_email(self, com_id):
-        com = self.env['res.company'].search([('id', 'in', (com_id))])
+        com = self.env['res.company'].search([('id', 'in', com_id)])
         for rec in com:
-            subject = (rec.name)+' Unit -Write your Report Name('+(datetime.now().strftime('%d %b, %Y'))+')'
-            
-            body = 'Dear All, \n Kindly see the attached ....'
-            email_to_list = []
-            # 'mudit.tandon@texfasteners.com',
-            # 'deepak.shah@bd.texfasteners.com',
-            email_to_list = [
-                'production@bd.texfasteners.com'
-                ]
-            email_from_list = ['odoo@texzipperbd.com']
-            email_cc_list = [
-                'shahid.hossain@texzipperbd.com',
-                ]
-             # 'alamgir@texzipperbd.com',
-             #    'nitish.bassi@texzipperbd.com',
-             #    'suranjan.kumar@texzipperbd.com',
-             #    'mirtunjoy.chatterjee@texzipperbd.com',
-             #    'abdur.rahman@texzipperbd.com',
-             #    'oa@bd.texfasteners.com',
-             #    'costing@texzipperbd.com',
-             #    'mis.mkt@texzipperbd.com',
-             #    'asraful.haque@texzipperbd.com',
-            author_id=0
-            
-               
-            # pdf_content, content_type = report.sudo()._render_qweb_pdf()
-            start_time = fields.datetime.now()
-        
-            data = {'date_from': start_time.date(),'date_to': start_time.date()}
-        
-            excel_content = report.sudo().daily_pr_xls_template(self, data=data)#_generate_excel_report()
-
-            attachment = rec.env['ir.attachment'].sudo().create({
-                'name': rec.name + ' Daily OA Release(' + (datetime.now().strftime('%d %b, %Y')) + ')' + '.xlsx',
-                'type': 'binary',
-                'datas': base64.encodebytes(excel_content),
-                'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'res_model': 'mrp.report',
-                'company_id': rec.id,
-            })
-            email_cc = ','.join(email_cc_list)
-            email_from = ','.join(email_from_list)
-            email_to = ','.join(email_to_list)
-            mail_values = {
-                'email_from': email_from,
-                'author_id': self.env.user.partner_id.id,
-                'model': None,
-                'res_id': None,
-                'subject': subject,
-                'body_html': body,
-                'auto_delete': True,
-                'email_to': email_to,
-                'email_cc': email_cc,
-                'attachment_ids': attachment,
-                'reply_to' : None,
+            if rec.id == 1:
+                subject = f"{rec.name} Unit - Write your Report Name ({datetime.now().strftime('%d %b, %Y')})"
+                body = 'Dear All,\nKindly see the attached ....'
                 
-            }
-            rec.env['mail.mail'].sudo().create(mail_values)
+                email_to_list = ['asraful.haque@texzipperbd.com']
+                email_from_list = ['odoo@texzipperbd.com']
+                email_cc_list = ['abu.sayed@texzipperbd.com']
+    
+                author_id = 0
+                
+                xlsx_report = self.env.ref('taps_sale.action_report_oa_xls')
+                # raise UserError((xlsx_report))
+                # report = xlsx_report._render_xlsx(docids=None, data=None)
+                
+                excel_content = base64.b64encode(
+            self.env['ir.actions.report'].sudo()._render_xlsx(xlsx_report, [self.id], data=None)[0])
+    
+                attachment_data = {
+                    'name': f"{rec.name} Daily OA Release ({datetime.now().strftime('%d %b, %Y')}).xlsx",
+                    'type': 'binary',
+                    'datas': excel_content,
+                    'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'res_model': 'mrp.report',
+                    'company_id': rec.id,
+                }
+    
+                attachment = rec.env['ir.attachment'].sudo().create(attachment_data)
+                
+                email_cc = ','.join(email_cc_list)
+                email_from = ','.join(email_from_list)
+                email_to = ','.join(email_to_list)
+    
+                mail_values = {
+                    'email_from': email_from,
+                    'author_id': self.env.user.partner_id.id,
+                    'model': None,
+                    'res_id': None,
+                    'subject': subject,
+                    'body_html': body,
+                    'auto_delete': True,
+                    'email_to': email_to,
+                    'email_cc': email_cc,
+                    'attachment_ids': [(6, 0, [attachment.id])],
+                    'reply_to': None,
+                }
+    
+                rec.env['mail.mail'].sudo().create(mail_values)
 
     @staticmethod
     def _get_year_list():
@@ -188,6 +181,8 @@ class MrpReportWizard(models.TransientModel):
         # oa_total_balance revision_no
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+       #workbook.set_zoom(75)
+        #workbook.print_area('A:O')
         
         column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
         
@@ -231,8 +226,10 @@ class MrpReportWizard(models.TransientModel):
             
             report_name = item.name
             # raise UserError((items))
-           
+            
             sheet = workbook.add_worksheet(('%s' % (report_name)))
+            sheet.set_zoom(75)
+            # 
             
             sheet.freeze_panes(1, 0)
             
@@ -572,6 +569,20 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 19, '')
             sheet.write(row+1, 20, '')
             sheet.write(row+1, 21, '')
+
+            # # start_column = 0
+            # # end_column = 15
+            # # start_row = 0
+            # # end_row = row+1
+
+            # # print_area = f'{start_column}:{end_column}{start_row}:{end_column}{end_row}'
+            # # sheet.print_area(0, 0, end_row, len(sheet.row_dimensions), start_column, get_column_letter(column_index_from_string(end_column)), print_area)
+
+            # #print_area = f'{start_column}:{end_column}{start_row}:{end_column}{end_row}'
+            # sheet.print_area(print_area)
+            # sheet.print_area(print_area)
+        
+        sheet.print_area('A1:H20')    
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -1053,6 +1064,8 @@ class MrpReportWizard(models.TransientModel):
             yield day
 
     def daily_pr_xls_template(self, docids, data=None):
+        
+        
         start_time = fields.datetime.now()
         month_ = None
         _day = to_day = None
@@ -1464,14 +1477,22 @@ class MrpReportWizard(models.TransientModel):
         xlsx_data = output.getvalue()
         self.file_data = base64.encodebytes(xlsx_data)
         end_time = fields.datetime.now()
-        
+        # raise UserError((end_time))
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Invoice')),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename{}&download=true'.format(self._name, self.id, ('Invoice')),
             'target': 'self',
         }
-
+        
+        # encoded_file_data = base64.b64encode(self.file_data).decode('utf-8')
+        
+        # return {
+        #     'type': 'ir.actions.act_url',
+        #     'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(
+        #         self._name, self.id, ('Invoice'), encoded_file_data),
+        #     'target': 'self',
+        # }
     #FG Invoice start Here 
     
     def iterate_days(self, year, month):

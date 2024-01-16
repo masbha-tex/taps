@@ -7,32 +7,17 @@
             <form string="OA Check">
                 <group>
                     <group>
-                        <field name="report_type" string="Report Type"/>
-                        <field name="date_from"/>
-                        <field name="date_to"/>
-                        
-                    </group>
-<!--                     <group>
-                        <field name="atten_type" string="Attendance Type"/>
-                        <field name="types"/>
-                        <field name="mode_type" string="Mode"/>
-                        <field name="employee_id" attrs="{
-                        'required': [('mode_type', '=', 'employee')],
-                        'invisible': [('mode_type', '!=', 'employee')]
-                        }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="mode_company_id" string="Company" attrs="{
-                        'required': [('mode_type', '=', 'company')],
-                        'invisible': [('mode_type', '!=', 'company')]
-                        }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="category_id" attrs="{
-                        'required': [('mode_type', '=', 'category')],
-                        'invisible': [('mode_type', '!=','category')]
-                        }" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="department_id" attrs="{
-                        'required': [('mode_type', '=', 'department')],
-                        'invisible': [('mode_type', '!=','department')]
-                        }" options="{'no_create': True, 'no_open': True}"/> 
-                    </group> -->
+                        <!-- <field name="report_type" string="Report Type"/> -->
+                        <field name="lookup_oa" placeholder="EX: 1971"/>
+                        <field name="action_date_list"/>
+                        <field name="Shade_list"/>
+                        <field name="Size_list"/>  
+                        </group>
+                        <group>
+                        <field name="total_packed"/>
+                        <field name="Shade_wise_packed"/>
+                        <field name="Size_wise_packed"/>  
+                        </group>
                 </group>
                 <footer>
                     <!-- <button string="Print" name="action_print_report" type="object" class="btn-primary"/> -->

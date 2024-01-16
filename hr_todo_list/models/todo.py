@@ -28,12 +28,12 @@ class MailActivity(models.Model):
         ('3', 'Urgent'),
     ], default='0', index=True, store=True)
     recurring = fields.Boolean(string="Recurring", store=True)
-    state = fields.Selection([
+    state = fields.Selection(selection_add=([
         ('today', 'Today'),
         ('planned', 'Planned'),
         ('done', 'Done'),
         ('overdue', 'Expired'),
-        ('cancel', 'Cancelled'), ], 'State',
+        ('cancel', 'Cancelled'), ]), string='State',
         compute='_compute_state', store=True)
     interval = fields.Selection(
         [('Daily', 'Daily'),
@@ -124,5 +124,6 @@ class MailActivity(models.Model):
 class ActivityGeneral(models.Model):
     _name = 'activity.general'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _description = 'To Do'
 
     name = fields.Char('Name')

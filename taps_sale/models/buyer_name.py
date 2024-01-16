@@ -29,7 +29,14 @@ class ResPartner(models.Model):
     swift_code = fields.Char(string="Swift Code", index=True, help="The Swift Code Number.")
     bond_license = fields.Char(string="Bond License", index=True, help="The Bond License Number.")
     incoterms = fields.Many2one('account.incoterms', string="Incoterms")
-
+    sourcing_office = fields.Char(string="Sourcing Office")
+    sourcing_type = fields.Selection([
+        ('agent', 'AGENT'),
+        ('direct', 'DIRECT'),
+        ('importer', 'IMPORTER'),
+        ('licence', 'LICENCE'),
+        ('lo', 'LO'),
+    ], string="Sourcing Type")
     property_account_receivable_id = fields.Many2one(
         'account.account',
         string='Account Receivable',

@@ -1846,12 +1846,74 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.write(4, 5, 'Weight', column_product_style)
             col = 0
             row=5
+
+            worksheet.merge_range(row, 0, row, 5, 'Revenue & PAT', column_product_style)
+            row+=1
+            grandtotal__ = 0
+            slnumber = 0
+            for line in report_data:       
+                if not line[2]:
+                    # raise UserError(("hi"))
+                    if line[6] == emp.id:
+                        slnumber += 1
+                        col=0
+                        for l in line:
+                            if col == 1:
+                                etype = l[:1]
+                            if col == 0:
+                                worksheet.write(row, col, slnumber, report_column_style_2) 
+                            if col == 1:
+                                worksheet.write(row, col, l, report_column_style_2) 
+                            if col == 2:
+                                worksheet.write(row, col, '', report_column_style_2) 
+                            elif col == 3:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)                    
+                            elif col == 4:
+                                
+                                if etype == '%':
+                                    # raise UserError((etype))
+                                    ld = l/100
+                                    worksheet.write(row, col, ld, report_column_style_3)
+                                else:
+                                    # raise UserError((etype))
+                                    worksheet.write(row, col, l, report_column_style_2)
+                            elif col==5:
+                                grandtotal__ = grandtotal__+l
+                                # format = workbook.add_format({'num_format': num_formats})
+                                worksheet.write(row, col, l, report_column_style_3)
+                            # elif col==8:
+                            #     break
+                            # else:
+                            #     worksheet.write(row, col, l, report_column_style_2)
+                            col+=1
+                        row+=1
+                                        
+                
+                        
             
+                    #worksheet.write(4, 0, 'SL.', column_product_style)
+                    
+                    worksheet.write(row, 0, '', report_small_title_style)
+                    worksheet.write(row, 1, 'Total', report_small_title_style)
+                    worksheet.write(row, 2, '', report_small_title_style)
+                    worksheet.write(row, 3, '', report_small_title_style)
+                    worksheet.write(row, 4, '', report_small_title_style)
+                    worksheet.write(row, 5, round(grandtotal__,2), report_small_title_style)
+            row+=1
+            worksheet.merge_range(row, 0, row, 5, 'Objective / Score', column_product_style)
+            row+=1
             grandtotal = 0
     #         grandtotal2 = 0
     #         grandtotal3 = 0
             
-            slnumber = 0
+            
             for line in report_data:
                 # raise UserError((line[8],emp.id))
                 # slnumber=0
@@ -1963,6 +2025,8 @@ class HeadwisePDFReport(models.TransientModel):
                     worksheet.write(row, 3, '', report_small_title_style)
                     worksheet.write(row, 4, '', report_small_title_style)
                     worksheet.write(row, 5, round(grandtotal_,2), report_small_title_style)
+
+            
 
                     
                     #raise UserError((datefrom,dateto,bankname,categname))
