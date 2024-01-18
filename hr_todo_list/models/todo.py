@@ -11,7 +11,7 @@ class MailActivity(models.Model):
 
     date_deadline = fields.Date('Due Date', index=True, required=True,
                                 default=fields.Date.context_today, store=True)
-    user_id = fields.Many2one('res.users', string='user', index=True,
+    user_id = fields.Many2one('res.users', string='Assigned to', index=True,
                               tracking=True, default=lambda self: self.env.user)
     res_model_id = fields.Many2one(
         'ir.model', 'Document Model',

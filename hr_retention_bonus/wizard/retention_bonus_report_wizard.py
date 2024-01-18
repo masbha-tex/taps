@@ -389,11 +389,13 @@ class RetentionPDFReport(models.TransientModel):
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        
         worksheet = workbook.add_worksheet()
 
         report_title_style = workbook.add_format({'bold': True, 'font_size': 11})
         report_title_style2 = workbook.add_format({'font_size': 11, 'num_format': 'mmm-yy'})
         report_title_style3 = workbook.add_format({'font_size': 11, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+        report_title_style4 = workbook.add_format({'font_size': 11, 'num_format': 'dd/mm/yy'})
         # worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
         worksheet.merge_range('B2:C2', ('April to Mar (%s - %s)' % (str(year_from),str(year_to))), report_title_style)
         
@@ -411,25 +413,32 @@ class RetentionPDFReport(models.TransientModel):
         # set the width od the column
         
         worksheet.set_column(1, 1, 25)
-        worksheet.set_column(2, 2, 20)
-        worksheet.set_column(3, 3, 14)
+        worksheet.set_column(2, 2, 15)
+        worksheet.set_column(3, 3, 20)
+        worksheet.set_column(4, 4, 11)
+        worksheet.set_column(6, 8, 15)
         
         # worksheet.write(4, 0, 'SL.', column_product_style)
-        worksheet.write(4, 1, 'Employee Name', column_product_style)        
-        worksheet.write(4, 2, 'Payment Start DT', column_product_style)
-        worksheet.write(4, 3, 'Amount', column_product_style)
-        worksheet.write(4, 4, 'Apr', column_product_style)
-        worksheet.write(4, 5, 'May', column_product_style)
-        worksheet.write(4, 6, 'Jun', column_product_style)
-        worksheet.write(4, 7, 'Jul', column_product_style)
-        worksheet.write(4, 8, 'Aug', column_product_style)
-        worksheet.write(4, 9, 'Sep', column_product_style)
-        worksheet.write(4, 10, 'Oct', column_product_style)
-        worksheet.write(4, 11, 'Nov', column_product_style)
-        worksheet.write(4, 12, 'Dec', column_product_style)
-        worksheet.write(4, 13, 'Jan', column_product_style)
-        worksheet.write(4, 14, 'Feb', column_product_style)
-        worksheet.write(4, 15, 'Mar', column_product_style)
+        worksheet.write(4, 1, 'Employee Name', column_product_style)
+        worksheet.write(4, 2, 'Unit', column_product_style)
+        worksheet.write(4, 3, 'Section', column_product_style)
+        worksheet.write(4, 4, 'Effective Date', column_product_style)
+        worksheet.write(4, 5, 'Duration', column_product_style)
+        worksheet.write(4, 6, 'Entitlement Date', column_product_style)
+        worksheet.write(4, 7, 'Payment Start DT', column_product_style)
+        worksheet.write(4, 8, 'Amount', column_product_style)
+        worksheet.write(4, 9, 'Apr', column_product_style)
+        worksheet.write(4, 10, 'May', column_product_style)
+        worksheet.write(4, 11, 'Jun', column_product_style)
+        worksheet.write(4, 12, 'Jul', column_product_style)
+        worksheet.write(4, 13, 'Aug', column_product_style)
+        worksheet.write(4, 14, 'Sep', column_product_style)
+        worksheet.write(4, 15, 'Oct', column_product_style)
+        worksheet.write(4, 16, 'Nov', column_product_style)
+        worksheet.write(4, 17, 'Dec', column_product_style)
+        worksheet.write(4, 18, 'Jan', column_product_style)
+        worksheet.write(4, 19, 'Feb', column_product_style)
+        worksheet.write(4, 20, 'Mar', column_product_style)
         col = 1
         row=5
 
@@ -444,68 +453,83 @@ class RetentionPDFReport(models.TransientModel):
                     worksheet.write(row, col, l.employee_id.display_name,)
                     col += 1
                 if col == 2: 
-                    worksheet.write(row, col, l.payment_date, report_title_style2)
+                    worksheet.write(row, col, l.employee_id.company_id.name, report_title_style2)
                     col += 1
                 if col == 3: 
+                    worksheet.write(row, col, l.employee_id.department_id.name, report_title_style2)
+                    col += 1
+                if col == 4: 
+                    worksheet.write(row, col, l.date, report_title_style4)
+                    col += 1
+                if col == 5: 
+                    worksheet.write(row, col, l.bonus_id.duration,)
+                    col += 1
+                if col == 6: 
+                    worksheet.write(row, col, l.bonus_id.entitlement_date, report_title_style4)
+                    col += 1
+                if col == 7: 
+                    worksheet.write(row, col, l.payment_date, report_title_style2)
+                    col += 1
+                if col == 8: 
                     worksheet.write(row, col, l.bonus_amount,report_title_style3)
                     col += 1
                     #in (4,5,6,7,8,9,10,11,12,13,14,15)
-                if col == 4 and  l.date.month == 4:
+                if col == 9 and  l.date.month == 4:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 5 and  l.date.month == 5:
+                if col == 10 and  l.date.month == 5:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 6 and  l.date.month == 6:
+                if col == 11 and  l.date.month == 6:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 7 and  l.date.month == 7:
+                if col == 12 and  l.date.month == 7:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 8 and  l.date.month == 8:
+                if col == 13 and  l.date.month == 8:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 9 and  l.date.month == 9:
+                if col == 14 and  l.date.month == 9:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 10 and  l.date.month == 10:
+                if col == 15 and  l.date.month == 10:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 11 and  l.date.month == 11:
+                if col == 16 and  l.date.month == 11:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 12 and  l.date.month == 12:
+                if col == 17 and  l.date.month == 12:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 13 and  l.date.month == 1:
+                if col == 18 and  l.date.month == 1:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 14 and  l.date.month == 2:
+                if col == 19 and  l.date.month == 2:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 else:
                     col += 1
-                if col == 15 and  l.date.month == 3:
+                if col == 20 and  l.date.month == 3:
                     worksheet.write(row, col, l.amount, report_title_style3)
                     col += 1
                 
@@ -513,19 +537,19 @@ class RetentionPDFReport(models.TransientModel):
             
             row +=1
 
-        worksheet.write(row, 3, '=SUM(D{0}:D{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 4, '=SUM(E{0}:E{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 5, '=SUM(F{0}:F{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 6, '=SUM(G{0}:G{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 7, '=SUM(H{0}:H{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 8, '=SUM(I{0}:I{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 9, '=SUM(J{0}:J{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 10, '=SUM(K{0}:K{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 11, '=SUM(L{0}:L{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 12, '=SUM(M{0}:M{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 14, '=SUM(O{0}:O{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 15, '=SUM(P{0}:P{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 8, '=SUM(D{0}:D{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 9, '=SUM(E{0}:E{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 10, '=SUM(F{0}:F{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 11, '=SUM(G{0}:G{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 12, '=SUM(H{0}:H{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 13, '=SUM(I{0}:I{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 14, '=SUM(J{0}:J{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 15, '=SUM(K{0}:K{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 16, '=SUM(L{0}:L{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 17, '=SUM(M{0}:M{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 18, '=SUM(N{0}:N{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 19, '=SUM(O{0}:O{1})'.format(5, row), column_issued_style)
+        worksheet.write(row, 20, '=SUM(P{0}:P{1})'.format(5, row), column_issued_style)
         
 
         

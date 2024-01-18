@@ -31,6 +31,8 @@
                     <filter name="shaderef_group" string="Shade Ref" domain="[]" context="{'group_by': 'shade_ref'}"/>
                     <filter name="finish_group" string="Finish" domain="[]" context="{'group_by': 'finish'}"/>
                     <filter name="slider_group" string="Slider" domain="[]" context="{'group_by': 'slidercodesfg'}"/>
+                    <filter name="sizein_group" string="Size In" domain="[]" context="{'group_by': 'sizein'}"/>
+                    <filter name="sizecm_group" string="Size CM" domain="[]" context="{'group_by': 'sizecm'}"/>
                     <filter name="machine_group" string="Machine" domain="[]" context="{'group_by': 'capacity'}"/>
                     <filter name="delivery_code" string="Delivery Code" domain="[]" context="{'group_by': 'mrp_delivery'}"/>
                 </group>

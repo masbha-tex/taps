@@ -8,7 +8,8 @@
                 <group>
                     <group>
                         <!-- <field name="report_type" string="Report Type"/> -->
-                        <field name="lookup_oa" placeholder="EX: 1971"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="lookup_oa" placeholder="Select OA"  force_save="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="action_date_list"/>
                         <field name="Shade_list"/>
                         <field name="Size_list"/>  

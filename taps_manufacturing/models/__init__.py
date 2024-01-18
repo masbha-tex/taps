@@ -8,3 +8,4 @@ from . import machine_list
 from . import packing_report
 from . import initial_production
 from . import others_item_config
+from . import selection_fields_data

@@ -38,7 +38,7 @@ class LabelPrintingWizard(models.TransientModel):
     finish = fields.Char('Finish', readonly=False)
 
     #finish = o_data.finish #.replace('\n',' ')
-    #finish = fields.Many2one('order.line.finish', "Finish",  required=True)
+    # finish = fields.Many2one('oa_number.finish', "Finish",  required=True)
     #shade = o_data.shade
     
     #shade = fields.Many2one('sales.order.name.shade', "Shade",  required=True)
@@ -50,8 +50,9 @@ class LabelPrintingWizard(models.TransientModel):
     #qty = sum(oa_number.mapped('sale_order_line.product_uom_qty'))
 
     batch_lot = fields.Char('Batch/Lot', readonly=False, default='')
-    qc_person = fields.Many2one('hr.employee', "QC By",  required=True)
-    # fil_qc_person = qc_person.filtered(lambda pr: pr.department_id == 'Quality Assurance')
+    qc_person = fields.Many2one('hr.employee', string="QC By", domain="['|', ('active', '=', True), ('department_id.id', '=', '89')]", index=True, required=True,readonly=False)
+    
+    # fil_qc_person = qc_person.filtered(lambda pr: pr.department_id.name == 'Quality Assurance.')
     # emp_fil = self.qc_person.filtered(lambda x: x.department_id = 'Quality Assurance')
     
     pre_check_person = fields.Many2one('hr.employee', "Pre-Check By",  required=True) #all perosns form pre-check dept
@@ -72,6 +73,18 @@ class LabelPrintingWizard(models.TransientModel):
             self.oa_number = oa_in_packing.oa_id #[(6, 0, self.env['sale.order'].search(domain).ids)]
         else:
             self.oa_number = False
+
+
+    
+    # @api.depends('qc_person')
+    # def _compute_qc_person(self):
+    #     # raise UserError(('feefef'))
+    #     oa_in_packing = self.env['operation.details'].sudo().search([('next_operation','=','Packing Output'),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+    #     if oa_in_packing:
+    #         domain = [('id', 'in', oa_in_packing.oa_id.ids),('company_id','=',self.env.company.id),('sales_type','=','oa')]
+    #         self.oa_number = oa_in_packing.oa_id #[(6, 0, self.env['sale.order'].search(domain).ids)]
+    #     else:
+    #         self.oa_number = False
 
 
     
@@ -578,207 +591,4 @@ class LabelPrintingWizard(models.TransientModel):
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('PI File')),
             'target': 'self',
         }
-
-    
-    def pis_xls_template(self, docids, data=None):
-        start_time = fields.datetime.now()
-        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','!=','closed'),('company_id','=',self.env.company.id)])
-        if data.get('date_from'):
-            if data.get('date_to'):
-                running_orders = running_orders.filtered(lambda pr: pr.date_order.date() >= data.get('date_from') and pr.date_order.date() <= data.get('date_to'))
-            else:
-                running_orders = running_orders.filtered(lambda pr: pr.date_order.date() == data.get('date_from'))
-                
-        m_orders = running_orders.search([('revision_no','=',None)])
-        rev_orders = running_orders - m_orders
-        m_orders = running_orders
-        output = io.BytesIO()
-        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        column_style = workbook.add_format({'bold': True, 'font_size': 11})
-        _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
-        
-
-        fg_items = m_orders.mapped('fg_categ_type')
-        fg_items = list(set(fg_items))
-        items = self.env['fg.category'].search([('active','=',True)]).sorted(key=lambda pr: pr.sequence)
-        
-        if rev_orders:
-            fg_items.append('Revised PI')
-        else:
-            items = items.filtered(lambda pr: pr.name != 'Revised PI').sorted(key=lambda pr: pr.sequence)
-        
-        de_items = items.filtered(lambda pr: pr.name not in (fg_items))
-        exists_items = items - de_items
-        items = exists_items.sorted(key=lambda pr: pr.sequence)
-
-        for item in items:
-            all_orders = None
-            if item.name == 'Revised PI':
-                all_orders = self.env['sale.order.line'].browse(rev_orders.sale_order_line.ids)
-            else:
-                all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
-                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item.name)
-            
-            sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
-            
-            report_name = item.name
-            sheet = workbook.add_worksheet(('%s' % (report_name)))
-            sheet.freeze_panes(1, 0)
-            
-            sheet.write(0, 0, "OA ID", column_style)
-            sheet.write(0, 1, "PI NO", column_style)
-            sheet.write(0, 2, "OA NO", column_style)
-            sheet.write(0, 3, "OA DATE", column_style)
-            sheet.write(0, 4, "ORDER QTY", column_style)
-            sheet.write(0, 5, "READY QTY", column_style)
-            sheet.write(0, 6, "PENDING QTY", column_style)
-            # docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
-            report_data = []
-            for orders in sale_orders:
-                # docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
-                create_date = orders.create_date.strftime("%d-%m-%Y")
-                m_order = self.env['manufacturing.order'].search([('oa_id','=',orders.id),('company_id','=',self.env.company.id)])
-                ready_qty = sum(m_order.mapped('done_qty'))
-                balance_qty = orders.total_product_qty - ready_qty
-                order_data = []
-                order_data = [
-                    orders.id,
-                    orders.order_ref.pi_number,
-                    orders.name,
-                    create_date,
-                    orders.total_product_qty,
-                    ready_qty,
-                    balance_qty,
-                ]
-                report_data.append(order_data)
-            row = 1    
-            for line in report_data:
-                col = 0
-                for l in line:
-                    sheet.write(row, col, l, row_style)
-                    col += 1
-                row += 1
-                
-        workbook.close()
-        output.seek(0)
-        xlsx_data = output.getvalue()
-        
-        self.file_data = base64.encodebytes(xlsx_data)
-        end_time = fields.datetime.now()
-        
-        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
-        return {
-            'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('PI Summary')),
-            'target': 'self',
-        }
-
-    #daily production report start here
-    def packing_xls_template(self, docids, data=None):
-        start_time = fields.datetime.now()
-        
-        all_outputs = self.env['operation.details'].search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
-        all_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= data.get('date_from') and pr.action_date.date() <= data.get('date_to'))
-        
-        output = io.BytesIO()
-        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        
-        column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
-        
-        _row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
-        
-        row_style = workbook.add_format({'bold': True, 'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
-        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'vcenter', 'align': 'center', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
-            
-        items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI'),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.sequence)
-        
-        report_data = []
-        
-        for item in items:
-            report_data = []
-            itemwise_outputs = all_outputs.filtered(lambda pr: pr.fg_categ_type == item.name).sorted(key=lambda pr: pr.action_date)
-            if itemwise_outputs:
-                sheet = workbook.add_worksheet(('%s' % (item.name)))
-                sheet.freeze_panes(1, 0)
-                
-                sheet.write(0, 0, "DATE", column_style)
-                sheet.write(0, 1, "OA", column_style)
-                sheet.write(0, 2, "SHADE", column_style)
-                sheet.write(0, 3, "TZP", column_style)
-                sheet.write(0, 4, "STOPPER", column_style)
-                sheet.write(0, 5, "SIZE", column_style)
-                sheet.write(0, 6, "QTY", column_style)
-                sheet.write(0, 7, "PACKET", column_style)
-                sheet.write(0, 8, "REMARK", column_style)
-                sheet.write(0, 9, "PAGE NO", column_style)
-                sheet.write(0, 10, "TABLE", column_style)
-    
-                sheet.set_column(0, 0, 15)
-                sheet.set_column(1, 1, 15)
-                sheet.set_column(2, 2, 25)
-                sheet.set_column(2, 3, 25)
-                # sheet.set_column(3, 3, 15)
-                # sheet.set_column(4, 4, 15)
-                # sheet.set_column(5, 5, 15)
-                # sheet.set_column(6, 6, 15)
-                # sheet.set_column(7, 7, 15)
-                # sheet.set_column(8, 8, 15)
-                
-                order_data = []
-                for i in itemwise_outputs:
-                    order_data = []
-                    slider = stopper = sizes = None
-                    
-                    sizes = i.sizein
-                    if sizes == "N/A":
-                        sizes = i.sizecm
-
-                    findslider = i.slidercodesfg.find("TZP ")
-                    if findslider > 0:
-                        slider = i.slidercodesfg.split("TZP ",1)[1]
-                    else:
-                        slider = i.slidercodesfg.split("TZP-",1)[1]
-                    if i.mrp_line.topbottom:
-                        stopper = i.mrp_line.topbottom
-                    
-                    order_data = [
-                        i.action_date.strftime("%d-%b-%Y"),
-                        i.oa_id.name,
-                        i.shade,
-                        slider,
-                        stopper,
-                        sizes,
-                        i.qty,
-                        i.pack_qty,
-                        '',
-                        '',
-                        '',
-                        ]
-                    report_data.append(order_data)
-            row = 1
-            for line in report_data:
-                col = 0
-                for l in line:
-                    sheet.write(row, col, l, format_label_1)
-                    col += 1
-                row += 1
-
-        
-        workbook.close()
-        output.seek(0)
-        xlsx_data = output.getvalue()
-        self.file_data = base64.encodebytes(xlsx_data)
-        end_time = fields.datetime.now()
-        
-        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
-        return {
-            'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Packing Production Report')),
-            'target': 'self',
-        }
-        
 

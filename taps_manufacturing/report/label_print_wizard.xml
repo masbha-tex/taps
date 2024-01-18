@@ -19,14 +19,14 @@
                         <!-- <field name="Country_name" widget="selection"/> -->
                         <field name="batch_lot"/>
                         <field name="table_name" widget="selection"/>
-                        <field name="qc_person"/>
-                        <field name="pre_check_person"/>
-                        <field name="printing_person"/>
+                        <field name="qc_person" options="{'no_create':true, 'no_open':true}" />
+                        <field name="pre_check_person" options="{'no_create':true, 'no_open':true}"/>
+                        <field name="printing_person" options="{'no_create':true, 'no_open':true}"/>
                     </group>
                 </group>
                 <footer>
                     <!-- <button string="Print" name="action_print_report" type="object" class="btn-primary"/> -->
-                    <button string="Download Excel" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+                    <button string="Print" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
@@ -44,4 +44,5 @@
               sequence="14"
               action="label_printing"
               parent="mrp.menu_mrp_reporting"/>
+   
 </odoo>

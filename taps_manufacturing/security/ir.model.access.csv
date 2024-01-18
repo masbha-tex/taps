@@ -27,6 +27,7 @@ access_mrp_return,mrp_return,model_mrp_return,base.group_user,1,1,1,1
 access_mrp_reports,mrp_report,model_mrp_report,base.group_user,1,1,1,1
 access_initial_production,initial_production,model_initial_production,base.group_user,1,1,1,1
 access_others_item_config,others_item_config,model_others_item_config,base.group_user,1,1,1,1
+access_selection_fields_data,selection_fields_data,model_selection_fields_data,base.group_user,1,1,1,1
 access_fg_reports,fg_report,model_fg_report,base.group_user,1,1,1,1
 access_label_print,label_print,model_label_print,base.group_user,1,1,1,1
 access_oa_check,access_oa_check,model_oa_check,base.group_user,1,1,1,1

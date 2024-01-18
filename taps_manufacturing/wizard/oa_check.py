@@ -9,57 +9,34 @@ from odoo.tools import format_date
 import re
 import math
 
-
-
 class OaCheck(models.TransientModel):
     _name = 'oa.check'
     _description = 'OA Check'     
 
-
-    lookup_oa = fields.Integer(string='OA No.', help='OA')
-    # action_date_list = fields.Integer(string='Packing Date', help='Packing Date')
-    action_date_list = fields.Selection(
-        selection=[],
-        string="Packing Date",
-    )
+    # lookup_oa = fields.Integer(string='OA No.', help='OA')
+    company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True)
+    lookup_oa = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True)
+    action_date_list = fields.Many2one('selection.fields.data', string='Dates',  domain="[('field_name', '=', 'Dates')]", check_company=True)
     iteam = fields.Integer(string='Iteam', help='Iteam')
     Shade_list = fields.Integer(string='Shade List', help='Shade List')
     Size_list = fields.Integer(string='Size List', help='OA')
     
     total_packed = fields.Integer(string='Total Packed (OA) ', help='Total Packed in current Date')
-    Shade_wise_packed = fields.Integer(string='Total Packed (Shade)', help='Shade wise packed in Current Date')
+    Shade_wise_packed = fields.Integer(string='Total Packed (Shade)', help='Shade wise packed in Current Date') 
     Size_wise_packed = fields.Integer(string='Total Packed(Size)', help='Size wise packed in Current Date')
-
 
 
     @api.onchange('lookup_oa')
     def _oa(self):
         if self.lookup_oa:
-            oa_data = self.env["operation.details"].search([('oa_id.name','ilike',self.lookup_oa),('next_operation','=','FG Packing')])
-            unique_dates = set(record.action_date.date() for record in oa_data)
-            sorted_dates = sorted(unique_dates)
-            # selection_data = []
-            selection_data = [('%s' % str(date), '%s' % str(date)) for date in sorted_dates]
-            # raise UserError((selection_data))
-            self.action_date_list = selection_data
-    
-
-    # @api.onchange('lookup_oa')
-    # def _oa(self):
-    #     if self.lookup_oa:
-    #         oa_data = self.env["operation.details"].search([('oa_id.name','ilike',self.lookup_oa),('next_operation','=','FG Packing')])
-    #         # oa_date_list = oa_data.mapped('action_date')
-    #         unique_dates = set(record.action_date.date() for record in oa_data)
-
-    #         sorted_dates = sorted(unique_dates)
-    #         selection_data = [(str(date), str(date)) for date in sorted_dates]
-            
-    #         # selection_data = [(str(date), str(date)) for date  in unique_dates]
-            
-    #         # raise UserError((selection_data))
-    #         self.action_date_list = selection_data
+            operations = self.env['operation.details'].sudo().search([('oa_id','=',self.lookup_oa.id),('next_operation','=','FG Packing')])
+            unique_dates = set(record.action_date.date() for record in operations)
+            all_dates = self.env['selection.fields.data'].sudo().search([('field_name','=','Dates')]).unlink()
+            if unique_dates:
+                for _date in unique_dates:
+                    self.env["selection.fields.data"].sudo().create({'field_name':'Dates',
+                                                                              'name':_date
+                                                                              })
+                self.action_date_list = [(0, 0, {'field_name': 'Dates', 'name': _date}) for _date in unique_dates]
 
 
-
-    
-   

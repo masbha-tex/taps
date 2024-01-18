@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <data noupdate='0'>
-        <!-- <record id="action_report_send_daily_production_xlsx" model="ir.actions.report">
-            <field name="name">Daily Production</field>
-            <field name="model">mrp.report</field>
-            <field name="report_type">xlsx</field>  
-            <field name="report_name">
-            taps_manufacturing.report_customer_invoice_xlsx</field>
-            <field name="report_file">
-            taps_manufacturing.report_customer_invoice_xlsx</field>
-            <field name="print_report_name">'Excel Report'</field>
-        </record> -->
+
+        <record id="action_daily_production_report" model="ir.actions.report">
+			<field name="name">Daily Release Oa Team Wise</field>
+			<field name="model">mrp.report</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">taps_manufacturing.view_email_template_daily_production</field>
+			<field name="report_file">taps_manufacturing.view_email_template_daily_production</field>
+			<field name="binding_model_id" ref="model_mrp_report"/>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="taps_manufacturing.paperformat_daily_production_report_landscape"/>
+			<field name="default_print_option">print</field>
+            <!-- <field name="params">True</field> -->
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+			
+        </record>
         
         <record id="action_mrp_lot_barcode" model="ir.actions.report">
             <field name="name">BARCODE MRP LOT</field>

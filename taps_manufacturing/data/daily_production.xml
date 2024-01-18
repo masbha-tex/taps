@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<template id="view_email_template_daily_production">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+               
+		 <!-- </style>-->
+		  <div class="page">
+    		<div class="container" >
+                <!-- <h3 class="text-right">
+                    <strong><t t-esc="datas"/></strong>
+                </h3> -->
+			<div class="ml-16">
+				<t t-set="grand_total_packing_pcs" t-value="0.0"/>
+				<t t-set="grand_total_in_usd" t-value="0.0"/>
+				<t t-set="grand_total_pen_pcs" t-value="0.0"/>
+				<t t-set="grand_total_pen_usd" t-value="0.0"/>
+				<t t-set="grand_total_com_pro" t-value="0.0"/>
+				<t t-set="grand_total_com_in" t-value="0.0"/>
+				<t t-set="grand_total_t_re" t-value="0.0"/>
+				<t t-set="grand_total_com_re" t-value="0.0"/>
+                <t t-set="grand_total_pen_oa" t-value="0.0"/>
+                <p style="font-size:16px"><strong>Daily Production Invoice</strong></p>
+				<p style="font-size:16px">Date :  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/></p>
+				<br/>
+				<table class=" table table-sm  o_main_table p-0 m-0" style="font-size:11px;table-layout: fixed ! important;page-break-inside: avoid ! important;">
+					<!-- <caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
+						<strong>METAL PRODUCTS</strong>
+					</caption> -->
+					<thead>
+						<tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th style="border: 1px solid white">PRODUCT</th>
+							<th style="border: 1px solid white">PACKING PCS</th>
+							<th style="border: 1px solid white">INVOICE USD</th>
+							<th style="border: 1px solid white">PENDING PCS</th>
+							<th style="border: 1px solid white">PENDING USD</th>
+							<th style="border: 1px solid white">COMULATIVE PRODUCTION</th>
+							<th style="border: 1px solid white">COMULATIVE INVOICING</th>
+							<th style="border: 1px solid white">TODAY RELEASED</th>
+							<th style="border: 1px solid white">COMULATIVE RELEASED</th>
+							<th style="border: 1px solid white">PENDING OA</th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="sl" t-value="0"/>
+						<t t-foreach="datas" t-as="order">
+						
+								<tr style="border: 1px solid black">
+									<td style="border: 1px solid black">
+										<t t-esc="order[0]"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order[1]"/>
+                                        <t t-set="grand_total_packing_pcs" t-value="grand_total_packing_pcs+order[1]"/>
+									</td>
+									<td style="border: 1px solid black">
+										$<t t-esc="order[2]"/>
+                                        <t t-set="grand_total_in_usd" t-value="grand_total_in_usd+order[2]"/>->
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order[3]"/>
+                                        <t t-set="grand_total_pen_pcs" t-value="grand_total_pen_pcs+order[3]"/>
+									</td>
+									<!-- <td style="border: 1px solid black">
+										<t t-set="sl" t-value="sl+1"/>
+										<t t-esc="sl"/>
+									</td> -->
+									<td style="border: 1px solid black">
+										$<t t-esc="order[4]"/>
+                                        <t t-set="grand_total_pen_usd" t-value="grand_total_pen_usd+order[4]"/>
+									</td>
+									<td style="border: 1px solid black">
+										<t t-esc="order[5]"/>
+                                        <t t-set="grand_total_com_pro" t-value="grand_total_com_pro+order[5]"/>
+									</td>
+									<td style="border: 1px solid black">
+                                        $<t t-esc="order[6]"/>
+                                        <t t-set="grand_total_com_in" t-value="grand_total_com_in+order[6]"/>
+									</td>
+									<td style="border: 1px solid black">
+										$<t t-esc="order[7]"/>
+                                        <t t-set="grand_total_t_re" t-value="grand_total_t_re+order[7]"/>
+									</td>
+									<td style="border: 1px solid black">
+										$<t t-esc="order[8]"/>
+                                        <t t-set="grand_total_com_re" t-value="grand_total_com_re+order[8]"/>
+									</td>
+									
+									<td style="border: 1px solid black">
+										<t t-esc="order[9]"/>
+                                        <t t-set="grand_total_pen_oa" t-value="grand_total_pen_oa+order[9]"/>
+                                        <!-- <t t-set="grand_total_pen_oa" t-value="float(grand_total_pen_oa) + float(order[9])"/> -->
+
+									</td>
+								</tr>
+							
+						</t>
+                        <tr style="border: 1px solid black">
+                            <td class="text-right" style="border: 1px solid black;">Total Order Close :</td>
+									<td style="border: 1px solid black">
+										<t t-esc="closedids"/>
+									</td>
+                            <td style="border: 1px solid black" colspan="8"/>
+                        </tr>
+						<tr style="border: 1px solid black">
+                            
+                          <td class="text-right" style="border: 1px solid black;">TOTAL</td>
+    						<td style="border: 1px solid black"><t t-esc="grand_total_packing_pcs"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_in_usd"/></td>
+                            <td style="border: 1px solid black"><t t-esc="grand_total_pen_pcs"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_pen_usd"/></td>
+                            <td style="border: 1px solid black"><t t-esc="grand_total_com_pro"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_com_in"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_t_re"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_com_re"/></td>
+                            <td style="border: 1px solid black"><t t-esc="grand_total_pen_oa"/></td>
+                            
+						</tr>
+					</tbody>
+				</table>
+			  <br/>
+			</div>	
+			</div>
+		</div>
+        </t>
+        </t>
+	</template>
+	
+</odoo>
