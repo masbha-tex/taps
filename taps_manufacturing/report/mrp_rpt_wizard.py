@@ -88,25 +88,22 @@ class MrpReportWizard(models.TransientModel):
             if rec.id == 1:
                 subject = (rec.name)+' Daily Production('+(one_day_ago.strftime('%d %b, %Y'))+')'
                 
-                body = 'Please Find The Attached File for Daily Production'
+                body = 'Dear Sir/All, Please Find The Attached Summary of '+(rec.name)+' Daily Production'
                 # email_to_list = []
-                email_to_list = ['asraful.haque@texzipperbd.com',]#'production@bd.texfasteners.com',
+                email_to_list = ['production@bd.texfasteners.com',]#'asraful.haque@texzipperbd.com',
                 email_from_list = [
                     'odoo@texzipperbd.com',
                 ]
                 email_cc_list = [
-                    # 'deepak.shah@bd.texfasteners.com',
-                    # 'shahid.hossain@texzipperbd.com',
-                    # 'ranjeet.singh@texzipperbd.com',
+                    'deepak.shah@bd.texfasteners.com',
+                    'nitish.bassi@texzipperbd.com',
+                    'shahid.hossain@texzipperbd.com',
+                    'ranjeet.singh@texzipperbd.com',
                     'abu.sayed@texzipperbd.com',
                     ]
                 author_id=0
-                
                 # email_to_list.append(rec.user_id.login)
                 # email_cc_list.append(rec.core_leader.login)
-                    
-        
-                
                 # raise UserError((ct['team_name'])) report.taps_hr.hris_employee_profile_pdf_template
                 report = rec.env.ref('taps_manufacturing.action_daily_production_report', False)
                 # report = report.with_context(ct)
@@ -136,26 +133,8 @@ class MrpReportWizard(models.TransientModel):
                     'attachment_ids' : attachment,
                     'reply_to': None,
                 }
-                # raise UserError((rec.env.ref('taps_sale.view_oa_release_body_team_wise', raise_if_not_found=True)))
-                # try:
-                    
-                #     template = rec.env.ref('taps_sale.view_email_template_daily_production', raise_if_not_found=True)
-                    
-                # except ValueError:
-                #     _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')
-                # else:
-                    
-                #     template_ctx = {
-                #         'message': rec.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA.pdf')),
-                #         'model_description': rec.env['ir.model']._get('operation.details').display_name,
-                #         'team' : rec,
-                #     }
-                    
-                        
-                #     body = template._render(template_ctx, engine='ir.qweb')
-                #     mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
                
-                rec.env['mail.mail'].sudo().create(mail_values).send()    
+                rec.env['mail.mail'].sudo().create(mail_values).send()
     
     def action_generate_xlsx_report(self):
         if self.report_type == "pir":
