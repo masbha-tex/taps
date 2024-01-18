@@ -95,6 +95,7 @@ class MrpReportWizard(models.TransientModel):
                     'odoo@texzipperbd.com',
                 ]
                 email_cc_list = [
+                    'deepak.shah@bd.texfasteners.com',
                     'shahid.hossain@texzipperbd.com',
                     'ranjeet.singh@texzipperbd.com',
                     'abu.sayed@texzipperbd.com',
@@ -1972,9 +1973,10 @@ class ProductionReportPDF(models.AbstractModel):
     _description = 'Production Report Template'     
 
     def _get_report_values(self, docids, data=None):
-        
+        # raise UserError((docids))
         start_time = fields.datetime.now()
         one_day_ago = start_time - timedelta(days=1)
+        report_date = one_day_ago.strftime("%d-%b-%Y")
         month_ = _day = to_day = None
         
         month_ = int(one_day_ago.month)
@@ -1987,17 +1989,6 @@ class ProductionReportPDF(models.AbstractModel):
         all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
         daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= first_day_of_m.date() and pr.action_date.date() <= one_day_ago.date())#.sorted(key=lambda pr: pr.sequence)
         
-        # column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center', 'bg_color':'#8DB4E2'})
-        
-        # column_merge_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
-        
-        # format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        # format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
-        
-        
-        # merge_format = workbook.add_format({'align': 'top'})
-        # merge_format_ = workbook.add_format({'align': 'bottom'})
 
         initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id),('production_date','>=',one_day_ago.date())])#&gt;
         
@@ -2012,17 +2003,6 @@ class ProductionReportPDF(models.AbstractModel):
         datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
         comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() <= full_date.date())
         
-        # sheet.write(1, 0, "PRODUCT", column_style)
-        # sheet.write(1, 1, "PACKING PCS", column_style)
-        # sheet.write(1, 2, "INVOICE USD", column_style)
-        # sheet.write(1, 3, "PENDING PCS", column_style)
-        # sheet.write(1, 4, "PENDING USD", column_style)
-        # sheet.write(1, 5, "COMULATIVE PRODUCTION", column_style)
-        # sheet.write(1, 6, "COMULATIVE INVOICING", column_style)
-        # sheet.write(1, 7, "TODAY RELEASED", column_style)
-        # sheet.write(1, 8, "COMULATIVE RELEASED", column_style)
-        # sheet.write(1, 9, "PENDING OA", column_style)
-        # raise UserError(('hudai'))
 
         closed_ids = 0
         
@@ -2158,29 +2138,8 @@ class ProductionReportPDF(models.AbstractModel):
             comu_inv = round(comu_inv,0)
             tr_value = round(tr_value,0)
             comur_value = round(comur_value,0)
+
             
-            # if start_time.date() < full_date.date():
-            #     invoiced = pending_usd = comu_inv = tr_value = comur_value = pack_pcs = pending_pcs = comu_pcs = pending_ids = None
-
-            # else:
-            #     if pack_pcs == 0:
-            #         pack_pcs = None
-            #     if pending_pcs <= 0:
-            #         pending_pcs,
-            #         pending_usd,
-            #     if comu_pcs == 0:
-            #         comu_pcs = None
-            #     if pending_ids == 0:
-            #         pending_ids = None
-
-            #     if invoiced == 0:
-            #         invoiced = None
-            #     if comu_inv == 0:
-            #         comu_inv = None
-            #     if tr_value == 0:
-            #         tr_value = None    
-            #     if comur_value == 0:
-            #         comur_value = None
             if item.name == 'Others':
                 others_value = invoiced
             order_data = [
@@ -2196,10 +2155,9 @@ class ProductionReportPDF(models.AbstractModel):
                 pending_ids,
                 ]
             report_data.append(order_data)
-        # grand_total = []
-        # for rec in order_data:
-        #     if 
+            
         return {
             'datas': report_data,
             'closedids':closed_ids,
+            'report_date':report_date,
             }

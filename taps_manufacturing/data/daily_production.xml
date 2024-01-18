@@ -21,7 +21,8 @@
 				<t t-set="grand_total_com_re" t-value="0.0"/>
                 <t t-set="grand_total_pen_oa" t-value="0.0"/>
                 <p style="font-size:16px"><strong>Daily Production Invoice</strong></p>
-				<p style="font-size:16px">Date :  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/></p>
+				<!-- <p style="font-size:16px">Date :  <span style="color:blue" t-esc="(datetime.date.today().strftime('%d %b, %Y'))"/></p> -->
+                <p style="font-size:16px">Date :  <span style="color:blue" t-esc="report_date"/></p>
 				<br/>
 				<table class=" table table-sm  o_main_table p-0 m-0" style="font-size:11px;table-layout: fixed ! important;page-break-inside: avoid ! important;">
 					<!-- <caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;padding: 5px;font-size: 15px;">
@@ -55,7 +56,7 @@
 									</td>
 									<td style="border: 1px solid black">
 										$<t t-esc="order[2]"/>
-                                        <t t-set="grand_total_in_usd" t-value="grand_total_in_usd+order[2]"/>->
+                                        <t t-set="grand_total_in_usd" t-value="grand_total_in_usd+order[2]"/>
 									</td>
 									<td style="border: 1px solid black">
 										<t t-esc="order[3]"/>

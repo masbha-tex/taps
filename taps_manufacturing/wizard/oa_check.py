@@ -13,12 +13,13 @@ class OaCheck(models.TransientModel):
     _name = 'oa.check'
     _description = 'OA Check'     
 
-    # lookup_oa = fields.Integer(string='OA No.', help='OA')
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True)
     lookup_oa = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True)
     action_date_list = fields.Many2one('selection.fields.data', string='Dates',  domain="[('field_name', '=', 'Dates')]", check_company=True)
-    iteam = fields.Integer(string='Iteam', help='Iteam')
-    Shade_list = fields.Integer(string='Shade List', help='Shade List')
+    # iteam = fields.Many2one('selection.fields.data', string='Dates',  domain="[('field_name', '=', 'Dates')]", check_company=True)
+    # iteam = fields.Integer(string='Iteam', help='Iteam')
+    # Shade_list = fields.Integer(string='Shade List', help='Shade List')
+    Shade_list = fields.Many2one('selection.fields.data', string='Shade List',  domain="[('field_name', '=', 'shade')]", check_company=True)
     Size_list = fields.Integer(string='Size List', help='OA')
     
     total_packed = fields.Integer(string='Total Packed (OA) ', help='Total Packed in current Date')
