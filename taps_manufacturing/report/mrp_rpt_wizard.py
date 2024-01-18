@@ -90,14 +90,14 @@ class MrpReportWizard(models.TransientModel):
                 
                 body = 'Please Find The Attached File for Daily Production'
                 # email_to_list = []
-                email_to_list = ['production@bd.texfasteners.com',]
+                email_to_list = ['asraful.haque@texzipperbd.com',]#'production@bd.texfasteners.com',
                 email_from_list = [
                     'odoo@texzipperbd.com',
                 ]
                 email_cc_list = [
-                    'deepak.shah@bd.texfasteners.com',
-                    'shahid.hossain@texzipperbd.com',
-                    'ranjeet.singh@texzipperbd.com',
+                    # 'deepak.shah@bd.texfasteners.com',
+                    # 'shahid.hossain@texzipperbd.com',
+                    # 'ranjeet.singh@texzipperbd.com',
                     'abu.sayed@texzipperbd.com',
                     ]
                 author_id=0
@@ -137,25 +137,25 @@ class MrpReportWizard(models.TransientModel):
                     'reply_to': None,
                 }
                 # raise UserError((rec.env.ref('taps_sale.view_oa_release_body_team_wise', raise_if_not_found=True)))
-                try:
+                # try:
                     
-                    template = rec.env.ref('taps_sale.view_email_template_daily_production', raise_if_not_found=True)
+                #     template = rec.env.ref('taps_sale.view_email_template_daily_production', raise_if_not_found=True)
                     
-                except ValueError:
-                    _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')
-                else:
+                # except ValueError:
+                #     _logger.warning('QWeb template mail.mail_notification_light not found when sending appraisal confirmed mails. Sending without layouting.')
+                # else:
                     
-                    template_ctx = {
-                        'message': rec.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA.pdf')),
-                        'model_description': rec.env['ir.model']._get('operation.details').display_name,
-                        'team' : rec,
-                    }
+                #     template_ctx = {
+                #         'message': rec.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name='OA.pdf')),
+                #         'model_description': rec.env['ir.model']._get('operation.details').display_name,
+                #         'team' : rec,
+                #     }
                     
                         
-                    body = template._render(template_ctx, engine='ir.qweb')
-                    mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
+                #     body = template._render(template_ctx, engine='ir.qweb')
+                #     mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
                
-                rec.env['mail.mail'].sudo().create(mail_values)    
+                rec.env['mail.mail'].sudo().create(mail_values).send()    
     
     def action_generate_xlsx_report(self):
         if self.report_type == "pir":
@@ -1973,7 +1973,8 @@ class ProductionReportPDF(models.AbstractModel):
     _description = 'Production Report Template'     
 
     def _get_report_values(self, docids, data=None):
-        # raise UserError((docids))
+        # raise UserError((docids[0]))
+        com_id = int(docids[0])
         start_time = fields.datetime.now()
         one_day_ago = start_time - timedelta(days=1)
         report_date = one_day_ago.strftime("%d-%b-%Y")
@@ -1986,13 +1987,13 @@ class ProductionReportPDF(models.AbstractModel):
         
         first_day_of_m = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
         
-        all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
+        all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id.id','=',com_id)])
         daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= first_day_of_m.date() and pr.action_date.date() <= one_day_ago.date())#.sorted(key=lambda pr: pr.sequence)
         
 
-        initial_pr = self.env['initial.production'].search([('company_id','=',self.env.company.id),('production_date','>=',one_day_ago.date())])#&gt;
+        initial_pr = self.env['initial.production'].search([('company_id.id','=',com_id),('production_date','>=',one_day_ago.date())])#&gt;
         
-        all_closed = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id','=',self.env.company.id)])
+        all_closed = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id.id','=',com_id)])
         day = _day
         
         report_name = day
@@ -2006,7 +2007,7 @@ class ProductionReportPDF(models.AbstractModel):
 
         closed_ids = 0
         
-        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id.id','=',com_id)])
 
         daily_closed_oa = None
         if all_closed:
@@ -2044,7 +2045,7 @@ class ProductionReportPDF(models.AbstractModel):
 
             in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
             
-            all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','!=','cancel'),('company_id','=',self.env.company.id)])
+            all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','!=','cancel'),('company_id.id','=',com_id)])
             
             
             comu_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() >= first_day_of_m.date())
@@ -2074,7 +2075,7 @@ class ProductionReportPDF(models.AbstractModel):
             item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
                                                  
             query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id and a.company_id = s.company_id where a.company_id = %s and a.state not in ('cancel') and date(s.create_date) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
-            self.env.cr.execute(query, (self.env.company.id,full_date.date(),full_date.date(),item.name))
+            self.env.cr.execute(query, (com_id,full_date.date(),full_date.date(),item.name))
             get_pending = self.env.cr.fetchone()
             
             pending_ids = 0
@@ -2091,7 +2092,7 @@ class ProductionReportPDF(models.AbstractModel):
                     
                     pending_pcs = qty
 
-                    pending_orders = self.env['manufacturing.order'].search([('oa_id','in',(pending_oa_ids)),('company_id','=',self.env.company.id)])
+                    pending_orders = self.env['manufacturing.order'].search([('oa_id','in',(pending_oa_ids)),('company_id.id','=',com_id)])
                     if pending_orders:
                         vl = round(sum(pending_orders.mapped('sale_order_line.price_subtotal')),2)
                         _qty = sum(pending_orders.mapped('sale_order_line.product_uom_qty'))
@@ -2100,7 +2101,7 @@ class ProductionReportPDF(models.AbstractModel):
                     pending_usd = round((pending_pcs * price),2)
 
                     if item.name == 'Others':
-                        all_top_outputs = self.env['operation.details'].sudo().search([('next_operation','=','Packing Output'),('company_id','=',self.env.company.id),('fg_categ_type','=',item.name),('oa_id.id','in',pending_oa_ids),('product_template_id.name','=','TOP')])
+                        all_top_outputs = self.env['operation.details'].sudo().search([('next_operation','=','Packing Output'),('company_id.id','=',com_id),('fg_categ_type','=',item.name),('oa_id.id','in',pending_oa_ids),('product_template_id.name','=','TOP')])
                         if all_top_outputs:
                             pending_pcs += sum(all_top_outputs.mapped('qty'))
                             qty = pending_pcs
