@@ -89,16 +89,15 @@ class MrpReportWizard(models.TransientModel):
                 subject = (rec.name)+' Daily Production('+(one_day_ago.strftime('%d %b, %Y'))+')'
                 
                 body = 'Please Find The Attached File for Daily Production'
-                email_to_list = []
-                email_to_list = []
+                # email_to_list = []
+                email_to_list = ['production@bd.texfasteners.com',]
                 email_from_list = [
                     'odoo@texzipperbd.com',
                 ]
                 email_cc_list = [
-                    # 'alamgir@texzipperbd.com',
-                    'asraful.haque@texzipperbd.com',
-                    'csd.zipper@texzipperbd.com',
-                    'nasir.csd@texzipperbd.com',
+                    'shahid.hossain@texzipperbd.com',
+                    'ranjeet.singh@texzipperbd.com',
+                    'abu.sayed@texzipperbd.com',
                     ]
                 author_id=0
                 
