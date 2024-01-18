@@ -59,9 +59,21 @@ class OperationDetails(models.Model):
     finish = fields.Char(string='Finish', store=True, readonly=True)
     shade = fields.Char(string='Shade', store=True, readonly=True)
     shade_ref = fields.Char(string='Shade Ref.', store=True, readonly=True)
+  
     sizein = fields.Char(string='Size (Inch)', store=True, readonly=True)
     sizecm = fields.Char(string='Size (CM)', store=True, readonly=True)
     sizemm = fields.Char(string='Size (MM)', store=True, readonly=True)
+    sizcommon = fields.Char(string='Size', store=True, readonly=True, compute='compute_size')
+
+    @api.depends('sizein', 'sizecm', 'sizemm')
+    def compute_size(self):
+        for s in self:
+            if s.sizein !=False and s.sizein != 'N/A':
+                s.sizcommon = str(s.sizein) + 'In' 
+            elif s.sizecm !=False and s.sizecm != 'N/A':
+                s.sizcommon = str(s.sizecm) + 'Cm'
+            elif s.sizemm !=False and s.sizemm != 'N/A':
+                s.sizcommon = str(s.sizemm) + 'Mm'
     
     top = fields.Char(string='Top', store=True, readonly=True)
     bottom = fields.Char(string='Bottom', store=True)

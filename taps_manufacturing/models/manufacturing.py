@@ -34,7 +34,7 @@ class ManufacturingOrder(models.Model):
     date_order = fields.Datetime(string='Order Date', related='oa_id.date_order', readonly=True)
     validity_date = fields.Date(string='Expiration', related='oa_id.validity_date', readonly=True)
     
-    lead_time = fields.Integer(string='Lead Time', compute='get_leadtime', readonly=True)
+    lead_time = fields.Integer(string='Lead Time', compute='get_leadtime', readonly=True, store=True,  group_operator='avg')
     
     product_id = fields.Many2one(
         'product.product', related='sale_order_line.product_id', string='Product Id',ondelete='restrict', check_company=True)
@@ -195,7 +195,18 @@ class ManufacturingOrder(models.Model):
 
     # _sql_constraints = [
     #     ('unique_name_per_company', 'unique(company_id, company_id)', 'Name must be unique within the same company.'),]
-
+    
+    @api.onchange('date_order','closing_date')
+    def get_leadtime(self):
+        for s in self:
+            # raise UserError(((datetime.now() - s.date_order).days))
+            if s.date_order:
+                if s.closing_date:
+                    s.lead_time = (s.closing_date.date() - s.date_order.date()).days
+                else:
+                    s.lead_time = (datetime.now().date() - s.date_order.date()).days
+            else:
+                s.lead_time = 0
     
     @api.onchange('done_qty')
     def _done_qty(self):
@@ -246,13 +257,7 @@ class ManufacturingOrder(models.Model):
             mr = self.env["manufacturing.order"].search([('oa_id','=',s.oa_id.id)])
             s.oa_total_balance = s.oa_total_qty-sum(mr.mapped('done_qty'))
 
-    def get_leadtime(self):
-        for s in self:
-            # raise UserError(((datetime.now() - s.date_order).days))
-            if s.date_order:
-                s.lead_time = (datetime.now() - s.date_order).days
-            else:
-                s.lead_time = 0
+
 
     # def _get_line_value(self):
     #     for s in self:

@@ -15,12 +15,18 @@
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="sizemm"/>
+                <field name="closing_date"/>
                 <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;',0.0),('state','not in',('closed','cancel'))]"/>
+                <filter string="Closed Orders" name="closed" domain="[('closing_date','!=',False)]"/>
                 <separator/>
                 <filter string="Order Date" name="action_date_filter" date="date_order"/>
                 <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>
                 <filter string="Plan Date" name="action_plandate_filter" date="dyeing_plan"/>
                 <group expand="0" string="Group By">
+                    <filter name="year_group" string="Yearly" domain="[]" context="{'group_by': 'closing_date:year'}"/>
+                    <filter name="month_group" string="Monthly" domain="[]" context="{'group_by': 'closing_date:month'}"/>
+                    <filter name="day_group" string="Daily" domain="[]" context="{'group_by': 'closing_date:day'}"/>
+                    
                     <filter name="oa_group" string="OA" domain="[]" context="{'group_by': 'oa_id'}"/>
                     <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'fg_categ_type'}"/>
                     <filter name="shade_group" string="Shade" domain="[]" context="{'group_by': 'shade'}"/>
@@ -228,7 +234,28 @@
             </tree>
         </field>
     </record>
-    
+
+    <record id="view_lead_time_tree" model="ir.ui.view">
+        <field name="name">lead.time.tree</field>
+        <field name="model">manufacturing.order</field>
+        <field name="arch" type="xml" >
+            <tree string="Average Lead Time" create="false" delete ="false" editable="top"> 
+                <field name="oa_id" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="closing_date" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="buyer_name" optional="show"/>
+                <field name="product_id" readonly="1" invisible="1"/>
+                <field name="product_template_id" readonly="1" optional="show"/>
+                <field name="fg_categ_type" optional="show"/>
+                <field name="product_uom_qty" readonly="1"/>
+                <field name="done_qty" readonly="1"/>
+                <field name="lead_time" avg="Average Lead Time"/>
+                <field name="state" readonly="1"/>
+            </tree>
+        </field>
+    </record>
+
     <record id="action_manufacturing_process_order" model="ir.actions.act_window">
         <field name="name">Manufacturing Process</field>
         <field name="res_model">manufacturing.order</field>
@@ -247,9 +274,26 @@
         <field name="context">{'search_default_running': 1}</field>
     </record>
 
+    <record id="action_lead_time" model="ir.actions.act_window">
+        <field name="name">Average Lead Time</field>
+        <field name="res_model">manufacturing.order</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_lead_time_tree" />
+        <field name="domain">[('state','=','closed')]</field>
+        <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
+        <field name="context">{'search_default_closed': 1}</field>
+        <field name="context">{'search_default_closed': 1, 'search_default_year_group':1, 'search_default_month_group':1, 'search_default_day_group':1, 'search_default_item_group':1}</field>
+    </record>
+    
     <menuitem id="menu_manufacturing_order" 
               name="Manufacturing Orders(New)" 
               action="action_manufacturing_order" 
               parent="mrp.menu_mrp_manufacturing"
               sequence="5"/>
+
+    <menuitem id="menu_lead_time" 
+          name="Lead Time" 
+          action="action_lead_time" 
+          parent="mrp.menu_mrp_manufacturing"
+          sequence="9"/>
 </odoo>

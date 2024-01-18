@@ -15,6 +15,7 @@
                 <field name="sizein"/>
                 <field name="sizecm"/>
                 <field name="sizemm"/>
+                <field name="sizcommon"/>
                 <field name="work_center"/>
                 <filter string="Ready" name="ready" domain="[('operation_of','in',('plan','input')),('state','!=','done'),('state','!=','closed'),('balance_qty','&gt;',0)]"/>
                 <filter string="Pending" name="progress" domain="[('operation_of','in',('lot','output')),('state','!=','done'),('next_operation','ilike','Output'),('state','!=','closed'),('balance_qty','&gt;',0)]"/>
@@ -33,6 +34,7 @@
                     <filter name="slider_group" string="Slider" domain="[]" context="{'group_by': 'slidercodesfg'}"/>
                     <filter name="sizein_group" string="Size In" domain="[]" context="{'group_by': 'sizein'}"/>
                     <filter name="sizecm_group" string="Size CM" domain="[]" context="{'group_by': 'sizecm'}"/>
+                    <filter name="size_group" string="Size" domain="[]" context="{'group_by': 'sizcommon'}"/>
                     <filter name="machine_group" string="Machine" domain="[]" context="{'group_by': 'capacity'}"/>
                     <filter name="delivery_code" string="Delivery Code" domain="[]" context="{'group_by': 'mrp_delivery'}"/>
                 </group>
@@ -78,6 +80,7 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="sizcommon" optional="show"/>
                 
                 <field name="company_id" invisible="1"/>
                 
@@ -237,6 +240,7 @@
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
                 <field name="sizemm" optional="show"/>
+                <field name="sizcommon" optional="show"/>
                 <field name="company_id" invisible="1"/>
                 <field name="work_center" invisible="1"/>
                 <field name="next_operation" invisible="1"/>
@@ -342,6 +346,7 @@
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
                 <field name="sizemm" optional="show"/>
+                <field name="sizcommon" optional="show"/>
                 <field name="company_id" invisible="1"/>
                 
                 <field name="work_center" invisible="1"/>
@@ -440,6 +445,7 @@
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
                 <field name="sizemm" optional="show"/>
+                <field name="sizcommon" optional="show"/>
                 <field name="company_id" invisible="1"/>
                 <field name="logo"/>
                 <field name="logoref" invisible="1"/>
