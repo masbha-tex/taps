@@ -13,11 +13,12 @@
                 <field name="brand" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('company_type', '=', 'person'),('supplier_rank', '>', 0),('customer_rank', '>', 0),('brand_rank', '>', 0),('customer_group_rank', '>', 0)]}"/>
                 <!-- <field name="sale_representative"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/> -->
                 <field name="user_id" domain="[('share', '=', False)]"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
-                <field name="sourcing_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
+                
               </group>
               <group name="related buyer and customer">
                   <field name="related_buyer"  widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person'),('buyer_rank', '>', 0)]}"/>
-                <field name="related_customer" domain="[('customer_rank','>', 0)]" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('brand_rank', '>', 0),('customer_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
+                <!-- <field name="related_customer" domain="[('customer_rank','>', 0)]" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('brand_rank', '>', 0),('customer_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/> -->
+                <field name="sourcing_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
                 <field name="sourcing_office" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
               </group>  
             </group>

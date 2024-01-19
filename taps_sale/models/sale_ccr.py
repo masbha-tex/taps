@@ -112,7 +112,7 @@ class SaleCcr(models.Model):
     # )
     finish = fields.Many2one('product.attribute.value', domain="[['attribute_id','=',4]]")
     # slider = fields.Char(string="Slider")
-    sale_representative = fields.Many2one('res.users', related = 'oa_number.user_id', string='Sale Representative')
+    sale_representative = fields.Many2one('res.users', related = 'oa_number.user_id', string='Salesperson')
     team = fields.Many2one(related ='oa_number.team_id', string='Team')
     # team_leader = fields.Many2one(related ='sale_representative.leader', string='Team Leader')
     company_id = fields.Many2one(related='oa_number.company_id', string='Company', store=True, readonly=True, index=True)
@@ -125,10 +125,17 @@ class SaleCcr(models.Model):
     #     'State', store=True)
     justification = fields.Char('Justification Status', readonly=True)
     after_sales = fields.Char('After Sales Service', readonly=True)
+    replacement_item = fields.Char('Replacement Item', readonly=True)
     ca_lead = fields.Char(string='CA Lead', compute='_compute_ca_lead')
     pa_lead = fields.Char(string='PA Lead', compute='_compute_pa_lead')
     total_lead = fields.Char(string='Total Lead', compute='_compute_total_lead')
     cost = fields.Float(string='Cost', readonly=True)
+    ca_step_1 = fields.Char(string='CA Step 1', readonly=True)
+    ca_step_2 = fields.Char(string='CA Step 2', readonly=True)
+    ca_step_3 = fields.Char(string='CA Step 3', readonly=True)
+    pa_step_1 = fields.Char(string='PA Step 1', readonly=True)
+    pa_step_2 = fields.Char(string='PA Step 2', readonly=True)
+    pa_step_3 = fields.Char(string='PA Step 3', readonly=True)
 
     states = fields.Selection([
         ('draft', 'Draft'),
@@ -144,6 +151,7 @@ class SaleCcr(models.Model):
         ], string='Status', readonly=True, copy=False, index=True, tracking=5, default='draft')
 
     ticket_id = fields.Many2one('helpdesk.ticket', string='Ticket Number', readonly=True)
+    raised_by = fields.Many2one('res.users', related ='ticket_id.create_uid', string="Raised By" ,readonly=True)
 
     last_approver = fields.Many2one(
         string="Last Approver",
@@ -462,8 +470,8 @@ class SaleCcr(models.Model):
         return {}
 
     def action_justify(self):
-        if not self.ccr_type or not self.department_id or not self.analysis_activity:
-            raise UserError(("You Cannot leave empty any of the the fields: \n -Ccr Type, \n -Resp. Department and \n -Probable Root Cause/Analysis"))
+        if not self.ccr_type or not self.analysis_activity:
+            raise UserError(("You Cannot leave empty any of the the fields: \n -Ccr Type, \n -Probable Root Cause/Analysis"))
         else:
             self.write({'states': 'just'})
             self.write({'justification': 'Justified'})
@@ -476,6 +484,15 @@ class SaleCcr(models.Model):
         # raise UserError((self.id))
         ctx.update({
             'default_ca_closing_date': date.today(),
+            'default_ccr_no' : self.name,
+            'default_oa_number' : self.oa_number.id,
+            'default_pi_number' : self.oa_number.order_ref.id,
+            'default_invoice_reference' : self.invoice_reference,
+            'default_ccr_raised_by' : self.ticket_id.create_uid.id,
+            'default_customer' : self.customer.id,
+            'default_buyer' : self.buyer.id,
+            'default_ccr_type' : self.ccr_type.id,
+            'default_analysis_activity' : self.analysis_activity,
             
         })
         return {
@@ -494,7 +511,25 @@ class SaleCcr(models.Model):
         
         # raise UserError((self.id))
         ctx.update({
+            
+            'default_ccr_no' : self.name,
+            'default_oa_number' : self.oa_number.id,
+            'default_pi_number' : self.oa_number.order_ref.id,
+            'default_invoice_reference' : self.invoice_reference,
+            'default_ccr_raised_by' : self.ticket_id.create_uid.id,
+            'default_customer' : self.customer.id,
+            'default_buyer' : self.buyer.id,
+            'default_ccr_type' : self.ccr_type.id,
+            'default_analysis_activity' : self.analysis_activity,
             'default_pa_closing_date': date.today(),
+            'default_ca_step_1': self.ca_step_1,
+            'default_ca_step_2': self.ca_step_2,
+            'default_ca_step_3': self.ca_step_3,
+            'default_after_sales': self.after_sales,
+            'default_replacement_item': self.replacement_item,
+            'default_replacement_quantity': self.replacement_quantity,
+            'default_cost': self.cost,
+            'default_ca_closing_date': self.ca_closing_date,
             
         })
         return {
@@ -509,8 +544,8 @@ class SaleCcr(models.Model):
 
     
     def action_notjustify(self):
-        if not self.ccr_type or not self.department_id or not self.analysis_activity:
-            raise UserError(("You Cannot leave empty any of the the fields: \n -Ccr Type, \n -Resp. Department and \n -Probable Root Cause/Analysis"))
+        if not self.ccr_type or not self.analysis_activity:
+            raise UserError(("You Cannot leave empty any of the the fields: \n -Ccr Type,\n -Probable Root Cause/Analysis"))
 
         else:
             compose_form_id = self.env.ref('taps_sale.sale_ccr_wizard_form_notjustify').id

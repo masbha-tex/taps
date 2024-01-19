@@ -183,18 +183,6 @@ class ManufacturingOrder(models.Model):
     revision_no = fields.Char(string='Revision No', store=True)
     closing_date = fields.Datetime(string='Closing Date', readonly=False)
     sale_line_of_top = fields.Integer(string='Sale Line of Top', store=True, readonly=True)
-
-    # @api.constrains('company_id')
-    # def _check_company_id(self):
-    #     for record in self:
-    #         if record.company_id != self.env.company:
-    #             raise models.ValidationError("Company ID must match the current user's company.")
-                
-    # # _sql_constraints = [
-    # #     ('name_company_uniq', 'unique(name, company_id)', 'The name of the Action Name must be unique per Action Name in company!'),]
-
-    # _sql_constraints = [
-    #     ('unique_name_per_company', 'unique(company_id, company_id)', 'Name must be unique within the same company.'),]
     
     @api.onchange('date_order','closing_date')
     def get_leadtime(self):

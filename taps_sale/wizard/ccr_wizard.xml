@@ -7,17 +7,48 @@
             <field name="priority" eval="10"/>
             <field name="arch" type="xml">
                 <form string="Action">
+                    
+                    
                     <group>
                         <group>
-                            <field name="corrective_action"/>
+                            <field name="ccr_no"/>
+                            <field name="ccr_raised_by"/>
+                            <field name="customer"/>
+                            <field name="buyer"/>
+                        </group>
+                        <group>
+                            <field name="oa_number"/>
+                            <field name="pi_number"/>
+                            <field name="invoice_reference"/>
+                            
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="ccr_type"/>
+                        </group>
+                        <group>
+                            <field name="analysis_activity"/>
+                        </group>
+                    </group>
+                    <group string="Take Corrective Action">
+                        <field name= "ca_step_1"/>
+                        <field name= "ca_step_2"/>
+                        <field name= "ca_step_3"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="after_sales"/>
+                            <field name="replacement_item"/>
                             <field name="ca_closing_date"/>
                         </group>
                         <group>
-                            <field name="after_sales"/>
+                            
                             <field name="replacement_quantity"/>
                             <field name="cost"/>
                         </group>
                     </group>
+                    
                     <footer>
                         <button name="action_corrective" string="Save" type="object" class="oe_highlight"/>
                         
@@ -35,8 +66,49 @@
                 <form string="Action Pa">
                     <group>
                         <group>
-                            <field name="preventive_action"/>
+                            <field name="ccr_no"/>
+                            <field name="ccr_raised_by"/>
+                            <field name="customer"/>
+                            <field name="buyer"/>
                         </group>
+                        <group>
+                            <field name="oa_number"/>
+                            <field name="pi_number"/>
+                            <field name="invoice_reference"/>
+                            
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="ccr_type"/>
+                        </group>
+                        <group>
+                            <field name="analysis_activity"/>
+                        </group>
+                    </group>
+                    <group string="Corrective Action Taken">
+                    <group >
+                        <field name= "ca_step_1"/>
+                        <field name= "ca_step_2"/>
+                        <field name= "ca_step_3"/>
+                        <field name="after_sales"/>
+                    </group>
+                        <group>
+                            <field name="replacement_item"/>
+                            <field name="replacement_quantity"/>
+                            <field name="cost"/>
+                            <field name="ca_closing_date"/>
+                        </group>
+                    </group>
+                    
+                    
+                    <group string="Take Preventive Action">
+                        <field name= "pa_step_1"/>
+                        <field name= "pa_step_2"/>
+                        <field name= "pa_step_3"/>
+                        
+                    </group>
+                    <group>
                         <group>
                             <field name="pa_closing_date"/>
                         </group>

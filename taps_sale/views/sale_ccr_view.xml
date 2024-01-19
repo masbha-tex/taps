@@ -89,11 +89,12 @@
                     <field name="customer"/>
                     <field name="buyer"/>
                     <field name="invoice_reference"/>
+                    <field name="raised_by" widget="many2one_avatar_user"/>
                     <field name="justification"  decoration-success="justification == 'Justified'"  decoration-danger="justification == 'Not Justified'"/>
                     <field name="after_sales" decoration-info ="after_sales=='replace'" decoration-warning ="after_sales=='rework'"/>
                     <field name="replacement_quantity"/>
                     <field name="cost"/>
-                    <field name="last_approver"/>
+                    <field name="last_approver" widget="many2one_avatar_user"/>
                     <field name="closing_date"/>
                     <field name="ca_lead"/>
                     <field name="pa_lead"/>
@@ -138,15 +139,16 @@
                         <field name="states" widget="statusbar" statusbar_visible="draft,inter,just,nonjust,ca,pa,man,toclose,done,cancel"/>
                     </header>
                     <sheet>
+                        
                         <div class="oe_title">
                             <h1>
                                 <field name="name" />
                             </h1>
                         </div>
                         <div class="float-right">
-                            <h1>
+                            <h5>
                                 <field name="ticket_id" />
-                            </h1>
+                            </h5>
                         </div>
                         <br/>
                         <!-- <div class="oe_title">
@@ -160,40 +162,41 @@
                             <field name="buyer"/>
                             <field name="pi_number"/>
                             <field name="order_quantity"/>
-                            <field name="rejected_quantity"/>
+                            <field name="rejected_quantity" attrs="{'readonly': [('states', '!=', 'draft')]}"/>
                             <!-- <field name="sale_order_line_id" invisible="1"/> -->
                             
                             
                         </group>
                         <group>
                             <!-- <field name="ccr_type"/> -->
-                            <field name="fg_product"/>
+                            <field name="fg_product" attrs="{'readonly': [('states', '!=', 'draft')]}"/>
                             <!-- <field name="sale_order_line_id"/> -->
-                            <field name="finish"/>
-                            <field name="complaint"/>
+                            <field name="finish" attrs="{'readonly': [('states', '!=', 'draft')]}"/>
+                            <field name="complaint" attrs="{'readonly': [('states', '!=', 'draft')]}"/>
                             <!-- <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/> -->
                             <!-- <field name="replacement_quantity"/> -->
-                            <field name="invoice_reference"/>
+                            <field name="invoice_reference" attrs="{'readonly': [('states', '!=', 'draft')]}"/>
                             <field name="report_date"/>
+                            <field name="raised_by" widget="many2one_avatar_user"/>
                             <!-- <field name="analysis_activity"/> -->
                         </group>
                             
                         </group>
                         <group string="Quality" attrs= "{'invisible': [('states', '=', 'draft')]}">
                             <group>
-                                <field name="ccr_type"/>
-                                <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="ccr_type" attrs="{'readonly': [('states', '!=', 'inter')]}"/>
+                                <field name="department_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [('states', '!=', 'inter')]}"/>
                                 
                             </group>
                             <group>
-                                <field name="analysis_activity"/>
+                                <field name="analysis_activity" attrs="{'readonly': [('states', '!=', 'inter')]}"/>
                             </group>
                         </group>
                         <!-- <div class="oe_title">
                                 <h2 style="color: #E54F6D">SALES</h2>
                         </div> -->
                         
-                        <group string="Justification Status">
+                        <group string="Justification Status" attrs= "{'invisible': [('states', 'in', ('draft','inter'))]}">
                             <group>
                                 <field name="justification" widget="radio" nolabel="1"/>
                                 <field name="reason" attrs= "{'invisible': [('justification', '=', 'Justified')]}"/>
@@ -203,24 +206,37 @@
                                 <field name="non_justify_action" attrs= "{'invisible': [('justification', '=', 'Justified')]}"/>
                             </group>
                         </group>
-                        <group>
+                        <group string="CORRECTIVE ACTION" attrs= "{'invisible': ['|',('justification', '=', 'Not Justified'), ('states', 'in', ('draft','inter'))]}">
                             
-                            <group string="CORRECTIVE ACTION" attrs= "{'invisible': [('justification', '=', 'Not Justified')]}">
-                                <field name="corrective_action"/>
-                                <field name="after_sales"/>
-                                <field name="replacement_quantity"/>
-                                <field name="cost"/>
+                            <group>
+                                <field name="ca_step_1"/>
+                                <field name="ca_step_2"/>
+                                <field name="ca_step_3"/>
                                 <field name="ca_closing_date"/>
                             </group>
-                            <group string="PREVENTIVE ACTION" attrs= "{'invisible': [('justification', '=', 'Not Justified')]}">
-                                <field name="preventive_action"/>
-                                <field name="pa_closing_date"/>
+                            <group>
+                                <field name="after_sales"/>
+                                <field name="replacement_item"/>
+                                <field name="replacement_quantity"/>
+                                <field name="cost"/>
                             </group>
                             
+                            
+                        </group>
+                        <group string="PREVENTIVE ACTION" attrs= "{'invisible': ['|',('justification', '=', 'Not Justified'), ('states', 'in', ('draft','inter'))]}">
+                            <group>
+                                <field name="pa_step_1"/>
+                                <field name="pa_step_2"/>
+                                <field name="pa_step_3"/>
+                                
+                            </group>
+                            <group>
+                                <field name="pa_closing_date"/>
+                            </group>
                         </group>
                         <group string="SALES">
                             <group>
-                                <field name="sale_representative"/>
+                                <field name="sale_representative" widget="many2one_avatar_user"/>
                                 
                             </group>
                             <group>
