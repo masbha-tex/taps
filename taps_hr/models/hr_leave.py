@@ -42,7 +42,7 @@ class HolidaysRequest(models.Model):
    
         for type in new_type:
             empp = self.env['hr.employee'].search([('active', '=', True)])
-            # raise UserError((empp))
+            
             for emp in empp:
                 current_employee = self.env.user.employee_id
                 date_join = datetime.strptime(emp.joining_date.strftime('%Y-%m-%d'), '%Y-%m-%d')
@@ -53,7 +53,7 @@ class HolidaysRequest(models.Model):
                 
                 cl_days = 0
                 sl_days = 0
-                if (date_join.month==12 and date_join.day>=26) or (date_join.year<type.validity_start.year):
+                if (date_join.month==12 and date_join.day>=26) or (date_join.year<=type.validity_start.year):
                     cl_days = 10
                     sl_days = 14
                 else:
