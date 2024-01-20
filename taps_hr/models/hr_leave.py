@@ -42,7 +42,7 @@ class HolidaysRequest(models.Model):
    
         for type in new_type:
             empp = self.env['hr.employee'].search([('active', '=', True)])
-            
+            # raise UserError((empp))
             for emp in empp:
                 current_employee = self.env.user.employee_id
                 date_join = datetime.strptime(emp.joining_date.strftime('%Y-%m-%d'), '%Y-%m-%d')

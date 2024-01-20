@@ -7,13 +7,14 @@
             <form string="Label Printing">
                 <group>
                     <group>
-                        <field name="report_type" string="Report Type"/>
-                        <field name="oa_number"/>
-                        <field name="iteam"/>
-                        <field name="shade"/>
-                        <field name="finish"/>                        
-                        <field name="size"/>
-                        <field name="qty"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="report_type" string="Report Type" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="oa_number" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="iteam" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="shade" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="finish" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>                        
+                        <field name="size" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="qty" />
                     </group>
                     <group>
                         <!-- <field name="Country_name" widget="selection"/> -->
@@ -26,7 +27,7 @@
                 </group>
                 <footer>
                     <!-- <button string="Print" name="action_print_report" type="object" class="btn-primary"/> -->
-                    <button string="Print" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+                    <!-- <button string="Print" name="action_generate_xlsx_report" type="object" class="btn-primary"/> -->
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

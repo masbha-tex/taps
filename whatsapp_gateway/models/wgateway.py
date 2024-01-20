@@ -29,13 +29,13 @@ class wApp(models.Model):
     _description = "WhatsApp Gateway"
 
     
-    url_field = fields.Char('URL', default='https://graph.facebook.com/v17.0/118373814703008/messages')
-    access_token = fields.Char('Access Tocken')
+    url_field = fields.Char(default='https://graph.facebook.com/v18.0/118373814703008/messages', string='URL')
+    access_token = fields.Char(string="Access Tocken")
 
     def send_message_wapp(self):
         payload = {
             "messaging_product": "whatsapp",
-            "to": "8801676778656",
+            "to": "+8801719276064",
             "type": "template",
             "template": {
                 "name": "customer_template",
@@ -60,4 +60,4 @@ class wApp(models.Model):
         # Error: Handle the error
             error_message = response.text
         # Handle the error message
-        raise UserError((error_message))
+            raise UserError((error_message))

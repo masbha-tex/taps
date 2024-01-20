@@ -9,8 +9,15 @@
           <header>
             <button name="send_message_wapp" string="Test Send" class="o_e_highlight" type="object"/>
           </header>
-          <field name="url_field"/>
-          <field name="access_token"/>
+          <sheet>
+              <group>
+                  <field name="url_field"/>
+              </group>
+              <group>
+                  <field name="access_token"/>
+              </group>
+          
+          </sheet>
         </form>
       </field>
     </record>

@@ -19,7 +19,7 @@ class LabelPrintingWizard(models.TransientModel):
     _check_company_auto = True
     
     # is_company = fields.Boolean(readonly=False, default=False)
-    
+    company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True)
     report_type = fields.Selection([('pplg', 'Production Packing Label (General)'),('fgcl', 'FG Carton Label'),('pplo', 'Production Packing Label (Others)')], string='Report Type', required=True, help='Report Type', default='pplg')
     
     # company_name = fields.Char('Company Name', readonly=False, default='TEX ZIPPERS (BD) LIMITED')     
@@ -28,15 +28,21 @@ class LabelPrintingWizard(models.TransientModel):
     table_name = fields.Selection([('a', 'Table A'),('b', 'Table B')], string='Table', required=True, help='Table', default='a')
     Country_name = fields.Selection([('bangladesh', 'Bangladesh'),('vietnam', 'Vietnam'),('pakistan', 'Pakistan')], string='Country', required=True, help='Country', default='bangladesh')
 
-    #oa_number = fields.Integer("OA", required=True)
-    #oa_number = fields.Many2one(filter(lambda x: x.env['operation.details'].sudo().search([('next_operation','=','Packing Output'),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)]), sale.order ), 'OA', index=True, readonly = False)
-    oa_number = fields.Many2one('sale.order', 'OA', compute='_compute_oa_id_domain',index=True, readonly = False)
 
-    #fields.Char('OA Number', readonly=False, default='') 
-    iteam = fields.Char('Iteam', readonly=False)
+    oa_number = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True)
+
+    iteam = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'Iteams')]", check_company=True, string='Iteam', store=True, required=False, readonly=False)
+
     shade = fields.Char('Shade', readonly=False, default='')
-    finish = fields.Char('Finish', readonly=False)
+    # finish = fields.Many2one(related='sale_order_line.finish',string='Finish', store=True, required=False, readonly=False)
 
+    # finish = o_data.finish #.replace('\n',' ')
+    finish = fields.Many2one('oa_number.finish', "Finish",  required=True)
+    #shade = o_data.shade
+    
+    #shade = fields.Many2one('sales.order.name.shade', "Shade",  required=True)
+    #shade = fields.Selection([('bangladesh', 'Bangladesh'),('vietnam', 'Vietnam'),('pakistan', 'Pakistan')], string='Country', required=True, help='Country', default='bangladesh')
+    #finish = fields.Char('Finish', readonly=False, default='')
     size = fields.Char('Size', readonly=False, default='')
     qty = fields.Char('Qty', readonly=False, default='')
     #qty = _compute_oa_id_domain.product_uom_qty
@@ -55,27 +61,53 @@ class LabelPrintingWizard(models.TransientModel):
 
     date_to = fields.Date('Date to', readonly=False, default=lambda self: self._compute_to_date())
     file_data = fields.Binary(readonly=True, attachment=False)
-    # oa_number = fields.Many2one('sale.order', 'OA', compute='_compute_oa_id_domain',index=True, readonly = False)
 
-    @api.depends('oa_number')
-    def _compute_oa_id_domain(self):
-        raise UserError(('feefef'))
-        oa_in_packing = self.env['operation.details'].sudo().search([('next_operation','=','Packing Output'),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
-        if oa_in_packing:
-            domain = [('id', 'in', oa_in_packing.oa_id.ids),('company_id','=',self.env.company.id),('sales_type','=','oa')]
-            self.oa_number = oa_in_packing.oa_id #[(6, 0, self.env['sale.order'].search(domain).ids)]
-        else:
-            self.oa_number = False
-    def _oa(self):
-        if self.lookup_oa:
-            operations = self.env['operation.details'].sudo().search([('oa_id','=',self.lookup_oa.id),('next_operation','=','FG Packing')])
-            unique_dates = set(record.action_date.date() for record in operations)
-            all_dates = self.env['selection.fields.data'].sudo().search([('field_name','=','Dates')]).unlink()
-            if unique_dates:
-                for _date in unique_dates:
-                    self.env["selection.fields.data"].sudo().create({'field_name':'Dates',
-                                                                              'name':_date
+
+
+    @api.onchange('oa_number')
+    def _iteam(self):
+        if self.oa_number:
+            operations = self.env['operation.details'].sudo().search([('oa_id','=',self.oa_number.id),('next_operation','=','Packing Output')])
+
+            # block for Iteam List
+            unique_iteam = set(record.product_template_id.name for record in operations)
+            all_iteam = self.env['selection.fields.data'].sudo().search([('field_name','=','Iteams')]).unlink()
+            
+            if unique_iteam:
+                for _iteam in unique_iteam:
+                    # raise UserError((_iteam))
+                    sl_cr = self.env["selection.fields.data"].sudo().create({'field_name':'Iteams',
+                                                                              'name':_iteam
                                                                               })
+                self.iteam = [(0, 0, {'field_name': 'Iteams', 'name': _iteam}) for _iteam in unique_iteam]
+
+            # block for Shade list
+            # unique_shade = set(record.product_template_id.shade for record in operations)
+            # all_shade = self.env['selection.fields.data'].sudo().search([('field_name','=','shade')]).unlink()
+            
+            # if unique_shade:
+            #     for _shade in unique_shade:
+            #         # raise UserError((_iteam))
+            #         sl_cr = self.env["selection.fields.data"].sudo().create({'field_name':'shade',
+            #                                                                   'name':_shade
+            #                                                                   })
+            #     self.shade = [(0, 0, {'field_name': 'shade', 'name': _shade}) for _shade in unique_shade]
+
+            # block for Shade list
+            unique_finish = set(record.product_template_id.finish for record in operations)
+            all_finish = self.env['selection.fields.data'].sudo().search([('field_name','=','finish')]).unlink()
+            
+            if unique_finish:
+                for _finish in unique_finish:
+                    # raise UserError((_iteam))
+                    sl_cr = self.env["selection.fields.data"].sudo().create({'field_name':'finish',
+                                                                              'name':_finish
+                                                                              })
+                self.finish = [(0, 0, {'field_name': 'finish', 'name': _finish}) for _finish in unique_finish]
+
+
+    # iteam = fields.Many2one(related='oa_number.order_line.product_template_id',string='Iteam', store=True, required=False,readonly=False)
+
 
     
     # @api.depends('qc_person')
