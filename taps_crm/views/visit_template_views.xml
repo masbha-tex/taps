@@ -76,7 +76,7 @@
             <field name="name">crm.visit.list</field>
             <field name="model">crm.visit</field>
             <field name="arch" type="xml">
-                <tree class="o_lead_opportunity_form custom_list_class" js_class="taps_crm_visit_tree_dashboard_upload">
+                <tree class="o_lead_opportunity_form custom_list_class" js_class="taps_crm_visit_tree_dashboard_upload" >
                     <field name="name"/>
                     <field name="description"/>
                     <field name="visit_date"/>
@@ -157,7 +157,7 @@
             <field name="model">crm.visit</field>
             <!-- <field name="priority" eval="1"/> -->
             <field name="arch" type="xml">
-                <kanban default_group_by="stages" class="o_kanban_small_column" on_create="quick_create" quick_create_view="taps_crm.quick_create_visit_form"
+                <kanban default_order="visit_date desc" default_group_by="team_id" class="o_kanban_small_column" on_create="quick_create" quick_create_view="taps_crm.quick_create_visit_form"
                     archivable="false" sample="1" js_class="taps_crm_visit_kanban_dashboard_upload">
                     <!-- <field name="stages" options='{"group_by_tooltip": {"requirements": "stages"}}'/> -->
                     <field name="name"/>
@@ -178,23 +178,29 @@
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_content oe_kanban_global_click">
                                 <div>
-                                    <strong class="o_kanban_record_title"><span><field name="name"/></span></strong>
+                                    <strong class="o_kanban_record_title"><span><field name="partner_id"/></span></strong>
                                 </div>
                                 <div>
-                                    <span class="o_kanban_record_subtitle"><field name="partner_id"/></span>
+                                    <i><span style="color:blue" class="o_kanban_record_subtitle"><field name="buyer"/></span></i>
                                 </div>
                                 <div>
-                                  <field name="product"/>
+                                  <field name="visit_purpose"/>
+                                </div>
+                                <div>
+                                  <field name="visit_outcome"/>
+                                </div>
+                                <div>
+                                  <span style="color:purple"><field name="action"/></span>
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
                                         <!-- <field name="priority" widget="priority"/> -->
                                         <div class="o_kanban_inline_block">
-                                            <field name="team_id" />
+                                            <b><i><field name="visit_date" /></i></b>
                                         </div>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
-                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                        <b><field name="user_id" class="o_kanban_record_title"/></b>
                                     </div>
                                 </div>
                             </div>
@@ -275,6 +281,18 @@
                         <filter string="Expected Closing" name="date_deadline" context="{'group_by':'date_deadline'}"/>
                         <filter string="Closed Date" name="date_closed" context="{'group_by':'date_closed'}"/>
                     </group> -->
+                    <group expand="0" string="Group By">
+                        <filter string="Team" name="team" context="{'group_by': 'team_id'}"/>
+                    </group>
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" name="customer" context="{'group_by': 'partner_id'}"/>
+                    </group>
+                    <group expand="0" string="Group By">
+                        <filter string="Buyer" name="buyer" context="{'group_by': 'buyer'}"/>
+                    </group>
+                    <group expand="0" string="Group By">
+                        <filter string="Visit Purpose" name="visit_purpose" context="{'group_by': 'visit_purpose'}"/>
+                    </group>
                 </search>
             </field>
         </record>

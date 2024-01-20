@@ -30,6 +30,7 @@ class CustomerVisit(models.Model):
     _name = 'crm.visit'
     _description = 'Customer Visit Template'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
+    _order = "visit_date desc"
 
     name = fields.Char(string="Name",required=True, copy=False, index=True, readonly=True,  default=lambda self: _('New'))
     description = fields.Char(string="Description")

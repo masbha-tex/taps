@@ -37,13 +37,6 @@ class LabelPrintingWizard(models.TransientModel):
     shade = fields.Char('Shade', readonly=False, default='')
     finish = fields.Char('Finish', readonly=False)
 
-    #finish = o_data.finish #.replace('\n',' ')
-    # finish = fields.Many2one('oa_number.finish', "Finish",  required=True)
-    #shade = o_data.shade
-    
-    #shade = fields.Many2one('sales.order.name.shade', "Shade",  required=True)
-    #shade = fields.Selection([('bangladesh', 'Bangladesh'),('vietnam', 'Vietnam'),('pakistan', 'Pakistan')], string='Country', required=True, help='Country', default='bangladesh')
-    #finish = fields.Char('Finish', readonly=False, default='')
     size = fields.Char('Size', readonly=False, default='')
     qty = fields.Char('Qty', readonly=False, default='')
     #qty = _compute_oa_id_domain.product_uom_qty
@@ -73,7 +66,16 @@ class LabelPrintingWizard(models.TransientModel):
             self.oa_number = oa_in_packing.oa_id #[(6, 0, self.env['sale.order'].search(domain).ids)]
         else:
             self.oa_number = False
-
+    def _oa(self):
+        if self.lookup_oa:
+            operations = self.env['operation.details'].sudo().search([('oa_id','=',self.lookup_oa.id),('next_operation','=','FG Packing')])
+            unique_dates = set(record.action_date.date() for record in operations)
+            all_dates = self.env['selection.fields.data'].sudo().search([('field_name','=','Dates')]).unlink()
+            if unique_dates:
+                for _date in unique_dates:
+                    self.env["selection.fields.data"].sudo().create({'field_name':'Dates',
+                                                                              'name':_date
+                                                                              })
 
     
     # @api.depends('qc_person')
