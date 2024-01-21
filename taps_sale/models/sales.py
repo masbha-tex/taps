@@ -446,6 +446,7 @@ class SaleOrder(models.Model):
             email_to_list = [
                 'mudit.tandon@texfasteners.com',
                 'deepak.shah@bd.texfasteners.com',
+                'mis@taps-testing-11226241.dev.odoo.com'
                 ]
             email_from_list = ['odoo@texzipperbd.com']
             email_cc_list = [
@@ -2238,7 +2239,7 @@ class SaleOrderLine(models.Model):
             self.logo='WREATH'
             self.finish_ref='TG-4117'
         elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194':
-            self.logo='WORKWEAR'
+            self.logo='RALPH LAUREN WORKWEAR'
             self.finish_ref='TG-4117'
         elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100214452':
             self.logo='RALPH LAUREN WORKWEAR'
@@ -2264,6 +2265,12 @@ class SaleOrderLine(models.Model):
         elif self.product_template_id.name == 'BRASS SNAP 100214447':
             self.logo='WAVY POLO R.LAUREN'
             self.finish_ref='TG-4117'
+        elif self.product_template_id.name == 'BRASS SHANK 100217521':
+            self.logo='WAVY POLO R.LAUREN'
+            self.finish_ref='TS-4117'
+        elif self.product_template_id.name == 'BRASS SHANK 100217522':
+            self.logo='RALPH LAUREN WORKWEAR'
+            self.finish_ref='TS-4117'
         
                 
         self._compute_tax_id()
