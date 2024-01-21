@@ -357,6 +357,10 @@ class SaleOrder(models.Model):
         for record in docs:
             # record.is_selected = False
             record.unlink()
+    def action_select_all(self):
+        docs=self.env['sale.order.line'].search([('order_id','=', self.id)])
+        for rec in docs:
+            rec.is_selected = True
         
             
     # def action_send_card(self,id):

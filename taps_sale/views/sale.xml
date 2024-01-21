@@ -233,6 +233,7 @@
                        <button name="action_copy" string="Mass Copy" type="object" class="btn-primary"/>
                         
                         <button  name="action_del" confirm="Are You Sure, you want to delete all selected lines" string="Mass Delete" type="object" class="btn-secondary"/>
+                        <button  name="action_select_all" confirm="Are You Sure, you want to Select all lines" string="Select All" type="object" class="btn-secondary"/>
                     
                     
                 </xpath>

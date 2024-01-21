@@ -69,11 +69,11 @@ class OperationDetails(models.Model):
     def compute_size(self):
         for s in self:
             if s.sizein !=False and s.sizein != 'N/A':
-                s.sizcommon = str(s.sizein) + 'In' 
+                s.sizcommon = str(s.sizein) + ' In' 
             elif s.sizecm !=False and s.sizecm != 'N/A':
-                s.sizcommon = str(s.sizecm) + 'Cm'
+                s.sizcommon = str(s.sizecm) + ' Cm'
             elif s.sizemm !=False and s.sizemm != 'N/A':
-                s.sizcommon = str(s.sizemm) + 'Mm'
+                s.sizcommon = str(s.sizemm) + ' Mm'
     
     top = fields.Char(string='Top', store=True, readonly=True)
     bottom = fields.Char(string='Bottom', store=True)

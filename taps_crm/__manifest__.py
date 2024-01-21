@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','crm','whatsapp_mail_messaging'],
+    'depends': ['base','sale','crm','whatsapp_mail_messaging','web'],
 
     # always loaded
     'data': [
@@ -29,10 +29,12 @@
         'views/crm_views.xml',
         'views/visit_template_views.xml',
         'views/assets.xml',
-        'views/crm_team_view.xml'
+        'views/crm_team_view.xml',
+        'views/custom_chart_view.xml'
     ],
     # only loaded in demonstration mode
     'qweb': [
         "static/src/xml/visit_dashboard.xml",
+        "static/src/xml/custom_chart/custom_chart.xml",
     ],
 }

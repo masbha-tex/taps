@@ -84,16 +84,13 @@ class MrpReportWizard(models.TransientModel):
     def _action_daily_production_email(self, company_id):
         company = self.env['res.company'].search([('id', 'in', (company_id))])
         one_day_ago = datetime.now() - timedelta(days=1)
-        for rec in company: 
+        for rec in company:
+            email_to_list = email_cc_list = []
+            subject = (rec.name)+' Daily Production('+(one_day_ago.strftime('%d %b, %Y'))+')'
+            body = 'Dear Sir/All, Please Find The Attached Summary of '+(rec.name)+' Daily Production'
+            email_from_list = ['odoo@texzipperbd.com',]
             if rec.id == 1:
-                subject = (rec.name)+' Daily Production('+(one_day_ago.strftime('%d %b, %Y'))+')'
-                
-                body = 'Dear Sir/All, Please Find The Attached Summary of '+(rec.name)+' Daily Production'
-                # email_to_list = []
                 email_to_list = ['production@bd.texfasteners.com',]#'asraful.haque@texzipperbd.com',
-                email_from_list = [
-                    'odoo@texzipperbd.com',
-                ]
                 email_cc_list = [
                     'deepak.shah@bd.texfasteners.com',
                     'nitish.bassi@texzipperbd.com',
@@ -101,40 +98,45 @@ class MrpReportWizard(models.TransientModel):
                     'ranjeet.singh@texzipperbd.com',
                     'abu.sayed@texzipperbd.com',
                     ]
-                author_id=0
-                # email_to_list.append(rec.user_id.login)
-                # email_cc_list.append(rec.core_leader.login)
-                # raise UserError((ct['team_name'])) report.taps_hr.hris_employee_profile_pdf_template
-                report = rec.env.ref('taps_manufacturing.action_daily_production_report', False)
-                # report = report.with_context(ct)
-                pdf_content, content_type = report.sudo()._render_qweb_pdf(res_ids=[rec.id], data={"team_id": rec.id})
-                attachment = rec.env['ir.attachment'].sudo().create({
-                            'name': rec.name+' Daily Production('+(one_day_ago.strftime('%d %b, %Y'))+')'+'.pdf',
-                            'type': 'binary',
-                            'datas': base64.encodebytes(pdf_content),
-                            'mimetype': 'application/pdf',
-                            'res_model' : 'operation.details',
-                  
-                })
+            if rec.id == 3:
+                email_to_list = ['packing.button@texzipperbd.com',]#'asraful.haque@texzipperbd.com',
+                email_cc_list = [
+                    'deepak.shah@bd.texfasteners.com',
+                    'nitish.bassi@texzipperbd.com',
+                    'shahid.hossain@texzipperbd.com',
+                    'kumar.abhishek@texzipperbd.com',
+                    'abu.sayed@texzipperbd.com',
+                    ]
                 
-                email_cc = ','.join(email_cc_list)
-                email_from = ','.join(email_from_list)
-                email_to = ','.join(email_to_list)
-                mail_values = {
-                    'email_from': email_from,
-                    'author_id': self.env.user.partner_id.id,
-                    'model': None,
-                    'res_id': None,
-                    'subject': subject,
-                    'body_html': body,
-                    'auto_delete': True,
-                    'email_to': email_to,
-                    'email_cc': email_cc,
-                    'attachment_ids' : attachment,
-                    'reply_to': None,
-                }
-               
-                rec.env['mail.mail'].sudo().create(mail_values).send()
+            author_id=0
+            report = rec.env.ref('taps_manufacturing.action_daily_production_report', False)
+            pdf_content, content_type = report.sudo()._render_qweb_pdf(res_ids=[rec.id], data={"team_id": rec.id})
+            attachment = rec.env['ir.attachment'].sudo().create({
+                        'name': rec.name+' Daily Production('+(one_day_ago.strftime('%d %b, %Y'))+')'+'.pdf',
+                        'type': 'binary',
+                        'datas': base64.encodebytes(pdf_content),
+                        'mimetype': 'application/pdf',
+                        'res_model' : 'operation.details',
+            })
+            
+            email_cc = ','.join(email_cc_list)
+            email_from = ','.join(email_from_list)
+            email_to = ','.join(email_to_list)
+            mail_values = {
+                'email_from': email_from,
+                'author_id': self.env.user.partner_id.id,
+                'model': None,
+                'res_id': None,
+                'subject': subject,
+                'body_html': body,
+                'auto_delete': True,
+                'email_to': email_to,
+                'email_cc': email_cc,
+                'attachment_ids' : attachment,
+                'reply_to': None,
+            }
+           
+            rec.env['mail.mail'].sudo().create(mail_values).send()
     
     def action_generate_xlsx_report(self):
         if self.report_type == "pir":
@@ -1996,7 +1998,7 @@ class ProductionReportPDF(models.AbstractModel):
             oa_ids = daily_closed_oa.mapped('oa_id')
             closed_ids = len(oa_ids)
         
-        items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
+        items = self.env['fg.category'].search([('active','=',True),('company_id.id','=',com_id),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
         
         report_data = []
         others_value = 0
@@ -2088,7 +2090,10 @@ class ProductionReportPDF(models.AbstractModel):
                     _outputs = all_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
                     if _outputs:
                         doneqty = sum(_outputs.mapped('qty'))
-                        pending_pcs = qty - doneqty
+                        if com_id == 3:
+                            pending_pcs = round((qty - doneqty),2)
+                        else:
+                            pending_pcs = qty - doneqty
                         pending_usd = round((pending_pcs * price),2)
             
             

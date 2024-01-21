@@ -3,10 +3,14 @@
     <template id="assets_backend_taps_crm" inherit_id="web.assets_backend" name="taps crm backend assets">
         <xpath expr="script[last()]" position="after">
             <script type="text/javascript" src="/taps_crm/static/src/js/visit_list_dashboard.js"></script>
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            
+            <script type="text/javascript" src="/taps_crm/static/src/js/custom_chart/custom_chart.js"></script>
         </xpath>
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/scss" href="/taps_crm/static/src/scss/visit.scss"/>
             <link rel="stylesheet" type="text/css" href="/taps_crm/static/src/css/list_view.css"/>
+            
         </xpath>
     </template>
 </odoo>

@@ -1,0 +1,15 @@
+<odoo>
+  <data>
+    <record id="view_action_custom_chart_dashboard" model="ir.actions.client">
+        <field name="name">Reporting Dashboard</field>
+        <field name="tag">action_reporting_dashboard</field>
+        <field name="target">main</field>
+    </record>
+    <menuitem
+        id="menu_custom_chart"
+        name="Custom Chart"
+        parent="taps_crm.menu_crm_config_lead_inherit"
+        action="taps_crm.view_action_custom_chart_dashboard"
+        sequence="2"/>
+  </data>
+</odoo>
