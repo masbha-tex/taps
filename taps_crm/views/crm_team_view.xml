@@ -9,7 +9,11 @@
             <xpath expr="//field[@name='user_id']" position="after">
                 <field name="core_leader"/>
                 <field name="region"/>
-            </xpath>   
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="domain">[['active', 'in',[True,False]]]</attribute>
+            </xpath>
+            
         </field>
         </record>
         <record id="crm_team_view_tree_inherit" model="ir.ui.view">

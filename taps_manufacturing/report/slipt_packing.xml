@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-	<template id="rpt_slipt_packing">
+	<template id="packing_label">
 		<t t-call="web.basic_layout">
 			<div class="page">
-				<t t-foreach="docs" t-as="morder">
+				<t t-foreach="docs" t-as="label.print">
 					<table class="float-left mt-2 mb-2 ml-4 mr-4 pt-2 pb-2 pl-4 pr-4" style="width:290pt; height:150pt; border: 1pt solid black; border-collapse: separate; border-radius:8pt; margin:5pt;page-break-inside: avoid; table-layout: fixed ! important">
 						<tr>
 							<th align="center">

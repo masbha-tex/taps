@@ -30,6 +30,9 @@ class OaCheck(models.TransientModel):
         if self.lookup_oa:
             oa_id = self.lookup_oa
             operations = self.env['operation.details'].sudo().search([('oa_id','=',self.lookup_oa.id),('next_operation','=','FG Packing')])
+
+            
+                    
             unique_dates = set(record.action_date.date() for record in operations)
             all_dates = self.env['selection.fields.data'].sudo().search([('field_name','=','Dates')]).unlink()
             if unique_dates:

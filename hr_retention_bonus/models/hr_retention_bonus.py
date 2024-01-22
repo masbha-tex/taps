@@ -163,7 +163,10 @@ class HrRetentionBonus(models.Model):
 
     def action_submit(self):
         self.write({'state': 'waiting_approval_1'})
-
+    def action_waiting_approval_1(self):
+        self.write({'state': 'waiting_approval_2'})
+    def action_waiting_approval_2(self):
+        self.write({'state': 'waiting_approval_3'})        
     def action_cancel(self):
         self.write({'state': 'cancel'})
 
