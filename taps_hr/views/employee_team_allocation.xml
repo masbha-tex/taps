@@ -2,11 +2,11 @@
 <odoo>
     <data>
 
-        <record id="view_hr_employee_relation_tree" model="ir.ui.view">
-            <field name="name">hr.employee.relation.tree</field>
-            <field name="model">hr.employee.relation</field>
+        <record id="view_hr_employee_team_allocation_tree" model="ir.ui.view">
+            <field name="name">hr.employee.team.allocation.tree</field>
+            <field name="model">hr.employee.team.allocation</field>
             <field name="arch" type="xml">
-                <tree string="Relation" sample="1" edit="1" editable="bottom" create="1">
+                <tree string="Team Allocation" sample="1" edit="1" editable="bottom" create="1">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <!-- <field name="company_id" groups="base.relation_multi_company"/> -->
@@ -14,11 +14,11 @@
             </field>
         </record>
 
-        <record id="view_hr_employee_relation_filter" model="ir.ui.view">
-            <field name="name">hr.employee.relation.search</field>
-            <field name="model">hr.employee.relation</field>
+        <record id="view_hr_employee_team_allocation_filter" model="ir.ui.view">
+            <field name="name">hr.employee.team.allocation.search</field>
+            <field name="model">hr.employee.team.allocation</field>
             <field name="arch" type="xml">
-                <search string="Relation">
+                <search string="Team Allocation">
                     <field name="name"/>
                     <!-- <field name="company_id"/> -->
                     <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
@@ -31,33 +31,33 @@
             </field>
         </record>
 
-        <record id="action_hr_employee_relation" model="ir.actions.act_window">
-            <field name="name">Relation</field>
-            <field name="res_model">hr.employee.relation</field>
+        <record id="action_hr_employee_team_allocation" model="ir.actions.act_window">
+            <field name="name">Team Allocation</field>
+            <field name="res_model">hr.employee.team.allocation</field>
             <field name="view_mode">tree</field>
-            <field name="search_view_id" ref="view_hr_employee_relation_filter"/>
+            <field name="search_view_id" ref="view_hr_employee_team_allocation_filter"/>
             <field name="context">{"search_default_Current":1}</field>
             <field name="help" type="html">
               <p class="o_view_nocontent_smiling_face">
-                Ready to Employee Relation?
+                Ready to Employee Team Allocation?
               </p><p>
-                Let's create a Employee Relation.
+                Let's create a Employee Team Allocation.
               </p>
             </field>
         </record>
       
         <!-- <menuitem
-            id="menu_hr_employee_relation"
+            id="menu_hr_employee_team_allocation"
             name="Employee Relation"
             parent="hr.menu_human_resources_configuration"
             groups="hr.group_hr_manager"
             sequence="34"/>   -->
             <menuitem
-                id="menu_hr_employee_relationp_tree"
-                action="action_hr_employee_relation"
+                id="menu_hr_employee_team_allocationp_tree"
+                action="action_hr_employee_team_allocation"
                 parent="hr.menu_human_resources_configuration_employee"
                 groups="hr.group_hr_manager"
-                sequence="11"/>        
+                sequence="13"/>        
 
     </data>
 </odoo>

@@ -5,6 +5,7 @@
         <field name="model">operation.details</field>
         <field name="arch" type="xml">
             <search>
+                <field name="name"/>
                 <field name="oa_id"/>
                 <field name="fg_categ_type"/>
                 <field name="partner_id"/>

@@ -533,7 +533,7 @@ class SaleOrder(models.Model):
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
                 
            
-            rec.env['mail.mail'].sudo().create(mail_values)
+            rec.env['mail.mail'].sudo().create(mail_values).send()
 
     
     
@@ -619,7 +619,7 @@ class SaleOrder(models.Model):
                 body = template._render(template_ctx, engine='ir.qweb')
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
            
-            rec.env['mail.mail'].sudo().create(mail_values)
+            rec.env['mail.mail'].sudo().create(mail_values).send()
             
 
     @api.model

@@ -6,7 +6,7 @@
             <field name="name">hr.employee.group.tree</field>
             <field name="model">hr.employee.group</field>
             <field name="arch" type="xml">
-                <tree string="Employee Group" sample="1" edit="1" editable="bottom" create="1">
+                <tree string="Group" sample="1" edit="1" editable="bottom" create="1">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="company_id" groups="base.group_multi_company"/>
@@ -18,7 +18,7 @@
             <field name="name">hr.employee.group.search</field>
             <field name="model">hr.employee.group</field>
             <field name="arch" type="xml">
-                <search string="Employee Group">
+                <search string="Group">
                     <field name="name"/>
                     <field name="company_id"/>
                     <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
@@ -32,7 +32,7 @@
         </record>
 
         <record id="action_hr_employee_group" model="ir.actions.act_window">
-            <field name="name">Employee Group</field>
+            <field name="name">Group</field>
             <field name="res_model">hr.employee.group</field>
             <field name="view_mode">tree</field>
             <field name="search_view_id" ref="view_hr_employee_group_filter"/>
@@ -46,18 +46,18 @@
             </field>
         </record>
       
-        <menuitem
+        <!-- <menuitem
             id="menu_hr_employee_group"
             name="Employee Group"
             parent="hr.menu_human_resources_configuration"
             groups="hr.group_hr_manager"
-            sequence="32"/>  
+            sequence="32"/>   -->
             <menuitem
                 id="menu_hr_employee_group_tree"
                 action="action_hr_employee_group"
-                parent="menu_hr_employee_group"
+                parent="hr.menu_human_resources_configuration_employee"
                 groups="hr.group_hr_manager"
-                sequence="33"/>        
+                sequence="10"/>        
 
     </data>
 </odoo>

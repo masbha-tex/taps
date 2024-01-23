@@ -24,8 +24,25 @@
                 <xpath expr="//field[@name='value']" position="attributes">
                     <attribute name="sum">Total Value</attribute>
                 </xpath>
+                <xpath expr="//field[@name='lot_id']" position="attributes">
+                    <attribute name="widget">lot_statusbar</attribute>
+                </xpath>
             </field>
         </record>
+
+<!-- <record id="view_stock_picking_form" model="ir.ui.view">
+    <field name="name">stock.picking.form</field>
+    <field name="model">stock.picking</field>
+    <field name="inherit_id" ref="stock.view_picking_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='lot_id']" position="attributes">
+            <attribute name="widget">lot_statusbar</attribute>
+        </xpath>
+    </field>
+</record> -->
+
+
+        
         
         <record id="stock_move_line_view_search" model="ir.ui.view">
             <field name="name">stock.move.line.search</field>
@@ -43,8 +60,17 @@
             <field name="model">stock.production.lot</field>
             <field name="inherit_id" ref="stock.view_production_lot_tree"/>
             <field name="arch" type="xml">
-               <xpath expr="//tree" position="inside">
-                   <field name="name" decoration-bf="1" class="custom_name_field"/>
+                <xpath expr="//field[@name='ref']" position="after">
+                    <field name="product_qty"/>
+                    <field name="unit_price"/>
+                    <field name="rejected"/>
+                    <field name="x_studio_slow_move" string="Slow Move"/>
+                </xpath>
+                <xpath expr="//tree[1]/field[@name='name']" position="before">
+                    <field name="id"/>
+                </xpath>
+                <xpath expr="//tree" position="inside">
+                    <field name="name" decoration-bf="1" class="custom_name_field" attrs="{'invisible': [('rejected', '=', False)]}"/>
                 </xpath>
             </field>
         </record>

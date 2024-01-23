@@ -67,18 +67,25 @@ class HrEmployeePrivate(models.Model):
         ('3', 'High-Impact')], string="Impact", tracking=True, help="What would be the impact of this employee leaving?" )
     employee_group = fields.Many2one('hr.employee.group', string="Group", help="What would be the group of this employee?")
     employee_relation = fields.Many2one('hr.employee.relation', tracking=True, string="Relation", help="What would be the relation of this employee?")
+    employee_grade_category = fields.Many2one('hr.employee.grade.category', tracking=True, string="Grade Category", help="What would be the Grade Category of this employee?")  
+    employee_team_allocation = fields.Many2one('hr.employee.team.allocation', tracking=True, string="Team Allocation", help="What would be the Team Allocation of this employee?")   
+    employee_trainee_grade = fields.Many2one('hr.employee.trainee.grade', tracking=True, string="Trainee Grade", help="What would be the Trainee Grade of this employee?")     
     performance_rated = fields.Selection(selection=[
         ('SKILLED', 'SKILLED'),
         ('UNSKILLED', 'UNSKILLED')], string="Performance Rated", tracking=True, help="How likely is it that this employee will Perform?" )
     replacement_new = fields.Selection(selection=[
         ('NEWHEAD', 'NEW HEAD'),
         ('REPLACEMENT', 'REPLACEMENT')], string="New Head Or Replacement", tracking=True, help="How likely is it that this employee is new or replaced?" )
+    status = fields.Selection(selection=[
+        ('Confirm', 'Confirm'),
+        ('Non-Confirm', 'Non-Confirm')], string="Status", tracking=True, help="How likely is it that this employee will Perform?" )    
     religion = fields.Selection(selection=[
         ('Islam', 'Islam'),
         ('Hinduism', 'Hinduism'),
         ('Buddhism', 'Buddhism'),
         ('Christian', 'Christian')], string="Religion", tracking=True, help="What would be the Religion of this employee?" )
-    tax_identification_number = fields.Char(string="TIN", help="What would be the Tax identification number of this employee?")    
+    tax_identification_number = fields.Char(string="TIN", help="What would be the Tax identification number of this employee?")
+    age = fields.Char( string="Age", readonly=True, store=True)
     
     def _sync_user(self, user, employee_has_image=False):
         vals = dict(
@@ -144,17 +151,26 @@ class HrEmployeePrivate(models.Model):
             for mc in self:
                 if mc.barcode:
                     mc._machine_user_registration(True, mc.name, mc.barcode, mc.rfid)
-        if self.category == 'staff' or self.category == 'expatriate':
-            for emp in self:
-                appraisal = self.env['hr.appraisal'].sudo().search([('employee_id', '=', emp.id), ('active', 'in', (False,True))]).sorted(key = 'id', reverse=True)[:1]
-                app_goal = self.env['hr.appraisal.goal'].sudo().search([('employee_id', '=', appraisal.employee_id.id), ('deadline', '=', appraisal.date_close), ('active', 'in', (False,True))])
-                if appraisal:
-                    if vals.get('active') is True: 
-                        app_goal.sudo().write({'active': True})
+
+        if vals.get('active') is True:
+            if self.category == 'staff' or self.category == 'expatriate':
+                for emp in self:
+                    appraisal = self.env['hr.appraisal'].sudo().search([('employee_id', '=', emp.id), ('active', 'in', (False,True))]).sorted(key = 'id', reverse=True)[:1]
+                    app_goal = self.env['hr.appraisal.goal'].sudo().search([('employee_id', '=', appraisal.employee_id.id), ('deadline', '=', appraisal.date_close), ('active', 'in', (False,True))])
+                    if appraisal:            
                         appraisal.sudo().write({'active': True, 'state': 'new'})
-                    if vals.get('active') is False:
-                        app_goal.sudo().write({'active': False})
+                    if app_goal:            
+                        app_goal.sudo().write({'active': True})                        
+        if vals.get('active') is False:
+            if self.category == 'staff' or self.category == 'expatriate':
+                for emp in self:
+                    appraisal = self.env['hr.appraisal'].sudo().search([('employee_id', '=', emp.id), ('active', 'in', (False,True))]).sorted(key = 'id', reverse=True)[:1]
+                    app_goal = self.env['hr.appraisal.goal'].sudo().search([('employee_id', '=', appraisal.employee_id.id), ('deadline', '=', appraisal.date_close), ('active', 'in', (False,True))])
+                    if appraisal:
                         appraisal.sudo().write({'active': False, 'state': 'cancel'})
+                    if app_goal:
+                        app_goal.sudo().write({'active': False})
+            
         return res
     
     
@@ -429,7 +445,44 @@ class HrEmployeePrivate(models.Model):
                 
                 record[-1].write({'service_length': length})
             else:
-                record.write({'service_length': False})        
+                record.write({'service_length': False})     
+                
+    def _calculate_employee_age(self):
+        emp_obj = self.env['hr.employee'].search([('active', '=', True)])
+        for record in emp_obj:
+            if record:
+                # if record.resign_date:
+                #     currentDate = datetime.strptime(str(record.resign_date), '%Y-%m-%d')
+                # else:
+                currentDate = datetime.now() + timedelta(hours=6)
+                    
+                if record.birthday:
+                    deadlineDate = datetime.strptime(str(record.birthday), '%Y-%m-%d')
+                else:
+                    deadlineDate = datetime.now() + timedelta(hours=6)
+                if currentDate > deadlineDate:
+                    currentDate, deadlineDate = deadlineDate, currentDate 
+    
+                # Calculate the difference in years and months using relativedelta
+                delta = relativedelta(deadlineDate, (currentDate))
+                
+                # years = delta.years
+                # months = delta.months
+
+                years = delta.years
+                total_months = delta.years * 12 + delta.months
+                months = total_months % 12 
+
+                # raise UserError((years,months))
+    
+                # Calculate the remaining days
+                remaining_days = (deadlineDate - (currentDate + relativedelta(years=years, months=months))).days
+    
+                length = f"{years} Years {months} Months {remaining_days} Days"
+                
+                record[-1].write({'age': length})
+            else:
+                record.write({'age': False})                    
      
     
 class HrEmployeeBase(models.AbstractModel):

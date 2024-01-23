@@ -4,7 +4,8 @@
 
         <template id="assets_backend_inv" name="Assets Backend Mrp" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
-                <link rel="stylesheet" href="/taps_inventory/static/src/css/custom_name_field.css"/>
+                <script type="text/javascript" src="/taps_inventory/static/src/js/stock_lot_number.js"/>
+                <!-- <link rel="stylesheet" href="/taps_inventory/static/src/css/custom_name_field.css"/> -->
             </xpath>
         </template>
 

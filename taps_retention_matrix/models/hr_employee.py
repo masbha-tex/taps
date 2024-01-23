@@ -18,12 +18,16 @@ class HrEmployeePrivate(models.Model):
 
     def write(self, vals):
         res = super(HrEmployeePrivate, self).write(vals)
-        if not self.company_id.id == 4:
-            for reten in self:
-                retention = self.env['retention.matrix'].sudo().search([('employee_id', '=', reten.id), ('active', 'in', (False,True))])
-                if retention:
-                    if vals.get('active') is True:                     
+        if vals.get('active') is True:
+            if not self.company_id.id == 4:
+                for reten in self:
+                    retention = self.env['retention.matrix'].sudo().search([('employee_id', '=', reten.id), ('active', 'in', (False,True))])
+                    if retention:
                         retention.sudo().write({'active': True})
-                    if vals.get('active') is False:
+        if vals.get('active') is False:
+            if not self.company_id.id == 4:
+                for reten in self:
+                    retention = self.env['retention.matrix'].sudo().search([('employee_id', '=', reten.id), ('active', 'in', (False,True))])
+                    if retention:
                         retention.sudo().write({'active': False})
         return res

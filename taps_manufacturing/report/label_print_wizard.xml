@@ -26,7 +26,7 @@
                     </group>
                 </group>
                 <footer>
-                    <!-- <button string="Print" name="generate_packing_label_report" type="object" class="btn-primary"/> -->
+                    <button string="Print" name="generate_qweb_pdf" type="object" class="btn-primary"/>
                     <!-- <button string="Print" name="" type="object" class="btn-primary"/> -->
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>

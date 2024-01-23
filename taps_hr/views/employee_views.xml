@@ -10,12 +10,15 @@
                 <field name="rfid"/>
             </field>
             <field name="coach_id" position="after">
+                <field name="employee_group" options='{"no_create":true}'/>
+                <field name="employee_grade_category" options='{"no_create":true}'/>
+                <field name="employee_team_allocation" options='{"no_create":true}'/>
+                <field name="employee_trainee_grade" options='{"no_create":true}'/>                
                 <field name="service_length"/>
+                <field name="age"/>
             </field>
             <field name="parent_id" position="before">
-                <field name="joining_date"/>
-                <field name="probation_date"/>
-                <field name="resign_date"/>
+                <field name="status"/>
             </field>
             <field name="company_id" position="before">
                 <field name="emp_id"/>
@@ -43,6 +46,9 @@
             </xpath>
             <field name="job_id" position="after">
                 <field name="grade"/>
+                <field name="joining_date"/>
+                <field name="probation_date"/>
+                <field name="resign_date"/>                
             </field>
             <xpath expr="//field[@name='identification_id']" position="attributes">
                 <attribute name="string">NID or Birth Certificate</attribute>
@@ -149,7 +155,11 @@
                 <xpath expr="//field[@name='company_id']" position="move"/>
                 <field name="category_ids" widget="many2many_tags" 
                        options="{&quot;color_field&quot;: &quot;color&quot;}" string="Category" groups="hr.group_hr_user"/>
+                <field name="status"/>
                 <field name="employee_group"/>
+                <field name="employee_grade_category" options='{"no_create":true}'/>
+                <field name="employee_team_allocation" options='{"no_create":true}'/>
+                <field name="employee_trainee_grade" options='{"no_create":true}'/>                   
                 <field name="risk" optional="hide"/>
                 <field name="impact" optional="hide"/>
                 <field name="employee_relation" optional="hide"/>
@@ -162,6 +172,7 @@
                 <xpath expr="//field[@name='parent_id']" position="move"/>
                 <field name="coach_id"/>
                 <field name="service_length"/>
+                <field name="age"/>
                 <field name="isovertime" optional="hide"/>
                 <field name="shift_group" optional="hide"/>
                 <field name="mobile_phone" optional="hide"/>
@@ -169,12 +180,6 @@
                 <field name="resource_calendar_id" optional="hide"/>
                 <field name="fathers_name" optional="hide"/>
                 <field name="mothers_name" optional="hide"/>
-                <field name="address_home_id" optional="hide"/>
-                <field name="street" optional="hide"/>
-                <field name="street2" optional="hide"/>
-                <field name="zip" optional="hide"/>
-                <field name="city" optional="hide"/>
-                <field name="country_id" optional="hide"/>
                 <field name="state_id" optional="hide"/>
                 <field name="is_same_address" optional="hide"/>
                 <field name="p_street" optional="hide"/>
@@ -201,7 +206,7 @@
                 <field name="study_school" optional="hide"/>
                 <field name="passing_year" optional="hide"/>
                 <field name="result" optional="hide"/>                
-                <field name="country_id" optional="hide"/>
+                <field name="country_id"/>
                 <field name="identification_id" optional="hide"/>
                 <field name="passport_id" optional="hide"/>
                 <field name="gender" optional="hide"/>
@@ -229,10 +234,14 @@
         <field name="inherit_id" ref="hr.view_employee_filter"/>        
         <field name="arch" type="xml">
             <xpath expr="//search[1]/searchpanel[1]/field[@name='company_id']" position="after">
+                <field name="country_id" icon="fa-globe" enable_counters="1"/>
+                <field name="status" icon="fa-wheelchair" enable_counters="1"/>
                 <field name="category" icon="fa-users" enable_counters="1"/>
-                <field name="employee_group" icon="fa-users" enable_counters="1"/>
-                <field name="employee_relation" icon="fa-users" enable_counters="1"/>
-                <!-- <field name="employee_group" icon="fa-users" enable_counters="1"/> -->
+                <field name="employee_group" icon="fa-male" enable_counters="1"/>
+                <field name="employee_grade_category" icon="fa-users" enable_counters="1"/>
+                <field name="employee_team_allocation" icon="fa-sitemap" enable_counters="1"/>
+                <field name="employee_trainee_grade" icon="fa-users" enable_counters="1"/>                           
+                <field name="employee_relation" icon="fa-random" enable_counters="1"/>
             </xpath>            
          </field>
     </record>    

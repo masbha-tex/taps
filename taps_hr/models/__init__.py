@@ -3,6 +3,9 @@
 from . import attendance
 from . import employee_group
 from . import employee_relation
+from . import employee_grade_category
+from . import employee_team_allocation
+from . import employee_trainee_grade
 from . import employee
 from . import work_entry
 from . import contract
@@ -16,4 +19,5 @@ from . import hr_appraisal_goal
 from . import hr_appraisal
 from . import hr_appraisal_goal_acvd
 from . import hr_resume
+
 

@@ -2,11 +2,11 @@
 <odoo>
     <data>
 
-        <record id="view_hr_employee_relation_tree" model="ir.ui.view">
-            <field name="name">hr.employee.relation.tree</field>
-            <field name="model">hr.employee.relation</field>
+        <record id="view_hr_employee_grade_category_tree" model="ir.ui.view">
+            <field name="name">hr.employee.grade.category.tree</field>
+            <field name="model">hr.employee.grade.category</field>
             <field name="arch" type="xml">
-                <tree string="Relation" sample="1" edit="1" editable="bottom" create="1">
+                <tree string="Grade Category" sample="1" edit="1" editable="bottom" create="1">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <!-- <field name="company_id" groups="base.relation_multi_company"/> -->
@@ -14,11 +14,11 @@
             </field>
         </record>
 
-        <record id="view_hr_employee_relation_filter" model="ir.ui.view">
-            <field name="name">hr.employee.relation.search</field>
-            <field name="model">hr.employee.relation</field>
+        <record id="view_hr_employee_grade_category_filter" model="ir.ui.view">
+            <field name="name">hr.employee.grade.category.search</field>
+            <field name="model">hr.employee.grade.category</field>
             <field name="arch" type="xml">
-                <search string="Relation">
+                <search string="Grade Category">
                     <field name="name"/>
                     <!-- <field name="company_id"/> -->
                     <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
@@ -31,33 +31,33 @@
             </field>
         </record>
 
-        <record id="action_hr_employee_relation" model="ir.actions.act_window">
-            <field name="name">Relation</field>
-            <field name="res_model">hr.employee.relation</field>
+        <record id="action_hr_employee_grade_category" model="ir.actions.act_window">
+            <field name="name">Grade Category</field>
+            <field name="res_model">hr.employee.grade.category</field>
             <field name="view_mode">tree</field>
-            <field name="search_view_id" ref="view_hr_employee_relation_filter"/>
+            <field name="search_view_id" ref="view_hr_employee_grade_category_filter"/>
             <field name="context">{"search_default_Current":1}</field>
             <field name="help" type="html">
               <p class="o_view_nocontent_smiling_face">
-                Ready to Employee Relation?
+                Ready to Employee Grade Category?
               </p><p>
-                Let's create a Employee Relation.
+                Let's create a Employee Grade Category.
               </p>
             </field>
         </record>
       
         <!-- <menuitem
-            id="menu_hr_employee_relation"
+            id="menu_hr_employee_grade_category"
             name="Employee Relation"
             parent="hr.menu_human_resources_configuration"
             groups="hr.group_hr_manager"
             sequence="34"/>   -->
             <menuitem
-                id="menu_hr_employee_relationp_tree"
-                action="action_hr_employee_relation"
+                id="menu_hr_employee_grade_categoryp_tree"
+                action="action_hr_employee_grade_category"
                 parent="hr.menu_human_resources_configuration_employee"
                 groups="hr.group_hr_manager"
-                sequence="11"/>        
+                sequence="12"/>        
 
     </data>
 </odoo>

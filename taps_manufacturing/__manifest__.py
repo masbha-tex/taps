@@ -56,8 +56,9 @@
         'report/mrp_rpt_wizard.xml',
         'report/fg_rpt_wizard.xml',
         'report/slipt_carton.xml',
-        'report/slipt_packing.xml',
+        # 'report/slipt_packing.xml',
         'report/label_print_wizard.xml',
+        'report/report_label_print.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     'qweb': [

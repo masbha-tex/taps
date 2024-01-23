@@ -31,7 +31,7 @@
         'data/create_update_qc.xml',
         'reports/sample_print_out_pdf.xml',
         'reports/report_action.xml',
-        # 'views/assets.xml',
+        'views/assets.xml',
         'views/stock_register_views.xml',
         'views/product_template.xml',
         'views/product_move.xml',

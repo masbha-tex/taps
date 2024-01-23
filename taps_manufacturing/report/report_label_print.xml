@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_label_print_template">
+        <t t-call="web.basic_layout">
+                <!-- <t t-foreach="datas" t-as="datas"> -->
+                    <table class="float-left mb-2 ml-2 mr-2 pb-2 pl-2 pr-2" 
+                    style="                                
+                    width:350pt; height:150pt;                                
+                    border: 1pt solid black; 
+                    border-collapse: separate;
+                    border-radius: 8pt;
+                    margin: 2pt;                                 
+                    page-break-inside: avoid;                                 
+                    table-layout: fixed !important; ">
+                        <tr>
+                                    <td >
+                                        <span>
+                                        <img style="max-height: 75px; " src="taps_sale/static/src/img/logo_tex_tiny.png"/>
+                                    </span>                                         
+                                    </td>
+                                    <td align="center" colspan="3">
+                                        <span style="font-size:25px">
+                                        <t t-esc="datas[1]"/>
+                                        <P style="font-size:14px"><t t-esc="datas[2]"/></P>
+                                    </span>
+                                    </td>
+                        </tr>
+                    <tr>
+                                    <td colspan="2">
+                                        <span style="margin-top: 20px;">Table No: </span>
+                                        <t t-esc="datas[3]"/>
+                                        <span align="left">Date: </span>
+                                        <t t-esc="datas[4]"/> 
+                                    </td>
+                                    <td colspan="2">
+                                        <span align="right">Batch/Lot No: </span>
+                                    <t t-esc="datas[5]"/>
+                                    </td>
+                        </tr>
+                        <tr>
+                                    <td colspan="2">
+                                     
+                                    </td>
+                                    <td colspan="2">
+                                        
+                                    </td>
+                        </tr>
+                        <tr>
+                                   <td colspan="2">
+                                        <span align="left">OA/PI: </span>
+                                        <t t-esc="datas[6]"/>
+                                   </td>
+                                    <td colspan="2"> </td>
+                        </tr>
+                        <tr>
+                                    <td colspan="4">
+                                        <span align="left">Product: </span>
+                                        <t t-esc="datas[7]"/>
+                                    </td>
+                        </tr>
+                        <tr>
+                                    <td colspan="4">
+                                        <span align="left">Finish: </span>
+                                        <t t-esc="datas[8]"/>
+                                    </td>
+                        </tr>
+                        <tr>
+                                    <td colspan="4">
+                                        <span align="left">Shade: </span>
+                                        <t t-esc="datas[9]"/>
+                                    </td>
+                        </tr>
+                        <tr>
+                                    <td colspan="2">
+                                        <span align="left">Size: </span>
+                                        <t t-esc="datas[10]"/>
+                                    </td>
+                                    <td colspan="2">
+                                        <span align="right">Qty: </span>
+                                        <t t-esc="datas[14]"/>
+                                    </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" align="center">
+                                    <img alt="barcode" t-if="docs.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', docs.name, 800, 100)" style="max-height: 40pt" align="center"/><br/>
+                                    <!-- <t t-esc="docs.name" /> -->
+                            </td>
+                        </tr>
+                    </table>
+                <!-- </t> -->
+        </t>
+    </template>
+</odoo>

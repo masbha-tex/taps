@@ -2,6 +2,11 @@ import base64
 import io
 import logging
 from odoo import models, fields, api
+from odoo import http
+from odoo import _
+from werkzeug.wrappers import Response
+from odoo.http import content_disposition, dispatch_rpc, request, route
+from odoo.tools import pycompat
 from datetime import datetime, date, timedelta, time
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.misc import xlsxwriter
@@ -9,12 +14,13 @@ from odoo.tools import format_date
 from dateutil.relativedelta import relativedelta
 import re
 import math
+from odoo.http import content_disposition
+from odoo.tools import pycompat
 import calendar
 from io import BytesIO
 from PIL import Image
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-from reportlab.lib.utils import ImageReader
 _logger = logging.getLogger(__name__)
 
 
@@ -23,18 +29,21 @@ class LabelPrintingWizard(models.TransientModel):
     _description = 'Label Printing'
     _check_company_auto = True
     
-    logo = "https://www.texfasteners.com/wp-content/uploads/2017/08/logo_tex_tiny_2x.png" 
+    logo = "src/user/taps_sale/static/src/img/logo_tex_tiny.png" 
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True)
-    report_type = fields.Selection([('pplg', 'Production Packing Label (General)'),('fgcl', 'FG Carton Label'),('pplo', 'Production Packing Label (Others)')], string='Report Type', required=True, help='Report Type', default='pplg')
+    report_type = fields.Selection([('pplg', 'Production Packing Label (General)'),
+                                    ('fgcl', 'FG Carton Label'),
+                                    ('pplo', 'Production Packing Label (Others)')],
+                                   string='Report Type', required=True, help='Report Type', default='pplg')
     
     company_name = fields.Char('Company Name', readonly=False, default='TEX ZIPPERS (BD) LIMITED')     
     company_address = fields.Char('Company Address', readonly=False, default='Plot # 180, 264 & 273 Adamjee Export Processing Zone, Adamjee Nagar, Shiddhirgonj, Narayangonj, Bangladesh')  
 
-    table_name = fields.Selection([('a', 'Table A'),('b', 'Table B')], string='Table', required=True, help='Table', default='a')
+    table_name = fields.Selection([('A', 'Table A'),('B', 'Table B')], string='Table', required=True, help='Table', default='A')
     Country_name = fields.Selection([('bangladesh', 'Bangladesh'),('vietnam', 'Vietnam'),('pakistan', 'Pakistan')], string='Country', required=True, help='Country', default='bangladesh')
 
 
-    oa_number = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True)
+    oa_number = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True,default='5552')
 
     iteam = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'Iteams')]", check_company=True, string='Iteam', store=True, required=False, readonly=False)
     shade = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'shade')]", check_company=True, string='Shade', store=True, required=False, readonly=False)
@@ -42,7 +51,7 @@ class LabelPrintingWizard(models.TransientModel):
     size = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'size')]", check_company=True, string='Size', store=True, required=False, readonly=False)
     qty = fields.Integer('Qty', readonly=False, default='')
 
-    batch_lot = fields.Char('Batch/Lot', readonly=False, default='')
+    batch_lot = fields.Char('Batch/Lot', readonly=False, default='000')
     
     qc_person = fields.Many2one('hr.employee', string="QC By", domain="[('active', '=', True), ('department_id', '=', 272)]", index=True, required=True,readonly=False)
     pre_check_person = fields.Many2one('hr.employee', string="Pre Check By", domain="[('active', '=', True), ('department_id', '=', 281)]", index=True, required=True,readonly=False)
@@ -208,3 +217,86 @@ class LabelPrintingWizard(models.TransientModel):
         self.shade = shade
         self.finish = finish
         self.qty = qty
+
+
+    def generate_qweb_pdf(self):
+        # Ensure that all required fields are filled
+        # if not all([self.company_name, self.table_name, self.oa_number, self.iteam, self.finish, self.shade, self.size, self.qc_person, self.pre_check_person, self.printing_person, self.qty]):
+        #     raise ValidationError("Please fill in all required fields before generating the PDF.")
+
+        # Prepare data for the QWeb report
+        data = {
+            'logo': self.logo,
+            'company_name': self.company_name,
+            'company_address': self.company_address,
+            'table_name': self.table_name,
+            'date': fields.Date.today(),
+            'batch_lot': self.batch_lot,
+            'oa_number': self.oa_number.name,
+            'iteam': self.iteam.name,
+            'finish': self.finish.name,
+            'shade': self.shade.name,
+            'size': self.size.name,
+            'qc_person': self.qc_person.name,
+            'pre_check_person': self.pre_check_person.name,
+            'printing_person': self.printing_person.name,
+            'qty': self.qty,
+        }
+        # raise UserError((self.printing_person.name))
+        # print("Data Dictionary:", data)
+
+        #Return the QWeb report action
+        if self.report_type == 'pplg':
+            return self.env.ref('taps_manufacturing.action_report_label_print').report_action(self, data=data)
+        else:
+            raise ValidationError("Here is no PDF.")
+
+class LabelPrintPDF(models.AbstractModel):
+    _name = 'report.taps_manufacturing.report_label_print_template'
+    _description = 'label print template'     
+
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        if data.get('oa_number'):
+            domain.append(('oa_id', '=', data.get('oa_number')))
+        if data.get('shade'):
+            domain.append(('shade', '=', data.get('shade')))
+        if data.get('finish'):
+            domain.append(('finish', '=', data.get('finish')))
+        if data.get('size'):
+            domain.append(('sizcommon', '=', data.get('size')))
+        domain.append(('next_operation', '=', 'Packing Output'))
+        
+        docs = self.env['operation.details'].sudo().search(domain)
+        # raise UserError((docs.qty))
+        
+            
+        common_data = [
+            data.get('logo'), #0
+            data.get('company_name'), #1
+            data.get('company_address'), #2
+            data.get('table_name'), #3
+            data.get('date'), #4
+            data.get('batch_lot'), #5
+            data.get('oa_number'), #6
+            data.get('iteam'), #7
+            data.get('finish'), #8
+            data.get('shade'), #9
+            data.get('size'), #10
+            data.get('qc_person'), #11
+            data.get('pre_check_person'),#12
+            data.get('printing_person'),#13
+            data.get('qty'), #14
+            # data.get(docs.name), #15
+        ]
+        common_data.append(common_data)
+        
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'operation.details',
+            'docs': docs,
+            'datas': common_data,
+            
+        }
+
+ 

@@ -14,3 +14,6 @@ access_hr_appraisal_goal_acvd_line,hr.appraisal.goal.acvd.line,model_hr_appraisa
 access_hr_appraisal_meeting_event_wizard,meeting.event.wizard,model_meeting_event_wizard,base.group_user,1,1,1,1
 access_hr_employee_group,access_hr_employee_group,model_hr_employee_group,hr.group_hr_user,1,1,1,1
 access_hr_employee_relation,access_hr_employee_relation,model_hr_employee_relation,hr.group_hr_user,1,1,1,1
+access_hr_employee_grade_category,access_hr_employee_grade_category,model_hr_employee_grade_category,hr.group_hr_user,1,1,1,1
+access_hr_employee_team_allocation,access_hr_employee_team_allocation,model_hr_employee_team_allocation,hr.group_hr_user,1,1,1,1
+access_hr_employee_trainee_grade,access_hr_employee_trainee_grade,model_hr_employee_trainee_grade,hr.group_hr_user,1,1,1,1

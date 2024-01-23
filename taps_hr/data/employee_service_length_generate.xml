@@ -12,6 +12,17 @@
             <field name="numbercall">-1</field>
             <field name="nextcall">2022-03-16 18:00:10</field>
         </record>
+        <record id="ir_cron_data_employee_age_generate" model="ir.cron">
+            <field name="name">Employee: Age Generate</field>
+            <field name="model_id" ref="model_hr_employee"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model._calculate_employee_age()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall">2024-01-24 18:00:15</field>
+        </record>        
         <record id="ir_cron_data_resume_service_length_generate" model="ir.cron">
             <field name="name">Resume Line: Service length Generate</field>
             <field name="model_id" ref="model_hr_resume_line"/>
