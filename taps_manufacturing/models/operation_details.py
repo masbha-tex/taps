@@ -702,7 +702,7 @@ class OperationDetails(models.Model):
         seq_date = None
         seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(datetime.now()))
 
-        raise UserError((vals.get('next_operation')))
+        # raise UserError((vals.get('next_operation')))
         if vals.get('operation_of') == "lot":
             ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
             vals['name'] = ref

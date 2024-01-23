@@ -42,6 +42,24 @@ class OaCheck(models.TransientModel):
         self.lookup_oa = oa_id
 
     
+    @api.onchange('action_date_list')
+    def _onchange_action_date(self):
+        if self.lookup_oa and self.action_date_list:
+            oa_id = self.lookup_oa.name
+            action_date = self.action_date_list.name
 
+            # Filter shades based on OA and Action Date
+            operations = self.env['operation.details'].sudo().search([
+                ('oa_id', '=', oa_id),
+                ('next_operation', '=', 'FG Packing'),
+                ('action_date', '=', action_date),
+            ])
 
+            unique_shades = set(record.shade for record in operations)
+            all_shades = self.env['selection.fields.data'].sudo().search([('field_name', '=', 'shade')]).unlink()
+            if unique_shades:
+                for shade in unique_shades:
+                    self.env["selection.fields.data"].sudo().create({'field_name': 'shade', 'name': shade})
+
+                self.Shade_list = [(0, 0, {'field_name': 'shade', 'name': shade}) for shade in unique_shades]
   
