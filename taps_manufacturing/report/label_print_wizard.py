@@ -68,6 +68,9 @@ class LabelPrintingWizard(models.TransientModel):
             ])
     
             if operations:
+                iteam_records = self.env['selection.fields.data'].sudo().search([])
+                iteam_records.unlink()
+                
                 self.oa_number = operations[0].oa_id.id
                 self.iteam = operations[0].product_id.product_tmpl_id.name
                 self.shade = operations[0].shade
