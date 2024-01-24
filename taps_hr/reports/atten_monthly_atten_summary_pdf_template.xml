@@ -15,6 +15,7 @@
 					<strong>
                        Monthly Attendance Summary 
                        <span t-esc="month[0]"/>
+                        <!-- <span t-esc="month"/> -->
 					</strong>
 				</h4>
 				<div class="container">

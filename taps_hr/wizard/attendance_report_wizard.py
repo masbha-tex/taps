@@ -1617,13 +1617,12 @@ class MonthlyattensummaryReportPDF(models.AbstractModel):
             allemp_data.append(emp_data)
             
             
-            lstmonth_data = []
-            lstmonth_data = [
-                datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B  %Y'),
-
-                
-            ]
-            lstmonths_data.append(lstmonth_data)
+        lstmonth_data = []
+        lstmonth_data = [
+            datetime.strptime(data.get('date_to'), '%Y-%m-%d').strftime('%B  %Y'),
+        ]
+        lstmonths_data.append(lstmonth_data)
+            # ismonth = docs.mapped('lstmonths_data')
         #raise UserError((section.id, allemp_data[0][9],department.id,section.parent_id.id))    
         return {
             'doc_ids': docs.ids,

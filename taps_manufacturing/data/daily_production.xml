@@ -51,45 +51,45 @@
 										<t t-esc="order[0]"/>
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="order[1]"/>
-                                        <t t-set="grand_total_packing_pcs" t-value="grand_total_packing_pcs+order[1]"/>
+										<t t-esc="order[1]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="grand_total_packing_pcs" t-value="grand_total_packing_pcs+order[1]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
 									<td style="border: 1px solid black">
-										$<t t-esc="order[2]"/>
-                                        <t t-set="grand_total_in_usd" t-value="grand_total_in_usd+order[2]"/>
+										$<t t-esc="order[2]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="grand_total_in_usd" t-value="grand_total_in_usd+order[2]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="order[3]"/>
-                                        <t t-set="grand_total_pen_pcs" t-value="grand_total_pen_pcs+order[3]"/>
+										<t t-esc="order[3]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="grand_total_pen_pcs" t-value="grand_total_pen_pcs+order[3]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
 									<!-- <td style="border: 1px solid black">
 										<t t-set="sl" t-value="sl+1"/>
 										<t t-esc="sl"/>
 									</td> -->
 									<td style="border: 1px solid black">
-										$<t t-esc="order[4]"/>
-                                        <t t-set="grand_total_pen_usd" t-value="grand_total_pen_usd+order[4]"/>
+										$<t t-esc="order[4]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="grand_total_pen_usd" t-value="grand_total_pen_usd+order[4]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
 									<td style="border: 1px solid black">
-										<t t-esc="order[5]"/>
-                                        <t t-set="grand_total_com_pro" t-value="grand_total_com_pro+order[5]"/>
+										<t t-esc="order[5]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="grand_total_com_pro" t-value="grand_total_com_pro+order[5]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
 									<td style="border: 1px solid black">
-                                        $<t t-esc="order[6]"/>
-                                        <t t-set="grand_total_com_in" t-value="grand_total_com_in+order[6]"/>
+                                        $<t t-esc="order[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="grand_total_com_in" t-value="grand_total_com_in+order[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
 									<td style="border: 1px solid black">
-										$<t t-esc="order[7]"/>
-                                        <t t-set="grand_total_t_re" t-value="grand_total_t_re+order[7]"/>
+										$<t t-esc="order[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="grand_total_t_re" t-value="grand_total_t_re+order[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
 									<td style="border: 1px solid black">
-										$<t t-esc="order[8]"/>
-                                        <t t-set="grand_total_com_re" t-value="grand_total_com_re+order[8]"/>
+										$<t t-esc="order[8]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="grand_total_com_re" t-value="grand_total_com_re+order[8]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 									</td>
 									
 									<td style="border: 1px solid black">
-										<t t-esc="order[9]"/>
-                                        <t t-set="grand_total_pen_oa" t-value="grand_total_pen_oa+order[9]"/>
+										<t t-esc="order[9]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="grand_total_pen_oa" t-value="grand_total_pen_oa+order[9]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
                                         <!-- <t t-set="grand_total_pen_oa" t-value="float(grand_total_pen_oa) + float(order[9])"/> -->
 
 									</td>
@@ -106,15 +106,15 @@
 						<tr style="border: 1px solid black">
                             
                           <td class="text-right" style="border: 1px solid black;">TOTAL</td>
-    						<td style="border: 1px solid black"><t t-esc="grand_total_packing_pcs"/></td>
-                            <td style="border: 1px solid black">$<t t-esc="grand_total_in_usd"/></td>
-                            <td style="border: 1px solid black"><t t-esc="grand_total_pen_pcs"/></td>
-                            <td style="border: 1px solid black">$<t t-esc="grand_total_pen_usd"/></td>
-                            <td style="border: 1px solid black"><t t-esc="grand_total_com_pro"/></td>
-                            <td style="border: 1px solid black">$<t t-esc="grand_total_com_in"/></td>
-                            <td style="border: 1px solid black">$<t t-esc="grand_total_t_re"/></td>
-                            <td style="border: 1px solid black">$<t t-esc="grand_total_com_re"/></td>
-                            <td style="border: 1px solid black"><t t-esc="grand_total_pen_oa"/></td>
+    						<td style="border: 1px solid black"><t t-esc="grand_total_packing_pcs" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_in_usd" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                            <td style="border: 1px solid black"><t t-esc="grand_total_pen_pcs" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_pen_usd" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                            <td style="border: 1px solid black"><t t-esc="grand_total_com_pro" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_com_in" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_t_re" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                            <td style="border: 1px solid black">$<t t-esc="grand_total_com_re" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
+                            <td style="border: 1px solid black"><t t-esc="grand_total_pen_oa" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/></td>
                             
 						</tr>
 					</tbody>

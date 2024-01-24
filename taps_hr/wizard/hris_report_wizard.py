@@ -583,44 +583,108 @@ class HRISPDFReport(models.TransientModel):
                 for i in range(7):
                     if i == 0:
                         relation = 'Spouse'
-                        # dep = docs.mapped('department_id')
-                        dep_id = docs.mapped('department_id.id')
-                        dep_count = docs.filtered(lambda x: x.department_id.id == dep_id)
-                        same_section = len(dep_count)
-                        # if same_section == dep:
-                        #     same_section = len(dep)
-                        no_count  = other_section = direct_reporting = other_unit = 2
+                        no_count = same_section = other_section = direct_reporting = other_unit = 0
+
+                        get_relation = rel_data.filtered(lambda x: x.employee_relation.name == relation)
+                        # raise UserError((get_relation))
+                        for rel in get_relation:
+                            if (rel.company_id.id == rel.relationship_id.company_id.id):
+                                if (rel.department_id.id == rel.relationship_id.department_id.id):
+                                    same_section += 1
+                                else:
+                                    other_section += 1
+                                if (rel.id == rel.relationship_id.parent_id.id):
+                                    direct_reporting += 1
+                            else:
+                                other_unit += 1
+                        no_count = same_section + other_section + direct_reporting + other_unit
+                               
                     if i == 1:
                         relation = 'Brother to Brother/Sister'
-                        dep_id_ = docs.mapped('department_id.id')
-                        dep_count_ = docs.filtered(lambda x: x.department_id.id == dep_id_)
-                        same_section = len(dep_count_)
-                        no_count = other_section = direct_reporting = other_unit = 1
+                        no_count = same_section = other_section = direct_reporting = other_unit = 0
+
+                        get_relation = rel_data.filtered(lambda x: x.employee_relation.name == relation)
+                        for rel in get_relation:
+                            if (rel.company_id.id == rel.relationship_id.company_id.id):
+                                if (rel.department_id.id == rel.relationship_id.department_id.id):
+                                    same_section += 1
+                                else:
+                                    other_section += 1
+                                if (rel.id == rel.relationship_id.parent_id.id):
+                                    direct_reporting += 1
+                            else:
+                                other_unit += 1
+                        no_count = same_section + other_section + direct_reporting + other_unit
                     if i == 2:
                         relation = 'Parents/In law to Son/Daughter'
-                        no_count = same_section = other_section = direct_reporting = other_unit = 1
+                        no_count = same_section = other_section = direct_reporting = other_unit = 0
+
+                        get_relation = rel_data.filtered(lambda x: x.employee_relation.name == relation)
+                        # raise UserError((get_relation))
+                        for rel in get_relation:
+                            if (rel.company_id.id == rel.relationship_id.company_id.id):
+                                if (rel.department_id.id == rel.relationship_id.department_id.id):
+                                    same_section += 1
+                                else:
+                                    other_section += 1
+                                if (rel.id == rel.relationship_id.parent_id.id):
+                                    direct_reporting += 1
+                            else:
+                                other_unit += 1
+                        no_count = same_section + other_section + direct_reporting + other_unit
+                       
                     if i == 3:
                         relation = 'Uncle to Nephew/Niece'
-                        no_count = same_section = other_section = direct_reporting = other_unit = 1
+                        no_count = same_section = other_section = direct_reporting = other_unit = 0
+
+                        get_relation = rel_data.filtered(lambda x: x.employee_relation.name == relation)
+                        for rel in get_relation:
+                            if (rel.company_id.id == rel.relationship_id.company_id.id):
+                                if (rel.department_id.id == rel.relationship_id.department_id.id):
+                                    same_section += 1
+                                else:
+                                    other_section += 1
+                                if (rel.id == rel.relationship_id.parent_id.id):
+                                    direct_reporting += 1
+                            else:
+                                other_unit += 1
+                        no_count = same_section + other_section + direct_reporting + other_unit
                     if i == 4:
                         relation = 'Cousin Brother/Sister'
-                        dep_id__ = docs.mapped('department_id.id')
-                        rel_id__ = docs.mapped('relationship_id.department_id')
+                        no_count = same_section = other_section = direct_reporting = other_unit = 0
+
+                        get_relation = rel_data.filtered(lambda x: x.employee_relation.name == relation)
+                        for rel in get_relation:
+                            if (rel.company_id.id == rel.relationship_id.company_id.id):
+                                if (rel.department_id.id == rel.relationship_id.department_id.id):
+                                    same_section += 1
+                                else:
+                                    other_section += 1
+                                if (rel.id == rel.relationship_id.parent_id.id):
+                                    direct_reporting += 1
+                            else:
+                                other_unit += 1
+                        no_count = same_section + other_section + direct_reporting + other_unit
                         
-                        dep_count__ = docs.filtered(lambda x: x.department_id.id == x.relationship_id.department_id)
-                        # all_workers_z = docs.filtered(lambda x: x.category_ids.name in ('Z-Worker'))
-                        # dep_count__ = all_workers_z.filtered(lambda x: x.gender == 'female' and x.resign_date <= x.probation_date)
-                        same_section = len(dep_count__)
-                        raise UserError((same_section))
-                        no_counts = other_section = direct_reporting = other_unit = 1
                     if i == 5:
                         relation = 'Brother In-Law/Sister In-Law'
-                        no_count = same_section = other_section = direct_reporting = other_unit = 1
-                    if i == 6:
-                        relation = ''
-                        no_count = same_section = other_section = direct_reporting = other_unit = 1
-    
-                    # rel_rw_data = rel_data.filtered(lambda x: x.employee_relation.name in ('Staff', 'B-Staff', 'Z-Staff', 'Z-Expatriate', 'Expatriate', 'B-Expatriate'))
+                        no_count = same_section = other_section = direct_reporting = other_unit = 0
+
+                        get_relation = rel_data.filtered(lambda x: x.employee_relation.name == relation)
+                        for rel in get_relation:
+                            if (rel.company_id.id == rel.relationship_id.company_id.id):
+                                if (rel.department_id.id == rel.relationship_id.department_id.id):
+                                    same_section += 1
+                                else:
+                                    other_section += 1
+                                if (rel.id == rel.relationship_id.parent_id.id):
+                                    direct_reporting += 1
+                            else:
+                                other_unit += 1
+                        no_count = same_section + other_section + direct_reporting + other_unit
+                        
+                    # if i == 6:
+                    #     relation = ''
                     
                     emp_data = [
                             relation,
@@ -632,7 +696,7 @@ class HRISPDFReport(models.TransientModel):
                             '',
                         ]
                     report_data.append(emp_data)
-
+                
                 worksheet1.merge_range(head_row-1, 4, head_row-1, 6, 'Employees are in Same Unit', column_issued_style1)
 
                 worksheet1.merge_range(head_row-1, 0, head_row, 0, head_company, column_issued_style1)

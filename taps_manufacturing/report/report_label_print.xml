@@ -2,7 +2,7 @@
 <odoo>
     <template id="report_label_print_template">
         <t t-call="web.basic_layout">
-                <!-- <t t-foreach="datas" t-as="datas"> -->
+                <t t-foreach="range(datas[16] or 6)" t-as="i">
                     <table class="float-left mb-2 ml-2 mr-2 pb-2 pl-2 pr-2" 
                     style="                                
                     width:350pt; height:150pt;                                
@@ -13,11 +13,21 @@
                     page-break-inside: avoid;                                 
                     table-layout: fixed !important; ">
                         <tr>
-                                    <td >
-                                        <span>
-                                        <img style="max-height: 75px; " src="taps_sale/static/src/img/logo_tex_tiny.png"/>
-                                    </span>                                         
-                                    </td>
+                            <td align="left"  colspan="2">
+                                <img alt="barcode" t-if="docs.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', docs.name, 200, 75)" style="max-height: 40pt" align="center"/> <!-- <t t-esc="docs.name" /> -->
+                            </td>
+                            <td align="center"  colspan="2">
+                              <span>
+                                    <img style="max-height: 75px; " src="taps_sale/static/src/img/logo_tex_tiny.png"/>
+                                    </span>  
+                            </td>
+                            <td align="center"  colspan="2">
+                                        <t t-esc="datas[17]"/>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+
                                     <td align="center" colspan="3">
                                         <span style="font-size:25px">
                                         <t t-esc="datas[1]"/>
@@ -26,13 +36,13 @@
                                     </td>
                         </tr>
                     <tr>
-                                    <td colspan="2">
-                                        <span style="margin-top: 20px;">Table No: </span>
-                                        <t t-esc="datas[3]"/>
+                                    <td colspan="2">                                       
                                         <span align="left">Date: </span>
                                         <t t-esc="datas[4]"/> 
                                     </td>
                                     <td colspan="2">
+                                         <span style="margin-top: 20px;">Table No: </span>
+                                        <t t-esc="datas[3]"/><br/>
                                         <span align="right">Batch/Lot No: </span>
                                     <t t-esc="datas[5]"/>
                                     </td>
@@ -75,19 +85,20 @@
                                         <span align="left">Size: </span>
                                         <t t-esc="datas[10]"/>
                                     </td>
-                                    <td colspan="2">
+                                    <td></td>
+                                    <td>
                                         <span align="right">Qty: </span>
-                                        <t t-esc="datas[14]"/>
+                                        <t t-esc="datas[15]"/>
                                     </td>
                         </tr>
                         <tr>
                             <td colspan="4" align="center">
-                                    <img alt="barcode" t-if="docs.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', docs.name, 800, 100)" style="max-height: 40pt" align="center"/><br/>
-                                    <!-- <t t-esc="docs.name" /> -->
+                                    <br/>
+                                    
                             </td>
                         </tr>
                     </table>
-                <!-- </t> -->
+                </t>
         </t>
     </template>
 </odoo>

@@ -491,7 +491,7 @@ class HeadwisePDFReport(models.TransientModel):
                 ytd = ytd + de.y_ytd
                 
                 
-            worksheet = workbook.add_worksheet(('%s - %s' % (emp.pin,emp.name)))
+            worksheet = workbook.add_worksheet(('%s - %s' % (emp.emp_id,emp.name)))
             worksheet.set_zoom(74)
             report_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 16, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_title_style1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'font_size': 13, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
@@ -1173,7 +1173,7 @@ class HeadwisePDFReport(models.TransientModel):
                 ytd = ytd + de.y_ytd
                 
             
-            worksheet = workbook.add_worksheet(('%s - %s' % (emp.pin,emp.name)))
+            worksheet = workbook.add_worksheet(('%s - %s' % (emp.emp_id,emp.name)))
             worksheet.set_zoom(64)
             report_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 16, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_title_style1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'font_size': 13, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
@@ -1802,7 +1802,7 @@ class HeadwisePDFReport(models.TransientModel):
         # raise UserError((emply))
         for emp in emply:
             
-            worksheet = workbook.add_worksheet(('%s - %s' % (emp.pin,emp.name)))
+            worksheet = workbook.add_worksheet(('%s - %s' % (emp.emp_id,emp.name)))
             report_title_style = workbook.add_format({'bold': True, 'font_size': 16, 'bg_color': '#714B62','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
             report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
@@ -1814,7 +1814,7 @@ class HeadwisePDFReport(models.TransientModel):
     #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
             worksheet.merge_range('A2:F2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
             worksheet.merge_range('A3:F3', ('KPI objective'), report_small_title_style)
-            worksheet.merge_range('A4:F4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
+            worksheet.merge_range('A4:F4', ('%s - %s' % (emp.emp_id,emp.name)), report_title_style)
             worksheet.merge_range('F4:F4', "",report_title_style)
             # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
     #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
@@ -2138,7 +2138,7 @@ class HeadwisePDFReport(models.TransientModel):
         # raise UserError((emply))
         for emp in emply:
             
-            worksheet = workbook.add_worksheet(('%s - %s' % (emp.pin,emp.name)))
+            worksheet = workbook.add_worksheet(('%s - %s' % (emp.emp_id,emp.name)))
             report_title_style = workbook.add_format({'bold': True, 'font_size': 16, 'bg_color': '#714B62','right': True, 'border': True, 'font_color':'#FFFFFF'})
             report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
             report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True})
@@ -2150,7 +2150,7 @@ class HeadwisePDFReport(models.TransientModel):
     #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
             worksheet.merge_range('A2:L2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_small_title_style)
             worksheet.merge_range('A3:L3', ('KPI objective with Action Plan'), report_small_title_style)
-            worksheet.merge_range('A4:E4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
+            worksheet.merge_range('A4:E4', ('%s - %s' % (emp.emp_id,emp.name)), report_title_style)
             worksheet.merge_range('F4:L4', "",report_title_style)
             # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
     #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)

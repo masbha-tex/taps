@@ -114,7 +114,7 @@ class HrIdea(models.Model):
                 body = RenderMixin._render_template(mail_template, 'hr.idea', idea.ids, post_process=True)[idea.id]
                 body_submit = RenderMixin._render_template(_template_submit, 'hr.idea', idea.ids, post_process=True)[idea.id]
                                 
-                body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
+                # body_sig = RenderMixin._render_template(self.env.user.signature, 'res.users', self.env.user.ids, post_process=True)[self.env.user.id]
                 body = f"{body}<br/>{body_submit}"
                 # post the message
                 matrix = self.env['hr.idea.matrix'].sudo().search([('name', '=', 'MAILTO')], limit=1)

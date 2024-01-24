@@ -22,7 +22,7 @@ class RetentionPDFReport(models.TransientModel):
         ('retentionbonus',	'Retention Bonus'),],
         string='Report Type', required=True,
         help='Report Type', default='retentionbonus')
-    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(), required=True)   
+    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year())   
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
@@ -246,8 +246,15 @@ class RetentionPDFReport(models.TransientModel):
         if self.report_type:
         # if self.report_type == 'plan':
         #     start_time = fields.datetime.now()
+            year_list = []
+            year_list = self._get_year_list()
+            if self.year:
+                year_list = []
+                year_list.append((self.year, 'Given Year'))
+            # raise UserError((self.get_year_display()))
             if self.holiday_type == "employee":#employee  company department category
                 #raise UserError(('sfefefegegegeeg'))
+                    
                 data = {'date_from': self.date_from, 
                         'date_to': self.date_to, 
                         'mode_company_id': False, 
@@ -256,7 +263,8 @@ class RetentionPDFReport(models.TransientModel):
                         'employee_id': self.employee_id.id, 
                         'bank_id': False,
                         'company_all': False,
-                        'year': self.year}
+                        'year': self.year,
+                        'year_list': year_list}
                 
             if self.holiday_type == "company":
                 data = {'date_from': self.date_from, 
@@ -268,7 +276,8 @@ class RetentionPDFReport(models.TransientModel):
                         'report_type': False,
                         'bank_id': False,
                         'company_all': False,
-                        'year': self.year}
+                        'year': self.year,
+                        'year_list': year_list}
                 
             if self.holiday_type == "department":
                 data = {'date_from': self.date_from, 
@@ -279,7 +288,8 @@ class RetentionPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'bank_id': False,
                         'company_all': False,
-                        'year': self.year}
+                        'year': self.year,
+                        'year_list': year_list}
                 
             if self.holiday_type == "category":
                 data = {'date_from': self.date_from, 
@@ -290,7 +300,8 @@ class RetentionPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'bank_id': False,
                         'company_all': False,
-                        'year': self.year}
+                        'year': self.year,
+                        'year_list': year_list}
                 
             if self.holiday_type == "emptype":
                 data = {'date_from': self.date_from, 
@@ -302,7 +313,8 @@ class RetentionPDFReport(models.TransientModel):
                         'bank_id': False,
                         'employee_type': self.employee_type,
                         'company_all': False,
-                        'year': self.year}
+                        'year': self.year,
+                        'year_list': year_list}
                 
             if self.holiday_type == "companyall":
                 data = {'date_from': self.date_from, 
@@ -313,10 +325,24 @@ class RetentionPDFReport(models.TransientModel):
                         'employee_id': False, 
                         'bank_id': False,
                         'company_all': self.company_all,
-                        'year': self.year}
+                        'year': self.year,
+                        'year_list': year_list}
         if self.report_type == 'retentionbonus':
             return self.retention_bonus_xls_template(self, data=data)
 
+    # @staticmethod
+    # def _get_year_list():
+    #     current_year = datetime.today().year
+    #     year_options = []
+        
+    #     for year in range(current_year - 3, current_year + 3):
+    #         year_str = str(year)
+    #         next_year = str(year+1)
+    #         year_label = f'{year_str}-{next_year[2:]}'
+    #         year_options.append((next_year, year_label))
+    #     return year_options
+
+    
     def retention_bonus_xls_template(self, docids, data=None):
         start_time = fields.datetime.now()
         domain = []
@@ -357,16 +383,13 @@ class RetentionPDFReport(models.TransientModel):
         datefrom = data.get('date_from')
 
         # raise UserError((data.get('year')))
-        year_from = int(data.get('year'))-1
-        year_to = int(data.get('year'))
-        datefrom = date.today().replace(day=1).replace(month=4).replace(year=year_from)
-        dateto = date.today().replace(month=3).replace(day=31).replace(year=year_to)
+        
         #(date.today().replace(day=1) - timedelta(days=1)).strftime('%Y-%m-26')
         # year_ = int(datefrom.strftime('%Y'))
         
         # raise UserError((datefrom,dateto))
         docs = self.env['hr.retention.bonus.line'].search(domain)#.sorted(key = 'employee_id', reverse=False)
-        docs = docs.filtered(lambda x: x.date >= datefrom and x.date <= dateto)
+        
 
         
         # raise UserError((docs[0].date.year))
@@ -389,168 +412,181 @@ class RetentionPDFReport(models.TransientModel):
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        
-        worksheet = workbook.add_worksheet()
 
-        report_title_style = workbook.add_format({'bold': True, 'font_size': 11})
-        report_title_style2 = workbook.add_format({'font_size': 11, 'num_format': 'mmm-yy'})
-        report_title_style3 = workbook.add_format({'font_size': 11, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
-        report_title_style4 = workbook.add_format({'font_size': 11, 'num_format': 'dd/mm/yy'})
-        # worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
-        worksheet.merge_range('B2:C2', ('April to Mar (%s - %s)' % (str(year_from),str(year_to))), report_title_style)
-        
-        report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
-        # worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-        # worksheet.merge_range('D2:E2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style)
-        # worksheet.merge_range('D2:E2', (str(year_to), '%Y-%m-%d').strftime('%B  %Y')), report_title_style)
-        # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_title_style)
-        
-        column_product_style = workbook.add_format({'bold': True, 'font_size': 11})
-        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
-        column_issued_style = workbook.add_format({'bold': True, 'font_size': 11, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
-        row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+        # oifj = 0
+        for rec in data.get('year_list'):
+            # if oifj > 2:
+            #     raise UserError((rec[0],rec))
+            year_from = int(rec[0])-1
+            year_to = int(rec[0])
+            datefrom = date.today().replace(day=1).replace(month=4).replace(year=year_from)
+            dateto = date.today().replace(month=3).replace(day=31).replace(year=year_to)
+            year_docs = docs.filtered(lambda x: x.date >= datefrom and x.date <= dateto)
+            # oifj += 1
 
-        # set the width od the column
-        
-        worksheet.set_column(1, 1, 25)
-        worksheet.set_column(2, 2, 15)
-        worksheet.set_column(3, 3, 20)
-        worksheet.set_column(4, 4, 11)
-        worksheet.set_column(6, 8, 15)
-        
-        # worksheet.write(4, 0, 'SL.', column_product_style)
-        worksheet.write(4, 1, 'Employee Name', column_product_style)
-        worksheet.write(4, 2, 'Unit', column_product_style)
-        worksheet.write(4, 3, 'Section', column_product_style)
-        worksheet.write(4, 4, 'Effective Date', column_product_style)
-        worksheet.write(4, 5, 'Duration', column_product_style)
-        worksheet.write(4, 6, 'Entitlement Date', column_product_style)
-        worksheet.write(4, 7, 'Payment Start DT', column_product_style)
-        worksheet.write(4, 8, 'Amount', column_product_style)
-        worksheet.write(4, 9, 'Apr', column_product_style)
-        worksheet.write(4, 10, 'May', column_product_style)
-        worksheet.write(4, 11, 'Jun', column_product_style)
-        worksheet.write(4, 12, 'Jul', column_product_style)
-        worksheet.write(4, 13, 'Aug', column_product_style)
-        worksheet.write(4, 14, 'Sep', column_product_style)
-        worksheet.write(4, 15, 'Oct', column_product_style)
-        worksheet.write(4, 16, 'Nov', column_product_style)
-        worksheet.write(4, 17, 'Dec', column_product_style)
-        worksheet.write(4, 18, 'Jan', column_product_style)
-        worksheet.write(4, 19, 'Feb', column_product_style)
-        worksheet.write(4, 20, 'Mar', column_product_style)
-        col = 1
-        row=5
-
-        employees = docs.mapped('employee_id')
-        
-        for emp in employees:
-            emp_docs = docs.filtered(lambda x: x.employee_id.id == emp.id)
-            # raise UserError((emp_docs[0].employee_id.id))
-            for l in emp_docs:
-                # raise UserError((l.date.month))
-                # for l in lines:
-                if col == 1: 
-                    worksheet.write(row, col, l.employee_id.display_name,)
-                    col += 1
-                if col == 2: 
-                    worksheet.write(row, col, l.employee_id.company_id.name, report_title_style2)
-                    col += 1
-                if col == 3: 
-                    worksheet.write(row, col, l.employee_id.department_id.name, report_title_style2)
-                    col += 1
-                if col == 4: 
-                    worksheet.write(row, col, l.date, report_title_style4)
-                    col += 1
-                if col == 5: 
-                    worksheet.write(row, col, l.bonus_id.duration,)
-                    col += 1
-                if col == 6: 
-                    worksheet.write(row, col, l.bonus_id.entitlement_date, report_title_style4)
-                    col += 1
-                if col == 7: 
-                    worksheet.write(row, col, l.payment_date, report_title_style2)
-                    col += 1
-                if col == 8: 
-                    worksheet.write(row, col, l.bonus_amount,report_title_style3)
-                    col += 1
-                    #in (4,5,6,7,8,9,10,11,12,13,14,15)
-                if col == 9 and  l.date.month == 4:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 10 and  l.date.month == 5:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 11 and  l.date.month == 6:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 12 and  l.date.month == 7:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 13 and  l.date.month == 8:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 14 and  l.date.month == 9:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 15 and  l.date.month == 10:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 16 and  l.date.month == 11:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 17 and  l.date.month == 12:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 18 and  l.date.month == 1:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 19 and  l.date.month == 2:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                else:
-                    col += 1
-                if col == 20 and  l.date.month == 3:
-                    worksheet.write(row, col, l.amount, report_title_style3)
-                    col += 1
-                
-                col = 1
+            # sheet_name = rec.strftime("%B-%y")
+            sheet_name = f"{year_from} - {year_to}"
+            worksheet = workbook.add_worksheet(sheet_name)
+    
+            report_title_style = workbook.add_format({'bold': True, 'font_size': 11})
+            report_title_style2 = workbook.add_format({'font_size': 11, 'num_format': 'mmm-yy'})
+            report_title_style3 = workbook.add_format({'font_size': 11, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+            report_title_style4 = workbook.add_format({'font_size': 11, 'num_format': 'dd/mm/yy'})
+            # worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+            worksheet.merge_range('B2:C2', ('April to Mar (%s - %s)' % (str(year_from),str(year_to))), report_title_style)
             
-            row +=1
-
-        worksheet.write(row, 8, '=SUM(D{0}:D{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 9, '=SUM(E{0}:E{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 10, '=SUM(F{0}:F{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 11, '=SUM(G{0}:G{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 12, '=SUM(H{0}:H{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 13, '=SUM(I{0}:I{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 14, '=SUM(J{0}:J{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 15, '=SUM(K{0}:K{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 16, '=SUM(L{0}:L{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 17, '=SUM(M{0}:M{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 18, '=SUM(N{0}:N{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 19, '=SUM(O{0}:O{1})'.format(5, row), column_issued_style)
-        worksheet.write(row, 20, '=SUM(P{0}:P{1})'.format(5, row), column_issued_style)
+            report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
+            # worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
+            # worksheet.merge_range('D2:E2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style)
+            # worksheet.merge_range('D2:E2', (str(year_to), '%Y-%m-%d').strftime('%B  %Y')), report_title_style)
+            # worksheet.merge_range('A3:F3', ('TZBD, %s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_title_style)
+            
+            column_product_style = workbook.add_format({'bold': True, 'font_size': 11})
+            column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12})
+            column_issued_style = workbook.add_format({'bold': True, 'font_size': 11, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+            row_categ_style = workbook.add_format({'bold': True, 'bg_color': '#6B8DE3'})
+    
+            # set the width od the column
+            
+            worksheet.set_column(1, 1, 25)
+            worksheet.set_column(2, 2, 15)
+            worksheet.set_column(3, 3, 20)
+            worksheet.set_column(4, 4, 11)
+            worksheet.set_column(6, 8, 15)
+            
+            # worksheet.write(4, 0, 'SL.', column_product_style)
+            worksheet.write(4, 1, 'Employee Name', column_product_style)
+            worksheet.write(4, 2, 'Unit', column_product_style)
+            worksheet.write(4, 3, 'Section', column_product_style)
+            worksheet.write(4, 4, 'Effective Date', column_product_style)
+            worksheet.write(4, 5, 'Duration', column_product_style)
+            worksheet.write(4, 6, 'Entitlement Date', column_product_style)
+            worksheet.write(4, 7, 'Payment Start DT', column_product_style)
+            worksheet.write(4, 8, 'Amount', column_product_style)
+            worksheet.write(4, 9, 'Apr', column_product_style)
+            worksheet.write(4, 10, 'May', column_product_style)
+            worksheet.write(4, 11, 'Jun', column_product_style)
+            worksheet.write(4, 12, 'Jul', column_product_style)
+            worksheet.write(4, 13, 'Aug', column_product_style)
+            worksheet.write(4, 14, 'Sep', column_product_style)
+            worksheet.write(4, 15, 'Oct', column_product_style)
+            worksheet.write(4, 16, 'Nov', column_product_style)
+            worksheet.write(4, 17, 'Dec', column_product_style)
+            worksheet.write(4, 18, 'Jan', column_product_style)
+            worksheet.write(4, 19, 'Feb', column_product_style)
+            worksheet.write(4, 20, 'Mar', column_product_style)
+            col = 1
+            row=5
+    
+            employees = year_docs.mapped('employee_id')
+            
+            for emp in employees:
+                emp_docs = year_docs.filtered(lambda x: x.employee_id.id == emp.id)
+                # raise UserError((emp_docs[0].employee_id.id))
+                for l in emp_docs:
+                    # raise UserError((l.date.month))
+                    # for l in lines:
+                    if col == 1: 
+                        worksheet.write(row, col, l.employee_id.display_name,)
+                        col += 1
+                    if col == 2: 
+                        worksheet.write(row, col, l.employee_id.company_id.name, report_title_style2)
+                        col += 1
+                    if col == 3: 
+                        worksheet.write(row, col, l.employee_id.department_id.name, report_title_style2)
+                        col += 1
+                    if col == 4: 
+                        worksheet.write(row, col, l.date, report_title_style4)
+                        col += 1
+                    if col == 5: 
+                        worksheet.write(row, col, l.bonus_id.duration,)
+                        col += 1
+                    if col == 6: 
+                        worksheet.write(row, col, l.bonus_id.entitlement_date, report_title_style4)
+                        col += 1
+                    if col == 7: 
+                        worksheet.write(row, col, l.payment_date, report_title_style2)
+                        col += 1
+                    if col == 8: 
+                        worksheet.write(row, col, l.bonus_amount,report_title_style3)
+                        col += 1
+                        #in (4,5,6,7,8,9,10,11,12,13,14,15)
+                    if col == 9 and  l.date.month == 4:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 10 and  l.date.month == 5:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 11 and  l.date.month == 6:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 12 and  l.date.month == 7:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 13 and  l.date.month == 8:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 14 and  l.date.month == 9:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 15 and  l.date.month == 10:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 16 and  l.date.month == 11:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 17 and  l.date.month == 12:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 18 and  l.date.month == 1:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 19 and  l.date.month == 2:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    else:
+                        col += 1
+                    if col == 20 and  l.date.month == 3:
+                        worksheet.write(row, col, l.amount, report_title_style3)
+                        col += 1
+                    
+                    col = 1
+                
+                row +=1
+    
+            worksheet.write(row, 8, '=SUM(D{0}:D{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 9, '=SUM(E{0}:E{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 10, '=SUM(F{0}:F{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 11, '=SUM(G{0}:G{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 12, '=SUM(H{0}:H{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 13, '=SUM(I{0}:I{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 14, '=SUM(J{0}:J{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 15, '=SUM(K{0}:K{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 16, '=SUM(L{0}:L{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 17, '=SUM(M{0}:M{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 18, '=SUM(N{0}:N{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 19, '=SUM(O{0}:O{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 20, '=SUM(P{0}:P{1})'.format(5, row), column_issued_style)
         
 
         

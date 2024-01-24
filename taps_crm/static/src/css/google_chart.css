@@ -1,0 +1,15 @@
+/* Responsive design for mobile view */
+@media only screen and (max-width: 767px) {
+    .oe_chatter_google_chart {
+        width: 100%; /* Set width to 100% for mobile view */
+    }
+}
+
+.o_google_chart {
+    flex: 1 0 100%;
+    padding: 10px 10px 18px 10px;
+
+    background-color: $o-view-background-color;
+    position: relative;
+    max-width:100%;
+}

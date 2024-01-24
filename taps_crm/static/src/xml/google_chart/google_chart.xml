@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<template id="taps_crm_google_chart" name="taps_crm.google_chart" xml:space="preserve">
-            <div class="oe_chatter" style="height:300px;">
-                <div t-attf-class="oe_chatter oe_chatter_#{widget.type}">
-                    <div class="oe_chatter_container oe_chatter_full">
-                        <div class="oe_chatter_header">
-                            <span class="oe_chatter_record_name" title="Chart Title">Chart Title</span>
-                        </div>
-                        <div class="oe_chatter_content">
-                            <div class="oe_chatter">
-                                <div class="oe_chatter_stage">
-                                    <div class="oe_chatter_message">
-                                        <div t-attf-class="oe_chatter_message_content oe_chatter_message_content_#{widget.type}">
-                                            <div class="oe_chatter_google_chart" t-att-id="'google_chart_' + widget.id"/>
-                                        </div>
-                                    </div>
+<template xml:space="preserve">
+    <t t-name="taps_crm_google_chart_template">
+        <div class="container">
+            <div class="oe_chatter_container oe_chatter_full">
+                <div class="oe_chatter_header">
+                    <span class="oe_chatter_record_name" title="Chart Title">Chart Title</span>
+                </div>
+                <div class="oe_chatter_content">
+                    <div class="oe_chatter">
+                        <div class="oe_chatter_stage row">
+                            <div class="oe_chatter_message col-6">
+                                <div class="oe_chatter_message_content oe_chatter_message_content_google_chart">
+                                    <div class="oe_chatter_google_chart" id="chart_div" style="width: 100%;"/>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="oe_chatter_message col-6">
+                                <div class="oe_chatter_message_content oe_chatter_message_content_google_chart">
+                                    <div class="oe_chatter_google_chart" id="chart_div_1" style="width: 100%;"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </template>
+        </div>
+    <!-- <table class="container">
+        
+      <tr>
+        <td ><div id="chart_div" style="border: 1px solid #ccc"></div></td>
+        <td ><div id="chart_div_1" style="border: 1px solid #ccc"></div></td>
+      </tr>
+    
+    </table> -->
+    </t>
+</template>

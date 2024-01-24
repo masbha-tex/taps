@@ -14,13 +14,8 @@ from odoo.tools import format_date
 from dateutil.relativedelta import relativedelta
 import re
 import math
-from odoo.http import content_disposition
-from odoo.tools import pycompat
 import calendar
 from io import BytesIO
-from PIL import Image
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
 _logger = logging.getLogger(__name__)
 
 
@@ -32,6 +27,7 @@ class LabelPrintingWizard(models.TransientModel):
     logo = "src/user/taps_sale/static/src/img/logo_tex_tiny.png" 
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True)
     report_type = fields.Selection([('pplg', 'Production Packing Label (General)'),
+                                    ('lpi', 'Label Print Information'),
                                     ('fgcl', 'FG Carton Label'),
                                     ('pplo', 'Production Packing Label (Others)')],
                                    string='Report Type', required=True, help='Report Type', default='pplg')
@@ -41,9 +37,11 @@ class LabelPrintingWizard(models.TransientModel):
 
     table_name = fields.Selection([('A', 'Table A'),('B', 'Table B')], string='Table', required=True, help='Table', default='A')
     Country_name = fields.Selection([('bangladesh', 'Bangladesh'),('vietnam', 'Vietnam'),('pakistan', 'Pakistan')], string='Country', required=True, help='Country', default='bangladesh')
+    
+    lot_code = fields.Char('Lot Code', readonly=False, default='')
 
-
-    oa_number = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True,default='5552')
+    oa_number = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True)
+    
 
     iteam = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'Iteams')]", check_company=True, string='Iteam', store=True, required=False, readonly=False)
     shade = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'shade')]", check_company=True, string='Shade', store=True, required=False, readonly=False)
@@ -51,12 +49,34 @@ class LabelPrintingWizard(models.TransientModel):
     size = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'size')]", check_company=True, string='Size', store=True, required=False, readonly=False)
     qty = fields.Integer('Qty', readonly=False, default='')
 
-    batch_lot = fields.Char('Batch/Lot', readonly=False, default='000')
+    batch_lot = fields.Char('Batch/Lot', readonly=False, default='0000')
+    label_qty = fields.Integer('Label Qty', readonly=False, default='100')
+    copy = fields.Integer('Label Copy', readonly=False, default = '6')
     
     qc_person = fields.Many2one('hr.employee', string="QC By", domain="[('active', '=', True), ('department_id', '=', 272)]", index=True, required=True,readonly=False)
     pre_check_person = fields.Many2one('hr.employee', string="Pre Check By", domain="[('active', '=', True), ('department_id', '=', 281)]", index=True, required=True,readonly=False)
     printing_person = fields.Many2one('hr.employee', string="Print By", domain="[('active', '=', True), ('department_id', '=', 284)]", index=True, required=True,readonly=False)
 
+    @api.onchange('lot_code')
+    def _onchange_lot_code(self):
+        oa_id = None
+        if self.lot_code:
+            oa_id = self.oa_number
+            operations = self.env['operation.details'].sudo().search([
+                ('name', '=', self.lot_code),
+                ('next_operation', '=', 'Packing Output')
+            ])
+    
+            if operations:
+                self.oa_number = operations[0].oa_id.id
+                self.iteam = operations[0].product_id.product_tmpl_id.name
+                self.shade = operations[0].shade
+                self.finish = operations[0].finish
+                self.size = operations[0].sizcommon
+                # self.qty = production[0].sizcommon
+                self.qty=sum(operations.mapped('balance_qty'))
+                
+                
     
     @api.onchange('oa_number')
     def _onchange_oa_number(self):
@@ -218,12 +238,14 @@ class LabelPrintingWizard(models.TransientModel):
         self.finish = finish
         self.qty = qty
 
+  
 
     def generate_qweb_pdf(self):
         # Ensure that all required fields are filled
         # if not all([self.company_name, self.table_name, self.oa_number, self.iteam, self.finish, self.shade, self.size, self.qc_person, self.pre_check_person, self.printing_person, self.qty]):
         #     raise ValidationError("Please fill in all required fields before generating the PDF.")
 
+        
         # Prepare data for the QWeb report
         data = {
             'logo': self.logo,
@@ -241,6 +263,9 @@ class LabelPrintingWizard(models.TransientModel):
             'pre_check_person': self.pre_check_person.name,
             'printing_person': self.printing_person.name,
             'qty': self.qty,
+            'copy':self.copy,
+            'label_qty':self.label_qty,
+            'Country_name':self.Country_name,
         }
         # raise UserError((self.printing_person.name))
         # print("Data Dictionary:", data)
@@ -268,9 +293,14 @@ class LabelPrintPDF(models.AbstractModel):
         domain.append(('next_operation', '=', 'Packing Output'))
         
         docs = self.env['operation.details'].sudo().search(domain)
-        # raise UserError((docs.qty))
+        store_label = self.env['label.print.data'].sudo().create({'name':docs[0].name,'batch_lot':data.get('batch_lot'),
+                                                                  'table_name':data.get('table_name'),
+                                                                  'qc_by':data.get('qc_person'),
+                                                                  'pre_check_by':data.get('pre_check_person'),
+                                                                  'print_by':data.get('printing_person'),
+                                                                  'label_qty':data.get('label_qty'),
+                                                                  'label_copy':data.get('copy')})     
         
-            
         common_data = [
             data.get('logo'), #0
             data.get('company_name'), #1
@@ -287,6 +317,9 @@ class LabelPrintPDF(models.AbstractModel):
             data.get('pre_check_person'),#12
             data.get('printing_person'),#13
             data.get('qty'), #14
+            data.get('label_qty'), #15
+            data.get('copy'), #16
+            data.get('Country_name'), #17
             # data.get(docs.name), #15
         ]
         common_data.append(common_data)
