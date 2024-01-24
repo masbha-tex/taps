@@ -7,6 +7,8 @@
             
             <script type="text/javascript" src="/taps_crm/static/src/js/custom_chart/custom_chart.js"/>
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript" src="/taps_crm/static/src/js/google_chart/google_chart.js"/>
+            
         </xpath>
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/scss" href="/taps_crm/static/src/scss/visit.scss"/>

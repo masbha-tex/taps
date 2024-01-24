@@ -30,11 +30,13 @@
         'views/visit_template_views.xml',
         'views/assets.xml',
         'views/crm_team_view.xml',
-        'views/custom_chart_view.xml'
+        'views/custom_chart_view.xml',
+        'views/google_chart_view.xml'
     ],
     # only loaded in demonstration mode
     'qweb': [
         "static/src/xml/visit_dashboard.xml",
         "static/src/xml/custom_chart/custom_chart.xml",
+        "static/src/xml/google_chart/google_chart.xml"
     ],
 }

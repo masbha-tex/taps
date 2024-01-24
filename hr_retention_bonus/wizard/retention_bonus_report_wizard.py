@@ -443,6 +443,7 @@ class RetentionPDFReport(models.TransientModel):
         row=5
 
         employees = docs.mapped('employee_id')
+        
         for emp in employees:
             emp_docs = docs.filtered(lambda x: x.employee_id.id == emp.id)
             # raise UserError((emp_docs[0].employee_id.id))

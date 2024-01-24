@@ -17,7 +17,7 @@ class OaCheck(models.TransientModel):
     lookup_oa = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True)
     action_date_list = fields.Many2one('selection.fields.data', string='Dates',  domain="[('field_name', '=', 'Dates')]", check_company=True)
     Shade_list = fields.Many2one('selection.fields.data', string='Shade List',  domain="[('field_name', '=', 'shade')]", check_company=True)
-    Size_list = fields.Integer(string='Size List', help='OA')
+    Size_list = fields.Many2one('selection.fields.data', string='Size List', domain="[('field_name', '=', 'size')]", check_company=True)
     
     total_packed = fields.Integer(string='Total Packed (OA) ', help='Total Packed in current Date')
     Shade_wise_packed = fields.Integer(string='Total Packed (Shade)', help='Shade wise packed in Current Date') 
@@ -26,7 +26,7 @@ class OaCheck(models.TransientModel):
 
     @api.onchange('lookup_oa')
     def _oa(self):
-        oa_id = None
+        oa_id=None
         if self.lookup_oa:
             oa_id = self.lookup_oa
             operations = self.env['operation.details'].sudo().search([('oa_id','=',self.lookup_oa.id),('next_operation','=','FG Packing')])
@@ -35,17 +35,15 @@ class OaCheck(models.TransientModel):
             all_dates = self.env['selection.fields.data'].sudo().search([('field_name','=','Dates')]).unlink()
             if unique_dates:
                 for _date in unique_dates:
-                    self.env["selection.fields.data"].sudo().create({'field_name':'Dates',
-                                                                              'name':_date
-                                                                              })
+                    self.env["selection.fields.data"].sudo().create({'field_name':'Dates', 'name': _date})
                 self.action_date_list = [(0, 0, {'field_name': 'Dates', 'name': _date}) for _date in unique_dates]
-        self.lookup_oa = oa_id
+        # self.lookup_oa = oa_id
 
-    
     @api.onchange('action_date_list')
     def _onchange_action_date(self):
+        
         if self.lookup_oa and self.action_date_list:
-            oa_id = self.lookup_oa.name
+            oa_id = self.lookup_oa.id
             action_date = self.action_date_list.name
 
             # Filter shades based on OA and Action Date
@@ -61,5 +59,36 @@ class OaCheck(models.TransientModel):
                 for shade in unique_shades:
                     self.env["selection.fields.data"].sudo().create({'field_name': 'shade', 'name': shade})
 
-                self.Shade_list = [(0, 0, {'field_name': 'shade', 'name': shade}) for shade in unique_shades]
-  
+                # Assuming the field name is 'Shade_list', update accordingly
+                self.update({'Shade_list': [(5, 0, 0)]})
+            # self.lookup_oa = oa_id
+            # self.action_date_list = [(0, 0, {'field_name': 'Dates', 'name': action_date})]
+            
+    @api.onchange('Shade_list')
+    def _onchange_shade(self):
+        if self.lookup_oa and self.action_date_list and self.Shade_list:
+            oa_id = self.lookup_oa.id
+            action_date = self.action_date_list.name
+            selected_shade = self.Shade_list.name
+    
+            # Filter sizes based on OA, Action Date, and Shade
+            operations = self.env['operation.details'].sudo().search([
+                ('oa_id', '=', oa_id),
+                ('next_operation', '=', 'FG Packing'),
+                ('action_date', '=', action_date),
+                ('shade', '=', selected_shade),
+            ])
+    
+            unique_sizes = set(record.sizcommon for record in operations)
+            all_sizes = self.env['selection.fields.data'].sudo().search([('field_name', '=', 'size')]).unlink()
+            if unique_sizes:
+                for size in unique_sizes:
+                    self.env["selection.fields.data"].sudo().create({'field_name': 'size', 'name': size})
+    
+                # Assuming the field name is 'Size_list', update accordingly
+                self.update({'Size_list': [(5, 0, 0)]})
+    
+            # Use self to set the values of the fields
+            # self.lookup_oa = oa_id
+            # self.action_date_list = [(0, 0, {'field_name': 'Dates', 'name': action_date})]
+            # self.Shade_list = [(0, 0, {'field_name': 'shade', 'name': selected_shade})]

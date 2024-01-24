@@ -852,4 +852,9 @@ class HrEmployeePublic(models.Model):
     performance_rated = fields.Char(readonly=True)
     replacement_new = fields.Char(readonly=True)
     relationship_id = fields.Char(readonly=True)
+    employee_grade_category = fields.Char(readonly=True)
+    employee_team_allocation = fields.Char(readonly=True)
+    employee_trainee_grade = fields.Char(readonly=True)
+    status = fields.Char(readonly=True)
+    age = fields.Char(readonly=True)
     

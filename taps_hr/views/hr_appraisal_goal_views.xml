@@ -452,7 +452,7 @@
         <field name="name">Appraisal</field>
         <field name="res_model">hr.appraisal</field>
         <field name="view_mode">kanban,tree,gantt,calendar,form,activity</field>
-        <field name="context">{"search_default_next_month": 1, 'group_by':'date_close:year'}</field>
+        <field name="context">{"search_default_next_month": 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create a new appraisal</p>
             <p>You will be able to plan an appraisal with your employees, to ask your appraisal with your

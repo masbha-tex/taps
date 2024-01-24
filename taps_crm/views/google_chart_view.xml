@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <!-- In your module's view file -->
+        <template id="taps_crm_google_chart_view" name="taps_crm.google_chart_view">
+            <t t-call="web.html_container">
+                <t t-foreach="widget_data" t-as="widget">
+                    <t t-call="web.widget" t-name="taps_crm_google_chart">
+                        <t t-set="widget_data" t-value="widget['data']"/>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <record id="taps_crm_module_google_chart" model="ir.actions.act_window">
+        <field name="name">Google Chart</field>
+        <field name="res_model">crm.visit</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="taps_crm.taps_crm_google_chart_view"/>
+        </record>
+
+        <menuitem
+        id="menu_google_chart"
+        name="Google Chart"
+        parent="taps_crm.menu_crm_config_lead_inherit"
+        action="taps_crm.taps_crm_module_google_chart"
+        sequence="3"/>
+
+    </data>
+</odoo>

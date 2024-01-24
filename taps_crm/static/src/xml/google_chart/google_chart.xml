@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<template id="taps_crm_google_chart_view" name="taps_crm.google_chart_view"  xml:space="preserve">
-    <t t-call="web.html_container">
-        <t t-foreach="widget_data" t-as="widget">
-            <t t-call="web.widget" t-name="taps_crm_google_chart">
-                <t t-set="widget_data" t-value="widget['data']"/>
-            </t>
-        </t>
-    </t>
-</template>
+<template id="taps_crm_google_chart" name="taps_crm.google_chart" xml:space="preserve">
+            <div class="oe_chatter" style="height:300px;">
+                <div t-attf-class="oe_chatter oe_chatter_#{widget.type}">
+                    <div class="oe_chatter_container oe_chatter_full">
+                        <div class="oe_chatter_header">
+                            <span class="oe_chatter_record_name" title="Chart Title">Chart Title</span>
+                        </div>
+                        <div class="oe_chatter_content">
+                            <div class="oe_chatter">
+                                <div class="oe_chatter_stage">
+                                    <div class="oe_chatter_message">
+                                        <div t-attf-class="oe_chatter_message_content oe_chatter_message_content_#{widget.type}">
+                                            <div class="oe_chatter_google_chart" t-att-id="'google_chart_' + widget.id"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
