@@ -14,9 +14,9 @@ class OrderFlow(models.Model):
     #name = fields.Char(related='check_id.name',string='Sale Orde')
     # Pi_number = fields.Char(related='check_id.pi_number',string='Pi')
     pi_type = fields.Selection(related='order_id.pi_type',string='Type')
-    sale_representative = fields.Many2one(related='order_id.sale_representative',string='Sales')
+    sale_representative = fields.Many2one(related='order_id.user_id',string='Sales')
     date_order = fields.Datetime(related='order_id.date_order',string='Date')
-    user_id = fields.Many2one(related='order_id.user_id',string='CSD')
+    user_id = fields.Many2one(related='order_id.create_uid',string='CSD')
     pi_number = fields.Char(related='order_id.pi_number',string='PI Number')
     pi_date = fields.Date(related='order_id.pi_date', string='PI Date')
     # amount_total = fields.Monetary(related='order_id.amount_total', string='Order Value')
@@ -97,7 +97,7 @@ class OrderFlow(models.Model):
         
         from
         (
-        select s.id as order_id,s.company_id,s.pi_type,s.sale_representative,s.date_order,s.user_id,
+        select s.id as order_id,s.company_id,s.pi_type,s.user_id as sale_representative,s.date_order,s.create_uid as user_id,
         s.pi_number,s.pi_date,s.currency_id,s.partner_id,s.buyer_name,s.style_ref,s.season,
         s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
         pt.name as product,
@@ -109,8 +109,8 @@ class OrderFlow(models.Model):
         inner join product_template as pt on pt.id = p.product_tmpl_id
         
         where  s.company_id=%s and 'a'=%s and s.sales_type='sale' and sol.product_uom_qty>0
-        group by s.id,s.company_id,s.pi_type,s.sale_representative,
-        s.date_order,s.user_id,s.pi_number,s.pi_date, 
+        group by s.id,s.company_id,s.pi_type,s.user_id,
+        s.date_order,s.create_uid,s.pi_number,s.pi_date, 
         s.currency_id,s.partner_id,s.buyer_name,s.style_ref,
         s.season,s.po_no,s.payment_term_id,s.incoterm,s.bank,s.department,
         pt.name,s.state

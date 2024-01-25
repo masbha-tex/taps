@@ -5,7 +5,7 @@
                 <t t-foreach="range(datas[16] or 6)" t-as="i">
                     <table class="float-left mb-2 ml-2 mr-2 pb-2 pl-2 pr-2" 
                     style="                                
-                    width:350pt; height:150pt;                                
+                    width:320pt; height:150pt;                                
                     border: 1pt solid black; 
                     border-collapse: separate;
                     border-radius: 8pt;
@@ -14,7 +14,7 @@
                     table-layout: fixed !important; ">
                         <tr>
                             <td align="left"  colspan="2">
-                                <img alt="barcode" t-if="docs.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', docs.name, 200, 75)" style="max-height: 40pt" align="center"/> <!-- <t t-esc="docs.name" /> -->
+                                <!-- <img alt="barcode" t-if="docs.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', docs.name, 200, 75)" style="max-height: 40pt" align="center"/>  <t t-esc="docs.name" /> -->
                             </td>
                             <td align="center"  colspan="2">
                               <span>
@@ -22,27 +22,35 @@
                                     </span>  
                             </td>
                             <td align="center"  colspan="2">
-                                        <t t-esc="datas[17]"/>
+                                        <t t-esc="datas[17]" style="font-size:25px"/>
                             </td>
                         </tr>
                         
                         <tr>
 
-                                    <td align="center" colspan="3">
+                                    <td align="center" colspan="6">
                                         <span style="font-size:25px">
                                         <t t-esc="datas[1]"/>
                                         <P style="font-size:14px"><t t-esc="datas[2]"/></P>
                                     </span>
                                     </td>
                         </tr>
-                    <tr>
-                                    <td colspan="2">                                       
-                                        <span align="left">Date: </span>
+                        <tr>
+                                    <td colspan="6">                                       
+                                        <strong>
+                                            <span align="left">Date: </span>
+                                        </strong>
                                         <t t-esc="datas[4]"/> 
                                     </td>
-                                    <td colspan="2">
+                        </tr>
+                    <tr>
+                                    
+                                    <td colspan="3">
                                          <span style="margin-top: 20px;">Table No: </span>
-                                        <t t-esc="datas[3]"/><br/>
+                                    <t t-esc="datas[5]"/>
+                                    </td>
+                                     <td colspan="3">
+                                         
                                         <span align="right">Batch/Lot No: </span>
                                     <t t-esc="datas[5]"/>
                                     </td>
@@ -63,19 +71,19 @@
                                     <td colspan="2"> </td>
                         </tr>
                         <tr>
-                                    <td colspan="4">
+                                    <td colspan="6">
                                         <span align="left">Product: </span>
                                         <t t-esc="datas[7]"/>
                                     </td>
                         </tr>
                         <tr>
-                                    <td colspan="4">
+                                    <td colspan="6">
                                         <span align="left">Finish: </span>
                                         <t t-esc="datas[8]"/>
                                     </td>
                         </tr>
                         <tr>
-                                    <td colspan="4">
+                                    <td colspan="6">
                                         <span align="left">Shade: </span>
                                         <t t-esc="datas[9]"/>
                                     </td>
@@ -85,18 +93,38 @@
                                         <span align="left">Size: </span>
                                         <t t-esc="datas[10]"/>
                                     </td>
-                                    <td></td>
-                                    <td>
+                                    <td colspan="2"></td>
+                                    <td colspan="2">
                                         <span align="right">Qty: </span>
                                         <t t-esc="datas[15]"/>
                                     </td>
                         </tr>
                         <tr>
-                            <td colspan="4" align="center">
+                            <td colspan="2" align="center">
+                                <span> QC By: </span>
                                     <br/>
-                                    
+                                <t t-esc="datas[11]"/>                                    
+                            </td>
+                            <td colspan="2" align="center">
+                                <span> Pre-check By: </span>
+                                    <br/>
+                                <t t-esc="datas[12]"/>                                    
+                            </td>
+                            <td colspan="2" align="center">
+                                <span> Print By: </span>
+                                    <br/>
+                                <t t-esc="datas[13]"/>                                    
                             </td>
                         </tr>
+                    <br/>
+                        <tr> 
+                            <td></td>
+                            <td colspan="4" align="left">
+                             <img alt="barcode" t-if="docs.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', docs.name, 800, 40)" style="max-height: 40pt" align="left"/> <!-- <t t-esc="docs.name" /> -->
+                                   
+                            </td>
+                        </tr>
+                        <td></td>
                     </table>
                 </t>
         </t>

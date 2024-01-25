@@ -27,7 +27,7 @@ class SalesReport(models.TransientModel):
         string='Report Type', required=True,
         help='By Salary Head Wise Report', default='orderacc')
     
-    mode_company_id = fields.Many2one('res.company',  string='Company Mode', readonly=False, required=True)
+    mode_company_id = fields.Many2one('res.company',  string='Company Mode', readonly=False, required=True, default=lambda self: self.env.company.id)
 
     file_data = fields.Binary(readonly=True, attachment=False)
 
@@ -130,13 +130,13 @@ class SalesReport(models.TransientModel):
         for l in docs:
             serial += 1
             if col == 0:
-                worksheet.write(row, col, l.sale_representative.name,column_title_style)
+                worksheet.write(row, col, l.user_id.partner_id.name,column_title_style)
                 col += 1
             if col == 1:
-                worksheet.write(row, col, l.sale_representative.team.team_name,column_title_style)
+                worksheet.write(row, col, l.team_id.name,column_title_style)
                 col += 1
             if col == 2:
-                worksheet.write(row, col, l.sale_representative.leader.name,column_title_style)
+                worksheet.write(row, col, l.team_id.user_id.partner_id.name,column_title_style)
                 col += 1
             if col == 3:
                 worksheet.write(row, col, l.date_order,date_format)
@@ -327,13 +327,13 @@ class SalesReport(models.TransientModel):
                 
                 serial += 1
                 if col == 0:
-                    worksheet.write(row, col, l.order_id.sale_representative.name,column_title_style)
+                    worksheet.write(row, col, l.order_id.user_id.partner_id.name,column_title_style)
                     col += 1
                 if col == 1:
-                    worksheet.write(row, col, l.order_id.sale_representative.team.team_name,column_title_style)
+                    worksheet.write(row, col, l.order_id.team_id.name,column_title_style)
                     col += 1
                 if col == 2:
-                    worksheet.write(row, col, l.order_id.sale_representative.leader.name,column_title_style)
+                    worksheet.write(row, col, l.order_id.team_id.user_id.partner_id.name,column_title_style)
                     col += 1
                 if col == 3:
                     worksheet.write(row, col, l.order_id.date_order,date_format)

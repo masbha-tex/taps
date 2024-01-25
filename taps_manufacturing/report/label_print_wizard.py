@@ -36,7 +36,7 @@ class LabelPrintingWizard(models.TransientModel):
     company_address = fields.Char('Company Address', readonly=False, default='Plot # 180, 264 & 273 Adamjee Export Processing Zone, Adamjee Nagar, Shiddhirgonj, Narayangonj, Bangladesh')  
 
     table_name = fields.Selection([('A', 'Table A'),('B', 'Table B')], string='Table', required=True, help='Table', default='A')
-    Country_name = fields.Selection([('bangladesh', 'Bangladesh'),('vietnam', 'Vietnam'),('pakistan', 'Pakistan')], string='Country', required=True, help='Country', default='bangladesh')
+    Country_name = fields.Selection([('VIETNAM', 'Vietnam'),('PAKISTAN', 'Pakistan')], string='Country', help='Country', default='')
     
     lot_code = fields.Char('Lot Code', readonly=False, default='')
 
@@ -44,43 +44,157 @@ class LabelPrintingWizard(models.TransientModel):
     
 
     iteam = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'Iteams')]", check_company=True, string='Iteam', store=True, required=False, readonly=False)
+    # default=lambda self: self.get_default_iteam()
+    
     shade = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'shade')]", check_company=True, string='Shade', store=True, required=False, readonly=False)
+    # ,default=lambda self: self.get_default_shade()
+    
     finish = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'finish')]", check_company=True, string='Finish', store=True, readonly=False)
+    # ,default=lambda self: self.get_default_finish()
+    
     size = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'size')]", check_company=True, string='Size', store=True, required=False, readonly=False)
-    qty = fields.Integer('Qty', readonly=False, default='')
+    # ,default=lambda self: self.get_default_size()
+    
+    qty = fields.Integer('Qty', readonly=False)
 
     batch_lot = fields.Char('Batch/Lot', readonly=False, default='0000')
-    label_qty = fields.Integer('Label Qty', readonly=False, default='100')
-    copy = fields.Integer('Label Copy', readonly=False, default = '6')
+    label_qty = fields.Integer('Label Qty', readonly=False,default='100')
+    # ,compute='_compute_label_qty' 
+    copy = fields.Integer('Label Copy', readonly=False, default = '1')
     
     qc_person = fields.Many2one('hr.employee', string="QC By", domain="[('active', '=', True), ('department_id', '=', 272)]", index=True, required=True,readonly=False)
     pre_check_person = fields.Many2one('hr.employee', string="Pre Check By", domain="[('active', '=', True), ('department_id', '=', 281)]", index=True, required=True,readonly=False)
     printing_person = fields.Many2one('hr.employee', string="Print By", domain="[('active', '=', True), ('department_id', '=', 284)]", index=True, required=True,readonly=False)
 
+
+    # @api.depends('iteam')
+    # def _compute_label_qty(self):
+    # for record in self:
+    #     if qty > label_qty:
+    #         if record.iteam and record.iteam.name == "CLOSE END":
+    #             record.label_qty = 100
+    #         else:
+    #             record.label_qty = 50
+    #     else:
+    #         record.label_qty = qty
+
+    # @api.onchange('qty', 'label_qty')
+    # def _onchange_qty_label_qty(self):
+    #     # Recalculate copy when either 'qty' or 'label_qty' changes
+    #     qty = self.qty if self.qty else 0
+    #     label_qty = max(qty, self.label_qty or 1)  # Set label_qty to max of qty and current label_qty
+    
+    #     # Update copy field
+    #     self.copy = 1 if qty < label_qty else qty // label_qty
+
+
+
+    # @api.model
+    # def get_default_iteam(self):
+    #     # Set your default value for 'Iteam' here
+    #     return self.env['selection.fields.data'].search([('field_name', '=', 'Iteams')], limit=1).id
+
+    # @api.model
+    # def get_default_shade(self):
+    #     # Set your default value for 'Shade' here
+    #     return self.env['selection.fields.data'].search([('field_name', '=', 'shade')], limit=1).id
+
+    # @api.model
+    # def get_default_finish(self):
+    #     # Set your default value for 'Finish' here
+    #     return self.env['selection.fields.data'].search([('field_name', '=', 'finish')], limit=1).id
+
+    # @api.model
+    # def get_default_size(self):
+    #     # Set your default value for 'Size' here
+    #     return self.env['selection.fields.data'].search([('field_name', '=', 'size')], limit=1).id
+
+
+
+    #code for data input from barcode start here 
+
     @api.onchange('lot_code')
     def _onchange_lot_code(self):
-        oa_id = None
         if self.lot_code:
-            oa_id = self.oa_number
             operations = self.env['operation.details'].sudo().search([
                 ('name', '=', self.lot_code),
                 ('next_operation', '=', 'Packing Output')
             ])
     
             if operations:
-                iteam_records = self.env['selection.fields.data'].sudo().search([])
-                iteam_records.unlink()
+                self.oa_number = operations[0].oa_id
+                self.iteam = operations[0].mapped('product_template_id.name')
+                self.shade = operations[0].mapped('shade')
+                self.finish = operations[0].mapped('finish')
+                self.size = operations[0].mapped('sizcommon')
+                self.qty = sum(operations.mapped('balance_qty'))
+
+                # Update selection fields data
+                self.update_selection_fields_data(operations)
                 
-                self.oa_number = operations[0].oa_id.id
-                self.iteam = operations[0].product_id.product_tmpl_id.name
-                self.shade = operations[0].shade
-                self.finish = operations[0].finish
-                self.size = operations[0].sizcommon
-                # self.qty = production[0].sizcommon
-                self.qty=sum(operations.mapped('balance_qty'))
-                
-                
+    # ...
+
+    def update_selection_fields_data(self, operations):
+        # Iteam List
+        unique_iteam = set(record.product_template_id.name for record in operations)
+        iteam_records = self.env['selection.fields.data'].sudo().search([
+            ('field_name', '=', 'Iteams')
+        ])
+        iteam_records.unlink()
+
+        for _iteam in unique_iteam:
+            iteam_cr = self.env["selection.fields.data"].sudo().create({
+                'field_name': 'Iteams',
+                'name': _iteam
+            })
+            self.update({'iteam': [(4, iteam_cr.name)]})
+
+        # Shade list
+        unique_shade = set(record.shade for record in operations)
+        shade_records = self.env['selection.fields.data'].sudo().search([
+            ('field_name', '=', 'shade')
+        ])
+        shade_records.unlink()  # Remove existing records
+
+        for _shade in unique_shade:
+            shade_cr = self.env["selection.fields.data"].sudo().create({
+                'field_name': 'shade',
+                'name': _shade
+            })
+            self.update({'shade': [(4, shade_cr.name)]})  # Add the record to the Many2one field
+
+        # Finish list
+        unique_finish = set(record.finish for record in operations)
+        finish_records = self.env['selection.fields.data'].sudo().search([
+            ('field_name', '=', 'finish')
+        ])
+        finish_records.unlink()
+
+        for _finish in unique_finish:
+            finish_cr = self.env["selection.fields.data"].sudo().create({
+                'field_name': 'finish',
+                'name': _finish
+            })
+            self.update({'finish': [(4, finish_cr.name)]})
+
+        # Size list
+        unique_size = set(record.sizcommon for record in operations)
+        size_records = self.env['selection.fields.data'].sudo().search([
+            ('field_name', '=', 'size')
+        ])
+        size_records.unlink()
+
+        for _size in unique_size:
+            size_cr = self.env["selection.fields.data"].sudo().create({
+                'field_name': 'size',
+                'name': _size
+            })
+            self.update({'size': [(4, size_cr.name)]})  # Add the record to the Many2one field
+
+    # ...
+
     
+    # ---- 
     @api.onchange('oa_number')
     def _onchange_oa_number(self):
         oa_id = None

@@ -22,19 +22,16 @@ odoo.define('taps_crm.google_chart_action', function(require) {
             ajax.jsonRpc("/taps_crm/get_google_chart_action", 'call', {})
                 .then(function(data) {
                     // Use Chart.js to render the chart
+                    // alert(data.labels)
                     google.charts.load('current', {
                         'packages': ['bar']
                     });
-                    google.charts.setOnLoadCallback(drawChart_1);
+                    google.charts.setOnLoadCallback(drawChart_1(data));
 
-                    function drawChart_1() {
-                        var data = google.visualization.arrayToDataTable([
-                            ['Year', 'Sales', 'Expenses'],
-                            ['2014', 1000, 400],
-                            ['2015', 1170, 460],
-                            ['2016', 660, 1120],
-                            ['2017', 1030, 540]
-                        ]);
+                    function drawChart_1(data) {
+                        var a =data.columns
+                        alert(a)
+                        var data = google.visualization.arrayToDataTable(data);
                         var options = {
                             chart: {
                                 title: 'SALES VS EXPENSE',

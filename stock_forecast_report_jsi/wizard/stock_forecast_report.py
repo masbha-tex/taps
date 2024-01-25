@@ -497,7 +497,7 @@ class StockForecastReport(models.TransientModel):
         select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id,pr_code,categ_type as product_category,parent_id as parent_category,invoice as lot_id, case when rejected=true then 'Reject' else 'Ok' end as rejected, avg(lot_price) as lot_price, avg(pur_price) as pur_price, avg(landed_cost) as landed_cost ,sum(opening_qty) as opening_qty,
         case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
         
-        min(COALESCE(receive_date,'2021-01-01 06:00:00')) as receive_date,
+        min(COALESCE(date(receive_date),'2021-01-01')) as receive_date,
         
         sum(receive_qty) as receive_qty,
         case when avg(lot_price)>0 then sum(receive_qty)*avg(lot_price) else sum(receive_value) end as receive_value,
@@ -611,7 +611,7 @@ class StockForecastReport(models.TransientModel):
         select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id,pr_code,categ_type as product_category,parent_id as parent_category,invoice as lot_id, case when rejected=true then 'Reject' else 'Ok' end as rejected, avg(lot_price) as lot_price, avg(pur_price) as pur_price, avg(landed_cost) as landed_cost ,sum(opening_qty) as opening_qty,
         case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
         
-        min(COALESCE(receive_date,'2021-01-01 06:00:00')) as receive_date,
+        min(COALESCE(date(receive_date),'2021-01-01')) as receive_date,
         
         sum(receive_qty) as receive_qty,
         case when avg(lot_price)>0 then sum(receive_qty)*avg(lot_price) else sum(receive_value) end as receive_value,
@@ -712,7 +712,7 @@ class StockForecastReport(models.TransientModel):
         --case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
         
         
-        min(COALESCE(receive_date,'2021-01-01 06:00:00')) as receive_date, 
+        min(COALESCE(date(receive_date),'2021-01-01')) as receive_date, 
         DATE_PART('day',%s-min(COALESCE(receive_date,'2021-01-01 06:00:00'))) as duration,
         
         --sum(receive_qty) as receive_qty,

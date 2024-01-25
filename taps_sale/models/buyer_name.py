@@ -49,8 +49,21 @@ class ResPartner(models.Model):
         help='Default account for receivables',
         default=lambda self: self._get_default_account_payable_id(),
         )
+    customer_type = fields.Selection([
+        ('A', 'A'),
+        ('B', 'B'),
+        ('C', 'C')
         
-    @api.onchange('phone')
+    ], string="Customer Type", default='C')
+    custom_delivery_method = fields.Selection([
+        ('By Road', 'By Road'),
+        ('By Air', 'By Air'),
+        ('By Sea', 'By Sea'),
+        ('By Air/By Sea', 'By Air/By Sea'),
+        
+    ], string="Customer Delivery Method", default='By Road')
+    
+    @api.onchange('phone','mobile','name','email','website')
     def _onchange_company_id(self):
         # Automatically update the property_account_payable_id based on the current company
         self.property_account_receivable_id = self._get_default_account_receivable_id()
