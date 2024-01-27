@@ -58,7 +58,21 @@
             <field name="header_spacing">20</field>
             <field name="dpi">90</field>
         </record>
-        
+         <record id="paperformat_report_label_print_template" model="report.paperformat">
+            <field name="name">A4 label Page</field>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">1</field>
+            <field name="margin_bottom">1</field>
+            <field name="margin_left">1</field>
+            <field name="margin_right">1</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+
         
     </data>
 </odoo>

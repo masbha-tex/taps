@@ -148,12 +148,38 @@ class IncludeCateTypeInPT(models.Model):
     fg_categ_type = fields.Many2one('fg.category', check_company=True, string='FG Category', store=True, readonly=False, copy=False)
 
     pack_qty = fields.Float(string="Qty/Pack", copy=True, default=0.0)
+
+    
+    second_last_price = fields.Float(string="2nd Last Price", compute="_compute_second_last_price")
+    #, groups="stock.group_stock_manager"
+    last_price = fields.Float(string="Last Price", compute="_compute_second_last_price")#, groups="stock.group_stock_manager"
     #description_purchase = fields.Text('Purchase Description', related='pur_description', translate=True)
     # fg_product_type = fields.Selection([
     #     ('Auto Taffeta', 'Auto Taffeta'),
     #     ('Brass Wire', 'Brass Wire'),
     #     ('Scrap', 'Scrap')
     #     ],string='PUR Description', store=True, readonly=True, copy=False)
+
+    def _compute_second_last_price(self):
+        for rec in self:
+            purchase_line = self.env['purchase.order.line'].sudo().search([('state','=','purchase'),('product_id.id','=',rec.product_variant_id.id)],order='id desc',limit=2)
+            if purchase_line:
+                if len(purchase_line) == 1:
+                    rec.last_price = round((purchase_line.price_unit / purchase_line.order_id.currency_rate),4)
+                    rec.second_last_price = round((purchase_line.price_unit / purchase_line.order_id.currency_rate),4)
+                else:
+                    rec.last_price = round((purchase_line[0].price_unit / purchase_line[0].order_id.currency_rate),4)
+                    rec.second_last_price = round((purchase_line[1].price_unit / purchase_line[1].order_id.currency_rate),4)
+            else:
+                rec.last_price = round(0,4)
+                rec.second_last_price = round(0,4)
+                
+
+    # def _compute_last_price(self):
+    #     self.description_purchase = ''
+    #     if self.pur_description !="":
+    #         self.description_purchase = self.pur_description    
+    
        
     @api.onchange('pur_description')
     def onchange_pur_description(self):

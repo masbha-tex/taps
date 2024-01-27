@@ -1332,7 +1332,8 @@ class SaleOrder(models.Model):
                                                     'pinbox':products.ppinboxfinish,
                                                     'actual_qty':qty,
                                                     'qty':qty,
-                                                    'revision_no':self.revised_no
+                                                    'revision_no':self.revised_no,
+                                                    'state':state
                                                     })
                         
                         else:
@@ -1413,7 +1414,8 @@ class SaleOrder(models.Model):
                                             'product_code':products.product_code,
                                             'shape':products.shape,
                                             'back_part':products.back_part,
-                                            'price_unit':products.price_unit
+                                            'price_unit':products.price_unit,
+                                            'state':state
                                             })
                 
             # text = products.shade

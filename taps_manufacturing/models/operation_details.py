@@ -1054,7 +1054,8 @@ class OperationDetails(models.Model):
                                 extra = each_qty
                             else:
                                 each_qty = each_qty - outqty
-                
+                else:
+                    raise UserError(('Ignore this line, this is invalid'))
                 move_qty = out.uotput_qty
                 if (extra > 0) and (out.uotput_qty != extra):
                     move_qty = out.uotput_qty - extra

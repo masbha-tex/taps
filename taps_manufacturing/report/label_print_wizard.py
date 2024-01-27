@@ -58,7 +58,7 @@ class LabelPrintingWizard(models.TransientModel):
     qty = fields.Integer('Qty', readonly=False)
 
     batch_lot = fields.Char('Batch/Lot', readonly=False, default='0000')
-    label_qty = fields.Integer('Label Qty', readonly=False,default='100')
+    label_qty = fields.Integer('Label Qty', readonly=False, default='100')
     # ,compute='_compute_label_qty' 
     copy = fields.Integer('Label Copy', readonly=False, default = '1')
     
@@ -69,14 +69,14 @@ class LabelPrintingWizard(models.TransientModel):
 
     # @api.depends('iteam')
     # def _compute_label_qty(self):
-    # for record in self:
-    #     if qty > label_qty:
+    #     for record in self:
+    #         # if qty > label_qty:
     #         if record.iteam and record.iteam.name == "CLOSE END":
     #             record.label_qty = 100
     #         else:
     #             record.label_qty = 50
-    #     else:
-    #         record.label_qty = qty
+            # else:
+            #     record.label_qty = qty
 
     # @api.onchange('qty', 'label_qty')
     # def _onchange_qty_label_qty(self):
@@ -86,7 +86,6 @@ class LabelPrintingWizard(models.TransientModel):
     
     #     # Update copy field
     #     self.copy = 1 if qty < label_qty else qty // label_qty
-
 
 
     # @api.model

@@ -113,6 +113,7 @@
             <field name="binding_type">report</field>
             <field name="default_print_option">print</field>
             <field name="print_report_name">"Packing Label"</field>
+             <field name="paperformat_id" ref="taps_manufacturing.paperformat_report_label_print_template"/>
           
         </record>  
         
