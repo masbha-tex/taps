@@ -7,9 +7,9 @@
             <form string="Label Printing">
                 <group>
                     <group>
+                        <field name="lot_code"  widget="lot_code_enter_pack"/>
                         <field name="company_id" invisible="1"/>
                         <field name="report_type" string="Report Type" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                        <field name="lot_code" options="{'no_create': True, 'no_open': True}"/>
                         <field name="oa_number" options="{'no_create': True, 'no_open': True}"/>
                         
                         <field name="iteam" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
@@ -21,12 +21,12 @@
                     <group>
                         <field name="Country_name" widget="selection"/>
                         <field name="batch_lot"/>
-                        <field name="table_name" widget="selection"/>
+                        <field name="table_name" widget="selection" invisible="1"/>
                         <field name="qc_person" options="{'no_create':true, 'no_open':true}" />
                         <field name="pre_check_person" options="{'no_create':true, 'no_open':true}"/>
                         <field name="printing_person" options="{'no_create':true, 'no_open':true}"/>
                         <field name="label_qty"/>
-                        <field name="copy"/>
+                        <field name="copy_of_print"/>
                     </group>
                 </group>
                 <footer>
@@ -46,8 +46,8 @@
     </record>
     <menuitem id="menulabel_printing"
               name="Label Printing"
-              sequence="14"
+              sequence="50"
               action="label_printing"
-              parent="mrp.menu_mrp_reporting"/>
+              parent="mrp.menu_mrp_root"/>
    
 </odoo>

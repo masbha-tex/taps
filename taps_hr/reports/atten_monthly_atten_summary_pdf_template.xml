@@ -137,6 +137,8 @@
 												<t t-foreach="alldays" t-as="ald">
 													<t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att" style="border: 1pt solid black;border-collapse:separate;">
 														<th>
+                                                            <span t-esc="att.attDate.strftime('%a')"/>
+                                                            <br/>
 															<span t-esc="att.attDate.strftime('%d')"/>
 															<br/>
 															<span t-esc="att.attDate.strftime('%b')"/>

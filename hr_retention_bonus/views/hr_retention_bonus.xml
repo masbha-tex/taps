@@ -27,13 +27,15 @@
         <field name="arch" type="xml">
             <form string="Retention Request">
                 <header>
-                    <button name="compute_installment" type="object" string="Compute Installment" class="oe_highlight"  attrs="{'invisible':[('state','in',('approve', 'refuse'))]}" groups="hr_retention_bonus.group_manager_retention_bonus"/>
-                    <!-- <button name="action_submit" type="object" string="Submit" states="draft" class="oe_highlight"/>
-                    <button name="action_cancel" type="object" string="Cancel" states="draft" />
-                    <button name="action_approve" type="object" string="Approve" states="waiting_approval_1" class="oe_highlight" groups="hr.group_hr_manager"/>
-                    <button name="action_refuse" type="object" string="Refuse" states="draft,waiting_approval_1" class="oe_highlight" groups="hr.group_hr_manager"/>
-                    <button name="action_draft" type="object" string="Set To Draft" states="approve,waiting_approval_1" class="oe_highlight"/>                     -->
-                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval_1,approve" invisible="1"/>
+                    <button name="compute_installment" type="object" string="Compute Installment" class="oe_highlight"  attrs="{'invisible':[('state','not in',('draft', 'refuse'))]}" groups="hr_retention_bonus.group_manager_retention_bonus"/>
+                    <button name="action_submit" type="object" string="Submit" states="draft" class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Cancel" states="submit" />
+                    <button name="action_approval_1" type="object" string="HoHR Approve" states="submit" class="oe_highlight" groups="hr.group_hr_manager"/>
+                    <button name="action_approval_2" type="object" string="HoFC Approve" states="approve1" class="oe_highlight" groups="hr.group_hr_manager"/>
+                    <button name="action_approval_3" type="object" string="DS Approve" states="approve2" class="oe_highlight" groups="hr.group_hr_manager"/>
+                    <button name="action_refuse" type="object" string="Refuse" states="submit,approve1,approve2,approve3" class="oe_highlight" groups="hr.group_hr_manager"/>
+                    <button name="action_draft" type="object" string="Set To Draft" states="refuse" class="oe_highlight"/>                    
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve1,approve2,approve3" invisible="0" options="{'clickable': 1}''"/>
                 </header>
 
                 <sheet>
@@ -43,21 +45,21 @@
                     <div class="oe_title">
                          <label for="criteria"/>
                         <h2>
-                            <field name="criteria" attrs="{'readonly':[('state','=','approve')]}"/>
+                            <field name="criteria" attrs="{'readonly':[('state','!=','draft')]}"/>
                         </h2>
                     </div>
                     <group col="4">
-                        <field name="employee_id" options="{'no_create': True}" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="employee_id" options="{'no_create': True}" attrs="{'readonly':[('state','!=','draft')]}"/>
                         <field name="date"/>
                         <field name="department_id" options="{'no_open': True}"/>
-                        <field name="duration" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="duration" attrs="{'readonly':[('state','!=','draft')]}"/>
                         <field name="job_position" options="{'no_open': True}"/>
-                        <field name="entitlement_date" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="entitlement_date" attrs="{'readonly':[('state','!=','draft')]}"/>
                         <field name="company_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_company" readonly="1"/>
-                        <field name="bonus_amount" widget="monetary" options="{'currency_field': 'currency_id'}" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="bonus_amount" widget="monetary" options="{'currency_field': 'currency_id'}" attrs="{'readonly':[('state','!=','draft')]}"/>
                         <field name="currency_id" options="{'no_create': True}" groups="base.group_multi_company"/>
-                        <field name="payment_date" attrs="{'readonly':[('state','=','approve')]}"/>
-                        <field name="instant_payment" attrs="{'readonly':[('state','=','approve')]}"/>
+                        <field name="payment_date" attrs="{'readonly':[('state','!=','draft')]}"/>
+                        <field name="instant_payment" attrs="{'readonly':[('state','!=','draft')]}"/>
                         <field name="installment" class="oe_readonly"/>
                     </group>
                     <notebook>

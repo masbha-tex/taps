@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<template id="report_retention_bonus">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+                    
+
+                    <div class="row" style="font-size:20px">
+                    <div class="col-12">
+
+                      
+                    <!-- <hr style="height:2px; width:100%; border-width:0; color:red; background-color:black"/> -->
+                    <br/>
+
+                    <div class="row">
+                    <div class="col-6">
+                            <strong>ID</strong>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                        <!-- : <t t-esc="o.employee_id.emp_id"/> -->
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                            <strong>Name</strong>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                        <!-- : <span t-field="o.contract_id"/> -->
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                            <strong>Unit</strong>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                        <!-- : <span t-field="o.employee_id.company_id"/> -->
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                            <strong>Designation</strong>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                        <!-- : <span t-field="o.employee_id.job_title"/> -->
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                            <strong>Department</strong>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                        <!-- : <span t-field="o.employee_id.department_id.parent_id"/> -->
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                            <strong>Date of Joining</strong>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                        <!-- : <span t-field="o.contract_id.date_start"/> -->
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                            <strong>Date of Resign</strong>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                        <!-- : <span t-field="o.employee_id.resign_date"/> -->
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-6">
+                            <strong>Total Service Tenure</strong>
+                    </div>
+                    <!--<div class="col-2">-->
+                    <!--    <h6 class="mb-0">:</h6>-->
+                    <!--</div>-->
+                    <div class="col-6 text-secondary">
+                        <!-- : <span t-field="o.employee_id.service_length"/> -->
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    
+				</t>
+			</t>
+		</t>
+	</template>
+</odoo>   
+    

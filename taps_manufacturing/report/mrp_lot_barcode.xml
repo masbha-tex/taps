@@ -2,7 +2,7 @@
 <odoo>
 	<template id="report_mrp_lot_barcode">
       <t t-call="web.basic_layout">
-        <div class="page">
+        <div class="page" style="layout:fixed; height:320pt; page-break-inside: avoid; margin-bottom:4px; margin-right:13px">
           <t t-foreach="docs" t-as="morder">
             <table class="float-left mt-2 mb-2 ml-4 mr-4 pt-2 pb-2 pl-4 pr-4" style="width:290pt; height:150pt; border: 1pt solid black; border-collapse: separate; border-radius:8pt; margin:5pt;page-break-inside: avoid; table-layout: fixed ! important">
                 <tr><th align="center"><div align="center"><span>OA: </span><t t-esc="morder.oa_id.name"/></div></th></tr>
@@ -17,7 +17,7 @@
                 <span> <t t-esc="morder.sizein"/> Inch</span>
                 </t>
                 </div></td></tr>
-                <tr><td align="center"><div><span>Machine: </span><t t-esc="morder.based_on"/></div></td></tr>
+                <!-- <tr><td align="center"><div><span>Machine: </span><t t-esc="morder.based_on"/></div></td></tr> -->
                 <tr><td align="center"><div><img alt="barcode" t-if="morder.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', morder.name, 400, 100)" style="max-height:40pt;" align="center"/><br/><t t-esc="morder.name"/></div></td></tr>
             </table>
           </t>

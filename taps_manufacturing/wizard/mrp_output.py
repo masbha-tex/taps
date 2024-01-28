@@ -79,6 +79,7 @@ class ManufacturingOutput(models.TransientModel):
 
     @api.model
     def get_production_details(self, code=None):
+        raise UserError(('efefefe'))
         production = self.env['operation.details'].search([('name', '=', code), ('name', '!=', None)])
         values = {}
         if production:

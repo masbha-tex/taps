@@ -1,0 +1,18 @@
+<odoo>
+    <data noupdate="0">
+
+		<record id="action_report_retention_bonus" model="ir.actions.report">
+			<field name="name">Retention Bonus</field>
+			<field name="model">hr.retention.bonus</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">hr_retention_bonus.report_retention_bonus</field>
+			<field name="report_file">hr_retention_bonus.report_retention_bonus</field>
+			<field name="binding_model_id" ref="model_hr_retention_bonus"/>
+			<field name="binding_type">report</field>
+			<!-- <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/> -->
+			<field name="default_print_option">print</field>
+			<!-- <field name="print_report_name">(object.pi_number)</field> -->
+            <field name="print_report_name">"Retention Bonus"</field>
+		</record>
+    </data>
+</odoo>

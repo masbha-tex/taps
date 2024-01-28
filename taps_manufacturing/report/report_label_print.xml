@@ -29,6 +29,14 @@
                                     </span>
                                     </td>
                         </tr>
+                         <tr>
+                                    <td colspan="6">                                       
+                                        <strong>
+                                            <span align="left">Customer: </span>
+                                        </strong>
+                                        <t style="font-size:17px" t-esc="docs.partner_id.name"/> 
+                                    </td>
+                        </tr>
                         <tr>
                                     <td colspan="6">                                       
                                         <strong>
@@ -41,9 +49,9 @@
                                     
                                     <td colspan="3">
                                          <strong>
-                                             <span style="margin-top: 20px;">Table No: </span>
+                                             <span style="margin-top: 20px;">PI: </span>
                                          </strong>
-                                    <t t-esc="datas[5]"/>
+                                    <t t-esc="docs.oa_id.order_ref.pi_number"/> 
                                     </td>
                                      <td colspan="3">                                         
                                         <strong>
@@ -56,7 +64,7 @@
                         <tr>
                                    <td colspan="6">
                                         <strong>
-                                            <span align="left">OA/PI: </span>
+                                            <span align="left">OA: </span>
                                         </strong>
                                         <t t-esc="datas[6]"/>
                                    </td>
@@ -97,7 +105,8 @@
                                         <strong>
                                             <span align="right">Qty: </span>
                                         </strong>
-                                        <t t-esc="datas[15]"/>
+                                        <!-- <t t-esc="datas[15]"/> -->
+                                         <t t-esc="datas[15]"/>
                                     </td>
                         </tr>
                         <tr>
@@ -128,6 +137,8 @@
                         </div>
                     </t>
                 </div>
+                <!-- label for partial qty -->
+
         </t>
     </template>
 </odoo>

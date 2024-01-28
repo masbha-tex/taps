@@ -100,10 +100,10 @@ class HrAttendance(models.Model):
     #             'email_to': emp.private_email
     #         }
     #         try:
-    #             template = self.env.ref('taps_hr.view_email_template_daily_attendance', raise_if_not_found=True)
+    #             template = self.env.ref('taps_hr.view_email_template_daily_late_come_eo_attendance', raise_if_not_found=True)
                 
     #         except ValueError:
-    #             _logger.warning('QWeb template taps_hr.view_email_template_daily_attendance not found when sending daily attendance mails. Sending without layouting.')
+    #             _logger.warning('QWeb template taps_hr.view_email_template_daily_late_come_eo_attendance not found when sending daily attendance mails. Sending without layouting.')
     #         else:
     
                     

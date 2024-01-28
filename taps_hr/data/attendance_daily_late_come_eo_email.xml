@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="view_email_template_daily_late_come_eo_attendance">
+	<body>
+		<html>
+			<div class="container" style="margin:0px;padding: 0px;">
+				<div>
+					<p>Dear <t t-esc="employee_name"/>,</p>
+					<p>Please find below Attendance report for your direct reportings dated up to <t t-esc="((datetime.datetime.today() - relativedelta(days=1)).strftime('%d/%m/%Y'))"/>
+					</p>
+					<br/>
+				</div>
+				<style type="text/css">  
+                        .tem_table{
+                            display:table;
+                            table-layout:fixed;
+                            font-size:10px;
+                            width:100%;     
+                        }
+                        .tem_table_1{
+                            display:table;
+                            table-layout:fixed;
+                            width: 60%;
+                            font-size:11px; 
+                        }
+                    </style>
+				<table class="tem_table" align="center" cellspacing="0" cellpadding="0" border="1">
+					<thead>
+						<!-- <tr style="color:white;background-color:rgb(113, 75, 98);">
+							<th colspan="2" style="text-align:center;width:8%">Date</th>
+							<th colspan="3" style="text-align:left;width:15%">Employee Name</th>
+							<th colspan="2" style="text-align:center;width:5%">InTime</th>
+							<th colspan="1" style="text-align:center;width:3%">IN</th>
+							<th colspan="1" style="text-align:center;width:5%">Flag</th>
+							<th colspan="2" style="text-align:center;width:5%">OutTime</th>
+							<th colspan="1" style="text-align:center;width:3%">OUT</th>
+							<th colspan="1" style="text-align:center;width:5%">Total</th>
+							<th colspan="2" style="text-align:center;width:5%">Present</th>
+							<th colspan="2" style="text-align:center;width:5%">Absent</th>
+							<th colspan="1" style="text-align:center;width:3%">LV</th>
+							<th colspan="1" style="text-align:center;width:3%">OD</th>
+							<th colspan="1" style="text-align:center;width:3%">Fri</th>
+							<th colspan="1" style="text-align:center;width:3%">Holi</th>
+							<th colspan="1" style="text-align:center;width:3%">CO</th>
+							<th colspan="1" style="text-align:center;width:3%">AJ</th>
+							<th colspan="1" style="text-align:center;width:5%">Late</th>
+							<th colspan="2" style="text-align:center;width:5%">EarlyOut</th>
+						</tr> -->
+                        <tr align="center" style="color:white;background-color:rgb(113, 75, 98);">
+                            <th>ID</th>
+                            <th colspan="3"><center>Emloyee Name</center></th>
+                            <th colspan="3">Designation</th>
+                            <t t-foreach="alldays" t-as="ald">
+                                <t t-foreach="docs.filtered(lambda x: (x.attDate == ald[0]) and (x.employee_id.id == emp[2]))" t-as="att" style="border: 1pt solid black;border-collapse:separate;">
+                                    <th>
+                                        <span t-esc="att.attDate.strftime('%a')"/>
+                                        <br/>
+                                        <span t-esc="att.attDate.strftime('%d')"/>
+                                        <br/>
+                                        <span t-esc="att.attDate.strftime('%b')"/>
+                                    </th>
+                                </t>
+                            </t>
+                            <th>TOTAL</th>
+                            <!-- <th>L/EO</th>
+                            <th>A/PO</th> -->
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="emp" t-value="env['hr.employee']"/>
+						<!-- <t t-foreach=" env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in',(15,21,31,26,44,47)),('attDate', '=', (datetime.datetime.today() - relativedelta(days=1))), '|','|','|', ('employee_id.parent_id', '=', employee),('employee_id.parent_id.parent_id', '=', employee),('employee_id.parent_id.parent_id.parent_id', '=', employee),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', employee)])" t-as="line"> -->
+                        <t t-foreach="env['hr.attendance'].search([('employee_id.active', '=', True),('employee_id.category_ids.id', 'in', (15,21,31,26,44,47)),('attDate', '>=', (datetime.datetime.today() - relativedelta(days=25)).replace(day=26)),('attDate', '<=', (datetime.datetime.today() + relativedelta(days=30)).replace(day=25)),'|','|','|',('employee_id.parent_id', '=', employee),('employee_id.parent_id.parent_id', '=', employee),('employee_id.parent_id.parent_id.parent_id', '=', employee),('employee_id.parent_id.parent_id.parent_id.parent_id', '=', employee)])" t-as="line">
+
+                            <t t-set="l" t-value="0"/>
+                            <t t-set="eo" t-value="0"/>
+                            <t t-set="po" t-value="0"/>
+
+							<!-- <t t-set="tt" t-value="emp.total_attendance(line.employee_id)"/>
+							<t t-set="pp" t-value="emp.total_present(line.employee_id)"/>
+							<t t-set="aa" t-value="emp.total_absent(line.employee_id)"/>
+							<t t-set="ll" t-value="emp.total_leave(line.employee_id)"/>
+							<t t-set="od" t-value="emp.total_od(line.employee_id)"/>
+							<t t-set="fr" t-value="emp.total_friday(line.employee_id)"/>
+							<t t-set="hh" t-value="emp.total_holiday(line.employee_id)"/>
+							<t t-set="co" t-value="emp.total_co(line.employee_id)"/>
+							<t t-set="aj" t-value="emp.total_aj(line.employee_id)"/>
+							<t t-set="la" t-value="emp.total_late(line.employee_id)"/>
+							<t t-set="eo" t-value="emp.total_earlyout(line.employee_id)"/> -->
+							<tr>
+								<!-- <td colspan="2" style="width:8%;text-align:center">
+									<t t-esc="line.attDate.strftime('%d/%m/%Y')"/>
+								</td> -->
+								<td colspan="3" style="width:15%;text-align:left">
+									<t t-esc="line.employee_id.display_name"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">
+									<t t-esc="line.inTime" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<t t-if="line.inHour !=0" t-esc="line.inHour" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+								</td>
+								<td colspan="1" style="width:5%;text-align:center">
+									<t t-esc="line.inFlag"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center;color:white;background-color:rgb(113, 75, 98);">
+									<t t-esc="line.outTime" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<t t-if="line.outHour !=0" t-esc="line.outHour" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/>
+								</td>
+								<td colspan="1" style="width:5%;text-align:center">
+									<span t-esc="tt"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center">
+									<span t-esc="pp"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center">
+									<span t-esc="aa"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="ll"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="od"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="fr"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="hh"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="co"/>
+								</td>
+								<td colspan="1" style="width:3%;text-align:center">
+									<span t-esc="aj"/>
+								</td>
+								<td colspan="1" style="width:5%;text-align:center">
+									<span t-esc="la"/>
+								</td>
+								<td colspan="2" style="width:5%;text-align:center">
+									<span t-esc="eo"/>
+								</td>
+							</tr>
+						</t>
+					</tbody>
+				</table>
+			</div>
+		</html>
+	</body>
+	</template>
+</odoo>

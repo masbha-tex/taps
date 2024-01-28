@@ -22,7 +22,11 @@
         'views/hr_retention_bonus_seq.xml',
         #'data/salary_rule_loan.xml',
         'views/hr_retention_bonus.xml',
+        'views/hr_retention_matrix_views.xml', 
+        'reports/report_action.xml',
+        'reports/report_retention_bonus.xml',
         'wizard/retention_bonus_report_wizard.xml',
+        
         #'views/hr_payroll.xml',
     ],
     'license': 'OPL-1',

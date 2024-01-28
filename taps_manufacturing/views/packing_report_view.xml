@@ -67,4 +67,5 @@
         action="action_packing_production_report"
         sequence="1"
         parent="mrp.menu_mrp_reporting"/>
+    
 </odoo>
