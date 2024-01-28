@@ -20,7 +20,7 @@ odoo.define('taps_crm.custom_chart', function (require) {
             .then(function (data) {
                 // Use Chart.js to render the chart
                 var ctx = self.$('#myChart')[0].getContext('2d');
-                alert(data.labels)
+                // alert(data.labels)
                 var myChart = new Chart(ctx, {
                     type: 'polarArea',
                     data: {

@@ -496,7 +496,7 @@ class RetentionPDFReport(models.TransientModel):
                         worksheet.write(row, col, l.employee_id.department_id.name, report_title_style2)
                         col += 1
                     if col == 4: 
-                        worksheet.write(row, col, l.date, report_title_style4)
+                        worksheet.write(row, col, l.bonus_id.date, report_title_style4)
                         col += 1
                     if col == 5: 
                         worksheet.write(row, col, l.bonus_id.duration,)
@@ -574,19 +574,19 @@ class RetentionPDFReport(models.TransientModel):
                 
                 row +=1
     
-            worksheet.write(row, 8, '=SUM(D{0}:D{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 9, '=SUM(E{0}:E{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 10, '=SUM(F{0}:F{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 11, '=SUM(G{0}:G{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 12, '=SUM(H{0}:H{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 13, '=SUM(I{0}:I{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 14, '=SUM(J{0}:J{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 15, '=SUM(K{0}:K{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 16, '=SUM(L{0}:L{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 17, '=SUM(M{0}:M{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 18, '=SUM(N{0}:N{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 19, '=SUM(O{0}:O{1})'.format(5, row), column_issued_style)
-            worksheet.write(row, 20, '=SUM(P{0}:P{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 8, '=SUM(I{0}:I{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 9, '=SUM(J{0}:J{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 10, '=SUM(K{0}:K{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 11, '=SUM(L{0}:L{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 12, '=SUM(M{0}:M{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 13, '=SUM(N{0}:N{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 14, '=SUM(O{0}:O{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 15, '=SUM(P{0}:P{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 16, '=SUM(Q{0}:Q{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 17, '=SUM(R{0}:R{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 18, '=SUM(S{0}:S{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 19, '=SUM(T{0}:T{1})'.format(5, row), column_issued_style)
+            worksheet.write(row, 20, '=SUM(U{0}:U{1})'.format(5, row), column_issued_style)
         
 
         
