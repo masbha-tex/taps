@@ -18,7 +18,7 @@ class ResPartner(models.Model):
     brand_rank = fields.Integer(default=0, copy=False)
     customer_group_rank = fields.Integer(default=0, copy=False)
     sale_representative = fields.Many2one('sale.representative', string="Sale Representative", )
-    related_buyer = fields.Many2many('res.partner', relation='partner_related_buyer_rel',column1='partner_id',column2='buyer_id',string="Related Buyer", compute='_compute_buyer')
+    related_buyer = fields.Many2many('res.partner', relation='partner_related_buyer_rel',column1='partner_id',column2='buyer_id',string="Related Buyer")
     related_customer = fields.Many2many('res.partner', relation='partner_related_customer_rel',column1='partner_id',column2='customer_id',string="Related Customer")
     contact_person = fields.Char(string="Contact Name", help="Contact Person Name")
     contact_mobile = fields.Char(string="Contact Person's Mobile")
@@ -74,14 +74,14 @@ class ResPartner(models.Model):
     #         self.env.ref("sales_team.group_sale_salesman").id
     #     ), compute='_compute_salesperson', inverse='_inverse_salesperson')
 
-    def _compute_buyer(self):
-        order = self.env['sale.order'].search([('partner_id.id', '=', self.id)])
-        order_sorted = order.mapped('buyer_name')
-        # raise UserError((order_sorted))
-        if order_sorted:
-            self.related_buyer =[(6, 0, order_sorted.ids)]
-        else:
-            self.related_buyer = False
+    # def _compute_buyer(self):
+    #     order = self.env['sale.order'].search([('partner_id.id', '=', self.id)])
+    #     order_sorted = order.mapped('buyer_name')
+    #     # raise UserError((order_sorted))
+    #     if order_sorted:
+    #         self.related_buyer =[(6, 0, order_sorted.ids)]
+    #     else:
+    #         self.related_buyer = False
         
 
     # def _compute_salesperson(self):
