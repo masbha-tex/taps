@@ -37,7 +37,7 @@ class OaCheck(models.TransientModel):
                 for _date in unique_dates:
                     self.env["selection.fields.data"].sudo().create({'field_name':'Dates', 'name': _date})
                 self.action_date_list = [(0, 0, {'field_name': 'Dates', 'name': _date}) for _date in unique_dates]
-        # self.lookup_oa = oa_id
+        self.lookup_oa = oa_id
 
     @api.onchange('action_date_list')
     def _onchange_action_date(self):
@@ -61,8 +61,8 @@ class OaCheck(models.TransientModel):
 
                 # Assuming the field name is 'Shade_list', update accordingly
                 self.update({'Shade_list': [(5, 0, 0)]})
-            # self.lookup_oa = oa_id
-            # self.action_date_list = [(0, 0, {'field_name': 'Dates', 'name': action_date})]
+            self.lookup_oa = oa_id
+            self.action_date_list = [(0, 0, {'field_name': 'Dates', 'name': action_date})]
             
     @api.onchange('Shade_list')
     def _onchange_shade(self):

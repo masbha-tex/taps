@@ -193,15 +193,24 @@ class MrpWoProductivity(models.Model):
         # mrpWorkorder
         for wc in self:
             operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of in ('plan','input') and op.state not in ('done','closed') and op.balance_qty>0)
-            wc.order_toproduce_count = len(operation)
+            if operation:
+                wc.order_toproduce_count = len(operation)
+            else:
+                wc.order_toproduce_count = 0
             
             operation = None
             operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of in ('lot','output') and op.state not in ('done','closed') and 'Output' in op.next_operation and op.balance_qty>0)
-            wc.order_tooutput_count = len(operation)
+            if operation:
+                wc.order_tooutput_count = len(operation)
+            else:
+                wc.order_tooutput_count = 0
             
             operation = None
             operation = mrpWorkorder.filtered(lambda op: op.work_center.id == wc.id and op.operation_of == 'qc' and op.state not in ('done','closed') and 'Qc' in op.next_operation and op.balance_qty>0)
-            wc.order_toqc_count = len(operation)
+            if operation:
+                wc.order_toqc_count = len(operation)
+            else:
+                wc.order_toqc_count = 0
 # op.qty > op.done_qt
     # def action_work_order(self):
     #     action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_operations")
