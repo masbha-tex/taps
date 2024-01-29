@@ -1482,7 +1482,7 @@ class MrpReportWizard(models.TransientModel):
                     sheet.write(row, 2, ot.unit, format_label_1)
                     row += 1
                 sheet.write(row, 0, 'TOTAL', format_label_1)
-                sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), format_label_1)
+                sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 44), format_label_1)
                 sheet.write(row+2, 0, 'TOTAL PRICE', format_label_2)
                 sheet.write(row+2, 1, others_value, format_label_1)
 

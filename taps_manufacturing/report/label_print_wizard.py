@@ -60,7 +60,7 @@ class LabelPrintingWizard(models.TransientModel):
     batch_lot = fields.Char('Batch/Lot', readonly=False, default='')
     label_qty = fields.Integer( string="Label Qty", readonly=False)
     # ,compute='_compute_label_qty' 
-    copy_of_print = fields.Integer('Label Copy', readonly=False,compute='_compute_copy', default = '1')
+    copy_of_print = fields.Integer('Label Copy', readonly=False, default = '1')
     
     qc_person = fields.Many2one('hr.employee', string="QC By", domain="[('active', '=', True), ('department_id', '=', 272)]", index=True, readonly=False)
     pre_check_person = fields.Many2one('hr.employee', string="Pre Check By", domain="[('active', '=', True), ('department_id', '=', 281)]", index=True, readonly=False)
@@ -88,29 +88,29 @@ class LabelPrintingWizard(models.TransientModel):
     #     return self.env['selection.fields.data'].search([('field_name', '=', 'size')], limit=1).id
 
 
-    @api.model
-    def onevent_lot(self,code=None):
-        raise UserError(('thtth'))
-        self.lot_code = ''
-        self.lot_code = code
-        return code    
+    # @api.model
+    # def onevent_lot(self,code=None):
+    #     raise UserError(('thtth'))
+    #     self.lot_code = ''
+    #     self.lot_code = code
+    #     return code    
 
-    @api.model
-    def get_production_details(self, code=None):
-        production = self.env['operation.details'].search([('name', '=', code), ('name', '!=', None)])
-        values = {}
-        raise UserError(('fefoeij'))
-        if production:
-            values['lot_code'] = production[0].name
-            values['qty'] = 5
-            # values['oa_id'] = production[0].oa_id.id
-            # values['item'] = production[0].fg_categ_type
-            # values['shade'] = production[0].shade
-            # values['finish'] = production[0].finish
-            # values['output_of'] = production[0].work_center.name
-            # values['planned_qty'] = production[0].qty
-        return values    
-    #code for data input from barcode  
+    # @api.model
+    # def get_production_details(self, code=None):
+    #     production = self.env['operation.details'].search([('name', '=', code), ('name', '!=', None)])
+    #     values = {}
+    #     raise UserError(('fefoeij'))
+    #     if production:
+    #         values['lot_code'] = production[0].name
+    #         values['qty'] = 5
+    #         # values['oa_id'] = production[0].oa_id.id
+    #         # values['item'] = production[0].fg_categ_type
+    #         # values['shade'] = production[0].shade
+    #         # values['finish'] = production[0].finish
+    #         # values['output_of'] = production[0].work_center.name
+    #         # values['planned_qty'] = production[0].qty
+    #     return values    
+    # #code for data input from barcode  
 
     @api.onchange('lot_code')
     def update_selection_fields_data(self):
@@ -385,7 +385,6 @@ class LabelPrintingWizard(models.TransientModel):
   
 
     def generate_qweb_pdf(self):
-        raise UserError((self.copy_of_print))
         # Ensure that all required fields are filled
         # if not all([self.company_name, self.table_name, self.oa_number, self.iteam, self.finish, self.shade, self.size, self.qc_person, self.pre_check_person, self.printing_person, self.qty]):
         #     raise ValidationError("Please fill in all required fields before generating the PDF.")
