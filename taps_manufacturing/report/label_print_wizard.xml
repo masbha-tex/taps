@@ -13,18 +13,18 @@
                         <field name="oa_number" options="{'no_create': True, 'no_open': True}"/>
                         
                         <field name="iteam" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                        <field name="shade" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="shade" attrs="{'invisible': [('company_id', '!=', 1)]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True} "/>
                         <field name="finish" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>                        
                         <field name="size" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="qty" />
                     </group>
                     <group>
-                        <field name="Country_name" widget="selection"/>
+                        <field name="Country_name" widget="selection" attrs="{'invisible': [('company_id', '!=', 1)]}"/>
                         <field name="batch_lot"/>
                         <field name="table_name" widget="selection" invisible="1"/>
-                        <field name="qc_person" options="{'no_create':true, 'no_open':true}" />
-                        <field name="pre_check_person" options="{'no_create':true, 'no_open':true}"/>
-                        <field name="printing_person" options="{'no_create':true, 'no_open':true}"/>
+                        <field name="qc_person" attrs="{'invisible': [('company_id', '!=', 1)]}" options="{'no_create':true, 'no_open':true}" />
+                        <field name="pre_check_person" attrs="{'invisible': [('company_id', '!=', 1)]}" options="{'no_create':true, 'no_open':true}"/>
+                        <field name="printing_person" attrs="{'invisible': [('company_id', '!=', 1)]}" options="{'no_create':true, 'no_open':true}"/>
                         <field name="label_qty"/>
                         <field name="copy_of_print"/>
                     </group>

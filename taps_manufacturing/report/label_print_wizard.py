@@ -407,7 +407,7 @@ class LabelPrintingWizard(models.TransientModel):
             'pre_check_person': self.pre_check_person.name,
             'printing_person': self.printing_person.name,
             'qty': self.qty,
-            'copy':self.copy_of_print,
+            'copy_of_print':self.copy_of_print,
             'label_qty':self.label_qty,
             'Country_name':self.Country_name,
         }
@@ -416,7 +416,10 @@ class LabelPrintingWizard(models.TransientModel):
 
         #Return the QWeb report action
         if self.report_type == 'pplg':
-            return self.env.ref('taps_manufacturing.action_report_label_print').report_action(self, data=data)
+            if self.company_id.id == 1:
+                return self.env.ref('taps_manufacturing.action_report_label_print').report_action(self, data=data)
+            else:
+                return self.env.ref('taps_manufacturing.action_report_label_print_mt').report_action(self, data=data)
         else:
             raise ValidationError("Here is no PDF.")
 
@@ -436,9 +439,69 @@ class LabelPrintPDF(models.AbstractModel):
             domain.append(('sizcommon', '=', data.get('size')))
         domain.append(('next_operation', '=', 'Packing Output'))
         
-        docs = self.env['operation.details'].sudo().search(domain)
+        docs = self.env['operation.details'].sudo().search(domain, order='id desc',limit=1)
         
-        store_label = self.env['label.print.data'].sudo().create({'name':docs[0].name,'batch_lot':data.get('batch_lot'),
+        store_label = self.env['label.print.data'].sudo().create({'name':docs.name,'batch_lot':data.get('batch_lot'),
+                                                                  'table_name':data.get('table_name'),
+                                                                  'qc_by':data.get('qc_person'),
+                                                                  'pre_check_by':data.get('pre_check_person'),
+                                                                  'print_by':data.get('printing_person'),
+                                                                  'label_qty':data.get('label_qty'),
+                                                                  'label_copy':data.get('copy_of_print')})     
+        
+        common_data = [
+            data.get('logo'), #0
+            data.get('company_name'), #1
+            data.get('company_address'), #2
+            data.get('table_name'), #3
+            data.get('date'), #4
+            data.get('batch_lot'), #5
+            data.get('oa_number'), #6
+            data.get('iteam'), #7
+            data.get('finish'), #8
+            data.get('shade'), #9
+            data.get('size'), #10
+            data.get('qc_person'), #11
+            data.get('pre_check_person'),#12
+            data.get('printing_person'),#13
+            data.get('qty'), #14
+            data.get('label_qty'), #15
+            data.get('copy_of_print'), #16
+            data.get('Country_name'), #17
+            data.get(docs.partner_id.name), #18 Customer Name
+            # data.get(docs.name), #15
+                     
+        ]
+        common_data.append(common_data)
+        # raise UserError(docs.partner_id)  
+        
+        return {
+            'doc_ids': docs.ids,
+            'doc_model': 'operation.details',
+            'docs': docs,
+            'datas': common_data,
+            
+        }
+
+class LabelPrintPDF(models.AbstractModel):
+    _name = 'report.taps_manufacturing.report_label_print_template_mt'
+    _description = 'label print template'     
+
+    def _get_report_values(self, docids, data=None):
+        domain = []
+        if data.get('oa_number'):
+            domain.append(('oa_id', '=', data.get('oa_number')))
+        if data.get('shade'):
+            domain.append(('shade', '=', data.get('shade')))
+        if data.get('finish'):
+            domain.append(('finish', '=', data.get('finish')))
+        if data.get('size'):
+            domain.append(('sizcommon', '=', data.get('size')))
+        domain.append(('next_operation', '=', 'Packing Output'))
+        
+        docs = self.env['operation.details'].sudo().search(domain, order='id desc',limit=1)
+        
+        store_label = self.env['label.print.data'].sudo().create({'name':docs.name,'batch_lot':data.get('batch_lot'),
                                                                   'table_name':data.get('table_name'),
                                                                   'qc_by':data.get('qc_person'),
                                                                   'pre_check_by':data.get('pre_check_person'),

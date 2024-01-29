@@ -184,7 +184,7 @@
         name="Buyers"
         action ="res_partner_action_buyer"
         parent="sale.sale_order_menu"
-        groups="sales_team.group_sale_salesman_all_leads"
+        groups="sales_team.group_sale_manager"
         sequence="19"/>
     <menuitem 
         id="sale_order_menu_inherit_brand"
@@ -200,4 +200,10 @@
         parent="sale.sale_order_menu"
         groups="sales_team.group_sale_manager"
         sequence="16"/>
+    
+    <menuitem id="sale_order_menu"
+            name="Orders"
+            parent="sale.sale_menu_root"
+            sequence="2" 
+            groups="sales_team.group_sale_manager"/>
 </odoo>    

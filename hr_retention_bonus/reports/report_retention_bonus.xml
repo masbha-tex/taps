@@ -4,105 +4,166 @@
 		<t t-call="web.html_container">
 			<t t-foreach="docs" t-as="o">
 				<t t-call="web.external_layout">
-                    
-
-                    <div class="row" style="font-size:20px">
-                    <div class="col-12">
-
-                      
-                    <!-- <hr style="height:2px; width:100%; border-width:0; color:red; background-color:black"/> -->
+				            <div>
+    				            <strong>Employee :</strong>
+    				            <br/>
+                        <span><t t-esc="o.employee_id.emp_id"/> - <t t-esc="o.employee_id.name"/></span>
+                        <br/>
+                        <t t-esc="o.job_position.name"/>, <t t-esc="o.department_id.name"/>
+                        <br/>
+                        <t t-esc="o.company_id.name"/>
+                    </div>
+                    <div class="float-left" style="font-size:30px">
+      								<!--<h1 class="mt15">-->
+      									<span>Retention Bonus # </span><span style="color: #C00000 ! important"><t t-esc="o.name"/></span>
+      								<!--</h1>-->
+      							</div>
                     <br/>
-
-                    <div class="row">
-                    <div class="col-6">
-                            <strong>ID</strong>
+                    <div class="row mt32 mb32">
+                      <div class="col-3 bm-2">
+                          <strong>Bonus Amount:</strong>
+                          <br/>
+                          <t t-esc="o.bonus_amount"/>
+                          <p class="m-0"/>
+                      </div>
+                      <div class="col-3 bm-2">
+                          <strong>Effective Date:</strong>
+                          <br/>
+                          <t t-esc="o.date"/>
+                          <p class="m-0"/>
+                      </div>
+                      <div class="col-3 bm-2">
+                          <strong>Duration in Month:</strong>
+                          <br/>
+                          <t t-esc="o.duration"/>
+                          <p class="m-0"/>
+                      </div>
+                      <div class="col-3 bm-2">
+                          <strong>Entitlement Date:</strong>
+                          <br/>
+                          <t t-esc="o.entitlement_date"/>
+                          <p class="m-0"/>
+                      </div>
                     </div>
-                    <!--<div class="col-2">-->
-                    <!--    <h6 class="mb-0">:</h6>-->
-                    <!--</div>-->
-                    <div class="col-6 text-secondary">
-                        <!-- : <t t-esc="o.employee_id.emp_id"/> -->
+                    <br/>
+                    <div class="row mt32 mb32">
+                      <div class="col-3 bm-2">
+                          <strong>Payment Start Date:</strong>
+                          <br/>
+                          <t t-esc="o.payment_date"/>
+                          <p class="m-0"/>
+                      </div>
+                      <div class="col-3 bm-2">
+                          <strong>Instant Payment:</strong>
+                          <br/>
+                          <!--<t t-if="o.instant_payment = ">-->
+                          <t t-esc="o.instant_payment"/>
+                          <p class="m-0"/>
+                      </div>
+                      <div class="col-3 bm-2">
+                          <strong>No Of Installments:</strong>
+                          <br/>
+                          <t t-esc="o.installment"/>
+                          <p class="m-0"/>
+                      </div>
+                      <div class="col-3 bm-2">
+                          <strong>Currency:</strong>
+                          <br/>
+                          <t t-esc="o.currency_id.name"/>
+                          <p class="m-0"/>
+                      </div>
                     </div>
-                    </div>
-                    <div class="row">
-                    <div class="col-6">
-                            <strong>Name</strong>
-                    </div>
-                    <!--<div class="col-2">-->
-                    <!--    <h6 class="mb-0">:</h6>-->
-                    <!--</div>-->
-                    <div class="col-6 text-secondary">
-                        <!-- : <span t-field="o.contract_id"/> -->
-                    </div>
-                    </div>
-                    <div class="row">
-                    <div class="col-6">
-                            <strong>Unit</strong>
-                    </div>
-                    <!--<div class="col-2">-->
-                    <!--    <h6 class="mb-0">:</h6>-->
-                    <!--</div>-->
-                    <div class="col-6 text-secondary">
-                        <!-- : <span t-field="o.employee_id.company_id"/> -->
-                    </div>
-                    </div>
-                    <div class="row">
-                    <div class="col-6">
-                            <strong>Designation</strong>
-                    </div>
-                    <!--<div class="col-2">-->
-                    <!--    <h6 class="mb-0">:</h6>-->
-                    <!--</div>-->
-                    <div class="col-6 text-secondary">
-                        <!-- : <span t-field="o.employee_id.job_title"/> -->
-                    </div>
-                    </div>
-                    <div class="row">
-                    <div class="col-6">
-                            <strong>Department</strong>
-                    </div>
-                    <!--<div class="col-2">-->
-                    <!--    <h6 class="mb-0">:</h6>-->
-                    <!--</div>-->
-                    <div class="col-6 text-secondary">
-                        <!-- : <span t-field="o.employee_id.department_id.parent_id"/> -->
-                    </div>
-                    </div>
-                    <div class="row">
-                    <div class="col-6">
-                            <strong>Date of Joining</strong>
-                    </div>
-                    <!--<div class="col-2">-->
-                    <!--    <h6 class="mb-0">:</h6>-->
-                    <!--</div>-->
-                    <div class="col-6 text-secondary">
-                        <!-- : <span t-field="o.contract_id.date_start"/> -->
-                    </div>
-                    </div>
-                    <div class="row">
-                    <div class="col-6">
-                            <strong>Date of Resign</strong>
-                    </div>
-                    <!--<div class="col-2">-->
-                    <!--    <h6 class="mb-0">:</h6>-->
-                    <!--</div>-->
-                    <div class="col-6 text-secondary">
-                        <!-- : <span t-field="o.employee_id.resign_date"/> -->
-                    </div>
-                    </div>
-                    <div class="row">
-                    <div class="col-6">
-                            <strong>Total Service Tenure</strong>
-                    </div>
-                    <!--<div class="col-2">-->
-                    <!--    <h6 class="mb-0">:</h6>-->
-                    <!--</div>-->
-                    <div class="col-6 text-secondary">
-                        <!-- : <span t-field="o.employee_id.service_length"/> -->
-                    </div>
-                    </div>
-                    </div>
-                    </div>
+				  
+				            
+				  
+				  
+				            <!--<div>-->
+    				        <!--    <strong>Employee :</strong>-->
+    				            <!--<br/>-->
+                <!--        <span style="font-size:18px"><t t-esc="o.employee_id.emp_id"/> - <t t-esc="o.employee_id.name"/></span>-->
+                <!--    </div>-->
+                <!--    <br/>-->
+                    
+                <!--  <div class="row mt32 mb32">-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Department:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.department_id.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Job Position:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.job_position.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Company:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.company_id.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Currency:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.currency_id.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--  </div>-->
+                <!--  <br/>-->
+                <!--  <div class="row mt32 mb32">-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Department:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.department_id.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Job Position:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.job_position.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Company:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.company_id.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Currency:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.currency_id.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--  </div>-->
+                <!--  <br/>-->
+                <!--  <div class="row mt32 mb32">-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Department:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.department_id.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Job Position:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.job_position.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Company:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.company_id.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--    <div class="col-3 bm-2">-->
+                <!--        <strong>Currency:</strong>-->
+                <!--        <br/>-->
+                <!--        <t t-esc="o.currency_id.name"/>-->
+                        <!--<p class="m-0"/>-->
+                <!--    </div>-->
+                <!--  </div>-->
                     
 				</t>
 			</t>
