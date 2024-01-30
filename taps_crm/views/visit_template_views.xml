@@ -1,17 +1,34 @@
 <odoo>
-    <record id="crm_visit_template_view_form" model="ir.ui.view">
-            <field name="name">crm.visit.purpose.form</field>
+
+    <record id="crm_visit_purpose_core" model="ir.ui.view">
+            <field name="name">crm.visit.purpose.core.list</field>
+            <field name="model">crm.visit.purpose.core</field>
+            <field name="arch" type="xml">
+                <tree string="Visit purpose Core">
+                    <field name="name"/>
+                    
+                </tree>
+            </field>
+    </record>
+    <record model="ir.actions.act_window" id="crm_visit_purpose_core_action">
+            <field name="name">Visit Purpose</field>
+            <field name="res_model">crm.visit.purpose.core</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+    <record id="crm_visit_purpose" model="ir.ui.view">
+            <field name="name">crm.visit.purpose.list</field>
             <field name="model">crm.visit.purpose</field>
             <field name="arch" type="xml">
-                <form string="Visit purpose">
+                <tree string="Visit Objective" editable="top">
                     <field name="name"/>
-                </form>
+                    <field name="core_purpose" widget="many2many_tags"/>
+                </tree>
             </field>
     </record>
     <record model="ir.actions.act_window" id="crm_visit_purpose_action">
-            <field name="name">Customer Visit Purpose</field>
+            <field name="name">Visit Objectives</field>
             <field name="res_model">crm.visit.purpose</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree</field>
     </record>
             
 
@@ -49,7 +66,8 @@
                         </group>
                         <group>
                             <field name="product" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
-                            <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                            <field name="core_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                            <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}" domain="[('core_purpose', '=', core_purpose)]"/>
                             <field name="visit_outcome" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             <field name="action" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             
@@ -86,6 +104,7 @@
                     <field name="designation"/>
                     <field name="mobile"/>
                     <field name="product"  widget="many2many_tags" options="{'color_field': 'color'}"/>
+                    <field name="core_purpose"/>
                     <field name="visit_purpose"/>
                     <!-- <field name="visit_outcome"/> -->
                     <!-- <field name="action"/> -->
@@ -113,7 +132,8 @@
                         <field name="designation" />
                         <field name="mobile" />
                         <field name="product" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}" widget="many2many_tags"/>
-                        <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="core_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
+                        <field name="visit_purpose" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('core_purpose', '=', core_purpose)]"/>
                         <field name="visit_outcome"/>
                         <field name="action"/>
                         <field name="visit_date"/>
@@ -419,9 +439,15 @@
         groups="sales_team.group_sale_manager"/>
     <menuitem
         id="crm_menu_visit_purpose"
-        name="Visit Purpose"
+        name="Visit Objectives"
         parent="taps_crm.menu_crm_config_lead_inherit"
         action="taps_crm.crm_visit_purpose_action"
-        sequence="-1"/>
+        sequence="1"/>
+    <menuitem
+        id="crm_menu_visit_purpose_core"
+        name="Visit Purposes"
+        parent="taps_crm.menu_crm_config_lead_inherit"
+        action="taps_crm.crm_visit_purpose_core_action"
+        sequence="2"/>
     
 </odoo>

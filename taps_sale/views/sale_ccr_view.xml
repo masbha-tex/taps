@@ -169,6 +169,7 @@
                         </group>
                         <group>
                             <!-- <field name="ccr_type"/> -->
+                            
                             <field name="fg_product" attrs="{'readonly': [('states', '!=', 'draft')]}"/>
                             <!-- <field name="sale_order_line_id"/> -->
                             <field name="finish" attrs="{'readonly': [('states', '!=', 'draft')]}"/>

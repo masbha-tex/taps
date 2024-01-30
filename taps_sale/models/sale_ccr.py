@@ -102,7 +102,6 @@ class SaleCcr(models.Model):
     ca_closing_date = fields.Date(string='CA Closing Date',readonly=True)
     pa_closing_date = fields.Date(string='PA Closing Date',readonly=True)
     closing_date = fields.Date(string='Closing Date')
-    
     fg_product = fields.Many2one('product.template',string="Product Type/Code", domain="[['categ_id.complete_name','ilike','ALL / FG']]")
     # fg_product = fields.Many2one(
     #     'product.template',

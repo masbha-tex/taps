@@ -20,10 +20,18 @@ import logging
 
 class VisitPurpose(models.Model):
     _name = 'crm.visit.purpose'
-    _description = 'Visit Purposes'
+    _description = 'Visit Objectives'
     _order = "id desc"
 
-    name = fields.Char(string="Purpose/Objective")
+    name = fields.Char(string="Objective")
+    core_purpose = fields.Many2many('crm.visit.purpose.core', string="Purpose of Visit", store=True)
+
+class VisitPurposeCore(models.Model):
+    _name = 'crm.visit.purpose.core'
+    _description = 'Purpose of Visit'
+    _order = "id desc"
+
+    name = fields.Char(string="Purpose of Visit")
     
 class CustomerVisit(models.Model):
 
@@ -40,7 +48,8 @@ class CustomerVisit(models.Model):
     designation = fields.Char(string="Designation")
     mobile = fields.Char(string="Mobile")
     product = fields.Many2many('crm.tag', string="Product")
-    visit_purpose = fields.Many2one('crm.visit.purpose',string="Visit Purpose")
+    core_purpose = fields.Many2one('crm.visit.purpose.core',string="Visit Purpose")
+    visit_purpose = fields.Many2one('crm.visit.purpose',string="Visit Objective")
     visit_outcome = fields.Text(string="Visit Outcome")
     action = fields.Text(string="Action")
     user_id = fields.Many2one('res.users', string='Salesperson', index=True, tracking=True, default=lambda self: self.env.user)
@@ -56,7 +65,9 @@ class CustomerVisit(models.Model):
         string='Status', copy=False, index=True, tracking=2, default='1_draft')
     color = fields.Integer('Color Index', default=0)
 
-
+    @api.onchange('core_purpose')
+    def onchange_core_purpose(self):
+        self.visit_purpose = False
 
     @api.model
     def retrieve_dashboard(self):
