@@ -136,7 +136,7 @@ class MrpReportWizard(models.TransientModel):
                 'reply_to': None,
             }
            
-            rec.env['mail.mail'].sudo().create(mail_values).send()
+            rec.env['mail.mail'].sudo().create(mail_values)#.send()
     
     def action_generate_xlsx_report(self):
         if self.report_type == "pir":
@@ -2147,4 +2147,5 @@ class ProductionReportPDF(models.AbstractModel):
             'datas': report_data,
             'closedids':closed_ids,
             'report_date':report_date,
+            'company': com_id,
             }

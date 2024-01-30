@@ -10,12 +10,13 @@
                         <!-- <field name="report_type" string="Report Type"/> -->
                         <field name="company_id" invisible="1"/>
                         <field name="lookup_oa" placeholder="Select OA"  force_save="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                        <field name="action_date_list" options="{'no_create':true, 'no_open':true}"/>
+                        <field name="action_date_list" options="{'no_create':true, 'no_open':true ,'date_format': 'DD-MMM-YYYY'}" />
                         <field name="Shade_list" options="{'no_create':true, 'no_open':true}"/>
                         <field name="Size_list" options="{'no_create':true, 'no_open':true}"/>  
                         </group>
                         <group>
                         <field name="total_packed" options="{'no_create':true, 'no_open':true}"/>
+                        <field name="total_packed_date" options="{'no_create':true, 'no_open':true}"/>
                         <field name="Shade_wise_packed" options="{'no_create':true, 'no_open':true}"/>
                         <field name="Size_wise_packed" options="{'no_create':true, 'no_open':true}"/>  
                         </group>

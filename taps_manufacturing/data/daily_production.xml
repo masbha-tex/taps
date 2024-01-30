@@ -31,18 +31,18 @@
 					<thead>
 						<tr style="color:white;background-color:rgb(113, 75, 98);">
 							<th style="border: 1px solid white">PRODUCT</th>
-                            <t t-if="docs.company_id.id == 1" >
+                            <t t-if="company == 1" >
     							<th style="border: 1px solid white">PACKING PCS</th>
                             </t>
-                            <t t-if="docs.company_id.id == 3" >
+                            <t t-if="company == 3" >
     							<th style="border: 1px solid white">PACKING GRS</th>
                             </t>
 							<th style="border: 1px solid white">INVOICE USD</th>
-                            <t t-if="docs.company_id.id == 1" >
+                            <t t-if="company == 1" >
     							<th style="border: 1px solid white">PENDING PCS</th>
                             </t>
-                            <t t-if="docs.company_id.id == 3" >
-    							<th style="border: 1px solid white">PACKING GRS</th>
+                            <t t-if="company == 3" >
+    							<th style="border: 1px solid white">PENDING GRS</th>
                             </t>
 							<!-- <th style="border: 1px solid white">PENDING PCS</th> -->
 							<th style="border: 1px solid white">PENDING USD</th>

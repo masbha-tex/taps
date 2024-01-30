@@ -38,6 +38,14 @@
                                     </td>
                         </tr>
                          <tr>
+                                    <td colspan="6">                                       
+                                        <strong>
+                                            <span align="left">Customer: </span>
+                                        </strong>
+                                        <t style="font-size:17px" t-esc="docs.partner_id.name"/> 
+                                    </td>
+                        </tr>
+                         <tr>
                                    <td colspan="6">
                                         <strong>
                                             <span align="left">OA: </span>
@@ -54,14 +62,7 @@
                                     <t t-esc="docs.oa_id.order_ref.pi_number"/> 
                                     </td>
                         </tr>
-                         <tr>
-                                    <td colspan="6">                                       
-                                        <strong>
-                                            <span align="left">Customer: </span>
-                                        </strong>
-                                        <t style="font-size:17px" t-esc="docs.partner_id.name"/> 
-                                    </td>
-                        </tr>
+                        
                         <tr>
                                     <td colspan="6">
                                         <strong>

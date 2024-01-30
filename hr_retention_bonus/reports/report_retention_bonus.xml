@@ -4,167 +4,166 @@
 		<t t-call="web.html_container">
 			<t t-foreach="docs" t-as="o">
 				<t t-call="web.external_layout">
-				            <div>
-    				            <strong>Employee :</strong>
-    				            <br/>
-                        <span><t t-esc="o.employee_id.emp_id"/> - <t t-esc="o.employee_id.name"/></span>
+    				  <div class="page" style="page-break-after: always;">
+                          <div class="float-right" >
+                              <t t-if="o.state == 'draft'">
+                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #616161; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Draft</h2>
+                              </t>
+                              <t t-if="o.state == 'submit'">
+                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #4FC3F7; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Waiting for HoHR Approval</h2>
+                              </t>
+                              <t t-if="o.state == 'approve1'">
+                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #26A69A; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Waiting for HoFC Approval</h2>
+                              </t>
+                              <t t-if="o.state == 'approve2'">
+                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #FFAB00; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Waiting for DS Approval</h2>
+                              </t>
+                              <t t-if="o.state == 'approve3'">
+                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #1B5E20; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Approved</h2>
+                              </t>
+                              <t t-if="o.state == 'refuse'">
+                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #C00000; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Refused</h2>
+                              </t>
+                              <t t-if="o.state == 'cancel'">
+                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #808080; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Canceled</h2>
+                              </t>
+                          </div>
+    				    <div>
+                            <strong>Employee :</strong>
+                            <br/>
+                            <span><t t-esc="o.employee_id.emp_id"/> - <t t-esc="o.employee_id.name"/></span>
+                            <br/>
+                            <t t-esc="o.job_position.name"/>, <t t-esc="o.department_id.name"/>
+                            <br/>
+                            <t t-esc="o.company_id.name"/>
+                        </div>
+                        <div style="font-size:32px">
+          					<span>Retention Bonus # </span><span style="color: #C00000 ! important"><t t-esc="o.name"/></span>
+          				</div>
                         <br/>
-                        <t t-esc="o.job_position.name"/>, <t t-esc="o.department_id.name"/>
+                        <div class="row mt32 mb32">
+                          <div class="col-3 bm-2">
+                              <strong>Criteria:</strong>
+                              <br/>
+                              <!--<t t-if="o.instant_payment = ">-->
+                              <t t-esc="o.criteria"/>
+                              <p class="m-0"/>
+                          </div>
+                          <div class="col-3 bm-2">
+                              <strong>Bonus Amount:</strong>
+                              <br/>
+                              <t t-esc="o.bonus_amount"/>
+                              <p class="m-0"/>
+                          </div>
+                          <div class="col-3 bm-2">
+                              <strong>Effective Date:</strong>
+                              <br/>
+                              <t t-esc="o.date"/>
+                              <p class="m-0"/>
+                          </div>
+                          <div class="col-3 bm-2">
+                              <strong>Duration in Month:</strong>
+                              <br/>
+                              <t t-esc="o.duration"/>
+                              <p class="m-0"/>
+                          </div>
+                        </div>
                         <br/>
-                        <t t-esc="o.company_id.name"/>
-                    </div>
-                    <div class="float-left" style="font-size:30px">
-      								<!--<h1 class="mt15">-->
-      									<span>Retention Bonus # </span><span style="color: #C00000 ! important"><t t-esc="o.name"/></span>
-      								<!--</h1>-->
-      							</div>
-                    <br/>
-                    <div class="row mt32 mb32">
-                      <div class="col-3 bm-2">
-                          <strong>Bonus Amount:</strong>
-                          <br/>
-                          <t t-esc="o.bonus_amount"/>
-                          <p class="m-0"/>
-                      </div>
-                      <div class="col-3 bm-2">
-                          <strong>Effective Date:</strong>
-                          <br/>
-                          <t t-esc="o.date"/>
-                          <p class="m-0"/>
-                      </div>
-                      <div class="col-3 bm-2">
-                          <strong>Duration in Month:</strong>
-                          <br/>
-                          <t t-esc="o.duration"/>
-                          <p class="m-0"/>
-                      </div>
-                      <div class="col-3 bm-2">
-                          <strong>Entitlement Date:</strong>
-                          <br/>
-                          <t t-esc="o.entitlement_date"/>
-                          <p class="m-0"/>
-                      </div>
-                    </div>
-                    <br/>
-                    <div class="row mt32 mb32">
-                      <div class="col-3 bm-2">
-                          <strong>Payment Start Date:</strong>
-                          <br/>
-                          <t t-esc="o.payment_date"/>
-                          <p class="m-0"/>
-                      </div>
-                      <div class="col-3 bm-2">
-                          <strong>Instant Payment:</strong>
-                          <br/>
-                          <!--<t t-if="o.instant_payment = ">-->
-                          <t t-esc="o.instant_payment"/>
-                          <p class="m-0"/>
-                      </div>
-                      <div class="col-3 bm-2">
-                          <strong>No Of Installments:</strong>
-                          <br/>
-                          <t t-esc="o.installment"/>
-                          <p class="m-0"/>
-                      </div>
-                      <div class="col-3 bm-2">
-                          <strong>Currency:</strong>
-                          <br/>
-                          <t t-esc="o.currency_id.name"/>
-                          <p class="m-0"/>
-                      </div>
-                    </div>
-				  
-				            
-				  
-				  
-				            <!--<div>-->
-    				        <!--    <strong>Employee :</strong>-->
-    				            <!--<br/>-->
-                <!--        <span style="font-size:18px"><t t-esc="o.employee_id.emp_id"/> - <t t-esc="o.employee_id.name"/></span>-->
-                <!--    </div>-->
-                <!--    <br/>-->
+                        <div class="row mt32 mb32">
+                          <div class="col-3 bm-2">
+                              <strong>Entitlement Date:</strong>
+                              <br/>
+                              <t t-esc="o.entitlement_date"/>
+                              <p class="m-0"/>
+                          </div>
+                          <div class="col-3 bm-2">
+                              <strong>Payment Start Date:</strong>
+                              <br/>
+                              <t t-esc="o.payment_date"/>
+                              <p class="m-0"/>
+                          </div>
+                          
+                          <div class="col-3 bm-2">
+                              <strong>No Of Installments:</strong>
+                              <br/>
+                              <t t-esc="o.installment"/>
+                              <p class="m-0"/>
+                          </div>
+                          <div class="col-3 bm-2">
+                              <strong>Currency:</strong>
+                              <br/>
+                              <t t-esc="o.currency_id.name"/>
+                              <p class="m-0"/>
+                          </div>
+                        </div>
+                        
+                        <br/>
+                        
+                        <strong>Installments:</strong>
+                        <table class="table table-sm o_main_table">
+                          <thead>
+                              <tr>
+                                  <th><strong>Date</strong></th>
+                                  <th class="text-right"><strong>Amount</strong></th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            <t t-foreach="o.bonus_lines" t-as="line">
+                              <tr>
+                                  <!--<td><t t-esc="line.date.strftime('%b %Y')"/></td>-->
+                                  <td><t t-esc="line.date"/></td>
+                                  <td class="text-right"><t t-esc="line.amount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/></td>
+                              </tr>
+                            </t>
+                          </tbody>
+                      </table>
                     
-                <!--  <div class="row mt32 mb32">-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Department:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.department_id.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Job Position:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.job_position.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Company:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.company_id.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Currency:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.currency_id.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--  </div>-->
-                <!--  <br/>-->
-                <!--  <div class="row mt32 mb32">-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Department:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.department_id.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Job Position:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.job_position.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Company:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.company_id.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Currency:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.currency_id.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--  </div>-->
-                <!--  <br/>-->
-                <!--  <div class="row mt32 mb32">-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Department:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.department_id.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Job Position:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.job_position.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Company:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.company_id.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--    <div class="col-3 bm-2">-->
-                <!--        <strong>Currency:</strong>-->
-                <!--        <br/>-->
-                <!--        <t t-esc="o.currency_id.name"/>-->
-                        <!--<p class="m-0"/>-->
-                <!--    </div>-->
-                <!--  </div>-->
+                      <div id="total" class="row justify-content-end">
+                        <div class="col-4">
+                            <table class="table table-sm">
+                                <tr class="border-black">
+                                    <td><strong>Total Amount</strong></td>
+                                    <td class="text-right"><span t-field="o.total_amount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Total Paid Amount</td>
+                                    <td class="text-right"><span t-field="o.total_paid_amount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/></td>
+                                </tr>
+                                <tr class="border-black o_total">
+                                    <td><strong>Balance Amount</strong></td>
+                                    <td class="text-right"><t t-esc="o.balance_amount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                     
+                    <br/>
+                        <div class="row mt32 mb32">
+                          <div class="col-3 bm-2">
+                              <strong>Submit By:</strong>
+                              <br/>
+                              <t t-esc="o.submit_uid.name"/>
+                          </div>
+                          <div class="col-3 bm-2">
+                              <strong>HoHR Approved</strong>
+                              <br/>
+                              <t t-esc="o.approve1_uid.name"/>
+                          </div>
+                          <div class="col-3 bm-2">
+                              <strong>HoFC Approved</strong>
+                              <br/>
+                              <!--<t t-if="o.instant_payment = ">-->
+                              <t t-esc="o.approve2_uid.name"/>
+                          </div>
+                          <div class="col-3 bm-2">
+                              <strong>DS Approved</strong>
+                              <br/>
+                              <t t-esc="o.approve3_uid.name"/>
+                              <p class="m-0"/>
+                          </div>
+                          
+                        </div>
+                 </div>       
 				</t>
 			</t>
 		</t>

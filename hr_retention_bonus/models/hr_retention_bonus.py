@@ -121,32 +121,49 @@ class HrRetentionBonus(models.Model):
         ('approve3', 'DS Approved'),
         ('refuse', 'Refused'),
         ('cancel', 'Canceled'),
-    ], string="State", default='draft', tracking=True, store=True, required=True)
+    ], string="Status", default='draft', tracking=True, store=True, required=True)
+    
+    submit_uid = fields.Many2one('res.users', ondelete="set null", string="Submit by", readonly=True, copy=True, store=True, help="Submit by")
+    approve1_uid = fields.Many2one('res.users', ondelete="set null", string="HoHR Approved", readonly=True, copy=True, store=True, help="HoHR Approved")
+    approve2_uid = fields.Many2one('res.users', ondelete="set null", string="HoFC Approved", readonly=True, copy=True, store=True, help="HoFC Approved")
+    approve3_uid = fields.Many2one('res.users', ondelete="set null", string="DS Approved", readonly=True, copy=True, store=True, help="DS Approved")
 
-
-
-        
     @api.model
     def create(self, values):
         loan_count = self.env['hr.retention.bonus'].sudo().search_count(
             [('employee_id', '=', values['employee_id']),
              ('balance_amount', '!=', 0)])#, ('state', '=', 'approve')
+        count = self.env['hr.retention.bonus'].sudo().search_count(
+            [('employee_id', '=', values['employee_id'])])#, ('state', '=', 'approve')        
         if loan_count:
             raise ValidationError(_("The employee has already a pending installment"))
+        if count:
+            raise ValidationError(_("The employee has already a retention bonus record"))            
         else:
             retention_date = values.get('entitlement_date')
             values['name'] = self.env['ir.sequence'].next_by_code('hr.retention.bonus.seq', sequence_date=retention_date)
             res = super(HrRetentionBonus, self).create(values)
+            if res.bonus_amount > 0:
+                for reten in res:
+                    reten.compute_installment()            
             return res
+
+    def write(self, vals):
+        res = super(HrRetentionBonus, self).write(vals)
+        if vals.get('bonus_amount') or vals.get('payment_date') or vals.get('instant_payment'):
+            for reten in self:
+                reten.compute_installment()
+        return res    
             
-    @api.onchange('bonus_amount', 'payment_date', 'installment')    
+    # @api.onchange('bonus_amount', 'payment_date', 'installment')    
     def compute_installment(self):
         """This automatically create the installment the employee need to pay to
         company based on payment start date and the no of installments.
             """
         if self.payment_date and self.bonus_amount > 0:
             for bonus in self:
-                bonus.bonus_lines.unlink()
+                if bonus.bonus_lines:
+                    bonus.bonus_lines.unlink()
                 date_start = datetime.strptime(str(bonus.payment_date), '%Y-%m-%d')
                 amount = bonus.bonus_amount / bonus.installment
                 
@@ -162,7 +179,8 @@ class HrRetentionBonus(models.Model):
         else:
             if self.bonus_amount >= 0:
                 for bonus in self:
-                    bonus.bonus_lines.unlink()
+                    if bonus.bonus_lines:
+                        bonus.bonus_lines.unlink()
             
         # return True
         
@@ -173,13 +191,18 @@ class HrRetentionBonus(models.Model):
         return self.write({'state': 'refuse'})
 
     def action_submit(self):
-        self.write({'state': 'submit'})
+        self.write({'state': 'submit',
+                    'submit_uid': self.env.context.get('user_id', self.env.user.id)})
     def action_approval_1(self):
-        self.write({'state': 'approve1'})
+        self.write({'state': 'approve1',
+                    'approve1_uid': self.env.context.get('user_id', self.env.user.id)})
+        
     def action_approval_2(self):
-        self.write({'state': 'approve2'})   
+        self.write({'state': 'approve2',
+                    'approve2_uid': self.env.context.get('user_id', self.env.user.id)})   
     def action_approval_3(self):
-        self.write({'state': 'approve3'})      
+        self.write({'state': 'approve3',
+                    'approve3_uid': self.env.context.get('user_id', self.env.user.id)})      
     def action_cancel(self):
         self.write({'state': 'cancel'})
 
