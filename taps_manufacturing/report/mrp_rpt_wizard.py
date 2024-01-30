@@ -136,7 +136,7 @@ class MrpReportWizard(models.TransientModel):
                 'reply_to': None,
             }
            
-            rec.env['mail.mail'].sudo().create(mail_values)#.send()
+            rec.env['mail.mail'].sudo().create(mail_values).send()
     
     def action_generate_xlsx_report(self):
         if self.report_type == "pir":
@@ -202,9 +202,11 @@ class MrpReportWizard(models.TransientModel):
         
         format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16,'valign': 'vcenter','align': 'center', 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'vcenter','align': 'center', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,})
+        format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top','align': 'left', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,})
+
+        format_label_5 = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'vcenter','align': 'center', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,})
         
         merge_format = workbook.add_format({'align': 'top'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
@@ -282,6 +284,7 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(13, 13, 15)
             sheet.set_column(14, 14, 15)
             sheet.set_column(14, 20, 12)
+            sheet.set_column(17, 22, 0)
             sheet.set_row(0, 30)
 
             
@@ -502,10 +505,12 @@ class MrpReportWizard(models.TransientModel):
                             sheet.write(row, col, l, format_label_1)
                         elif col in(1,2,3):
                             sheet.write(row, col, l, format_label_2)
-                        elif col in(4,5):
+                        elif col in(4,5,6):
                             sheet.write(row, col, l, format_label_3)
                         elif col in(8,9):
                             sheet.write(row, col, l, format_label_4)
+                        elif col in(10,11,12,13,14):
+                            sheet.write(row, col, l, format_label_5)
                         elif col == 14:
                             sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), row_style)
                         else:
@@ -591,7 +596,11 @@ class MrpReportWizard(models.TransientModel):
             # sheet.print_area(print_area)
             # sheet.print_area(print_area)
         
-        sheet.print_area('A1:H20')    
+        # sheet.print_area('A1:H20')
+        # sheet.set_paper(9)
+        # sheet.fit_to_pages(1, 1)
+        # sheet.print_area(0, 0, len(sale_orders), 16)
+        
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -1144,8 +1153,12 @@ class MrpReportWizard(models.TransientModel):
                     
                 sheet.write(1, 0, "PRODUCT", column_style)
                 sheet.write(1, 1, "PACKING PCS", column_style)
+                if self.env.company.id == 3:
+                    sheet.write(1, 1, "PACKING GRS", column_style)
                 sheet.write(1, 2, "INVOICE USD", column_style)
                 sheet.write(1, 3, "PENDING PCS", column_style)
+                if self.env.company.id == 3:
+                    sheet.write(1, 3, "PENDING GRS", column_style)
                 sheet.write(1, 4, "PENDING USD", column_style)
                 sheet.write(1, 5, "COMULATIVE PRODUCTION", column_style)
                 sheet.write(1, 6, "COMULATIVE INVOICING", column_style)

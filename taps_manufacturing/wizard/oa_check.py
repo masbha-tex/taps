@@ -19,40 +19,76 @@ class OaCheck(models.TransientModel):
     Shade_list = fields.Many2one('selection.fields.data', string='Shade List',  domain="[('field_name', '=', 'shade')]", check_company=True)
     Size_list = fields.Many2one('selection.fields.data', string='Size List', domain="[('field_name', '=', 'size')]", check_company=True)
     
-    total_packed = fields.Integer(string='Total Packed (OA) ', help='Total Packed in this OA')
-    total_packed_date = fields.Integer(string='Total Packed (Date) ', help='Total Packed in current Date')
+    total_packed = fields.Integer(string='Total Packed (OA) ',compute='_compute_total_packed', help='Total Packed in this OA')
+    total_packed_date = fields.Integer(string='Total Packed (Date) ',  help='Total Packed in current Date')
+    # compute='_compute_total_packed_date',
     Shade_wise_packed = fields.Integer(string='Total Packed (Shade)', help='Shade wise packed in Current Date') 
     Size_wise_packed = fields.Integer(string='Total Packed(Size)', help='Size wise packed in Current Date')
 
+
+    @api.depends('lookup_oa')
+    def _compute_total_packed(self):
+        for rec in self:
+            total_packed = 0
+            if rec.lookup_oa:
+                operations = self.env['operation.details'].sudo().search([
+                    ('oa_id', '=', rec.lookup_oa.name),
+                    ('next_operation', '=', 'FG Packing')
+                ])
+                total_packed = sum(operations.mapped('qty'))
+            rec.total_packed = total_packed
 
     @api.onchange('lookup_oa')
     def _oa(self):
         oa_id= None
         action_date = None
-        total_packed = None
+        # total_packed = None
         if self.lookup_oa:
             oa_id = self.lookup_oa
             operations = self.env['operation.details'].sudo().search([
                 ('oa_id','=',self.lookup_oa.id), ('next_operation','=','FG Packing')])
             if operations:
-                total_packed = sum(operations.mapped('qty'))
-                # raise UserError(qty)  
-                self.total_packed = total_packed
-            else:
-                # Clear Qty field if no operations are found
-                self.total_packed = 0
+            #     total_packed = sum(operations.mapped('qty'))
+            #     raise UserError((self.lookup_oa.name))  
+            #     self.total_packed = total_packed
+            # else:
+            #     # Clear Qty field if no operations are found
+            #     self.total_packed = 0
                     
-            unique_dates = set(record.action_date.date() for record in operations)
-            all_dates = self.env['selection.fields.data'].sudo().search([('field_name','=','action_date')]).unlink()
-            if unique_dates:
-                for _date in unique_dates:
-                    self.env["selection.fields.data"].sudo().create({'field_name':'action_date', 'name': _date})
-                self.action_date_list = [(0, 0, {'field_name': 'action_date', 'name': _date}) for _date in unique_dates]
-                
+                unique_dates = set(record.action_date.date() for record in operations)
+                all_dates = self.env['selection.fields.data'].sudo().search([('field_name','=','action_date')]).unlink()
+                if unique_dates:
+                    for _date in unique_dates:
+                        self.env["selection.fields.data"].sudo().create({'field_name':'action_date', 'name': _date})
+                    self.action_date_list = [(0, 0, {'field_name': 'action_date', 'name': _date}) for _date in unique_dates]
+                    
         self.lookup_oa = oa_id
-        # self.action_date_list = action_date
-        self.total_packed = total_packed
+        self.action_date_list = action_date
+        # self.total_packed = total_packed
+
+    # @api.depends('action_date_list')
+    # def _compute_total_packed_date(self):
+    #     for rec in self:
+    #         total_packed_date = 0
+    #         shade_list = None
+
+    #         if rec.action_date_list and rec.lookup_oa:
+    #             date_format = "%Y-%m-%d"
+    #             _date = datetime.strptime(rec.action_date_list.name, date_format)
+
+    #             operations = self.env['operation.details'].sudo().search([
+    #                 ('oa_id', '=', rec.lookup_oa.id),
+    #                 ('next_operation', '=', 'FG Packing'),
+    #                 ('action_date', '=', _date.date())
+    #             ])
+
+    #             total_packed_date = sum(operations.mapped('qty'))
+    #             rec.total_packed_date = total_packed_date
+
+               
         
+
+    
     @api.onchange('action_date_list')
     def _dates(self):
         oa_id = None
@@ -60,73 +96,77 @@ class OaCheck(models.TransientModel):
         total_packed = None
         action_date_list = None
         total_packed_date = None
-        shade_list = None
-    
+        shade_list = None  # Initialize shade_list here
+        
         if self.action_date_list:
+            action_date = self.action_date_list
             date_format = "%Y-%m-%d"
             _date = datetime.strptime(self.action_date_list.name, date_format)
-    
+        
             operations = self.env['operation.details'].sudo().search([
                 ('oa_id', '=', self.lookup_oa.id),
-                ('next_operation', '=', 'FG Packing')])
-    
+                ('next_operation', '=', 'FG Packing')
+            ])
+        
             operations = operations.filtered(lambda mo: mo.action_date.date() == _date.date())
             if operations:
-                self.total_packed_date = sum(operations.mapped('qty'))
-    
+                # total_packed_date = sum(operations.mapped('qty'))
+                # self.total_packed_date = total_packed_date
+        
                 # Shade list
                 unique_shade = set(record.shade for record in operations)
                 shade_records = self.env['selection.fields.data'].sudo().search([
                     ('field_name', '=', 'shade')
                 ])
                 shade_records.unlink()  # Remove existing records
-    
+        
                 for _shade in unique_shade:
                     shade_cr = self.env["selection.fields.data"].sudo().create({
                         'field_name': 'shade',
                         'name': _shade
                     })
                     self.update({'Shade_list': [(4, shade_cr.id)]})  # Update the Many2one field
-                    shade_list = shade_cr.id
-    
+                    shade_list = shade_cr.id  # Assign value to shade_list
+        
         self.lookup_oa = oa_id
         self.action_date_list = action_date
         self.total_packed = total_packed
         # self.total_packed_date = total_packed_date
-        # self.Shade_list = shade_list
+        self.Shade_list = shade_list  # Include shade_list in the final assignment
 
-        @api.onchange('Shade_list')
-        def _shade_list(self):
-            oa_id = None
-            if self.action_date_list:
-                date_format = "%Y-%m-%d"
-                _date = datetime.strptime(self.action_date_list.name, date_format)
+
+    #     @api.onchange('Shade_list')
+    #     def _shade_list(self):
+    #         oa_id = None
+    #         if self.action_date_list:
+    #             date_format = "%Y-%m-%d"
+    #             _date = datetime.strptime(self.action_date_list.name, date_format)
     
-                operations = self.env['operation.details'].sudo().search([
-                    ('oa_id', '=', self.lookup_oa.id),
-                    ('shade', '=', self.Shade_list),
-                    ('next_operation', '=', 'FG Packing'),
-                    ('action_date', '=', _date.date())
-                ])
+    #             operations = self.env['operation.details'].sudo().search([
+    #                 ('oa_id', '=', self.lookup_oa.id),
+    #                 ('shade', '=', self.Shade_list),
+    #                 ('next_operation', '=', 'FG Packing'),
+    #                 ('action_date', '=', _date.date())
+    #             ])
     
-                if operations:
-                    self.Shade_wise_packed = sum(operations.mapped('qty'))
+    #             if operations:
+    #                 self.Shade_wise_packed = sum(operations.mapped('qty'))
     
-                    # Size list
-                    unique_size = set(record.sizcommon for record in operations)
-                    size_records = self.env['selection.fields.data'].sudo().search([
-                        ('field_name', '=', 'size')
-                    ])
-                    size_records.unlink()  # Remove existing records
+    #                 # Size list
+    #                 unique_size = set(record.sizcommon for record in operations)
+    #                 size_records = self.env['selection.fields.data'].sudo().search([
+    #                     ('field_name', '=', 'size')
+    #                 ])
+    #                 size_records.unlink()  # Remove existing records
     
-                    for _size in unique_size:
-                        size_cr = self.env["selection.fields.data"].sudo().create({
-                            'field_name': 'size',
-                            'name': _size
-                        })
-                        self.update({'Size_list': [(4, size_cr.id)]})  # Update the Many2one field
+    #                 for _size in unique_size:
+    #                     size_cr = self.env["selection.fields.data"].sudo().create({
+    #                         'field_name': 'size',
+    #                         'name': _size
+    #                     })
+    #                     self.update({'Size_list': [(4, size_cr.id)]})  # Update the Many2one field
                         
-        self.lookup_oa = oa_id
+    #     self.lookup_oa = oa_id
 
 
                 

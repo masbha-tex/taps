@@ -63,6 +63,7 @@
         'wizard/oa_update_confirm.xml',
         'wizard/ccr_wizard.xml',
         'wizard/order_modification_warning.xml',
+        'views/activity.xml',
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",
              "static/src/xml/sale_reporting_dashboard.xml",

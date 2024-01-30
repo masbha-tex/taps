@@ -41,8 +41,8 @@
                                 <field name="sourcing_type" attrs="{'invisible':[('type', '=', 'customer')]}"/>
                                 <field name="sourcing_office" attrs="{'invisible':[('type', '=', 'customer')]}"/>
                                 <field name="related_buyer"  widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_open': True}" attrs="{'invisible':[('type', '=', 'buyer')]}"/>
-                                <field name="customer_type" attrs="{'invisible':[('type', '=', 'buyer')]}"/>
-                                <field name="customer_status" attrs="{'invisible':[('type', '=', 'buyer')]}"/>
+                                <!-- <field name="customer_type" attrs="{'invisible':[('type', '=', 'buyer')]}"/> -->
+                                <!-- <field name="customer_status" attrs="{'invisible':[('type', '=', 'buyer')]}"/> -->
                             </group>
                         </group>
                         <group>
@@ -71,7 +71,7 @@
                             <group>
                                 <field name="swift_code"/>
                                 <field name="bond_license"/>
-                                <field name="property_product_pricelist" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/>
+                                <!-- <field name="property_product_pricelist" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/> -->
                                 
                             </group>
                             <group>

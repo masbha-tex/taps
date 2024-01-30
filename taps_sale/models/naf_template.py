@@ -19,7 +19,7 @@ class NewAccountForm(models.Model):
     name = fields.Char(index=True, string="Name", required=True)
     brand = fields.Many2one('res.partner', domain="[['brand_rank', '=', 1]]", string="Brand")
     group = fields.Many2one('res.partner', string="Group", domain="[['customer_group_rank', '=', 1]]")
-    salesperson = fields.Many2one('res.users', domain="[['share', '=', False]]")
+    salesperson = fields.Many2one('res.users', domain="[['share', '=', False],['sale_team_id', '!=', False]]", required=True)
     sourcing_type = fields.Selection([
         ('agent', 'AGENT'),
         ('direct', 'DIRECT'),
@@ -28,20 +28,20 @@ class NewAccountForm(models.Model):
         ('lo', 'LO'),
     ], string="Sourcing Type")
     sourcing_office = fields.Char(string="Sourcing Office")
-    street = fields.Char()
+    street = fields.Char(required=True)
     street2 = fields.Char()
     zip = fields.Char(change_default=True)
-    city = fields.Char()
+    city = fields.Char(required=True)
     state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
-    country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
+    country_id = fields.Many2one('res.country', string='Country', ondelete='restrict', required=True)
 
-    contact_person = fields.Char(string= "Contact Name")
+    contact_person = fields.Char(string= "Contact Name", required=True)
     email = fields.Char()
     email_formatted = fields.Char(
         'Formatted Email', compute='_compute_email_formatted',
         help='Format email address "Name <email@domain>"')
     phone = fields.Char()
-    mobile = fields.Char()
+    mobile = fields.Char(required=True)
     company_id = fields.Many2one('res.company', 'Company', index=True)
     website = fields.Char('Website Link')
     delivery_address = fields.Text(string="Delivery Address")
@@ -50,20 +50,20 @@ class NewAccountForm(models.Model):
     bond_license = fields.Char(string="Bond License", index=True, help="The Bond License Number.")
     incoterms = fields.Many2one('account.incoterms', string="Incoterms")
     property_payment_term_id = fields.Many2one('account.payment.term', string="Payment Terms")
-    property_product_pricelist = fields.Many2one('product.pricelist', string="Pricelist")
+    # property_product_pricelist = fields.Many2one('product.pricelist', string="Pricelist")
     # property_delivery_carrier_id = fields.Many2one('delivery.carrier', string="Delivery Method")
-    related_buyer = fields.Many2many('res.partner', relation='customer_related_buyer',column1='partner_id',column2='buyer_id',string="Related Buyer", domain="[['buyer_rank', '=', 1]]")
+    related_buyer = fields.Many2many('res.partner', relation='customer_related_buyer',column1='partner_id',column2='buyer_id',string="Related Buyer", domain="[['buyer_rank', '=', 1]]" ,required=True)
     
-    customer_type = fields.Selection([
-        ('A', 'A'),
-        ('B', 'B'),
-        ('C', 'C'),
-    ], string="Customer Type",  default='C')
-    customer_status = fields.Selection([
-        ('REGULAR', 'REGULAR'),
-        ('NON REGULAR', 'NON REGULAR'),
-        ('NEW', 'NEW'),
-    ], string="Customer Status",  default='NEW')
+    # customer_type = fields.Selection([
+    #     ('A', 'A'),
+    #     ('B', 'B'),
+    #     ('C', 'C'),
+    # ], string="Customer Type",  default='C')
+    # customer_status = fields.Selection([
+    #     ('REGULAR', 'REGULAR'),
+    #     ('NON REGULAR', 'NON REGULAR'),
+    #     ('NEW', 'NEW'),
+    # ], string="Customer Status",  default='NEW')
     
 
     state = fields.Selection([
@@ -114,10 +114,21 @@ class NewAccountForm(models.Model):
                 ))
                 
     def action_submit_approval(self):
+        users = self.env.ref('sales_team.group_sale_manager').users
+        for user in users:
+            # activity_type=self.env.ref()
+            self.activity_schedule('taps_sale.mail_activity_naf_approve', user_id=user.id)
+        
         self.write({'state':'to approve'})
 
     def action_approve(self):
         self.write({'state':'cancel'})
+        
+        activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_approve').id)])
+        activity_id.action_feedback(feedback="Approved")
+        other_activity_ids = self.env['mail.activity'].search([('res_id','=', self.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_approve').id)])
+        
+        other_activity_ids.unlink()
 
     def action_set_draft(self):
         self.write({'state':'draft'})

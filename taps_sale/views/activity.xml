@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_activity_naf_approve" model="mail.activity.type">
+        <field name="name">NAF Approval</field>
+        <field name="res_model_id" ref="taps_sale.model_naf_template"/>
+        
+    </record>
+</odoo>

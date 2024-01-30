@@ -1,0 +1,103 @@
+<odoo>
+    <data>
+        <template id="retention_bonus_hr_reminder_mail_template">
+            <style type="text/css"> 
+                .tem_table_1{
+                    display:table;
+                    table-layout:fixed;
+                    width: 60%;
+                    font-size:11px; 
+                }
+            </style>
+            <div style="margin:0px;padding: 0px;">
+                <span>Dear Hr Team,</span>
+                <br/>
+                <span>Please process to retention bonus scheme and start payment approval process as below list:</span> 
+            </div> 
+            
+            <div style="text-align:center;">
+                <h3 align="center">Retention Bonus Scheme Entitlement List</h3>
+            </div>
+            
+            <div align="center" style="margin:auto;width:100%">
+                <table class="tem_table_1" cellspacing="0" cellpadding="0" border="1">
+                    <thead>
+                        <tr style="color:white;background-color:rgb(113, 75, 98);">
+                            <th style="text-align:center;width:12%">No.</th>
+                            <th style="text-align:center;width:20%">Employee Name</th>
+                            <th style="text-align:left;width:20%">Criteria</th>
+                            <th style="text-align:center;width:5%">Bonus Amount</th>
+                            <th style="text-align:center;width:5%">	Effective Date</th>
+                            <th style="width:5%;text-align:center">Duration in Month</th>
+                            <th style="width:5%;text-align:center">Entitlement Date</th>
+                            <th style="width:5%;text-align:center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach=" env['hr.retention.bonus'].search([('entitlement_date', '=', (datetime.datetime.today() + relativedelta(days=15)))])" t-as="line">
+                            <tr>
+                                <td style="width:8%;text-align:center">
+                                    <t t-esc="line.name"/>
+                                </td>
+                                <td style="width:20%;text-align:left">
+                                    <t t-esc="line.employee_id.display_name"/>
+                                </td>
+                                <td style="width:5%;color:white;background-color:rgb(113, 75, 98);text-align:center">
+                                    <t t-esc="line.criteria.name"/>
+                                </td>
+                                <td style="width:5%;text-align:center">
+                                    <span>
+                                        <t t-esc="line.bonus_amount"/>
+                                    </span>
+                                </td>
+                                <td style="width:5%;text-align:center">
+                                    <!-- <t t-if="line.inHour !=0" t-esc="line.inHour" t-options="{&quot;widget&quot;: &quot;float_time&quot;}"/> -->
+                                    <t t-esc="line.date"/>
+                                </td>
+                                <td style="width:5%;text-align:center">
+                                    <span>
+                                        <t t-esc="line.duration"/>
+                                    </span>
+                                </td>
+                                <td style="width:5%;text-align:center">
+                                    <span>
+                                        <t t-esc="line.entitlement_date"/>
+                                    </span>
+                                </td>
+                                <td style="width:5%;text-align:center">
+                                    <span>
+                                        <t t-esc="line.state"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <div style="text-align:center;">
+                    <p>** This is an auto generated mail from Odoo. Please do not reply **</p>
+                </div>
+            </div>            
+        </template>
+        <!-- #bonus -->
+        <template id="retention_bonus_mail_template">
+            <div style="margin:0px;padding: 0px;">
+                <span>Dear ${ctx['employee_to_name']},</span>
+                <br/>
+                <span>Congratulations! You have completed <strong>1</strong> year of your retention bonus scheme. You`ve splendidly demonstrated that you`re an important part of our company. We are pleased to have you as a member of our organizations. 
+
+We look forward to your valuable contributions, and appreciate the efforts put in by you and expect that you would continue to do so in the future</span>
+                <br/>
+                <br/>
+                % if ctx.get('recipient_users'):
+                
+                <p style="margin:16px 0px 16px 0px;">
+                    <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+            View Retention Bonus
+                </a>
+                </p>
+                % endif
+            </div>
+        </template>
+
+    </data>
+</odoo>

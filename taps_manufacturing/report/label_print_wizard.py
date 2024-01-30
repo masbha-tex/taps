@@ -210,7 +210,7 @@ class LabelPrintingWizard(models.TransientModel):
     def _onchange_oa_number(self):
         oa_id = None
         item_id = None
-        shade = None
+        # shade = None
         if self.oa_number:
             oa_id = self.oa_number
             operations = self.env['operation.details'].sudo().search([
@@ -255,7 +255,7 @@ class LabelPrintingWizard(models.TransientModel):
                 self.update({'shade': [(5, 0, 0)]})
         self.oa_number = oa_id
         self.iteam = item_id
-        self.shade = shade
+        # self.shade = shade
        
     
     @api.onchange('shade')
@@ -304,7 +304,7 @@ class LabelPrintingWizard(models.TransientModel):
         iteam = None
         shade = None
         finish = None
-        size = None 
+        # size = None 
         if self.finish:
             oa_id = self.oa_number
             iteam = self.iteam
@@ -339,7 +339,7 @@ class LabelPrintingWizard(models.TransientModel):
         self.iteam = iteam
         self.shade = shade
         self.finish = finish
-        self.size = size 
+        # self.size = size 
 
 
     @api.onchange('size')
@@ -347,10 +347,10 @@ class LabelPrintingWizard(models.TransientModel):
     def _onchange_size(self):
         oa_id = None
         iteam = None
-        shade = None
-        finish = None
-        size = None
-        qty = None
+        # shade = None
+        # finish = None
+        # size = None
+        # qty = None
         
         if self.size:
             oa_id = self.oa_number
@@ -378,9 +378,9 @@ class LabelPrintingWizard(models.TransientModel):
 
         self.oa_number = oa_id
         self.iteam = iteam
-        self.shade = shade
-        self.finish = finish
-        self.qty = qty
+        # self.shade = shade
+        # self.finish = finish
+        # self.qty = qty
 
   
 
