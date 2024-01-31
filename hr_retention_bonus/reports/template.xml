@@ -34,7 +34,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <t t-foreach=" env['hr.retention.bonus'].search([('entitlement_date', '=', (datetime.datetime.today() + relativedelta(days=15)))])" t-as="line">
+                        <!-- <t t-set="emp" t-value="env['hr.employee']"/> -->
+                        <t t-foreach="env['hr.retention.bonus'].search([('entitlement_date', '=', (datetime.datetime.today() + relativedelta(days=15)))])" t-as="line">
                             <tr>
                                 <td style="width:8%;text-align:center">
                                     <t t-esc="line.name"/>
@@ -70,6 +71,14 @@
                                     </span>
                                 </td>
                             </tr>
+                            <t t-log="line.name"/>
+                            <t t-log="line.employee_id.display_name"/>
+                            <t t-log="line.criteria.name"/>
+                            <t t-log="line.bonus_amount"/>
+                            <t t-log="line.date"/>
+                            <t t-log="line.duration"/>
+                            <t t-log="line.entitlement_date"/>
+                            <t t-log="line.state"/>
                         </t>
                     </tbody>
                 </table>

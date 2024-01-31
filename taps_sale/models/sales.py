@@ -2275,6 +2275,9 @@ class SaleOrderLine(models.Model):
         elif self.product_template_id.name == 'BRASS SHANK 100217522':
             self.logo='RALPH LAUREN WORKWEAR'
             self.finish_ref='TS-4117'
+        elif self.product_template_id.name == 'BRASS SNAP 100217662':
+            self.logo='RALPH LAUREN WORKWEAR'
+            self.finish_ref='TS-4117'
         
                 
         self._compute_tax_id()
