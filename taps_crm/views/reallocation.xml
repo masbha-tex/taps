@@ -1,0 +1,36 @@
+<odoo>
+
+    <record id="reallocation_form_list" model="ir.ui.view">
+            <field name="name">reallocation.form.list</field>
+            <field name="model">reallocation.form</field>
+            <field name="arch" type="xml">
+                <tree string="Reallocation Form">
+                    <field name="type"/>
+                </tree>
+            </field>
+    </record>
+    <record id="reallocation_form_view" model="ir.ui.view">
+            <field name="name">reallocation.form.view</field>
+            <field name="model">reallocation.form</field>
+            <field name="arch" type="xml">
+                <form string="Reallocation Form View">
+                    <field name="type"/>
+                    <field name="select_customer"/>
+                    <field name="existing_user"/>
+                    <field name="new_user"/>
+                    <field name="is_removed"/>
+                </form>
+            </field>
+    </record>
+    <record model="ir.actions.act_window" id="reallocation_form_action">
+            <field name="name">Re-Allocation Form</field>
+            <field name="res_model">reallocation.form</field>
+            <field name="view_mode">tree, free</field>
+    </record>
+    <menuitem
+        id="reallocation_menu"
+        name="Reallocation"
+        parent="crm.crm_menu_sales"
+        action="taps_crm.reallocation_form_action"
+        sequence="8"/>
+</odoo>

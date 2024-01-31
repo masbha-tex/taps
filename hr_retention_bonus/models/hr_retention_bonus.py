@@ -222,16 +222,18 @@ class HrRetentionBonus(models.Model):
                     'Once saved, You cannot delete a Retention Bonus Scheme.')
         return super(HrRetentionBonus, self).unlink()
         
-
+    # @api.model
     def _action_retention_bonus_hr_reminder_email(self):
-        template_submit = self.env.ref('hr_retention_bonus.retention_bonus_mail_blank_template', raise_if_not_found=True)
+        template_submit = self.env.ref('hr_retention_bonus.retention_bonus_hr_reminder_mail_template', raise_if_not_found=True)
         ctx = {}
         # raise UserError((template_submit))
         _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
         # raise UserError((_template_submit))
-        RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)                
-        body_submit = RenderMixin._render_template(_template_submit, 'hr.retention.bonus', 1, post_process=True)[1]
-        raise UserError((body_submit))
+        RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
+        retention = self.env['hr.retention.bonus'].sudo().search([], limit=1)
+        # raise UserError((ids))
+        body_submit = RenderMixin._render_template(_template_submit, 'hr.retention.bonus', retention.ids, post_process=True)[retention.id]
+        # raise UserError((body_submit))
         body = f"{body_submit}"
         # post the message
         

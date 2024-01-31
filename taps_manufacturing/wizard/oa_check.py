@@ -23,7 +23,8 @@ class OaCheck(models.TransientModel):
     total_packed_date = fields.Integer(string='Total Packed (Date) ',readonly = False, help='Total Packed in current Date')
     # compute='_compute_total_packed_date',
     Shade_wise_packed = fields.Integer(string='Total Packed (Shade)',readonly = False, help='Shade wise packed in Current Date') 
-    Size_wise_packed = fields.Integer(string='Total Packed(Size)', compute='_compute_total_size_wise_packed', readonly = False, help='Size wise packed in Current Date')
+    Size_wise_packed = fields.Integer(string='Total Packed(Size)',  readonly = False, help='Size wise packed in Current Date')
+    #compute='_compute_total_size_wise_packed',
 
 
     # @api.depends('lookup_oa')
@@ -61,29 +62,7 @@ class OaCheck(models.TransientModel):
             self.action_date_list = action_date
             self.total_packed = total_packed
         # self.total_packed = total_packed
-
-    @api.depends('Size_list')
-    def _compute_total_size_wise_packed(self):
-        for rec in self:
-            total_packed_date = 0
-            shade_list = None
-
-            if rec.action_date_list and rec.lookup_oa:
-                date_format = "%Y-%m-%d"
-                _date = datetime.strptime(rec.action_date_list.name, date_format)
-
-                operations = self.env['operation.details'].sudo().search([
-                    ('oa_id', '=', rec.lookup_oa.id),
-                    ('next_operation', '=', 'FG Packing'),
-                    ('shade', '=', self.Shade_list.name),
-                    
-                    ('action_date', '=', _date.date())
-                ])
-
-                Size_wise_packed = sum(operations.mapped('qty'))
-                rec.Size_wise_packed = Size_wise_packed
-
-
+    
 
     
     @api.onchange('action_date_list')
@@ -180,4 +159,39 @@ class OaCheck(models.TransientModel):
         self.Shade_wise_packed = Shade_wise_packed
         self.Shade_list = Shade_list 
         self.action_date_list = action_date_list
-                    
+
+    @api.onchange('Shade_list', 'action_date_list','Size_list')
+    def _size_wise_packed(self):  
+        oa_id = self.lookup_oa
+        action_date = None
+        total_packed = self.total_packed 
+        total_packed_date = self.total_packed_date 
+        Shade_list = self.Shade_list
+        action_date_list = self.action_date_list
+        Shade_wise_packed = self.Shade_wise_packed
+        Size_wise_packed = None
+        
+        if self.Shade_list and self.action_date_list and self.Size_list :
+            date_format = "%Y-%m-%d"
+            _date = datetime.strptime(self.action_date_list.name, date_format)
+    
+            operations = self.env['operation.details'].sudo().search([
+                ('oa_id', '=', self.lookup_oa.id),
+                ('shade', '=', self.Shade_list.name),
+                ('sizcommon', '=', self.Size_list.name),
+                ('next_operation', '=', 'FG Packing'),
+            ])
+            operations = operations.filtered(lambda mo: mo.action_date.date() == _date.date())
+            
+            if operations:
+                Size_wise_packed = sum(operations.mapped('qty'))
+                
+        self.lookup_oa = oa_id
+        self.action_date_list = action_date
+        self.total_packed = total_packed
+        self.total_packed_date = total_packed_date
+        self.Shade_wise_packed = Shade_wise_packed
+        self.Shade_list = Shade_list 
+        self.action_date_list = action_date_list
+        self.Size_wise_packed = Size_wise_packed
+                        

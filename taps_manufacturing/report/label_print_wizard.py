@@ -65,6 +65,7 @@ class LabelPrintingWizard(models.TransientModel):
     qc_person = fields.Many2one('hr.employee', string="QC By", domain="[('active', '=', True), ('department_id', '=', 272)]", index=True, readonly=False)
     pre_check_person = fields.Many2one('hr.employee', string="Pre Check By", domain="[('active', '=', True), ('department_id', '=', 281)]", index=True, readonly=False)
     printing_person = fields.Many2one('hr.employee', string="Print By", domain="[('active', '=', True), ('department_id', '=', 284)]", index=True, readonly=False)
+    
 
 
     # @api.model
@@ -114,7 +115,7 @@ class LabelPrintingWizard(models.TransientModel):
 
     @api.onchange('lot_code')
     def update_selection_fields_data(self):
-        self.qty = 5
+        self.qty = 0
         # if self.lot_code:
             
             # operations = self.env['operation.details'].sudo().search([
@@ -389,16 +390,16 @@ class LabelPrintingWizard(models.TransientModel):
         # if not all([self.company_name, self.table_name, self.oa_number, self.iteam, self.finish, self.shade, self.size, self.qc_person, self.pre_check_person, self.printing_person, self.qty]):
         #     raise ValidationError("Please fill in all required fields before generating the PDF.")
 
-        
+        current_date = fields.Date.today()
         # Prepare data for the QWeb report
         data = {
             'logo': self.logo,
             'company_name': self.company_name,
             'company_address': self.company_address,
             'table_name': self.table_name,
-            'date': fields.Date.today(),
+            'date': current_date.strftime('%d-%b-%Y'),
             'batch_lot': self.batch_lot,
-            'oa_number': self.oa_number.name,
+            'oa_number': self.oa_number.name.replace('OA00', ''),
             'iteam': self.iteam.name,
             'finish': self.finish.name,
             'shade': self.shade.name,

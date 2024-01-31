@@ -1,0 +1,24 @@
+<odoo>
+    <record id="crm_approval_matrix_list" model="ir.ui.view">
+        <field name="name">crm.approval.matrix.list</field>
+        <field name="model">crm.approval.matrix</field>
+        <field name="arch" type="xml" >
+            <tree string="Approval Matrix" editable="top">
+                <field name="model_name"/>
+                <field name="first_approval" widget="many2many_tags"/>
+                <field name="second_approval" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="crm_approval_matrix_action">
+            <field name="name">Crm Approval Matrix</field>
+            <field name="res_model">crm.approval.matrix</field>
+            <field name="view_mode">tree</field>
+    </record>
+    <menuitem
+        id="crm_menu_approval_matrix"
+        name="Approval matrix"
+        parent="taps_crm.menu_crm_config_lead_inherit"
+        action="taps_crm.crm_approval_matrix_action"
+        sequence="2"/>
+</odoo>
