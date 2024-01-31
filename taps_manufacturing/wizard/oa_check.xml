@@ -15,10 +15,10 @@
                         <field name="Size_list" options="{'no_create':true, 'no_open':true}"/>  
                         </group>
                         <group>
-                        <field name="total_packed" options="{'no_create':true, 'no_open':true}"/>
-                        <field name="total_packed_date" options="{'no_create':true, 'no_open':true}"/>
-                        <field name="Shade_wise_packed" options="{'no_create':true, 'no_open':true}"/>
-                        <field name="Size_wise_packed" options="{'no_create':true, 'no_open':true}"/>  
+                        <field name="total_packed" force_save="1" readonly="1"/>
+                        <field name="total_packed_date" force_save="1" readonly="1"/>
+                        <field name="Shade_wise_packed" force_save="1" readonly="1"/>
+                        <field name="Size_wise_packed" force_save="1" readonly="1"/>  
                         </group>
                 </group>
                 <footer>

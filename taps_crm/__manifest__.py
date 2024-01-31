@@ -31,7 +31,8 @@
         'views/assets.xml',
         'views/crm_team_view.xml',
         'views/custom_chart_view.xml',
-        'views/google_chart_view.xml'
+        'views/google_chart_view.xml',
+        'views/saleperson_wise_customer_view.xml'
     ],
     # only loaded in demonstration mode
     'qweb': [

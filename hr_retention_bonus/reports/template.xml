@@ -98,6 +98,12 @@ We look forward to your valuable contributions, and appreciate the efforts put i
                 % endif
             </div>
         </template>
+        
+        <template id="retention_bonus_mail_blank_template">
+            <div style="margin:0px;padding: 0px;">
+                hi
+            </div>
+        </template>
 
     </data>
 </odoo>

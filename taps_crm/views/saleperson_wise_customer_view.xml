@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="salesperson_wise_customer_list" model="ir.ui.view">
+        <field name="name">customer.allocation.list</field>
+        <field name="model">customer.allocation</field>
+        <field name="arch" type="xml">
+            <tree string="Salesperson wise customer list">
+                <field name="salesperson"/>
+                <field name="team_id"/>
+                <field name="customers" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+    <record id="salesperson_wise_customer_form" model="ir.ui.view">
+        <field name="name">customer.allocation.form</field>
+        <field name="model">customer.allocation</field>
+        <field name="arch" type="xml">
+            <form string="Salesperson wise customer form">
+                <sheet>
+                    <div class="oe_title">
+                            <h1>
+                                <field name="salesperson" />
+                            </h1>
+                    </div>
+                
+                <group>
+                    
+                    <field name="team_id"/>
+                </group>
+                <group>
+                    <field name="customers" widget="many2many_tags"/>
+                </group>
+                
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
+                
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="salesperson_wise_customer_action">
+            <field name="name">Salesperson wise Customer Allocation</field>
+            <field name="res_model">customer.allocation</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+    <record id="marketingperson_wise_customer_list" model="ir.ui.view">
+        <field name="name">brand.allocation.list</field>
+        <field name="model">brand.allocation</field>
+        <field name="arch" type="xml">
+            <tree string="Marketingperson wise customer list">
+                <field name="marketing_person"/>
+                <field name="team_id"/>
+                <field name="brand" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+    <record id="marketingperson_wise_customer_form" model="ir.ui.view">
+        <field name="name">brand.allocation.form</field>
+        <field name="model">brand.allocation</field>
+        <field name="arch" type="xml">
+            <form string="Marketingperson wise customer form">
+                <sheet>
+                    <div class="oe_title">
+                            <h1>
+                                <field name="marketing_person" />
+                            </h1>
+                    </div>
+                
+                <group>
+                    
+                    <field name="team_id"/>
+                </group>
+                <group>
+                    <field name="brand" widget="many2many_tags"/>
+                </group>
+                
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="marketingperson_wise_customer_action">
+            <field name="name">Marketing Person wise brand Allocation</field>
+            <field name="res_model">brand.allocation</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem
+        id="salespersonwise_customer_allocation"
+        name="Customer Allocation"
+        parent="crm.crm_menu_sales"
+        action="taps_crm.salesperson_wise_customer_action"
+        sequence="6"/>
+    <menuitem
+        id="marketingpersonwise_brand_allocation"
+        name="Brand Allocation"
+        parent="crm.crm_menu_sales"
+        action="taps_crm.marketingperson_wise_customer_action"
+        sequence="7"/>
+    
+</odoo>

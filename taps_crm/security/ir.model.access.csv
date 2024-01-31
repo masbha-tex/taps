@@ -1,8 +1,10 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_crm_visit_purpose,access_crm_visit_purpose,model_crm_visit_purpose,sales_team.group_sale_manager,1,1,1,1
-access_crm_visit_purpose_core,access_crm_visit_purpose_core,model_crm_visit_purpose_core,sales_team.group_sale_manager,1,1,1,1
+access_crm_visit_purpose,access_crm_visit_purpose,model_crm_visit_purpose,base.group_user,1,1,1,0
+access_crm_visit_purpose_core,access_crm_visit_purpose_core,model_crm_visit_purpose_core,base.group_user,1,1,1,0
 access_crm_visit,access_crm_visit,model_crm_visit,sales_team.group_sale_salesman_all_leads,1,1,1,0
 access_crm_visit_manager,access_crm_visit_manager,model_crm_visit,sales_team.group_sale_manager,1,1,1,1
 access_crm_visit,access_crm_visit,model_crm_visit,sales_team.group_sale_salesman,1,1,1,0
 access_prev_crm_team,access_prev_crm_team,model_prev_crm_team,base.group_user,1,1,1,0
 access_crm_team_transfer,access_crm_team_transfer,model_crm_team_transfer,base.group_user,1,1,1,0
+access_customer_allocation,access_customer_allocation,model_customer_allocation,base.group_user,1,1,1,1
+access_brand_allocation,access_brand_allocation,model_brand_allocation,base.group_user,1,1,1,1

@@ -224,20 +224,19 @@ class HrRetentionBonus(models.Model):
         
 
     def _action_retention_bonus_hr_reminder_email(self):
-        # if self.state == 'draft':
-        #     self.state = 'Submit'
-        for bonus in self:
-            # bonus_mail_template = bonus.id
-            # mapped_data = {
-            #     **{bonus.employee_id: bonus_mail_template}
-            # }
-            # for employee, mail_template in mapped_data.items():
+        
+        docs = self.env['hr.retention.bonus'].search([])
+        # raise UserError((docs))
+        for bonus in docs:
+            
             template_submit = self.env.ref('hr_retention_bonus.retention_bonus_hr_reminder_mail_template', raise_if_not_found=True)
+            
             ctx = {}
             _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
-
+            # # raise UserError((_template_submit))
             RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)                
             body_submit = RenderMixin._render_template(_template_submit, 'hr.retention.bonus', bonus.ids, post_process=True)[bonus.id]
+            # raise UserError((body_submit))
             body = f"{body_submit}"
             # post the message
             matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'MAILTO')], limit=1)
@@ -245,7 +244,7 @@ class HrRetentionBonus(models.Model):
                 mailto = ','.join([email.email for email in matrix.next_user if email])
             matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
             if matrix_cc:
-                mailcc = ','.join([email.email for email in matrix_cc.next_user if email])+','+bonus.parent_id.email
+                mailcc = ','.join([email.email for email in matrix_cc.next_user if email])#+','+bonus.parent_id.email
             if matrix or matrix_cc:
                 # raise UserError((self.env['hr.retention.matrix']))
                 # attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.retention.bonus'), ('res_id', 'in', self.ids)])
