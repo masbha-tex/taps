@@ -88,7 +88,7 @@
         <!-- #bonus -->
         <template id="retention_bonus_mail_template">
             <div style="margin:0px;padding: 0px;">
-                <!-- <t t-foreach="env['hr.retention.bonus'].search([('entitlement_date', '=', (datetime.datetime.today() + relativedelta(days=15)))])" t-as="line"> -->
+                <!-- <t t-foreach="env['hr.retention.bonus'].search([('date', '<', (datetime.datetime.today())),((datetime.datetime.today()), '>',)])" t-as="line"> -->
                 <span>Dear .name,</span>
                 <br/>
                 <span>Congratulations! You have completed <strong>1</strong> year of your retention bonus scheme. You`ve splendidly demonstrated that you`re an important part of our company. We are pleased to have you as a member of our organizations.<br/>We look forward to your valuable contributions, and appreciate the efforts put in by you and expect that you would continue to do so in the future.</span>

@@ -42,7 +42,6 @@ class LabelPrintingWizard(models.TransientModel):
 
     oa_number = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True)
     
-
     iteam = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'Iteams')]", check_company=True, string='Iteam', store=True, readonly=False)
     # default=lambda self: self.get_default_iteam()
     
@@ -399,7 +398,7 @@ class LabelPrintingWizard(models.TransientModel):
             'table_name': self.table_name,
             'date': current_date.strftime('%d-%b-%Y'),
             'batch_lot': self.batch_lot,
-            'oa_number': self.oa_number.name.replace('OA00', ''),
+            'oa_number': self.oa_number.name,
             'iteam': self.iteam.name,
             'finish': self.finish.name,
             'shade': self.shade.name,
@@ -457,7 +456,7 @@ class LabelPrintPDF(models.AbstractModel):
             data.get('table_name'), #3
             data.get('date'), #4
             data.get('batch_lot'), #5
-            data.get('oa_number'), #6
+            data.get('oa_number', '').replace('OAOO', ''), #6
             data.get('iteam'), #7
             data.get('finish'), #8
             data.get('shade'), #9
@@ -474,7 +473,7 @@ class LabelPrintPDF(models.AbstractModel):
                      
         ]
         common_data.append(common_data)
-        raise UserError((docs.partner_id))  
+        # raise UserError((docs.partner_id.name))  
         
         return {
             'doc_ids': docs.ids,
@@ -517,7 +516,7 @@ class LabelPrintPDF(models.AbstractModel):
             data.get('table_name'), #3
             data.get('date'), #4
             data.get('batch_lot'), #5
-            data.get('oa_number'), #6
+            data.get('oa_number', '').replace('OAOO', ''), #6
             data.get('iteam'), #7
             data.get('finish'), #8
             data.get('shade'), #9

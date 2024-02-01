@@ -239,9 +239,10 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            sheet.set_zoom(75)
-            # 
+            for row_num in range(1, len(sale_orders)):  
+                sheet.set_row(row_num, 23)
             
+            sheet.set_zoom(75)
             sheet.freeze_panes(1, 0)
             
             sheet.write(0, 0, "CUSTOMER NAME", column_style)
@@ -259,7 +260,7 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(0, 11, "SIZE(CM)", column_style)
             sheet.write(0, 12, "ORDER QTY", column_style)
             sheet.write(0, 13, "READY QTY", column_style)
-            sheet.write(0, 14, "PENDING QTY", column_style)
+            sheet.write(0, 14, "PENDING", column_style)
             sheet.write(0, 15, "TOTAL WT/KG", column_style)
             sheet.write(0, 16, "SHADE TOTAL", column_style)
             sheet.write(0, 17, "WIRE/KG", column_style)
@@ -272,18 +273,19 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(0, 0, 20)
             sheet.set_column(1, 1, 30)
             sheet.set_column(2, 2, 20)
-            sheet.set_column(3, 3, 20)
-            sheet.set_column(4, 4, 20)
-            sheet.set_column(5, 5, 20)
-            sheet.set_column(6, 6, 20)
+            sheet.set_column(3, 3, 14)
+            sheet.set_column(4, 4, 12)
+            sheet.set_column(5, 5, 8)
+            sheet.set_column(6, 6, 10)
             sheet.set_column(7, 7, 0)
-            sheet.set_column(8, 8, 40)
+            sheet.set_column(8, 8, 32)
             sheet.set_column(10, 10, 11)
             sheet.set_column(11, 11, 11)
             sheet.set_column(12, 12, 15)
-            sheet.set_column(13, 13, 15)
-            sheet.set_column(14, 14, 15)
+            sheet.set_column(13, 13, 12)
+            sheet.set_column(14, 14, 12)
             sheet.set_column(14, 20, 12)
+            sheet.set_column(15, 15, 0)
             sheet.set_column(17, 22, 0)
             sheet.set_row(0, 30)
 
@@ -601,6 +603,8 @@ class MrpReportWizard(models.TransientModel):
         # sheet.fit_to_pages(1, 1)
         # sheet.print_area(0, 0, len(sale_orders), 16)
         
+        # for row_num in range(1, len(sale_orders)):  
+        #         sheet.set_row(row_num, 100)
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -1981,7 +1985,7 @@ class ProductionReportPDF(models.AbstractModel):
         _day = int(one_day_ago.day)
         to_day = int(one_day_ago.day)
         
-        first_day_of_m = fields.datetime.now().replace(day = 1).replace(month = int(month_)).replace(year = year)
+        first_day_of_m = fields.datetime.now().replace(year = year).replace(month = int(month_)).replace(day = 1)
         
         all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id.id','=',com_id)])
         daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= first_day_of_m.date() and pr.action_date.date() <= one_day_ago.date())#.sorted(key=lambda pr: pr.sequence)
@@ -1993,7 +1997,7 @@ class ProductionReportPDF(models.AbstractModel):
         day = _day
         
         report_name = day
-        full_date = fields.datetime.now().replace(day = _day).replace(month = int(month_)).replace(year = year)
+        full_date = fields.datetime.now().replace(year = year).replace(month = int(month_)).replace(day = _day)
          # first day of month
         full_date = full_date.replace(day = day)
         
