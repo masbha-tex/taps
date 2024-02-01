@@ -9,3 +9,5 @@ access_crm_team_transfer,access_crm_team_transfer,model_crm_team_transfer,base.g
 access_customer_allocation,access_customer_allocation,model_customer_allocation,sales_team.group_sale_manager,1,1,1,1
 access_brand_allocation,access_brand_allocation,model_brand_allocation,sales_team.group_sale_manager,1,1,1,1
 access_crm_approval_matrix,access_crm_approval_matrix,model_crm_approval_matrix,base.group_user,1,1,1,1
+access_reallocation_template,access_reallocation_template,model_reallocation_template,base.group_user,1,1,1,1
+access_reallocation_template_line,access_reallocation_template_line,model_reallocation_template_line,base.group_user,1,1,1,1

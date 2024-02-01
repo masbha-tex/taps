@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="ir_cron_data_daily_attendance_email_template" model="ir.cron">
             <field name="name">Attendance: Daily Attendance Send by email</field>
             <field name="model_id" ref="model_hr_attendance"/>
@@ -12,7 +12,7 @@
             <field name="numbercall">-1</field>
             <field name="nextcall">2023-01-05 11:00:00</field>
         </record>
-        <record id="daily_attendance_email_template" model="mail.template">
+        <!-- <record id="daily_attendance_email_template" model="mail.template">
             <field name="name">Attendance: Daily Attendance Send by email</field>
             <field name="model_id" ref="taps_hr.model_hr_employee"/>
             <field name="email_from">${user.email_formatted | safe}</field>
@@ -185,6 +185,6 @@
                 <p>** This is an auto generated mail from Odoo. Please do not reply **</p>
                 </div></div>
             </field>
-        </record>
+        </record> -->
     </data>
 </odoo>

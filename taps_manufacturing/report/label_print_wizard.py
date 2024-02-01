@@ -474,7 +474,7 @@ class LabelPrintPDF(models.AbstractModel):
                      
         ]
         common_data.append(common_data)
-        # raise UserError(docs.partner_id)  
+        raise UserError((docs.partner_id))  
         
         return {
             'doc_ids': docs.ids,

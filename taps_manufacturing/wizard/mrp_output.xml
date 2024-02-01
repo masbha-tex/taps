@@ -11,21 +11,21 @@
             <field name="name">mrp.output.form.view</field>
             <field name="model">mrp.output</field>
             <field name="arch" type="xml">
-                <form string="Manufacturing Output">
+                <form string="Manufacturing Output" class="oe_form_container" width="1200" height="1200">
                    <group>
                         <table>
                             <tr>
                                 <th> Lot Code</th>
                                 <th> OA </th>
-                                <td><field name="item" style="width: 100px; margin-right: 10px;"/></td>
-                                <td><field name="shade" style="width: 100px; margin-right: 10px;"/></td>
-                                <td><field name="finish" style="width: 100px; margin-right: 10px;"/></td>
-                                <td><field name="sizein" style="width: 100px; margin-right: 10px;"/></td>
-                                <td><field name="sizecm" style="width: 100px; margin-right: 10px;"/></td>
-                                <td><field name="output_of" style="width: 100px; margin-right: 10px;"/></td>
-                                <td><field name="manuf_date" style="width: 100px; margin-right: 10px;"/></td>
-                                <td><field name="planned_qty" style="width: 100px; margin-right: 10px;"/></td>
-                                <td><field name="qty" style="width: 100px;"/></td>
+                                <th>Iteam </th>
+                                <th>Shade</th>
+                                <th>Finish</th>
+                                <th>SIZE</th>
+                                <th>SIZE</th>
+                                <th>Output</th>
+                                <th>Manufecturing Date</th>
+                                <th>Planned QTY</th>
+                                <th>QTY</th>
                             </tr>
                             <tr>
                                 <td><field name="lot_code" widget="lot_code_enter" style="width: 100px; margin-right: 10px;"/></td>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!--Adding a retention matrix rule-->
+	<data noupdate="1">
+        <record id="hr_retention_matrix_input_app1" model="hr.retention.matrix">
+            <field name="sequence">1</field>
+            <field name="name">APPROVAL-1</field>
+            <field name="next_user" eval="[(6, 0, [15])]"/>
+        </record>
+        <record id="hr_retention_matrix_input_app2" model="hr.retention.matrix">
+            <field name="sequence">2</field>
+            <field name="name">APPROVAL-2</field>
+            <field name="next_user" eval="[(6, 0, [26])]"/>
+        </record>
+        <record id="hr_retention_matrix_input_app3" model="hr.retention.matrix">
+            <field name="sequence">3</field>
+            <field name="name">APPROVAL-3</field>
+            <field name="next_user" eval="[(6, 0, [17])]"/>
+        </record>   
+        <record id="hr_retention_matrix_input_mto" model="hr.retention.matrix">
+            <field name="sequence">4</field>
+            <field name="name">MAILTO</field>
+            <field name="next_user" eval="[(6, 0, [22])]"/>
+        </record>   
+        <record id="hr_retention_matrix_input_mcc" model="hr.retention.matrix">
+            <field name="sequence">5</field>
+            <field name="name">MAILCC</field>
+            <field name="next_user" eval="[(6, 0, [15,22])]"/>
+        </record>  
+        <record id="hr_retention_matrix_input_rmto" model="hr.retention.matrix">
+            <field name="sequence">6</field>
+            <field name="name">RE-MAILTO</field>
+            <field name="next_user" eval="[(6, 0, [22])]"/>
+        </record>   
+        <record id="hr_retention_matrix_input_rmcc" model="hr.retention.matrix">
+            <field name="sequence">7</field>
+            <field name="name">RE-MAILCC</field>
+            <field name="next_user" eval="[(6, 0, [15])]"/>
+        </record>          
+	</data>
+</odoo>
