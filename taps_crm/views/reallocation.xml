@@ -52,10 +52,12 @@
                                         <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/> -->
                                     </control>
                                         <!-- <field name="domain" invisible="1"/> -->
-                                        <field name="select_customer"/>
-                                        <field name="existing_user" widget="many2many_tags" force_save="1"/>
+                                        
+                                        <field name="existing_user"/>
                                         <field name="new_user"/>
-                                        <field name="name"/>
+                                        <field name="customer_domain" invisible="1"/>
+                                        <field name="select_customer" domain="customer_domain" widget="many2many_tags"/>
+                                        <field name="name" invisible="1"/>
                                         <field name="is_removed"/>
                                     </tree>
                                 </field>
@@ -74,9 +76,13 @@
             <field name="arch" type="xml">
                 <tree string="Reallocation Line Tree" create="false">
                     <!-- <field name="domain" invisible="1"/> -->
-                    <field name="select_customer"/>
-                    <field name="existing_user" force_save="1"/>
+                    
+                    
+                    <field name="existing_user"/>
                     <field name="new_user"/>
+                    <field name="customer_domain" invisible="1"/>
+                    <field name="select_customer" domain="customer_domain" widget="many2many_tags"/>
+                    
                     <field name="is_removed"/>
                 </tree>
             </field>

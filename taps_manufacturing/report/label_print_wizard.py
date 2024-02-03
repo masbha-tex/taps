@@ -67,25 +67,40 @@ class LabelPrintingWizard(models.TransientModel):
     
 
 
-    # @api.model
-    # def get_default_iteam(self):
-    #     # Set your default value for 'Iteam' here
-    #     return self.env['selection.fields.data'].search([('field_name', '=', 'Iteams')], limit=1).id
+    def reset_values(self):
+        # Reset values to their default or initial state
+        self.write({
+            # 'logo': "src/user/taps_sale/static/src/img/logo_tex_tiny.png",
+            # 'company_name': 'TEX ZIPPERS (BD) LIMITED',
+            # 'company_address': 'Plot # 180, 264 & 273 Adamjee Export Processing Zone, Adamjee Nagar, Shiddhirgonj, Narayangonj, Bangladesh',
+            'table_name': 'A',
+            'Country_name': '',
+            'lot_code': '',
+            'oa_number': False,
+            'iteam': False,
+            'shade': False,
+            'finish': False,
+            'size': False,
+            'qty': 0,
+            'batch_lot': '',
+            'label_qty': 0,
+            'copy_of_print': 1,
+            'qc_person': False,
+            'pre_check_person': False,
+            'printing_person': False,
+        })
 
-    # @api.model
-    # def get_default_shade(self):
-    #     # Set your default value for 'Shade' here
-    #     return self.env['selection.fields.data'].search([('field_name', '=', 'shade')], limit=1).id
 
-    # @api.model
-    # def get_default_finish(self):
-    #     # Set your default value for 'Finish' here
-    #     return self.env['selection.fields.data'].search([('field_name', '=', 'finish')], limit=1).id
+        # Return the view id to stay on the same form view after resetting
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'label.print',
+            'view_mode': 'form',
+            'name':'Label Printing',
+            'view_id': self.env.ref('taps_manufacturing.label_print_wizard_view').id,
+            'target': 'new',
+        }
 
-    # @api.model
-    # def get_default_size(self):
-    #     # Set your default value for 'Size' here
-    #     return self.env['selection.fields.data'].search([('field_name', '=', 'size')], limit=1).id
 
 
     # @api.model
@@ -210,6 +225,7 @@ class LabelPrintingWizard(models.TransientModel):
     def _onchange_oa_number(self):
         oa_id = None
         item_id = None
+        finish = None
         # shade = None
         if self.oa_number:
             oa_id = self.oa_number
@@ -249,15 +265,36 @@ class LabelPrintingWizard(models.TransientModel):
                     })
                     self.update({'shade': [(4, shade_cr.name)]})  # Add the record to the Many2one field
                     shade = shade_cr[0].id
+
+                # raise UserError((self.company_id.id))
+                if self.company_id.id == 3:
+                     # raise UserError((finish))
+                    unique_finish = set(record.finish for record in operations)
+                    finish_records = self.env['selection.fields.data'].sudo().search([
+                        ('field_name', '=', 'finish')
+                    ])
+                    finish_records.unlink()
+        
+                    for _finish in unique_finish:
+                        finish_cr = self.env["selection.fields.data"].sudo().create({
+                            'field_name': 'finish',
+                            'name': _finish
+                        })
+                        self.update({'finish': [(4, finish_cr.name)]})
+                        finish = finish_cr[0].id
+                   
             else:
                 # Clear Iteam field if no operations are found
                 self.update({'iteam': [(5, 0, 0)]})
                 self.update({'shade': [(5, 0, 0)]})
+                self.update({'finish': [(5, 0, 0)]})
+                
+                    
         self.oa_number = oa_id
         self.iteam = item_id
+        self.finish = finish
         # self.shade = shade
-       
-    
+
     @api.onchange('shade')
     def _onchange_shade(self):
         oa_id = None
@@ -269,7 +306,8 @@ class LabelPrintingWizard(models.TransientModel):
             iteam = self.iteam
             shade = self.shade
             # raise UserError((self.oa_number.id,self.shade.name))
-            operations = self.env['operation.details'].sudo().search([
+            if self.company_id.id == 1:
+                operations = self.env['operation.details'].sudo().search([
                 ('oa_id', '=', self.oa_number.id),
                 ('shade', '=', self.shade.name), 
                 ('next_operation', '=', 'Packing Output')
@@ -297,6 +335,8 @@ class LabelPrintingWizard(models.TransientModel):
         self.iteam = iteam
         self.shade = shade
         self.finish = finish
+        
+       
                 
     @api.onchange('finish')
     def _onchange_finish(self):
@@ -310,9 +350,16 @@ class LabelPrintingWizard(models.TransientModel):
             iteam = self.iteam
             shade = self.shade
             finish = self.finish
-            operations = self.env['operation.details'].sudo().search([
+            if self.company_id.id == 1:
+                operations = self.env['operation.details'].sudo().search([
                 ('oa_id', '=', self.oa_number.id),
                 ('shade', '=', self.shade.name),
+                ('finish', '=', self.finish.name),
+                ('next_operation', '=', 'Packing Output')
+            ])
+            else :
+                operations = self.env['operation.details'].sudo().search([
+                ('oa_id', '=', self.oa_number.id),
                 ('finish', '=', self.finish.name),
                 ('next_operation', '=', 'Packing Output')
             ])
@@ -423,6 +470,11 @@ class LabelPrintingWizard(models.TransientModel):
         else:
             raise ValidationError("Here is no PDF.")
 
+    def clear_all_values(self):
+        self.lot_code = 'None'
+        # return {'type': 'ir.actions.act_window_close'}
+
+
 class LabelPrintPDF(models.AbstractModel):
     _name = 'report.taps_manufacturing.report_label_print_template'
     _description = 'label print template'     
@@ -456,7 +508,7 @@ class LabelPrintPDF(models.AbstractModel):
             data.get('table_name'), #3
             data.get('date'), #4
             data.get('batch_lot'), #5
-            data.get('oa_number', '').replace('OAOO', ''), #6
+            data.get('oa_number'), #6
             data.get('iteam'), #7
             data.get('finish'), #8
             data.get('shade'), #9
@@ -516,7 +568,7 @@ class LabelPrintPDF(models.AbstractModel):
             data.get('table_name'), #3
             data.get('date'), #4
             data.get('batch_lot'), #5
-            data.get('oa_number', '').replace('OAOO', ''), #6
+            data.get('oa_number'), #6
             data.get('iteam'), #7
             data.get('finish'), #8
             data.get('shade'), #9
@@ -542,5 +594,8 @@ class LabelPrintPDF(models.AbstractModel):
             'datas': common_data,
             
         }
+
+
+
 
  

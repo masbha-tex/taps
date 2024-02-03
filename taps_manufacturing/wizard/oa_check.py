@@ -39,6 +39,31 @@ class OaCheck(models.TransientModel):
     #             total_packed = sum(operations.mapped('qty'))
     #         rec.total_packed = total_packed
 
+    # @api.multi
+    def action_reset(self):
+        # Reset your fields to their default values or clear them
+        self.write({
+            'lookup_oa': False,
+            'action_date_list': False,
+            'Shade_list': False,
+            'Size_list': False,
+            'total_packed': False,
+            'total_packed_date': False,
+            'Shade_wise_packed': False,
+            'Size_wise_packed': False,
+        })
+
+        # Return the view id to stay on the same form view after resetting
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'oa.check',
+            'view_mode': 'form',
+            'name':'OA Check',
+            'view_id': self.env.ref('taps_manufacturing.oa_checkform_view').id,
+            'target': 'new',
+        }
+
+        
     @api.onchange('lookup_oa')
     def _oa(self):
         oa_id= None

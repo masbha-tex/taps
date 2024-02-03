@@ -608,21 +608,19 @@ class StockForecastReport(models.TransientModel):
         
         query = """
         insert into stock_opening_closing(id,product_id,pr_code,product_category,parent_category,lot_id,rejected,lot_price,pur_price,landed_cost,opening_qty,opening_value,receive_date,receive_qty,receive_value,issue_qty,issue_value,cloing_qty,cloing_value,shipment_mode,po_type) select * from (
-        select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id,pr_code,categ_type as product_category,parent_id as parent_category,invoice as lot_id, case when rejected=true then 'Reject' else 'Ok' end as rejected, avg(lot_price) as lot_price, avg(pur_price) as pur_price, avg(landed_cost) as landed_cost ,sum(opening_qty) as opening_qty,
-        case when avg(lot_price)>0 then sum(opening_qty)*avg(lot_price) else sum(opening_value) end as opening_value,
+        select ROW_NUMBER () OVER (ORDER BY product_id) as id, product_id,pr_code,categ_type as product_category,parent_id as parent_category,invoice as lot_id, case when rejected=true then 'Reject' else 'Ok' end as rejected, avg(lot_price) as lot_price, avg(pur_price) as pur_price, avg(landed_cost) as landed_cost ,0 as opening_qty,0 as opening_value,
         
         min(COALESCE(date(receive_date),'2021-01-01')) as receive_date,
         
-        sum(receive_qty) as receive_qty,
-        case when avg(lot_price)>0 then sum(receive_qty)*avg(lot_price) else sum(receive_value) end as receive_value,
-        sum(issue_qty) as issue_qty,
-        case when avg(lot_price)>0 then sum(issue_qty)*avg(lot_price) else sum(issue_value) end as issue_value,
+        0 as receive_qty,0 as receive_value,
+        0 as issue_qty,
+        0 as issue_value,
         sum(cloing_qty) as cloing_qty,
         case when avg(lot_price)>0 then sum(cloing_qty)*avg(lot_price) else sum(cloing_value) end as cloing_value,
         
-        (select x_studio_shipment_mode from purchase_order where name in(select origin from stock_picking where id in(select distinct sl.picking_id from stock_move_line as sl where sl.product_id=product_id and sl.lot_id=invoice and sl.state='done' and sl.reference like %s order by sl.picking_id asc) order by id limit 1)) as shipment_mode,
+        (select x_studio_shipment_mode from purchase_order where name=stock.po_number) as shipment_mode,
         
-        (select po_type from purchase_order where name in(select origin from stock_picking where id in(select distinct sl.picking_id from stock_move_line as sl where sl.product_id=product_id and sl.lot_id=invoice and sl.state='done' and sl.reference like %s order by sl.picking_id asc) order by id limit 1)) as po_type
+        (select po_type from purchase_order where name=stock.po_number) as po_type
         
         from(
         select
@@ -646,6 +644,7 @@ class StockForecastReport(models.TransientModel):
         
         
         (select min(scheduled_date) from stock_picking where id in(select distinct sl.picking_id from stock_move_line as sl where sl.product_id=product.id and sl.lot_id=lot.id and sl.state='done' and sl.reference like %s order by sl.picking_id asc)) as receive_date,
+        (select min(origin) from stock_picking where id in(select distinct sl.picking_id from stock_move_line as sl where sl.product_id=product.id and sl.lot_id=lot.id and sl.state='done' and sl.reference like %s order by sl.picking_id asc)) as po_number,
 
         0 as receive_qty,
 
@@ -658,15 +657,15 @@ class StockForecastReport(models.TransientModel):
 
         (
         case when lot.id is not null then
-		(select COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as cl_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id)
-        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date) end
+		(select COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as cl_qty from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=%s) and b.lot_id=lot.id and b.product_id=product.id)
+        else (select COALESCE(sum(quantity),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=%s) end
         ) as cloing_qty,
 
         (
         case when lot.id is not null then
 		(select (sum(cl_qty)*avg(cost))+sum(lc_cost) from ((select b.move_id,COALESCE(sum(case when b.location_dest_id in(8,9,36,10,37,38) then b.qty_done else -b.qty_done end),0) as cl_qty, COALESCE((select avg(l.unit_cost) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id),1) as cost, COALESCE((select sum(l.value) from stock_valuation_layer as l where l.product_id=product.id and l.stock_move_id=b.move_id and l.description like %s),0) as lc_cost
-		from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date and a.schedule_date<=sd.to_date) and b.lot_id=lot.id and b.product_id=product.id group by b.move_id)) as val)
-        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date<=sd.to_date) end
+		from stock_move_line as b where move_id in(select stock_move_id from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date <= %s and a.schedule_date <= %s) and b.lot_id=lot.id and b.product_id=product.id group by b.move_id)) as val)
+        else (select COALESCE(sum(value),0) from stock_valuation_layer as a where a.product_id=product.id and a.schedule_date <= %s) end
         ) as cloing_value,
         
         pt.company_id
@@ -679,10 +678,10 @@ class StockForecastReport(models.TransientModel):
         left join searching_date as sd on 1=1
         where pt.company_id = %s and (product.default_code like %s or product.default_code like %s)
         ) as stock where (stock.cloing_qty>=0 and stock.cloing_value>=0)
-        group by stock.product_id,stock.pr_code,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected,stock.company_id
+        group by stock.product_id,stock.pr_code,stock.categ_type,stock.parent_id,stock.invoice,stock.rejected,stock.company_id,stock.po_number
         ) as atb
         """
-        self.env.cr.execute(query, ('%/IN/%','%/IN/%','%/IN/%','%LC/%',self.env.company.id,'R_%','S_%'))
+        self.env.cr.execute(query, ('%/IN/%','%/IN/%',to_date.date(),to_date.date(),'%LC/%',to_date.date(),to_date.date(),to_date.date(),self.env.company.id,'R_%','S_%'))
 
 
 

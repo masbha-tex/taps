@@ -262,43 +262,56 @@ class HrRetentionBonus(models.Model):
 
 
     def _action_retention_bonus_employee_reminder_email(self):
-        matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILTO')], limit=1)
-        if matrix:
-            mailto = ','.join([email.email for email in matrix.next_user if email])
-        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)
-        if matrix_cc:
-            mailcc = ','.join([email.email for email in matrix_cc.next_user if email])#+','+bonus.parent_id.email
-        # if matrix or matrix_cc:
-        mail_values = {
-            'email_from': 'odoo@texzipperbd.com',
-            'author_id': self.env.user.partner_id.id,
-            'model': None,
-            'res_id': None,
-            'subject': '1 Year Retention Bonus Entitlements',
-            'body_html': 'Hello',
-            'auto_delete': True,
-            'email_to': self.employee_id.email or '',
-            # 'email_to': mailto or '',
-            'email_cc': mailcc or '',
-        }
-        try:
-            template = self.env.ref('hr_retention_bonus.retention_bonus_mail_template', raise_if_not_found=True)
+        # docs = self.env['hr.retention.bonus'].search([])
+        docs = self.env['hr.retention.bonus'].search([('date', '<', (date.today())),('entitlement_date','>', date.today())])
+        raise UserError((docs.id))
+        for rec in docs:
+            raise UserError((dif_year))
+            # current_date = date.today()
+            dif_year = date.today() - rec.date
             
-        except ValueError:
-            _logger.warning('QWeb template hr_retention_bonus.retention_bonus_mail_template not found when sending Upcoming Retention Bonus Entitlements. Sending without layouting.')
-        else:
-
-                
-            template_ctx = {
-                'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'])),
-                'model_description': self.env['ir.model']._get('hr.retention.bonus').display_name,
-                'company': self.env.company,
+            
+            # current_date = datetime.today().strftime('%B')
+            d_year = dif_year.strftime('%B')
+            du = d_year/12
+            
+            matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILTO')], limit=1)
+            if matrix:
+                mailto = ','.join([email.email for email in matrix.next_user if email])
+            matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)
+            if matrix_cc:
+                mailcc = ','.join([email.email for email in matrix_cc.next_user if email])#+','+bonus.parent_id.email
+            # if matrix or matrix_cc:
+            mail_values = {
+                'email_from': 'odoo@texzipperbd.com',
+                'author_id': self.env.user.partner_id.id,
+                'model': None,
+                'res_id': None,
+                'subject': '1 Year Retention Bonus Entitlements',
+                'body_html': 'Hello',
+                'auto_delete': True,
+                'email_to': self.employee_id.email or '',
+                # 'email_to': mailto or '',
+                'email_cc': mailcc or '',
             }
-            body = template._render(template_ctx, engine='ir.qweb')
-            mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)        
-            
-            # Create the mail
-            self.env['mail.mail'].sudo().create(mail_values)
+            try:
+                template = self.env.ref('hr_retention_bonus.retention_bonus_mail_template', raise_if_not_found=True)
+                
+            except ValueError:
+                _logger.warning('QWeb template hr_retention_bonus.retention_bonus_mail_template not found when sending Upcoming Retention Bonus Entitlements. Sending without layouting.')
+            else:
+    
+                    
+                template_ctx = {
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'])),
+                    'model_description': self.env['ir.model']._get('hr.retention.bonus').display_name,
+                    'company': self.env.company,
+                }
+                body = template._render(template_ctx, engine='ir.qweb')
+                mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)        
+                
+                # Create the mail
+                self.env['mail.mail'].sudo().create(mail_values)
 
 
 class InstallmentLine(models.Model):

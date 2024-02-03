@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','crm','whatsapp_mail_messaging','web'],
+    'depends': ['base','sale','crm','whatsapp_mail_messaging','web','web_domain_field'],
 
     # always loaded
     'data': [

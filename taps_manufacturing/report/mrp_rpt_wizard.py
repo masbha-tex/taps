@@ -239,8 +239,8 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            for row_num in range(1, len(sale_orders)):  
-                sheet.set_row(row_num, 23)
+            for row_num in range(1, 50000):  
+                sheet.set_row(row_num, 28)
             
             sheet.set_zoom(75)
             sheet.freeze_panes(1, 0)
@@ -278,7 +278,8 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(5, 5, 8)
             sheet.set_column(6, 6, 10)
             sheet.set_column(7, 7, 0)
-            sheet.set_column(8, 8, 32)
+            sheet.set_column(8, 8, 20)
+            sheet.set_column(9, 9, 14)
             sheet.set_column(10, 10, 11)
             sheet.set_column(11, 11, 11)
             sheet.set_column(12, 12, 15)

@@ -25,6 +25,8 @@
                     <!-- <button string="Print" name="action_print_report" type="object" class="btn-primary"/> -->
 <!--                     <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/> -->
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
+                     <button string="Reset" class="oe_highlight" type="object" icon="fa-refresh"
+                    name="action_reset"/>
                 </footer>
             </form>
         </field>

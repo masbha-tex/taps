@@ -31,6 +31,8 @@
                 </group>
                 <footer>
                     <button string="Print" name="generate_qweb_pdf" type="object" class="btn-primary"/>
+                    <button string="Reset" class="oe_highlight" type="object" icon="fa-refresh"
+                    name="reset_values"/>
                     <!-- <button string="Print" name="" type="object" class="btn-primary"/> -->
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>

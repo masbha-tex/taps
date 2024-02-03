@@ -79,24 +79,33 @@ class ReAllocationLine(models.Model):
     
         
     reallocation_id = fields.Many2one('reallocation.template', string='Reallocation', index=True, required=True, ondelete='cascade')
-    name = fields.Char(string="Explanation", required=True)
+    name = fields.Char(string="Explanation")
     # domain = fields.Char()
-    select_customer = fields.Many2one('res.partner', string='Select Customer', domain="[('customer_rank', '=', 1)]")
-    existing_user = fields.Many2many('res.users', string="Sales/Marketing person", domain="[('share', '=', False)]", readonly=True)
+    customer_domain = fields.Char(compute="_compute_customer",readonly=True, store=True)
+
+    select_customer = fields.Many2many('res.partner', string='Select Customer', domain="[('customer_rank', '=', 1)]" , store=False)
+    existing_user = fields.Many2one('res.users', string="Sales/Marketing person", domain="[('share', '=', False)]")
     new_user = fields.Many2one('res.users', string=" Assigned Sales/Marketing person", domain="[('share', '=', False)]")
     
     is_removed = fields.Boolean('Select to remove the customer from previous person',default=False)
 
     
-    @api.onchange('select_customer')
-    def _compute_salesperson(self):
+    # @api.onchange('select_customer')
+    # def _compute_salesperson(self):
         
-        assigned_user = self.env['customer.allocation'].search([('customers', 'in', self.select_customer.id)])
-        if assigned_user:
-            self.existing_user = assigned_user.salesperson
-        else:
-            self.existing_user = False
+    #     assigned_user = self.env['customer.allocation'].search([('customers', 'in', self.select_customer.id)])
+    #     if assigned_user:
+    #         self.existing_user = assigned_user.salesperson
+    #     else:
+    #         self.existing_user = False
 
+    @api.depends('existing_user')
+    def _compute_customer(self):
+        
+        search_customer = self.env['customer.allocation'].search([('salesperson', '=', self.existing_user.id)])
+        # raise UserError((search_customer.salesperson))
+        for rec in search_customer:
+           self.customer_domain = json.dumps([('id', 'in', rec.customers.ids)])
 
     
         
