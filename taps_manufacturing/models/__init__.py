@@ -10,3 +10,4 @@ from . import initial_production
 from . import others_item_config
 from . import selection_fields_data
 from . import label_print_data
+from . import operation_packing

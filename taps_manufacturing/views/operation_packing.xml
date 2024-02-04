@@ -17,12 +17,9 @@
                 <field name="sizecm"/>
                 <field name="sizemm"/>
                 <field name="sizcommon"/>
-                <filter string="Ready" name="ready" domain="[('operation_of','in',('plan','input')),('state','!=','done'),('state','!=','closed'),('balance_qty','&gt;',0)]"/>
-                <filter string="Pending" name="progress" domain="[('operation_of','in',('lot','output')),('state','!=','done'),('next_operation','ilike','Output'),('state','!=','closed'),('balance_qty','&gt;',0)]"/>
-                <filter string="Done" name="quality" domain="[('operation_of','=','qc'),('state','!=','done'),('next_operation','ilike','Qc'),('balance_qty','&gt;',0)]"/>
-                <filter string="Requisitions" name="requisitions" domain="[('mr_req','=',True)]"/>
-                <filter string="Packing" name="packing" domain="[('next_operation','=','FG Packing'),('state','!=','done'),('state','!=','closed')]"/>
-                <filter string="Delivery" name="delivery" domain="[('next_operation','=','Delivery'),('state','!=','done'),('state','!=','closed')]"/>
+                <!-- <filter string="Ready" name="ready" domain="[('state','not in',('done','closed','cancel')),('balance_qty','&gt;',0)]"/> -->
+                <filter string="Pending" name="pending" domain="[('state','not in',('done','closed','cancel')),('balance_qty','&gt;',0)]"/>
+                <filter string="Done" name="complete" domain="[('state','=','done'),('balance_qty','=',0)]"/>
                 <separator/>
                 <filter string="Start Date" name="action_date_filter" date="action_date"/>
                 <group expand="0" string="Group By">
@@ -51,22 +48,16 @@
         <field name="model">operation.packing</field>
         <field name="arch" type="xml" >
             <tree string="Operation Packing" create="false" delete="true" editable="top" sample="1"> 
-                <!-- editable="top" -->
                 <header>
-                    <button name="button_requisition" type="object" string="Requisition"/>
-                    <button name="button_createmrplot" type="object" string="Create MRP Lot"/>
                     <button name="button_group_output" type="object" string="Group Output"/>
                 </header>
                 <field name="name" readonly="1"/>
-                <field name="mrp_lines" invisible="1"/>
-                <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>
                 <field name="sale_order_line" invisible="1"/>
                 <field name="oa_id" optional="show"/>
                 <field name="date_order" optional="show"/>
                 <field name="action_date" optional="show"/>
                 <field name="partner_id" optional="show"/>
-                <field name="parent_ids" invisible="1"/>
                 <field name="buyer_name" optional="show"/>
                 <field name="product_id" readonly="1" invisible="1"/>
                 <field name="product_template_id" readonly="1"/>
@@ -87,18 +78,12 @@
                 <field name="qty" readonly="1" optional="show"/>
                 <field name="done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="balance_qty" readonly="1" force_save="1" optional="show"/>
-                <field name="uotput_qty" attrs="{'readonly': [('operation_of', 'not in', ('output','qc','lot'))]}" optional="show"/>
+                <field name="uotput_qty" attrs="{'readonly': [('state', 'not in', ('done','cancel','closed','partial'))]}" optional="show"/>
                 <field name="revision_no" readonly="1" force_save="1" optional="show"/>
                 <field name="closing_date" readonly="1" force_save="1" optional="show"/>
                 <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="return_qty" invisible="1"/>
                 <field name="state" readonly="1" force_save="1" optional="show"/>
-                <!-- <button name="button_createlot" type="object" string="Create Lot" class="btn-success" attrs="{'invisible': [('operation_of', '!=', 'plan')]}"/> -->
-                <!-- <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/> -->
-                <!-- <button name="button_output" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/> -->
-                
-                <!-- <button name="action_view_lots" class="oe_highlight" type="object" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/> "Create Lot (Lots: #{record.num_of_lots})"-->
-                
             </tree>
         </field>
     </record>
@@ -108,23 +93,16 @@
         <field name="model">operation.packing</field>
         <field name="arch" type="xml" >
             <tree string="Operation Packing" create="false" delete="true" editable="top" sample="1"> 
-                <!-- editable="top" -->
                 <header>
-                    <!-- <button name="button_requisition" type="object" string="Requisition"/> -->
-                    <!-- <button name="button_createmrplot" type="object" string="Create MRP Lot"/> -->
                     <button name="button_group_output" type="object" string="Group Output"/>
-                    <!-- <button name="button_return" type="object" string="Return"/> -->
                 </header>
                 <field name="name" readonly="1"/>
-                <field name="mrp_lines" invisible="1"/>
-                <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>
                 <field name="sale_order_line" invisible="1"/>
                 <field name="oa_id" optional="show"/>
                 <field name="date_order" optional="show"/>
                 <field name="action_date" optional="show"/>
                 <field name="partner_id" optional="show"/>
-                <field name="parent_ids" invisible="1"/>
                 <field name="buyer_name" optional="show"/>
                 <field name="product_id" readonly="1" invisible="1"/>
                 <field name="product_template_id" readonly="1"/>
@@ -151,7 +129,7 @@
                 <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="balance_qty" readonly="1" force_save="1" optional="show"/>
-                <field name="uotput_qty" attrs="{'readonly': [('operation_of', 'not in', ('output','qc','lot'))]}" optional="show"/>
+                <field name="uotput_qty" attrs="{'readonly': [('state', 'not in', ('done','cancel','closed','partial'))]}" optional="show"/>
                 <field name="revision_no" readonly="1" force_save="1" optional="show"/>
                 <field name="closing_date" readonly="1" force_save="1" optional="show"/>
                 <field name="state" readonly="1" force_save="1" optional="show"/>
@@ -167,12 +145,15 @@
         <field name="view_mode">tree</field>
         <field name="view_id" ref="view_operation_packing_tree" />
         <field name="search_view_id" ref="view_mrp_operatin_packing_search" />
+        <field name="domain">[('oa_id','!=',False)]</field>
+        <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
+        <field name="context">{'search_default_pending': 1}</field>
     </record>
 
     <menuitem id="menu_operation_packing" 
               name="Operation Packing" 
               action="action_operation_packing" 
-              parent="mrp.menu_mrp_manufacturing"
+              parent="mrp.menu_mrp_root"
               sequence="5"/>
     
 </odoo>

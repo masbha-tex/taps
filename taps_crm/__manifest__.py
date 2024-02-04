@@ -34,7 +34,8 @@
         'views/google_chart_view.xml',
         'views/saleperson_wise_customer_view.xml',
         'views/approval_matrix.xml',
-        'views/reallocation.xml'
+        'views/customer_reallocation.xml',
+        'views/activity.xml'
     ],
     # only loaded in demonstration mode
     'qweb': [

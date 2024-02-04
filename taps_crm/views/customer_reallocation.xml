@@ -1,18 +1,18 @@
 <odoo>
 
     <record id="reallocation_template_list" model="ir.ui.view">
-            <field name="name">reallocation.template.list</field>
-            <field name="model">reallocation.template</field>
+            <field name="name">customer.reallocation.list</field>
+            <field name="model">customer.reallocation</field>
             <field name="arch" type="xml">
                 <tree string="Reallocation Form">
                     <field name="name"/>
-                    <field name="type"/>
+                    <field name="explanation"/>
                 </tree>
             </field>
     </record>
     <record id="reallocation_template_form" model="ir.ui.view">
-            <field name="name">reallocation.template.form</field>
-            <field name="model">reallocation.template</field>
+            <field name="name">customer.reallocation.form</field>
+            <field name="model">customer.reallocation</field>
             <field name="arch" type="xml">
                 
                 <form string="Reallocation Form View">
@@ -33,7 +33,7 @@
                         
                         <group>
                             <group>
-                                <field name="type"/>
+                                <field name="explanation"/>
                                 
                             </group>
                             <group>
@@ -47,23 +47,29 @@
                                     string="Reallocation Line"
                                     editable="bottom">
                                         <control>
-                                        <create name="add_product_control" string="Add a product"/>
+                                        <create name="add_product_control" string="Add a Salesperson"/>
                                         <!-- <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
                                         <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/> -->
                                     </control>
-                                        <!-- <field name="domain" invisible="1"/> -->
+                                        
                                         
                                         <field name="existing_user"/>
                                         <field name="new_user"/>
                                         <field name="customer_domain" invisible="1"/>
-                                        <field name="select_customer" domain="customer_domain" widget="many2many_tags"/>
+                                        <field name="select_customer" domain="customer_domain" widget="many2many_tags" force_save="1"/>
                                         <field name="name" invisible="1"/>
-                                        <field name="is_removed"/>
+                                        <field name="buyer"/>
+                                        <field name="keep_both"/>
                                     </tree>
                                 </field>
                              </page>
+                            
                         </notebook>
-                    
+                    <div class="oe_chatter">
+                                <field name="message_follower_ids"/>
+                                <field name="activity_ids"/>
+                                <field name="message_ids"/>
+                          </div>
                     </sheet>
                     
                     
@@ -71,25 +77,25 @@
             </field>
     </record>
     <record id="reallocation_line_tree" model="ir.ui.view">
-            <field name="name">reallocation.template.line.tree</field>
-            <field name="model">reallocation.template.line</field>
+            <field name="name">customer.reallocation.line.tree</field>
+            <field name="model">customer.reallocation.line</field>
             <field name="arch" type="xml">
                 <tree string="Reallocation Line Tree" create="false">
-                    <!-- <field name="domain" invisible="1"/> -->
+                   
                     
                     
                     <field name="existing_user"/>
                     <field name="new_user"/>
                     <field name="customer_domain" invisible="1"/>
-                    <field name="select_customer" domain="customer_domain" widget="many2many_tags"/>
-                    
-                    <field name="is_removed"/>
+                    <field name="select_customer" domain="customer_domain" widget="many2many_tags" force_save="1"/>
+                    <field name="buyer"/>
+                    <field name="keep_both"/>
                 </tree>
             </field>
         </record>
     <record model="ir.actions.act_window" id="reallocation_template_action">
             <field name="name">Re-Allocation Form</field>
-            <field name="res_model">reallocation.template</field>
+            <field name="res_model">customer.reallocation</field>
             <field name="view_mode">tree,form</field>
     </record>
     <menuitem

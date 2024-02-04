@@ -47,6 +47,7 @@
         'views/mrp_workorder.xml',
         'views/manufacturing.xml',
         'views/operation_details.xml',
+        'views/operation_packing.xml',
         'views/mrp_workcenter.xml',
         'views/machine_list.xml',
         'views/packing_report_view.xml',

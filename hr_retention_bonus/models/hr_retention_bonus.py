@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-from datetime import datetime
+from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError, UserError
 
@@ -116,14 +116,16 @@ class HrRetentionBonus(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submit', 'Submitted'),
+        ('approve0', 'HoD Approved'),
         ('approve1', 'HoHR Approved'),
         ('approve2', 'HoFC Approved'),
-        ('approve3', 'DS Approved'),
+        ('approve3', 'Approved'),
         ('refuse', 'Refused'),
         ('cancel', 'Canceled'),
     ], string="Status", default='draft', tracking=True, store=True, required=True)
     
     submit_uid = fields.Many2one('res.users', ondelete="set null", string="Submit by", readonly=True, copy=True, store=True, help="Submit by")
+    approve0_uid = fields.Many2one('res.users', ondelete="set null", string="HoD Approved", readonly=True, copy=True, store=True, help="HoD Approved")
     approve1_uid = fields.Many2one('res.users', ondelete="set null", string="HoHR Approved", readonly=True, copy=True, store=True, help="HoHR Approved")
     approve2_uid = fields.Many2one('res.users', ondelete="set null", string="HoFC Approved", readonly=True, copy=True, store=True, help="HoFC Approved")
     approve3_uid = fields.Many2one('res.users', ondelete="set null", string="DS Approved", readonly=True, copy=True, store=True, help="DS Approved")
@@ -193,6 +195,10 @@ class HrRetentionBonus(models.Model):
     def action_submit(self):
         self.write({'state': 'submit',
                     'submit_uid': self.env.context.get('user_id', self.env.user.id)})
+    def action_approval_0(self):
+        self.write({'state': 'approve0',
+                    'approve0_uid': self.env.context.get('user_id', self.env.user.id)})
+                
     def action_approval_1(self):
         self.write({'state': 'approve1',
                     'approve1_uid': self.env.context.get('user_id', self.env.user.id)})
@@ -263,8 +269,9 @@ class HrRetentionBonus(models.Model):
 
     def _action_retention_bonus_employee_reminder_email(self):
         # docs = self.env['hr.retention.bonus'].search([])
+        # raise UserError((date.today()))
         docs = self.env['hr.retention.bonus'].search([('date', '<', (date.today())),('entitlement_date','>', date.today())])
-        raise UserError((docs.id))
+        # raise UserError((len(docs.ids)))
         for rec in docs:
             raise UserError((dif_year))
             # current_date = date.today()

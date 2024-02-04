@@ -19,7 +19,7 @@
                 <button name="action_submit" type="object" string="Submit" states="draft" icon="fa-thumbs-up" class="btn-primary"/>
                 <button name="action_approval_1" type="object" string="HoHR Approve" states="submit" icon="fa-check" class="btn-info" groups="hr_retention_bonus.group_manager_retention_bonus"/>
                 <button name="action_approval_2" type="object" string="HoFC Approve" states="approve1" icon="fa-check" class="btn-success" groups="hr_retention_bonus.group_manager_retention_bonus"/>
-                <button name="action_approval_3" type="object" string="DS Approve" states="approve2" icon="fa-check" class="btn-warning" groups="hr_retention_bonus.group_manager_retention_bonus"/>
+                <button name="action_approval_3" type="object" string="Approved" states="approve2" icon="fa-check" class="btn-warning" groups="hr_retention_bonus.group_manager_retention_bonus"/>
                 <button name="action_refuse" type="object" string="Refuse" icon="fa-times" states="submit,approve1,approve2" groups="hr_retention_bonus.group_manager_retention_bonus"/>
             </tree>
         </field>
@@ -36,12 +36,12 @@
                     <button name="action_submit" confirm="Are you sure to submit HoHR?" type="object" string="Submit" states="draft" class="btn-primary"/>
                     <button name="action_approval_1" confirm="Are you sure to recommend HoFC?" type="object" string="HoHR Approve" states="submit" class="btn-info" groups="hr_retention_bonus.group_manager_retention_bonus"/>
                     <button name="action_approval_2" confirm="Are you sure to recommend DS?" type="object" string="HoFC Approve" states="approve1" class="btn-success" groups="hr_retention_bonus.group_manager_retention_bonus"/>
-                    <button name="action_approval_3" confirm="Are you sure to Approved?" type="object" string="DS Approve" states="approve2" class="btn-warning" groups="hr_retention_bonus.group_manager_retention_bonus"/>
+                    <button name="action_approval_3" confirm="Are you sure to Approved?" type="object" string="Approved" states="approve2" class="btn-warning" groups="hr_retention_bonus.group_manager_retention_bonus"/>
 
                     <button name="action_cancel" type="object" string="Cancel" states="submit,refuse,draft" />                    
                     <button name="action_refuse" type="object" string="Refuse" states="submit,approve1,approve2,approve3"/>
                     <button name="action_draft" type="object" string="Set To Draft" states="refuse"/>                    
-                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve1,approve2,approve3" invisible="0" options="{'clickable': 0}''"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve0,approve1,approve2,approve3" invisible="0" options="{'clickable': 0}''"/>
                 </header>
 
                 <sheet>
