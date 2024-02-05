@@ -53,12 +53,12 @@
                                     </control>
                                         
                                         
-                                        <field name="existing_user"/>
-                                        <field name="new_user"/>
+                                        <field name="existing_user" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                        <field name="new_user" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                                         <field name="customer_domain" invisible="1"/>
-                                        <field name="select_customer" domain="customer_domain" widget="many2many_tags" force_save="1"/>
+                                        <field name="select_customer" domain="customer_domain" widget="many2many_tags" force_save="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                                         <field name="name" invisible="1"/>
-                                        <field name="buyer"/>
+                                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                                         <field name="keep_both"/>
                                     </tree>
                                 </field>

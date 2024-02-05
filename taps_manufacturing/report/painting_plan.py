@@ -48,6 +48,8 @@ class ReportPaintingPlan(models.AbstractModel):
         sheet.set_column(7, 7, 15)
         sheet.set_column(9, 9, 15)
         sheet.merge_range(0, 0, 0, 9, 'Painting Plan', merge_format)
+        sheet.merge_range(1, 0, 1, 9, f"Date: {datetime.now().strftime('%d %b %Y')}", merge_format)
+
         
         sheet.write(2, 0, "PLAN DATE", column_style)
         sheet.write(2, 1, "OA", column_style)
@@ -55,7 +57,7 @@ class ReportPaintingPlan(models.AbstractModel):
         sheet.write(2, 3, "SHADE", column_style)
         sheet.write(2, 4, "FINISH", column_style)
         sheet.write(2, 5, "Qty 3% ADD", column_style)
-        sheet.write(2, 6, "KG", column_style)
+        sheet.write(2, 6, "BALANCE", column_style)
         sheet.write(2, 7, "OPERATOR SIGNATUR", _column_style)
         sheet.write(2, 8, "URGENT LIST", _column_style)
         sheet.write(2, 9, "Remarks", column_style)
@@ -63,13 +65,13 @@ class ReportPaintingPlan(models.AbstractModel):
         for pid in planids:
             slider = pid.slidercodesfg.split("TZP-",1)[1]
             order_data = [
-                pid.action_date.strftime("%m-%d"),
+                pid.action_date.strftime("%d - %b"),
                 int(pid.oa_id.name.replace('OA','0')),
                 slider,
                 pid.shade,
                 pid.finish,
                 pid.qty,
-                '',
+                pid.balance_qty,
                 '',
                 '',
                 ''

@@ -19,7 +19,7 @@
                 <sheet>
                     <div class="oe_title">
                             <h1>
-                                <field name="salesperson" />
+                                <field name="salesperson" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             </h1>
                     </div>
                 
@@ -28,7 +28,7 @@
                     <field name="team_id"/>
                 </group>
                 <group>
-                    <field name="customers" widget="many2many_tags"/>
+                    <field name="customers" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                 </group>
                 
                 </sheet>
@@ -65,7 +65,7 @@
                 <sheet>
                     <div class="oe_title">
                             <h1>
-                                <field name="marketing_person" />
+                                <field name="marketing_person" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             </h1>
                     </div>
                 
@@ -74,7 +74,7 @@
                     <field name="team_id"/>
                 </group>
                 <group>
-                    <field name="brand" widget="many2many_tags"/>
+                    <field name="brand" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                 </group>
                 
                 </sheet>

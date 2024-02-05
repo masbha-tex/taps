@@ -40,14 +40,17 @@
                     <group>
                         <field name="explanation"/>
                     </group>
+                    <group>
+                        <field name="date"/>
+                    </group>
                 </group>
                 <group>
                     <group>
                         <field name="user_domain" invisible="1"/>
-                        <field name="user_id" domain="user_domain"/>
+                        <field name="user_id" domain="user_domain" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                     </group>
                     <group>
-                        <field name="new_team"/>
+                        <field name="new_team" attrs="{'invisible': [['type', '=', 'remove']] }" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                     </group>
                 </group>
                 

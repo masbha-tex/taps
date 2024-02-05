@@ -78,11 +78,24 @@ class CrmTeamTransfer(models.Model):
             raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
 
     def action_approve(self):
-        return {}
+        user = self.env['crm.approval.matrix'].search([('model_name', '=','crm.team.transfer')],limit=1)
+        if user.second_approval.id == self.env.user.id:
+            activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_crm.mail_activity_team_transfer_final_approval').id)])
+            activity_id.action_feedback(feedback="Approved")
+            if self. type == "add":
+                self.user_id.sale_team_id = self.new_team.id
+            if self. type == "remove":
+                self.user_id.sale_team_id = False
+            if self. type == "transfer":
+                self.user_id.sale_team_id = self.new_team.id
+            
+            self.write({'state':'approved'})
+        else:
+            raise UserError(("Only "+ user.second_approval.partner_id.name + " can approve this"))
 
     def action_set_draft(self):
-        return {}
+        self.write({'state':'draft'})
     def action_cancel(self):
-        return {}
+        self.write({'state':'cancel'})
     
     

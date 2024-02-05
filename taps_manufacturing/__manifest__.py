@@ -61,6 +61,7 @@
         'report/label_print_wizard.xml',
         'report/report_label_print.xml',
         'report/report_label_print_mt.xml',
+        'report/report_label_print_blank.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     'qweb': [

@@ -240,8 +240,9 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            for row_num in range(1, 50000):  
-                sheet.set_row(row_num, 32)
+            sheet.set_default_row(32)
+            # for row_num in range(1, 50000):  
+            #     sheet.set_row(row_num, 32)
                 
             if report_name == 'M#4 CE':
                 sheet.set_tab_color('#0000FE')
@@ -268,7 +269,9 @@ class MrpReportWizard(models.TransientModel):
            
 
             sheet.set_margins(left=0.2, right=0.3, top=0.2, bottom=0.2)
-            sheet.set_footer('Iteam: &A, Page: &P of &N, Printed at &D &T', {'margin': 0.05, 'align': 'center', 'font_size': 10})
+            sheet.set_header('Iteam: &A Page: &P of &N Printed at &D &T', {'margin': 0.08, 'align': 'center', 'font_size': 12})
+            # sheet.set_footer('Page: &P of &N','Printed at &D &T', {'margin': 0.08, 'align': 'right', 'font_size': 10})
+            
             sheet.fit_to_pages(1, 0)
             sheet.set_zoom(75)
             sheet.freeze_panes(1, 0)

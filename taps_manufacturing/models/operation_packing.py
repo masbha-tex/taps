@@ -30,8 +30,18 @@ class OperationPacking(models.Model):
     oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', readonly=True, store=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", check_company=True)
     
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True, store=True)
+    # related='sale_order_line.product_id',
 
-    product_id = fields.Many2one('product.product', related='sale_order_line.product_id',  check_company=True, string='Product Id')
+    product_id = fields.Many2one('product.product', compute='_compute_product_id',  check_company=True, string='Product Id')
+    @api.depends('product_id')
+    def _compute_product_id(self):
+        for rec in self:
+            if rec.sale_order_line:
+                rec.product_id = rec.sale_order_line.product_id.id
+            else:
+                raise UserError((self.product_id))
+                rec.product_id = rec.product_id
+                
     product_template_id = fields.Many2one('product.template', string='Product', related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)], store=True)
     
     fg_categ_type = fields.Char(string='Item', related='product_template_id.fg_categ_type.name', store=True)
@@ -92,6 +102,7 @@ class OperationPacking(models.Model):
     #             s.balance_qty = round((s.actual_qty - s.done_qty),2)
     #         else:
     #             s.balance_qty = round((s.qty - s.done_qty),2)
+    
     
     @api.depends('qty', 'done_qty', 'actual_qty')
     def get_ac_balance(self):

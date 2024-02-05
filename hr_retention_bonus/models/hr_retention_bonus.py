@@ -194,11 +194,13 @@ class HrRetentionBonus(models.Model):
         return self.write({'state': 'refuse'})
 
     def action_submit(self):
-        self.write({'state': 'submit',
-                    'submit_uid': self.env.context.get('user_id', self.env.user.id)})
+        if self.user_id:
+            self.write({'state': 'submit', 'submit_uid': self.env.context.get('user_id', self.env.user.id)})
+        else:
+            raise UserError(('Maybe you forget to add HoD!!'))
     def action_approval_0(self):
-        self.write({'state': 'approve0',
-                    'approve0_uid': self.env.context.get('user_id', self.env.user.id)})
+        
+        self.write({'state': 'approve0', 'approve0_uid': self.env.context.get('user_id', self.env.user.id)})
                 
     def action_approval_1(self):
         self.write({'state': 'approve1',

@@ -27,7 +27,7 @@ class LabelPrintingWizard(models.TransientModel):
     logo = "src/user/taps_sale/static/src/img/logo_tex_tiny.png" 
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True)
     report_type = fields.Selection([('pplg', 'Production Packing Label (General)'),
-                                ('fgcl', 'FG Carton Label')],
+                                    ('pplb', 'Production Packing Label (Blank)')],
                                string='Report Type', required=True, help='Report Type', default='pplg')
 
     company_name = fields.Char('Company Name', readonly=False, default='TEX ZIPPERS (BD) LIMITED')     
@@ -466,6 +466,9 @@ class LabelPrintingWizard(models.TransientModel):
                 return self.env.ref('taps_manufacturing.action_report_label_print').report_action(self, data=data)
             else:
                 return self.env.ref('taps_manufacturing.action_report_label_print_mt').report_action(self, data=data)
+        if self.report_type == 'pplb':
+            if self.company_id.id == 1:
+                return self.env.ref('taps_manufacturing.action_report_label_print_blank').report_action(self, data=data)
         else:
             raise ValidationError("Here is no PDF.")
 
@@ -595,6 +598,38 @@ class LabelPrintPDF(models.AbstractModel):
         }
 
 
-
+    class LabelPrintPDF(models.AbstractModel):
+        _name = 'report.taps_manufacturing.report_label_print_template_blank'
+        _description = 'label print template Blank'     
+         
+        def _get_report_values(self, docids, data=None):
+            common_data = [
+                    data.get('logo'), #0
+                    data.get('company_name'), #1
+                    data.get('company_address'), #2
+                    data.get('table_name'), #3
+                    data.get(' '), #4
+                    data.get(' '), #5
+                    data.get(' '), #6
+                    data.get('iteam'), #7
+                    data.get('finish'), #8
+                    data.get(' '), #9
+                    data.get(' '), #10
+                    data.get('qc_person'), #11
+                    data.get('pre_check_person'),#12
+                    data.get('printing_person'),#13
+                    data.get(' '), #14
+                    data.get('label_qty'), #15
+                    data.get('copy_of_print'), #16
+                    data.get('Country_name'), #17
+                    # data.get(docs.partner_id.name), #18 Customer Name
+                    # data.get(docs.name), #15
+                             
+            ]
+            common_data.append(common_data)
+            # raise UserError((docs.partner_id.name))  
+            return {
+                'datas': common_data,
+                 }
 
  

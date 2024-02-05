@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <template id="report_label_print_template">
+    <template id="report_label_print_template_blank">
         <t t-call="web.basic_layout">
                 <div class="page">
                     <t t-foreach="range(datas[16] or 1)" t-as="i">
@@ -34,7 +34,7 @@
                                         <strong>
                                             <span align="left">Customer: </span>
                                         </strong>
-                                            <t style="font-size:17px" t-esc="docs.partner_id.name"/>
+                                            <!-- <t style="font-size:17px" t-esc="docs.partner_id.name"/> -->
                                     
                                     </td>
                         </tr>
@@ -43,7 +43,7 @@
                                         <strong>
                                             <span align="left">Date: </span>                                            
                                         </strong>
-                                        <t t-esc="datas[4]"/> 
+                                        <!-- <t t-esc="datas[4]"/>  -->
                                         
                                     </td>
                         </tr>
@@ -55,7 +55,7 @@
                                              <span style="margin-top: 20px;">PI: </span>
                                              
                                          </strong>
-                                                <t t-esc="docs.oa_id.order_ref.pi_number"/> 
+                                                <!-- <t t-esc="docs.oa_id.order_ref.pi_number"/>  -->
                                     </td>
                                      <td colspan="3">                                         
                                         <strong>
@@ -70,7 +70,7 @@
                                         <strong>
                                             <span align="left">OA: </span>
                                         </strong>
-                                        <t t-esc="datas[6]"/>
+                                        <!-- <t t-esc="datas[6]"/> -->
                                    </td>
                         </tr>
                         <tr>
@@ -94,7 +94,7 @@
                                         <strong>
                                             <span align="left">Shade: </span>
                                         </strong>
-                                        <t t-esc="datas[9]"/>
+                                        <!-- <t t-esc="datas[9]"/> -->
                                     </td>
                         </tr>
                         <tr>
@@ -102,7 +102,7 @@
                                         <strong>
                                             <span align="left">Size: </span>
                                         </strong>
-                                        <t t-esc="datas[10]"/>
+                                        <!-- <t t-esc="datas[10]"/> -->
                                     </td>
                                     <td colspan="2"/>
                                     <td colspan="2">
@@ -110,19 +110,22 @@
                                             <span align="right">Qty: </span>
                                         </strong>
                                         <!-- <t t-esc="datas[15]"/> -->
-                                         <t t-esc="datas[15]"/>
+                                         <!-- <t t-esc="datas[15]"/> -->
                                     </td>
                         </tr>
                         <tr>
                             <td colspan="2" align="center">
                                 <span> QC By: </span>
                                     <br/>
-                                <t t-esc="datas[11]"/>                                    
+                                    <br/>
+                                <!-- <t t-esc="datas[11]"/>                                     -->
                             </td>
                             <td colspan="2" align="center">
                                 <span> Pre-check By: </span>
                                     <br/>
-                                <t t-esc="datas[12]"/>                                    
+                                    <br/>
+                                    <br/>
+                                <!-- <t t-esc="datas[12]"/>                                     -->
                             </td>
                             <td colspan="2" align="center">
                                 <span> Print By: </span>
@@ -130,12 +133,6 @@
                                 <t t-esc="datas[13]"/>                                    
                             </td>
                         </tr> 
-                        <tr> 
-                            <td colspan="6" align="center">
-                              <img alt="barcode" t-if="docs.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', docs.name, 300, 40)" style="max-height: 40pt" align="center"/>  <!--<t t-esc="docs.name" align="center"/> -->
-                            </td>
-                        </tr>
-                        
                     </table>
                         </div>
                     </t>
