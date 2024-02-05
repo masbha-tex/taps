@@ -267,10 +267,12 @@ class MrpReportWizard(models.TransientModel):
                 sheet.set_tab_color('#00B050')
            
 
-            sheet.set_margins(left=0.2, right=0.2, top=0.2, bottom=0.2)
+            sheet.set_margins(left=0.2, right=0.3, top=0.2, bottom=0.2)
+            sheet.set_footer('Iteam: &A, Page: &P of &N, Printed at &D &T', {'margin': 0.05, 'align': 'center', 'font_size': 10})
             sheet.fit_to_pages(1, 0)
             sheet.set_zoom(75)
             sheet.freeze_panes(1, 0)
+            sheet.set_paper(9)
             
             sheet.write(0, 0, "CUSTOMER NAME", column_style)
             sheet.write(0, 1, "PRODUCT", column_style)

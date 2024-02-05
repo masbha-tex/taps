@@ -68,7 +68,14 @@ class CrmTeamTransfer(models.Model):
         
 
     def action_hod(self):
-        return {}
+        user = self.env['crm.approval.matrix'].search([('model_name', '=','crm.team.transfer')],limit=1)
+        if user.first_approval.id == self.env.user.id:
+            activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_crm.mail_activity_team_transfer_first_approval').id)])
+            activity_id.action_feedback(feedback="Approved")
+            self.write({'state':'to approve'})
+            self.activity_schedule('taps_crm.mail_activity_team_transfer_final_approval', user_id=user.second_approval.id)
+        else:
+            raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
 
     def action_approve(self):
         return {}
