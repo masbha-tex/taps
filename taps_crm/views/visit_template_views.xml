@@ -427,7 +427,7 @@
 
     <menuitem
         id="crm_menu_visit"
-        name="VISIT"
+        name="Visit"
         parent="crm.crm_menu_root"
         action="taps_crm.crm_visit_action"
         sequence="-1"/>

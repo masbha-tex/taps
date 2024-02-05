@@ -5,8 +5,8 @@
         <field name="model">operation.packing</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name"/>
                 <field name="oa_id"/>
+                <field name="name"/>
                 <field name="fg_categ_type"/>
                 <field name="partner_id"/>
                 <field name="buyer_name"/>
@@ -78,7 +78,7 @@
                 <field name="qty" readonly="1" optional="show"/>
                 <field name="done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="balance_qty" readonly="1" force_save="1" optional="show"/>
-                <field name="uotput_qty" attrs="{'readonly': [('state', 'not in', ('done','cancel','closed','partial'))]}" optional="show"/>
+                <field name="uotput_qty" attrs="{'readonly': [('state', 'not in', ('partial','waiting'))]}" optional="show"/>
                 <field name="revision_no" readonly="1" force_save="1" optional="show"/>
                 <field name="closing_date" readonly="1" force_save="1" optional="show"/>
                 <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
@@ -129,7 +129,7 @@
                 <field name="price_unit" readonly="1" force_save="1" invisible="1"/>
                 <field name="done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="balance_qty" readonly="1" force_save="1" optional="show"/>
-                <field name="uotput_qty" attrs="{'readonly': [('state', 'not in', ('done','cancel','closed','partial'))]}" optional="show"/>
+                <field name="uotput_qty" attrs="{'readonly': [('state', 'not in', ('partial','waiting'))]}" optional="show"/>
                 <field name="revision_no" readonly="1" force_save="1" optional="show"/>
                 <field name="closing_date" readonly="1" force_save="1" optional="show"/>
                 <field name="state" readonly="1" force_save="1" optional="show"/>

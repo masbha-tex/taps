@@ -61,18 +61,20 @@ class ReAllocation(models.Model):
         
     def action_approve(self):
         user = self.env['crm.approval.matrix'].search([('model_name', '=','customer.reallocation')],limit=1)
-        # if user.second_approval.id == self.env.user.id:
-        #     activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_crm.mail_activity_customer_reallocation_final_approval').id)])
-        #     activity_id.action_feedback(feedback="Approved")
-        # data = self.reallocation_line
-        # for record in data:
-        #     record.
-        # raise UserError((data.ids))
-        # self.write({'state':'approved'})
+        if user.second_approval.id == self.env.user.id:
+            activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_crm.mail_activity_customer_reallocation_final_approval').id)])
+            activity_id.action_feedback(feedback="Approved")
+            data = self.reallocation_line
+            for record in data:
+                # raise UserError((record.new_user.customers))
+                record.new_user.write({'customers': [(4, select_customer)for select_customer in record.select_customer.ids]})
+                if record.keep_both:
+                    record.existing_user.write({'customers': [(3, select_customer)for select_customer in record.select_customer.ids]})
+                self.write({'state':'approved'})
             
            
-        # else:
-        #     raise UserError(("Only "+ user.second_approval.partner_id.name + " can approve this"))
+        else:
+            raise UserError(("Only "+ user.second_approval.partner_id.name + " can approve this"))
         
     def action_set_draft(self):
         self.write({'state':'draft'})
@@ -105,11 +107,12 @@ class ReAllocationLine(models.Model):
     reallocation_id = fields.Many2one('customer.reallocation', string='Reallocation', index=True, required=True, ondelete='cascade')
     name = fields.Char(string="Description")
     # domain = fields.Char()
+    
     customer_domain = fields.Char(compute="_compute_customer",readonly=True, store=True)
 
-    select_customer = fields.Many2many('res.partner', string='Select Customer', store=True, required=True)
-    existing_user = fields.Many2one('customer.allocation', string="Sales/Marketing person", domain="[('salesperson.share', '=', False),('salesperson.sale_team_id.name', '!=', 'MARKETING')]", required=True)
-    new_user = fields.Many2one('customer.allocation', string=" Assigned Sales/Marketing person", domain="[('salesperson.share', '=', False),('salesperson.sale_team_id.name', '!=', 'MARKETING')]", required=True)
+    select_customer = fields.Many2many('res.partner', string='Allocate Customers', store=True, required=True)
+    existing_user = fields.Many2one('customer.allocation', string="Existing Salesperson",)
+    new_user = fields.Many2one('customer.allocation', string="New Salesperson",)
     buyer = fields.Many2one('res.partner',string="Buyer", domain="[['buyer_rank', '=', 1]]") 
     
     keep_both = fields.Boolean('Keep In Both', help="Select to Keep the customer for both salesperson", default=False)
@@ -123,15 +126,13 @@ class ReAllocationLine(models.Model):
     @api.depends('existing_user')
     def _compute_customer(self):
        
-       search_customer = self.env['customer.allocation'].search([('salesperson', '=', self.existing_user.id)])
-       # raise UserError((search_customer.salesperson))
-       if search_customer:
-           for rec in search_customer:
-              self.customer_domain = json.dumps([('id', 'in', rec.customers.ids)])
-       else:
-           self.customer_domain = json.dumps([('customer_rank', '=', 1)])
-    
-    
+       
+       for rec in self:
+           if self.existing_user.salesperson:
+                  self.customer_domain = json.dumps([('id', 'in', self.existing_user.customers.ids)])
+           else:
+               self.customer_domain = json.dumps([('id', '=', False)])
+           # raise UserError((self.customer_domain)) 
         
             
     

@@ -1,8 +1,8 @@
 <odoo>
 
-    <record id="reallocation_template_list" model="ir.ui.view">
-            <field name="name">customer.reallocation.list</field>
-            <field name="model">customer.reallocation</field>
+    <record id="brand_reallocation_template_list" model="ir.ui.view">
+            <field name="name">brand.reallocation.list</field>
+            <field name="model">brand.reallocation</field>
             <field name="arch" type="xml">
                 <tree string="Reallocation Form">
                     <field name="name"/>
@@ -10,9 +10,9 @@
                 </tree>
             </field>
     </record>
-    <record id="reallocation_template_form" model="ir.ui.view">
-            <field name="name">customer.reallocation.form</field>
-            <field name="model">customer.reallocation</field>
+    <record id="brand_reallocation_template_form" model="ir.ui.view">
+            <field name="name">brand.reallocation.form</field>
+            <field name="model">brand.reallocation</field>
             <field name="arch" type="xml">
                 
                 <form string="Reallocation Form View">
@@ -55,10 +55,9 @@
                                         
                                         <field name="existing_user"/>
                                         <field name="new_user"/>
-                                        <field name="customer_domain" invisible="1"/>
-                                        <field name="select_customer" domain="customer_domain" widget="many2many_tags" force_save="1"/>
+                                        <field name="brand_domain" invisible="1"/>
+                                        <field name="select_brand" domain="brand_domain" widget="many2many_tags" force_save="1"/>
                                         <field name="name" invisible="1"/>
-                                        <field name="buyer"/>
                                         <field name="keep_both"/>
                                     </tree>
                                 </field>
@@ -76,9 +75,9 @@
                 </form>
             </field>
     </record>
-    <record id="reallocation_line_tree" model="ir.ui.view">
-            <field name="name">customer.reallocation.line.tree</field>
-            <field name="model">customer.reallocation.line</field>
+    <record id="brand_reallocation_line_tree" model="ir.ui.view">
+            <field name="name">brand.reallocation.line.tree</field>
+            <field name="model">brand.reallocation.line</field>
             <field name="arch" type="xml">
                 <tree string="Reallocation Line Tree" create="false">
                    
@@ -86,23 +85,21 @@
                     
                     <field name="existing_user"/>
                     <field name="new_user"/>
-                    <field name="customer_domain" invisible="1"/>
-                    <field name="select_customer" domain="customer_domain" widget="many2many_tags" force_save="1"/>
-                    <field name="buyer"/>
+                    <field name="brand_domain" invisible="1"/>
+                    <field name="select_brand" domain="brand_domain" widget="many2many_tags" force_save="1"/>
                     <field name="keep_both"/>
                 </tree>
             </field>
         </record>
-    <record model="ir.actions.act_window" id="reallocation_template_action">
-            <field name="name">Re-Allocation Form</field>
-            <field name="res_model">customer.reallocation</field>
+    <record model="ir.actions.act_window" id="brand_reallocation_template_action">
+            <field name="name">Brand ReAllocation Form</field>
+            <field name="res_model">brand.reallocation</field>
             <field name="view_mode">tree,form</field>
     </record>
-    
     <menuitem
-        id="reallocation_menu"
-        name="Customer Reallocation"
-        parent="taps_crm.crm_menu_customers"
-        action="taps_crm.reallocation_template_action"
-        sequence="8"/>
+        id="brand_reallocation_menu"
+        name="Brand Reallocation"
+        parent="taps_crm.crm_menu_brands"
+        action="taps_crm.brand_reallocation_template_action"
+        sequence="2"/>
 </odoo>

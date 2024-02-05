@@ -11,4 +11,5 @@ from . import google_chart
 from . import saleperson_wise_customer
 from . import approval_matrix
 from . import customer_reallocation
+from . import brand_reallocation
 

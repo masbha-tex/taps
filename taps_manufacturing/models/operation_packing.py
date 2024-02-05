@@ -85,19 +85,22 @@ class OperationPacking(models.Model):
     # based_on = fields.Char(string='Based On', store=True)
     
 
-    @api.depends('qty', 'done_qty')
-    def get_balance(self):
-        for s in self:
-            if s.next_operation in ('Dyeing Qc','Packing Output'):
-                s.balance_qty = round((s.actual_qty - s.done_qty),2)
-            else:
-                s.balance_qty = round((s.qty - s.done_qty),2)
+    # @api.depends('qty', 'done_qty')
+    # def get_balance(self):
+    #     for s in self:
+    #         if s.next_operation in ('Dyeing Qc','Packing Output'):
+    #             s.balance_qty = round((s.actual_qty - s.done_qty),2)
+    #         else:
+    #             s.balance_qty = round((s.qty - s.done_qty),2)
     
     @api.depends('qty', 'done_qty', 'actual_qty')
     def get_ac_balance(self):
         for s in self:
             if s.actual_qty>0:
                 s.ac_balance_qty = round((s.actual_qty - s.done_qty),2)
+                s.balance_qty = round((s.actual_qty - s.done_qty),2)
+            if s.qty>0:
+                s.balance_qty = round((s.qty - s.done_qty),2)
 
     
     actual_qty = fields.Float(string='OA Qty', related='sale_order_line.product_uom_qty', readonly=True, store=True, group_operator="sum")
@@ -170,9 +173,9 @@ class OperationPacking(models.Model):
 
         ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
         vals['name'] = ref
-            
+        # raise UserError((ref))    
         vals['state'] = 'waiting'
-        result = super(OperationDetails, self).create(vals)
+        result = super(OperationPacking, self).create(vals)
         return result                
 
     # @api.model
@@ -185,7 +188,7 @@ class OperationPacking(models.Model):
                     vals['state'] = 'waiting'
                 else:
                     vals['state'] = 'partial'
-        result = super(OperationDetails, self).write(vals)
+        result = super(OperationPacking, self).write(vals)
         return result                
 
     def set_group_output(self,mo_ids,qty,planned_qty):
@@ -229,18 +232,18 @@ class OperationPacking(models.Model):
                 
             s = out.write({'done_qty':done_qty})#done_qty = done_qty
             # manufac_ids = self.env["manufacturing.order"].browse(out.mrp_lines)
-            mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
-            mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
+            # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
+            mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
             
             move_line = None
             pr_pac_qty = mrp_data[0].product_template_id.pack_qty
-            mrp_lines = None
+            # mrp_lines = None
             if pr_pac_qty:
                 pack_qty = math.ceil(out.uotput_qty/pr_pac_qty)
                 fraction_pc_of_pack = round(((out.uotput_qty/pr_pac_qty) % 1)*pr_pac_qty)
 
             if mrp_data:
-                up_date = mrp_data.update({'packing_done': mrp_data[0].packing_done + out.uotput_qty, 'done_qty':datas.done_qty + out.uotput_qty})
+                up_date = mrp_data.update({'packing_done': mrp_data[0].packing_done + out.uotput_qty, 'done_qty':mrp_data[0].done_qty + out.uotput_qty})
                 out_qty = out.uotput_qty / len(mrp_data)
                 extra = out_qty
                 
@@ -315,8 +318,8 @@ class OperationPacking(models.Model):
             next = 'FG Packing'
             if can_create:
                 ope = self.env['operation.details'].create({'name':out.name,
-                                                        'mrp_lines':out.mrp_lines,
-                                                        'sale_lines':out.sale_lines,
+                                                        'mrp_lines':out.mrp_line.id,
+                                                        'sale_lines':out.sale_order_line.id,
                                                         'mrp_line':out.mrp_line.id,
                                                         'sale_order_line':out.sale_order_line.id,
                                                         'parent_id':out.id,
@@ -353,7 +356,7 @@ class OperationPacking(models.Model):
                                                         'operation_by':'Packing',
                                                         'based_on':'Lot Code',
                                                         'next_operation':next,
-                                                        'actual_qty':actual_qty,
+                                                        'actual_qty':out.actual_qty,
                                                         'qty':out.uotput_qty,
                                                         'pack_qty':pack_qty,
                                                         'fr_pcs_pack':fraction_pc_of_pack,

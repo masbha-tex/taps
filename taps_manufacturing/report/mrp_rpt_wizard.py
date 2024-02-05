@@ -198,6 +198,7 @@ class MrpReportWizard(models.TransientModel):
         _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -240,8 +241,34 @@ class MrpReportWizard(models.TransientModel):
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
             for row_num in range(1, 50000):  
-                sheet.set_row(row_num, 28)
-            
+                sheet.set_row(row_num, 32)
+                
+            if report_name == 'M#4 CE':
+                sheet.set_tab_color('#0000FE')
+            if report_name == 'M#5 CE':
+                sheet.set_tab_color('#C00000')
+            if report_name == 'M#5 OE':
+                sheet.set_tab_color('#FF0000')
+            if report_name == 'C#3 CE':
+                sheet.set_tab_color('#974706')
+            if report_name == 'C#3 Inv CE':
+                sheet.set_tab_color('#92D050')
+            if report_name == 'C#5 CE':
+                sheet.set_tab_color('#FFC000')
+            if report_name == 'C#5 OE':
+                sheet.set_tab_color('#FFFF00')
+            if report_name == 'P#3 CE':
+                sheet.set_tab_color('#002060')
+            if report_name == 'P#3 OE':
+                sheet.set_tab_color('#0070C0')
+            if report_name == 'P#5 OE':
+                sheet.set_tab_color('#0070C0')
+            if report_name == 'P#5 CE':
+                sheet.set_tab_color('#00B050')
+           
+
+            sheet.set_margins(left=0.2, right=0.2, top=0.2, bottom=0.2)
+            sheet.fit_to_pages(1, 0)
             sheet.set_zoom(75)
             sheet.freeze_panes(1, 0)
             
@@ -283,8 +310,8 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(10, 10, 11)
             sheet.set_column(11, 11, 11)
             sheet.set_column(12, 12, 15)
-            sheet.set_column(13, 13, 12)
-            sheet.set_column(14, 14, 12)
+            sheet.set_column(13, 13, 15)
+            sheet.set_column(14, 14, 15)
             sheet.set_column(14, 20, 12)
             sheet.set_column(15, 15, 0)
             sheet.set_column(17, 22, 0)
@@ -320,7 +347,7 @@ class MrpReportWizard(models.TransientModel):
                     # slnumber = slnumber+1 orders.buyer_name.name,
                     if x == 0:
                         payment_term = (orders.payment_term_id.name or '')
-                        customer = "\n".join([orders.partner_id.name,"\n",payment_term])
+                        customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name,"\n",payment_term])
                         pi_num = orders.order_ref.pi_number
                         oa_num = int(orders.name.replace('OA',''))
                         remarks = orders.remarks
@@ -361,6 +388,10 @@ class MrpReportWizard(models.TransientModel):
                     ready_qty = sum(m_order.mapped('done_qty'))
                     # raise UserError((o_data.id,ready_qty))
                     balance_qty = o_data.product_uom_qty - ready_qty
+                    if ready_qty == 0:
+                        ready_qty = None
+                    if balance_qty == 0:
+                        balance_qty = None
                     order_data = [
                         customer,
                         pr_name,
@@ -515,7 +546,7 @@ class MrpReportWizard(models.TransientModel):
                         elif col in(10,11,12,13,14):
                             sheet.write(row, col, l, format_label_5)
                         elif col == 14:
-                            sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), row_style)
+                            sheet.write(row, col,'=M{1}-N{1}'.format(row + 1), row_style)
                         else:
                             sheet.write(row, col, l, row_style)
                         if col == 12:
@@ -548,9 +579,9 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(row, 9, '')
                 sheet.write(row, 10, '')
                 sheet.write(row, 11, '')
-                sheet.write(row, 12, '=SUM(M{0}:M{1})'.format(row_rang+1, row), row_style)
-                sheet.write(row, 13, '=SUM(N{0}:N{1})'.format(row_rang+1, row), row_style)
-                sheet.write(row, 14, '=M{1}-N{1}'.format(row+1, row+1), row_style)
+                sheet.write(row, 12, '=SUM(M{0}:M{1})'.format(row_rang+1, row), row_style_sum)
+                sheet.write(row, 13, '=SUM(N{0}:N{1})'.format(row_rang+1, row), row_style_sum)
+                sheet.write(row, 14, '=M{1}-N{1}'.format(row+1, row+1), row_style_sum)
                 sheet.write(row, 15, '')
                 sheet.write(row, 16, shade_total, row_style)
                 sheet.write(row, 17, wire_total, row_style)
@@ -576,9 +607,9 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 9, '')
             sheet.write(row+1, 10, '')
             sheet.write(row+1, 11, '')
-            sheet.write(row+1, 12, '=SUM(M{0}:M{1})/2'.format(1, row_rang-1), row_style)
-            sheet.write(row+1, 13, '=SUM(N{0}:N{1})/2'.format(1, row_rang-1), row_style)
-            sheet.write(row+1, 14, '=M{1}-N{1}'.format(row_rang, row_rang), row_style)
+            sheet.write(row+1, 12, '=SUM(M{0}:M{1})/2'.format(1, row_rang-1), row_style_sum)
+            sheet.write(row+1, 13, '=SUM(N{0}:N{1})/2'.format(1, row_rang-1), row_style_sum)
+            sheet.write(row+1, 14, '=M{1}-N{1}'.format(row_rang, row_rang), row_style_sum)
             sheet.write(row+1, 15, '')
             sheet.write(row+1, 16, '')
             sheet.write(row+1, 17, '')
@@ -587,25 +618,23 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 20, '')
             sheet.write(row+1, 21, '')
 
-            # # start_column = 0
-            # # end_column = 15
-            # # start_row = 0
-            # # end_row = row+1
-
-            # # print_area = f'{start_column}:{end_column}{start_row}:{end_column}{end_row}'
-            # # sheet.print_area(0, 0, end_row, len(sheet.row_dimensions), start_column, get_column_letter(column_index_from_string(end_column)), print_area)
-
-            # #print_area = f'{start_column}:{end_column}{start_row}:{end_column}{end_row}'
-            # sheet.print_area(print_area)
-            # sheet.print_area(print_area)
+        # def delete_zero_value(worksheet, row, col, format=None):
+        #     # Write a blank cell and check if the value is 0
+        #     worksheet.write_blank(row, col, None, format)
+        #     cell = worksheet.cell(row, col)
+        #     if cell.is_blank:
+        #         # Set the cell to blank if the value is 0
+        #         worksheet.write_blank(row, col, None, format)
         
-        # sheet.print_area('A1:H20')
-        # sheet.set_paper(9)
-        # sheet.fit_to_pages(1, 1)
-        # sheet.print_area(0, 0, len(sale_orders), 16)
-        
-        # for row_num in range(1, len(sale_orders)):  
-        #         sheet.set_row(row_num, 100)
+        # # Iterate through rows and delete 0 values in the 13th and 14th columns
+        # for row in range(1, sheet.dim_rowmax + 1):
+        #     delete_zero_value(sheet, row, 13, row_style)
+        #     delete_zero_value(sheet, row, 14, row_style)
+
+
+
+
+            
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -1086,6 +1115,7 @@ class MrpReportWizard(models.TransientModel):
         for day in range(1, last_day + 1):
             yield day
 
+    #code for packing_invoice
     def daily_pr_xls_template(self, docids, data=None):
         
         
@@ -1145,6 +1175,9 @@ class MrpReportWizard(models.TransientModel):
                 comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() <= full_date.date())
                 
                 sheet = workbook.add_worksheet(('%s' % (report_name)))
+
+                sheet.set_zoom(85)
+                sheet.fit_to_pages(1, 0)
                 
                 
                 sheet.write(0, 0, "DATE :", column_style)
@@ -1171,16 +1204,19 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(1, 8, "COMULATIVE RELEASED", column_style)
                 sheet.write(1, 9, "PENDING OA", column_style)
     
-                sheet.set_column(0, 0, 20)
-                sheet.set_column(1, 1, 15)
-                sheet.set_column(2, 2, 15)
-                sheet.set_column(3, 3, 15)
-                sheet.set_column(4, 4, 15)
-                sheet.set_column(5, 5, 15)
-                sheet.set_column(6, 6, 15)
-                sheet.set_column(7, 7, 15)
-                sheet.set_column(8, 8, 15)
-                sheet.set_column(9, 9, 15)
+                sheet.set_column(0, 0, 17)
+                sheet.set_column(1, 1, 12)
+                sheet.set_column(2, 2, 12)
+                sheet.set_column(3, 3, 12)
+                sheet.set_column(4, 4, 12)
+                sheet.set_column(5, 5, 12)
+                sheet.set_column(6, 6, 12)
+                sheet.set_column(7, 7, 12)
+                sheet.set_column(8, 8, 12)
+                sheet.set_column(9, 9, 12)
+                sheet.set_column(10, 10, 0)
+                # sheet.set_column(10, 10, 0)
+                sheet.set_column(11, 18, 6)
     
                 closed_ids = 0
                 # items = datewise_outputs.mapped('fg_categ_type')
@@ -1557,10 +1593,13 @@ class MrpReportWizard(models.TransientModel):
         
         column_merge_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
         
-        _row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
+        _row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter', 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
+        row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#FFFF00','left': True, 'top': True, 'right': True, 'bottom': True}) 
         
-        row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'align': 'center','valign': 'vcenter', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
         
@@ -1583,6 +1622,8 @@ class MrpReportWizard(models.TransientModel):
                 datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
                             
                 sheet = workbook.add_worksheet(('%s' % (report_name)))
+                for col_number in range(16):  # 0 to 12
+                    sheet.write(25, col_number, None, row_style_sum)
                 
                 
                 sheet.write(0, 0, "DATE :", column_style)
@@ -1597,8 +1638,14 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(1, 0, "PRODUCT", column_style)
                 sheet.write(1, 1, "PACKING PCS", column_style)
     
-                sheet.set_column(0, 0, 20)
-                sheet.set_column(1, 1, 15)
+                sheet.set_column(0, 0, 16)
+                sheet.set_column(1, 1, 12)
+                sheet.set_column(2, 16, 7)
+                sheet.set_column(7, 8, 0)
+                sheet.set_column(14,14, 0)
+                sheet.set_column(6,6, 0)
+
+                sheet.set_row(1, 30)
     
                 closed_ids = 0
                 # items = datewise_outputs.mapped('fg_categ_type')
@@ -1710,13 +1757,13 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(row, 0, 'Total Order Close :', format_label_1)
                 sheet.write(row, 1, closed_ids, format_label_1)
                 sheet.write(row, 2, '', format_label_1)
-                sheet.write(row, 3, '', format_label_1)
-                sheet.write(row, 4, '', format_label_1)
-                sheet.write(row, 5, '', format_label_1)
-                sheet.write(row, 6, '', format_label_1)
-                sheet.write(row, 7, '', format_label_1)
-                sheet.write(row, 8, '', format_label_1)
-                sheet.write(row, 9, '', format_label_1)
+                sheet.write(row, 3, '', format_label_3)
+                sheet.write(row, 4, '', format_label_3)
+                sheet.write(row, 5, '', format_label_3)
+                sheet.write(row, 6, '', format_label_3)
+                sheet.write(row, 7, '', format_label_3)
+                sheet.write(row, 8, '', format_label_3)
+                sheet.write(row, 9, '', format_label_3)
                 row += 1    
                 sheet.write(row, 0, 'TOTAL', row_style)
                 sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)

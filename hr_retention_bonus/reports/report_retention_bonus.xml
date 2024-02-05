@@ -10,7 +10,10 @@
                                   <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #616161; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Draft</h2>
                               </t>
                               <t t-if="o.state == 'submit'">
-                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #4FC3F7; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Waiting for HoHR Approval</h2>
+                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #4FC3F7; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Waiting for HoD Approval</h2>
+                              </t>
+                              <t t-if="o.state == 'approve0'">
+                                  <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #0000ff; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Waiting for HoHR Approval</h2>
                               </t>
                               <t t-if="o.state == 'approve1'">
                                   <h2 style="position: absolute; top: 35px; right: -45px; width: 200px; padding: 10px; background-color: #26A69A; color: #fff; font-size: 16px; font-weight: bold; text-align: center; transform: rotate(45deg); -webkit-transform: rotate(45deg); z-index: 9999;">Waiting for HoFC Approval</h2>
@@ -136,13 +139,25 @@
                             </table>
                         </div>
                     </div>
-                    
                     <br/>
                         <div class="row mt32 mb32">
                           <div class="col-3 bm-2">
                               <strong>Submit By:</strong>
                               <br/>
                               <t t-esc="o.submit_uid.name"/>
+                          </div>
+                        </div>
+                    <br/>
+                        <div class="row mt32 mb32">
+                          <!-- <div class="col-3 bm-2">
+                              <strong>Submit By:</strong>
+                              <br/>
+                              <t t-esc="o.submit_uid.name"/>
+                          </div> -->
+                            <div class="col-3 bm-2">
+                              <strong>HoD Approved</strong>
+                              <br/>
+                              <t t-esc="o.approve0_uid.name"/>
                           </div>
                           <div class="col-3 bm-2">
                               <strong>HoHR Approved</strong>
@@ -156,7 +171,7 @@
                               <t t-esc="o.approve2_uid.name"/>
                           </div>
                           <div class="col-3 bm-2">
-                              <strong>DS Approved</strong>
+                              <strong>Approved</strong>
                               <br/>
                               <t t-esc="o.approve3_uid.name"/>
                               <p class="m-0"/>

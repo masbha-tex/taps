@@ -35,6 +35,8 @@
         'views/saleperson_wise_customer_view.xml',
         'views/approval_matrix.xml',
         'views/customer_reallocation.xml',
+        'views/brand_reallocation.xml',
+        'views/crm_team_transfer.xml',
         'views/activity.xml'
     ],
     # only loaded in demonstration mode

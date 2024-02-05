@@ -34,24 +34,28 @@
                                         <strong>
                                             <span align="left">Customer: </span>
                                         </strong>
-                                        <t style="font-size:17px" t-esc="docs.partner_id.name"/> 
+                                            <t t-if="datas[6] == ' '" style="font-size:17px" t-esc="docs.partner_id.name"/>
+                                    
                                     </td>
                         </tr>
                         <tr>
                                     <td colspan="6">                                       
                                         <strong>
-                                            <span align="left">Date: </span>
+                                            <span align="left">Date: </span>                                            
                                         </strong>
-                                        <t t-esc="datas[4]"/> 
+                                        <t t-if="datas[6] == ' '" t-esc="datas[4]"/> 
+                                        
                                     </td>
                         </tr>
                     <tr>
                                     
                                     <td colspan="3">
                                          <strong>
+                                             
                                              <span style="margin-top: 20px;">PI: </span>
+                                             
                                          </strong>
-                                    <t t-esc="docs.oa_id.order_ref.pi_number"/> 
+                                                <t t-if="datas[6] == ' '" t-esc="docs.oa_id.order_ref.pi_number"/> 
                                     </td>
                                      <td colspan="3">                                         
                                         <strong>
@@ -110,6 +114,7 @@
                                     </td>
                         </tr>
                         <tr>
+                             <t t-if="datas[6] == ' '">
                             <td colspan="2" align="center">
                                 <span> QC By: </span>
                                     <br/>
@@ -125,11 +130,13 @@
                                     <br/>
                                 <t t-esc="datas[13]"/>                                    
                             </td>
+                             </t>
                         </tr> 
                         <tr> 
                             <td colspan="6" align="center">
+                                <t t-if="datas[6] == ' '">
                               <img alt="barcode" t-if="docs.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', docs.name, 300, 40)" style="max-height: 40pt" align="center"/>  <!--<t t-esc="docs.name" align="center"/> -->
-                                   
+                                </t>
                             </td>
                         </tr>
                         

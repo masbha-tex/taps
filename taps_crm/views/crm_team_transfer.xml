@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="crm_team_transfer_list" model="ir.ui.view">
+        <field name="name">crm.team.transfer.list</field>
+        <field name="model">crm.team.transfer</field>
+        <field name="arch" type="xml">
+            <tree string="Team Transfer List">
+                <field name="type"/>
+                <field name="user_domain" invisible="1"/>
+                <field name="user_id" domain="user_domain"/>
+                <field name="existing_team"/>
+                <field name="new_team"/>
+            </tree>
+        </field>
+    </record>
+    <record id="crm_team_transfer_form" model="ir.ui.view">
+        <field name="name">crm.team.transfer.form</field>
+        <field name="model">crm.team.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Team Transfer Form">
+                <header>
+                    <button name="action_submit_approval" type="object" string="Submit" attrs= "{'invisible': [('state', 'not in', ['draft'])]}" help="Click On Submit to send for approval "/>
+                        <button name="action_hod" type="object" string="Head Of Sales" attrs= "{'invisible': [('state', 'not in', ['submitted'])]}" help="Click On Approve to create a record"/>
+                        <button name="action_approve" type="object" string="Approve" attrs= "{'invisible': [('state', 'not in', ['to approve'])]}" help="Click On Approve to create a record"/>
+                        <button name="action_set_draft" type="object" string="Set to Draft" attrs= "{'invisible': [('state', 'not in', ['cancel'])]}"/>
+                        <button name="action_cancel" type="object" string="Cancel" attrs= "{'invisible': [('state', 'not in', ['approved'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,to approve,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                    </div>
+                
+                <group>
+                    <field name="type" widget="radio" options="{'horizontal': true}"/>
+                </group>
+                <group>
+                    <group>
+                        <field name="explanation"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="user_domain" invisible="1"/>
+                        <field name="user_id" domain="user_domain"/>
+                    </group>
+                    <group>
+                        <field name="new_team"/>
+                    </group>
+                </group>
+                
+                <group>
+                    
+                    <field name="existing_team" force_save="1" attrs="{'invisible': [['type', '=', 'add']] }"/>
+                </group>
+                
+                
+                
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
+                
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="crm_team_transfer_action">
+            <field name="name">Team Transfer</field>
+            <field name="res_model">crm.team.transfer</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+    
+    <menuitem
+        id="crm_menu_Team"
+        name="Team"
+        parent="crm.crm_menu_root"
+        groups = "sales_team.group_sale_manager"
+        sequence="4"/>
+    
+    <menuitem
+        id="crm_team_transfer"
+        name="Team"
+        parent="taps_crm.crm_menu_Team"
+        action="taps_crm.crm_team_transfer_action"
+        sequence="1"/>
+    
+    
+</odoo>

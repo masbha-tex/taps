@@ -27,10 +27,9 @@ class LabelPrintingWizard(models.TransientModel):
     logo = "src/user/taps_sale/static/src/img/logo_tex_tiny.png" 
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True)
     report_type = fields.Selection([('pplg', 'Production Packing Label (General)'),
-                                    ('lpi', 'Label Print Information'),
-                                    ('fgcl', 'FG Carton Label'),
-                                    ('pplo', 'Production Packing Label (Others)')],
-                                   string='Report Type', required=True, help='Report Type', default='pplg')
+                                ('fgcl', 'FG Carton Label')],
+                               string='Report Type', required=True, help='Report Type', default='pplg')
+
     company_name = fields.Char('Company Name', readonly=False, default='TEX ZIPPERS (BD) LIMITED')     
     company_address = fields.Char('Company Address', readonly=False, default='Plot # 180, 264 & 273 Adamjee Export Processing Zone, Adamjee Nagar, Shiddhirgonj, Narayangonj, Bangladesh')  
 

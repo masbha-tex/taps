@@ -15,12 +15,14 @@
                 <field name="duration"/>
                 <field name="entitlement_date"/>
                 <field name="payment_date"/>
+                <field name="user_id" options="{'no_create': True}"/>
                 <field name="state" invisible="0" widget="badge" decoration-success="state == 'approve3'" decoration-warning="state == 'submit'" decoration-danger="state == 'refuse'" decoration-muted="state == 'draft'" decoration-primary="state == 'approve1'" decoration-info="state == 'approve2'"/>
                 <button name="action_submit" type="object" string="Submit" states="draft" icon="fa-thumbs-up" class="btn-primary"/>
-                <button name="action_approval_1" type="object" string="HoHR Approve" states="submit" icon="fa-check" class="btn-info" groups="hr_retention_bonus.group_manager_retention_bonus"/>
+                <button name="action_approval_0" type="object" string="HoD Approve" states="submit" icon="fa-check" class="bg-primary" groups="hr_retention_bonus.group_manager_retention_bonus"/>
+                <button name="action_approval_1" type="object" string="HoHR Approve" states="approve0" icon="fa-check" class="btn-info" groups="hr_retention_bonus.group_manager_retention_bonus"/>
                 <button name="action_approval_2" type="object" string="HoFC Approve" states="approve1" icon="fa-check" class="btn-success" groups="hr_retention_bonus.group_manager_retention_bonus"/>
                 <button name="action_approval_3" type="object" string="Approved" states="approve2" icon="fa-check" class="btn-warning" groups="hr_retention_bonus.group_manager_retention_bonus"/>
-                <button name="action_refuse" type="object" string="Refuse" icon="fa-times" states="submit,approve1,approve2" groups="hr_retention_bonus.group_manager_retention_bonus"/>
+                <button name="action_refuse" type="object" string="Refuse" icon="fa-times" states="submit,approve0,approve1,approve2" groups="hr_retention_bonus.group_manager_retention_bonus"/>
             </tree>
         </field>
     </record>
@@ -34,12 +36,13 @@
                 <header>
                     <!-- <button name="compute_installment" type="object" string="Compute Installment" class="oe_highlight"  attrs="{'invisible':[('state','!=','draft')]}" groups="hr_retention_bonus.group_manager_retention_bonus"/> -->
                     <button name="action_submit" confirm="Are you sure to submit HoHR?" type="object" string="Submit" states="draft" class="btn-primary"/>
-                    <button name="action_approval_1" confirm="Are you sure to recommend HoFC?" type="object" string="HoHR Approve" states="submit" class="btn-info" groups="hr_retention_bonus.group_manager_retention_bonus"/>
+                    <button name="action_approval_0" confirm="Are you sure to recommend HoD?" type="object" string="HoD Approve" states="submit" class="btn-info" groups="hr_retention_bonus.group_manager_retention_bonus"/>
+                    <button name="action_approval_1" confirm="Are you sure to recommend HoFC?" type="object" string="HoHR Approve" states="approve0" class="btn-info" groups="hr_retention_bonus.group_manager_retention_bonus"/>
                     <button name="action_approval_2" confirm="Are you sure to recommend DS?" type="object" string="HoFC Approve" states="approve1" class="btn-success" groups="hr_retention_bonus.group_manager_retention_bonus"/>
                     <button name="action_approval_3" confirm="Are you sure to Approved?" type="object" string="Approved" states="approve2" class="btn-warning" groups="hr_retention_bonus.group_manager_retention_bonus"/>
 
                     <button name="action_cancel" type="object" string="Cancel" states="submit,refuse,draft" />                    
-                    <button name="action_refuse" type="object" string="Refuse" states="submit,approve1,approve2,approve3"/>
+                    <button name="action_refuse" type="object" string="Refuse" states="submit,approve0,approve1,approve2,approve3"/>
                     <button name="action_draft" type="object" string="Set To Draft" states="refuse"/>                    
                     <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve0,approve1,approve2,approve3" invisible="0" options="{'clickable': 0}''"/>
                 </header>
@@ -47,7 +50,8 @@
                 <sheet>
                     <widget name="web_ribbon" title="Refuse" bg_color="bg-danger" attrs="{'invisible': [('state', '!=', 'refuse')]}"/>
                     <widget name="web_ribbon" title="Cancel" bg_color="bg-dark" attrs="{'invisible': [('state', '!=', 'cancel')]}"/>
-                    <widget name="web_ribbon" title="Waiting for HoHR Approval" bg_color="bg-info" attrs="{'invisible': [('state', '!=', 'submit')]}"/>
+                    <widget name="web_ribbon" title="Waiting for HoD Approval" bg_color="bg-primary" attrs="{'invisible': [('state', '!=', 'submit')]}"/>
+                    <widget name="web_ribbon" title="Waiting for HoHR Approval" bg_color="bg-info" attrs="{'invisible': [('state', '!=', 'approve0')]}"/>
                     <widget name="web_ribbon" title="Waiting for HoFC Approval" bg_color="bg-success" attrs="{'invisible': [('state', '!=', 'approve1')]}"/>
                     <widget name="web_ribbon" title="Waiting for DS Approval" bg_color="bg-warning" attrs="{'invisible': [('state', '!=', 'approve2')]}"/>
                     <widget name="web_ribbon" title="Approved" bg_color="bg-success" attrs="{'invisible': [('state', '!=', 'approve3')]}"/>
@@ -73,6 +77,7 @@
                         <field name="payment_date" attrs="{'readonly':[('state','!=','draft')]}"/>
                         <field name="instant_payment" attrs="{'readonly':[('state','!=','draft')]}"/>
                         <field name="installment" class="oe_readonly"/>
+                        <field name="user_id" options="{'no_create': True}" attrs="{'readonly':[('state','!=','draft')]}"/>
                     </group>
                     <notebook>
                         <page string="Installments">
