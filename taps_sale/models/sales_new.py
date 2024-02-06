@@ -43,10 +43,7 @@ class SaleOrder(models.Model):
                                   relation='id_name',column1='id',column2='name',
                                   string='Sample Ref.', readonly=False, 
                                   domain=['|', ('sales_type', '=', 'sample'),('sales_type', '=', 'oldsa')])
-
     #sample_ref = fields.Many2many('sale.order', string='Sample Ref.', copy=False, states={'done': [('readonly', True)]})
-
-    
     sales_type = fields.Selection([
             ('oldsa', 'Old Sample'),
             ('sample', 'Sample Order'),
@@ -282,7 +279,7 @@ class SaleOrder(models.Model):
         
     def action_cancel(self):
         if self.state == "sale" and self.sales_type == "oa":
-            mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
+            mrp = self.env['operation.details'].search([('oa_id','=', self.id),('next_operation','=', 'FG Packing')])
             if mrp:
                 return {
                     'name': _('Cancel Warning'),
@@ -1659,6 +1656,7 @@ class SaleOrderLine(models.Model):
     is_copied = fields.Boolean('Copied',default=False)
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     rmc = fields.Float(string='RMC', store=True)
+    # oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=False)
     
     def _inverse_compute_product_code(self):
         pass
@@ -2262,7 +2260,7 @@ class SaleOrderLine(models.Model):
 
     def _check_mrp (self):
         if self.order_id.sales_type == 'oa':
-            mrp_ope = self.env['operation.details'].search([('company_id', '=', self.env.company.id),('oa_id', '=', self.order_id.id),('done_qty', '>', 0)])
+            mrp_ope = self.env['operation.details'].search([('company_id', '=', self.env.company.id),('oa_id', '=', self.order_id.id),('next_operation', '=', 'FG Packing'),('qty', '>', 0)])
             
             for li in self.ids:
                 exist_ope = mrp_ope.filtered(lambda op: str(li) in op.sale_lines)

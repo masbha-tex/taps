@@ -37,6 +37,7 @@
         'views/product_move.xml',
         'views/ageing.xml',
         'views/stock_opening_closing.xml',
+        'views/product_price_comparison.xml',
         'views/fg_category.xml',
         'security/ir.model.access.csv',
         #'wizard/stock_valuation_layer_revaluation_views.xml',

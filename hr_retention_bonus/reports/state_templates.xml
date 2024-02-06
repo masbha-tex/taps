@@ -1,0 +1,91 @@
+<odoo>
+    <data>
+        <template id="mail_bonus_submit_template">
+            <div style="margin:0px;padding: 0px;">
+                <span>This Retention Bonus need HoD Approval</span>
+                ${ctx['employee_to_name']}
+                <br/>
+                % if ctx.get('recipient_users'):
+                Here is the link of Retention Bonus:
+                <p style="margin:16px 0px 16px 0px;">
+                    <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+            View Retention Bonus
+                </a>
+                </p>
+                % endif
+            </div>
+        </template>
+        <template id="mail_bonus_approval_0_template">
+            <div style="margin:0px;padding: 0px;">
+                <span>This Retention Bonus need HoHR Approval</span>
+                <br/>
+                % if ctx.get('recipient_users'):
+                Here is the link of Retention Bonus:
+                <p style="margin:16px 0px 16px 0px;">
+                    <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+            View Retention Bonus
+                </a>
+                </p>
+                % endif
+            </div>
+        </template>
+        <template id="mail_bonus_approval_1_template">
+            <div style="margin:0px;padding: 0px;">
+                <span>This Retention Bonus need HoFC Approval</span>
+                <br/>
+                % if ctx.get('recipient_users'):
+                Here is the link of Retention Bonus:
+                <p style="margin:16px 0px 16px 0px;">
+                    <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+            View Retention Bonus
+                </a>
+                </p>
+                % endif
+            </div>
+        </template>
+        <template id="mail_bonus_approval_2_template">
+            <div style="margin:0px;padding: 0px;">
+                <span>This Retention Bonus need Final Approval</span>
+                <br/>
+                % if ctx.get('recipient_users'):
+                Here is the link of Retention Bonus:
+                <p style="margin:16px 0px 16px 0px;">
+                    <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+            View Retention Bonus
+                </a>
+                </p>
+                % endif
+            </div>
+        </template>
+        <!-- <template id="mail_bonus_approval_3_template">
+            <div style="margin:0px;padding: 0px;">
+                <span>This Retention Bonus need HoD Approval</span>
+                <br/>
+                % if ctx.get('recipient_users'):
+                Here is the link of Retention Bonus:
+                <p style="margin:16px 0px 16px 0px;">
+                    <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+            View Retention Bonus
+                </a>
+                </p>
+                % endif
+            </div>
+        </template> -->
+        <template id="mail_bonus_refused_template">
+            <div style="margin:0px;padding: 0px;">
+                <!-- <span>Dear ${ctx['employee_to_name']},</span> -->
+                <!-- <br/> -->
+                <span>Your Retention Bonus has been Refused</span>
+                <br/>
+                % if ctx.get('recipient_users'):
+                Here is the link of Retention Bonus:
+                <p style="margin:16px 0px 16px 0px;">
+                    <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
+            View Retention Bonus
+                </a>
+                </p>
+                % endif
+            </div>
+        </template>        
+    </data>
+</odoo>

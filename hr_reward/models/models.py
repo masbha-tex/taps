@@ -281,7 +281,7 @@ class HrReward(models.Model):
                     'recipient_users': employee.user_id,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
                 }
-
+                
                 RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)
                 subject = RenderMixin._render_template('Reward and Recognition', 'hr.reward', reward.ids, post_process=True)[reward.id]
                 body = RenderMixin._render_template(self.details, 'hr.reward', reward.ids, post_process=True)[reward.id]
@@ -329,7 +329,7 @@ class HrReward(models.Model):
                         }
                         body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                         mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-                    self.env['mail.mail'].sudo().create(mail_values).send()
+                    self.env['mail.mail'].sudo().create(mail_values)#.send()
                 else:
                     raise UserError(('Maybe forget to add Email Matrix like..EMAILTO, EMAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
                 

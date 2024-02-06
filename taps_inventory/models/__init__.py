@@ -8,3 +8,4 @@ from . import searching_date
 from . import stock_ageing
 from . import stock_ageing
 from . import fg_category
+from . import product_price_comparison

@@ -28,6 +28,7 @@
         'reports/report_action.xml',
         'reports/report_retention_bonus.xml',
         'reports/template.xml',
+        'reports/state_templates.xml',
         'wizard/retention_bonus_report_wizard.xml',
         
         #'views/hr_payroll.xml',

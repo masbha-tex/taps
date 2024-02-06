@@ -42,7 +42,9 @@ class LabelPrintingWizard(models.TransientModel):
     oa_number = fields.Many2one('sale.order', string='OA', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True)
     
     iteam = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'Iteams')]", check_company=True, string='Iteam', store=True, readonly=False)
-    # default=lambda self: self.get_default_iteam()
+    # else :
+    #     iteam = fields.Many2one('sale.order', string='Iteam', store=True, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('sales_type', '=', 'oa'), ('state', '=', 'sale')]", check_company=True)
+    # # default=lambda self: self.get_default_iteam()
     
     shade = fields.Many2one('selection.fields.data', domain="[('field_name', '=', 'shade')]", check_company=True, string='Shade', store=True,  readonly=False)
     # ,default=lambda self: self.get_default_shade()

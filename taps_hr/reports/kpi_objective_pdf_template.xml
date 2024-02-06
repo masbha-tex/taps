@@ -103,7 +103,7 @@
 						<!--		</tbody>-->
 						<!--	</table>-->
 						<!--</div>-->
-                        <div class="row py-2">
+                        <!-- <div class="row py-2">
 							<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt">
 								<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">
 									<strong>Revenue &amp; PAT</strong>
@@ -148,7 +148,7 @@
 									</tr>
 								</tbody>
 							</table>
-						</div>
+						</div> -->
 						<div class="row py-2">
 							<table class="table table-sm p-0 m-0" style="table-layout:fixed;font-size:9pt">
 								<caption align="center" style="background-color:#714B62;color: white;caption-side: top; display: table-caption;text-align: center;border: 1px solid black;padding: 5px;font-size: 15px;">

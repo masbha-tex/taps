@@ -626,106 +626,106 @@ class HeadwisePDFReport(models.TransientModel):
             total_weight_46 = 0
             total_weight_47 = 0
             # worksheet.set_row(8, 35)
-            worksheet.merge_range(row, 0, row, 19, 'Revenue & PAT', merge_format_)
-            row=7
+            # worksheet.merge_range(row, 0, row, 19, 'Revenue & PAT', merge_format_)
+            # row=7
             
-            # filtered_data = [line for line in report_data if line[48] == emp.id]
-            # raise UserError((filtered_data))
-            for line in report_data:
-                mrg_val = None    
-                if not line[48]:
-                    total_weight_35 += line[35]
-                    total_weight_36 += line[36]
-                    total_weight_37 += line[37]
-                    total_weight_38 += line[38]
-                    total_weight_39 += line[39]
-                    total_weight_40 += line[40]
-                    total_weight_41 += line[41]
-                    total_weight_42 += line[42]
-                    total_weight_43 += line[43]
-                    total_weight_44 += line[44]
-                    total_weight_45 += line[45]
-                    total_weight_46 += line[46]
-                    total_weight_47 += line[47]
-                    slnumber += 1
-                    col=0
-                    line.pop(48)
-                    if line[1]:
-                        worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
-                        worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
-                        worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
-                        worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
-                        worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
-                        worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
-                        # worksheet.write(sum(row, 0, row[2], 0, l, merge_format))
-                    wei = None
-                    for l in line:
-                        # len (line)
-                        # if line[6] == 'Weightage':
-                        #     raise UserError(('fefefgrgr'))
-                        if col == 1:
-                            etype = l[:1]
-                        if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style)
-                        if col == 1:
-                            worksheet.write(row, col, l, report_column_style_2)
-                        if col == 2:
-                            worksheet.write(row, col, '', report_column_style_2)
-                        elif col == 3:
+            # # filtered_data = [line for line in report_data if line[48] == emp.id]
+            # # raise UserError((filtered_data))
+            # for line in report_data:
+            #     mrg_val = None    
+            #     if not line[48]:
+            #         total_weight_35 += line[35]
+            #         total_weight_36 += line[36]
+            #         total_weight_37 += line[37]
+            #         total_weight_38 += line[38]
+            #         total_weight_39 += line[39]
+            #         total_weight_40 += line[40]
+            #         total_weight_41 += line[41]
+            #         total_weight_42 += line[42]
+            #         total_weight_43 += line[43]
+            #         total_weight_44 += line[44]
+            #         total_weight_45 += line[45]
+            #         total_weight_46 += line[46]
+            #         total_weight_47 += line[47]
+            #         slnumber += 1
+            #         col=0
+            #         line.pop(48)
+            #         if line[1]:
+            #             worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
+            #             worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
+            #             worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
+            #             worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
+            #             worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
+            #             worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
+            #             # worksheet.write(sum(row, 0, row[2], 0, l, merge_format))
+            #         wei = None
+            #         for l in line:
+            #             # len (line)
+            #             # if line[6] == 'Weightage':
+            #             #     raise UserError(('fefefgrgr'))
+            #             if col == 1:
+            #                 etype = l[:1]
+            #             if col == 0:
+            #                 worksheet.write(row, col, slnumber, report_column_style)
+            #             if col == 1:
+            #                 worksheet.write(row, col, l, report_column_style_2)
+            #             if col == 2:
+            #                 worksheet.write(row, col, '', report_column_style_2)
+            #             elif col == 3:
                             
-                            if etype == '%':
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                worksheet.write(row, col, l, report_column_style_2)                    
-                        elif col == 4:
+            #                 if etype == '%':
+            #                     ld = l/100
+            #                     worksheet.write(row, col, ld, report_column_style_3)
+            #                 else:
+            #                     worksheet.write(row, col, l, report_column_style_2)                    
+            #             elif col == 4:
                             
-                            if etype == '%':
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                worksheet.write(row, col, l, report_column_style_2)
-                        elif col == 6:
-                            wei = l
-                            worksheet.write(row, col, l, column_product_style)
+            #                 if etype == '%':
+            #                     ld = l/100
+            #                     worksheet.write(row, col, ld, report_column_style_3)
+            #                 else:
+            #                     worksheet.write(row, col, l, report_column_style_2)
+            #             elif col == 6:
+            #                 wei = l
+            #                 worksheet.write(row, col, l, column_product_style)
                         
-                        elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, report_column_style_3)
+            #             elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei == 'Weightage'):
+            #                 worksheet.write(row, col, l/100, report_column_style_3)
                         
-                        elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, report_column_style_2)
-                                # total_sum += l
-                        elif col == 19 and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, column_product_style_3)
-                            row+=1
-                            col=5
-                        elif col == 19 and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, column_product_style)
-                            row+=1
-                            col=5
-                        elif col==5:
-                            # grandtotal = grandtotal+l
-                            worksheet.write(row, col, l, report_column_style_3)
+            #             elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei != 'Weightage'):
+            #                 worksheet.write(row, col, l, report_column_style_2)
+            #                     # total_sum += l
+            #             elif col == 19 and (wei == 'Weightage'):
+            #                 worksheet.write(row, col, l/100, column_product_style_3)
+            #                 row+=1
+            #                 col=5
+            #             elif col == 19 and (wei != 'Weightage'):
+            #                 worksheet.write(row, col, l, column_product_style)
+            #                 row+=1
+            #                 col=5
+            #             elif col==5:
+            #                 # grandtotal = grandtotal+l
+            #                 worksheet.write(row, col, l, report_column_style_3)
                             
-                        col+=1
+            #             col+=1
 
-                    row = row-1
-                    row+=1
-            worksheet.write(row, 6, 'Total', column_product_style_)
-            worksheet.write(row, 7, total_weight_35/100, report_column_style_)
-            worksheet.write(row, 8, total_weight_36/100, report_column_style_)
-            worksheet.write(row, 9, total_weight_37/100, report_column_style_)
-            worksheet.write(row, 10, total_weight_38/100, report_column_style_)
-            worksheet.write(row, 11, total_weight_39/100, report_column_style_)
-            worksheet.write(row, 12, total_weight_40/100, report_column_style_)
-            worksheet.write(row, 13, total_weight_41/100, report_column_style_)
-            worksheet.write(row, 14, total_weight_42/100, report_column_style_)
-            worksheet.write(row, 15, total_weight_43/100, report_column_style_)
-            worksheet.write(row, 16, total_weight_44/100, report_column_style_)
-            worksheet.write(row, 17, total_weight_45/100, report_column_style_)
-            worksheet.write(row, 18, total_weight_46/100, report_column_style_)
-            worksheet.write(row, 19, total_weight_47/100, report_column_style_)
-            row+=1
+            #         row = row-1
+            #         row+=1
+            # worksheet.write(row, 6, 'Total', column_product_style_)
+            # worksheet.write(row, 7, total_weight_35/100, report_column_style_)
+            # worksheet.write(row, 8, total_weight_36/100, report_column_style_)
+            # worksheet.write(row, 9, total_weight_37/100, report_column_style_)
+            # worksheet.write(row, 10, total_weight_38/100, report_column_style_)
+            # worksheet.write(row, 11, total_weight_39/100, report_column_style_)
+            # worksheet.write(row, 12, total_weight_40/100, report_column_style_)
+            # worksheet.write(row, 13, total_weight_41/100, report_column_style_)
+            # worksheet.write(row, 14, total_weight_42/100, report_column_style_)
+            # worksheet.write(row, 15, total_weight_43/100, report_column_style_)
+            # worksheet.write(row, 16, total_weight_44/100, report_column_style_)
+            # worksheet.write(row, 17, total_weight_45/100, report_column_style_)
+            # worksheet.write(row, 18, total_weight_46/100, report_column_style_)
+            # worksheet.write(row, 19, total_weight_47/100, report_column_style_)
+            # row+=1
             
                     
             worksheet.merge_range(row, 0, row, 19, 'Objective / Score', merge_format_)
@@ -1324,118 +1324,118 @@ class HeadwisePDFReport(models.TransientModel):
             total_weight_58 = 0
             total_weight_59 = 0
             # worksheet.set_row(8, 35)
-            worksheet.merge_range(row, 0, row, 23, 'Revenue & PAT', merge_format_)
-            row=7
+            # worksheet.merge_range(row, 0, row, 23, 'Revenue & PAT', merge_format_)
+            # row=7
             
-            for line in report_data:
-                mrg_val = None    
-                if not line[60]:
-                    total_weight_43 += line[43]
-                    total_weight_44 += line[44]
-                    total_weight_45 += line[45]
-                    total_weight_46 += line[46]
-                    total_weight_47 += line[47]
-                    total_weight_48 += line[48]
-                    total_weight_49 += line[49]
-                    total_weight_50 += line[50]
-                    total_weight_51 += line[51]
-                    total_weight_52 += line[52]
-                    total_weight_53 += line[53]
-                    total_weight_54 += line[54]
-                    total_weight_55 += line[55]
-                    total_weight_56 += line[56]
-                    total_weight_57 += line[57]
-                    total_weight_58 += line[58]
-                    total_weight_59 += line[59]
-                    slnumber += 1
-                    col=0
-                    line.pop(60)
-                    if line[1]:
-                        worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
-                        worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
-                        worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
-                        worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
-                        worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
-                        worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
-                        # worksheet.write(sum(row, 0, row[2], 0, l, merge_format))
-                    wei = None
-                    for l in line:
-                        # len (line)
-                        # if line[6] == 'Weightage':
-                        #     raise UserError(('fefefgrgr'))
-                        if col == 1:
-                            etype = l[:1]
-                        if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style)
-                        if col == 1:
-                            worksheet.write(row, col, l, report_column_style_2)
-                        if col == 2:
-                            worksheet.write(row, col, '', report_column_style_2)
-                        elif col == 3:
+            # for line in report_data:
+            #     mrg_val = None    
+            #     if not line[60]:
+            #         total_weight_43 += line[43]
+            #         total_weight_44 += line[44]
+            #         total_weight_45 += line[45]
+            #         total_weight_46 += line[46]
+            #         total_weight_47 += line[47]
+            #         total_weight_48 += line[48]
+            #         total_weight_49 += line[49]
+            #         total_weight_50 += line[50]
+            #         total_weight_51 += line[51]
+            #         total_weight_52 += line[52]
+            #         total_weight_53 += line[53]
+            #         total_weight_54 += line[54]
+            #         total_weight_55 += line[55]
+            #         total_weight_56 += line[56]
+            #         total_weight_57 += line[57]
+            #         total_weight_58 += line[58]
+            #         total_weight_59 += line[59]
+            #         slnumber += 1
+            #         col=0
+            #         line.pop(60)
+            #         if line[1]:
+            #             worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
+            #             worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
+            #             worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
+            #             worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
+            #             worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
+            #             worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
+            #             # worksheet.write(sum(row, 0, row[2], 0, l, merge_format))
+            #         wei = None
+            #         for l in line:
+            #             # len (line)
+            #             # if line[6] == 'Weightage':
+            #             #     raise UserError(('fefefgrgr'))
+            #             if col == 1:
+            #                 etype = l[:1]
+            #             if col == 0:
+            #                 worksheet.write(row, col, slnumber, report_column_style)
+            #             if col == 1:
+            #                 worksheet.write(row, col, l, report_column_style_2)
+            #             if col == 2:
+            #                 worksheet.write(row, col, '', report_column_style_2)
+            #             elif col == 3:
                             
-                            if etype == '%':
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                worksheet.write(row, col, l, report_column_style_2)                    
-                        elif col == 4:
+            #                 if etype == '%':
+            #                     ld = l/100
+            #                     worksheet.write(row, col, ld, report_column_style_3)
+            #                 else:
+            #                     worksheet.write(row, col, l, report_column_style_2)                    
+            #             elif col == 4:
                             
-                            if etype == '%':
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                worksheet.write(row, col, l, report_column_style_2)
-                        elif col == 6:
-                            wei = l
-                            worksheet.write(row, col, l, column_product_style)
+            #                 if etype == '%':
+            #                     ld = l/100
+            #                     worksheet.write(row, col, ld, report_column_style_3)
+            #                 else:
+            #                     worksheet.write(row, col, l, report_column_style_2)
+            #             elif col == 6:
+            #                 wei = l
+            #                 worksheet.write(row, col, l, column_product_style)
                         
-                        elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, report_column_style_3)
+            #             elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'Weightage'):
+            #                 worksheet.write(row, col, l/100, report_column_style_3)
                         
-                        elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, report_column_style_2)
+            #             elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei != 'Weightage'):
+            #                 worksheet.write(row, col, l, report_column_style_2)
                             
-                        elif (col in (10,14,18,22)) and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, gray_style_1)
+            #             elif (col in (10,14,18,22)) and (wei == 'Weightage'):
+            #                 worksheet.write(row, col, l/100, gray_style_1)
                         
-                        elif (col in (10,14,18,22)) and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, gray_style)
-                                # total_sum += l
-                        elif col == 23 and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, column_product_style_3)
-                            row+=1
-                            col=5
-                        elif col == 23 and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, column_product_style)
-                            row+=1
-                            col=5
-                        elif col==5:
-                            # grandtotal = grandtotal+l
-                            worksheet.write(row, col, l, report_column_style_3)
+            #             elif (col in (10,14,18,22)) and (wei != 'Weightage'):
+            #                 worksheet.write(row, col, l, gray_style)
+            #                     # total_sum += l
+            #             elif col == 23 and (wei == 'Weightage'):
+            #                 worksheet.write(row, col, l/100, column_product_style_3)
+            #                 row+=1
+            #                 col=5
+            #             elif col == 23 and (wei != 'Weightage'):
+            #                 worksheet.write(row, col, l, column_product_style)
+            #                 row+=1
+            #                 col=5
+            #             elif col==5:
+            #                 # grandtotal = grandtotal+l
+            #                 worksheet.write(row, col, l, report_column_style_3)
                             
-                        col+=1
+            #             col+=1
     
-                    row = row-1
-                    row+=1
-            worksheet.write(row, 6, 'Total', column_product_style_)
-            worksheet.write(row, 7, total_weight_43/100, report_column_style_)
-            worksheet.write(row, 8, total_weight_44/100, report_column_style_)
-            worksheet.write(row, 9, total_weight_45/100, report_column_style_)
-            worksheet.write(row, 10, total_weight_46/100, gray_style_1)
-            worksheet.write(row, 11, total_weight_47/100, report_column_style_)
-            worksheet.write(row, 12, total_weight_48/100, report_column_style_)
-            worksheet.write(row, 13, total_weight_49/100, report_column_style_)
-            worksheet.write(row, 14, total_weight_50/100, gray_style_1)
-            worksheet.write(row, 15, total_weight_51/100, report_column_style_)
-            worksheet.write(row, 16, total_weight_52/100, report_column_style_)
-            worksheet.write(row, 17, total_weight_53/100, report_column_style_)
-            worksheet.write(row, 18, total_weight_54/100, gray_style_1)
-            worksheet.write(row, 19, total_weight_55/100, report_column_style_)
-            worksheet.write(row, 20, total_weight_56/100, report_column_style_)
-            worksheet.write(row, 21, total_weight_57/100, report_column_style_)
-            worksheet.write(row, 22, total_weight_58/100, gray_style_1)
-            worksheet.write(row, 23, total_weight_59/100, report_column_style_)
-            row+=1
+            #         row = row-1
+            #         row+=1
+            # worksheet.write(row, 6, 'Total', column_product_style_)
+            # worksheet.write(row, 7, total_weight_43/100, report_column_style_)
+            # worksheet.write(row, 8, total_weight_44/100, report_column_style_)
+            # worksheet.write(row, 9, total_weight_45/100, report_column_style_)
+            # worksheet.write(row, 10, total_weight_46/100, gray_style_1)
+            # worksheet.write(row, 11, total_weight_47/100, report_column_style_)
+            # worksheet.write(row, 12, total_weight_48/100, report_column_style_)
+            # worksheet.write(row, 13, total_weight_49/100, report_column_style_)
+            # worksheet.write(row, 14, total_weight_50/100, gray_style_1)
+            # worksheet.write(row, 15, total_weight_51/100, report_column_style_)
+            # worksheet.write(row, 16, total_weight_52/100, report_column_style_)
+            # worksheet.write(row, 17, total_weight_53/100, report_column_style_)
+            # worksheet.write(row, 18, total_weight_54/100, gray_style_1)
+            # worksheet.write(row, 19, total_weight_55/100, report_column_style_)
+            # worksheet.write(row, 20, total_weight_56/100, report_column_style_)
+            # worksheet.write(row, 21, total_weight_57/100, report_column_style_)
+            # worksheet.write(row, 22, total_weight_58/100, gray_style_1)
+            # worksheet.write(row, 23, total_weight_59/100, report_column_style_)
+            # row+=1
             
                     
             worksheet.merge_range(row, 0, row, 23, 'Objective / Score', merge_format_)
@@ -1847,66 +1847,66 @@ class HeadwisePDFReport(models.TransientModel):
             col = 0
             row=5
 
-            worksheet.merge_range(row, 0, row, 5, 'Revenue & PAT', column_product_style)
-            row+=1
-            grandtotal__ = 0
-            slnumber = 0
-            for line in report_data:       
-                if not line[2]:
-                    # raise UserError(("hi"))
-                    if line[6] == emp.id:
-                        slnumber += 1
-                        col=0
-                        for l in line:
-                            if col == 1:
-                                etype = l[:1]
-                            if col == 0:
-                                worksheet.write(row, col, slnumber, report_column_style_2) 
-                            if col == 1:
-                                worksheet.write(row, col, l, report_column_style_2) 
-                            if col == 2:
-                                worksheet.write(row, col, '', report_column_style_2) 
-                            elif col == 3:
+            # worksheet.merge_range(row, 0, row, 5, 'Revenue & PAT', column_product_style)
+            # row+=1
+            # grandtotal__ = 0
+            # slnumber = 0
+            # for line in report_data:       
+            #     if not line[2]:
+            #         # raise UserError(("hi"))
+            #         if line[6] == emp.id:
+            #             slnumber += 1
+            #             col=0
+            #             for l in line:
+            #                 if col == 1:
+            #                     etype = l[:1]
+            #                 if col == 0:
+            #                     worksheet.write(row, col, slnumber, report_column_style_2) 
+            #                 if col == 1:
+            #                     worksheet.write(row, col, l, report_column_style_2) 
+            #                 if col == 2:
+            #                     worksheet.write(row, col, '', report_column_style_2) 
+            #                 elif col == 3:
                                 
-                                if etype == '%':
-                                    # raise UserError((etype))
-                                    ld = l/100
-                                    worksheet.write(row, col, ld, report_column_style_3)
-                                else:
-                                    # raise UserError((etype))
-                                    worksheet.write(row, col, l, report_column_style_2)                    
-                            elif col == 4:
+            #                     if etype == '%':
+            #                         # raise UserError((etype))
+            #                         ld = l/100
+            #                         worksheet.write(row, col, ld, report_column_style_3)
+            #                     else:
+            #                         # raise UserError((etype))
+            #                         worksheet.write(row, col, l, report_column_style_2)                    
+            #                 elif col == 4:
                                 
-                                if etype == '%':
-                                    # raise UserError((etype))
-                                    ld = l/100
-                                    worksheet.write(row, col, ld, report_column_style_3)
-                                else:
-                                    # raise UserError((etype))
-                                    worksheet.write(row, col, l, report_column_style_2)
-                            elif col==5:
-                                grandtotal__ = grandtotal__+l
-                                # format = workbook.add_format({'num_format': num_formats})
-                                worksheet.write(row, col, l, report_column_style_3)
-                            # elif col==8:
-                            #     break
-                            # else:
-                            #     worksheet.write(row, col, l, report_column_style_2)
-                            col+=1
-                        row+=1
+            #                     if etype == '%':
+            #                         # raise UserError((etype))
+            #                         ld = l/100
+            #                         worksheet.write(row, col, ld, report_column_style_3)
+            #                     else:
+            #                         # raise UserError((etype))
+            #                         worksheet.write(row, col, l, report_column_style_2)
+            #                 elif col==5:
+            #                     grandtotal__ = grandtotal__+l
+            #                     # format = workbook.add_format({'num_format': num_formats})
+            #                     worksheet.write(row, col, l, report_column_style_3)
+            #                 # elif col==8:
+            #                 #     break
+            #                 # else:
+            #                 #     worksheet.write(row, col, l, report_column_style_2)
+            #                 col+=1
+            #             row+=1
                                         
                 
                         
             
-                    #worksheet.write(4, 0, 'SL.', column_product_style)
+            #         #worksheet.write(4, 0, 'SL.', column_product_style)
                     
-                    worksheet.write(row, 0, '', report_small_title_style)
-                    worksheet.write(row, 1, 'Total', report_small_title_style)
-                    worksheet.write(row, 2, '', report_small_title_style)
-                    worksheet.write(row, 3, '', report_small_title_style)
-                    worksheet.write(row, 4, '', report_small_title_style)
-                    worksheet.write(row, 5, round(grandtotal__,2), report_small_title_style)
-            row+=1
+            #         worksheet.write(row, 0, '', report_small_title_style)
+            #         worksheet.write(row, 1, 'Total', report_small_title_style)
+            #         worksheet.write(row, 2, '', report_small_title_style)
+            #         worksheet.write(row, 3, '', report_small_title_style)
+            #         worksheet.write(row, 4, '', report_small_title_style)
+            #         worksheet.write(row, 5, round(grandtotal__,2), report_small_title_style)
+            # row+=1
             worksheet.merge_range(row, 0, row, 5, 'Objective / Score', column_product_style)
             row+=1
             grandtotal = 0

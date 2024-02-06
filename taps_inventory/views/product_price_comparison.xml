@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_comparison_search" model="ir.ui.view">
+        <field name="name">comparison.search</field>
+        <field name="model">product.price.comparison</field>
+        <field name="arch" type="xml" >
+            <search string="RM &amp; Spare">
+                <filter string="RM" name="rm_stock" domain="[('product_id.categ_id.complete_name', 'ilike',
+                                                            'All / RM')]" />
+                <filter string="Spare" name="spare_stock" domain="[('product_id.categ_id.complete_name', 'ilike',
+                                                                  'All / Spare Parts')]" />
+                <separator/>
+                <field name="product_id" string="Product"/>
+                <group expand="0" string="Group By">
+                    <filter name="product_group" string="Product" domain="[]" context="{'group_by': 'parent_category'}"/>
+                    <filter name="category_group" string="Category" domain="[]" context="{'group_by': 'product_category'}"/>
+                    <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record model="ir.rule" id="record_not_shared_multi_company_rule">
+        <field name="name">Non Shared Records:model</field>
+        <field name="model_id" ref="model_product_price_comparison"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="view_stock_reg_tree" model="ir.ui.view">
+        <field name="name">comparison.tree</field>
+        <field name="model">product.price.comparison</field>
+        <field name="arch" type="xml" >
+            <tree string="RM Stock" create="false" delete="false" >
+                <field name="company_id"/>
+                <field name="product_id"/>
+                <field name="product_template_id"/>
+                <field name="product_uom"/>
+                <field name="pr_code"/>
+                <field name="product_category"/>
+                <field name="parent_category"/>
+                <field name="comparison_month"/>
+                <field name="second_last_price"/>
+                <field name="last_price"/>
+                <field name="qty"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_product_price_comparison" model="ir.actions.act_window">
+        <field name="name">Product Price Comparison</field>
+        <field name="res_model">product.price.comparison</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'search_default_rm_stock':1, 'search_default_product_group':1, 'search_default_category_group':1, 'search_default_item_group':1}</field>
+        <field name="search_view_id" ref="view_comparison_search" />
+    </record>
+
+<!--     <menuitem id="menu_stock_reg_view"
+              name="RM Stock"
+              action="action_stock_opening_closing"
+              parent="stock.menu_warehouse_report"
+              sequence="160"/> -->
+</odoo>    

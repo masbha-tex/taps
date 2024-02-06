@@ -269,7 +269,7 @@ class MrpReportWizard(models.TransientModel):
            
 
             sheet.set_margins(left=0.2, right=0.3, top=0.2, bottom=0.2)
-            sheet.set_header('Iteam: &A Page: &P of &N Printed at &D &T', {'margin': 0.08, 'align': 'center', 'font_size': 12})
+            sheet.set_footer('Iteam: &A Page: &P of &N Printed at &D &T', {'margin': 0.08, 'align': 'center', 'font_size': 12})
             # sheet.set_footer('Page: &P of &N','Printed at &D &T', {'margin': 0.08, 'align': 'right', 'font_size': 10})
             
             sheet.fit_to_pages(1, 0)
@@ -278,7 +278,7 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_paper(9)
             
             sheet.write(0, 0, "CUSTOMER NAME", column_style)
-            sheet.write(0, 1, "PRODUCT", column_style)
+            sheet.write(0, 1, f"PRODUCT: {report_name}", column_style)
             sheet.write(0, 2, "SLIDER CODE", column_style)
             sheet.write(0, 3, "FINISH", column_style)
             sheet.write(0, 4, "PI NO", column_style)
@@ -622,21 +622,6 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 19, '')
             sheet.write(row+1, 20, '')
             sheet.write(row+1, 21, '')
-
-        # def delete_zero_value(worksheet, row, col, format=None):
-        #     # Write a blank cell and check if the value is 0
-        #     worksheet.write_blank(row, col, None, format)
-        #     cell = worksheet.cell(row, col)
-        #     if cell.is_blank:
-        #         # Set the cell to blank if the value is 0
-        #         worksheet.write_blank(row, col, None, format)
-        
-        # # Iterate through rows and delete 0 values in the 13th and 14th columns
-        # for row in range(1, sheet.dim_rowmax + 1):
-        #     delete_zero_value(sheet, row, 13, row_style)
-        #     delete_zero_value(sheet, row, 14, row_style)
-
-
 
 
             
@@ -1156,6 +1141,8 @@ class MrpReportWizard(models.TransientModel):
         _row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
         
         row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#FFFF00','left': True, 'top': True, 'right': True, 'bottom': True}) 
+        row_style_head = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#8DB4E2','left': True, 'top': True, 'right': True, 'bottom': True}) 
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
@@ -1180,6 +1167,15 @@ class MrpReportWizard(models.TransientModel):
                 comu_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() <= full_date.date())
                 
                 sheet = workbook.add_worksheet(('%s' % (report_name)))
+                
+                for col_number in range(2):  
+                    sheet.write(45, col_number, None, row_style_sum)
+                for col_number in range(20): 
+                    sheet.write(25, col_number, None, row_style_sum)
+                for col_number in range(17): 
+                    sheet.write(0, col_number, None, row_style_head)
+                for col_number in range(3): 
+                    sheet.write(26, col_number, None, row_style_head)
 
                 sheet.set_zoom(85)
                 sheet.fit_to_pages(1, 0)
@@ -1189,7 +1185,7 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
                 # sheet.write(0, 11, "DATE :", column_style)
                 # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
-                sheet.merge_range(0, 11, 0, 17, 'CLOSED ORDER', column_style)
+                sheet.merge_range(0, 11, 0, 19, 'CLOSED ORDER', column_style)
                 sheet.freeze_panes(2, 0)
                 if start_time.date() == full_date.date():
                     sheet.activate()
@@ -1210,15 +1206,15 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(1, 9, "PENDING OA", column_style)
     
                 sheet.set_column(0, 0, 17)
-                sheet.set_column(1, 1, 12)
-                sheet.set_column(2, 2, 12)
-                sheet.set_column(3, 3, 12)
-                sheet.set_column(4, 4, 12)
-                sheet.set_column(5, 5, 12)
-                sheet.set_column(6, 6, 12)
-                sheet.set_column(7, 7, 12)
-                sheet.set_column(8, 8, 12)
-                sheet.set_column(9, 9, 12)
+                sheet.set_column(1, 1, 13)
+                sheet.set_column(2, 2, 13)
+                sheet.set_column(3, 3, 13)
+                sheet.set_column(4, 4, 13)
+                sheet.set_column(5, 5, 13)
+                sheet.set_column(6, 6, 13)
+                sheet.set_column(7, 7, 13)
+                sheet.set_column(8, 8, 13)
+                sheet.set_column(9, 9, 13)
                 sheet.set_column(10, 10, 0)
                 # sheet.set_column(10, 10, 0)
                 sheet.set_column(11, 18, 6)
@@ -1597,6 +1593,7 @@ class MrpReportWizard(models.TransientModel):
         column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center', 'bg_color':'#8DB4E2'})
         
         column_merge_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
+        row_style_head = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#8DB4E2','left': True, 'top': True, 'right': True, 'bottom': True}) 
         
         _row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter', 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
         row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#FFFF00','left': True, 'top': True, 'right': True, 'bottom': True}) 
@@ -1627,15 +1624,22 @@ class MrpReportWizard(models.TransientModel):
                 datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
                             
                 sheet = workbook.add_worksheet(('%s' % (report_name)))
-                for col_number in range(16):  # 0 to 12
+                for col_number in range(16):  
                     sheet.write(25, col_number, None, row_style_sum)
+                for col_number in range(2):  
+                    sheet.write(45, col_number, None, row_style_sum)
+                for col_number in range(16):  
+                    sheet.write(0, col_number, None, row_style_head)
+                for col_number in range(3):  
+                    sheet.write(27, col_number, None, row_style_head)
+               
                 
                 
                 sheet.write(0, 0, "DATE :", column_style)
                 sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
                 # sheet.write(0, 11, "DATE :", column_style)
                 # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
-                sheet.merge_range(0, 2, 0, 9, 'CLOSED ORDER', column_style)
+                sheet.merge_range(0, 2, 0, 15, 'CLOSED ORDER', row_style_head)
                 sheet.freeze_panes(2, 0)
                 if start_time.date() == full_date.date():
                     sheet.activate()

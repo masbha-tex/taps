@@ -21,7 +21,8 @@ class StockForecastReport(models.TransientModel):
         ('rmstock', 'RM Stock'),
         ('rmstockwithzero', 'RM Stock (with 0)'),
         ('rmc', 'RM Consumption'),
-        ('ageing', 'Stock Ageing')], 
+        ('ageing', 'Stock Ageing'),
+        ('ppcom', 'Product Price Comparison')], 
         default='rmstock', string='Report Type')
     
     report_for = fields.Selection([
@@ -229,6 +230,18 @@ class StockForecastReport(models.TransientModel):
                     'target': 'self',
                     'context': {'search_default_spare_stock':1, 'search_default_product_group':1, 'search_default_category_group':1, 'search_default_item_group':1}
                 }
+        if self.report_type == 'ppcom':
+            self.get_price_comparison(from_date,to_date)
+            vewid = self.env['ir.ui.view'].search([('model', '=', 'product.price.comparison'), ('type', '=', 'list')])
+            return {
+                'view_mode': 'list',
+                'view_id': vewid,
+                'view_type': 'list',
+                'res_model': 'product.price.comparison',
+                'type': 'ir.actions.act_window',
+                'target': 'self',
+                'context': {'search_default_rm_stock':1, 'search_default_product_group':1, 'search_default_category_group':1, 'search_default_item_group':1}
+            }
         if self.report_type == 'rmstockwithzero':
             #search_date = self.env['searching.date'].search([('id','=',1)])
             #search_date.write({'from_date':from_date,'to_date':to_date})
@@ -574,3 +587,46 @@ class StockForecastReport(models.TransientModel):
         ) as atb) as ageing
         """
         self.env.cr.execute(query, (to_date,'%/IN/%',to_date,to_date,'%LC/%',to_date,to_date,self.env.company.id,'R_%','S_%'))        
+
+
+
+    def get_price_comparison(self,from_date,to_date):
+        com_month = from_date.date().strftime('%b, %Y')
+        com_month = com_month + ' & ' + to_date.date().strftime('%b, %Y')
+        # to_date
+
+        query_ = """truncate table stock_ageing;"""
+        self.env.cr.execute(query_)
+        query = """
+        insert into product_price_comparison(id,product_id,product_template_id,product_uom,pr_code,product_category,parent_category,comparison_month,second_last_price,last_price,company_id) 
+        select * from (
+        select ROW_NUMBER () OVER (ORDER BY product_id) as id,
+        product.id as product_id,
+        pt.id as product_template_id,
+        pt.uom_id as product_uom,
+        product.default_code as pr_code,
+        catype.id as product_category,
+        catype.id as parent_category,
+        %s as comparison_month,
+        
+        (select round((ol.price_unit / po.currency_rate),4) from purchase_order_line as ol 
+        inner join purchase_order as po on po.id=ol.order_id
+        where ol.product_id=product.id and date_part('month',po.date_approve)=%s
+        and date_part('year',po.date_approve)=%s
+        and po.state='purchase' order by ol.id desc limit 1) as second_last_price,
+        
+        (select round((ol.price_unit / po.currency_rate),4) from purchase_order_line as ol
+        inner join purchase_order as po on po.id=ol.order_id
+        where ol.product_id=product.id and date_part('month',po.date_approve)=%s
+        and date_part('year',po.date_approve)=%s
+        and po.state='purchase' order by ol.id desc limit 1) as last_price,
+        
+        pt.company_id
+
+        from product_product as product
+        inner join product_template as pt on product.product_tmpl_id=pt.id
+        inner join category_type as catype on pt.categ_type=catype.id
+        where pt.company_id = %s
+        ) as stock
+        """
+        self.env.cr.execute(query, (com_month,from_date.month,from_date.year,to_date.month,to_date.year,self.env.company.id))        
