@@ -2,8 +2,11 @@
     <data>
         <template id="mail_bonus_submit_template">
             <div style="margin:0px;padding: 0px;">
-                <span>This Retention Bonus need HoD Approval</span>
-                ${ctx['employee_to_name']}
+                <span>Dear Concern,</span>
+                <br/>
+                <br/>
+                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is now on <strong>"Submit"</strong> state, waiting for <strong>"HoD Approval"</strong></span>
+                <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
                 Here is the link of Retention Bonus:
@@ -17,7 +20,11 @@
         </template>
         <template id="mail_bonus_approval_0_template">
             <div style="margin:0px;padding: 0px;">
-                <span>This Retention Bonus need HoHR Approval</span>
+                <span>Dear Concern,</span>
+                <br/>
+                <br/>
+                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is now on <strong>"HoD Approval"</strong> state, waiting for <strong>"HoHR Approval"</strong></span>
+                <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
                 Here is the link of Retention Bonus:
@@ -31,7 +38,11 @@
         </template>
         <template id="mail_bonus_approval_1_template">
             <div style="margin:0px;padding: 0px;">
-                <span>This Retention Bonus need HoFC Approval</span>
+                <span>Dear Concern,</span>
+                <br/>
+                <br/>
+                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is now on <strong>"HoHR Approval"</strong> state, waiting for <strong>"HoFC Approval"</strong></span>
+                <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
                 Here is the link of Retention Bonus:
@@ -45,7 +56,11 @@
         </template>
         <template id="mail_bonus_approval_2_template">
             <div style="margin:0px;padding: 0px;">
-                <span>This Retention Bonus need Final Approval</span>
+                <span>Dear Concern,</span>
+                <br/>
+                <br/>
+                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is now on <strong>"HoFC Approval"</strong> state, waiting for <strong>"CEO"</strong></span>
+                <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
                 Here is the link of Retention Bonus:
@@ -57,9 +72,13 @@
                 % endif
             </div>
         </template>
-        <!-- <template id="mail_bonus_approval_3_template">
+        <template id="mail_bonus_approval_3_template">
             <div style="margin:0px;padding: 0px;">
-                <span>This Retention Bonus need HoD Approval</span>
+                <span>Dear Concern,</span>
+                <br/>
+                <br/>
+                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is <strong>"Approved"</strong></span>
+                <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
                 Here is the link of Retention Bonus:
@@ -70,7 +89,7 @@
                 </p>
                 % endif
             </div>
-        </template> -->
+        </template>
         <template id="mail_bonus_refused_template">
             <div style="margin:0px;padding: 0px;">
                 <!-- <span>Dear ${ctx['employee_to_name']},</span> -->

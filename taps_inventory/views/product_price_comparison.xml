@@ -12,6 +12,7 @@
                 <separator/>
                 <field name="product_id" string="Product"/>
                 <group expand="0" string="Group By">
+                    <filter name="comparison_group" string="Month" domain="[]" context="{'group_by': 'comparison_month'}"/>
                     <filter name="product_group" string="Product" domain="[]" context="{'group_by': 'parent_category'}"/>
                     <filter name="category_group" string="Category" domain="[]" context="{'group_by': 'product_category'}"/>
                     <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'product_id'}"/>
@@ -31,12 +32,12 @@
         <field name="arch" type="xml" >
             <tree string="RM Stock" create="false" delete="false" >
                 <field name="company_id"/>
-                <field name="product_id"/>
+                <field name="product_id" invisible="1"/>
                 <field name="product_template_id"/>
                 <field name="product_uom"/>
                 <field name="pr_code"/>
                 <field name="product_category"/>
-                <field name="parent_category"/>
+                <field name="parent_category" invisible="1"/>
                 <field name="comparison_month"/>
                 <field name="second_last_price"/>
                 <field name="last_price"/>
@@ -49,7 +50,7 @@
         <field name="name">Product Price Comparison</field>
         <field name="res_model">product.price.comparison</field>
         <field name="view_mode">tree</field>
-        <field name="context">{'search_default_rm_stock':1, 'search_default_product_group':1, 'search_default_category_group':1, 'search_default_item_group':1}</field>
+        <field name="context">{'search_default_comparison_group':1}</field>
         <field name="search_view_id" ref="view_comparison_search" />
     </record>
 

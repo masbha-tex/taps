@@ -194,7 +194,8 @@ class HrRetentionBonus(models.Model):
         self.write({'state': 'refuse'})
         template_submit = self.env.ref('hr_retention_bonus.mail_bonus_refused_template', raise_if_not_found=True)
         ctx = {
-            'employee_to_name': self.display_name,
+            'name': self.display_name,
+            'employee_to_name': self.employee_id.display_name,
             'recipient_users': self.employee_id.user_id,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
@@ -254,6 +255,7 @@ class HrRetentionBonus(models.Model):
             raise UserError(('Maybe you forget to add HoD!!'))   
         template_submit = self.env.ref('hr_retention_bonus.mail_bonus_submit_template', raise_if_not_found=True)
         ctx = {
+            'name': self.display_name,
             'employee_to_name': self.employee_id.display_name,
             'recipient_users': self.employee_id.user_id,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
@@ -276,7 +278,7 @@ class HrRetentionBonus(models.Model):
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
-                'subject': 'Upcoming Retention Bonus Submit To HoD',
+                'subject': 'Retention Bonus for %s is waiting for HoD Approval' % self.employee_id.display_name,
                 'body_html': body,
                 'auto_delete': True,
                 'email_to': mailto or '',
@@ -313,7 +315,8 @@ class HrRetentionBonus(models.Model):
         self.write({'state': 'approve0', 'approve0_uid': self.uid})
         template_submit = self.env.ref('hr_retention_bonus.mail_bonus_approval_0_template', raise_if_not_found=True)
         ctx = {
-            'employee_to_name': self.display_name,
+            'name': self.display_name,
+            'employee_to_name': self.employee_id.display_name,
             'recipient_users': self.employee_id.user_id,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
@@ -335,7 +338,7 @@ class HrRetentionBonus(models.Model):
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
-                'subject': 'Upcoming Retention Bonus Submit To HoHR',
+                'subject': 'Retention Bonus for %s is waiting for HoHR Approval' % self.employee_id.display_name,
                 'body_html': body,
                 'auto_delete': True,
                 'email_to': mailto or '',
@@ -371,7 +374,8 @@ class HrRetentionBonus(models.Model):
         self.write({'state': 'approve1', 'approve1_uid': self.env.context.get('user_id', self.env.user.id)})
         template_submit = self.env.ref('hr_retention_bonus.mail_bonus_approval_1_template', raise_if_not_found=True)
         ctx = {
-            'employee_to_name': self.display_name,
+            'name': self.display_name,
+            'employee_to_name': self.employee_id.display_name,
             'recipient_users': self.employee_id.user_id,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
@@ -393,7 +397,7 @@ class HrRetentionBonus(models.Model):
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
-                'subject': 'Upcoming Retention Bonus Submit To HoFC',
+                'subject': 'Retention Bonus for %s is waiting for HoFC Approval' % self.employee_id.display_name,
                 'body_html': body,
                 'auto_delete': True,
                 'email_to': mailto or '',
@@ -428,7 +432,8 @@ class HrRetentionBonus(models.Model):
         self.write({'state': 'approve2', 'approve2_uid': self.env.context.get('user_id', self.env.user.id)})  
         template_submit = self.env.ref('hr_retention_bonus.mail_bonus_approval_2_template', raise_if_not_found=True)
         ctx = {
-            'employee_to_name': self.display_name,
+            'name': self.display_name,
+            'employee_to_name': self.employee_id.display_name,
             'recipient_users': self.employee_id.user_id,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
@@ -450,7 +455,7 @@ class HrRetentionBonus(models.Model):
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
-                'subject': 'Upcoming Retention Bonus Submit To CEO',
+                'subject': 'Retention Bonus for %s is waiting for CEO Approval' % self.employee_id.display_name,
                 'body_html': body,
                 'auto_delete': True,
                 'email_to': mailto or '',
@@ -483,9 +488,10 @@ class HrRetentionBonus(models.Model):
         
     def action_approval_3(self):
         self.write({'state': 'approve3', 'approve3_uid': self.env.context.get('user_id', self.env.user.id)})  
-        template_submit = self.env.ref('hr_retention_bonus.mail_bonus_approval_2_template', raise_if_not_found=True)
+        template_submit = self.env.ref('hr_retention_bonus.mail_bonus_approval_3_template', raise_if_not_found=True)
         ctx = {
-            'employee_to_name': self.display_name,
+            'name': self.display_name,
+            'employee_to_name': self.employee_id.display_name,
             'recipient_users': self.employee_id.user_id,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
@@ -507,7 +513,7 @@ class HrRetentionBonus(models.Model):
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
-                'subject': 'Upcoming Retention Bonus Submit To Final',
+                'subject': '%s "s Retention Bonus Approved' % self.employee_id.display_name,
                 'body_html': body,
                 'auto_delete': True,
                 'email_to': mailto or '',

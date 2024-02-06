@@ -192,6 +192,7 @@ class MrpReportWizard(models.TransientModel):
         #workbook.print_area('A:O')
         
         column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
+        red_fill_format = workbook.add_format({'bg_color': '#A7A7A7', 'align': 'center', 'valign': 'vcenter','left': True, 'top': True, 'right': True, 'bottom': True})
         
         # column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
         
@@ -548,10 +549,14 @@ class MrpReportWizard(models.TransientModel):
                             sheet.write(row, col, l, format_label_3)
                         elif col in(8,9):
                             sheet.write(row, col, l, format_label_4)
-                        elif col in(10,11,12,13,14):
+                        elif col in(10,11,12,13):
                             sheet.write(row, col, l, format_label_5)
                         elif col == 14:
-                            sheet.write(row, col,'=M{1}-N{1}'.format(row + 1), row_style)
+                            if l:
+                                sheet.write(row, col,l, row_style)#'=M{1}-N{1}'.format(row + 1)
+                            else:
+                                sheet.write(row, col, l, red_fill_format)
+                                
                         else:
                             sheet.write(row, col, l, row_style)
                         if col == 12:
@@ -612,9 +617,32 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 9, '')
             sheet.write(row+1, 10, '')
             sheet.write(row+1, 11, '')
+            sheet.write(row+1, 12, '')
+            sheet.write(row+1, 13, '')
+            sheet.write(row+1, 14, '')
+            sheet.write(row+1, 15, '')
+            sheet.write(row+1, 16, '')
+            sheet.write(row+1, 17, '')
+            sheet.write(row+1, 18, '')
+            sheet.write(row+1, 19, '')
+            sheet.write(row+1, 20, '')
+            sheet.write(row+1, 21, '')
+            row += 1
+            sheet.write(row+1, 0, '')
+            sheet.write(row+1, 1, '')
+            sheet.write(row+1, 2, '')
+            sheet.write(row+1, 3, '')
+            sheet.write(row+1, 4, '')
+            sheet.write(row+1, 5, '')
+            sheet.write(row+1, 6, '')
+            sheet.write(row+1, 7, '')
+            sheet.write(row+1, 8, '')
+            sheet.write(row+1, 9, '')
+            sheet.write(row+1, 10, '')
+            sheet.write(row+1, 11, '')
             sheet.write(row+1, 12, '=SUM(M{0}:M{1})/2'.format(1, row_rang-1), row_style_sum)
             sheet.write(row+1, 13, '=SUM(N{0}:N{1})/2'.format(1, row_rang-1), row_style_sum)
-            sheet.write(row+1, 14, '=M{1}-N{1}'.format(row_rang, row_rang), row_style_sum)
+            sheet.write(row+1, 14, '=M{1}-N{1}'.format(row_rang+1, row_rang+1), row_style_sum)
             sheet.write(row+1, 15, '')
             sheet.write(row+1, 16, '')
             sheet.write(row+1, 17, '')
@@ -624,7 +652,8 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 21, '')
 
 
-            
+        # sheet.conditional_format('O2:O1000', {'type':   'blanks','format': red_fill_format})
+             
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -660,6 +689,8 @@ class MrpReportWizard(models.TransientModel):
         format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+
+        red_fill_format = workbook.add_format({'bg_color': '#FF0000', 'align': 'center', 'valign': 'vcenter'})
         
         merge_format = workbook.add_format({'align': 'top'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
@@ -686,6 +717,15 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
            
             sheet = workbook.add_worksheet(('%s' % (report_name)))
+            # sheet.conditional_format(
+            #     "o2",
+            #     {
+            #         "type": "cell",
+            #         "criteria": "equal to",
+            #         "value": 0,
+            #         "format": red_fill_format,
+            #         },
+            #     ) 
             
             sheet.freeze_panes(1, 0)
                                 
@@ -917,7 +957,11 @@ class MrpReportWizard(models.TransientModel):
                         elif col in(8,9):
                             sheet.write(row, col, l, format_label_4)
                         elif col == 14:
+                            # if (sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1)) > 0:
+                            #     sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), red_fill_format)
+                            # else :
                             sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), row_style)
+                            # sheet.write_formula(row, col, '=M{1}-N{1}'.format(row+1), row_style, {'type': 'cell', 'criteria': 'equal to', 'value': 0, 'format': red_fill_format})
                         else:
                             sheet.write(row, col, l, row_style)
                         if col == 12:
@@ -989,6 +1033,8 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 20, '')
             sheet.write(row+1, 21, '')
             
+        # sheet.conditional_format('O2:O1000', {'type':   'blanks',
+        #                                'format': red_fill_format})
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -1083,8 +1129,9 @@ class MrpReportWizard(models.TransientModel):
                 for l in line:
                     sheet.write(row, col, l, row_style)
                     col += 1
-                row += 1
-                
+                row += 1   
+        
+        
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -1593,7 +1640,7 @@ class MrpReportWizard(models.TransientModel):
         column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center', 'bg_color':'#8DB4E2'})
         
         column_merge_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center'})
-        row_style_head = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#8DB4E2','left': True, 'top': True, 'right': True, 'bottom': True}) 
+        row_style_head = workbook.add_format({'bold': True, 'font_size': 13,'align': 'center','valign': 'vcenter', 'bg_color': '#8DB4E2','left': True, 'top': True, 'right': True, 'bottom': True}) 
         
         _row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter', 'bottom': True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
         row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#FFFF00','left': True, 'top': True, 'right': True, 'bottom': True}) 
