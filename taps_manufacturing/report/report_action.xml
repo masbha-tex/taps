@@ -43,6 +43,18 @@
             <field name="print_report_name">"Running Order"</field>
         </record>
 
+        <record id="action_report_running_order_status_xls" model="ir.actions.report">
+            <field name="name">Order Status</field>
+            <field name="model">operation.details</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">taps_manufacturing.report_running_order_xls</field>
+            <field name="report_file">taps_manufacturing.report_running_order_xls</field>
+            <field name="binding_model_id" ref="model_operation_details"/>
+            <field name="binding_type">report</field>
+            <field name="default_print_option">print</field>
+            <field name="print_report_name">"Order Status"</field>
+        </record>        
+
         <record id="action_report_dye_plan_xls" model="ir.actions.report">
             <field name="name">Dyeing Plan</field>
             <field name="model">operation.details</field>

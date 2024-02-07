@@ -14,7 +14,7 @@ class ProductPriceComparison(models.Model):
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', related='product_template_id.uom_id')
     pr_code = fields.Char(string='Item Code', store=True)
     product_category = fields.Many2one('category.type', string='Category')
-    parent_category = fields.Many2one('category.type', string='Product')
+    parent_category = fields.Many2one('category.type', string='Product Type')
     comparison_month = fields.Char(string='Comparison Month', store=True)
     second_last_price = fields.Float(string='Second Last Price', readonly=True)
     last_price = fields.Float(string='Last Price', readonly=True)

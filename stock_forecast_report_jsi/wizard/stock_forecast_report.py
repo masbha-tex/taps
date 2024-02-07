@@ -306,7 +306,6 @@ class StockForecastReport(models.TransientModel):
         # (select po_type from purchase_order where name in(select origin from stock_picking where id in(select distinct sl.picking_id from stock_move_line as sl where sl.product_id=product_id and sl.lot_id=invoice and sl.state='done' and sl.reference like %s order by sl.picking_id asc) order by id limit 1)) as po_type
         
     def get_opening_closing(self,from_date,to_date):
-        
         query_ = """truncate table stock_opening_closing; update searching_date set from_date=%s,
         to_date=%s;"""
         self.env.cr.execute(query_,(from_date,to_date))

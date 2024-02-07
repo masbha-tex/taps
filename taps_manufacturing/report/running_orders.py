@@ -5,7 +5,10 @@ from odoo import models, fields, api
 from datetime import datetime, date, timedelta, time
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.misc import xlsxwriter
+from xlsxwriter.workbook import Workbook
 from odoo.tools import format_date
+import subprocess
+from io import BytesIO
 import re
 import math
 
@@ -38,10 +41,10 @@ class MrpRunningOrders(models.AbstractModel):
         items = list(set(items))
         
         for item in items:
-            all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
-            all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item)
-            sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
+            sale_orders = self.env['sale.order'].browse(m_orders.oa_id.ids).sorted(key=lambda pr: pr.id)
             
+            all_orders = self.env['sale.order.line'].browse(sale_orders.order_line.ids)
+            all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item)
             report_name = item
             
             sheet = workbook.add_worksheet(report_name[:41])
@@ -79,6 +82,8 @@ class MrpRunningOrders(models.AbstractModel):
             sheet.set_column(5, 5, 20)
             sheet.set_column(8, 8, 40)
             sheet.set_column(9, 9, 40)
+            sheet.set_column(17, 21, 0)
+            sheet.set_column(7, 7, 0)
 
             
             row_rang = 1
@@ -150,6 +155,10 @@ class MrpRunningOrders(models.AbstractModel):
                     ready_qty = sum(m_order.mapped('done_qty'))
                     # raise UserError((o_data.id,ready_qty))
                     balance_qty = o_data.product_uom_qty - ready_qty
+                    if ready_qty == 0:
+                        ready_qty = None
+                    if balance_qty == 0:
+                        balance_qty = None
                     order_data = [
                         customer,
                         pr_name,
@@ -273,7 +282,8 @@ class MrpRunningOrders(models.AbstractModel):
                         elif col in(8,9):
                             sheet.write(row, col, l, format_label_4)
                         elif col == 14:
-                            sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), row_style)
+                            sheet.write(row, col, l, row_style)
+                            # sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), row_style)
                         else:
                             sheet.write(row, col, l, row_style)
                         if col == 12:
@@ -321,7 +331,8 @@ class MrpRunningOrders(models.AbstractModel):
                 row_rang = row + 2
                 
                 product_range = slider_range = finish_range = shade_range = row_rang - 1
-
+                
+       # Create a BytesIO buffer to save the Excel file
 
 
 

@@ -201,7 +201,7 @@ class MrpReportWizard(models.TransientModel):
         row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
         row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
         row_style_border_top_bottom = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'top': True,'valign': 'vcenter','align': 'center', 'bottom': True})
-        row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True})
+        row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True,'bottom': True})
         row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
@@ -244,7 +244,8 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            sheet.set_default_row(30)
+            sheet.set_default_row(32)
+            
             # for row_num in range(1, 50000):  
             #     sheet.set_row(row_num, 32)
                 
@@ -470,7 +471,7 @@ class MrpReportWizard(models.TransientModel):
 
                 # Set row height for the merged cells
                 for row_num in range(row_rang, _range + 1):
-                    sheet.set_row(row_num, 30)  # Adjust the height value as needed
+                    sheet.set_row(row_num, 32)  # Adjust the height value as needed
                 
                 qty_total = 0
                 shade_total = 0
@@ -584,7 +585,7 @@ class MrpReportWizard(models.TransientModel):
                     inline_row += 1
                     row_p = row_sl = row_f = row_sh = inline_row - 1
                 
-                sheet.write(row, 0, '',row_style_border_top_bottom)
+                sheet.write(row, 0, '',row_style_border_left)
                 sheet.write(row, 1, '',row_style_border_top_bottom)
                 sheet.write(row, 2, '',row_style_border_top_bottom)
                 sheet.write(row, 3, '',row_style_border_top_bottom)

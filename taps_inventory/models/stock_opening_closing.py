@@ -11,7 +11,6 @@ class Inventory(models.Model):
     #_auto = False
     #_order = "date desc, id desc"
     
-    
     product_id = fields.Many2one('product.product', string='Item', readonly=True)
     pr_code = fields.Char(string='Item Code', readonly=True)
     product_category = fields.Many2one('category.type', string='Category')
