@@ -616,52 +616,302 @@
 															<t t-esc="o.y_a_ytd" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 													</tr>
-                                                    <!-- <tr align="center" style="border: 1pt solid black;border-collapse:separate;">
+                                                    <tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 														<td colspan="3" style="color:white; text-align: left;background-color:#714B50;">
 															<span>KPI ACVD</span>
 														</td>
-														<td colspan="2" style="color:black;">
-                                                            <t t-if="o.a_apr and o.t_apr == 0">
-															<t t-esc="o.a_apr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-                                                            <t t-elif="">
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_may" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_jun" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_jul" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_aug" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_sep" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_oct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_nov" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_dec" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_jan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_feb" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:black;">
-															<t t-esc="o.a_mar" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-														<td colspan="2" style="color:white;background-color:#714B50;">
-															<t t-esc="o.y_a_ytd" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-														</td>
-													</tr> -->
+														<t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_apr == 0 or o.t_apr == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_apr !=0 and o.t_apr != 0">
+                                                                    <t t-esc="(o.t_apr / o.a_apr)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_apr == 0 or o.t_apr == 0">
+                                                                   <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_apr !=0 and o.t_apr != 0">
+                                                                    <t t-esc="(o.a_apr / o.t_apr)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+														<t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_may == 0 or o.t_may == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_may !=0 and o.t_may != 0">
+                                                                    <t t-esc="(o.t_may / o.a_may)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_may == 0 or o.t_may == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_may !=0 and o.t_may != 0">
+                                                                    <t t-esc="(o.a_may / o.t_may)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jun == 0 or o.t_jun == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jun !=0 and o.t_jun != 0">
+                                                                    <t t-esc="(o.t_jun / o.a_jun)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jun == 0 or o.t_jun == 0">
+                                                                   <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jun !=0 and o.t_jun != 0">
+                                                                    <t t-esc="(o.a_jun / o.t_jun)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jul == 0 or o.t_jul == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jul !=0 and o.t_jul != 0">
+                                                                    <t t-esc="(o.t_jul / o.a_jul)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jul == 0 or o.t_jul == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jul !=0 and o.t_jul != 0">
+                                                                    <t t-esc="(o.a_jul / o.t_jul)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_aug == 0 or o.t_aug == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_aug !=0 and o.t_aug != 0">
+                                                                    <t t-esc="(o.t_aug / o.a_aug)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_aug == 0 or o.t_aug == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_aug !=0 and o.t_aug != 0">
+                                                                    <t t-esc="(o.a_aug / o.t_aug)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_sep == 0 or o.t_sep == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_sep !=0 and o.t_sep != 0">
+                                                                    <t t-esc="(o.t_sep / o.a_sep)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_sep == 0 or o.t_sep == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_sep !=0 and o.t_sep != 0">
+                                                                    <t t-esc="(o.a_sep / o.t_sep)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_oct == 0 or o.t_oct == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_oct !=0 and o.t_oct != 0">
+                                                                    <t t-esc="(o.t_oct / o.a_oct)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_oct == 0 or o.t_oct == 0">
+                                                                    <span>0%</span>
+                                                                </t>
+                                                                <t t-if="o.a_oct !=0 and o.t_oct != 0">
+                                                                    <t t-esc="(o.a_oct / o.t_oct)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_nov == 0 or o.t_nov == 0">
+                                                                    <span>0%</span>
+                                                                </t>
+                                                                <t t-if="o.a_nov !=0 and o.t_nov != 0">
+                                                                    <t t-esc="(o.t_nov / o.a_nov)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_nov == 0 or o.t_nov == 0">
+                                                                    <span>0%</span>
+                                                                </t>
+                                                                <t t-if="o.nov !=0 and o.t_nov != 0">
+                                                                    <t t-esc="(o.a_nov / o.t_nov)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_dec == 0 or o.t_dec == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_dec !=0 and o.t_dec != 0">
+                                                                    <t t-esc="(o.t_dec / o.a_dec)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_dec == 0 or o.t_dec == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_dec !=0 and o.t_dec != 0">
+                                                                    <t t-esc="(o.a_dec / o.t_dec)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jan == 0 or o.t_jan == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jan !=0 and o.t_jan != 0">
+                                                                    <t t-esc="(o.t_jan / o.a_jan)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jan == 0 or o.t_jan == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jan !=0 and o.t_jan != 0">
+                                                                    <t t-esc="(o.a_jan / o.t_jan)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_feb == 0 or o.t_feb == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_feb !=0 and o.t_feb != 0">
+                                                                    <t t-esc="(o.t_feb / o.a_feb)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_feb == 0 or o.t_feb == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_feb !=0 and o.t_feb != 0">
+                                                                    <t t-esc="(o.a_feb / o.t_feb)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_mar == 0 or o.t_mar == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_mar !=0 and o.t_mar != 0">
+                                                                    <t t-esc="(o.t_mar / o.a_mar)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_mar == 0 or o.t_mar == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_mar !=0 and o.t_mar != 0">
+                                                                    <t t-esc="(o.a_mar / o.t_mar)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:white;background-color:#714B50;">
+                                                                <t t-if="o.y_a_ytd == 0 or o.y_t_ytd == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.y_a_ytd !=0 and o.y_t_ytd != 0">
+                                                                    <t t-esc="(o.y_t_ytd / o.y_a_ytd)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:white;background-color:#714B50;">
+                                                                <t t-if="o.y_a_ytd == 0 and o.y_t_ytd == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.y_a_ytd !=0 and o.y_t_ytd != 0">
+                                                                    <t t-esc="(o.y_a_ytd / o.y_t_ytd)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
+													</tr>
 													<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 														<td colspan="3" style="color:white; text-align: left;background-color:#714B50;">
 															<span>Weightage</span>
@@ -971,6 +1221,302 @@
 														<td colspan="2" style="color:white;background-color:#714B40;">
 															<t t-esc="o.y_a_ytd" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
+													</tr>
+                                                    <tr align="center" style="border: 1pt solid black;border-collapse:separate;">
+														<td colspan="3" style="color:white; text-align: left;background-color:#714B50;">
+															<span>KPI ACVD</span>
+														</td>
+														<t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_apr == 0 or o.t_apr == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_apr !=0 and o.t_apr != 0">
+                                                                    <t t-esc="(o.t_apr / o.a_apr)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_apr == 0 or o.t_apr == 0">
+                                                                   <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_apr !=0 and o.t_apr != 0">
+                                                                    <t t-esc="(o.a_apr / o.t_apr)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+														<t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_may == 0 or o.t_may == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_may !=0 and o.t_may != 0">
+                                                                    <t t-esc="(o.t_may / o.a_may)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_may == 0 or o.t_may == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_may !=0 and o.t_may != 0">
+                                                                    <t t-esc="(o.a_may / o.t_may)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jun == 0 or o.t_jun == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jun !=0 and o.t_jun != 0">
+                                                                    <t t-esc="(o.t_jun / o.a_jun)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jun == 0 or o.t_jun == 0">
+                                                                   <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jun !=0 and o.t_jun != 0">
+                                                                    <t t-esc="(o.a_jun / o.t_jun)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jul == 0 or o.t_jul == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jul !=0 and o.t_jul != 0">
+                                                                    <t t-esc="(o.t_jul / o.a_jul)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jul == 0 or o.t_jul == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jul !=0 and o.t_jul != 0">
+                                                                    <t t-esc="(o.a_jul / o.t_jul)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_aug == 0 or o.t_aug == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_aug !=0 and o.t_aug != 0">
+                                                                    <t t-esc="(o.t_aug / o.a_aug)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_aug == 0 or o.t_aug == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_aug !=0 and o.t_aug != 0">
+                                                                    <t t-esc="(o.a_aug / o.t_aug)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_sep == 0 or o.t_sep == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_sep !=0 and o.t_sep != 0">
+                                                                    <t t-esc="(o.t_sep / o.a_sep)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_sep == 0 or o.t_sep == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_sep !=0 and o.t_sep != 0">
+                                                                    <t t-esc="(o.a_sep / o.t_sep)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_oct == 0 or o.t_oct == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_oct !=0 and o.t_oct != 0">
+                                                                    <t t-esc="(o.t_oct / o.a_oct)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_oct == 0 or o.t_oct == 0">
+                                                                    <span>0%</span>
+                                                                </t>
+                                                                <t t-if="o.a_oct !=0 and o.t_oct != 0">
+                                                                    <t t-esc="(o.a_oct / o.t_oct)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_nov == 0 or o.t_nov == 0">
+                                                                    <span>0%</span>
+                                                                </t>
+                                                                <t t-if="o.a_nov !=0 and o.t_nov != 0">
+                                                                    <t t-esc="(o.t_nov / o.a_nov)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_nov == 0 or o.t_nov == 0">
+                                                                    <span>0%</span>
+                                                                </t>
+                                                                <t t-if="o.nov !=0 and o.t_nov != 0">
+                                                                    <t t-esc="(o.a_nov / o.t_nov)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_dec == 0 or o.t_dec == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_dec !=0 and o.t_dec != 0">
+                                                                    <t t-esc="(o.t_dec / o.a_dec)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_dec == 0 or o.t_dec == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_dec !=0 and o.t_dec != 0">
+                                                                    <t t-esc="(o.a_dec / o.t_dec)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jan == 0 or o.t_jan == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jan !=0 and o.t_jan != 0">
+                                                                    <t t-esc="(o.t_jan / o.a_jan)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_jan == 0 or o.t_jan == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_jan !=0 and o.t_jan != 0">
+                                                                    <t t-esc="(o.a_jan / o.t_jan)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_feb == 0 or o.t_feb == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_feb !=0 and o.t_feb != 0">
+                                                                    <t t-esc="(o.t_feb / o.a_feb)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_feb == 0 or o.t_feb == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_feb !=0 and o.t_feb != 0">
+                                                                    <t t-esc="(o.a_feb / o.t_feb)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_mar == 0 or o.t_mar == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_mar !=0 and o.t_mar != 0">
+                                                                    <t t-esc="(o.t_mar / o.a_mar)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:black;">
+                                                                <t t-if="o.a_mar == 0 or o.t_mar == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.a_mar !=0 and o.t_mar != 0">
+                                                                    <t t-esc="(o.a_mar / o.t_mar)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
+                                                        <t t-if="o.condition == 'less'">
+                                                            <td colspan="2" style="color:white;background-color:#714B50;">
+                                                                <t t-if="o.y_a_ytd == 0 or o.y_t_ytd == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.y_a_ytd !=0 and o.y_t_ytd != 0">
+                                                                    <t t-esc="(o.y_t_ytd / o.y_a_ytd)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        <t t-if="o.condition == 'more'">
+                                                            <td colspan="2" style="color:white;background-color:#714B50;">
+                                                                <t t-if="o.y_a_ytd == 0 and o.y_t_ytd == 0">
+                                                                    <span>0%</span>
+                                                            </t>
+                                                                <t t-if="o.y_a_ytd !=0 and o.y_t_ytd != 0">
+                                                                    <t t-esc="(o.y_a_ytd / o.y_t_ytd)*100" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                                                    <span>%</span>
+                                                            </t>
+    														</td>
+                                                        </t>
+                                                        
 													</tr>
 													<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 														<td colspan="3" style="color:white; text-align: left;background-color:#714B40;">

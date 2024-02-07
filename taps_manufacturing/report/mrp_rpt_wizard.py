@@ -244,7 +244,7 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            sheet.set_default_row(32)
+            sheet.set_default_row(30)
             # for row_num in range(1, 50000):  
             #     sheet.set_row(row_num, 32)
                 
@@ -470,7 +470,7 @@ class MrpReportWizard(models.TransientModel):
 
                 # Set row height for the merged cells
                 for row_num in range(row_rang, _range + 1):
-                    sheet.set_row(row_num, 32)  # Adjust the height value as needed
+                    sheet.set_row(row_num, 30)  # Adjust the height value as needed
                 
                 qty_total = 0
                 shade_total = 0
@@ -560,7 +560,7 @@ class MrpReportWizard(models.TransientModel):
                             sheet.write(row, col, l, format_label_5)
                         elif col == 14:
                             if l:
-                                sheet.write(row, col,l, row_style)#'=M{1}-N{1}'.format(row + 1)
+                                sheet.write(row, col,l, row_style_sum)#'=M{1}-N{1}'.format(row + 1)
                             else:
                                 sheet.write(row, col, l, red_fill_format)
                                 
@@ -584,7 +584,7 @@ class MrpReportWizard(models.TransientModel):
                     inline_row += 1
                     row_p = row_sl = row_f = row_sh = inline_row - 1
                 
-                sheet.write(row, 0, '',row_style_border_left)
+                sheet.write(row, 0, '',row_style_border_top_bottom)
                 sheet.write(row, 1, '',row_style_border_top_bottom)
                 sheet.write(row, 2, '',row_style_border_top_bottom)
                 sheet.write(row, 3, '',row_style_border_top_bottom)
@@ -635,28 +635,28 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 20, '')
             sheet.write(row+1, 21, '')
             row += 1
-            sheet.write(row+1, 0, '')
-            sheet.write(row+1, 1, '')
-            sheet.write(row+1, 2, '')
-            sheet.write(row+1, 3, '')
-            sheet.write(row+1, 4, '')
-            sheet.write(row+1, 5, '')
-            sheet.write(row+1, 6, '')
-            sheet.write(row+1, 7, '')
-            sheet.write(row+1, 8, '')
-            sheet.write(row+1, 9, '')
-            sheet.write(row+1, 10, '')
-            sheet.write(row+1, 11, '')
+            sheet.write(row+1, 0, '',row_style_border_top_bottom)
+            sheet.write(row+1, 1, '',row_style_border_top_bottom)
+            sheet.write(row+1, 2, '',row_style_border_top_bottom)
+            sheet.write(row+1, 3, '',row_style_border_top_bottom)
+            sheet.write(row+1, 4, '',row_style_border_top_bottom)
+            sheet.write(row+1, 5, '',row_style_border_top_bottom)
+            sheet.write(row+1, 6, '',row_style_border_top_bottom)
+            sheet.write(row+1, 7, '',row_style_border_top_bottom)
+            sheet.write(row+1, 8, '',row_style_border_top_bottom)
+            sheet.write(row+1, 9, '',row_style_border_top_bottom)
+            sheet.write(row+1, 10, '',row_style_border_top_bottom)
+            sheet.write(row+1, 11, '',row_style_border_top_bottom)
             sheet.write(row+1, 12, '=SUM(M{0}:M{1})/2'.format(1, row_rang-1), row_style_sum)
             sheet.write(row+1, 13, '=SUM(N{0}:N{1})/2'.format(1, row_rang-1), row_style_sum)
             sheet.write(row+1, 14, '=M{1}-N{1}'.format(row_rang+1, row_rang+1), row_style_sum)
-            sheet.write(row+1, 15, '')
-            sheet.write(row+1, 16, '')
-            sheet.write(row+1, 17, '')
-            sheet.write(row+1, 18, '')
-            sheet.write(row+1, 19, '')
-            sheet.write(row+1, 20, '')
-            sheet.write(row+1, 21, '')
+            sheet.write(row+1, 15, '',row_style_border_top_bottom)
+            sheet.write(row+1, 16, '',row_style_border_top_bottom)
+            sheet.write(row+1, 17, '',row_style_border_top_bottom)
+            sheet.write(row+1, 18, '',row_style_border_top_bottom)
+            sheet.write(row+1, 19, '',row_style_border_top_bottom)
+            sheet.write(row+1, 20, '',row_style_border_top_bottom)
+            sheet.write(row+1, 21, '',row_style_border_top_bottom)
 
 
         # sheet.conditional_format('O2:O1000', {'type':   'blanks','format': red_fill_format})

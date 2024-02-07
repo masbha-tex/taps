@@ -10,11 +10,7 @@ odoo.define('taps_crm.google_chart_action', function(require) {
     var SampleServer = require('web.SampleServer');
     // let dashboardValues;
     var QWeb = core.qweb;
-    const {
-        Component,
-        useState,
-        onWillStart
-    } = owl.hooks;
+    const {Component,useState,onWillStart} = owl.hooks;
     var GoogleChartAction = AbstractAction.extend({
         template: 'taps_crm_google_chart_template',
         start: function() {
@@ -22,22 +18,18 @@ odoo.define('taps_crm.google_chart_action', function(require) {
             ajax.jsonRpc("/taps_crm/get_google_chart_action", 'call', {})
                 .then(function(data) {
                     // Use Chart.js to render the chart
-                    // alert(data.labels)
+                    // alert(data)
+                    var d= data
                     google.charts.load('current', {
                         'packages': ['bar']
                     });
-                    google.charts.setOnLoadCallback(drawChart_1(data));
+                    
+                    google.charts.setOnLoadCallback(drawChart_1);
 
-                    function drawChart_1(data) {
-                        var a =data.columns
-                        // alert(a)
-                        var data = google.visualization.arrayToDataTable([
-                            ['Year', 'Sales', 'Expenses'],
-                            ['2014', 1000, 400],
-                            ['2015', 1170, 460],
-                            ['2016', 660, 1120],
-                            ['2017', 1030, 540],
-                        ]);
+                    function drawChart_1() {
+                        // var a =data.columns
+                        // alert(d)
+                        var data = google.visualization.arrayToDataTable(d);
                         var options = {
                             chart: {
                                 title: 'SALES VS EXPENSE',
@@ -56,6 +48,7 @@ odoo.define('taps_crm.google_chart_action', function(require) {
                         
                         chart.draw(data, google.charts.Bar.convertOptions(options));
                     }
+                    
                 });
             
             ajax.jsonRpc("/taps_crm/get_google_chart_action_1", 'call', {})

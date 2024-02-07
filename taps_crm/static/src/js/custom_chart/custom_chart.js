@@ -19,18 +19,22 @@ odoo.define('taps_crm.custom_chart', function (require) {
             ajax.jsonRpc("/taps_crm/get_chart_data", 'call', {})
             .then(function (data) {
                 // Use Chart.js to render the chart
+                
                 var ctx = self.$('#myChart')[0].getContext('2d');
                 // alert(data.labels)
+                // console.log(ctx)
                 var myChart = new Chart(ctx, {
+
                     type: 'polarArea',
                     data: {
                         
                         // labels: data.labels,
-                        labels: ['Red','Green','Yellow','Grey','Blue'],
+                        
+                        labels: data.labels,
                         datasets: [{
                             label: 'Sales Data',
                             // data: data.values,
-                            data: [11, 16, 7, 3, 14],
+                            data: data.values,
                             // backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             backgroundColor: [
                               'rgb(255, 99, 132)',
