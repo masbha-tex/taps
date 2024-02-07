@@ -300,7 +300,7 @@ class HrAttendance(models.Model):
             trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]
             record.outTime = trans_data.outTime
 
-    def generate_attdate(self):
+    def generate_attdate(self,attdate=None):
         activeemplist = self.env['hr.employee'].search([('active', '=', True)])
         base_auto = self.env['base.automation'].search([('id', '=', 23)])
         if base_auto:
@@ -308,6 +308,10 @@ class HrAttendance(models.Model):
         for employeelist in activeemplist:
             att_obj = self.env['hr.attendance']
             dateGenerate = datetime.datetime.now() + timedelta(hours=6)
+            if attdate:
+                dateGenerate = datetime.datetime.now() - timedelta(days=attdate) + timedelta(hours=6)
+                
+                
             get_transfer = self.env['shift.transfer'].search([('empid', '=', employeelist.emp_id),
                                                               ('activationDate', '<=', dateGenerate)])
             trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]

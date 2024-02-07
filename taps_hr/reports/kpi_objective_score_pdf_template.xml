@@ -616,6 +616,52 @@
 															<t t-esc="o.y_a_ytd" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 														</td>
 													</tr>
+                                                    <!-- <tr align="center" style="border: 1pt solid black;border-collapse:separate;">
+														<td colspan="3" style="color:white; text-align: left;background-color:#714B50;">
+															<span>KPI ACVD</span>
+														</td>
+														<td colspan="2" style="color:black;">
+                                                            <t t-if="o.a_apr and o.t_apr == 0">
+															<t t-esc="o.a_apr" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                                            <t t-elif="">
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_may" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_jun" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_jul" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_aug" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_sep" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_oct" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_nov" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_dec" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_jan" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_feb" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:black;">
+															<t t-esc="o.a_mar" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+														<td colspan="2" style="color:white;background-color:#714B50;">
+															<t t-esc="o.y_a_ytd" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+														</td>
+													</tr> -->
 													<tr align="center" style="border: 1pt solid black;border-collapse:separate;">
 														<td colspan="3" style="color:white; text-align: left;background-color:#714B50;">
 															<span>Weightage</span>

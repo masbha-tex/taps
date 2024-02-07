@@ -31,7 +31,8 @@ odoo.define('taps_crm.google_chart_action', function(require) {
                     function drawChart_1(data) {
                         var a =data.columns
                         // alert(a)
-                        var data = google.visualization.arrayToDataTable([['Year', 'Sales', 'Expenses'],
+                        var data = google.visualization.arrayToDataTable([
+                            ['Year', 'Sales', 'Expenses'],
                             ['2014', 1000, 400],
                             ['2015', 1170, 460],
                             ['2016', 660, 1120],

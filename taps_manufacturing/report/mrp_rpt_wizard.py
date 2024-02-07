@@ -200,6 +200,9 @@ class MrpReportWizard(models.TransientModel):
         
         row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
         row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
+        row_style_border_top_bottom = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'top': True,'valign': 'vcenter','align': 'center', 'bottom': True})
+        row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True})
+        row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
         format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -464,6 +467,10 @@ class MrpReportWizard(models.TransientModel):
                 sheet.merge_range(row_rang, 6, _range, 6, '', merge_format)
                 sheet.merge_range(row_rang, 7, _range, 7, '', merge_format)
                 sheet.merge_range(row_rang, 8, _range, 8, '', merge_format)
+
+                # Set row height for the merged cells
+                for row_num in range(row_rang, _range + 1):
+                    sheet.set_row(row_num, 32)  # Adjust the height value as needed
                 
                 qty_total = 0
                 shade_total = 0
@@ -577,28 +584,28 @@ class MrpReportWizard(models.TransientModel):
                     inline_row += 1
                     row_p = row_sl = row_f = row_sh = inline_row - 1
                 
-                sheet.write(row, 0, '')
-                sheet.write(row, 1, '')
-                sheet.write(row, 2, '')
-                sheet.write(row, 3, '')
-                sheet.write(row, 4, '')
-                sheet.write(row, 5, '')
-                sheet.write(row, 6, '')
-                sheet.write(row, 7, '')
-                sheet.write(row, 8, '')
-                sheet.write(row, 9, '')
-                sheet.write(row, 10, '')
-                sheet.write(row, 11, '')
+                sheet.write(row, 0, '',row_style_border_left)
+                sheet.write(row, 1, '',row_style_border_top_bottom)
+                sheet.write(row, 2, '',row_style_border_top_bottom)
+                sheet.write(row, 3, '',row_style_border_top_bottom)
+                sheet.write(row, 4, '',row_style_border_top_bottom)
+                sheet.write(row, 5, '',row_style_border_top_bottom)
+                sheet.write(row, 6, '',row_style_border_top_bottom)
+                sheet.write(row, 7, '',row_style_border_top_bottom)
+                sheet.write(row, 8, '',row_style_border_top_bottom)
+                sheet.write(row, 9, '',row_style_border_top_bottom)
+                sheet.write(row, 10, '',row_style_border_top_bottom)
+                sheet.write(row, 11, '',row_style_border_top_bottom)
                 sheet.write(row, 12, '=SUM(M{0}:M{1})'.format(row_rang+1, row), row_style_sum)
                 sheet.write(row, 13, '=SUM(N{0}:N{1})'.format(row_rang+1, row), row_style_sum)
                 sheet.write(row, 14, '=M{1}-N{1}'.format(row+1, row+1), row_style_sum)
-                sheet.write(row, 15, '')
+                sheet.write(row, 15, '',row_style_border_top_bottom)
                 sheet.write(row, 16, shade_total, row_style)
                 sheet.write(row, 17, wire_total, row_style)
                 sheet.write(row, 18, slider_total, row_style)
                 sheet.write(row, 19, bottom_total, row_style)
                 sheet.write(row, 20, top_total, row_style)
-                sheet.write(row, 21, '')
+                sheet.write(row, 21, '',row_style_border_right)
 
                 # row += 1
                 row_rang = row + 2
@@ -1216,13 +1223,16 @@ class MrpReportWizard(models.TransientModel):
                 sheet = workbook.add_worksheet(('%s' % (report_name)))
                 
                 for col_number in range(2):  
-                    sheet.write(45, col_number, None, row_style_sum)
+                    sheet.write(44, col_number, None, row_style_sum)
+                for col_number in range(2):  
+                    sheet.write(46, col_number, None, row_style_sum)
                 for col_number in range(20): 
                     sheet.write(25, col_number, None, row_style_sum)
-                for col_number in range(17): 
+                    
+                for col_number in range(20): 
                     sheet.write(0, col_number, None, row_style_head)
                 for col_number in range(3): 
-                    sheet.write(26, col_number, None, row_style_head)
+                    sheet.write(27, col_number, None, row_style_head)
 
                 sheet.set_zoom(85)
                 sheet.fit_to_pages(1, 0)
@@ -1232,7 +1242,7 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
                 # sheet.write(0, 11, "DATE :", column_style)
                 # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
-                sheet.merge_range(0, 11, 0, 19, 'CLOSED ORDER', column_style)
+                sheet.merge_range(0, 11, 0, 20, 'CLOSED ORDER', column_style)
                 sheet.freeze_panes(2, 0)
                 if start_time.date() == full_date.date():
                     sheet.activate()
@@ -1674,7 +1684,9 @@ class MrpReportWizard(models.TransientModel):
                 for col_number in range(16):  
                     sheet.write(25, col_number, None, row_style_sum)
                 for col_number in range(2):  
-                    sheet.write(45, col_number, None, row_style_sum)
+                    sheet.write(44, col_number, None, row_style_sum)
+                for col_number in range(2):  
+                    sheet.write(46, col_number, None, row_style_sum)
                 for col_number in range(16):  
                     sheet.write(0, col_number, None, row_style_head)
                 for col_number in range(3):  
