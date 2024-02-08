@@ -194,6 +194,7 @@ class MrpReportWizard(models.TransientModel):
         column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
         red_fill_format = workbook.add_format({'bg_color': '#A7A7A7', 'align': 'center', 'valign': 'vcenter','left': True, 'top': True, 'right': True, 'bottom': True})
         
+        
         # column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
         
         _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -244,7 +245,7 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            sheet.set_default_row(32)
+            # sheet.set_default_row(32)
             
             # for row_num in range(1, 50000):  
             #     sheet.set_row(row_num, 32)
@@ -469,9 +470,9 @@ class MrpReportWizard(models.TransientModel):
                 sheet.merge_range(row_rang, 7, _range, 7, '', merge_format)
                 sheet.merge_range(row_rang, 8, _range, 8, '', merge_format)
 
-                # Set row height for the merged cells
-                for row_num in range(row_rang, _range + 1):
-                    sheet.set_row(row_num, 32)  # Adjust the height value as needed
+                # # Set row height for the merged cells
+                # for row_num in range(row_rang, _range + 1):
+                #     sheet.set_row(row_num, 32)  # Adjust the height value as needed
                 
                 qty_total = 0
                 shade_total = 0
@@ -580,7 +581,11 @@ class MrpReportWizard(models.TransientModel):
                         if col == 20:
                             top_total += l
                         col += 1
-                        
+
+                    # Set the row height dynamically based on the content
+                    max_height = max(len(str(line[col])) for col in range(len(line)))
+                    sheet.set_row(row, max(32, max_height * 1.2))  # Adjust the multiplier as needed
+                    
                     row += 1
                     inline_row += 1
                     row_p = row_sl = row_f = row_sh = inline_row - 1
@@ -724,18 +729,38 @@ class MrpReportWizard(models.TransientModel):
             report_name = item.name
             # raise UserError((items))
            
-            sheet = workbook.add_worksheet(('%s' % (report_name)))
-            # sheet.conditional_format(
-            #     "o2",
-            #     {
-            #         "type": "cell",
-            #         "criteria": "equal to",
-            #         "value": 0,
-            #         "format": red_fill_format,
-            #         },
-            #     ) 
+            sheet = workbook.add_worksheet(('%s' % (report_name)))                 
+            if report_name == 'M#4 CE':
+                sheet.set_tab_color('#0000FE')
+            if report_name == 'M#5 CE':
+                sheet.set_tab_color('#C00000')
+            if report_name == 'M#5 OE':
+                sheet.set_tab_color('#FF0000')
+            if report_name == 'C#3 CE':
+                sheet.set_tab_color('#974706')
+            if report_name == 'C#3 Inv CE':
+                sheet.set_tab_color('#92D050')
+            if report_name == 'C#5 CE':
+                sheet.set_tab_color('#FFC000')
+            if report_name == 'C#5 OE':
+                sheet.set_tab_color('#FFFF00')
+            if report_name == 'P#3 CE':
+                sheet.set_tab_color('#002060')
+            if report_name == 'P#3 OE':
+                sheet.set_tab_color('#0070C0')
+            if report_name == 'P#5 OE':
+                sheet.set_tab_color('#0070C0')
+            if report_name == 'P#5 CE':
+                sheet.set_tab_color('#00B050')
             
+            sheet.set_margins(left=0.2, right=0.3, top=0.2, bottom=0.2)
+            sheet.set_footer('Iteam: &A Page: &P of &N Printed at &D &T', {'margin': 0.08, 'align': 'center', 'font_size': 12})
+            # sheet.set_footer('Page: &P of &N','Printed at &D &T', {'margin': 0.08, 'align': 'right', 'font_size': 10})
+            
+            sheet.fit_to_pages(1, 0)
+            sheet.set_zoom(75)
             sheet.freeze_panes(1, 0)
+            sheet.set_paper(9)
                                 
             sheet.write(0, 0, "CUSTOMER NAME", column_style)
             sheet.write(0, 1, "PRODUCT", column_style)
@@ -769,7 +794,8 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(5, 5, 20)
             sheet.set_column(8, 8, 40)
             sheet.set_column(9, 9, 40)
-            sheet.set_column(15, 21, 0)
+            sheet.set_column(15, 20, 0)
+            sheet.set_column(7, 7, 0)
             
 
             
@@ -807,7 +833,8 @@ class MrpReportWizard(models.TransientModel):
                         oa_num = orders.name
                         remarks = orders.remarks
                         create_date = orders.create_date.strftime("%d-%m-%Y")
-                        closing_date = orders.closing_date.strftime("%d-%m-%Y")
+                        if orders.closing_date:
+                            closing_date = orders.closing_date.strftime("%d-%m-%Y")
                     else:
                         customer = ''
                         pi_num = ''
@@ -843,6 +870,10 @@ class MrpReportWizard(models.TransientModel):
                     ready_qty = sum(m_order.mapped('done_qty'))
                     # raise UserError((o_data.id,ready_qty))
                     balance_qty = o_data.product_uom_qty - ready_qty
+                    if ready_qty == 0:
+                        ready_qty = None
+                    if balance_qty == 0:
+                        balance_qty = None
                     order_data = [
                         customer,
                         pr_name,
@@ -879,6 +910,10 @@ class MrpReportWizard(models.TransientModel):
                 sheet.merge_range(row_rang, 6, _range, 6, '', merge_format)
                 sheet.merge_range(row_rang, 7, _range, 7, '', merge_format)
                 sheet.merge_range(row_rang, 8, _range, 8, '', merge_format)
+
+                  # Set row height for the merged cells
+                for row_num in range(row_rang, _range + 1):
+                    sheet.set_row(row_num, 32)  # Adjust the height value as needed
                 
                 qty_total = 0
                 shade_total = 0
@@ -965,13 +1000,12 @@ class MrpReportWizard(models.TransientModel):
                         elif col in(8,9):
                             sheet.write(row, col, l, format_label_4)
                         elif col == 14:
-                            # if (sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1)) > 0:
-                            #     sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), red_fill_format)
-                            # else :
-                            sheet.write(row, col, '=M{1}-N{1}'.format(row+1, row+1), row_style)
-                            # sheet.write_formula(row, col, '=M{1}-N{1}'.format(row+1), row_style, {'type': 'cell', 'criteria': 'equal to', 'value': 0, 'format': red_fill_format})
+                            if l:
+                                sheet.write(row, col,l, row_style_sum)#'=M{1}-N{1}'.format(row + 1)
+                            else:
+                                sheet.write(row, col, l, red_fill_format)
                         else:
-                            sheet.write(row, col, l, row_style)
+                            sheet.write(row, col, l, row_style_sum)
                         if col == 12:
                             qty_total += l
                         if col == 15:
@@ -1041,8 +1075,6 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 20, '')
             sheet.write(row+1, 21, '')
             
-        # sheet.conditional_format('O2:O1000', {'type':   'blanks',
-        #                                'format': red_fill_format})
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()

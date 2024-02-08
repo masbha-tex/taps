@@ -4,12 +4,13 @@ from odoo.exceptions import UserError, ValidationError
 
 
 
-class BuyerName(models.Model):
-    _name = 'sale.buyer'
-    _rec_name= 'name'
-    _description = 'Buyer List'
+
+class BuyerSourcingOffice(models.Model):
+    _name = 'buyer.sourcing.office'
+    _description = "Brand Sourcing Office"
+
     
-    name = fields.Char(string='Buyer Name')
+    name= fields.Char(string="Sourcing Office Name")
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -29,7 +30,7 @@ class ResPartner(models.Model):
     swift_code = fields.Char(string="Swift Code", index=True, help="The Swift Code Number.")
     bond_license = fields.Char(string="Bond License", index=True, help="The Bond License Number.")
     incoterms = fields.Many2one('account.incoterms', string="Incoterms")
-    sourcing_office = fields.Char(string="Sourcing Office")
+    sourcing_office = fields.Many2one('buyer.sourcing.office', string="Sourcing Office")
     sourcing_type = fields.Selection([
         ('agent', 'AGENT'),
         ('direct', 'DIRECT'),

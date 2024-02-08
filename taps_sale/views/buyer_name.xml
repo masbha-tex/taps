@@ -13,14 +13,14 @@
                 <field name="brand" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('company_type', '=', 'person'),('supplier_rank', '>', 0),('customer_rank', '>', 0),('brand_rank', '>', 0),('customer_group_rank', '>', 0)]}"/>
                 <!-- <field name="sale_representative"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/> -->
                 <field name="user_id" domain="[('share', '=', False)]"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
-                  <field name ="customer_status" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person'),('buyer_rank', '>', 0)]}"/>
+                  <field name ="customer_status" attrs="{'invisible': ['|','|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person'),('buyer_rank', '>', 0)]}"/>
                 
               </group>
               <group name="related buyer and customer">
                   <field name="related_buyer"  widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person'),('buyer_rank', '>', 0)]}"/>
                 <!-- <field name="related_customer" domain="[('customer_rank','>', 0)]" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('brand_rank', '>', 0),('customer_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/> -->
                 <field name="sourcing_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
-                <field name="sourcing_office" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
+                <field name="sourcing_office" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                 <field name="customer_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('buyer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
               </group>  
             </group>
@@ -62,24 +62,21 @@
         <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]" position="after">
             <group attrs="{'invisible': ['|',('supplier_rank', '>', 0),('company_type', '=', 'person')]}">
               <group>
-                  <field name= "delivery_address"/>
+                  <field name= "delivery_address" attrs="{'invisible':[('buyer_rank', '>', 0)]}" />
                   
               </group>
               <group>
-                  <field name= "billing_address"/>
+                  <span class="o_form_label o_td_label" name="billing_address_name">
+                                <b>
+                                    <label for="billing_address" string="Billing Address" attrs="{'invisible':[('customer_rank', '!=', 1)]}"/>
+                                    <label for="billing_address" string="Local Office Address" attrs="{'invisible':[('buyer_rank', '!=', 1)]}"/>
+                                </b>
+                    </span>
+                  <field name= "billing_address" nolabel="1"/>
               </group>
             </group>
         </xpath>
-        <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
-            <page string="Others" name="Others info" attrs="{'invisible': ['|',('company_type', '=', 'person'),('supplier_rank', '>', 0)]}">
-              <group name="Others">
-                
-                
-                
-                <field name="contact_mobile" widget="phone"/>
-              </group>
-            </page>
-        </xpath>
+        
     </field>
     </record>
     <record id="res_partner_view_search_inherit" model="ir.ui.view">
@@ -96,29 +93,9 @@
                 </xpath>
             </field>
         </record>
-    <record id="buyer_list" model="ir.ui.view">
-        <field name="name">sale.buyer.list</field>
-        <field name="model">sale.buyer</field>
-        <field name="arch" type="xml">
-            <tree string="Buyer List">
-                <field name="name"/>
-            </tree>
-        </field>
-    </record>
+    
     <!-- Form View -->
-    <record id="unit_form" model="ir.ui.view">
-        <field name="name">sale.buyer.form</field>
-        <field name="model">sale.buyer</field>
-        <field name="arch" type="xml">
-            <form string="Buyer Form">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+    
     
     <record id="res_partner_action_buyer" model="ir.actions.act_window">
             <field name="name">Buyers</field>
@@ -165,19 +142,27 @@
               </p>
             </field>
         </record>
+        <record id="buyer_sourcing_office_action" model="ir.actions.act_window">
+            <field name="name">Brand Sourcing Office</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">buyer.sourcing.office</field>
+            <field name="view_mode">tree,form</field>
+            
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create your first Sourcing Office
+              </p>
+              
+            </field>
+        </record>
     
     
-    <record id="buyer_name_action_config" model="ir.actions.act_window">
-        <field name="name">Buyer Name</field>
-        <field name="res_model">sale.buyer</field>
-        <field name="view_mode">tree,form</field>
-    </record>
     <menuitem
-        id="menu_sale_buyer"
-        name="Buyer List"
-        action="buyer_name_action_config"
+        id="menu_sale_buyer_sourcing_office"
+        name="Brand Sourcing Office"
+        action="buyer_sourcing_office_action"
         parent="sale.menu_sales_config"
-        sequence="17"/>
+        sequence="30"/>
     
     <menuitem 
         id="sale_order_menu_inherit"

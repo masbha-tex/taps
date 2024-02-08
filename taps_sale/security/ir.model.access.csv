@@ -1,7 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_order,base.group_user,1,1,1,1
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_fg_product_formula,sales_team.group_sale_manager,1,1,1,1
-access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_buyer,base.group_user,1,1,1,1
 access_sale_overview,access_sale_overview,model_sale_overview,base.group_user,1,0,0,0
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_sale_representative,sales_team.group_sale_manager,1,1,1,1
 access_taps_sale.taps_sale,taps_sale.taps_sale,model_wastage_percent,sales_team.group_sale_manager,1,1,1,1
@@ -23,3 +22,4 @@ access_sale_ccr_wizard_notjustify,access_sale_ccr_wizard_notjustify,model_sale_c
 access_sale_modify_confirm,access_oa_modification_confirmation,model_oa_modification_confirmation,base.group_user,1,1,1,1
 access_naf_template,access_naf_template,model_naf_template,sales_team.group_sale_salesman,1,1,1,0
 access_naf_template,access_naf_template,model_naf_template,sales_team.group_sale_manager,1,1,1,1
+access_buyer_sourcing_office,access_buyer_sourcing_office,model_buyer_sourcing_office,base.group_user,1,1,1,1

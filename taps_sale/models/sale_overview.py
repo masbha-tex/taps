@@ -12,7 +12,7 @@ class SaleOverview(models.Model):
     order_id = fields.Many2one('sale.order', string='OA Number')
     pi_number = fields.Char(string='PI No.')
     name = fields.Text(string='Description')
-    buyer_name = fields.Many2one('sale.buyer', related="order_id.buyer_name", string='Buyer Name')
+    buyer_name = fields.Many2one('res.partner', related="order_id.buyer_name", string='Buyer Name')
     sequence = fields.Integer(string='Sequence')
     price_unit = fields.Float('Unit Price', required=True, digits='Product Price', default=0.0)
     price_subtotal = fields.Monetary(string='Subtotal')
