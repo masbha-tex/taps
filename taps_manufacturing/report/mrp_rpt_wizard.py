@@ -188,8 +188,6 @@ class MrpReportWizard(models.TransientModel):
         # oa_total_balance revision_no
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-       #workbook.set_zoom(75)
-        #workbook.print_area('A:O')
         
         column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
         red_fill_format = workbook.add_format({'bg_color': '#A7A7A7', 'align': 'center', 'valign': 'vcenter','left': True, 'top': True, 'right': True, 'bottom': True})
@@ -245,7 +243,7 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            # sheet.set_default_row(32)
+            sheet.set_default_row(32)
             
             # for row_num in range(1, 50000):  
             #     sheet.set_row(row_num, 32)
@@ -556,8 +554,12 @@ class MrpReportWizard(models.TransientModel):
                             sheet.write(row, col, l, format_label_2)
                         elif col in(4,5,6):
                             sheet.write(row, col, l, format_label_3)
-                        elif col in(8,9):
+                        elif col == 8:
                             sheet.write(row, col, l, format_label_4)
+                        elif col == 9 :
+                            sheet.write(row, col, l, format_label_4)
+                            max_height = max(len(str(line[col])) for col in range(len(line)))
+                            sheet.set_row(row, max(2, max_height/3))  # Adjust the multiplier as needed
                         elif col in(10,11,12,13):
                             sheet.write(row, col, l, format_label_5)
                         elif col == 14:
@@ -583,8 +585,9 @@ class MrpReportWizard(models.TransientModel):
                         col += 1
 
                     # Set the row height dynamically based on the content
-                    max_height = max(len(str(line[col])) for col in range(len(line)))
-                    sheet.set_row(row, max(32, max_height * 1.2))  # Adjust the multiplier as needed
+                    # # if col == 9:
+                    # max_height = max(len(str(line[col])) for col in range(len(line)))
+                    # sheet.set_row(row, max(32, max_height*1.2))  # Adjust the multiplier as needed
                     
                     row += 1
                     inline_row += 1
