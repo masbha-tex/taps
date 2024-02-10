@@ -8,11 +8,14 @@ from odoo.exceptions import UserError, ValidationError
 class BuyerSourcingOffice(models.Model):
     _name = 'buyer.sourcing.office'
     _description = "Brand Sourcing Office"
+    _rec_name = 'name'
+    
+    name= fields.Char(string="Sourcing Office Name")
 
 class BuyerSourcingType(models.Model):
     _name = 'buyer.sourcing.type'
     _description = "Brand Sourcing Type"
-
+    _rec_name = 'name'
     
     name= fields.Char(string="Sourcing Office Type")
 

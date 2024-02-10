@@ -384,8 +384,8 @@ class MrpReportWizard(models.TransientModel):
                     slider = o_data.slidercodesfg
                     finish = o_data.finish #.replace('\n',' ')
                     shade = o_data.shade
-                    if shade:
-                        shade = o_data.shade.replace('\n',' ')
+                    # if shade:
+                    #     shade = o_data.shade.replace('\n',' ')
                         # shade = re.sub(r'\n\s*\n', ' ', o_data.shade)
                     shadewise_tape = o_data.shadewise_tape
                     
@@ -1907,10 +1907,10 @@ class MrpReportWizard(models.TransientModel):
                         sheet.write(row, 1, '', format_label_1)
                     sheet.write(row, 2, ot.unit, format_label_1)
                     row += 1
-                sheet.write(row, 0, 'TOTAL', format_label_1)
-                sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), format_label_1)
-                sheet.write(row+2, 0, 'TOTAL PRICE', format_label_2)
-                sheet.write(row+2, 1, others_value, format_label_1)
+                sheet.write(row, 0, 'TOTAL', row_style_sum)
+                sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(29, 43), row_style_sum)
+                # sheet.write(row+2, 0, 'TOTAL PRICE', format_label_2)
+                # sheet.write(row+2, 1, others_value, format_label_1)
 
             # if start_time.day == day and start_time.month == int(month_):
             #     sheet.Activate()
