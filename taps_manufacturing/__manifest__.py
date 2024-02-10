@@ -24,6 +24,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'report/label_print_wizard.xml',
         # 'report/mrp_lot_barcode.xml',
         'wizard/mrp_split.xml',
         'wizard/bom_verification.xml',
@@ -57,7 +58,6 @@
         'report/fg_rpt_wizard.xml',
         'report/slipt_carton.xml',
         # 'report/slipt_packing.xml',
-        'report/label_print_wizard.xml',
         'report/report_label_print.xml',
         'report/report_label_print_mt.xml',
         'report/report_label_print_blank.xml',

@@ -384,8 +384,8 @@ class MrpReportWizard(models.TransientModel):
                     slider = o_data.slidercodesfg
                     finish = o_data.finish #.replace('\n',' ')
                     shade = o_data.shade
-                    # if shade:
-                        # shade = o_data.shade.replace('\n',' ')
+                    if shade:
+                        shade = o_data.shade.replace('\n',' ')
                         # shade = re.sub(r'\n\s*\n', ' ', o_data.shade)
                     shadewise_tape = o_data.shadewise_tape
                     
@@ -565,7 +565,7 @@ class MrpReportWizard(models.TransientModel):
                                 l = str(l)
                             number_of_newlines = l.count('\n') if isinstance(l, str) else 0
                             if number_of_newlines > 2: 
-                                row_height = number_of_newlines * 30
+                                row_height = number_of_newlines * 12
                                 sheet.write(row, col, l, format_label_4)
                                 sheet.set_row(row, row_height)
                             else :
