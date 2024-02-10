@@ -31,9 +31,20 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
-    <menuitem id="menu_mrp_reports"
-              name="MRP Reports"
-              sequence="12"
+    <record id="mrp_PPC" model="ir.actions.act_window">
+        <field name="name">PPC</field>
+        <field name="res_model">mrp.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="ppc_reports"
+              name="PPC"
+              sequence="52"
+              action="mrp_PPC"
+              parent="mrp.menu_mrp_root"/>
+    <menuitem id="ppc_reports_daily"
+              name="PPC REPORTS"
+              sequence="53"
               action="mrp_reports"
-              parent="mrp.menu_mrp_reporting"/>
+              parent="mrp.menu_mrp_root.ppc_reports"/>
 </odoo>

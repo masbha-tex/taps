@@ -42,7 +42,7 @@
               name="OA Check"
               sequence="5"
               action="action_oa_check"
-              parent="mrp.menu_mrp_reporting"/>     
+              parent="menu_packing"/>     
     
     
 

@@ -463,10 +463,7 @@ class SaleOrder(models.Model):
                 'asraful.haque@texzipperbd.com',
                 ]
             author_id=0
-            
-            
-            
-            
+
             if rec.id == 1:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
                 email_cc_list.append('ranjeet.singh@texzipperbd.com')
@@ -487,8 +484,6 @@ class SaleOrder(models.Model):
                         'mimetype': 'application/pdf',
                         'res_model' : 'sale.order',
                         'company_id' : rec.id,
-                        
-              
             })
             email_cc = ','.join(email_cc_list)
             email_from = ','.join(email_from_list)
@@ -523,17 +518,11 @@ class SaleOrder(models.Model):
                     'com' : rec,
                 }
                 
-                
-                    
                 body = template._render(template_ctx, engine='ir.qweb')
                 # raise UserError((body))
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
-                
            
             rec.env['mail.mail'].sudo().create(mail_values).send()
-
-    
-    
     
     def _action_daily_oa_release_email_team_wise(self, team_id):
         
@@ -571,14 +560,8 @@ class SaleOrder(models.Model):
                         'datas': base64.encodebytes(pdf_content),
                         'mimetype': 'application/pdf',
                         'res_model' : 'sale.order',
-                        
-                        
               
             })
-            
-           
-            
-            
             email_cc = ','.join(email_cc_list)
             email_from = ','.join(email_from_list)
             email_to = ','.join(email_to_list)
@@ -594,7 +577,6 @@ class SaleOrder(models.Model):
                 'email_cc': email_cc,
                 'attachment_ids' : attachment,
                 'reply_to': None,
-                
                 
             }
             # raise UserError((rec.env.ref('taps_sale.view_oa_release_body_team_wise', raise_if_not_found=True)))
@@ -617,7 +599,6 @@ class SaleOrder(models.Model):
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
            
             rec.env['mail.mail'].sudo().create(mail_values).send()
-            
 
     @api.model
     def retrieve_dashboard(self):
@@ -1317,6 +1298,100 @@ class SaleOrder(models.Model):
                         top = exist_mrp.filtered(lambda mo: mo.sale_line_of_top == products.id)
                         top_ope = operation.filtered(lambda mo: mo.sale_line_of_top == products.id)
                         qty = products.product_uom_qty * num_of_top
+
+ # top_create = self.env['sale.order.line'].create({
+ #                    'order_id':self.id,
+ #                    'name':lines.name,
+ #                    'sequence':lines.sequence,
+ #                    'price_unit':lines.price_unit,
+ #                    'price_subtotal':lines.price_subtotal,
+ #                    'price_tax':lines.price_tax,
+ #                    'price_total':lines.price_total,
+ #                    'price_reduce':lines.price_reduce,
+ #                    'tax_id':lines.tax_id,
+ #                    'price_reduce_taxinc':lines.price_reduce_taxinc,
+ #                    'price_reduce_taxexcl':lines.price_reduce_taxexcl,
+ #                    'discount':lines.discount,
+ #                    'product_id':lines.product_id,
+ #                    'product_template_id':lines.product_template_id,
+ #                    'product_updatable':lines.product_updatable,
+ #                    'product_uom_qty':lines.product_uom_qty,
+ #                    'product_uom':lines.product_uom,
+ #                    'product_uom_category_id':lines.product_uom_category_id,
+ #                    'product_uom_readonly':lines.product_uom_readonly,
+ #                    'product_custom_attribute_value_ids':lines.product_custom_attribute_value_ids,
+ #                    'product_no_variant_attribute_value_ids':lines.product_no_variant_attribute_value_ids,
+ #                    'qty_delivered_method':lines.qty_delivered_method,
+ #                    'qty_delivered':0,
+ #                    'qty_delivered_manual':0,
+ #                    'qty_to_invoice':0,
+ #                    'qty_invoiced':0,
+ #                    'untaxed_amount_invoiced':0,
+ #                    'untaxed_amount_to_invoice':0,
+ #                    'salesman_id':lines.salesman_id,
+ #                    'currency_id':lines.currency_id,
+ #                    'company_id':lines.company_id,
+ #                    'order_partner_id':lines.order_partner_id,
+ #                    'is_expense':lines.is_expense,
+ #                    'is_downpayment':lines.is_downpayment,
+ #                    'state':lines.state,
+ #                    'customer_lead':lines.customer_lead,
+ #                    'display_type':lines.display_type,
+ #                    'id':lines.id,
+ #                    'display_name':lines.display_name,
+ #                    'create_uid':lines.create_uid,
+ #                    'create_date':lines.create_date,
+ #                    'write_uid':lines.write_uid,
+ #                    'write_date':lines.write_date,
+ #                    'sale_order_option_ids':lines.sale_order_option_ids,
+ #                    'product_packaging':lines.product_packaging,
+ #                    'route_id':lines.route_id,
+ #                    'move_ids':lines.move_ids,
+ #                    'product_type':lines.product_type,
+ #                    'virtual_available_at_date':lines.virtual_available_at_date,
+ #                    'scheduled_date':lines.scheduled_date,
+ #                    'forecast_expected_date':lines.forecast_expected_date,
+ #                    'free_qty_today':lines.free_qty_today,
+ #                    'qty_available_today':lines.qty_available_today,
+ #                    'warehouse_id':lines.warehouse_id,
+ #                    'qty_to_deliver':lines.qty_to_deliver,
+ #                    'is_mto':lines.is_mto,
+ #                    'display_qty_widget':lines.display_qty_widget,
+ #                    'purchase_line_ids':lines.purchase_line_ids,
+ #                    'purchase_line_count':lines.purchase_line_count,
+ #                    'is_delivery':lines.is_delivery,
+ #                    'product_qty':lines.product_qty,
+ #                    'recompute_delivery_price':lines.recompute_delivery_price,
+ #                    'is_configurable_product':lines.is_configurable_product,
+ #                    'product_template_attribute_value_ids':lines.product_template_attribute_value_ids,
+ #                    'topbottom':lines.topbottom,
+ #                    'slidercode':lines.slidercode,
+ #                    'finish':lines.finish,
+ #                    'shade':lines.shade,
+ #                    'shade_name':lines.shade_name,
+ #                    'shade_ref':lines.shade_ref,
+ #                    'sizein':lines.sizein,
+ #                    'sizecm':lines.sizecm,
+ #                    'finish_ref':lines.finish_ref,
+ #                    'slidercodesfg':lines.slidercodesfg,
+ #                    'dyedtape':lines.dyedtape,
+ #                    'ptopfinish':lines.ptopfinish,
+ #                    'numberoftop':lines.numberoftop,
+ #                    'pbotomfinish':lines.pbotomfinish,
+ #                    'ppinboxfinish':lines.ppinboxfinish,
+ #                    'dippingfinish':lines.dippingfinish,
+ #                    'gap':lines.gap,
+ #                    'tape_con':lines.tape_con,
+ #                    'slider_con':lines.slider_con,
+ #                    'topwire_con':lines.topwire_con,
+ #                    'botomwire_con':lines.botomwire_con,
+ #                    'wire_con':lines.wire_con,
+ #                    'pinbox_con':lines.pinbox_con,
+ #                    'color' : lines.color,
+ #                })
+
+
+                        
                         if top_ope:
                             top_update = top.update({'product_uom_qty':qty,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'oa_total_qty':products.order_id.total_product_qty + qty ,'remarks':products.order_id.remarks,'revision_no':self.revised_no,'state':state})
                             
@@ -1347,6 +1422,7 @@ class SaleOrder(models.Model):
                                                                 'state':state,
                                                                 'sale_line_of_top':products.id
                                                                 })
+                            
             
             
             if exist_mrp:
@@ -1656,7 +1732,7 @@ class SaleOrderLine(models.Model):
     is_copied = fields.Boolean('Copied',default=False)
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     rmc = fields.Float(string='RMC', store=True)
-    # oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=False)
+    oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=False)
     
     def _inverse_compute_product_code(self):
         pass

@@ -9,8 +9,12 @@ class BuyerSourcingOffice(models.Model):
     _name = 'buyer.sourcing.office'
     _description = "Brand Sourcing Office"
 
+class BuyerSourcingType(models.Model):
+    _name = 'buyer.sourcing.type'
+    _description = "Brand Sourcing Type"
+
     
-    name= fields.Char(string="Sourcing Office Name")
+    name= fields.Char(string="Sourcing Office Type")
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -20,24 +24,25 @@ class ResPartner(models.Model):
     customer_group_rank = fields.Integer(default=0, copy=False)
     sale_representative = fields.Many2one('sale.representative', string="Sale Representative", )
     related_buyer = fields.Many2many('res.partner', relation='partner_related_buyer_rel',column1='partner_id',column2='buyer_id',string="Related Buyer")
-    related_customer = fields.Many2many('res.partner', relation='partner_related_customer_rel',column1='partner_id',column2='customer_id',string="Related Customer")
+    related_customer = fields.Many2many('res.partner', relation='partner_related_customer_rel',column1='partner_id',column2='customer_id',string="Related Customer", domain="[['customer_rank', '=',1]]")
     contact_person = fields.Char(string="Contact Name", help="Contact Person Name")
     contact_mobile = fields.Char(string="Contact Person's Mobile")
     group = fields.Many2one('res.partner', string="Group")
-    brand = fields.Many2one('res.partner', string="Brand")
+    brand = fields.Many2one('res.partner', string="Brand Group")
     delivery_address = fields.Text(string="Delivery Address")
     billing_address = fields.Text(string="Billing Address")
     swift_code = fields.Char(string="Swift Code", index=True, help="The Swift Code Number.")
     bond_license = fields.Char(string="Bond License", index=True, help="The Bond License Number.")
     incoterms = fields.Many2one('account.incoterms', string="Incoterms")
     sourcing_office = fields.Many2one('buyer.sourcing.office', string="Sourcing Office")
-    sourcing_type = fields.Selection([
-        ('agent', 'AGENT'),
-        ('direct', 'DIRECT'),
-        ('importer', 'IMPORTER'),
-        ('licence', 'LICENCE'),
-        ('lo', 'LO'),
-    ], string="Sourcing Type")
+    sourcing_type = fields.Many2one('buyer.sourcing.type' ,string="Sourcing Type")
+    # sourcing_type = fields.Selection([
+    #     ('agent', 'AGENT'),
+    #     ('direct', 'DIRECT'),
+    #     ('importer', 'IMPORTER'),
+    #     ('licence', 'LICENCE'),
+    #     ('lo', 'LO'),
+    # ], string="Sourcing Type", ondelete='cascade')
     property_account_receivable_id = fields.Many2one(
         'account.account',
         string='Account Receivable',

@@ -12,14 +12,15 @@
                 <field name="group" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('company_type', '=', 'person'),('supplier_rank', '>', 0),('buyer_rank', '>', 0),('brand_rank', '>', 0),('customer_group_rank', '>', 0)]}"/>
                 <field name="brand" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('company_type', '=', 'person'),('supplier_rank', '>', 0),('customer_rank', '>', 0),('brand_rank', '>', 0),('customer_group_rank', '>', 0)]}"/>
                 <!-- <field name="sale_representative"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/> -->
-                <field name="user_id" domain="[('share', '=', False)]"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
+                <field name="user_id" domain="[('share', '=', False)]"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('buyer_rank', '>', 0),('company_type', '=', 'person')]}"/>
                   <field name ="customer_status" attrs="{'invisible': ['|','|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person'),('buyer_rank', '>', 0)]}"/>
+                  <field name="related_customer" domain="[('customer_rank','>', 0)]" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('buyer_rank', '!=', 1)]}"/>
                 
               </group>
               <group name="related buyer and customer">
                   <field name="related_buyer"  widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person'),('buyer_rank', '>', 0)]}"/>
-                <!-- <field name="related_customer" domain="[('customer_rank','>', 0)]" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('brand_rank', '>', 0),('customer_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/> -->
-                <field name="sourcing_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
+                
+                <field name="sourcing_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                 <field name="sourcing_office" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                 <field name="customer_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('buyer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
               </group>  
@@ -155,12 +156,31 @@
               
             </field>
         </record>
+        <record id="buyer_sourcing_type_action" model="ir.actions.act_window">
+            <field name="name">Brand Sourcing Type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">buyer.sourcing.type</field>
+            <field name="view_mode">tree,form</field>
+            
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create your first Sourcing Office
+              </p>
+              
+            </field>
+        </record>
     
     
     <menuitem
         id="menu_sale_buyer_sourcing_office"
         name="Brand Sourcing Office"
         action="buyer_sourcing_office_action"
+        parent="sale.menu_sales_config"
+        sequence="30"/>
+    <menuitem
+        id="menu_sale_buyer_sourcing_type"
+        name="Brand Sourcing Type"
+        action="buyer_sourcing_type_action"
         parent="sale.menu_sales_config"
         sequence="30"/>
     

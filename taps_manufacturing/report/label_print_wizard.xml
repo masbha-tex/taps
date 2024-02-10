@@ -46,10 +46,21 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
+    <!-- <record id="mrp_packing" model="ir.actions.act_window">
+        <field name="name">Packing</field>
+        <field name="res_model">mrp.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record> -->
+    <menuitem id="menu_packing"
+              name="Packing"
+              sequence="50"
+              parent="mrp.menu_mrp_root"/>
     <menuitem id="menulabel_printing"
               name="Label Printing"
-              sequence="50"
+              sequence="51"
               action="label_printing"
-              parent="mrp.menu_mrp_root"/>
+              parent="menu_packing"/>
+   
    
 </odoo>

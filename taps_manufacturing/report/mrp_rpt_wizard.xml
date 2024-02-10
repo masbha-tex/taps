@@ -30,9 +30,14 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
-    <menuitem id="menu_mrp_reports"
+    <menuitem id="menu_mrp_reports_combined"
               name="MRP Reports"
               sequence="12"
               action="mrp_reports"
               parent="mrp.menu_mrp_reporting"/>
+    <menuitem id="menu_mrp_reports_packing"
+              name="MRP Reports"
+              sequence="3"
+              action="mrp_reports"
+              parent="menu_packing"/>
 </odoo>
