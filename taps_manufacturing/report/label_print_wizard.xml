@@ -56,11 +56,12 @@
               name="Packing"
               sequence="50"
               parent="mrp.menu_mrp_root"/>
+    
     <menuitem id="menulabel_printing"
               name="Label Printing"
-              sequence="51"
+              sequence="2"
               action="label_printing"
-              parent="menu_packing"/>
+              parent="taps_manufacturing.menu_packing"/>
    
    
 </odoo>

@@ -384,9 +384,9 @@ class MrpReportWizard(models.TransientModel):
                     slider = o_data.slidercodesfg
                     finish = o_data.finish #.replace('\n',' ')
                     shade = o_data.shade
-                    if shade:
+                    # if shade:
                         # shade = o_data.shade.replace('\n',' ')
-                        shade = re.sub(r'\n\s*\n', ' ', o_data.shade)
+                        # shade = re.sub(r'\n\s*\n', ' ', o_data.shade)
                     shadewise_tape = o_data.shadewise_tape
                     
                     sizein = o_data.sizein
@@ -564,9 +564,10 @@ class MrpReportWizard(models.TransientModel):
                             if isinstance(l, bool):
                                 l = str(l)
                             number_of_newlines = l.count('\n') if isinstance(l, str) else 0
-                            row_height = number_of_newlines * 12
-                            sheet.write(row, col, l, format_label_4)
-                            sheet.set_row(row, row_height)
+                            if number_of_newlines > 2: 
+                                row_height = number_of_newlines * 30
+                                sheet.write(row, col, l, format_label_4)
+                                sheet.set_row(row, row_height)
                             # sheet.row(row).height_mismatch = True
                             # sheet.row(row).height = row_height
                             # max_height = max(len(str(line[col])) for col in range(len(line)))

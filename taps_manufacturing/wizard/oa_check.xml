@@ -38,11 +38,12 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>   
+    
     <menuitem id="menu_oa_check"
               name="OA Check"
               sequence="5"
               action="action_oa_check"
-              parent="menu_packing"/>     
+              parent="taps_manufacturing.menu_packing"/>     
     
     
 
