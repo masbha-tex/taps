@@ -41,23 +41,23 @@ class CustomerVisit(models.Model):
     _order = "visit_date desc"
 
     name = fields.Char(string="Name",required=True, copy=False, index=True, readonly=True,  default=lambda self: _('New'))
-    description = fields.Char(string="Description")
+    # description = fields.Char(string="Description")
     partner_id = fields.Many2one('res.partner', string='Customer')
     buyer = fields.Many2one('res.partner', string='Buyer')
     concern = fields.Char(string="Concern")
     designation = fields.Char(string="Designation")
     mobile = fields.Char(string="Mobile")
     product = fields.Many2many('crm.tag', string="Product")
-    core_purpose = fields.Many2one('crm.visit.purpose.core',string="Visit Purpose")
-    visit_purpose = fields.Many2one('crm.visit.purpose',string="Visit Objective")
+    core_purpose = fields.Many2one('crm.visit.purpose.core',string="Visit Purpose", required=True)
+    visit_purpose = fields.Many2one('crm.visit.purpose',string="Visit Objective", required=True)
     visit_outcome = fields.Text(string="Visit Outcome")
     action = fields.Text(string="Action")
-    user_id = fields.Many2one('res.users', string='Salesperson', index=True, tracking=True, default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', string='Salesperson', index=True, tracking=True, default=lambda self: self.env.user, readonly=True)
     visit_date = fields.Date(string='Date', tracking=True, default=date.today())
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     team_id = fields.Many2one(
         'crm.team', string='Sales Team', index=True, tracking=True,
-        compute='_compute_team_id', readonly=False, store=True)
+        compute='_compute_team_id', store=True, readonly=True)
     stages = fields.Selection([
         ('1_draft', 'Draft'),
         ('2_done', 'Done'),

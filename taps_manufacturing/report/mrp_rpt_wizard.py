@@ -243,7 +243,7 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            sheet.set_default_row(32)
+            sheet.set_default_row(30)
             
             # for row_num in range(1, 50000):  
             #     sheet.set_row(row_num, 32)
@@ -312,10 +312,10 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(3, 3, 14)
             sheet.set_column(4, 4, 12)
             sheet.set_column(5, 5, 8)
-            sheet.set_column(6, 6, 10)
+            sheet.set_column(6, 6, 12)
             sheet.set_column(7, 7, 0)
             sheet.set_column(8, 8, 20)
-            sheet.set_column(9, 9, 14)
+            sheet.set_column(9, 9, 25)
             sheet.set_column(10, 10, 11)
             sheet.set_column(11, 11, 11)
             sheet.set_column(12, 12, 15)
@@ -558,8 +558,8 @@ class MrpReportWizard(models.TransientModel):
                             sheet.write(row, col, l, format_label_4)
                         elif col == 9 :
                             sheet.write(row, col, l, format_label_4)
-                            max_height = max(len(str(line[col])) for col in range(len(line)))
-                            sheet.set_row(row, max(2, max_height/3))  # Adjust the multiplier as needed
+                            # max_height = max(len(str(line[col])) for col in range(len(line)))
+                            # sheet.set_row(row, max(2, max_height/2.2))  # Adjust the multiplier as needed
                         elif col in(10,11,12,13):
                             sheet.write(row, col, l, format_label_5)
                         elif col == 14:

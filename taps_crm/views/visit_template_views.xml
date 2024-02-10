@@ -52,9 +52,9 @@
                             </h1>
                         </div>
                         <br/>
-                        <div class="text-center alert alert-primary oe_edit_only" role="alert">
-                        <field name="description" placeholder="Description ..." attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
-                        </div>
+                        <!-- <div class="text-center alert alert-primary oe_edit_only" role="alert"> -->
+                        <!-- <field name="description" placeholder="Description ..." attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/> -->
+                        <!-- </div> -->
                         <group>
                         <group>
                             <field name="partner_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
@@ -75,10 +75,10 @@
                         </group>
                         <group>
                             <group>
-                                <field name="user_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                                <field name="user_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
                             </group>
                             <group>
-                                <field name="team_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
+                                <field name="team_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             </group>
                         </group>
                     </sheet>
@@ -96,7 +96,7 @@
             <field name="arch" type="xml">
                 <tree class="o_lead_opportunity_form custom_list_class" js_class="taps_crm_visit_tree_dashboard_upload" >
                     <field name="name"/>
-                    <field name="description"/>
+                    <!-- <field name="description"/> -->
                     <field name="visit_date"/>
                     <field name="partner_id"/>
                     <field name="buyer"/>
@@ -123,7 +123,7 @@
             <field name="arch" type="xml">
                 <form>
                     <group>
-                        <field name="description" />
+                        <!-- <field name="description" /> -->
                         <field name="partner_id" widget="res_partner_many2one"
                             string='Customer'
                              options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
