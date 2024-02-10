@@ -60,8 +60,9 @@
     <menuitem id="menulabel_printing"
               name="Label Printing"
               sequence="2"
+              parent="taps_manufacturing.menu_packing"
               action="label_printing"
-              parent="taps_manufacturing.menu_packing"/>
+              />
    
    
 </odoo>

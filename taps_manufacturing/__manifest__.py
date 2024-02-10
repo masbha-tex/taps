@@ -37,7 +37,6 @@
         'wizard/mrp_group_output.xml',
         'wizard/mrp_return.xml',
         'views/selection_fields_data.xml',
-        'wizard/oa_check.xml',
         'wizard/change_production_date.xml',
         'report/paperformat.xml',
         'data/daily_production.xml',
@@ -62,6 +61,7 @@
         'report/report_label_print.xml',
         'report/report_label_print_mt.xml',
         'report/report_label_print_blank.xml',
+        'wizard/oa_check.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     'qweb': [

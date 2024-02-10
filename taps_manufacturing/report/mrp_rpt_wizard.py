@@ -568,10 +568,10 @@ class MrpReportWizard(models.TransientModel):
                                 row_height = number_of_newlines * 30
                                 sheet.write(row, col, l, format_label_4)
                                 sheet.set_row(row, row_height)
-                            # sheet.row(row).height_mismatch = True
-                            # sheet.row(row).height = row_height
-                            # max_height = max(len(str(line[col])) for col in range(len(line)))
-                            # sheet.set_row(row, max(2, max_height/2.2))  # Adjust the multiplier as needed
+                            else :
+                                row_height = 32
+                                sheet.write(row, col, l, format_label_4)
+                                sheet.set_row(row, row_height)
                         elif col in(10,11,12,13):
                             sheet.write(row, col, l, format_label_5)
                         elif col == 14:
