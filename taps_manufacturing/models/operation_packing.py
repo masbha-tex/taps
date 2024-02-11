@@ -39,7 +39,6 @@ class OperationPacking(models.Model):
             if rec.sale_order_line:
                 rec.product_id = rec.sale_order_line.product_id.id
             else:
-                raise UserError((self.product_id))
                 rec.product_id = rec.product_id
                 
     product_template_id = fields.Many2one('product.template', string='Product', related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)], store=True)

@@ -10,15 +10,28 @@ class BuyerSourcingOffice(models.Model):
     _description = "Brand Sourcing Office"
     _rec_name = 'name'
 
+    _sql_constraints = [
+        ('name_sourcing_type_uniq', 'unique (name,sourcing_type)', "Combination of Sourcing Office and Sourcing Type already exists !"),
+    ]
+
     def _get_default_color(self):
         return randint(1, 11)
         
     name= fields.Char(string="Sourcing Office Name")
     color = fields.Integer('Color', default=_get_default_color)
+    sourcing_type = fields.Many2one('buyer.sourcing.type', string="Sourcing Type")
 
-    _sql_constraints = [
-        ('name_uniq', 'unique (name)', "Sourcing Office already exists !"),
-    ]
+    def name_get(self):
+        result = []
+        for record in self:
+            if record.name and record.sourcing_type:
+                # Only goes off when the custom_search is in the context values.
+                result.append((record.id, "{}-[{}]".format(record.name, record.sourcing_type.name)))
+            else:
+                result.append((record.id, record.name))
+        return result
+
+    
 
 class BuyerSourcingType(models.Model):
     _name = 'buyer.sourcing.type'
@@ -41,7 +54,7 @@ class ResPartner(models.Model):
     contact_person = fields.Char(string="Contact Name", help="Contact Person Name")
     contact_mobile = fields.Char(string="Contact Person's Mobile")
     group = fields.Many2one('res.partner', string="Group")
-    brand = fields.Many2one('res.partner', string="Brand Group")
+    brand = fields.Many2one('res.partner', string="Brand Group", domain="[['brand_rank', '=', 1]]")
     delivery_address = fields.Text(string="Delivery Address")
     billing_address = fields.Text(string="Billing Address")
     swift_code = fields.Char(string="Swift Code", index=True, help="The Swift Code Number.")

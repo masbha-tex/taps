@@ -1300,12 +1300,14 @@ class SaleOrder(models.Model):
                         qty = products.product_uom_qty * num_of_top
                         product_all = self.env['product.product'].browse(129294)
                         get_top = self.env['sale.order.line'].sudo().search([('order_id','=',self.id),('product_id','=',product_all.id),('sale_line_of_top','=',products.id)])
+                        create_top_line = get_top
                         if get_top:
-                            ope_top_update = sget_top.sudo().update({'qty':qty})
+                            ope_top_update = get_top.sudo().update({'product_uom_qty':qty})
                         else:
                             create_top_line = self.env['sale.order.line'].create({
                                 'order_id':self.id,
                                 'name':product_all.product_tmpl_id.display_name,
+                                'sequence':11,
                                 'price_unit':0,
                                 'price_subtotal':0,
                                 'price_tax':0,
@@ -1360,29 +1362,35 @@ class SaleOrder(models.Model):
                                                     })
                         
                         else:
-                            top_create = self.env['manufacturing.order'].create({'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'product_id':129294,'product_template_id':127303,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'oa_total_qty':products.order_id.total_product_qty + qty,'oa_total_balance':products.order_id.total_product_qty + qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'sale_line_of_top':products.id})
+                            top_create = self.env['manufacturing.order'].create({'sale_order_line':create_top_line.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'product_id':129294,'product_template_id':127303,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'oa_total_qty':products.order_id.total_product_qty + qty,'oa_total_balance':products.order_id.total_product_qty + qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'sale_line_of_top':products.id})
                             
-                            raise UserError(('weww'))
                             m_line = str(top_create.id)
-                            ope_top_create = self.env['operation.packing'].create({'name':'',
-                                                                'mrp_line':top_create.id,
-                                                                'oa_id':products.order_id.id,
-                                                                'buyer_name':products.order_id.buyer_name.name,
-                                                                'product_id':129294,#125308,#
-                                                                'product_template_id':127303,#126982,#
-                                                                'action_date':self.date_order,
-                                                                'shade':products.shade,
-                                                                'shade_ref':products.shade_ref,
-                                                                'finish':products.finish,
-                                                                'slidercodesfg':products.slidercodesfg,
-                                                                'top':products.ptopfinish,
-                                                                'bottom':products.pbotomfinish,
-                                                                'pinbox':products.ppinboxfinish,
-                                                                'actual_qty':qty,
-                                                                'qty':qty,
-                                                                'state':state,
-                                                                'sale_line_of_top':products.id
-                                                                })
+                            ope = self.env['operation.packing'].create({'name':'',
+                                                            'mrp_line':top_create.id,
+                                                            'sale_order_line':create_top_line.id,
+                                                            'action_date':self.date_order,
+                                                            'qty':0,
+                                                            'state':state,
+                                                            })
+                            # ope_top_create = self.env['operation.packing'].create({'name':'',
+                            #                                     'mrp_line':top_create.id,
+                            #                                     'oa_id':products.order_id.id,
+                            #                                     'buyer_name':products.order_id.buyer_name.name,
+                            #                                     'product_id':129294,#125308,#
+                            #                                     'product_template_id':127303,#126982,#
+                            #                                     'action_date':self.date_order,
+                            #                                     'shade':products.shade,
+                            #                                     'shade_ref':products.shade_ref,
+                            #                                     'finish':products.finish,
+                            #                                     'slidercodesfg':products.slidercodesfg,
+                            #                                     'top':products.ptopfinish,
+                            #                                     'bottom':products.pbotomfinish,
+                            #                                     'pinbox':products.ppinboxfinish,
+                            #                                     'actual_qty':qty,
+                            #                                     'qty':qty,
+                            #                                     'state':state,
+                            #                                     'sale_line_of_top':products.id
+                            #                                     })
                         
             if exist_mrp:
                 if exist_mrp[0].state == 'closed':

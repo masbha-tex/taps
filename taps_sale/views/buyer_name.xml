@@ -15,13 +15,16 @@
                 <field name="user_id" domain="[('share', '=', False)]"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('buyer_rank', '>', 0),('company_type', '=', 'person')]}"/>
                   <field name ="customer_status" attrs="{'invisible': ['|','|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person'),('buyer_rank', '>', 0)]}"/>
                   <field name="related_customer" domain="[('customer_rank','>', 0)]" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('buyer_rank', '!=', 1)]}" />
+                  
+                  
                 
               </group>
               <group name="related buyer and customer">
                   <field name="related_buyer"  widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person'),('buyer_rank', '>', 0)]}"/>
+                  <field name="sourcing_office" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}" widget="many2many_tags" />
                 
-                <field name="sourcing_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                <field name="sourcing_office" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}" widget="many2many_tags" />
+                <!-- <field name="sourcing_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/> -->
+                
                 <field name="customer_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('buyer_rank', '>', 0),('customer_group_rank','>',0)]}"/>
               </group>  
             </group>
@@ -114,7 +117,7 @@
             </field>
         </record>
         <record id="res_partner_action_brand" model="ir.actions.act_window">
-            <field name="name">Brands</field>
+            <field name="name">Brand Groups</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.partner</field>
             <field name="view_mode">kanban,tree,form</field>
@@ -150,6 +153,7 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name" />
+                    <field name="sourcing_type" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                     <field name="color" required="True" widget="color_picker" />
                 </tree>
             </field>
@@ -214,7 +218,7 @@
         sequence="19"/>
     <menuitem 
         id="sale_order_menu_inherit_brand"
-        name="Brands"
+        name="Brand Groups"
         action ="res_partner_action_brand"
         parent="sale.sale_order_menu"
         groups="sales_team.group_sale_manager"
