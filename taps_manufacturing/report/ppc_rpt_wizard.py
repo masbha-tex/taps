@@ -235,13 +235,10 @@ class PpcReportWizard(models.TransientModel):
             sheet.write(0, 15, "CLOSING DATE", column_style)
            
             sheet.set_column(0, 0, 6)
-            sheet.set_column(0, 1, 0)
-            sheet.set_column(0, 2, 20)
-            sheet.set_column(0, 3, 20)
-            sheet.set_column(0, 4, 20)
-            sheet.set_column(0, 5, 20)
-            sheet.set_column(0, 6, 20)
-            sheet.set_column(0, 7, 20)
+            sheet.set_column(1, 1, 0)
+            sheet.set_column(2, 2, 10)
+            sheet.set_column(14, 14, 14)
+           
 
             sheet.set_row(0, 30)
             mrp_datas = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('balance_qty','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id),('fg_categ_type','=',item.name)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
@@ -275,8 +272,9 @@ class PpcReportWizard(models.TransientModel):
                         # sheet.write(row, col, format_custom_date(o_data[0].oa_id.create_date), row_style)
                         sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d/%m/%Y"), row_style)
                     elif col == 4:
-                        slider_code = o_data[0].slidercodesfg.split()[-1]
-                        sheet.write(row, col,slider_code, row_style)
+                        # slider_code = o_data[0].slidercodesfg.split()[-1]
+                        sheet.write(row, col,o_data[0].slidercodesfg, row_style)
+                        # sheet.write(row, col,slider_code, row_style)
                     elif col == 5:
                         # sheet.write(row, col, format_custom_date(o_data[0].dyeing_plan), row_style)
                         sheet.write(row, col, o_data[0].dyeing_plan, row_style) #Dye Plan Date

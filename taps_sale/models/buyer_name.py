@@ -10,9 +10,9 @@ class BuyerSourcingOffice(models.Model):
     _description = "Brand Sourcing Office"
     _rec_name = 'name'
 
-    _sql_constraints = [
-        ('name_sourcing_type_uniq', 'unique (name,sourcing_type)', "Combination of Sourcing Office and Sourcing Type already exists !"),
-    ]
+    # _sql_constraints = [
+    #     ('name_sourcing_type_uniq', 'unique (name,sourcing_type)', "Combination of Sourcing Office and Sourcing Type already exists !"),
+    # ]
 
     def _get_default_color(self):
         return randint(1, 11)
