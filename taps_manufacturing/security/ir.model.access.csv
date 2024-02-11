@@ -34,3 +34,4 @@ access_label_print,label_print,model_label_print,base.group_user,1,1,1,1
 access_oa_check,access_oa_check,model_oa_check,base.group_user,1,1,1,1
 access_oa_check,access_oa_check,model_oa_check,base.group_user,1,1,1,1
 access_label_print_data,access_label_print_data,model_label_print_data,base.group_user,1,1,1,1
+access_ppc_report,access_ppc_report,model_ppc_report,base.group_user,1,1,1,1

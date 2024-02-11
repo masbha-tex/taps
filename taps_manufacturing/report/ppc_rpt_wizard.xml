@@ -7,7 +7,7 @@
             <form string="PPC Reports">
                 <group>
                     <group>
-                        <field name="report_type" string="Report Type"/>
+                        <field name="report_category" string="Report Category"/>
                         <field name="report_type" string="Report Type"/>
                         <field name="date_from"/>
                         <field name="date_to"/>
@@ -25,26 +25,23 @@
         </field>
     </record>
     
-    <record id="mrp_reports" model="ir.actions.act_window">
-        <field name="name">MRP Reports</field>
-        <field name="res_model">label.print</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-    </record>
-    <record id="mrp_PPC" model="ir.actions.act_window">
+
+    <record id="mrp_ppc_report" model="ir.actions.act_window">
         <field name="name">PPC</field>
-        <field name="res_model">mrp.report</field>
+        <field name="res_model">ppc.report</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
     <menuitem id="ppc_reports"
               name="PPC"
-              sequence="52"
-              action="mrp_PPC"
+              sequence="50"
               parent="mrp.menu_mrp_root"/>
-    <menuitem id="ppc_reports_daily"
+    
+        <menuitem id="ppc_reports_daily"
               name="PPC REPORTS"
-              sequence="53"
-              action="mrp_reports"
-              parent="mrp.menu_mrp_root.ppc_reports"/>
-</odoo>
+              sequence="2"
+              parent="taps_manufacturing.ppc_reports"
+              action="mrp_ppc_report"
+              />
+
+ </odoo>

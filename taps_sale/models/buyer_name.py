@@ -1,7 +1,7 @@
 import logging
 from odoo import api, fields, tools, models, _
 from odoo.exceptions import UserError, ValidationError
-
+from random import randint
 
 
 
@@ -9,19 +9,29 @@ class BuyerSourcingOffice(models.Model):
     _name = 'buyer.sourcing.office'
     _description = "Brand Sourcing Office"
     _rec_name = 'name'
-    
+
+    def _get_default_color(self):
+        return randint(1, 11)
+        
     name= fields.Char(string="Sourcing Office Name")
+    color = fields.Integer('Color', default=_get_default_color)
+
+    _sql_constraints = [
+        ('name_uniq', 'unique (name)', "Sourcing Office already exists !"),
+    ]
 
 class BuyerSourcingType(models.Model):
     _name = 'buyer.sourcing.type'
     _description = "Brand Sourcing Type"
     _rec_name = 'name'
     
-    name= fields.Char(string="Sourcing Office Type")
+    name= fields.Char(string="Sourcing Type")
+    
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
-
+    
+    
     buyer_rank = fields.Integer(default=0, copy=False)
     brand_rank = fields.Integer(default=0, copy=False)
     customer_group_rank = fields.Integer(default=0, copy=False)
@@ -37,7 +47,7 @@ class ResPartner(models.Model):
     swift_code = fields.Char(string="Swift Code", index=True, help="The Swift Code Number.")
     bond_license = fields.Char(string="Bond License", index=True, help="The Bond License Number.")
     incoterms = fields.Many2one('account.incoterms', string="Incoterms")
-    sourcing_office = fields.Many2one('buyer.sourcing.office', string="Sourcing Office")
+    sourcing_office = fields.Many2many('buyer.sourcing.office', string="Sourcing Office")
     sourcing_type = fields.Many2one('buyer.sourcing.type' ,string="Sourcing Type")
     # sourcing_type = fields.Selection([
     #     ('agent', 'AGENT'),
@@ -76,6 +86,8 @@ class ResPartner(models.Model):
         ('Non-Regular', 'Non-Regular'),
         ('Regular', 'Regular'),
     ], string="Customer Status", default='New')
+
+    color = fields.Integer('Color Index', default=0)
 
     # user_id = fields.Many2one(
     #     'res.users', string='Salesperson', index=True, tracking=2, default=lambda self: self.env.user,

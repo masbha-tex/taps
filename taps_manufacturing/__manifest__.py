@@ -62,6 +62,7 @@
         'report/report_label_print_mt.xml',
         'report/report_label_print_blank.xml',
         'wizard/oa_check.xml',
+        'report/ppc_rpt_wizard.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     'qweb': [

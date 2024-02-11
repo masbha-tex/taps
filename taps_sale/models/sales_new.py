@@ -1298,98 +1298,59 @@ class SaleOrder(models.Model):
                         top = exist_mrp.filtered(lambda mo: mo.sale_line_of_top == products.id)
                         top_ope = operation.filtered(lambda mo: mo.sale_line_of_top == products.id)
                         qty = products.product_uom_qty * num_of_top
-                        product_all = self.env['mrp.workcenter'].browse(129294)
-                        create_top_line = self.env['sale.order.line'].create({
-                            'order_id':self.id,
-                            'name':lines.name,
-                            'sequence':lines.sequence,
-                            'price_unit':0,
-                            'price_subtotal':0,
-                            'price_tax':0,
-                            'price_total':0,
-                            'price_reduce':0,
-                            'tax_id':lines.tax_id,
-                            'price_reduce_taxinc':0,
-                            'price_reduce_taxexcl':0,
-                            'discount':0,
-                            'product_id':product_all.id,
-                            'product_template_id':product_all.product_tmpl_id,
-                            'product_updatable':lines.product_updatable,
-                            'product_uom_qty':qty,
-                            'product_uom':product_all.product_tmpl_id.uom_id,
-                            'product_uom_category_id':lines.product_uom_category_id,
-                            'product_uom_readonly':lines.product_uom_readonly,
-                            'qty_delivered_method':products.qty_delivered_method,
-                            'qty_delivered':0,
-                            'qty_delivered_manual':0,
-                            'qty_to_invoice':0,
-                            'qty_invoiced':0,
-                            'untaxed_amount_invoiced':0,
-                            'untaxed_amount_to_invoice':0,
-                            'salesman_id':products.salesman_id,
-                            'currency_id':products.currency_id,
-                            'company_id':products.company_id,
-                            'order_partner_id':products.order_partner_id,
-                            'is_expense':products.is_expense,
-                            'is_downpayment':products.is_downpayment,
-                            'state':products.state,
-                            'customer_lead':products.customer_lead,
-                            'display_type':products.display_type,
-                            'id':lines.id,
-                            'display_name':lines.display_name,
-                            'create_uid':lines.create_uid,
-                            'create_date':lines.create_date,
-                            'write_uid':lines.write_uid,
-                            'write_date':lines.write_date,
-                            'sale_order_option_ids':lines.sale_order_option_ids,
-                            'product_packaging':lines.product_packaging,
-                            'route_id':lines.route_id,
-                            'move_ids':lines.move_ids,
-                            'product_type':lines.product_type,
-                            'virtual_available_at_date':lines.virtual_available_at_date,
-                            'scheduled_date':lines.scheduled_date,
-                            'forecast_expected_date':lines.forecast_expected_date,
-                            'free_qty_today':lines.free_qty_today,
-                            'qty_available_today':lines.qty_available_today,
-                            'warehouse_id':lines.warehouse_id,
-                            'qty_to_deliver':lines.qty_to_deliver,
-                            'is_mto':lines.is_mto,
-                            'display_qty_widget':lines.display_qty_widget,
-                            'purchase_line_ids':lines.purchase_line_ids,
-                            'purchase_line_count':lines.purchase_line_count,
-                            'is_delivery':lines.is_delivery,
-                            'product_qty':lines.product_qty,
-                            'recompute_delivery_price':lines.recompute_delivery_price,
-                            'is_configurable_product':lines.is_configurable_product,
-                            'product_template_attribute_value_ids':lines.product_template_attribute_value_ids,
-                            'topbottom':lines.topbottom,
-                            'slidercode':lines.slidercode,
-                            'finish':lines.finish,
-                            'shade':lines.shade,
-                            'shade_name':lines.shade_name,
-                            'shade_ref':lines.shade_ref,
-                            'sizein':lines.sizein,
-                            'sizecm':lines.sizecm,
-                            'finish_ref':lines.finish_ref,
-                            'slidercodesfg':lines.slidercodesfg,
-                            'dyedtape':lines.dyedtape,
-                            'ptopfinish':lines.ptopfinish,
-                            'numberoftop':lines.numberoftop,
-                            'pbotomfinish':lines.pbotomfinish,
-                            'ppinboxfinish':lines.ppinboxfinish,
-                            'dippingfinish':lines.dippingfinish,
-                            'gap':lines.gap,
-                            'tape_con':lines.tape_con,
-                            'slider_con':lines.slider_con,
-                            'topwire_con':lines.topwire_con,
-                            'botomwire_con':lines.botomwire_con,
-                            'wire_con':lines.wire_con,
-                            'pinbox_con':lines.pinbox_con,
-                            'color' : lines.color,
-                            })
+                        product_all = self.env['product.product'].browse(129294)
+                        get_top = self.env['sale.order.line'].sudo().search([('order_id','=',self.id),('product_id','=',product_all.id),('sale_line_of_top','=',products.id)])
+                        if get_top:
+                            ope_top_update = sget_top.sudo().update({'qty':qty})
+                        else:
+                            create_top_line = self.env['sale.order.line'].create({
+                                'order_id':self.id,
+                                'name':product_all.product_tmpl_id.display_name,
+                                'price_unit':0,
+                                'price_subtotal':0,
+                                'price_tax':0,
+                                'price_total':0,
+                                'price_reduce':0,
+                                'price_reduce_taxinc':0,
+                                'price_reduce_taxexcl':0,
+                                'discount':0,
+                                'product_id':product_all.id,
+                                'product_template_id':product_all.product_tmpl_id,
+                                'product_uom_qty':qty,
+                                'product_uom':product_all.product_tmpl_id.uom_id.id,#type   | categ_id
+                                'product_uom_category_id':product_all.product_tmpl_id.categ_id,
+                                'qty_delivered_method':products.qty_delivered_method,
+                                'qty_delivered':0,
+                                'qty_delivered_manual':0,
+                                'qty_to_invoice':0,
+                                'qty_invoiced':0,
+                                'untaxed_amount_invoiced':0,
+                                'untaxed_amount_to_invoice':0,
+                                'salesman_id':products.salesman_id.id,
+                                'currency_id':products.currency_id.id,
+                                'order_partner_id':products.order_partner_id.id,
+                                'is_expense':products.is_expense,
+                                'is_downpayment':products.is_downpayment,
+                                'state':products.state,
+                                'customer_lead':products.customer_lead,
+                                'display_type':products.display_type,
+                                'display_name':product_all.product_tmpl_id.display_name,
+                                'product_qty':qty,
+                                'topbottom':products.topbottom,
+                                'finish':products.finish,
+                                'shade':products.shade,
+                                'sizein':products.sizein,
+                                'sizecm':products.sizecm,
+                                'finish_ref':products.finish_ref,
+                                'slidercodesfg':products.slidercodesfg,
+                                'dyedtape':products.dyedtape,
+                                'ptopfinish':products.ptopfinish,
+                                'numberoftop':products.numberoftop,
+                                'pbotomfinish':products.pbotomfinish,
+                                'ppinboxfinish':products.ppinboxfinish,
+                                'sale_line_of_top':products.id,
+                                })
 
-
-                        
                         if top_ope:
                             top_update = top.update({'product_uom_qty':qty,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'oa_total_qty':products.order_id.total_product_qty + qty ,'remarks':products.order_id.remarks,'revision_no':self.revised_no,'state':state})
                             
@@ -1400,6 +1361,8 @@ class SaleOrder(models.Model):
                         
                         else:
                             top_create = self.env['manufacturing.order'].create({'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'product_id':129294,'product_template_id':127303,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'oa_total_qty':products.order_id.total_product_qty + qty,'oa_total_balance':products.order_id.total_product_qty + qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'sale_line_of_top':products.id})
+                            
+                            raise UserError(('weww'))
                             m_line = str(top_create.id)
                             ope_top_create = self.env['operation.packing'].create({'name':'',
                                                                 'mrp_line':top_create.id,
@@ -1420,9 +1383,7 @@ class SaleOrder(models.Model):
                                                                 'state':state,
                                                                 'sale_line_of_top':products.id
                                                                 })
-                            
-            
-            
+                        
             if exist_mrp:
                 if exist_mrp[0].state == 'closed':
                     state = 'closed'
@@ -1730,7 +1691,7 @@ class SaleOrderLine(models.Model):
     is_copied = fields.Boolean('Copied',default=False)
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     rmc = fields.Float(string='RMC', store=True)
-    oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=False)
+    sale_line_of_top = fields.Integer(string='Sale Line of Top', store=True, readonly=True)
     
     def _inverse_compute_product_code(self):
         pass

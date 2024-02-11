@@ -1734,8 +1734,6 @@ class MrpReportWizard(models.TransientModel):
                     sheet.write(25, col_number, None, row_style_sum)
                 for col_number in range(2):  
                     sheet.write(44, col_number, None, row_style_sum)
-                for col_number in range(2):  
-                    sheet.write(46, col_number, None, row_style_sum)
                 for col_number in range(16):  
                     sheet.write(0, col_number, None, row_style_head)
                 for col_number in range(3):  
