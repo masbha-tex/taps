@@ -64,7 +64,7 @@ class PackingReturn(models.TransientModel):
             update manufacturing_order set closing_date = null, state = 'partial' where oa_id = %s;"""
             self._cr.execute(query, (return_qty, return_qty,return_qty,oa_id,salelines,oa_id))
         else:
-            query = """update operation_packing set done_qty = done_qty - %s,balance_qty = balance_qty + %s,ac_balance_qty = ac_balance_qty + %s,state = 'waiting' where oa_id = %s and mrp_lines = %s; 
+            query = """update operation_packing set done_qty = done_qty - %s,balance_qty = balance_qty + %s,ac_balance_qty = ac_balance_qty + %s,state = 'waiting' where oa_id = %s and sale_order_line = %s; 
 update manufacturing_order set done_qty = done_qty - %s,balance_qty = balance_qty + %s where oa_id = %s and id = %s;
 update manufacturing_order set oa_total_balance = oa_total_balance + %s where oa_id = %s;
 update manufacturing_order set closing_date = case when oa_total_balance > 0 then null else closing_date end, state = case when oa_total_balance > 0 then 'partial' else state end where oa_id = %s;"""
