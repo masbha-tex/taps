@@ -212,7 +212,7 @@ class LabelPrintingWizard(models.TransientModel):
     # ...code for  label qty 
     @api.onchange('size')
     def _onchange_iteam(self):
-        operations = self.env['operation.details'].sudo().search([
+        operations = self.env['operation.packing'].sudo().search([
                 ('oa_id', '=', self.oa_number.id)])
         self.label_qty = operations[0].product_template_id.pack_qty
 
@@ -241,9 +241,8 @@ class LabelPrintingWizard(models.TransientModel):
         # shade = None
         if self.oa_number:
             oa_id = self.oa_number
-            operations = self.env['operation.details'].sudo().search([
-                ('oa_id', '=', self.oa_number.id),
-                ('next_operation', '=', 'Packing Output')
+            operations = self.env['operation.packing'].sudo().search([
+                ('oa_id', '=', self.oa_number.id)
             ])
     
             if operations:
@@ -319,10 +318,9 @@ class LabelPrintingWizard(models.TransientModel):
             shade = self.shade
             # raise UserError((self.oa_number.id,self.shade.name))
             if self.company_id.id == 1:
-                operations = self.env['operation.details'].sudo().search([
+                operations = self.env['operation.packing'].sudo().search([
                 ('oa_id', '=', self.oa_number.id),
-                ('shade', '=', self.shade.name), 
-                ('next_operation', '=', 'Packing Output')
+                ('shade', '=', self.shade.name)
             ])
     
             if operations:
@@ -363,17 +361,15 @@ class LabelPrintingWizard(models.TransientModel):
             shade = self.shade
             finish = self.finish
             if self.company_id.id == 1:
-                operations = self.env['operation.details'].sudo().search([
+                operations = self.env['operation.packing'].sudo().search([
                 ('oa_id', '=', self.oa_number.id),
                 ('shade', '=', self.shade.name),
-                ('finish', '=', self.finish.name),
-                ('next_operation', '=', 'Packing Output')
+                ('finish', '=', self.finish.name)
             ])
             else :
-                operations = self.env['operation.details'].sudo().search([
+                operations = self.env['operation.packing'].sudo().search([
                 ('oa_id', '=', self.oa_number.id),
-                ('finish', '=', self.finish.name),
-                ('next_operation', '=', 'Packing Output')
+                ('finish', '=', self.finish.name)
             ])
     
             if operations:
@@ -418,9 +414,8 @@ class LabelPrintingWizard(models.TransientModel):
             finish = self.finish
             size = self.size
             qty = self.qty
-            operations = self.env['operation.details'].sudo().search([
+            operations = self.env['operation.packing'].sudo().search([
                 ('oa_id', '=', self.oa_number.id),
-                ('next_operation', '=', 'Packing Output'),
                 ('shade', '=', self.shade.name),
                 ('finish', '=', self.finish.name),
                 ('sizcommon', '=', self.size.name), 
@@ -504,9 +499,9 @@ class LabelPrintPDF(models.AbstractModel):
             domain.append(('finish', '=', data.get('finish')))
         if data.get('size'):
             domain.append(('sizcommon', '=', data.get('size')))
-        domain.append(('next_operation', '=', 'Packing Output'))
+        # domain.append(('next_operation', '=', 'Packing Output'))
         
-        docs = self.env['operation.details'].sudo().search(domain, order='id desc',limit=1)
+        docs = self.env['operation.packing'].sudo().search(domain, order='id desc',limit=1)
         
         store_label = self.env['label.print.data'].sudo().create({'name':docs.name,'batch_lot':data.get('batch_lot'),
                                                                   'table_name':data.get('table_name'),
@@ -544,7 +539,7 @@ class LabelPrintPDF(models.AbstractModel):
         
         return {
             'doc_ids': docs.ids,
-            'doc_model': 'operation.details',
+            'doc_model': 'operation.packing',
             'docs': docs,
             'datas': common_data,
             
@@ -564,9 +559,8 @@ class LabelPrintPDF(models.AbstractModel):
             domain.append(('finish', '=', data.get('finish')))
         if data.get('size'):
             domain.append(('sizcommon', '=', data.get('size')))
-        domain.append(('next_operation', '=', 'Packing Output'))
         
-        docs = self.env['operation.details'].sudo().search(domain, order='id desc',limit=1)
+        docs = self.env['operation.packing'].sudo().search(domain, order='id desc',limit=1)
         
         store_label = self.env['label.print.data'].sudo().create({'name':docs.name,'batch_lot':data.get('batch_lot'),
                                                                   'table_name':data.get('table_name'),
@@ -604,7 +598,7 @@ class LabelPrintPDF(models.AbstractModel):
         
         return {
             'doc_ids': docs.ids,
-            'doc_model': 'operation.details',
+            'doc_model': 'operation.packing',
             'docs': docs,
             'datas': common_data,
             

@@ -327,7 +327,7 @@ class HrRetentionBonus(models.Model):
         body = RenderMixin._render_template(_template_submit, 'hr.retention.bonus', self.ids, post_process=True)[self.id]
         body = f"{body}"
         # post the message
-        matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILTO')], limit=1)
+        matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-1')], limit=1)
         if matrix:
             mailto = ','.join([email.email for email in matrix.next_user if email])
         matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)
@@ -386,7 +386,7 @@ class HrRetentionBonus(models.Model):
         body = RenderMixin._render_template(_template_submit, 'hr.retention.bonus', self.ids, post_process=True)[self.id]
         body = f"{body}"
         # post the message
-        matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILTO')], limit=1)
+        matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-2')], limit=1)
         if matrix:
             mailto = ','.join([email.email for email in matrix.next_user if email])
         matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)
@@ -444,7 +444,7 @@ class HrRetentionBonus(models.Model):
         body = RenderMixin._render_template(_template_submit, 'hr.retention.bonus', self.ids, post_process=True)[self.id]
         body = f"{body}"
         # post the message
-        matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILTO')], limit=1)
+        matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-3')], limit=1)
         if matrix:
             mailto = ','.join([email.email for email in matrix.next_user if email])
         matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)

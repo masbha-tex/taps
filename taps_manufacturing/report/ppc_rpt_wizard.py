@@ -215,7 +215,7 @@ class PpcReportWizard(models.TransientModel):
             sheet.write(0, 5, "DYE Plan DATE", column_style)
             sheet.write(0, 6, "SHADE OK ", column_style)
             sheet.write(0, 7, "SLIDR OK", column_style)
-            sheet.write(0, 8, "REMARKS", column_style)
+            sheet.write(0, 8, "DIPPING", column_style)
             sheet.write(0, 9, "ORDER QTY", column_style)
             sheet.write(0, 10, "READY QTY", column_style)
             sheet.write(0, 11, "PENDING", column_style)
@@ -313,7 +313,9 @@ class PpcReportWizard(models.TransientModel):
                     elif col == 14:
                         sheet.write(row, col, o_data[0].oa_id.partner_id.name, row_style_)
                     elif col == 15:
-                        sheet.write(row, col, '', row_style)
+                        # raise UserError((o_data[0].exp_close_date))
+                        exp_close_date = o_data[0].exp_close_date.strftime("%d %b") if o_data[0].exp_close_date else ''
+                        sheet.write(row, col, exp_close_date, row_style)
                     elif col == 16:
                         sheet.write(row, col, '', row_style)
 
@@ -333,7 +335,7 @@ class PpcReportWizard(models.TransientModel):
             sheet.write(row, 8, '',row_style_border_top_bottom)
             sheet.write(row, 9, f'=SUM(J{sum_start_row}:J{sum_end_row})', row_style_sum)
             sheet.write(row, 10, f'=SUM(K{sum_start_row}:K{sum_end_row})', row_style_sum)
-            sheet.write(row, 11, f'=L{sum_start_row}-L{sum_end_row}', row_style_sum)
+            sheet.write(row, 11, f'=SUM(L{sum_start_row}:L{sum_end_row})', row_style_sum)
             sheet.write(row, 12, '',row_style_border_top_bottom)
             sheet.write(row, 13, '',row_style_border_top_bottom)
             sheet.write(row, 14, '',row_style_border_top_bottom)            

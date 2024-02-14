@@ -16,11 +16,11 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'Uncategorized',
-    'version': '0.1',
+    'category': 'Generic Modules/CRM',
+    'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','crm','taps_sale','whatsapp_mail_messaging','web','web_domain_field'],
+    'depends': ['base','crm','taps_sale','whatsapp_mail_messaging','web_domain_field'],
 
     # always loaded
     'data': [
