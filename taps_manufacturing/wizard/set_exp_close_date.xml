@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_form_set_expected_close_date" model="ir.ui.view">
+            <field name="name">expdd.form.view</field>
+            <field name="model">set.exp.cd</field>
+            <field name="arch" type="xml">
+                <form string="Set Expected Close Date">
+                    <group>
+                        <group>
+                            <field name="oa_id"/>
+                            <field name="oa_count" readonly="1" force_save="1"/>
+                            <field name="exp_close_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="done_exp_cd" string="Done" type="object" default_focus="1" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_set_exp_cd" model="ir.actions.act_window">
+            <field name="name">Set Expected Close Date</field>
+            <field name="res_model">set.exp.cd</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_form_set_expected_close_date"/>
+            <field name="target">new</field>
+        </record>
+    
+    </data>    
+</odoo>

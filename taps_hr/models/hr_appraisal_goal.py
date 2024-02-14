@@ -964,267 +964,260 @@ class HrAppraisalGoal(models.Model):
     @api.depends('a_apr','a_may','a_jun','a_q1','a_jul','a_aug','a_sep','a_q2','a_oct','a_nov','a_dec','a_q3','a_jan',
                                      'a_feb','a_mar','a_q4','a_ytd','t_apr','t_may','t_jun','t_q1','t_jul','t_aug','t_sep','t_q2','t_oct','t_nov','t_dec','t_q3','t_jan','t_feb','t_mar','t_q4','y_ytd','weight','target','condition','month')  
     def compute_kpi_achv(self):
-        for app in self:
-            return {}
-            if app.condition == 'less':
-                if app.a_apr != 0 and app.t_apr != 0 :
-                    ka = (t_apr / a_apr)*100
-                    app.write({'apr_k': round(ka)})
-                else:
-                    ka = 0
-                    app.write({'apr_k': round(ka)})
+        if self.condition == 'less':
+            if self.a_apr != 0 and self.t_apr != 0 :
+                ka = (self.t_apr / self.a_apr)*100
+                # self.write({'apr_k': round(ka)})
+                # raise UserError((round(ka)))
+                self.apr_k = round(ka)
+            else:
+                ka = 0
+                self.write({'apr_k': round(ka)})
+            
+            if self.a_may != 0 and self.t_may != 0 :
+                ka = (self.t_may / self.a_may)*100
+                self.write({'may_k': round(ka)})
                 
-                if app.a_may != 0 and app.t_may != 0 :
-                    ka = (t_may / a_may)*100
-                    app.write({'may_k': round(ka)})
-                    
-                else:
-                    ka = 0
-                    app.write({'may_k': round(ka)})
-                    
-                if app.a_jun != 0 and app.t_jun != 0 :
-                    ka = (t_jun / a_jun)*100
-                    app.write({'jun_k': round(ka)})
-                    
-                else:
-                    ka = 0
-                    app.write({'jun_k': round(ka)})
-                    
-                if app.a_q1 != 0 and app.t_q1 != 0:
-                    ka = (t_q1 / a_q1)*100
-                    app.write({'q1_k': round(ka)})
-                else:
-                    ka = 0
-                    app.write({'q1_k': round(ka)})
-                    
-                if app.a_jul != 0 and app.t_jul !=0:
-                    ka = (t_jul / a_jul)*100
-                    app.write({'jul_k': round(ka)})
-                else:
-                    ka = 0
-                    app.write({'jul_k': round(ka)})
-                    
-                if app.a_aug != 0 and app.t_aug !=0:
-                    ka = (t_aug / a_aug)*100
-                    app.write({'aug_k': round(ka)})
-                    
-                else:
-                    ka = 0
-                    app.write({'aug_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'may_k': round(ka)})
                 
-                if app.a_sep != 0 and app.t_sep !=0:
-                    ka = (t_sep / a_sep)*100
-                    app.write({'sep_k': round(ka)})
-                    
-                else:
-                    ka = 0
-                    app.write({'sep_k': round(ka)})
+            if self.a_jun != 0 and self.t_jun != 0 :
+                ka = (self.t_jun / self.a_jun)*100
+                self.write({'jun_k': round(ka)})
                 
-                if app.a_q2 != 0 and app.t_q2 !=0:
-                    ka = (t_q2 / a_q2)*100
-                    app.write({'q2_k': round(ka)})
-                    
-                else:
-                    ka = 0
-                    app.write({'q2_k': round(ka)})
-					
-				
-					
-			# 	if app.a_oct != 0 and app.t_oct !=0:
-			# 		ka = (t_oct / a_oct)*100
-			# 		app.write({'oct_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'oct_k': round(ka)})
-					
-			# 	if app.a_nov != 0 and app.t_nov !=0:
-			# 		ka = (t_nov / a_nov)*100
-			# 		app.write({'nov_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'nov_k': round(ka)})
-					
-			# 	if app.a_dec != 0 and app.t_dec !=0:
-			# 		ka = (t_dec / a_dec)*100
-			# 		app.write({'dec_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'dec_k': round(ka)})
-					
-					
-			# 	if app.a_q3 != 0 and app.t_q3 !=0:
-			# 		ka = (t_q3 / a_q3)*100
-			# 		app.write({'q3_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'q3_k': round(ka)})
-					
-					
-			# 	if app.a_jan != 0 and app.t_jan !=0:
-			# 		ka = (t_jan / a_jan)*100
-			# 		app.write({'jan_k': round(ka)a})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'jan_k': round(ka)})
-					
-			# 	if app.a_feb != 0 and app.t_feb !=0:
-			# 		ka = (t_feb / a_feb)*100
-			# 		app.write({'feb_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'feb_k': round(ka)})
-					
-			# 	if app.a_mar != 0 and app.t_mar !=0:
-			# 		ka = (t_mar / a_mar)*100
-			# 		app.write({'mar_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'mar_k': round(ka)})
-					
-					
-			# 	if app.a_q4 != 0 and app.t_q4 !=0:
-			# 		ka = (t_q4 / a_q4)*100
-			# 		app.write({'q4_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'q4_k': round(ka)})
-					
-					
-			# 	if app.a_ytd != 0 and app.t_ytd !=0:
-			# 		ka = (t_ytd / a_ytd)*100
-			# 		app.write({'ytd_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'ytd_k': round(ka)})
-					
-				
-					
-			# else:
-			# 	if app.a_apr != 0 and app.t_apr !=0:
-			# 		ka = ( a_apr / t_apr)*100
-			# 		app.write({'apr_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'apr_k': round(ka)})
-					
-			# 	if app.a_may != 0 and app.t_may !=0:
-			# 		ka = (a_may / t_may)*100
-			# 		app.write({'may_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'may_k': round(ka)})
-					
-			# 	if app.a_jun != 0 and app.t_jun !=0:
-			# 		ka = (a_jun / t_jun)*100
-			# 		app.write({'jun_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'jun_k': round(ka)})
-					
-					
-			# 	if app.a_q1 != 0 and app.t_q1 !=0:
-			# 		ka = (a_q1 / t_q1)*100
-			# 		app.write({'q1_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'q1_k': round(ka)})
-					
-				
-			# 	if app.a_jul != 0 and app.t_jul !=0:
-			# 		ka = (a_jul / t_jul)*100
-			# 		app.write({'jul_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'jul_k': round(ka)})
-					
-			# 	if app.a_aug != 0 and app.t_aug !=0:
-			# 		ka = (a_aug / t_aug)*100
-			# 		app.write({'aug_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'aug_k': round(ka)})
-					
-			# 	if app.a_sep != 0 and app.t_sep !=0:
-			# 		ka = (a_sep / t_sep)*100
-			# 		app.write({'sep_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'sep_k': round(ka)})
-					
-					
-			# 	if app.a_q2 != 0 and app.t_q2 !=0:
-			# 		ka = (a_q2 / t_q2)*100
-			# 		app.write({'q2_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'q2_k': round(ka)})
-					
-				
-					
-			# 	if app.a_oct != 0 and app.t_oct !=0:
-			# 		ka = (a_oct / t_oct)*100
-			# 		app.write({'oct_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'oct_k': round(ka)})
-					
-			# 	if app.a_nov != 0 and app.t_nov !=0:
-			# 		ka = (a_nov / t_nov)*100
-			# 		app.write({'nov_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'nov_k': round(ka)})
-					
-			# 	if app.a_dec != 0 and app.t_dec !=0:
-			# 		ka = (a_dec / t_dec)*100
-			# 		app.write({'dec_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'dec_k': round(ka)})
-					
-					
-			# 	if app.a_q3 != 0 and app.t_q3 !=0:
-			# 		ka = (a_q3 / t_q3)*100
-			# 		app.write({'q3_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'q3_k': round(ka)})
-					
-					
-			# 	if app.a_jan != 0 and app.t_jan !=0:
-			# 		ka = (a_jan / t_jan)*100
-			# 		app.write({'jan_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'jan_k': round(ka)})
-					
-			# 	if app.a_feb != 0 and app.t_feb !=0:
-			# 		ka = (a_feb / t_feb)*100
-			# 		app.write({'feb_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'feb_k': round(ka)})
-					
-			# 	if app.a_mar != 0 and app.t_mar !=0:
-			# 		ka = (a_mar / t_mar)*100
-			# 		app.write({'mar_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'mar_k': round(ka)})
-					
-					
-			# 	if app.a_q4 != 0 and app.t_q4 !=0:
-			# 		ka = (a_q4 / t_q4)*100
-			# 		app.write({'q4_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'q4_k': round(ka)})
-					
-					
-			# 	if app.a_ytd != 0 and app.t_ytd !=0:
-			# 		ka = (a_ytd / t_ytd)*100
-			# 		app.write({'ytd_k': round(ka)})
-			# 	else:
-			# 		ka = 0
-			# 		app.write({'ytd_k': round(ka)})
-					
+            else:
+                ka = 0
+                self.write({'jun_k': round(ka)})
+                
+            if self.a_q1 != 0 and self.t_q1 != 0:
+                ka = (self.t_q1 / self.a_q1)*100
+                self.write({'q1_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'q1_k': round(ka)})
+                
+            if self.a_jul != 0 and self.t_jul !=0:
+                ka = (self.t_jul / self.a_jul)*100
+                self.write({'jul_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'jul_k': round(ka)})
+                
+            if self.a_aug != 0 and self.t_aug !=0:
+                ka = (self.t_aug / self.a_aug)*100
+                self.write({'aug_k': round(ka)})
+                
+            else:
+                ka = 0
+                self.write({'aug_k': round(ka)})
+            
+            if self.a_sep != 0 and self.t_sep !=0:
+                ka = (self.t_sep / self.a_sep)*100
+                self.write({'sep_k': round(ka)})
+                
+            else:
+                ka = 0
+                self.write({'sep_k': round(ka)})
+            
+            if self.a_q2 != 0 and self.t_q2 !=0:
+                ka = (self.t_q2 / self.a_q2)*100
+                self.write({'q2_k': round(ka)})
+                
+            else:
+                ka = 0
+                self.write({'q2_k': round(ka)})
+
+            if self.a_oct != 0 and self.t_oct !=0:
+                ka = (self.t_oct / self.a_oct)*100
+                self.write({'oct_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'oct_k': round(ka)})
+            
+            if self.a_nov != 0 and self.t_nov !=0:
+                ka = (self.t_nov / self.a_nov)*100
+                self.write({'nov_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'nov_k': round(ka)})
+            
+            if self.a_dec != 0 and self.t_dec !=0:
+                ka = (self.t_dec / self.a_dec)*100
+                self.write({'dec_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'dec_k': round(ka)})
+            
+            if self.a_q3 != 0 and self.t_q3 !=0:
+                ka = (self.t_q3 / self.a_q3)*100
+                self.write({'q3_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'q3_k': round(ka)})
+                
+            if self.a_jan != 0 and self.t_jan !=0:
+                ka = (self.t_jan / self.a_jan)*100
+                self.write({'jan_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'jan_k': round(ka)})
+            
+            if self.a_feb != 0 and self.t_feb !=0:
+                ka = (self.t_feb / self.a_feb)*100
+                self.write({'feb_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'feb_k': round(ka)})
+            
+            if self.a_mar != 0 and self.t_mar !=0:
+                ka = (self.t_mar / self.a_mar)*100
+                self.write({'mar_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'mar_k': round(ka)})
+                
+            if self.a_q4 != 0 and self.t_q4 !=0:
+                ka = (self.t_q4 / self.a_q4)*100
+                self.write({'q4_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'q4_k': round(ka)})
+                
+            if self.a_ytd != 0 and self.t_ytd !=0:
+                ka = (self.t_ytd / self.a_ytd)*100
+                self.write({'ytd_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'ytd_k': round(ka)})
+                
+
+        else:
+            if self.a_apr != 0 and self.t_apr !=0:
+                ka = ( self.a_apr / self.t_apr)*100
+                self.write({'apr_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'apr_k': round(ka)})
+            
+            if self.a_may != 0 and self.t_may !=0:
+                ka = (self.a_may / self.t_may)*100
+                self.write({'may_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'may_k': round(ka)})
+            
+            if self.a_jun != 0 and self.t_jun !=0:
+                ka = (self.a_jun / self.t_jun)*100
+                self.write({'jun_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'jun_k': round(ka)})
+            
+            
+            if self.a_q1 != 0 and self.t_q1 !=0:
+                ka = (self.a_q1 / self.t_q1)*100
+                self.write({'q1_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'q1_k': round(ka)})
+            
+            
+            if self.a_jul != 0 and self.t_jul !=0:
+                ka = (self.a_jul / self.t_jul)*100
+                self.write({'jul_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'jul_k': round(ka)})
+            
+            if self.a_aug != 0 and self.t_aug !=0:
+                ka = (self.a_aug / self.t_aug)*100
+                self.write({'aug_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'aug_k': round(ka)})
+            
+            if self.a_sep != 0 and self.t_sep !=0:
+                ka = (self.a_sep / self.t_sep)*100
+                self.write({'sep_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'sep_k': round(ka)})
+            
+            
+            if self.a_q2 != 0 and self.t_q2 !=0:
+                ka = (self.a_q2 / self.t_q2)*100
+                self.write({'q2_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'q2_k': round(ka)})
+            
+            
+            
+            if self.a_oct != 0 and self.t_oct !=0:
+                ka = (self.a_oct / self.t_oct)*100
+                self.write({'oct_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'oct_k': round(ka)})
+            
+            if self.a_nov != 0 and self.t_nov !=0:
+                ka = (self.a_nov / self.t_nov)*100
+                self.write({'nov_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'nov_k': round(ka)})
+            
+            if self.a_dec != 0 and self.t_dec !=0:
+                ka = (self.a_dec / self.t_dec)*100
+                self.write({'dec_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'dec_k': round(ka)})
+            
+            
+            if self.a_q3 != 0 and self.t_q3 !=0:
+                ka = (self.a_q3 / self.t_q3)*100
+                self.write({'q3_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'q3_k': round(ka)})
+                
+            
+            if self.a_jan != 0 and self.t_jan !=0:
+                ka = (self.a_jan / self.t_jan)*100
+                self.write({'jan_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'jan_k': round(ka)})
+            
+            if self.a_feb != 0 and self.t_feb !=0:
+                ka = (self.a_feb / self.t_feb)*100
+                self.write({'feb_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'feb_k': round(ka)})
+            
+            if self.a_mar != 0 and self.t_mar !=0:
+                ka = (self.a_mar / self.t_mar)*100
+                self.write({'mar_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'mar_k': round(ka)})
+            
+            
+            if self.a_q4 != 0 and self.t_q4 !=0:
+                ka = (self.a_q4 / self.t_q4)*100
+                self.write({'q4_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'q4_k': round(ka)})
+            
+            
+            if self.a_ytd != 0 and self.t_ytd !=0:
+                ka = (self.a_ytd / self.t_ytd)*100
+                self.write({'ytd_k': round(ka)})
+            else:
+                ka = 0
+                self.write({'ytd_k': round(ka)})
+            

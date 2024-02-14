@@ -8,6 +8,8 @@
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
                     <attribute name="domain">[('customer_rank', '=', 1)]</attribute>
+                    <!-- <attribute name="attrs">{}</attribute> -->
+                    <attribute name="attrs">{'required': [['sample_type', 'not in', ['buyinghouse','pacc']]], 'invisible': [['sales_type', '=', 'sample'],['sample_type', '!=', 'customer']]}</attribute>
                     <!-- <attribute name="autocomplete">off</attribute> -->
                 </xpath>
 				<xpath expr="//field[@name='name']" position="before">
@@ -15,25 +17,30 @@
 				</xpath>
 				<xpath expr="//field[@name='partner_id']" position="before">
 					<field name="sales_type" attrs="{'readonly':[('state','=','sale')]}"/>
+                    <field name="sample_type" attrs="{'readonly':[('state','=','sale')], 'invisible': [['sales_type', '!=', 'sample']]}"/>
+                    <field name="provisionals_id" attrs="{'readonly':[('state','=','sale')], 'invisible': ['|',['sales_type', '!=', 'sample'],['sample_type', '!=', 'pacc']]}"/>
+                    <field name="buying_house" attrs="{'readonly':[('state','=','sale')], 'invisible': ['|',['sales_type', '!=', 'sample'],['sample_type', '!=', 'buyinghouse']]}"/>
                     <field name="pi_type" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']],'readonly':[('state','=','sale')] }"/>
                     <field name="cause_of_replacement" attrs="{'invisible': ['|',['pi_type','=','regular'],['pi_type','=','block']]}"/>
                     
                     
 				</xpath>
 				<xpath expr="//field[@name='partner_invoice_id']" position="attributes">
-					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]]}</attribute>
+					<attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]], 'invisible': [['sales_type', '=','sample']], 'required': [['sales_type', '!=', 'sample']]}</attribute>
 					<attribute name="groups"/>
 					<attribute name="options">{'always_reload':true,'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
 				</xpath>
+                
 				<xpath expr="//field[@name='partner_invoice_id']" position="after">
-					<field name="invoice_details"/>
+					<field name="invoice_details" attrs="{'invisible': [['sales_type','=','sample']]}"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [['state','not in',['draft','sent','sale']]], 'invisible': [['sales_type', '=','sample'],['sample_type', 'not in',['customer']]], 'required': [['sample_type', 'not in', ['buyinghouse','pacc']]]}</attribute>
 					<attribute name="groups"/>
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
 				</xpath>
 				<xpath expr="//field[@name='partner_shipping_id']" position="after">
-					<field name="delivery_details" options="{'no_create': True, 'no_create_edit':True}"/>
+					<field name="delivery_details" options="{'no_create': True, 'no_create_edit':True}" attrs="{'invisible': [['sales_type','=','sample'],['sample_type','!=','customer']]}"/>
 					<field name="kind_attention"/>
 				</xpath>
 				<xpath expr="//field[@name='sale_order_template_id']" position="attributes">
@@ -54,7 +61,21 @@
 					<field name="style_ref"/>
 					<field name="sale_representative" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" invisible="1"/>
                     <field name="user_id"/>
-                    <field name="team_id" readonly="1" />
+                    <label for="team_id" />
+					<div name="reminder" class="o_row" >
+						<field name="team_id" readonly="1"/>
+						<span class="ml-4"><b>Region</b></span>
+						<div class="o_row oe_inline">
+							<field name="region_id" class="oe_inline" readonly="1" options="{'no_open': true}"/>
+						</div>
+					</div>
+                    
+                    <!-- <field name="team_id" readonly="1" class="oe_inline"/>
+                    <div class="o_row oe_inline">
+							<field name="region_id" readonly="1"  class="oe_inline ml-2"/>
+					</div> -->
+                    
+                   
 					<field name="garments" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2)]]}"/>
                     <field name="corrosions_test" attrs="{'invisible': ['|',['sales_type','=','sale'],['company_id','in', (1,2)]]}"/>
                     <field name="assortment" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
@@ -70,7 +91,8 @@
                     <field name="pi_date" attrs="{'invisible': ['|','|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','sale'],['sales_type','=','oldsa']]}"/>
 					<field name="applicant_bank" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=','oa'],['sales_type','=','oldsa']]}"/>
                     <field name="is_mockup_needed" invisible="1"/>
-                     <field name="mockup_details" attrs="{'required': [('is_mockup_needed', '=', True)]}"/>
+                    <field name="mockup_details" attrs="{'required': [('is_mockup_needed', '=', True)]}"/>
+                    <field name="exp_close_date" readonly="1" force_save="1" invisible="1" optional="show"/>
             
 				</xpath>
 				<xpath expr="//field[@name='validity_date']" position="before">
@@ -112,14 +134,14 @@
 					<attribute name="attrs">{'invisible': [['sales_type','=','Sample Order']], 'readonly': [['state','not in',['draft','sent']]]}</attribute>
 				</xpath>
 				<xpath expr="//field[@name='payment_term_id']" position="attributes">
-					<attribute name="attrs">{'required': [('sales_type', '=', 'sale')]}</attribute>
+					<attribute name="attrs">{'required': [('sales_type', '=', 'sale')], 'invisible': [['sales_type', '=', 'sample']]}</attribute>
 				</xpath>
                 <xpath expr="//field[@name='incoterm']" position="attributes">
 					<attribute name="attrs">{'required': [('sales_type', '=', 'sale')]}</attribute>
                     <attribute name="attrs">{'default': '1'}</attribute>
 				</xpath>
 				<xpath expr="//field[@name='payment_term_id']" position="after">
-					<field name="bank" string="Bank" options="{'no_create': True, 'no_create_edit':True}" attrs="{'required': [('sales_type', '=', 'sale')]}"/>
+					<field name="bank" string="Bank" options="{'no_create': True, 'no_create_edit':True}" attrs="{'required': [('sales_type', '=', 'sale')], 'invisible': [('sales_type', '=', 'sample')]}"/>
 				</xpath>
 				<xpath expr="//field[@name='sales_type']" position="after">
 					<field name="order_ref" string="Sales Order Ref." attrs="{'invisible': [('sales_type','!=','oa')]}" domain="[('state','=','sale'),'|',('sales_type','=','oldsale'),('sales_type','=','sale')]" options="{ 'no_create_edit' : True, 'no_create' : True, 'no_open': True}"/>

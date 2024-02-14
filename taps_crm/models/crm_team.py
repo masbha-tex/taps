@@ -1,12 +1,13 @@
 from odoo import fields, models
 
 
+
 class CrmTeamInherit(models.Model):
     _inherit = 'crm.team'
 
     # crm_team_line = fields.One2many('crm.team.line', 'crm_team_id', string='Team Line', copy=True)
     core_leader = fields.Many2one('res.users' , string='Core Leader', domain="[['active', 'in',[True,False] ]]")
-    region = fields.Many2one('team.region' , string='Region')
+    region = fields.Many2one('team.region' , string='Region') 
 
 
 

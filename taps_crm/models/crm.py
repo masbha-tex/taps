@@ -6,11 +6,7 @@ from odoo import models, fields, api
 
 class TapsCrm(models.Model):
     _inherit = 'crm.lead'
-    
 
-   
-
-    
     def action_send_whatsapp(self):
         compose_form_id = self.env.ref('whatsapp_mail_messaging.whatsapp_message_wizard_form').id
         ctx = dict(self.env.context)

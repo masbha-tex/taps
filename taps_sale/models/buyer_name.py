@@ -44,7 +44,7 @@ class BuyerSourcingType(models.Model):
 class ResPartner(models.Model):
     _inherit = 'res.partner'
     
-    
+    buying_house_rank = fields.Integer(default=0, copy=False)
     buyer_rank = fields.Integer(default=0, copy=False)
     brand_rank = fields.Integer(default=0, copy=False)
     customer_group_rank = fields.Integer(default=0, copy=False)
@@ -171,6 +171,8 @@ class ResPartner(models.Model):
         is_buyer = search_partner_mode == 'buyer'
         is_brand = search_partner_mode == 'brand'
         is_customer_group = search_partner_mode == 'customer_group'
+        is_buying_house = search_partner_mode == 'buying_house'
+        
         # raise UserError((vals_list))
         if is_supplier:
             exists = self.env['res.partner'].search([('supplier_rank', '>=', 1)])
@@ -182,6 +184,8 @@ class ResPartner(models.Model):
             exists = self.env['res.partner'].search([('brand_rank', '>=', 1)])
         if is_customer_group:
             exists = self.env['res.partner'].search([('customer_group_rank', '>=', 1)])
+        if is_buying_house:
+            exists = self.env['res.partner'].search([('buying_house_rank', '>=', 1)])
         
             
             
@@ -296,7 +300,27 @@ class ResPartner(models.Model):
                         raise UserError((duplicate_name + " is already exist."))
                     else:
                         vals['customer_group_rank'] = 1        
-                    
+                elif is_buying_house and 'buying_house_rank' not in vals:
+                    output_string = vals['name'].lower()
+                    for record in exists:
+                        # mapping_table = str.maketrans({'LIMITED':'','.':''})
+                        
+                        
+                        if record.name:
+                            check_string = record.name.lower()
+                        for word in list:
+                             
+                            output_string = output_string.replace(word,'')
+                            check_string = check_string.replace(word,'')
+                            # raise UserError((record.name.lower()))
+                            if record.name and (check_string == output_string):
+                                duplicate_name = record.name
+                                duplicate = 1
+                    # raise UserError((duplicate))
+                    if duplicate == 1:
+                        raise UserError((duplicate_name + " is already exist."))
+                    else:
+                        vals['buying_house_rank'] = 1
         return super().create(vals_list)
 
 

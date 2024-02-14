@@ -6,14 +6,14 @@
         <field name="arch" type="xml">
             <form string="MRP Reports">
                 <group>
-                    <group>
+                    <!-- <group> -->
                         <field name="report_type" string="Report Type"/>
                         <field name="date_from"/>
                         <field name="date_to"/>
-                    </group>
-                    <group>
+                    <!-- </group> -->
+                    <!-- <group>
                         <field name="month_list" widget="selection"/>
-                    </group>
+                    </group> -->
                 </group>
                 <footer>
                     <!-- <button string="Print" name="action_print_report" type="object" class="btn-primary"/> -->

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_mrp_operatin_packing_search" model="ir.ui.view">
-        <field name="name">operation.packing.search</field>
-        <field name="model">operation.packing</field>
+    <record id="view_mrp_operation_topbottom_packing_search" model="ir.ui.view">
+        <field name="name">operation.packing.topbottom.search</field>
+        <field name="model">operation.packing.topbottom</field>
         <field name="arch" type="xml">
             <search>
                 <field name="oa_id"/>
@@ -36,25 +36,23 @@
             </search>
         </field>
     </record>
-    <record model="ir.rule" id="record_not_shared_packing_multi_company_rule">
+    <record model="ir.rule" id="record_not_shared_top_packing_multi_company_rule">
         <field name="name">Non Shared Records:model</field>
-        <field name="model_id" ref="model_operation_packing"/>
+        <field name="model_id" ref="model_operation_packing_topbottom"/>
         <field name="global" eval="True"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
     
-    <record id="view_operation_packing_tree" model="ir.ui.view">
-        <field name="name">operation.packing.tree</field>
-        <field name="model">operation.packing</field>
+    <record id="view_operation_packing_topbottom_tree" model="ir.ui.view">
+        <field name="name">operation.packing.topbottom.tree</field>
+        <field name="model">operation.packing.topbottom</field>
         <field name="arch" type="xml" >
             <tree string="Operation Packing" create="false" delete="true" editable="top" sample="1"> 
                 <header>
                     <button name="button_group_output" type="object" string="Group Output"/>
-                    <button name="button_return" type="object" string="Return"/>
-                    <button name="button_change_packing_date" type="object" string="Change Packing Date"/>
                 </header>
                 <field name="name" readonly="1"/>
-                <field name="mrp_line" invisible="1"/>
+                <field name="sale_order_option" invisible="1"/>
                 <field name="sale_order_line" invisible="1"/>
                 <field name="oa_id" optional="show"/>
                 <field name="date_order" optional="show"/>
@@ -90,18 +88,16 @@
         </field>
     </record>
 
-    <record id="view_mt_operation_tree" model="ir.ui.view">
-        <field name="name">mt.operation.packing.tree</field>
-        <field name="model">operation.packing</field>
+    <record id="view_mt_operation_topbottom_tree" model="ir.ui.view">
+        <field name="name">mt.operation.packing.topbottom.tree</field>
+        <field name="model">operation.packing.topbottom</field>
         <field name="arch" type="xml" >
             <tree string="Operation Packing" create="false" delete="true" editable="top" sample="1"> 
                 <header>
                     <button name="button_group_output" type="object" string="Group Output"/>
-                    <button name="button_return" type="object" string="Return"/>
-                    <button name="button_change_packing_date" type="object" string="Change Packing Date"/>
                 </header>
                 <field name="name" readonly="1"/>
-                <field name="mrp_line" invisible="1"/>
+                <field name="sale_order_option" invisible="1"/>
                 <field name="sale_order_line" invisible="1"/>
                 <field name="oa_id" optional="show"/>
                 <field name="date_order" optional="show"/>
@@ -143,20 +139,20 @@
         </field>
     </record>    
 
-    <record id="action_operation_packing" model="ir.actions.act_window">
-        <field name="name">Operation Packing</field>
-        <field name="res_model">operation.packing</field>
+    <record id="action_operation_topbottom_packing" model="ir.actions.act_window">
+        <field name="name">Top Bottom Packing</field>
+        <field name="res_model">operation.packing.topbottom</field>
         <field name="view_mode">tree</field>
-        <field name="view_id" ref="view_operation_packing_tree" />
-        <field name="search_view_id" ref="view_mrp_operatin_packing_search" />
+        <field name="view_id" ref="view_operation_packing_topbottom_tree" />
+        <field name="search_view_id" ref="view_mrp_operation_topbottom_packing_search" />
         <field name="domain">[('oa_id','!=',False)]</field>
         <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
         <field name="context">{'search_default_pending': 1}</field>
     </record>
 
-    <menuitem id="menu_operation_packing" 
-              name="Operation Packing" 
-              action="action_operation_packing" 
+    <menuitem id="menu_operation_topbottom_packing" 
+              name="Top Bottom Packing" 
+              action="action_operation_topbottom_packing" 
               parent="mrp.menu_mrp_root"
               sequence="5"/>
     

@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','crm','whatsapp_mail_messaging','web','web_domain_field'],
+    'depends': ['base','sale','crm','taps_sale','whatsapp_mail_messaging','web','web_domain_field'],
 
     # always loaded
     'data': [
@@ -37,7 +37,8 @@
         'views/customer_reallocation.xml',
         'views/brand_reallocation.xml',
         'views/crm_team_transfer.xml',
-        'views/activity.xml'
+        'views/activity.xml',
+        # 'views/provisional_naf.xml',
     ],
     # only loaded in demonstration mode
     'qweb': [

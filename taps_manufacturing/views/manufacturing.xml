@@ -54,6 +54,7 @@
                 <header>
                     <button name="button_plan" type="object" string="Plan"/>
                     <button name="button_requisition" type="object" string="Requisition"/>
+                    <button name="button_set_expcd" type="object" string="Exp Close Date"/>
                     <!-- <button name="button_createlot" type="object" string="Create Lot"/>
                     <button name="button_output" type="object" string="Output"/> -->
                 </header>
@@ -155,6 +156,7 @@
                     attrs="{'invisible': [('dyeing_plan', '=', False)]}"/> -->
                  <!-- attrs="{'invisible': [('operation_of', '!=', 'plan')]}" -->
                 <field name="num_of_lots" optional="show"/>
+                <field name="exp_close_date" readonly="1" force_save="1" optional="show"/>
                 <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
 				 <!-- attrs="{'invisible': [('num_of_lots', '=', 0)]}" -->
             </tree>

@@ -24,7 +24,7 @@ class MrpReportWizard(models.TransientModel):
     
     # is_company = fields.Boolean(readonly=False, default=False)
     
-    report_type = fields.Selection([('pir', 'PI File'),('pic', 'Closed PI'),('pis', 'PI Summary'),('dpr', 'Invoice'),('dppr', 'Packing Production Report'),('dpcl', 'Production Report (FG)')], string='Report Type', required=True, help='Report Type', default='pir')
+    report_type = fields.Selection([('pir', 'PI File'),('pic', 'Closed PI'),('pis', 'PI Summary'),('dpr', 'Invoice'),('dppr', 'Packing Production Report'),('dpcl', 'Production Report (FG)'),('oa_d', 'OA Details'),('invs', 'Invoice Summery')], string='Report Type', required=True, help='Report Type', default='pir')
     
     date_from = fields.Date('Date from', readonly=False, default=lambda self: self._compute_from_date())
     date_to = fields.Date('Date to', readonly=False, default=lambda self: self._compute_to_date())
@@ -145,6 +145,12 @@ class MrpReportWizard(models.TransientModel):
                 return self.pi_xls_template(self, data=data)
             if self.env.company.id == 3:
                 return self.pi_mt_xls_template(self, data=data)
+        if self.report_type == "oa_d":
+            data = {'date_from': self.date_from,'date_to': self.date_to}
+            if self.env.company.id == 1:
+                return self.oa_details(self, data=data)
+            if self.env.company.id == 3:
+                return self.oa_details_mt(self, data=data)
         if self.report_type == "pis":
             data = {'date_from': self.date_from,'date_to': self.date_to}
             return self.pis_xls_template(self, data=data)
@@ -198,7 +204,7 @@ class MrpReportWizard(models.TransientModel):
         _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
         row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
-        row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
+        row_style_sum = workbook.add_format({'bold': True, 'font_size': 16, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
         row_style_border_top_bottom = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'top': True,'valign': 'vcenter','align': 'center', 'bottom': True})
         row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True,'bottom': True})
         row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
@@ -210,7 +216,7 @@ class MrpReportWizard(models.TransientModel):
         
         format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top','align': 'left', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,})
 
-        format_label_5 = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'vcenter','align': 'center', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,})
+        format_label_5 = workbook.add_format({'font':'Arial', 'font_size': 16, 'valign': 'vcenter','align': 'center', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,})
         
         merge_format = workbook.add_format({'align': 'top'})
         merge_format_ = workbook.add_format({'align': 'bottom'})
@@ -243,7 +249,9 @@ class MrpReportWizard(models.TransientModel):
             # raise UserError((items))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
-            sheet.set_default_row(30)
+            # sheet.set_default_row(None)
+            sheet.set_default_row(height=None, hide_unused_rows=False)
+            sheet.set_row(0, 40)
             
             # for row_num in range(1, 50000):  
             #     sheet.set_row(row_num, 32)
@@ -315,7 +323,7 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(6, 6, 12)
             sheet.set_column(7, 7, 0)
             sheet.set_column(8, 8, 20)
-            sheet.set_column(9, 9, 25)
+            sheet.set_column(9, 9, 35)
             sheet.set_column(10, 10, 11)
             sheet.set_column(11, 11, 11)
             sheet.set_column(12, 12, 15)
@@ -324,7 +332,7 @@ class MrpReportWizard(models.TransientModel):
             sheet.set_column(14, 20, 12)
             sheet.set_column(15, 15, 0)
             sheet.set_column(17, 22, 0)
-            sheet.set_row(0, 30)
+            sheet.set_row(0, 28)
 
             
             row_rang = 1
@@ -356,9 +364,13 @@ class MrpReportWizard(models.TransientModel):
                     # slnumber = slnumber+1 orders.buyer_name.name,
                     if x == 0:
                         payment_term = (orders.payment_term_id.name or '')
-                        customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name,"\n",payment_term])
+                        customer = " ".join([orders.partner_id.name," ",orders.buyer_name.name," ",payment_term])
                         pi_num = orders.order_ref.pi_number
                         oa_num = int(orders.name.replace('OA',''))
+                        if orders.revised_no:
+                            oa_num = "\n".join([str(oa_num), str(orders.revised_no).upper()])
+                        else:
+                            oa_num = str(oa_num)
                         remarks = orders.remarks
                         create_date = orders.create_date.strftime("%d-%m-%Y")
                         expected_date = ''#orders.expected_date.strftime("%d-%m-%Y")
@@ -381,12 +393,23 @@ class MrpReportWizard(models.TransientModel):
                         pr_name = "\n".join([pr_name,o_data.ppinboxfinish])
                     if o_data.topbottom:
                         pr_name = "\n".join([pr_name,o_data.topbottom])
+
+                    
+
+
+                    
+                    if o_data.order_id.cause_of_revision:
+                        pr_name = "\n".join([pr_name,"\n",str(orders.revised_no),"\n",o_data.order_id.cause_of_revision])
                     slider = o_data.slidercodesfg
                     finish = o_data.finish #.replace('\n',' ')
-                    shade = o_data.shade
-                    # if shade:
-                    #     shade = o_data.shade.replace('\n',' ')
-                        # shade = re.sub(r'\n\s*\n', ' ', o_data.shade)
+                    if isinstance(o_data.shade, str):
+                        shade = o_data.shade.replace('[', '').replace(']', ' ')
+                    else:
+                        o_data.shade
+                    if shade:
+                        shade_lines = [line for line in shade.split('\n') if line.strip()]
+                        shade = '\n'.join(shade_lines)
+
                     shadewise_tape = o_data.shadewise_tape
                     
                     sizein = o_data.sizein
@@ -559,19 +582,21 @@ class MrpReportWizard(models.TransientModel):
                             sheet.write(row, col, l, format_label_3)
                         elif col == 8:
                             sheet.write(row, col, l, format_label_4)
+                        elif col == 9:
+                            sheet.write(row, col, l, format_label_4)
                         elif col == 9 :
                             # sheet.write(row, col, l, format_label_4)
                             if isinstance(l, bool):
                                 l = str(l)
                             number_of_newlines = l.count('\n') if isinstance(l, str) else 0
-                            if number_of_newlines > 2: 
+                            if number_of_newlines > 3: 
                                 row_height = number_of_newlines * 12
                                 sheet.write(row, col, l, format_label_4)
                                 sheet.set_row(row, row_height)
                             else :
-                                row_height = 32
+                                # row_height = 32
                                 sheet.write(row, col, l, format_label_4)
-                                sheet.set_row(row, row_height)
+                                # sheet.set_row(row, row_height)
                         elif col in(10,11,12,13):
                             sheet.write(row, col, l, format_label_5)
                         elif col == 14:
@@ -604,7 +629,8 @@ class MrpReportWizard(models.TransientModel):
                     row += 1
                     inline_row += 1
                     row_p = row_sl = row_f = row_sh = inline_row - 1
-                
+
+                sheet.set_row(row, 32)
                 sheet.write(row, 0, '',row_style_border_left)
                 sheet.write(row, 1, '',row_style_border_top_bottom)
                 sheet.write(row, 2, '',row_style_border_top_bottom)
@@ -629,10 +655,12 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(row, 21, '',row_style_border_right)
 
                 # row += 1
+                sheet.set_row(row+1, 32)
                 row_rang = row + 2
                 
                 product_range = slider_range = finish_range = shade_range = row_rang - 1
             
+            sheet.set_row(row+1, 32)
             sheet.write(row+1, 0, '')
             sheet.write(row+1, 1, '')
             sheet.write(row+1, 2, '')
@@ -656,6 +684,7 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 20, '')
             sheet.write(row+1, 21, '')
             row += 1
+            sheet.set_row(row+1, 32)
             sheet.write(row+1, 0, '',row_style_border_top_bottom)
             sheet.write(row+1, 1, '',row_style_border_top_bottom)
             sheet.write(row+1, 2, '',row_style_border_top_bottom)
@@ -679,9 +708,6 @@ class MrpReportWizard(models.TransientModel):
             sheet.write(row+1, 20, '',row_style_border_top_bottom)
             sheet.write(row+1, 21, '',row_style_border_top_bottom)
 
-
-        # sheet.conditional_format('O2:O1000', {'type':   'blanks','format': red_fill_format})
-             
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -731,366 +757,349 @@ class MrpReportWizard(models.TransientModel):
         de_items = items.filtered(lambda pr: pr.name not in (fg_items))
         exists_items = items - de_items
         items = exists_items.sorted(key=lambda pr: pr.sequence)
+        all_orders = self.env['sale.order.line'].browse(closed_orders.sale_order_line.ids)
 
-        for item in items:
-            all_orders = None
-            if item.name == 'Revised PI':
-                all_orders = self.env['sale.order.line'].browse(rev_orders.sale_order_line.ids)
-            else:
-                all_orders = self.env['sale.order.line'].browse(closed_orders.sale_order_line.ids)
-                all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item.name)
+        # for item in items:
+        #     all_orders = self.env['sale.order.line'].browse(closed_orders.sale_order_line.ids)
+            # all_orders = None
+            # if item.name == 'Revised PI':
+            #     all_orders = self.env['sale.order.line'].browse(rev_orders.sale_order_line.ids)
+            # else:
+            #     all_orders = self.env['sale.order.line'].browse(closed_orders.sale_order_line.ids)
+                # all_orders = all_orders.filtered(lambda pr: pr.product_template_id.fg_categ_type.name == item.name)
             
-            sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
-            
-            report_name = item.name
-            # raise UserError((items))
-           
-            sheet = workbook.add_worksheet(('%s' % (report_name)))                 
-            if report_name == 'M#4 CE':
-                sheet.set_tab_color('#0000FE')
-            if report_name == 'M#5 CE':
-                sheet.set_tab_color('#C00000')
-            if report_name == 'M#5 OE':
-                sheet.set_tab_color('#FF0000')
-            if report_name == 'C#3 CE':
-                sheet.set_tab_color('#974706')
-            if report_name == 'C#3 Inv CE':
-                sheet.set_tab_color('#92D050')
-            if report_name == 'C#5 CE':
-                sheet.set_tab_color('#FFC000')
-            if report_name == 'C#5 OE':
-                sheet.set_tab_color('#FFFF00')
-            if report_name == 'P#3 CE':
-                sheet.set_tab_color('#002060')
-            if report_name == 'P#3 OE':
-                sheet.set_tab_color('#0070C0')
-            if report_name == 'P#5 OE':
-                sheet.set_tab_color('#0070C0')
-            if report_name == 'P#5 CE':
-                sheet.set_tab_color('#00B050')
-            
-            sheet.set_margins(left=0.2, right=0.3, top=0.2, bottom=0.2)
-            sheet.set_footer('Iteam: &A Page: &P of &N Printed at &D &T', {'margin': 0.08, 'align': 'center', 'font_size': 12})
-            # sheet.set_footer('Page: &P of &N','Printed at &D &T', {'margin': 0.08, 'align': 'right', 'font_size': 10})
-            
-            sheet.fit_to_pages(1, 0)
-            sheet.set_zoom(75)
-            sheet.freeze_panes(1, 0)
-            sheet.set_paper(9)
-                                
-            sheet.write(0, 0, "CUSTOMER NAME", column_style)
-            sheet.write(0, 1, "PRODUCT", column_style)
-            sheet.write(0, 2, "SLIDER CODE", column_style)
-            sheet.write(0, 3, "FINISH", column_style)
-            sheet.write(0, 4, "PI NO", column_style)
-            sheet.write(0, 5, "OA NO", column_style)
-            sheet.write(0, 6, "OA DATE", column_style)
-            sheet.write(0, 7, "Production DATE", column_style)
-            sheet.write(0, 8, "DETAILS", column_style)
-            sheet.write(0, 9, "SHADE", column_style)
-            sheet.write(0, 10, "SIZE(INCH)", column_style)
-            sheet.write(0, 11, "SIZE(CM)", column_style)
-            sheet.write(0, 12, "ORDER QTY", column_style)
-            sheet.write(0, 13, "READY QTY", column_style)
-            sheet.write(0, 14, "PENDING QTY", column_style)
-            sheet.write(0, 15, "TOTAL WT/KG", column_style)
-            sheet.write(0, 16, "SHADE TOTAL", column_style)
-            sheet.write(0, 17, "WIRE/KG", column_style)
-            sheet.write(0, 18, "SLIDER/PCS", column_style)
-            sheet.write(0, 19, "H-BOTTOM/KG", column_style)
-            sheet.write(0, 20, "U-TOP/KG", column_style)
-            sheet.write(0, 21, "SALESPERSON", column_style)
-            sheet.write(0, 22, "CLOSE DATE", column_style)
+        # sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
+        sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.closing_date)
+        
+        # report_name = item.name
+        # raise UserError((items))
+       
+        # sheet = workbook.add_worksheet(('%s' % (report_name)))  
+        sheet = workbook.add_worksheet(('Closed PI'))
 
-            sheet.set_column(0, 0, 20)
-            sheet.set_column(1, 1, 30)
-            sheet.set_column(2, 2, 20)
-            sheet.set_column(3, 3, 20)
-            sheet.set_column(4, 4, 20)
-            sheet.set_column(5, 5, 20)
-            sheet.set_column(8, 8, 40)
-            sheet.set_column(9, 9, 40)
-            sheet.set_column(15, 20, 0)
-            sheet.set_column(7, 7, 0)
-            
+        
+        sheet.set_margins(left=0.2, right=0.3, top=0.2, bottom=0.2)
+        sheet.set_footer('Iteam: &A Page: &P of &N Printed at &D &T', {'margin': 0.08, 'align': 'center', 'font_size': 12})
+        # sheet.set_footer('Page: &P of &N','Printed at &D &T', {'margin': 0.08, 'align': 'right', 'font_size': 10})
+        
+        sheet.fit_to_pages(1, 0)
+        sheet.set_zoom(75)
+        sheet.freeze_panes(1, 0)
+        sheet.set_paper(9)
+                            
+        sheet.write(0, 0, "CUSTOMER NAME", column_style)
+        sheet.write(0, 1, "PRODUCT", column_style)
+        sheet.write(0, 2, "SLIDER CODE", column_style)
+        sheet.write(0, 3, "FINISH", column_style)
+        sheet.write(0, 4, "PI NO", column_style)
+        sheet.write(0, 5, "OA NO", column_style)
+        sheet.write(0, 6, "OA DATE", column_style)
+        sheet.write(0, 7, "Production DATE", column_style)
+        sheet.write(0, 8, "DETAILS", column_style)
+        sheet.write(0, 9, "SHADE", column_style)
+        sheet.write(0, 10, "SIZE(INCH)", column_style)
+        sheet.write(0, 11, "SIZE(CM)", column_style)
+        sheet.write(0, 12, "ORDER QTY", column_style)
+        sheet.write(0, 13, "READY QTY", column_style)
+        sheet.write(0, 14, "PENDING QTY", column_style)
+        sheet.write(0, 15, "TOTAL WT/KG", column_style)
+        sheet.write(0, 16, "SHADE TOTAL", column_style)
+        sheet.write(0, 17, "WIRE/KG", column_style)
+        sheet.write(0, 18, "SLIDER/PCS", column_style)
+        sheet.write(0, 19, "H-BOTTOM/KG", column_style)
+        sheet.write(0, 20, "U-TOP/KG", column_style)
+        sheet.write(0, 21, "SALESPERSON", column_style)
+        sheet.write(0, 22, "CLOSE DATE", column_style)
 
+        sheet.set_column(0, 0, 20)
+        sheet.set_column(1, 1, 30)
+        sheet.set_column(2, 2, 20)
+        sheet.set_column(3, 3, 20)
+        sheet.set_column(4, 4, 20)
+        sheet.set_column(5, 5, 20)
+        sheet.set_column(8, 8, 40)
+        sheet.set_column(9, 9, 40)
+        sheet.set_column(22, 22, 20)
+        sheet.set_column(14, 21, 0)
+        sheet.set_column(7, 7, 0)
+        
+
+        
+        row_rang = 1
+        _range = 0
+        
+        row_p = 0
+        row_sl = 0
+        row_f = 0
+        row_sh = 0
+        
+        product_range = 0
+        slider_range = 0
+        finish_range = 0
+        shade_range = 0
+        
+        for orders in sale_orders:
+            docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
             
-            row_rang = 1
-            _range = 0
+            report_data = []
+            order_data = []
+            # slnumber=0
+            customer = ''
+            pi_num = ''
+            oa_num = ''
+            remarks = ''
+            create_date = ''
+            closing_date = ''
+            for x,o_data in enumerate(docs):
+                # slnumber = slnumber+1 orders.buyer_name.name,
+                if x == 0:
+                    payment_term = (orders.payment_term_id.name or '')
+                    customer = "\n".join([orders.partner_id.name,"\n",payment_term])
+                    pi_num = orders.order_ref.pi_number
+                    oa_num = orders.name
+                    remarks = orders.remarks
+                    create_date = orders.create_date.strftime("%d-%m-%Y")
+                    if orders.closing_date:
+                        closing_date = orders.closing_date.strftime("%d-%m-%Y")
+                else:
+                    customer = ''
+                    pi_num = ''
+                    oa_num = ''
+                    remarks = ''
+                    create_date = ''
+                    closing_date = ''
+                
+                pr_name = o_data.product_template_id.name
+                if o_data.numberoftop:
+                    pr_name = "\n".join([pr_name,o_data.numberoftop])
+                if o_data.ptopfinish:
+                    pr_name = "\n".join([pr_name,o_data.ptopfinish])
+                if o_data.pbotomfinish:
+                    pr_name = "\n".join([pr_name,o_data.pbotomfinish])
+                if o_data.ppinboxfinish:
+                    pr_name = "\n".join([pr_name,o_data.ppinboxfinish])
+                if o_data.topbottom:
+                    pr_name = "\n".join([pr_name,o_data.topbottom])
+                slider = o_data.slidercodesfg
+                finish = o_data.finish #.replace('\n',' ')
+                shade = o_data.shade
+                shadewise_tape = o_data.shadewise_tape
+                
+                sizein = o_data.sizein
+                sizecm = o_data.sizecm
+                if sizein == 'N/A':
+                    sizein = ''
+                if sizecm == 'N/A':
+                    sizecm = ''
+                
+                m_order = self.env['manufacturing.order'].search([('sale_order_line','=',o_data.id),('company_id','=',self.env.company.id)])
+                ready_qty = sum(m_order.mapped('done_qty'))
+                # raise UserError((o_data.id,ready_qty))
+                balance_qty = o_data.product_uom_qty - ready_qty
+                if ready_qty == 0:
+                    ready_qty = None
+                if balance_qty == 0:
+                    balance_qty = None
+                order_data = [
+                    customer,
+                    pr_name,
+                    slider,
+                    finish,
+                    pi_num,
+                    oa_num,
+                    create_date,
+                    '',
+                    remarks,
+                    shade,
+                    sizein,
+                    sizecm,
+                    o_data.product_uom_qty,
+                    ready_qty,
+                    balance_qty,
+                    o_data.tape_con,
+                    shadewise_tape,
+                    o_data.wire_con,
+                    o_data.slider_con,
+                    o_data.botomwire_con,
+                    o_data.topwire_con,
+                    orders.sale_representative.name,
+                    closing_date,
+                ]
+                report_data.append(order_data)
+            if _range > 0:
+                _range += 2
+            _range += len(report_data)
             
+            sheet.merge_range(row_rang, 0, _range, 0, '', merge_format)
+            sheet.merge_range(row_rang, 4, _range, 4, '', merge_format)
+            sheet.merge_range(row_rang, 5, _range, 5, '', merge_format)
+            sheet.merge_range(row_rang, 6, _range, 6, '', merge_format)
+            sheet.merge_range(row_rang, 7, _range, 7, '', merge_format)
+            sheet.merge_range(row_rang, 8, _range, 8, '', merge_format)
+
+              # Set row height for the merged cells
+            for row_num in range(row_rang, _range + 1):
+                sheet.set_row(row_num, 32)  # Adjust the height value as needed
+            
+            qty_total = 0
+            shade_total = 0
+            wire_total = 0
+            slider_total = 0
+            bottom_total = 0
+            top_total = 0
+            
+            
+            col = 0
+            row = row_rang
+            inline_row = 1
             row_p = 0
             row_sl = 0
             row_f = 0
             row_sh = 0
             
-            product_range = 0
-            slider_range = 0
-            finish_range = 0
-            shade_range = 0
+            # product_range += product_range
+            # slider_range += slider_range
+            # finish_range += finish_range
+            # shade_range += shade_range
             
-            for orders in sale_orders:
-                docs = self.env['sale.order.line'].search([('order_id', '=', orders.id)])
-                
-                report_data = []
-                order_data = []
-                # slnumber=0
-                customer = ''
-                pi_num = ''
-                oa_num = ''
-                remarks = ''
-                create_date = ''
-                closing_date = ''
-                for x,o_data in enumerate(docs):
-                    # slnumber = slnumber+1 orders.buyer_name.name,
-                    if x == 0:
-                        payment_term = (orders.payment_term_id.name or '')
-                        customer = "\n".join([orders.partner_id.name,"\n",payment_term])
-                        pi_num = orders.order_ref.pi_number
-                        oa_num = orders.name
-                        remarks = orders.remarks
-                        create_date = orders.create_date.strftime("%d-%m-%Y")
-                        if orders.closing_date:
-                            closing_date = orders.closing_date.strftime("%d-%m-%Y")
+            for line in report_data:
+                for x in report_data[row_p:]:
+                    p_last_one = row
+                    if (x[1] == line[1]):
+                        product_range += 1
+                        row_p += 1
                     else:
-                        customer = ''
-                        pi_num = ''
-                        oa_num = ''
-                        remarks = ''
-                        create_date = ''
-                        closing_date = ''
-                    
-                    pr_name = o_data.product_template_id.name
-                    if o_data.numberoftop:
-                        pr_name = "\n".join([pr_name,o_data.numberoftop])
-                    if o_data.ptopfinish:
-                        pr_name = "\n".join([pr_name,o_data.ptopfinish])
-                    if o_data.pbotomfinish:
-                        pr_name = "\n".join([pr_name,o_data.pbotomfinish])
-                    if o_data.ppinboxfinish:
-                        pr_name = "\n".join([pr_name,o_data.ppinboxfinish])
-                    if o_data.topbottom:
-                        pr_name = "\n".join([pr_name,o_data.topbottom])
-                    slider = o_data.slidercodesfg
-                    finish = o_data.finish #.replace('\n',' ')
-                    shade = o_data.shade
-                    shadewise_tape = o_data.shadewise_tape
-                    
-                    sizein = o_data.sizein
-                    sizecm = o_data.sizecm
-                    if sizein == 'N/A':
-                        sizein = ''
-                    if sizecm == 'N/A':
-                        sizecm = ''
-                    
-                    m_order = self.env['manufacturing.order'].search([('sale_order_line','=',o_data.id),('company_id','=',self.env.company.id)])
-                    ready_qty = sum(m_order.mapped('done_qty'))
-                    # raise UserError((o_data.id,ready_qty))
-                    balance_qty = o_data.product_uom_qty - ready_qty
-                    if ready_qty == 0:
-                        ready_qty = None
-                    if balance_qty == 0:
-                        balance_qty = None
-                    order_data = [
-                        customer,
-                        pr_name,
-                        slider,
-                        finish,
-                        pi_num,
-                        oa_num,
-                        create_date,
-                        '',
-                        remarks,
-                        shade,
-                        sizein,
-                        sizecm,
-                        o_data.product_uom_qty,
-                        ready_qty,
-                        balance_qty,
-                        o_data.tape_con,
-                        shadewise_tape,
-                        o_data.wire_con,
-                        o_data.slider_con,
-                        o_data.botomwire_con,
-                        o_data.topwire_con,
-                        orders.sale_representative.name,
-                        closing_date,
-                    ]
-                    report_data.append(order_data)
-                if _range > 0:
-                    _range += 2
-                _range += len(report_data)
-                
-                sheet.merge_range(row_rang, 0, _range, 0, '', merge_format)
-                sheet.merge_range(row_rang, 4, _range, 4, '', merge_format)
-                sheet.merge_range(row_rang, 5, _range, 5, '', merge_format)
-                sheet.merge_range(row_rang, 6, _range, 6, '', merge_format)
-                sheet.merge_range(row_rang, 7, _range, 7, '', merge_format)
-                sheet.merge_range(row_rang, 8, _range, 8, '', merge_format)
-
-                  # Set row height for the merged cells
-                for row_num in range(row_rang, _range + 1):
-                    sheet.set_row(row_num, 32)  # Adjust the height value as needed
-                
-                qty_total = 0
-                shade_total = 0
-                wire_total = 0
-                slider_total = 0
-                bottom_total = 0
-                top_total = 0
-                
-                
-                col = 0
-                row = row_rang
-                inline_row = 1
-                row_p = 0
-                row_sl = 0
-                row_f = 0
-                row_sh = 0
-                
-                # product_range += product_range
-                # slider_range += slider_range
-                # finish_range += finish_range
-                # shade_range += shade_range
-                
-                for line in report_data:
-                    for x in report_data[row_p:]:
-                        p_last_one = row
-                        if (x[1] == line[1]):
-                            product_range += 1
-                            row_p += 1
-                        else:
-                            sheet.merge_range(row, 1, product_range, 1, '', merge_format)
-                            product_range = row
-                            break
-                        if _range == product_range:
-                            sheet.merge_range(p_last_one, 1, product_range, 1, '', merge_format)
-                            product_range = row
-                    for x in report_data[row_sl:]:
-                        sl_last_one = row
-                        if (x[2] == line[2]):
-                            slider_range += 1
-                            row_sl += 1
-                        else:
-                            sheet.merge_range(row, 2, slider_range, 2, '', merge_format)
-                            slider_range = row
-                            break
-                        if _range == slider_range:
-                            sheet.merge_range(sl_last_one, 2, slider_range, 2, '', merge_format)
-                            slider_range = row
-                    for x in report_data[row_f:]:
-                        f_last_one = row
-                        if (x[3] == line[3]):
-                            finish_range += 1
-                            row_f += 1
-                        else:
-                            sheet.merge_range(row, 3, finish_range, 3, '', merge_format)
-                            finish_range = row
-                            break
-                        if _range == finish_range:
-                            sheet.merge_range(f_last_one, 3, finish_range, 3, '', merge_format)
-                            finish_range = row
-        
-                    for x in report_data[row_sh:]:
-                        last_one = row
-                        if (x[9] == line[9]):
-                            shade_range += 1
-                            row_sh += 1
-                        else:
-                            sheet.merge_range(row, 9, shade_range, 9, '', merge_format)
-                            sheet.merge_range(row, 16, shade_range, 16, '', merge_format_)
-                            shade_range = row
-                            break
-                        if _range == shade_range:
-                            sheet.merge_range(last_one, 9, shade_range, 9, '', merge_format)
-                            sheet.merge_range(last_one, 16, shade_range, 16, '', merge_format_)
-                            shade_range = row
-                            
-                    col = 0
-                    for l in line:
-                        if col in(0,6,7):
-                            sheet.write(row, col, l, format_label_1)
-                        elif col in(1,2,3):
-                            sheet.write(row, col, l, format_label_2)
-                        elif col in(4,5):
-                            sheet.write(row, col, l, format_label_3)
-                        elif col in(8,9):
-                            sheet.write(row, col, l, format_label_4)
-                        elif col == 14:
-                            if l:
-                                sheet.write(row, col,l, row_style_sum)#'=M{1}-N{1}'.format(row + 1)
-                            else:
-                                sheet.write(row, col, l, red_fill_format)
-                        else:
-                            sheet.write(row, col, l, row_style_sum)
-                        if col == 12:
-                            qty_total += l
-                        if col == 15:
-                            shade_total += l
-                        if col == 17:
-                            wire_total += l
-                        if col == 18:
-                            slider_total += l
-                        if col == 19:
-                            bottom_total += l
-                        if col == 20:
-                            top_total += l
-                        col += 1
+                        sheet.merge_range(row, 1, product_range, 1, '', merge_format)
+                        product_range = row
+                        break
+                    if _range == product_range:
+                        sheet.merge_range(p_last_one, 1, product_range, 1, '', merge_format)
+                        product_range = row
+                for x in report_data[row_sl:]:
+                    sl_last_one = row
+                    if (x[2] == line[2]):
+                        slider_range += 1
+                        row_sl += 1
+                    else:
+                        sheet.merge_range(row, 2, slider_range, 2, '', merge_format)
+                        slider_range = row
+                        break
+                    if _range == slider_range:
+                        sheet.merge_range(sl_last_one, 2, slider_range, 2, '', merge_format)
+                        slider_range = row
+                for x in report_data[row_f:]:
+                    f_last_one = row
+                    if (x[3] == line[3]):
+                        finish_range += 1
+                        row_f += 1
+                    else:
+                        sheet.merge_range(row, 3, finish_range, 3, '', merge_format)
+                        finish_range = row
+                        break
+                    if _range == finish_range:
+                        sheet.merge_range(f_last_one, 3, finish_range, 3, '', merge_format)
+                        finish_range = row
+    
+                for x in report_data[row_sh:]:
+                    last_one = row
+                    if (x[9] == line[9]):
+                        shade_range += 1
+                        row_sh += 1
+                    else:
+                        sheet.merge_range(row, 9, shade_range, 9, '', merge_format)
+                        sheet.merge_range(row, 16, shade_range, 16, '', merge_format_)
+                        shade_range = row
+                        break
+                    if _range == shade_range:
+                        sheet.merge_range(last_one, 9, shade_range, 9, '', merge_format)
+                        sheet.merge_range(last_one, 16, shade_range, 16, '', merge_format_)
+                        shade_range = row
                         
-                    row += 1
-                    inline_row += 1
-                    row_p = row_sl = row_f = row_sh = inline_row - 1
-                
-                sheet.write(row, 0, '')
-                sheet.write(row, 1, '')
-                sheet.write(row, 2, '')
-                sheet.write(row, 3, '')
-                sheet.write(row, 4, '')
-                sheet.write(row, 5, '')
-                sheet.write(row, 6, '')
-                sheet.write(row, 7, '')
-                sheet.write(row, 8, '')
-                sheet.write(row, 9, '')
-                sheet.write(row, 10, '')
-                sheet.write(row, 11, '')
-                sheet.write(row, 12, '=SUM(M{0}:M{1})'.format(row_rang+1, row), row_style)
-                sheet.write(row, 13, '=SUM(N{0}:N{1})'.format(row_rang+1, row), row_style)
-                sheet.write(row, 14, '=M{1}-N{1}'.format(row+1, row+1), row_style)
-                sheet.write(row, 15, '')
-                sheet.write(row, 16, shade_total, row_style)
-                sheet.write(row, 17, wire_total, row_style)
-                sheet.write(row, 18, slider_total, row_style)
-                sheet.write(row, 19, bottom_total, row_style)
-                sheet.write(row, 20, top_total, row_style)
-                sheet.write(row, 21, '')
+                col = 0
+                for l in line:
+                    if col in(0,6,7):
+                        sheet.write(row, col, l, format_label_1)
+                    elif col in(1,2,3):
+                        sheet.write(row, col, l, format_label_2)
+                    elif col in(4,5):
+                        sheet.write(row, col, l, format_label_3)
+                    elif col in(8,9):
+                        sheet.write(row, col, l, format_label_4)
+                    elif col == 14:
+                        if l:
+                            sheet.write(row, col,l, row_style_sum)#'=M{1}-N{1}'.format(row + 1)
+                        else:
+                            sheet.write(row, col, l, red_fill_format)
+                    else:
+                        sheet.write(row, col, l, row_style_sum)
+                    if col == 12:
+                        qty_total += l
+                    if col == 15:
+                        shade_total += l
+                    if col == 17:
+                        wire_total += l
+                    if col == 18:
+                        slider_total += l
+                    if col == 19:
+                        bottom_total += l
+                    if col == 20:
+                        top_total += l
+                    col += 1
+                    
+                row += 1
+                inline_row += 1
+                row_p = row_sl = row_f = row_sh = inline_row - 1
+            
+            sheet.write(row, 0, '')
+            sheet.write(row, 1, '')
+            sheet.write(row, 2, '')
+            sheet.write(row, 3, '')
+            sheet.write(row, 4, '')
+            sheet.write(row, 5, '')
+            sheet.write(row, 6, '')
+            sheet.write(row, 7, '')
+            sheet.write(row, 8, '')
+            sheet.write(row, 9, '')
+            sheet.write(row, 10, '')
+            sheet.write(row, 11, '')
+            sheet.write(row, 12, '=SUM(M{0}:M{1})'.format(row_rang+1, row), row_style)
+            sheet.write(row, 13, '=SUM(N{0}:N{1})'.format(row_rang+1, row), row_style)
+            sheet.write(row, 14, '=M{1}-N{1}'.format(row+1, row+1), row_style)
+            sheet.write(row, 15, '')
+            sheet.write(row, 16, shade_total, row_style)
+            sheet.write(row, 17, wire_total, row_style)
+            sheet.write(row, 18, slider_total, row_style)
+            sheet.write(row, 19, bottom_total, row_style)
+            sheet.write(row, 20, top_total, row_style)
+            sheet.write(row, 21, '')
 
-                # row += 1
-                row_rang = row + 2
-                
-                product_range = slider_range = finish_range = shade_range = row_rang - 1
-            
-            sheet.write(row+1, 0, '')
-            sheet.write(row+1, 1, '')
-            sheet.write(row+1, 2, '')
-            sheet.write(row+1, 3, '')
-            sheet.write(row+1, 4, '')
-            sheet.write(row+1, 5, '')
-            sheet.write(row+1, 6, '')
-            sheet.write(row+1, 7, '')
-            sheet.write(row+1, 8, '')
-            sheet.write(row+1, 9, '')
-            sheet.write(row+1, 10, '')
-            sheet.write(row+1, 11, '')
-            sheet.write(row+1, 12, '=SUM(M{0}:M{1})/2'.format(1, row_rang-1), row_style)
-            sheet.write(row+1, 13, '=SUM(N{0}:N{1})/2'.format(1, row_rang-1), row_style)
-            sheet.write(row+1, 14, '=M{1}-N{1}'.format(row_rang, row_rang), row_style)
-            sheet.write(row+1, 15, '')
-            sheet.write(row+1, 16, '')
-            sheet.write(row+1, 17, '')
-            sheet.write(row+1, 18, '')
-            sheet.write(row+1, 19, '')
-            sheet.write(row+1, 20, '')
-            sheet.write(row+1, 21, '')
-            
+            # row += 1
+            row_rang = row + 2            
+            product_range = slider_range = finish_range = shade_range = row_rang - 1
+        
+        sheet.write(row+1, 0, '')
+        sheet.write(row+1, 1, '')
+        sheet.write(row+1, 2, '')
+        sheet.write(row+1, 3, '')
+        sheet.write(row+1, 4, '')
+        sheet.write(row+1, 5, '')
+        sheet.write(row+1, 6, '')
+        sheet.write(row+1, 7, '')
+        sheet.write(row+1, 8, '')
+        sheet.write(row+1, 9, '')
+        sheet.write(row+1, 10, '')
+        sheet.write(row+1, 11, '')
+        sheet.write(row+1, 12, '=SUM(M{0}:M{1})/2'.format(1, row_rang-1), row_style)
+        sheet.write(row+1, 13, '=SUM(N{0}:N{1})/2'.format(1, row_rang-1), row_style)
+        sheet.write(row+1, 14, '=M{1}-N{1}'.format(row_rang, row_rang), row_style)
+        sheet.write(row+1, 15, '')
+        sheet.write(row+1, 16, '')
+        sheet.write(row+1, 17, '')
+        sheet.write(row+1, 18, '')
+        sheet.write(row+1, 19, '')
+        sheet.write(row+1, 20, '')
+        sheet.write(row+1, 21, '')
+        
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -1201,6 +1210,8 @@ class MrpReportWizard(models.TransientModel):
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('PI Summary')),
             'target': 'self',
         }
+
+    
     #packing invoice start here
     def iterate_days(self, year, month):
         _, last_day = calendar.monthrange(year, month)
@@ -1991,11 +2002,13 @@ class MrpReportWizard(models.TransientModel):
                     if sizes == "N/A":
                         sizes = i.sizecm
 
-                    findslider = i.slidercodesfg.find("TZP ")
-                    if findslider > 0:
-                        slider = i.slidercodesfg.split("TZP ",1)[1]
-                    else:
-                        slider = i.slidercodesfg.split("TZP-",1)[1]
+                    if i.slidercodesfg:
+                        if i.slidercodesfg != 'TBA':
+                            findslider = i.slidercodesfg.find("TZP ")
+                            if findslider > 0:
+                                slider = i.slidercodesfg.split("TZP ",1)[1]
+                            else:
+                                slider = i.slidercodesfg.split("TZP-",1)[1]
                     if i.mrp_line.topbottom:
                         stopper = i.mrp_line.topbottom
                     
@@ -2129,6 +2142,116 @@ class MrpReportWizard(models.TransientModel):
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('MT PI File')),
             'target': 'self',
         }
+
+
+       # OA Details 
+    def oa_details(self, docids, data=None):
+        start_time = fields.datetime.now()
+        # domain = []
+        # if data.get('date_from'):
+        #     domain.append(('date_from', '=', data.get('date_from'))) 
+        docs = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('balance_qty','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
+        
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+
+        sheet = workbook.add_worksheet("PI PENDING MT EXCEL")
+        column_style = workbook.add_format({'bold': True, 'font_size': 12})
+        
+        row_style = workbook.add_format({'font_size': 12, 'font':'Calibri', 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'vcenter', 'text_wrap':False})
+
+        sheet.write(0, 0, "OA", column_style)
+        sheet.write(0, 1, "OA DATE", column_style)
+        sheet.write(0, 2, "CUSTOMER ", column_style)
+        sheet.write(0, 3, "BUYER", column_style)
+        sheet.write(0, 4, "LOGO", column_style)
+        sheet.write(0, 5, "SIZE", column_style)
+        #sheet.write(0, 6, "MATERIAL( ALLOY / BRASS)", column_style)
+        sheet.write(0, 6, "FINISH", column_style)
+        sheet.write(0, 7, "B PART", column_style)
+        sheet.write(0, 8, "QTY", column_style)
+        sheet.write(0, 9, "READY", column_style)
+        sheet.write(0, 10, "PENDING", column_style)
+        col = 0
+        row = 1
+
+        #docs = self.env['sale.order.line'].browse(running_orders.sale_order_line.ids).sorted(key=lambda pr: pr.order_id and pr.id)
+
+        
+        for o_data in docs:
+            col = 0
+            for l in range(17):
+                if col == 0:
+                    sheet.write(row, col, o_data.oa_id.name, row_style)
+                #elif col == 1:
+                    #sheet.write(row, col, o_data.order_id.expected_date.strftime("%d/%m/%Y"), row_style)
+                elif col == 1:
+                    sheet.write(row, col, o_data.oa_id.create_date.strftime("%d/%m/%Y"), row_style)
+                #elif col == 3:
+                    #sheet.write(row, col, o_data.order_id.order_ref.pi_number, row_style)
+                elif col == 2:
+                    sheet.write(row, col, o_data.oa_id.partner_id.name, row_style)
+                elif col == 3:
+                    sheet.write(row, col, o_data.oa_id.buyer_name.name, row_style)
+                #elif col == 4:
+                    #sheet.write(row, col, '', row_style)
+                elif col == 4:
+                    if o_data.logo:
+                        sheet.write(row, col, o_data.logo, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
+                elif col == 5:
+                    sheet.write(row, col, o_data.sizemm, row_style)
+                elif col == 6:
+                    if o_data.finish:
+                        sheet.write(row, col, o_data.finish, row_style)
+                    else:
+                        sheet.write(row, col,'', row_style)
+                    sheet.write(row, col, o_data.product_template_id.name, row_style)
+                elif col == 7:
+                    if o_data.b_part:
+                        sheet.write(row, col, o_data.b_part, row_style)
+                    else:
+                        sheet.write(row, col, '', row_style)
+                elif col == 8:
+                    sheet.write(row, col, o_data.product_uom_qty, row_style)
+                elif col == 9:
+                    sheet.write(row, col, o_data.done_qty , row_style)
+                elif col == 10:
+                    sheet.write(row, col, o_data.balance_qty , row_style)
+
+                #sheet.set_column(0, 0, 15)
+                col += 1
+            row += 1
+
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('MT PI File')),
+            'target': 'self',
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class ProductionReportPDF(models.AbstractModel):
@@ -2329,3 +2452,4 @@ class ProductionReportPDF(models.AbstractModel):
             'report_date':report_date,
             'company': com_id,
             }
+ 

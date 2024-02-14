@@ -18,28 +18,20 @@ from odoo.addons.stock.models.stock_move import PROCUREMENT_PRIORITIES
 from werkzeug.urls import url_encode
 from datetime import datetime
 
-class OperationPacking(models.Model):
-    _name = "operation.packing"
-    _description = "Operation Packing"
+class OperationPackingTopbottom(models.Model):
+    _name = "operation.packing.topbottom"
+    _description = "Top & Bottom Packing"
     _check_company_auto = True
     
     name = fields.Char(string='Code', store=True)
-    mrp_line = fields.Many2one('manufacturing.order', string='Mrp Id', store=True, readonly=True)
-    sale_order_line = fields.Many2one('sale.order.line',related='mrp_line.sale_order_line',  string='Sale Order Line', readonly=True, store=True, check_company=True)
+    sale_order_option = fields.Many2one('sale.order.option',string='Sale Order Option', readonly=True, store=True, check_company=True)
+    sale_order_line = fields.Many2one('sale.order.line', related='sale_order_option.line_id', string='Sale Order Line', readonly=True, store=True, check_company=True)
     
-    oa_id = fields.Many2one('sale.order', related='sale_order_line.order_id', string='OA', readonly=True, store=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", check_company=True)
+    oa_id = fields.Many2one('sale.order', related='sale_order_option.order_id', string='OA', readonly=True, store=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", check_company=True)
     
     company_id = fields.Many2one('res.company', index=True, default=lambda self: self.env.company, string='Company', readonly=True, store=True)
-    # related='sale_order_line.product_id',
 
-    product_id = fields.Many2one('product.product', compute='_compute_product_id',  check_company=True, string='Product Id')
-    @api.depends('product_id')
-    def _compute_product_id(self):
-        for rec in self:
-            if rec.sale_order_line:
-                rec.product_id = rec.sale_order_line.product_id.id
-            else:
-                rec.product_id = rec.product_id
+    product_id = fields.Many2one('product.product', related='sale_order_option.product_id',  check_company=True, string='Product Id')
                 
     product_template_id = fields.Many2one('product.template', string='Product', related="product_id.product_tmpl_id", domain=[('sale_ok', '=', True)], store=True)
     
@@ -90,18 +82,6 @@ class OperationPacking(models.Model):
     shape = fields.Text(string='Shape', related='sale_order_line.shape', store=True, readonly=True)
     back_part = fields.Text(string='Back Part', related='sale_order_line.back_part', store=True, readonly=True)
     work_center = fields.Many2one('mrp.workcenter', string='Assign To', store=True, readonly=True, help="Assign to")
-    # operation_by = fields.Char(string='Operation By', store=True, help="Done by")
-    # based_on = fields.Char(string='Based On', store=True)
-    
-
-    # @api.depends('qty', 'done_qty')
-    # def get_balance(self):
-    #     for s in self:
-    #         if s.next_operation in ('Dyeing Qc','Packing Output'):
-    #             s.balance_qty = round((s.actual_qty - s.done_qty),2)
-    #         else:
-    #             s.balance_qty = round((s.qty - s.done_qty),2)
-    
     
     @api.depends('qty', 'done_qty', 'actual_qty')
     def get_ac_balance(self):
@@ -112,13 +92,12 @@ class OperationPacking(models.Model):
             if s.qty>0:
                 s.balance_qty = round((s.qty - s.done_qty),2)
 
-    
-    actual_qty = fields.Float(string='OA Qty', related='sale_order_line.product_uom_qty', readonly=True, store=True, group_operator="sum")
+    actual_qty = fields.Float(string='OA Qty', related='sale_order_option.quantity', readonly=True, store=True, group_operator="sum")
     # actual_qty = fields.Float(string='OA Qty', readonly=True, store=True, group_operator="sum")
     ac_balance_qty = fields.Float(string='OA Balance', readonly=False, store=True, compute='get_ac_balance', group_operator="sum")
     qty = fields.Float(string='Qty', readonly=False)
     # price_unit = fields.Float('Unit Price', digits='Product Price', default=0.0, store=True)
-    price_unit = fields.Float('Unit Price', related='sale_order_line.price_unit', digits='Product Price', default=0.0, readonly=True, store=True)
+    price_unit = fields.Float('Unit Price', related='sale_order_option.price_unit', digits='Product Price', default=0.0, readonly=True, store=True)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
     balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
@@ -172,7 +151,7 @@ class OperationPacking(models.Model):
         self._check_company()
         if self.next_operation != 'FG Packing':
             raise UserError(('This is not for you'))    
-    
+        
     def button_output(self):
         self.ensure_one()
         self._check_company()
@@ -191,7 +170,7 @@ class OperationPacking(models.Model):
         vals['name'] = ref
         # raise UserError((ref))    
         vals['state'] = 'waiting'
-        result = super(OperationPacking, self).create(vals)
+        result = super(OperationPackingTopbottom, self).create(vals)
         return result                
 
     # @api.model
@@ -204,11 +183,11 @@ class OperationPacking(models.Model):
                     vals['state'] = 'waiting'
                 else:
                     vals['state'] = 'partial'
-        result = super(OperationPacking, self).write(vals)
+        result = super(OperationPackingTopbottom, self).write(vals)
         return result                
 
     def set_group_output(self,mo_ids,qty,planned_qty):
-        operation = self.env["operation.packing"].browse(mo_ids)
+        operation = self.env["operation.packing.topbottom"].browse(mo_ids)
         qty_ = round((qty/len(operation)),2)
         if operation[0].next_operation == 'Dyeing Qc':
             rest_qty = qty
@@ -246,88 +225,27 @@ class OperationPacking(models.Model):
             if (out.state not in ('partial','waiting')):
                 raise UserError(('You can not update this data because of state is done/closed'))
                 
-            s = out.write({'done_qty':done_qty})#done_qty = done_qty
-            # manufac_ids = self.env["manufacturing.order"].browse(out.mrp_lines)
-            # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
-            mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
+            s = out.write({'done_qty':done_qty})
+
+            mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
+            packing_balance = self.env["operation.packing"].search([('oa_id','=',out.oa_id.id),('balance_qty','>',0)])
+            top_balance = self.env["operation.packing.topbottom"].search([('oa_id','=',out.oa_id.id),('balance_qty','>',0)])
+            top_sum = 0
+            if top_balance:
+                top_sum = sum(top_balance.mapped('balance_qty'))
+                top_sum -= out.uotput_qty
+                
+            if (not packing_balance) and (top_sum == 0):
+                mrp_all_oa = mrp_oa_data.update({'oa_total_balance':0,'closing_date':datetime.now(),'state':'closed'})
+                sl_closed = self.env["sale.order"].browse(out.oa_id.id)
+                _slclosed = sl_closed.write({'closing_date':datetime.now().date()})
+
             
             move_line = None
-            pr_pac_qty = mrp_data[0].product_template_id.pack_qty
-            # mrp_lines = None
-            if pr_pac_qty:
-                pack_qty = math.ceil(out.uotput_qty/pr_pac_qty)
-                fraction_pc_of_pack = round(((out.uotput_qty/pr_pac_qty) % 1)*pr_pac_qty)
+            pr_pac_qty = 0
+            pack_qty = 0#out.uotput_qty
+            fraction_pc_of_pack = 0
 
-            if mrp_data:
-                up_date = mrp_data.update({'packing_done': mrp_data[0].packing_done + out.uotput_qty, 'done_qty':mrp_data[0].done_qty + out.uotput_qty})
-                out_qty = out.uotput_qty / len(mrp_data)
-                extra = out_qty
-                
-                move_qty = out.uotput_qty
-                if (extra > 0) and (out.uotput_qty != extra):
-                    move_qty = out.uotput_qty - extra
-                mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
-                top_bottom = self.env["operation.packing.topbottom"].search([('oa_id','=',out.oa_id.id),('balance_qty','>',0)])
-                tot_b =  sum(mrp_oa_data.mapped('oa_total_balance'))/ len(mrp_oa_data) # mrp_oa_data.oa_total_balance - out.uotput_qty
-                tot_b = tot_b - move_qty #out.uotput_qty
-                if (tot_b == 0) and (not top_bottom):
-                    mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b,'closing_date':datetime.now(),'state':'closed'})
-                    sl_closed = self.env["sale.order"].browse(out.oa_id.id)
-                    _slclosed = sl_closed.write({'closing_date':datetime.now().date()})
-                else:
-                    mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b})
-                
-                locations = self.env["stock.location"].search([('company_id','=',self.env.company.id),('name', 'in', ('Stock','Production'))])
-                locationid = locations.filtered(lambda pr: pr.name == 'Stock').id
-                
-                des_locationid = locations.filtered(lambda pr: pr.name == 'Production').id
-
-                picking_types = self.env["stock.picking.type"].search([('company_id','=',self.env.company.id),('code', '=', 'mrp_operation' )])#('Z_Manufacturing','M_Manufacturing')
-                pic_typeid = picking_types.id
-                warehouse_id = picking_types.warehouse_id.id
-                
-                if move_qty > 0:
-                    stockmove = self.env["stock.move"].create({'name':'New',
-                                                               'sequence':10,
-                                                               'company_id':self.env.company.id,
-                                                               'product_id':out.product_id.id,
-                                                               'product_uom_qty':move_qty,
-                                                               'product_uom':out.product_id.product_tmpl_id.uom_id.id,
-                                                               'location_id':des_locationid,
-                                                               'location_dest_id':locationid,
-                                                               'state':'done',
-                                                               'procure_method':'make_to_stock',
-                                                               'scrapped':False,
-                                                               'propagate_cancel':False,
-                                                               'picking_type_id':pic_typeid,
-                                                               'warehouse_id':warehouse_id,
-                                                               'additional':False,
-                                                               'is_done':True,
-                                                               'unit_factor':move_qty
-                                                               })
-                    lot_producing_id = self.env['stock.production.lot'].create({
-                        'product_id': out.product_id.id,
-                        'company_id': self.env.company.id
-                    })
-                  
-                    stockmove_line = self.env["stock.move.line"].create({'move_id': stockmove.id,
-                                                                         'company_id':self.env.company.id,
-                                                                         'product_id':out.product_id.id,
-                                                                         'product_uom_id':out.product_id.product_tmpl_id.uom_id.id,
-                                                                         'qty_done':move_qty,
-                                                                         'lot_id':lot_producing_id.id,
-                                                                         'date':datetime.now(),
-                                                                         'location_id':des_locationid,
-                                                                         'location_dest_id':locationid,
-                                                                         'state':'done',
-                                                                         'qty_onhand':move_qty
-                                                                         })
-                    move_line = stockmove_line.id
-    
-                    picking = self.env["stock.picking"].search([('origin','=',out.oa_id.name),('state','not in',('draft','done','cancel'))])
-                    if picking:
-                        picking.action_assign()
-                
             next = None
             w_center = None
             operation_of = 'output'
@@ -335,9 +253,7 @@ class OperationPacking(models.Model):
             next = 'FG Packing'
             if can_create:
                 ope = self.env['operation.details'].create({'name':out.name,
-                                                        'mrp_lines':out.mrp_line.id,
                                                         'sale_lines':out.sale_order_line.id,
-                                                        'mrp_line':out.mrp_line.id,
                                                         'sale_order_line':out.sale_order_line.id,
                                                         'parent_id':out.id,
                                                         'oa_id':out.oa_id.id,

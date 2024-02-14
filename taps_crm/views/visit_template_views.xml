@@ -51,14 +51,16 @@
                                 <field name="name" />
                             </h1>
                         </div>
-                        <br/>
-                        <!-- <div class="text-center alert alert-primary oe_edit_only" role="alert"> -->
-                        <!-- <field name="description" placeholder="Description ..." attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/> -->
-                        <!-- </div> -->
+                        <group>
+                                <field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}"/>
+                        </group>
+                        
                         <group>
                         <group>
-                            <field name="partner_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
-                            <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'readonly': [['stages', 'in', ('2_done','(9_cancel')]]}"/>
+                            <field name="partner_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]], 'invisible':['|',['type', '=', 'buyinghouse'],['type', '=', 'pacc']], 'required': [['type', '=', 'customer']]}" domain="[('customer_rank', '>',0)]"/>
+                            <field name="buying_house" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]], 'invisible': [['type', '!=', 'buyinghouse']], 'required': [['type', '=', 'buyinghouse']]}"/>
+                            <field name="provisional_id" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]], 'invisible': [['type', '!=', 'pacc']] , 'required':[['type', '=', 'pacc']] }"/>
+                            <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'readonly': [['stages', 'in', ('2_done','(9_cancel')]], 'required': [['type', '=', 'brand']]}"/>
                             <field name="concern" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             <field name="designation" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             <field name="mobile" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
@@ -123,11 +125,15 @@
             <field name="arch" type="xml">
                 <form>
                     <group>
-                        <!-- <field name="description" /> -->
+                        <field name="type" widget="radio" nolabel="1"/>
                         <field name="partner_id" widget="res_partner_many2one"
-                            string='Customer'
-                             options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
-                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]"/>
+                            string="Customer"
+                             options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"
+                            attrs="{'invisible':['|',['type', '=', 'buyinghouse'],['type', '=', 'pacc']], 'required': [['type', '=', 'customer']]}"
+                            domain="[('customer_rank', '>',0)]"/>
+                        <field name="buying_house" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type', '!=', 'buyinghouse']], 'required': [['type', '=', 'buyinghouse']]}"/>
+                        <field name="provisional_id" attrs="{'invisible': [['type', '!=', 'pacc']] , 'required':[['type', '=', 'pacc']] }"/>
+                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'required': [['type', '=', 'brand']]}"/>
                         <field name="concern" />
                         <field name="designation" />
                         <field name="mobile" />

@@ -42,14 +42,22 @@ class CustomerVisit(models.Model):
 
     name = fields.Char(string="Name",required=True, copy=False, index=True, readonly=True,  default=lambda self: _('New'))
     # description = fields.Char(string="Description")
+    type = fields.Selection([
+        ('customer', 'Customer'),
+        ('brand', 'Brand'),
+        ('buyinghouse', 'Buying House'),
+        ('pacc', 'Potential Account'),
+    ],string="Type", required=True, default='customer')
     partner_id = fields.Many2one('res.partner', string='Customer')
+    provisional_id = fields.Many2one('provisional.template', string='Provisional Acc')
+    buying_house = fields.Many2one('res.partner', string='Buying House', domain="[('buying_house_rank', '>',0)]")
     buyer = fields.Many2one('res.partner', string='Buyer')
     concern = fields.Char(string="Concern")
     designation = fields.Char(string="Designation")
     mobile = fields.Char(string="Mobile")
     product = fields.Many2many('crm.tag', string="Product")
-    core_purpose = fields.Many2one('crm.visit.purpose.core',string="Visit Purpose", required=True)
-    visit_purpose = fields.Many2one('crm.visit.purpose',string="Visit Objective", required=True)
+    core_purpose = fields.Many2one('crm.visit.purpose.core',string="Visit Purpose", required=True, ondelete="cascade")
+    visit_purpose = fields.Many2one('crm.visit.purpose',string="Visit Objective", required=True, ondelete="cascade")
     visit_outcome = fields.Text(string="Visit Outcome")
     action = fields.Text(string="Action")
     user_id = fields.Many2one('res.users', string='Salesperson', index=True, tracking=True, default=lambda self: self.env.user, readonly=True)

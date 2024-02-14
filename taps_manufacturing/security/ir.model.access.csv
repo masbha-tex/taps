@@ -11,6 +11,7 @@ access_requisition,requisition,model_mrp_requisition,base.group_user,1,1,1,1
 access_requisition_line,requisition_line,model_mrp_requisition_line,base.group_user,1,1,1,1
 access_operation_details,operation_details,model_operation_details,base.group_user,1,1,1,1
 access_operation_packing,operation_packing,model_operation_packing,base.group_user,1,1,1,1
+access_operation_packing_topbottom,operation_packing_topbottom,model_operation_packing_topbottom,base.group_user,1,1,1,1
 access_mrp_lot,mrp_lot,model_mrp_lot,base.group_user,1,1,1,1
 access_lot_line,lot_line,model_lot_line,base.group_user,1,1,1,1
 access_mrp_delivery,mrp_delivery,model_mrp_delivery,base.group_user,1,1,1,1
@@ -35,3 +36,4 @@ access_oa_check,access_oa_check,model_oa_check,base.group_user,1,1,1,1
 access_oa_check,access_oa_check,model_oa_check,base.group_user,1,1,1,1
 access_label_print_data,access_label_print_data,model_label_print_data,base.group_user,1,1,1,1
 access_ppc_report,access_ppc_report,model_ppc_report,base.group_user,1,1,1,1
+access_set_exp_cd,access_set_exp_cd,model_set_exp_cd,base.group_user,1,1,1,1

@@ -48,6 +48,7 @@
         'views/manufacturing.xml',
         'views/operation_details.xml',
         'views/operation_packing.xml',
+        'views/operation_packing_topbottom.xml',
         'views/mrp_workcenter.xml',
         'views/machine_list.xml',
         'views/packing_report_view.xml',
@@ -63,6 +64,7 @@
         'report/report_label_print_blank.xml',
         'wizard/oa_check.xml',
         'report/ppc_rpt_wizard.xml',
+        'wizard/set_exp_close_date.xml',
         # 'wizard/manufacturing_report_wizard.xml'
     ],
     'qweb': [

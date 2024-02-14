@@ -15,3 +15,4 @@ from . import sale_ccr
 from . import sale_ccr_old
 from . import sale_order_rmc
 from . import naf_template
+from . import provisional_naf

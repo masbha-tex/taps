@@ -134,24 +134,14 @@ class PpcReportWizard(models.TransientModel):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         
         column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
-        red_fill_format = workbook.add_format({'bg_color': '#A7A7A7', 'align': 'center', 'valign': 'vcenter','left': True, 'top': True, 'right': True, 'bottom': True})
         
-        _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'center', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_ = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'left', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
         row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
         row_style_border_top_bottom = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'top': True,'valign': 'vcenter','align': 'center', 'bottom': True})
         row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True,'bottom': True})
         row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
-        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16,'valign': 'vcenter','align': 'center', 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        
-        format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top','align': 'left', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,})
-
-        format_label_5 = workbook.add_format({'font':'Arial', 'font_size': 13, 'valign': 'vcenter','align': 'center', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,})    
+  
       
 
         fg_items = m_orders.mapped('fg_categ_type')
@@ -221,9 +211,9 @@ class PpcReportWizard(models.TransientModel):
             sheet.write(0, 1, "PI NO", column_style)
             sheet.write(0, 2, "OA NO", column_style)
             sheet.write(0, 3, "OA DATE", column_style)
-            sheet.write(0, 4, "SLIDER/PCS", column_style)
+            sheet.write(0, 4, "SLIDER", column_style)
             sheet.write(0, 5, "DYE Plan DATE", column_style)
-            sheet.write(0, 6, "SHADE OK", column_style)
+            sheet.write(0, 6, "SHADE OK ", column_style)
             sheet.write(0, 7, "SLIDR OK", column_style)
             sheet.write(0, 8, "REMARKS", column_style)
             sheet.write(0, 9, "ORDER QTY", column_style)
@@ -233,14 +223,23 @@ class PpcReportWizard(models.TransientModel):
             sheet.write(0, 13, "BUYER", column_style)
             sheet.write(0, 14, "CUSTOMER", column_style)
             sheet.write(0, 15, "CLOSING DATE", column_style)
+            sheet.write(0, 16, "REMARKS", column_style)
            
             sheet.set_column(0, 0, 6)
             sheet.set_column(1, 1, 0)
             sheet.set_column(2, 2, 10)
-            sheet.set_column(14, 14, 14)
+            sheet.set_column(6, 6, 18)
+            sheet.set_column(4, 4, 22)
+            sheet.set_column(8, 8, 0)
+            sheet.set_column(9, 11, 16)
+            sheet.set_column(13, 13, 24)
+            sheet.set_column(14, 14, 34)
+            sheet.set_column(15, 15, 20)
+            sheet.set_column(16, 16, 24)
            
 
-            sheet.set_row(0, 30)
+            sheet.set_row(0, 32)
+            sheet.set_row(1, 20)
             mrp_datas = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('balance_qty','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id),('fg_categ_type','=',item.name)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
 
             
@@ -260,26 +259,39 @@ class PpcReportWizard(models.TransientModel):
                 # if o_data:
                 #     raise UserError(('slider'))
                 col = 0
-                for l in range(15):
+                for l in range(17):
                     if col == 0:
                         sheet.write(row, col, row, row_style)
                     elif col == 1:
                         sheet.write(row, col, o_data[0].oa_id.order_ref.pi_number, row_style)
                     elif col == 2:
-                        sheet.write(row, col, o_data[0].oa_id.name.replace("OA", ""), row_style)
+                        sheet.write(row, col, str(o_data[0].oa_id.name.replace("OA00", "")), row_style)
                         # sheet.write(row, col, o_data[0].oa_id.name, row_style)
                     elif col == 3:
-                        # sheet.write(row, col, format_custom_date(o_data[0].oa_id.create_date), row_style)
-                        sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d/%m/%Y"), row_style)
+                        sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d %b"), row_style)
+                        # sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d/%m/%Y"), row_style)
                     elif col == 4:
-                        # slider_code = o_data[0].slidercodesfg.split()[-1]
-                        sheet.write(row, col,o_data[0].slidercodesfg, row_style)
-                        # sheet.write(row, col,slider_code, row_style)
+                        slider_code_match = re.search(r'TZP-\s*(.+)', str(o_data[0].slidercodesfg)) #after all part tzp
+                        slider_part = slider_code_match.group(1) if slider_code_match else ''
+                        if slider_part:
+                            sheet.write(row, col, f"TZP-{slider_part}", row_style)
+                        
+                        
+                        # slider_code_match = re.search(r'TZP-\s*([^\s]+)', str(o_data[0].slidercodesfg)) #after tzp number only 
+                        # slider_part = slider_code_match.group(1) if slider_code_match else ''
+                        # if slider_part:
+                        #     sheet.write(row, col, f"TZP- {slider_part}", row_style)
+
+                        # sheet.write(row, col,o_data[0].slidercodesfg, row_style)
                     elif col == 5:
-                        # sheet.write(row, col, format_custom_date(o_data[0].dyeing_plan), row_style)
-                        sheet.write(row, col, o_data[0].dyeing_plan, row_style) #Dye Plan Date
+                        dyeing_plan_date = o_data[0].dyeing_plan.strftime("%d %b") if o_data[0].dyeing_plan else ''
+                        sheet.write(row, col, dyeing_plan_date, row_style)                     
+                        # sheet.write(row, col, o_data[0].dyeing_plan, row_style) #Dye Plan Date
                     elif col == 6:
-                        sheet.write(row, col, sum(o_data.mapped('dyeing_qc_pass')), row_style) #Shade ok
+                        total_shade = round(sum(o_data.mapped('tape_con')), 2)
+                        dyed_shade = round(sum(o_data.mapped('dyeing_qc_pass')), 2)
+                        sheet.write(row, col, f"{dyed_shade} of {total_shade}", row_style)
+                        # sheet.write(row, col, dyed_shade, row_style) 
                     elif col == 7:
                         sheet.write(row, col, sum(o_data.mapped('plating_output')), row_style) #slider plating ok
                     elif col == 8:
@@ -299,18 +311,35 @@ class PpcReportWizard(models.TransientModel):
                     elif col == 13:
                         sheet.write(row, col, o_data[0].oa_id.buyer_name.name, row_style)
                     elif col == 14:
-                        sheet.write(row, col, o_data[0].oa_id.partner_id.name, row_style)
-                    # elif col == 14:
-                    #     sheet.write(row, col, o_data.expected_date.strftime("%d/%m/%Y"), row_style)
-    
-    
-                    #sheet.set_column(0, 0, 15)
+                        sheet.write(row, col, o_data[0].oa_id.partner_id.name, row_style_)
+                    elif col == 15:
+                        sheet.write(row, col, '', row_style)
+                    elif col == 16:
+                        sheet.write(row, col, '', row_style)
+
                     col += 1
                 row += 1
+            sum_start_row = 2
+            sum_end_row = row 
+            row += 1
+            sheet.write(row, 0, '',row_style_border_top_bottom)
+            sheet.write(row, 1, '',row_style_border_top_bottom)
+            sheet.write(row, 2, '',row_style_border_top_bottom)
+            sheet.write(row, 3, '',row_style_border_top_bottom)
+            sheet.write(row, 4, '',row_style_border_top_bottom)
+            sheet.write(row, 5, '',row_style_border_top_bottom)
+            sheet.write(row, 6, '',row_style_border_top_bottom)
+            sheet.write(row, 7, '',row_style_border_top_bottom)
+            sheet.write(row, 8, '',row_style_border_top_bottom)
+            sheet.write(row, 9, f'=SUM(J{sum_start_row}:J{sum_end_row})', row_style_sum)
+            sheet.write(row, 10, f'=SUM(K{sum_start_row}:K{sum_end_row})', row_style_sum)
+            sheet.write(row, 11, f'=L{sum_start_row}-L{sum_end_row}', row_style_sum)
+            sheet.write(row, 12, '',row_style_border_top_bottom)
+            sheet.write(row, 13, '',row_style_border_top_bottom)
+            sheet.write(row, 14, '',row_style_border_top_bottom)            
+            sheet.write(row, 15, '',row_style_border_top_bottom)
+            sheet.write(row, 16, '',row_style_border_top_bottom)
             
-
-                            
-
              
         workbook.close()
         output.seek(0)

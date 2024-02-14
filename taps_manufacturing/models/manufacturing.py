@@ -183,6 +183,7 @@ class ManufacturingOrder(models.Model):
     revision_no = fields.Char(string='Revision No', store=True)
     closing_date = fields.Datetime(string='Closing Date', readonly=False)
     sale_line_of_top = fields.Integer(string='Sale Line of Top', store=True, readonly=True)
+    exp_close_date = fields.Date(string='Expected Closing Date')
     
     @api.onchange('date_order','closing_date')
     def get_leadtime(self):
@@ -614,6 +615,12 @@ class ManufacturingOrder(models.Model):
     def button_requisition(self):
         self._check_company()
         action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_mrp_requisition")
+        action["domain"] = [('default_id','in',self.mapped('id'))]
+        return action
+
+    def button_set_expcd(self):
+        self._check_company()
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_manufacturing.action_set_exp_cd")
         action["domain"] = [('default_id','in',self.mapped('id'))]
         return action
 

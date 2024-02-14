@@ -91,9 +91,11 @@
                 <!-- <t t-foreach="env['hr.retention.bonus'].search([('date', '&lt;', (datetime.datetime.today())),((datetime.datetime.today()), '&gt;','duration')])" t-as="line"> -->
                     <!-- <t t-foreach="line.search([('date', '=', (datetime.datetime.today()))])" t-as="o"> -->
                     <!-- <span>Dear <t t-esc="docs.employee_id.display_name"/>,</span> -->
-                    <span>Dear ,</span>
+                    
+                    <span>Dear <strong>${ctx['employee_to_name']}</strong>,</span>
                     <br/>
-                    <span>Congratulations! You have completed <strong>1</strong> year of your retention bonus scheme. You`ve splendidly demonstrated that you`re an important part of our company. We are pleased to have you as a member of our organizations.<br/>We look forward to your valuable contributions, and appreciate the efforts put in by you and expect that you would continue to do so in the future.</span>
+                    <br/>
+                    <span>Congratulations! You have completed <strong>${ctx['year']}</strong> year of your retention bonus scheme. You`ve splendidly demonstrated that you`re an important part of our company. We are pleased to have you as a member of our organizations.<br/><br/>We look forward to your valuable contributions, and appreciate the efforts put in by you and expect that you would continue to do so in the future.</span>
                     <!-- </t> -->
                 <!-- </t> -->
             </div>

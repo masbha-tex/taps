@@ -25,15 +25,38 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    partner_id = fields.Many2one(
+        'res.partner', string='Customer', readonly=True,
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        required=False, change_default=True, index=True, tracking=1,
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",)
+    partner_invoice_id = fields.Many2one(
+        'res.partner', string='Invoice Address',
+        readonly=True, required=False,
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)], 'sale': [('readonly', False)]},
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",)
+    partner_shipping_id = fields.Many2one(
+        'res.partner', string='Delivery Address', readonly=True, required=False,
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)], 'sale': [('readonly', False)]},
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",)
+    sample_type = fields.Selection([
+        ('customer', 'Customer'),
+        ('buyinghouse', 'Buying House'),
+        ('pacc', 'Potential Account'),
+    ],string="Sample Submission", required=True, default='customer')    
+    provisionals_id = fields.Many2one('provisional.template', string='Provisional Acc')
+    buying_house = fields.Many2one('res.partner', string='Buying House', domain="[('buying_house_rank', '>',0)]")
     user_id = fields.Many2one(
-        'res.users', string='Salesperson',  default=False,required=True,
+        'res.users', string='Salesperson',  default=False, required=True,
         domain="[('sale_team_id', '!=', False)]")
     # user_id = fields.Many2one(
     #     'res.users', string='Salesperson',)
 
     team_id = fields.Many2one(
-        'crm.team', 'Sales Team', default=False, check_company=True,  # Unrequired company
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+        'crm.team', 'Sales Team', default=False, check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    
+    region_id = fields.Many2one(
+        'team.region', 'Region', default=False, check_company=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", readonly=True)
     
     priority_sales = fields.Selection(
         [('0', 'Normal'), ('1', 'Urgent')], 'Priority Sales', default='0', index=True)
@@ -43,17 +66,14 @@ class SaleOrder(models.Model):
                                   relation='id_name',column1='id',column2='name',
                                   string='Sample Ref.', readonly=False, 
                                   domain=['|', ('sales_type', '=', 'sample'),('sales_type', '=', 'oldsa')])
-
     #sample_ref = fields.Many2many('sale.order', string='Sample Ref.', copy=False, states={'done': [('readonly', True)]})
-
-    
     sales_type = fields.Selection([
             ('oldsa', 'Old Sample'),
             ('sample', 'Sample Order'),
             ('sale', 'Sales Order'),
             ('oldsale', 'OLD Sales Order'),
             ('oa', 'OA')],
-            string='Sales Type')
+            string='Sales Type', required=True)
     invoice_details = fields.Char(string='Invoice Details', related='partner_invoice_id.contact_address_complete')
     delivery_details = fields.Char(string='Delivery Details', readonly=True, related='partner_shipping_id.contact_address_complete')
     po_no = fields.Char(string='PO No.')
@@ -149,7 +169,14 @@ class SaleOrder(models.Model):
     earlier_ref = fields.Char(string='Earlier Ref')
     mockup_details = fields.Text(string= "Mockup Details")
     is_mockup_needed = fields.Boolean(string="mockup required", default=False)
-    
+    exp_close_date = fields.Date(string='Expected Closing Date')
+
+    @api.onchange('user_id')
+    def compute_region_id(self):
+        
+        region = self.env['crm.team'].search([('id', '=', self.user_id.sale_team_id.region.id)], limit=1)
+        # raise UserError((team))
+        self.region_id= region.id
 
     @api.onchange('order_line')
     def onchange_mockup_update(self):
@@ -168,12 +195,6 @@ class SaleOrder(models.Model):
                 self.is_mockup_needed= True
                 break
 
-        
-
-                
-        
-        
-    
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         """
@@ -235,7 +256,8 @@ class SaleOrder(models.Model):
         result = super(SaleOrder, self).write(values)
         if state == 'sale' and self.sales_type == 'oa':
             operation = self.env['operation.details'].search([('oa_id','=', self.id)])
-            if operation:
+            operation_pack = self.env['operation.packing'].search([('oa_id','=', self.id)])
+            if operation or operation_pack:
                 self.generate_m_order()
         return result
 
@@ -282,7 +304,7 @@ class SaleOrder(models.Model):
         
     def action_cancel(self):
         if self.state == "sale" and self.sales_type == "oa":
-            mrp = self.env['operation.details'].search([('oa_id','=', self.id)])
+            mrp = self.env['operation.details'].search([('oa_id','=', self.id),('next_operation','=', 'FG Packing')])
             if mrp:
                 return {
                     'name': _('Cancel Warning'),
@@ -466,10 +488,7 @@ class SaleOrder(models.Model):
                 'asraful.haque@texzipperbd.com',
                 ]
             author_id=0
-            
-            
-            
-            
+
             if rec.id == 1:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
                 email_cc_list.append('ranjeet.singh@texzipperbd.com')
@@ -490,8 +509,6 @@ class SaleOrder(models.Model):
                         'mimetype': 'application/pdf',
                         'res_model' : 'sale.order',
                         'company_id' : rec.id,
-                        
-              
             })
             email_cc = ','.join(email_cc_list)
             email_from = ','.join(email_from_list)
@@ -526,17 +543,11 @@ class SaleOrder(models.Model):
                     'com' : rec,
                 }
                 
-                
-                    
                 body = template._render(template_ctx, engine='ir.qweb')
                 # raise UserError((body))
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
-                
            
             rec.env['mail.mail'].sudo().create(mail_values).send()
-
-    
-    
     
     def _action_daily_oa_release_email_team_wise(self, team_id):
         
@@ -574,14 +585,8 @@ class SaleOrder(models.Model):
                         'datas': base64.encodebytes(pdf_content),
                         'mimetype': 'application/pdf',
                         'res_model' : 'sale.order',
-                        
-                        
               
             })
-            
-           
-            
-            
             email_cc = ','.join(email_cc_list)
             email_from = ','.join(email_from_list)
             email_to = ','.join(email_to_list)
@@ -597,7 +602,6 @@ class SaleOrder(models.Model):
                 'email_cc': email_cc,
                 'attachment_ids' : attachment,
                 'reply_to': None,
-                
                 
             }
             # raise UserError((rec.env.ref('taps_sale.view_oa_release_body_team_wise', raise_if_not_found=True)))
@@ -620,7 +624,6 @@ class SaleOrder(models.Model):
                 mail_values['body_html'] = rec.env['mail.render.mixin']._replace_local_links(body)
            
             rec.env['mail.mail'].sudo().create(mail_values).send()
-            
 
     @api.model
     def retrieve_dashboard(self):
@@ -678,7 +681,6 @@ class SaleOrder(models.Model):
     def _total_pi_quantity(self):
         for rec in self:
             rec.total_product_qty = sum(rec.order_line.mapped('product_uom_qty'))
-        
     
     def _amount_in_words(self):
         
@@ -1235,10 +1237,6 @@ class SaleOrder(models.Model):
             #saleorder.order_ref.order_line#
             saleorder.order_line = [(5, 0)] + [(0, 0, value) for value in orderline_values]
 
-
-    
-    
-    
 #             orderline_values = []
 
 #             product_qty = production.product_uom_id._compute_quantity(production.product_qty, production.bom_id.product_uom_id)
@@ -1294,7 +1292,7 @@ class SaleOrder(models.Model):
 
     def generate_m_order(self):
         exist_mrp = self.env['manufacturing.order'].search([('oa_id','=',self.id),('company_id','=',self.company_id.id)])
-        operation = self.env['operation.details'].search([('oa_id','=',self.id),('company_id','=',self.company_id.id)])
+        operation = self.env['operation.packing'].search([('oa_id','=',self.id),('company_id','=',self.company_id.id)])
         w_centers = self.env['mrp.workcenter'].search([('company_id','=',self.company_id.id),('name','=','Packing')])
         w_center = w_centers.id
         for products in self.order_line:
@@ -1320,56 +1318,28 @@ class SaleOrder(models.Model):
                         top = exist_mrp.filtered(lambda mo: mo.sale_line_of_top == products.id)
                         top_ope = operation.filtered(lambda mo: mo.sale_line_of_top == products.id)
                         qty = products.product_uom_qty * num_of_top
-                        if top_ope:
-                            top_update = top.update({'product_uom_qty':qty,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'oa_total_qty':products.order_id.total_product_qty + qty ,'remarks':products.order_id.remarks,'revision_no':self.revised_no,'state':state})
-                            
-                            ope_top_update = top_ope.update({'shade':products.shade,
-                                                    'shade_ref':products.shade_ref,
-                                                    'finish':products.finish,
-                                                    'slidercodesfg':products.slidercodesfg,
-                                                    'top':products.ptopfinish,
-                                                    'bottom':products.pbotomfinish,
-                                                    'pinbox':products.ppinboxfinish,
-                                                    'actual_qty':qty,
-                                                    'qty':qty,
-                                                    'revision_no':self.revised_no
-                                                    })
-                        
+                        product_all = self.env['product.product'].browse(129294)
+                        get_top = self.env['sale.order.option'].sudo().search([('order_id','=',self.id),('line_id','=',products.id)])
+                        create_top_line = get_top
+                        if get_top:
+                            ope_top_update = get_top.sudo().update({'quantity':qty})
                         else:
-                            top_create = self.env['manufacturing.order'].create({'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'product_id':129294,'product_template_id':127303,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'oa_total_qty':products.order_id.total_product_qty + qty,'oa_total_balance':products.order_id.total_product_qty + qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'sale_line_of_top':products.id})
-                            m_line = str(top_create.id)
-                            ope_top_create = self.env['operation.details'].create({'name':'','mrp_lines':m_line,
-                                                                'sale_lines':None,
-                                                                'mrp_line':str(top_create.id),
-                                                                'parent_id':None,
-                                                                'oa_id':products.order_id.id,
-                                                                'buyer_name':products.order_id.buyer_name.name,
-                                                                'product_id':129294,#125308,#
-                                                                'product_template_id':127303,#126982,#
-                                                                'action_date':self.date_order,
-                                                                'shade':products.shade,
-                                                                'shade_ref':products.shade_ref,
-                                                                'finish':products.finish,
-                                                                'slidercodesfg':products.slidercodesfg,
-                                                                'top':products.ptopfinish,
-                                                                'bottom':products.pbotomfinish,
-                                                                'pinbox':products.ppinboxfinish,
-                                                                'operation_of':'output',
-                                                                'work_center':w_center,
-                                                                'operation_by':self.env.user.name,
-                                                                'based_on':'Lot Code',
-                                                                'next_operation':'Packing Output',
-                                                                'actual_qty':qty,
-                                                                'qty':qty,
-                                                                'pack_qty':0,
-                                                                'fr_pcs_pack':0,
-                                                                'capacity':0,
-                                                                'state':state,
-                                                                'move_line':None,
-                                                                'sale_line_of_top':products.id
-                                                                })
-            
-            
+                            create_top_line = self.env['sale.order.option'].create({
+                                'order_id':self.id,
+                                'line_id':products.id,
+                                'name':product_all.product_tmpl_id.display_name,
+                                'product_id':product_all.id,   'price_unit':0,
+                                'discount':0,
+                                'uom_id':product_all.product_tmpl_id.uom_id.id,
+                                'quantity':qty,
+                                'sequence':products.sequence})
+                            
+                            ope = self.env['operation.packing.topbottom'].create({'name':'',
+                                                            'sale_order_option':create_top_line.id,
+                                                            'action_date':self.date_order,
+                                                            'state':state,
+                                                            })
+                        
             if exist_mrp:
                 if exist_mrp[0].state == 'closed':
                     state = 'closed'
@@ -1386,38 +1356,6 @@ class SaleOrder(models.Model):
                 op = operation.filtered(lambda mo: mo.sale_order_line.id == products.id)
                 if op:
                     op_can_create = False
-                    ope_update = op.update({'product_id':products.product_id.id,
-                                            'product_template_id':products.product_id.product_tmpl_id.id,
-                                            'shade':products.shade,
-                                            'shade_ref':products.shade_ref,
-                                            'finish':products.finish,
-                                            'sizein':products.sizein,
-                                            'sizecm':products.sizecm,
-                                            'sizemm':products.sizemm,
-                                            'slidercodesfg':products.slidercodesfg,
-                                            'top':products.ptopfinish,
-                                            'bottom':products.pbotomfinish,
-                                            'pinbox':products.ppinboxfinish,
-                                            'actual_qty':products.product_uom_qty,
-                                            'revision_no':self.revised_no,
-                                            'logo':products.logo,
-                                            'logoref':products.logoref,
-                                            'logo_type':products.logo_type,
-                                            'style':products.style,
-                                            'gmt':products.gmt,
-                                            'shapefin':products.shapefin,
-                                            'b_part':products.b_part,
-                                            'c_part':products.c_part,
-                                            'd_part':products.d_part,
-                                            'finish_ref':products.finish_ref,
-                                            'product_code':products.product_code,
-                                            'shape':products.shape,
-                                            'back_part':products.back_part,
-                                            'price_unit':products.price_unit
-                                            })
-                
-            # text = products.shade
-            # shade = text.splitlines()
             
             if can_create == True:
                 mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty + qty,'oa_total_balance':products.order_id.total_product_qty + qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'logo':products.logo,'logoref':products.logoref,'logo_type':products.logo_type,'style':products.style,'gmt':products.gmt,'shapefin':products.shapefin,'b_part':products.b_part,'c_part':products.c_part,'d_part':products.d_part,'finish_ref':products.finish_ref,'product_code':products.product_code,'shape':products.shape,'back_part':products.back_part})
@@ -1426,57 +1364,17 @@ class SaleOrder(models.Model):
                 sale_lines = str(products.id)
                 mrp_id = mrp_.id
             if op_can_create == True:
-                ope = self.env['operation.details'].create({'name':'','mrp_lines':mrp_lines,
-                                                            'sale_lines':sale_lines,
+                ope = self.env['operation.packing'].create({'name':'',
                                                             'mrp_line':mrp_id,
                                                             'sale_order_line':products.id,
-                                                            'parent_id':None,
-                                                            'oa_id':products.order_id.id,
-                                                            'buyer_name':products.order_id.buyer_name.name,
-                                                            'product_id':products.product_id.id,
-                                                            'product_template_id':products.product_id.product_tmpl_id.id,
                                                             'action_date':self.date_order,
-                                                            'shade':products.shade,
-                                                            'shade_ref':products.shade_ref,
-                                                            'finish':products.finish,
-                                                            'sizein':products.sizein,
-                                                            'sizecm':products.sizecm,
-                                                            'sizemm':products.sizemm,
-                                                            'slidercodesfg':products.slidercodesfg,
-                                                            'top':products.ptopfinish,
-                                                            'bottom':products.pbotomfinish,
-                                                            'pinbox':products.ppinboxfinish,
-                                                            'operation_of':'output',
-                                                            'work_center':w_center,
-                                                            'operation_by':self.env.user.name,
-                                                            'based_on':'Lot Code',
-                                                            'next_operation':'Packing Output',
-                                                            'actual_qty':products.product_uom_qty,
                                                             'qty':0,
-                                                            'pack_qty':0,
-                                                            'fr_pcs_pack':0,
-                                                            'capacity':0,
                                                             'state':state,
-                                                            'move_line':None,
-                                                            'logo':products.logo,
-                                                            'logoref':products.logoref,
-                                                            'logo_type':products.logo_type,
-                                                            'style':products.style,
-                                                            'gmt':products.gmt,
-                                                            'shapefin':products.shapefin,
-                                                            'b_part':products.b_part,
-                                                            'c_part':products.c_part,
-                                                            'd_part':products.d_part,
-                                                            'finish_ref':products.finish_ref,
-                                                            'product_code':products.product_code,
-                                                            'shape':products.shape,
-                                                            'back_part':products.back_part,
-                                                            'price_unit':products.price_unit
                                                             })
 
         if state != 'cancel':
             current_mrp = self.env['manufacturing.order'].search([('oa_id','=',self.id),('company_id','=',self.company_id.id)])
-            e_operation = self.env['operation.details'].search([('oa_id','=',self.id),('done_qty','=',0),('next_operation','=','Packing Output')])
+            e_operation = self.env['operation.packing'].search([('oa_id','=',self.id),('done_qty','=',0)])
     
             delete_operation = e_operation.filtered(lambda sol: sol.sale_order_line == True and sol.sale_order_line not in current_mrp.sale_order_line.ids)
             
@@ -1749,6 +1647,7 @@ class SaleOrderLine(models.Model):
     is_copied = fields.Boolean('Copied',default=False)
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     rmc = fields.Float(string='RMC', store=True)
+    sale_line_of_top = fields.Integer(string='Sale Line of Top', store=True, readonly=True)
     
     def _inverse_compute_product_code(self):
         pass
@@ -2352,7 +2251,7 @@ class SaleOrderLine(models.Model):
 
     def _check_mrp (self):
         if self.order_id.sales_type == 'oa':
-            mrp_ope = self.env['operation.details'].search([('company_id', '=', self.env.company.id),('oa_id', '=', self.order_id.id),('done_qty', '>', 0)])
+            mrp_ope = self.env['operation.details'].search([('company_id', '=', self.env.company.id),('oa_id', '=', self.order_id.id),('next_operation', '=', 'FG Packing'),('qty', '>', 0)])
             
             for li in self.ids:
                 exist_ope = mrp_ope.filtered(lambda op: str(li) in op.sale_lines)

@@ -46,25 +46,29 @@ class PackingReturn(models.TransientModel):
         return_qty = self.return_qty
         qty_exist = production.qty - return_qty
         
-        mrp_lines = [int(id_str) for id_str in production.mrp_lines.split(',')]
-        mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
-        pr_pac_qty = mrp_data.product_template_id.pack_qty
+        # mrp_lines = [int(id_str) for id_str in production.mrp_lines.split(',')]
+        # mrp_data = self.env["manufacturing.order"].browse(mrp_lines)
+        pr_pac_qty = production.product_template_id.pack_qty
         pack_qty = production.pack_qty
         fraction_pc_of_pack = production.fr_pcs_pack
-        mrplines = production.mrp_lines
-        mrp_id = int(production.mrp_lines)
+        salelines = production.sale_order_line.id
+        # mrp_id = int(production.mrp_lines)
         if pr_pac_qty:
             pack_qty = math.ceil(qty_exist/pr_pac_qty)
             fraction_pc_of_pack = round((((qty_exist/pr_pac_qty) % 1)*pr_pac_qty),0)
+
+        query = None
             
-        
-        query = """update operation_details set done_qty = done_qty - %s,balance_qty = balance_qty + %s,ac_balance_qty = ac_balance_qty + %s,state = 'waiting' where oa_id = %s and next_operation = 'Packing Output' and mrp_lines = %s; 
+        if production.product_template_id.name == 'TOP':
+            query = """update operation_packing_topbottom set done_qty = done_qty - %s,balance_qty = balance_qty + %s,ac_balance_qty = ac_balance_qty + %s,state = 'waiting' where oa_id = %s and sale_order_line = %s;
+            update manufacturing_order set closing_date = null, state = 'partial' where oa_id = %s;"""
+            self._cr.execute(query, (return_qty, return_qty,return_qty,oa_id,salelines,oa_id))
+        else:
+            query = """update operation_packing set done_qty = done_qty - %s,balance_qty = balance_qty + %s,ac_balance_qty = ac_balance_qty + %s,state = 'waiting' where oa_id = %s and mrp_lines = %s; 
 update manufacturing_order set done_qty = done_qty - %s,balance_qty = balance_qty + %s where oa_id = %s and id = %s;
 update manufacturing_order set oa_total_balance = oa_total_balance + %s where oa_id = %s;
 update manufacturing_order set closing_date = case when oa_total_balance > 0 then null else closing_date end, state = case when oa_total_balance > 0 then 'partial' else state end where oa_id = %s;"""
-
-        
-        self._cr.execute(query, (return_qty, return_qty,return_qty,oa_id,mrplines,return_qty,return_qty,oa_id,mrp_id,return_qty,oa_id,oa_id))
+            self._cr.execute(query, (return_qty, return_qty,return_qty,oa_id,salelines,return_qty,return_qty,oa_id,salelines,return_qty,oa_id,oa_id))
         # raise UserError((query))
         
         pack_return = production.update({'qty': qty_exist, 'return_qty':production.return_qty + return_qty,'pack_qty':pack_qty,'fr_pcs_pack': fraction_pc_of_pack})

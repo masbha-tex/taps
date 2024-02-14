@@ -40,6 +40,10 @@
                         'required': [('holiday_type', '=', 'companyall')],
                         'invisible': [('holiday_type', '!=','companyall')]
                         }" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="employee_group" attrs="{
+                        'required': [('holiday_type', '=', 'group')],
+                        'invisible': [('holiday_type', '!=','group')]
+                        }" options="{'no_create': True, 'no_open': True}"/>
 <!--                         <field name="bank_id"/> -->
                     </group>
                 </group>

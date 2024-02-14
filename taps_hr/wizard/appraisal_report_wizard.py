@@ -25,14 +25,16 @@ class HeadwisePDFReport(models.TransientModel):
         ('plan',	'KPI objective with Action Plan'),],
         string='Report Type', required=True,
         help='Report Type', default='score')
-    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(), required=True)    
+    year = fields.Selection('_get_year_list', 'Year', default=lambda self: self._get_default_year(), required=True)
+    employee_group = fields.Many2one('hr.employee.group', readonly=False, string="Group", related_sudo=False)
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
         ('companyall', 'By All Company'),
         ('department', 'By Department'),
         ('category', 'By Employee Tag'),
-        ('emptype', 'By Employee Type')],
+        ('emptype', 'By Employee Type'),
+        ('group', 'By Group')],
         string='Report Mode', required=True, default='employee',
         help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')
     
@@ -156,6 +158,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': False,
                         'employee_type': False,
+                        'employee_group': False,
                         'year': self.year}
 
             if self.holiday_type == "company":
@@ -169,6 +172,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': False,
                         'employee_type': False,
+                        'employee_group': False,
                         'year': self.year}
 
             if self.holiday_type == "department":
@@ -182,6 +186,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': False,
                         'employee_type': False,
+                        'employee_group': False,
                         'year': self.year}
 
             if self.holiday_type == "category":
@@ -195,6 +200,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'company_all': False,
                         'employee_type': False,
+                        'employee_group': False,
                         'year': self.year}
                 
             if self.holiday_type == "emptype":
@@ -208,6 +214,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'employee_type': self.employee_type,
                         'company_all': False,
+                        'employee_group': False,
                         'year': self.year}              
             if self.holiday_type == "companyall":
                 data = {'date_from': self.date_from, 
@@ -220,6 +227,20 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'employee_type': False,
                         'company_all': self.company_all,
+                        'employee_group': False,
+                        'year': self.year}
+            if self.holiday_type == "group":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'report_type': self.report_type,
+                        'bank_id': False,
+                        'employee_type': False,
+                        'company_all': False,
+                        'employee_group': self.employee_group.id,
                         'year': self.year}
                 
 #         return self.env.ref('taps_hr.action_kpi_objective_pdf_report').report_action(self, data=data)
@@ -248,6 +269,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'employee_id': self.employee_id.id, 
                         'bank_id': False,
                         'company_all': False,
+                        'employee_group': False,
                         'year': self.year}
                 
             if self.holiday_type == "company":
@@ -260,6 +282,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'report_type': False,
                         'bank_id': False,
                         'company_all': False,
+                        'employee_group': False,
                         'year': self.year}
                 
             if self.holiday_type == "department":
@@ -271,6 +294,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'employee_id': False, 
                         'bank_id': False,
                         'company_all': False,
+                        'employee_group': False,
                         'year': self.year}
                 
             if self.holiday_type == "category":
@@ -282,6 +306,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'employee_id': False, 
                         'bank_id': False,
                         'company_all': False,
+                        'employee_group': False,
                         'year': self.year}
                 
             if self.holiday_type == "emptype":
@@ -294,6 +319,7 @@ class HeadwisePDFReport(models.TransientModel):
                         'bank_id': False,
                         'employee_type': self.employee_type,
                         'company_all': False,
+                        'employee_group': False,
                         'year': self.year}
                 
             if self.holiday_type == "companyall":
@@ -305,6 +331,19 @@ class HeadwisePDFReport(models.TransientModel):
                         'employee_id': False, 
                         'bank_id': False,
                         'company_all': self.company_all,
+                        'employee_group': False,
+                        'year': self.year}
+
+            if self.holiday_type == "group":
+                data = {'date_from': self.date_from, 
+                        'date_to': self.date_to, 
+                        'mode_company_id': False, 
+                        'department_id': False, 
+                        'category_id': False, 
+                        'employee_id': False, 
+                        'bank_id': False,
+                        'company_all': self.company_all,
+                        'employee_group': self.employee_group.id,
                         'year': self.year}
         if self.report_type == 'score':
             return self.score_xls_template(self, data=data)
@@ -335,6 +374,8 @@ class HeadwisePDFReport(models.TransientModel):
             domain.append(('employee_id.department_id.parent_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_group'):
+            domain.append(('employee_id.employee_group.id', '=', data.get('employee_group')))
         if data.get('employee_id'):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
 #         if data.get('bank_id'):
@@ -416,6 +457,20 @@ class HeadwisePDFReport(models.TransientModel):
                     edata.a_feb,
                     edata.a_mar,
                     edata.y_a_ytd,
+                    'KPI ACVD',
+                    edata.apr_k,
+                    edata.may_k,
+                    edata.jun_k,
+                    edata.jul_k,
+                    edata.aug_k,
+                    edata.sep_k,
+                    edata.oct_k,
+                    edata.nov_k,
+                    edata.dec_k,
+                    edata.jan_k,
+                    edata.feb_k,
+                    edata.mar_k,
+                    edata.ytd_k,
                     'Weightage',
                     edata.apr,
                     edata.may,
@@ -501,6 +556,8 @@ class HeadwisePDFReport(models.TransientModel):
            
             report_column_style_2.set_text_wrap()
             report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
+            report_column_style_4 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
+            report_column_style_5 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12,'font_color':'#B00020', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
             worksheet.merge_range('A1:E1',('%s' % (emp.name)), report_title_style)
             
             # img = io.BytesIO(base64.b64decode(emp.image_1920))
@@ -509,14 +566,16 @@ class HeadwisePDFReport(models.TransientModel):
             # img_ = io.BytesIO(base64.b64decode(emp.parent_id.image_1920))
             # worksheet.insert_image(0, 23, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 1})
             
-            worksheet.merge_range('F1:M1', 'KPI Scorecard [Challenged By]', report_title_style)
-            worksheet.merge_range('N1:X1', ('%s' % (emp.parent_id.name)), report_title_style)
+            worksheet.merge_range('F1:J1', '', report_title_style)
+            # worksheet.merge_range('N1:X1', ('%s' % (emp.parent_id.name)), report_title_style)
+            worksheet.merge_range('K1:T1', 'KPI Scorecard', report_title_style)
     
             report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
     #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
             worksheet.merge_range('A2:E2',('%s' % (emp.job_title)), report_title_style1)
-            worksheet.merge_range('F2:M2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style1)
-            worksheet.merge_range('N2:X2', ('%s' % (emp.parent_id.job_title)), report_title_style1)
+            worksheet.merge_range('F2:J2', '', report_title_style1)
+            # worksheet.merge_range('N2:X2', ('%s' % (emp.parent_id.job_title)), report_title_style1)
+            worksheet.merge_range('K2:T2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style1)
             # worksheet.merge_range('C3:F3', ('KPI objective'), report_small_title_style)
             # worksheet.merge_range('A4:F4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
             worksheet.merge_range('F4:F4', "",report_title_style)
@@ -533,6 +592,8 @@ class HeadwisePDFReport(models.TransientModel):
             column_product_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00%'})
             column_product_style_5 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
             column_product_style_6 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+            column_product_style_7 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#00B050', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
+            column_product_style_8 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#B00020', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
             
             column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
             column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
@@ -547,37 +608,37 @@ class HeadwisePDFReport(models.TransientModel):
             worksheet.freeze_panes(6, 0)
 
 
-            worksheet.write(2, 2, 'WEIGHT', column_product_style_6)
-            worksheet.write(2, 3, 'APR', column_product_style_6)
-            worksheet.write(2, 4, 'MAY', column_product_style_6)
-            worksheet.write(2, 5, 'JUN', column_product_style_6)
-            worksheet.write(2, 6, 'JUL', column_product_style_6)
-            worksheet.write(2, 7, 'AUG', column_product_style_6)
-            worksheet.write(2, 8, 'SEP', column_product_style_6)
-            worksheet.write(2, 9, 'OCT', column_product_style_6)
-            worksheet.write(2, 10, 'NOV', column_product_style_6)
-            worksheet.write(2, 11, 'DEC', column_product_style_6)
-            worksheet.write(2, 12, 'JAN', column_product_style_6)
-            worksheet.write(2, 13, 'FEB', column_product_style_6)
-            worksheet.write(2, 14, 'MAR', column_product_style_6)
-            worksheet.write(2, 15, 'YTD', column_product_style_5)
+            worksheet.write(2, 6 , 'WEIGHT', column_product_style_6)
+            worksheet.write(2, 7 , 'APR', column_product_style_6)
+            worksheet.write(2, 8 , 'MAY', column_product_style_6)
+            worksheet.write(2, 9 , 'JUN', column_product_style_6)
+            worksheet.write(2, 10, 'JUL', column_product_style_6)
+            worksheet.write(2, 11, 'AUG', column_product_style_6)
+            worksheet.write(2, 12, 'SEP', column_product_style_6)
+            worksheet.write(2, 13, 'OCT', column_product_style_6)
+            worksheet.write(2, 14, 'NOV', column_product_style_6)
+            worksheet.write(2, 15, 'DEC', column_product_style_6)
+            worksheet.write(2, 16, 'JAN', column_product_style_6)
+            worksheet.write(2, 17, 'FEB', column_product_style_6)
+            worksheet.write(2, 18, 'MAR', column_product_style_6)
+            worksheet.write(2, 19, 'YTD', column_product_style_5)
 
              
             
-            worksheet.write(3, 2, weight, column_product_style_6)
-            worksheet.write(3, 3, apr, column_product_style_6)
-            worksheet.write(3, 4, may, column_product_style_6)
-            worksheet.write(3, 5, jun, column_product_style_6)
-            worksheet.write(3, 6, jul, column_product_style_6)
-            worksheet.write(3, 7, aug, column_product_style_6)
-            worksheet.write(3, 8, sep, column_product_style_6)
-            worksheet.write(3, 9,  oct, column_product_style_6)
-            worksheet.write(3, 10, nov, column_product_style_6)
-            worksheet.write(3, 11, dec, column_product_style_6)
-            worksheet.write(3, 12, jan, column_product_style_6)
-            worksheet.write(3, 13, feb, column_product_style_6)
-            worksheet.write(3, 14, mar, column_product_style_6)
-            worksheet.write(3, 15, ytd, column_product_style_5)
+            worksheet.write(3, 6 , weight, column_product_style_6)
+            worksheet.write(3, 7 , apr, column_product_style_6)
+            worksheet.write(3, 8 , may, column_product_style_6)
+            worksheet.write(3, 9 , jun, column_product_style_6)
+            worksheet.write(3, 10, jul, column_product_style_6)
+            worksheet.write(3, 11, aug, column_product_style_6)
+            worksheet.write(3, 12, sep, column_product_style_6)
+            worksheet.write(3, 13,  oct, column_product_style_6)
+            worksheet.write(3, 14, nov, column_product_style_6)
+            worksheet.write(3, 15, dec, column_product_style_6)
+            worksheet.write(3, 16, jan, column_product_style_6)
+            worksheet.write(3, 17, feb, column_product_style_6)
+            worksheet.write(3, 18, mar, column_product_style_6)
+            worksheet.write(3, 19, ytd, column_product_style_5)
             # raise UserError((weight + de.weight))
             
             worksheet.set_column(0,0,3)
@@ -748,32 +809,33 @@ class HeadwisePDFReport(models.TransientModel):
             for line in report_data:
                 mrg_val = None 
                 if line[2] != 'Strategic Projects' and line[2]:
-                    total_weight_35_ += line[35]
-                    total_weight_36_ += line[36]
-                    total_weight_37_ += line[37]
-                    total_weight_38_ += line[38]
-                    total_weight_39_ += line[39]
-                    total_weight_40_ += line[40]
-                    total_weight_41_ += line[41]
-                    total_weight_42_ += line[42]
-                    total_weight_43_ += line[43]
-                    total_weight_44_ += line[44]
-                    total_weight_45_ += line[45]
-                    total_weight_46_ += line[46]
-                    total_weight_47_ += line[47]
-                    if line[48] == emp.id:
+                    total_weight_35_ += line[49]
+                    total_weight_36_ += line[50]
+                    total_weight_37_ += line[51]
+                    total_weight_38_ += line[52]
+                    total_weight_39_ += line[53]
+                    total_weight_40_ += line[54]
+                    total_weight_41_ += line[55]
+                    total_weight_42_ += line[56]
+                    total_weight_43_ += line[57]
+                    total_weight_44_ += line[58]
+                    total_weight_45_ += line[59]
+                    total_weight_46_ += line[60]
+                    total_weight_47_ += line[61]
+                    if line[62] == emp.id:
                         slnumber += 1
                         col=0
-                        line.pop(48)
+                        line.pop(62)
                         if line[1]:
-                            worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
-                            worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
-                            worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
-                            worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
-                            worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
-                            worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
+                            worksheet.merge_range(row, 0, row+3, 0, '', merge_format)
+                            worksheet.merge_range(row, 1, row+3, 1, '', merge_format)
+                            worksheet.merge_range(row, 2, row+3, 2, '', merge_format)
+                            worksheet.merge_range(row, 3, row+3, 3, '', merge_format)
+                            worksheet.merge_range(row, 4, row+3, 4, '', merge_format)
+                            worksheet.merge_range(row, 5, row+3, 5, '', merge_format)
                         
                     wei = None
+                    
                     for l in line:
                         # len (line)
                         # if line[6] == 'Weightage':
@@ -803,6 +865,12 @@ class HeadwisePDFReport(models.TransientModel):
                         elif col == 6:
                             wei = l
                             worksheet.write(row, col, l, column_product_style)
+
+                        elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei == 'KPI ACVD'):
+                            if l > 60:
+                                worksheet.write(row, col, l/100, report_column_style_4)
+                            else:
+                                worksheet.write(row, col, l/100, report_column_style_5)
                         
                         elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei == 'Weightage'):
                             worksheet.write(row, col, l/100, report_column_style_3)
@@ -810,6 +878,13 @@ class HeadwisePDFReport(models.TransientModel):
                         elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei != 'Weightage'):
                             worksheet.write(row, col, l, report_column_style_2)
                                 # total_sum += l
+                        elif col == 19 and (wei == 'KPI ACVD'):
+                            if l > 60:
+                                worksheet.write(row, col, l/100, column_product_style_7)
+                            else:
+                                worksheet.write(row, col, l/100, column_product_style_8)
+                            row+=1
+                            col=5
                         elif col == 19 and (wei == 'Weightage'):
                             worksheet.write(row, col, l/100, column_product_style_3)
                             row+=1
@@ -863,31 +938,31 @@ class HeadwisePDFReport(models.TransientModel):
             for line in report_data:
                 mrg_val = None
                 if line[2] == 'Strategic Projects':
-                    total_weight_35_l += line[35]
-                    total_weight_36_l += line[36]
-                    total_weight_37_l += line[37]
-                    total_weight_38_l += line[38]
-                    total_weight_39_l += line[39]
-                    total_weight_40_l += line[40]
-                    total_weight_41_l += line[41]
-                    total_weight_42_l += line[42]
-                    total_weight_43_l += line[43]
-                    total_weight_44_l += line[44]
-                    total_weight_45_l += line[45]
-                    total_weight_46_l += line[46]
-                    total_weight_47_l += line[47]
-                    if line[48] == emp.id:
+                    total_weight_35_l += line[49]
+                    total_weight_36_l += line[50]
+                    total_weight_37_l += line[51]
+                    total_weight_38_l += line[52]
+                    total_weight_39_l += line[53]
+                    total_weight_40_l += line[54]
+                    total_weight_41_l += line[55]
+                    total_weight_42_l += line[56]
+                    total_weight_43_l += line[57]
+                    total_weight_44_l += line[58]
+                    total_weight_45_l += line[59]
+                    total_weight_46_l += line[60]
+                    total_weight_47_l += line[61]
+                    if line[62] == emp.id:
                         
                         slnumber += 1
                         col=0
-                        line.pop(48)
+                        line.pop(62)
                         if line[1]:
-                            worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
-                            worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
-                            worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
-                            worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
-                            worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
-                            worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
+                            worksheet.merge_range(row, 0, row+3, 0, '', merge_format)
+                            worksheet.merge_range(row, 1, row+3, 1, '', merge_format)
+                            worksheet.merge_range(row, 2, row+3, 2, '', merge_format)
+                            worksheet.merge_range(row, 3, row+3, 3, '', merge_format)
+                            worksheet.merge_range(row, 4, row+3, 4, '', merge_format)
+                            worksheet.merge_range(row, 5, row+3, 5, '', merge_format)
                     wei = None
                     for l in line:
                         # len (line)
@@ -918,13 +993,26 @@ class HeadwisePDFReport(models.TransientModel):
                         elif col == 6:
                             wei = l
                             worksheet.write(row, col, l, column_product_style)
-                        
-                        elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei == 'Weightage'):
+                            
+                        elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei == 'KPI ACVD'):
+                            if l > 60:
+                                worksheet.write(row, col, l/100, report_column_style_4)
+                            else:
+                                worksheet.write(row, col, l/100, report_column_style_5)
+                            
+                        elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei == 'Weightage') :
                             worksheet.write(row, col, l/100, report_column_style_3)
                         
                         elif (col in (7,8,9,10,11,12,13,14,15,16,17,18)) and (wei != 'Weightage'):
                             worksheet.write(row, col, l, report_column_style_2)
                                 # total_sum += l
+                        elif col == 19 and (wei == 'KPI ACVD'):
+                            if l > 60:
+                                worksheet.write(row, col, l/100, column_product_style_7)
+                            else:
+                                worksheet.write(row, col, l/100, column_product_style_8)
+                            row+=1
+                            col=5
                         elif col == 19 and (wei == 'Weightage'):
                             worksheet.write(row, col, l/100, column_product_style_3)
                             row+=1
@@ -968,7 +1056,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s - Scorecard Quarterly'% (emp.department_id.parent_id.name if data.get('department_id') else emp.name))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s - Scorecard'% (emp.department_id.parent_id.name if data.get('department_id') else emp.name))),
             'target': 'self',
         }
     
@@ -989,6 +1077,8 @@ class HeadwisePDFReport(models.TransientModel):
             domain.append(('employee_id.department_id.parent_id.id', '=', data.get('department_id')))
         if data.get('category_id'):
             domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        if data.get('employee_group'):
+            domain.append(('employee_id.employee_group.id', '=', data.get('employee_group')))
         if data.get('employee_id'):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
 #         if data.get('bank_id'):
@@ -1086,6 +1176,24 @@ class HeadwisePDFReport(models.TransientModel):
                     edata.a_mar,
                     edata.a_q4,
                     edata.y_a_ytd,
+                    'KPI ACVD',
+                    edata.apr_k,
+                    edata.may_k,
+                    edata.jun_k,
+                    edata.q1_k,
+                    edata.jul_k,
+                    edata.aug_k,
+                    edata.sep_k,
+                    edata.q2_k,
+                    edata.oct_k,
+                    edata.nov_k,
+                    edata.dec_k,
+                    edata.q3_k,
+                    edata.jan_k,
+                    edata.feb_k,
+                    edata.mar_k,
+                    edata.q4_k,
+                    edata.ytd_k,
                     'Weightage',
                     edata.apr,
                     edata.may,
@@ -1183,6 +1291,8 @@ class HeadwisePDFReport(models.TransientModel):
            
             report_column_style_2.set_text_wrap()
             report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
+            report_column_style_4 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
+            report_column_style_5 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12,'font_color':'#B00020', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
             worksheet.merge_range('A1:E1',('%s' % (emp.name)), report_title_style)
             
             # img = io.BytesIO(base64.b64decode(emp.image_1920))
@@ -1191,14 +1301,14 @@ class HeadwisePDFReport(models.TransientModel):
             # img_ = io.BytesIO(base64.b64decode(emp.parent_id.image_1920))
             # worksheet.insert_image(0, 23, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 1})
             
-            worksheet.merge_range('F1:M1', 'KPI Scorecard Quarterly [Challenged By]', report_title_style)
-            worksheet.merge_range('N1:X1', ('%s' % (emp.parent_id.name)), report_title_style)
+            worksheet.merge_range('F1:M1', '', report_title_style)
+            worksheet.merge_range('N1:X1', 'KPI Scorecard Quarterly', report_title_style)
     
             report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
     #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
             worksheet.merge_range('A2:E2',('%s' % (emp.job_title)), report_title_style1)
-            worksheet.merge_range('F2:M2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style1)
-            worksheet.merge_range('N2:X2', ('%s' % (emp.parent_id.job_title)), report_title_style1)
+            worksheet.merge_range('F2:M2', '', report_title_style1)
+            worksheet.merge_range('N2:X2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style1)
             # worksheet.merge_range('C3:F3', ('KPI objective'), report_small_title_style)
             # worksheet.merge_range('A4:F4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
             worksheet.merge_range('F4:F4', "",report_title_style)
@@ -1215,6 +1325,8 @@ class HeadwisePDFReport(models.TransientModel):
             column_product_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00%'})
             column_product_style_5 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
             column_product_style_6 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+            column_product_style_7 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#00B050', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
+            column_product_style_8 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#B00020', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
             
             column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
             column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
@@ -1222,50 +1334,51 @@ class HeadwisePDFReport(models.TransientModel):
             gray_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
             gray_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
             gray_style_1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True,"num_format": "0.00%"})
-    
+            gray_style_2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'border': True,"num_format": "0%"})
+            gray_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#B00020', 'border': True,"num_format": "0%"})
             # set the width od the column
             percent_format = workbook.add_format({"num_format": "0%"})
             worksheet.freeze_panes(6, 0)
     
             
-            worksheet.write(2, 2, 'WEIGHT', column_product_style_6)
-            worksheet.write(2, 3, 'APR', column_product_style_6)
-            worksheet.write(2, 4, 'MAY', column_product_style_6)
-            worksheet.write(2, 5, 'JUN', column_product_style_6)
-            worksheet.write(2, 6, 'Q1', gray_style_)
-            worksheet.write(2, 7, 'JUL', column_product_style_6)
-            worksheet.write(2, 8, 'AUG', column_product_style_6)
-            worksheet.write(2, 9,  'SEP', column_product_style_6)
-            worksheet.write(2, 10, 'Q2', gray_style_)
-            worksheet.write(2, 11, 'OCT', column_product_style_6)
-            worksheet.write(2, 12, 'NOV', column_product_style_6)
-            worksheet.write(2, 13, 'DEC', column_product_style_6)
-            worksheet.write(2, 14, 'Q3', gray_style_)
-            worksheet.write(2, 15, 'JAN', column_product_style_6)
-            worksheet.write(2, 16, 'FEB', column_product_style_6)
-            worksheet.write(2, 17, 'MAR', column_product_style_6)
-            worksheet.write(2, 18, 'Q4', gray_style_)
-            worksheet.write(2, 19, 'YTD', column_product_style_5)
+            worksheet.write(2, 6, 'WEIGHT', column_product_style_6)
+            worksheet.write(2, 7, 'APR', column_product_style_6)
+            worksheet.write(2, 8, 'MAY', column_product_style_6)
+            worksheet.write(2, 9, 'JUN', column_product_style_6)
+            worksheet.write(2, 10, 'Q1', gray_style_)
+            worksheet.write(2, 11, 'JUL', column_product_style_6)
+            worksheet.write(2, 12, 'AUG', column_product_style_6)
+            worksheet.write(2, 13,  'SEP', column_product_style_6)
+            worksheet.write(2, 14, 'Q2', gray_style_)
+            worksheet.write(2, 15, 'OCT', column_product_style_6)
+            worksheet.write(2, 16, 'NOV', column_product_style_6)
+            worksheet.write(2, 17, 'DEC', column_product_style_6)
+            worksheet.write(2, 18, 'Q3', gray_style_)
+            worksheet.write(2, 19, 'JAN', column_product_style_6)
+            worksheet.write(2, 20, 'FEB', column_product_style_6)
+            worksheet.write(2, 21, 'MAR', column_product_style_6)
+            worksheet.write(2, 22, 'Q4', gray_style_)
+            worksheet.write(2, 23, 'YTD', column_product_style_5)
              
             
-            worksheet.write(3, 2, weight, column_product_style_6)
-            worksheet.write(3, 3, apr, column_product_style_6)
-            worksheet.write(3, 4, may, column_product_style_6)
-            worksheet.write(3, 5, jun, column_product_style_6)
-            worksheet.write(3, 6, q_1_ytd, gray_style_)
-            worksheet.write(3, 7, jul, column_product_style_6)
-            worksheet.write(3, 8, aug, column_product_style_6)
-            worksheet.write(3, 9, sep, column_product_style_6)
-            worksheet.write(3, 10, q_2_ytd, gray_style_)
-            worksheet.write(3, 11, oct, column_product_style_6)
-            worksheet.write(3, 12, nov, column_product_style_6)
-            worksheet.write(3, 13, dec, column_product_style_6)
-            worksheet.write(3, 14, q_3_ytd, gray_style_)
-            worksheet.write(3, 15, jan, column_product_style_6)
-            worksheet.write(3, 16, feb, column_product_style_6)
-            worksheet.write(3, 17, mar, column_product_style_6)
-            worksheet.write(3, 18, q_4_ytd, gray_style_)
-            worksheet.write(3, 19, ytd, column_product_style_5)
+            worksheet.write(3, 6, weight, column_product_style_6)
+            worksheet.write(3, 7, apr, column_product_style_6)
+            worksheet.write(3, 8, may, column_product_style_6)
+            worksheet.write(3, 9, jun, column_product_style_6)
+            worksheet.write(3, 10, q_1_ytd, gray_style_)
+            worksheet.write(3, 11, jul, column_product_style_6)
+            worksheet.write(3, 12, aug, column_product_style_6)
+            worksheet.write(3, 13, sep, column_product_style_6)
+            worksheet.write(3, 14, q_2_ytd, gray_style_)
+            worksheet.write(3, 15, oct, column_product_style_6)
+            worksheet.write(3, 16, nov, column_product_style_6)
+            worksheet.write(3, 17, dec, column_product_style_6)
+            worksheet.write(3, 18, q_3_ytd, gray_style_)
+            worksheet.write(3, 19, jan, column_product_style_6)
+            worksheet.write(3, 20, feb, column_product_style_6)
+            worksheet.write(3, 21, mar, column_product_style_6)
+            worksheet.write(3, 22, q_4_ytd, gray_style_)
+            worksheet.write(3, 23, ytd, column_product_style_5)
             # raise UserError((weight + de.weight))
             
             worksheet.set_column(0,0,3)
@@ -1461,34 +1574,34 @@ class HeadwisePDFReport(models.TransientModel):
             for line in report_data:
                 mrg_val = None 
                 if line[2] != 'Strategic Projects' and line[2]:
-                    total_weight_43_ += line[43]
-                    total_weight_44_ += line[44]
-                    total_weight_45_ += line[45]
-                    total_weight_46_ += line[46]
-                    total_weight_47_ += line[47]
-                    total_weight_48_ += line[48]
-                    total_weight_49_ += line[49]
-                    total_weight_50_ += line[50]
-                    total_weight_51_ += line[51]
-                    total_weight_52_ += line[52]
-                    total_weight_53_ += line[53]
-                    total_weight_54_ += line[54]
-                    total_weight_55_ += line[55]
-                    total_weight_56_ += line[56]
-                    total_weight_57_ += line[57]
-                    total_weight_58_ += line[58]
-                    total_weight_59_ += line[59]
-                    if line[60] == emp.id:
+                    total_weight_43_ += line[61]
+                    total_weight_44_ += line[62]
+                    total_weight_45_ += line[63]
+                    total_weight_46_ += line[64]
+                    total_weight_47_ += line[65]
+                    total_weight_48_ += line[66]
+                    total_weight_49_ += line[67]
+                    total_weight_50_ += line[68]
+                    total_weight_51_ += line[69]
+                    total_weight_52_ += line[70]
+                    total_weight_53_ += line[71]
+                    total_weight_54_ += line[72]
+                    total_weight_55_ += line[73]
+                    total_weight_56_ += line[74]
+                    total_weight_57_ += line[75]
+                    total_weight_58_ += line[76]
+                    total_weight_59_ += line[77]
+                    if line[78] == emp.id:
                         slnumber += 1
                         col=0
-                        line.pop(60)
+                        line.pop(78)
                         if line[1]:
-                            worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
-                            worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
-                            worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
-                            worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
-                            worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
-                            worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
+                            worksheet.merge_range(row, 0, row+3, 0, '', merge_format)
+                            worksheet.merge_range(row, 1, row+3, 1, '', merge_format)
+                            worksheet.merge_range(row, 2, row+3, 2, '', merge_format)
+                            worksheet.merge_range(row, 3, row+3, 3, '', merge_format)
+                            worksheet.merge_range(row, 4, row+3, 4, '', merge_format)
+                            worksheet.merge_range(row, 5, row+3, 5, '', merge_format)
                         
                     wei = None
                     for l in line:
@@ -1520,18 +1633,38 @@ class HeadwisePDFReport(models.TransientModel):
                         elif col == 6:
                             wei = l
                             worksheet.write(row, col, l, column_product_style)
+
+                        elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'KPI ACVD'):
+                            if l > 60:
+                                worksheet.write(row, col, l/100, report_column_style_4)
+                            else:
+                                worksheet.write(row, col, l/100, report_column_style_5)
                         
                         elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'Weightage'):
                             worksheet.write(row, col, l/100, report_column_style_3)
                         
                         elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei != 'Weightage'):
                             worksheet.write(row, col, l, report_column_style_2)
-                            
+
+                        elif (col in (10,14,18,22)) and (wei == 'KPI ACVD'):
+                            if l > 60:
+                                worksheet.write(row, col, l/100, gray_style_2)
+                            else:
+                                worksheet.write(row, col, l/100, gray_style_3)
+                                            
                         elif (col in (10,14,18,22)) and (wei == 'Weightage'):
                             worksheet.write(row, col, l/100, gray_style_1)
                         
                         elif (col in (10,14,18,22)) and (wei != 'Weightage'):
                             worksheet.write(row, col, l, gray_style)
+
+                        elif col == 23 and (wei == 'KPI ACVD'):
+                            if l > 60:
+                                worksheet.write(row, col, l/100, column_product_style_7)
+                            else:
+                                worksheet.write(row, col, l/100, column_product_style_8)
+                            row+=1
+                            col=5
                                 # total_sum += l
                         elif col == 23 and (wei == 'Weightage'):
                             worksheet.write(row, col, l/100, column_product_style_3)
@@ -1593,35 +1726,35 @@ class HeadwisePDFReport(models.TransientModel):
             for line in report_data:
                 mrg_val = None 
                 if line[2] == 'Strategic Projects':
-                    total_weight_43_l += line[43]
-                    total_weight_44_l += line[44]
-                    total_weight_45_l += line[45]
-                    total_weight_46_l += line[46]
-                    total_weight_47_l += line[47]
-                    total_weight_48_l += line[48]
-                    total_weight_49_l += line[49]
-                    total_weight_50_l += line[50]
-                    total_weight_51_l += line[51]
-                    total_weight_52_l += line[52]
-                    total_weight_53_l += line[53]
-                    total_weight_54_l += line[54]
-                    total_weight_55_l += line[55]
-                    total_weight_56_l += line[56]
-                    total_weight_57_l += line[57]
-                    total_weight_58_l += line[58]
-                    total_weight_59_l += line[59]
-                    if line[60] == emp.id:
+                    total_weight_43_l += line[61]
+                    total_weight_44_l += line[62]
+                    total_weight_45_l += line[63]
+                    total_weight_46_l += line[64]
+                    total_weight_47_l += line[65]
+                    total_weight_48_l += line[66]
+                    total_weight_49_l += line[67]
+                    total_weight_50_l += line[68]
+                    total_weight_51_l += line[69]
+                    total_weight_52_l += line[70]
+                    total_weight_53_l += line[71]
+                    total_weight_54_l += line[72]
+                    total_weight_55_l += line[73]
+                    total_weight_56_l += line[74]
+                    total_weight_57_l += line[75]
+                    total_weight_58_l += line[76]
+                    total_weight_59_l += line[77]
+                    if line[78] == emp.id:
                         
                         slnumber += 1
                         col=0
-                        line.pop(60)
+                        line.pop(78)
                         if line[1]:
-                            worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
-                            worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
-                            worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
-                            worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
-                            worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
-                            worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
+                            worksheet.merge_range(row, 0, row+3, 0, '', merge_format)
+                            worksheet.merge_range(row, 1, row+3, 1, '', merge_format)
+                            worksheet.merge_range(row, 2, row+3, 2, '', merge_format)
+                            worksheet.merge_range(row, 3, row+3, 3, '', merge_format)
+                            worksheet.merge_range(row, 4, row+3, 4, '', merge_format)
+                            worksheet.merge_range(row, 5, row+3, 5, '', merge_format)
                     wei = None
                     for l in line:
                         # len (line)
@@ -1652,12 +1785,21 @@ class HeadwisePDFReport(models.TransientModel):
                         elif col == 6:
                             wei = l
                             worksheet.write(row, col, l, column_product_style)
+
+                        elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'KPI ACVD'):
+                            if l > 60:
+                                worksheet.write(row, col, l/100, report_column_style_4)
+                            else:
+                                worksheet.write(row, col, l/100, report_column_style_5)
                         
                         elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'Weightage'):
                             worksheet.write(row, col, l/100, report_column_style_3)
                         
                         elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei != 'Weightage'):
                             worksheet.write(row, col, l, report_column_style_2)
+
+                        elif (col in (10,14,18,22)) and (wei == 'KPI ACVD'):
+                            worksheet.write(row, col, l/100, gray_style_2)
                             
                         elif (col in (10,14,18,22)) and (wei == 'Weightage'):
                             worksheet.write(row, col, l/100, gray_style_1)
@@ -1665,6 +1807,14 @@ class HeadwisePDFReport(models.TransientModel):
                         elif (col in (10,14,18,22)) and (wei != 'Weightage'):
                             worksheet.write(row, col, l, gray_style)
                                 # total_sum += l
+                        elif col == 23 and (wei == 'KPI ACVD'):
+                            if l > 60:
+                                worksheet.write(row, col, l/100, column_product_style_7)
+                            else:
+                                worksheet.write(row, col, l/100, column_product_style_8)
+                            row+=1
+                            col=5
+                            
                         elif col == 23 and (wei == 'Weightage'):
                             worksheet.write(row, col, l/100, column_product_style_3)
                             row+=1

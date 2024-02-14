@@ -65,6 +65,11 @@ class LabelPrintingWizard(models.TransientModel):
     qc_person = fields.Many2one('hr.employee', string="QC By", domain="[('active', '=', True), ('department_id', '=', 272)]", index=True, readonly=False)
     pre_check_person = fields.Many2one('hr.employee', string="Pre Check By", domain="[('active', '=', True), ('department_id', '=', 281)]", index=True, readonly=False)
     printing_person = fields.Many2one('hr.employee', string="Print By", domain="[('active', '=', True), ('department_id', '=', 284)]", index=True, readonly=False)
+
+
+    # running_orders = ['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',1)])
+    # items = running_orders.mapped('fg_categ_type')
+    # raise UserError((items[0]))
     
 
 
@@ -211,6 +216,12 @@ class LabelPrintingWizard(models.TransientModel):
                 ('oa_id', '=', self.oa_number.id)])
         self.label_qty = operations[0].product_template_id.pack_qty
 
+    # @api.onchange('report_type')
+    # def _onchange_report_type(self):
+    #     # report_type = None 
+    #     # if report_type == 'pplb':
+    #     self.iteam = fields.Selection([('M#4 CE', 'M#4 CE'),('M#5 CE', 'M#5 CE'),('M#5 OE', 'M#5 OE'),('M#8 CE', 'M#8 CE'),('M#8 OE', 'M#8 OE'),('C#3 CE', 'C#3 CE'),('C#3 Inv CE', 'C#3 Inv CE'),('C#3 Inv CE', 'C#3 Inv CE'),('C#5 CE', 'C#5 CE'),('C#5 OE', 'C#5 OE'),('P#3 CE', 'P#3 CE'),('P#3 OE', 'P#3 OE'),('P#5 CE', 'P#5 CE'),('P#5 OE', 'P#5 OE'),('Others', 'Others')], string='Table',  help='Table', default='M#4 CE')
+
 
     @api.onchange('qty', 'label_qty')
     def _compute_copy(self):
@@ -219,7 +230,7 @@ class LabelPrintingWizard(models.TransientModel):
             self.copy_of_print = self.qty / self.label_qty
         else:
             self.copy_of_print = 1
-
+    
     
     # ---- 
     @api.onchange('oa_number')
@@ -602,7 +613,7 @@ class LabelPrintPDF(models.AbstractModel):
 
     class LabelPrintPDF(models.AbstractModel):
         _name = 'report.taps_manufacturing.report_label_print_template_blank'
-        _description = 'label print template Blank'     
+        _description = 'label print template Blank'
          
         def _get_report_values(self, docids, data=None):
             common_data = [
