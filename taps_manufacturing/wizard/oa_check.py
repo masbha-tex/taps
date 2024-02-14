@@ -70,6 +70,7 @@ class OaCheck(models.TransientModel):
         action_date = None
         total_packed = None
         if self.lookup_oa:
+            oa_packed = None
             oa_id = self.lookup_oa
             operations = self.env['operation.details'].sudo().search([
                 ('oa_id','=',self.lookup_oa.id), ('next_operation','=','FG Packing')])
@@ -138,7 +139,9 @@ class OaCheck(models.TransientModel):
 
 
     @api.onchange('Shade_list', 'action_date_list')
-    def _shade_list(self):  
+    def _shade_list(self):
+        oa_packed = None
+        shade_packed = None
         oa_id = self.lookup_oa
         action_date = None
         total_packed = self.total_packed 
@@ -195,6 +198,9 @@ class OaCheck(models.TransientModel):
         action_date_list = self.action_date_list
         Shade_wise_packed = self.Shade_wise_packed
         Size_wise_packed = None
+        oa_packed = None
+        shade_packed = None
+        size_packed = None
         
         if self.Shade_list and self.action_date_list and self.Size_list :
             date_format = "%Y-%m-%d"

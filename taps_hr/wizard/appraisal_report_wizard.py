@@ -2382,7 +2382,7 @@ class HeadwisePDFReport(models.TransientModel):
             total_weight_59_ = 0
             for line in report_data:
                 mrg_val = None 
-                if '$ PAT' in line[1]:
+                if line[2] != 'Strategic Projects' and line[2]:
                     total_weight_43_ += line[61]
                     total_weight_44_ += line[62]
                     total_weight_45_ += line[63]
