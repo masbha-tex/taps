@@ -6,11 +6,11 @@
                 <span>Dear Concern,</span>
                 <br/>
                 <br/>
-                <span><strong>${ctx['employee_to_name']}</strong>'s R & R (${ctx['name']}) is now on <strong>"HoD Approval"</strong> state, waiting for <strong>"HoHR Approval"</strong></span>
+                <span><strong>${ctx['employee_to_name']}</strong>'s R &amp; R (${ctx['name']}) is now on <strong>"HoD Approval"</strong> state, waiting for <strong>"HoHR Approval"</strong></span>
                 <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
-                Here is the link of R & R:
+                Here is the link of R &amp; R:
                 <p style="margin:16px 0px 16px 0px;">
                     <a href="${ctx['url']}" style="margin: 0; line-height: 1.2;background-color: rgb(135, 90, 123); padding: 8px 16px; text-decoration: none; color: rgb(255, 255, 255); border-radius: 5px;" data-original-title="" title="" aria-describedby="tooltip947022">
             View Reward
