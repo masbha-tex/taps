@@ -221,7 +221,8 @@ class OperationPackingTopbottom(models.Model):
             fraction_pc_of_pack = 0
             pr_pac_qty = 0
             done_qty = out.done_qty + out.uotput_qty
-            
+            if (round(out.balance_qty,0) < round(out.uotput_qty,0)):
+                raise UserError(('You can not produce more then balance'))
             if (out.state not in ('partial','waiting')):
                 raise UserError(('You can not update this data because of state is done/closed'))
                 

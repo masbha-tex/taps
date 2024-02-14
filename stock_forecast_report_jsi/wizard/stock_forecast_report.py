@@ -594,6 +594,32 @@ class StockForecastReport(models.TransientModel):
         com_month = com_month + ' & ' + to_date.date().strftime('%b, %Y')
         # to_date
 
+#         all_product = self.env['product.product'].sudo().search([('product.product_tmpl_id.company_id', '=', self.env.company.id)])
+#         price_comparison = []
+#         for p in all_product:
+
+#             all_product = self.env['purchase.order.line'].sudo().search([('product_id', '=', self.env.company.id)])
+
+# # -- / cast(po.currency_rate as decimal))
+        
+#         (select round(ol.price_unit,4) from purchase_order_line as ol 
+#         inner join purchase_order as po on po.id=ol.order_id
+#         where ol.product_id=product.id and date_part('month',po.date_approve)=%s
+#         and date_part('year',po.date_approve)=%s
+#         and po.state='purchase' and po.company_id=pt.company_id order by ol.id desc limit 1) as second_last_price,
+
+            
+#             p.id as product_id,
+#         p.product_tmpl_id.id as product_template_id,
+#         p.product_tmpl_id.uom_id.id as product_uom,
+#         p.default_code as pr_code,
+#         p.product_tmpl_idcateg_type.id as product_category,
+#         p.product_tmpl_idcateg_type.id as parent_category,
+#         com_month as comparison_month,
+        
+#         p.product_tmpl_id.company_id,
+
+        
         query_ = """truncate table product_price_comparison;"""
         self.env.cr.execute(query_)
         query = """
@@ -608,13 +634,17 @@ class StockForecastReport(models.TransientModel):
         catype.id as parent_category,
         %s as comparison_month,
         
-        (select round((ol.price_unit / cast(po.currency_rate as decimal)),4) from purchase_order_line as ol 
+        -- / cast(po.currency_rate as decimal))
+        
+        (select round(ol.price_unit,4) from purchase_order_line as ol 
         inner join purchase_order as po on po.id=ol.order_id
         where ol.product_id=product.id and date_part('month',po.date_approve)=%s
         and date_part('year',po.date_approve)=%s
         and po.state='purchase' and po.company_id=pt.company_id order by ol.id desc limit 1) as second_last_price,
         
-        (select round((ol.price_unit / cast(po.currency_rate as decimal)),4) from purchase_order_line as ol
+        -- / cast(po.currency_rate as decimal))
+        
+        (select round(ol.price_unit,4) from purchase_order_line as ol
         inner join purchase_order as po on po.id=ol.order_id
         where ol.product_id=product.id and date_part('month',po.date_approve)=%s
         and date_part('year',po.date_approve)=%s

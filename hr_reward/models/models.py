@@ -21,12 +21,14 @@ class HrReward(models.Model):
     state = fields.Selection([
             ('draft', 'Draft'),
             ('Submit', 'Submit'),
+            ('HoD', 'Hod Approved'),
             ('Approved', 'Approved'),
             # ('Cancel', 'Cancel'),
             ('Refused', 'Refused')], 'Status', required=True, tracking=True, default='draft')
     criteria_id = fields.Many2one('reward.criteria', required=True, string='Title')
     title_ids = fields.Many2one('reward.title', string='Scope', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")    
     details = fields.Html('Reward For', tracking=True)
+    uid = fields.Many2one('res.users', string='HoD Approval', index=True, store=True, tracking=True)
 
     # @api.model
     # def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
@@ -341,7 +343,70 @@ class HrReward(models.Model):
                 # 'img_url': 'taps_grievance/static/img/success.png'
             }
         }
+
+    def action_hod_approval(self):
+        if self.uid:
+            if self.state == 'Submit':
+                self.state = 'HoD'
+        else:
+            raise UserError(('Maybe you forget to add HoD!!'))
+        # self.write({'state': 'approve0', 'approve0_uid': self.uid})
         
+        template_submit = self.env.ref('hr_reward.mail_hod_template', raise_if_not_found=True)
+        ctx = {
+            'name': self.display_name,
+            'employee_to_name': self.employee_id.display_name,
+            'recipient_users': self.employee_id.user_id,
+            'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', self.id),
+        }
+        _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
+
+        RenderMixin = self.env['mail.render.mixin'].with_context(**ctx)                
+        body = RenderMixin._render_template(_template_submit, 'hr.reward', self.ids, post_process=True)[self.id]
+        body = f"{body}"
+        # post the message
+        matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-1')], limit=1)
+        if matrix:
+            mailto = ','.join([email.email for email in matrix.next_user if email])
+        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)
+        if matrix_cc:
+            mailcc = ','.join([email.email for email in matrix_cc.next_user if email])#+','+bonus.parent_id.email
+        if matrix or matrix_cc:
+            mail_values = {
+                'email_from': 'odoo@texzipperbd.com',
+                'author_id': self.env.user.partner_id.id,
+                'model': None,
+                'res_id': None,
+                'subject': 'R & R for %s is waiting for Approval' % self.employee_id.display_name,
+                'body_html': body,
+                'auto_delete': True,
+                'email_to': mailto or '',
+                'email_cc': mailcc or '',
+            }
+            try:
+                template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+            except ValueError:
+                _logger.warning('QWeb template mail.mail_notification_light not found when sending reward confirmed mails. Sending without layouting.')
+            else:
+                template_ctx = {
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'])),
+                    'model_description': self.env['ir.model']._get('hr.reward').display_name,
+                    'company': self.env.company,
+                }
+                body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+                mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+            self.env['mail.mail'].sudo().create(mail_values)#.send()
+        else:
+            raise UserError(('Maybe forget to add Email Matrix like..RE-MAILTO, RE-MAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
+        
+        return {
+            'effect': {
+                'fadeout': 'slow',
+                'message': 'HoD Approved',
+                'type': 'rainbow_man',
+                # 'img_url': 'taps_grievance/static/img/success.png'
+            }
+        }
             
     def action_closed(self):
         if self.state == 'Submit':
