@@ -2,7 +2,7 @@
 <odoo>
 
 
-    <!-- <record id="res_partner_view_buttons_inherit" model="ir.ui.view">
+    <record id="res_partner_view_buttons_inherit" model="ir.ui.view">
             <field name="name">res.partner.view.buttons.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form" />
@@ -23,7 +23,7 @@
                 
 
             </field>
-        </record> -->
+        </record>
         <record id="view_sale_ccr_new_filter" model="ir.ui.view">
             <field name="name">sale.ccr.search</field>
             <field name="model">sale.ccr</field>
