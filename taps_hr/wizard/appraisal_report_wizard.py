@@ -74,7 +74,7 @@ class HeadwisePDFReport(models.TransientModel):
         current_year = datetime.today().year
         year_options = []
         
-        for year in range(current_year - 1, current_year + 1):
+        for year in range(current_year - 2, current_year + 3):
             year_str = str(year)
             next_year = str(year+1)
             year_label = f'{year_str}-{next_year[2:]}'
@@ -2026,11 +2026,8 @@ class HeadwisePDFReport(models.TransientModel):
        
         report_column_style_2.set_text_wrap()
         report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
-        report_column_style_4 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
-        report_column_style_5 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12,'font_color':'#B00020', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
+        
         worksheet.merge_range('A1:E1','', report_title_style)
-        
-        
         worksheet.merge_range('F1:M1', 'PAT & Revenue', report_title_style)
         worksheet.merge_range('N1:X1', '', report_title_style)
 
@@ -2053,10 +2050,7 @@ class HeadwisePDFReport(models.TransientModel):
         column_product_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B35', 'font_size': 14, 'font_color':'#FFFFFF', 'border': True})
         column_product_style2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
         column_product_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00%'})
-        column_product_style_5 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
-        column_product_style_6 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
-        column_product_style_7 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#00B050', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
-        column_product_style_8 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#B00020', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
+        
         
         column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
         column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
@@ -2064,8 +2058,6 @@ class HeadwisePDFReport(models.TransientModel):
         gray_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
         gray_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
         gray_style_1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True,"num_format": "0.00%"})
-        gray_style_2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'border': True,"num_format": "0%"})
-        gray_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#B00020', 'border': True,"num_format": "0%"})
         # set the width od the column
         percent_format = workbook.add_format({"num_format": "0%"})
         worksheet.freeze_panes(3, 0)
@@ -2153,12 +2145,12 @@ class HeadwisePDFReport(models.TransientModel):
                 col=0
                 line.pop(78)
                 if line[1]:
-                    worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
-                    worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
-                    worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
-                    worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
-                    worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
-                    worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
+                    worksheet.merge_range(row, 0, row+3, 0, '', merge_format)
+                    worksheet.merge_range(row, 1, row+3, 1, '', merge_format)
+                    worksheet.merge_range(row, 2, row+3, 2, '', merge_format)
+                    worksheet.merge_range(row, 3, row+3, 3, '', merge_format)
+                    worksheet.merge_range(row, 4, row+3, 4, '', merge_format)
+                    worksheet.merge_range(row, 5, row+3, 5, '', merge_format)
                     # worksheet.write(sum(row, 0, row[2], 0, l, merge_format))
                 wei = None
                 for l in line:

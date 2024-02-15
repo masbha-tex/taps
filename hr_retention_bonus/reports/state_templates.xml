@@ -5,7 +5,7 @@
                 <span>Dear Concern,</span>
                 <br/>
                 <br/>
-                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is now on <strong>"Submit"</strong> state, waiting for <strong>"HoD Approval"</strong></span>
+                <span>Retention Bonus (${ctx['name']}) is now on <strong>"Submit"</strong> state, waiting for <strong>"HoD Approval"</strong></span>
                 <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
@@ -23,7 +23,7 @@
                 <span>Dear Concern,</span>
                 <br/>
                 <br/>
-                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is now on <strong>"HoD Approval"</strong> state, waiting for <strong>"HoHR Approval"</strong></span>
+                <span>Retention Bonus (${ctx['name']}) is now on <strong>"HoD Approval"</strong> state, waiting for <strong>"HoHR Approval"</strong></span>
                 <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
@@ -41,7 +41,7 @@
                 <span>Dear Concern,</span>
                 <br/>
                 <br/>
-                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is now on <strong>"HoHR Approval"</strong> state, waiting for <strong>"HoFC Approval"</strong></span>
+                <span>Retention Bonus (${ctx['name']}) is now on <strong>"HoHR Approval"</strong> state, waiting for <strong>"HoFC Approval"</strong></span>
                 <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
@@ -59,7 +59,7 @@
                 <span>Dear Concern,</span>
                 <br/>
                 <br/>
-                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is now on <strong>"HoFC Approval"</strong> state, waiting for <strong>"CEO"</strong></span>
+                <span>Retention Bonus (${ctx['name']}) is now on <strong>"HoFC Approval"</strong> state, waiting for <strong>"CEO"</strong></span>
                 <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
@@ -77,7 +77,7 @@
                 <span>Dear Concern,</span>
                 <br/>
                 <br/>
-                <span><strong>${ctx['employee_to_name']}</strong>'s Retention Bonus (${ctx['name']}) is <strong>"Approved"</strong></span>
+                <span>Retention Bonus (${ctx['name']}) is <strong>"Approved"</strong></span>
                 <br/>
                 <br/>
                 % if ctx.get('recipient_users'):
@@ -94,7 +94,7 @@
             <div style="margin:0px;padding: 0px;">
                 <!-- <span>Dear ${ctx['employee_to_name']},</span> -->
                 <!-- <br/> -->
-                <span>Your Retention Bonus has been Refused</span>
+                <span>(${ctx['name']})Retention Bonus has been Refused</span>
                 <br/>
                 % if ctx.get('recipient_users'):
                 Here is the link of Retention Bonus:

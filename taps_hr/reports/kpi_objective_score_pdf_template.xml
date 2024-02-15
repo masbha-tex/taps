@@ -68,13 +68,13 @@
 							<div>
 								<!--<h5 class="text-uppercase bg-white text-dark py-2 squared-pill">Challenged By</h5>-->
 								<div class="header-right">
-									<img class="img-fluid rounded-circle mb-2" style="height:60pt;width:60pt;" t-if="docs.manager_id.image_1920" t-att-src="image_data_uri(docs.manager_id.image_1920)"/>
+									<!-- <img class="img-fluid rounded-circle mb-2" style="height:60pt;width:60pt;" t-if="docs.manager_id.image_1920" t-att-src="image_data_uri(docs.manager_id.image_1920)"/>
 									<h5>
 										<t t-esc="docs.manager_id.name"/>
 									</h5>
 									<p class=" text-white-50 mb-4">
 										<t t-esc="docs.manager_id.job_id.name"/>
-									</p>
+									</p> -->
 								</div>
 							</div>
 						</div>

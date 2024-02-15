@@ -44,6 +44,11 @@ class HrReward(models.Model):
 
     submit_template = fields.Html('Submit Template', default="""
                     <div style="margin:0px;padding: 0px;">
+                    <span>Dear Concern,</span>
+                    <br/>
+                    <br/>
+                    <span><strong>${ctx['employee_to_name']}</strong>'s R &amp; R is now on <strong>"Submit"</strong> state, waiting for <strong>"HoD Approval"</strong></span>
+                    <br/>
                     
                     <br>
                     			% if ctx.get('recipient_users'):
@@ -283,7 +288,7 @@ class HrReward(models.Model):
                 #     continue
                 ctx = {
                     'employee_to_name': employee.display_name,
-                    'recipient_users': employee.user_id,
+                    'recipient_users': self.hod_uid.user_id,
                     'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', reward.id),
                 }
                 
@@ -316,9 +321,9 @@ class HrReward(models.Model):
                         'body_html': body,
                         'attachment_ids': attachment,                    
                         'auto_delete': True,
-                        'email_to': mailto or '',
+                        'email_to': self.hod_uid.email or '',
                         # 'email_to': self.submit_by.email,
-                        'email_cc': mailcc or '',
+                        'email_cc': mailto+','+mailcc or '',
                     
                     }
                     # raise UserError((mail_values['mail_values']))
@@ -348,14 +353,17 @@ class HrReward(models.Model):
         }
 
     def action_hod_approval(self):
-        if self.state == 'Submit':
-            self.state = 'HoD'
+        if self.hod_uid.user_id.id == self.env.user.id:
+            if self.state == 'Submit':
+                self.write({'state': 'HoD'})
+        else:
+            raise UserError(('You are not allowed to HoD Approve !!'))
         
         template_submit = self.env.ref('hr_reward.mail_hod_template', raise_if_not_found=True)
         ctx = {
             'name': self.display_name,
             'employee_to_name': self.employee_id.display_name,
-            'recipient_users': self.employee_id.user_id,
+            'recipient_users': self.hod_uid.user_id,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.reward', self.id),
         }
         _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)

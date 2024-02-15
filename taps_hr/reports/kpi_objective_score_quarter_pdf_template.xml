@@ -39,12 +39,59 @@
 					<t t-set="baseline_gtotal" t-value="0"/>
 					<t t-set="target_gtotal" t-value="0"/>
 					<t t-set="weight_gtotal" t-value="0"/>
-					<div class="row">
+
+                    <div class="row">
 						<div class="col-4 text-center py-1 bg-dark">
 							<div class="header-left">
-								<div>
-									<!--<h5 class="bg-white text-dark py-2 squared-pill">Owner</h5>-->
+								<!-- <div>
 									<img class="img-fluid rounded-circle mb-2" style="height:60pt;width:60pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/>
+									<h5>
+										<t t-esc="docs.employee_id.name"/>
+									</h5>
+									<p class="text-white-50 mb-4">
+										<t t-esc="docs.employee_id.job_id.name"/>
+									</p>
+								</div> -->
+							</div>
+						</div>
+						<div class="col-4 text-center py-1 bg-dark">
+                            <div class="header-center">
+									<!--<h5 class="bg-white text-dark py-2 squared-pill">Owner</h5>-->
+									<img class="img-fluid rounded-circle mb-2" style="height:40pt;width:40pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/>
+									<h5>
+										<t t-esc="docs.employee_id.name"/>
+									</h5><p class="text-white-50 mb-4">
+										<t t-esc="docs.employee_id.job_id.name"/>
+									</p>
+                                    <h6 class="bg-white text-dark py-1 rounded-pill">KPI Quarterly Scorecard</h6>
+                                <!-- <span class="header-left">Calculate YTD: <t t-esc="datas[1]"/> -->
+								<!-- </span> -->
+								</div>
+						</div>
+						<div class="col-4 text-center py-1 bg-dark">
+							<div>
+								<!--<h5 class="text-uppercase bg-white text-dark py-2 squared-pill">Challenged By</h5>-->
+								<div class="header-right">
+									<!-- <img class="img-fluid rounded-circle mb-2" style="height:60pt;width:60pt;" t-if="docs.manager_id.image_1920" t-att-src="image_data_uri(docs.manager_id.image_1920)"/>
+									<h5>
+										<t t-esc="docs.manager_id.name"/>
+									</h5>
+									<p class=" text-white-50 mb-4">
+										<t t-esc="docs.manager_id.job_id.name"/>
+									</p> -->
+                                    <span>Calculate YTD: <t t-esc="datas[1]"/></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+                    
+					<!-- <div class="row">
+						<div class="col-4 text-center py-1 bg-dark">
+							<div class="header-left">
+								<div> -->
+									<!--<h5 class="bg-white text-dark py-2 squared-pill">Owner</h5>-->
+									<!-- <img class="img-fluid rounded-circle mb-2" style="height:60pt;width:60pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/>
 									<h5>
 										<t t-esc="docs.employee_id.name"/>
 									</h5>
@@ -62,16 +109,16 @@
 							<div class="header-center">
 								<h5 class="bg-dark text-white py-2">Challenged By</h5>
 							</div>
-							<div class="header-left">
+							<div class="header-left"> -->
 								<!--<h6 class="bg-dark text-white py-2">Calculate YTD:</h6>-->
-								<span>Calculate YTD: <t t-esc="datas[1]"/>
+								<!-- <span>Calculate YTD: <t t-esc="datas[1]"/>
 								</span>
 							</div>
-						</div>
-						<div class="col-4 text-center py-1 bg-dark">
-							<div>
+						</div> -->
+						<!-- <div class="col-4 text-center py-1 bg-dark">
+							<div> -->
 								<!--<h5 class="text-uppercase bg-white text-dark py-2 squared-pill">Challenged By</h5>-->
-								<div class="header-right">
+								<!-- <div class="header-right">
 									<img class="img-fluid rounded-circle mb-2" style="height:60pt;width:60pt;" t-if="docs.manager_id.image_1920" t-att-src="image_data_uri(docs.manager_id.image_1920)"/>
 									<h5>
 										<t t-esc="docs.manager_id.name"/>
@@ -82,7 +129,7 @@
 								</div>
 							</div>
 						</div>
-					</div>
+					</div> -->
 					<div class="row">
 						<table class="table table-sm center bg-dark" style="font-size:10pt; width:60%; margin:auto; color: white">
 							<thead>

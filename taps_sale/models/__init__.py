@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from . import provisional_naf
 from . import sales
 from . import fg_product
 #from . import replenishment
@@ -15,4 +15,3 @@ from . import sale_ccr
 from . import sale_ccr_old
 from . import sale_order_rmc
 from . import naf_template
-from . import provisional_naf

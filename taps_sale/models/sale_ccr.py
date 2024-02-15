@@ -20,15 +20,15 @@ from urllib.parse import quote
 
 
 
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
+# class ResPartner(models.Model):
+#     _inherit = 'res.partner'
 
-    ccr_count = fields.Integer(compute='_compute_ccr_count', string='CCR Count')
+#     ccr_count = fields.Integer(compute='_compute_ccr_count', string='CCR Count')
 
-    def action_view_ccr(self):
-        return {}
-    def _compute_ccr_count(self):
-        self.ccr_count = 0
+#     def action_view_ccr(self):
+#         return {}
+#     def _compute_ccr_count(self):
+#         self.ccr_count = 0
         # retrieve all children partners and prefetch 'parent_id' on them
         # all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
         # all_partners.read(['parent_id'])

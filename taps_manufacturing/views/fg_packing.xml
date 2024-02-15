@@ -1,299 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_mrp_order_search" model="ir.ui.view">
-        <field name="name">fg.packing.view</field>
-        <field name="model">fg.packing</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="oa_id"/>
-                <field name="fg_categ_type"/>
-                <field name="partner_id"/>
-                <field name="buyer_name"/>
-                <field name="slidercodesfg"/>
-                <field name="finish"/>
-                <field name="shade"/>
-                <field name="sizein"/>
-                <field name="sizecm"/>
-                <field name="sizemm"/>
-                <field name="closing_date"/>
-                <filter string="Running Orders" name="running" domain="[('oa_total_balance','&gt;',0.0),('state','not in',('closed','cancel'))]"/>
-                <filter string="Closed Orders" name="closed" domain="[('closing_date','!=',False)]"/>
-                <separator/>
-                <filter string="Order Date" name="action_date_filter" date="date_order"/>
-                <filter string="Have Plan" name="action_planned_filter" domain="[('dyeing_plan','=',True)]"/>
-                <filter string="Plan Date" name="action_plandate_filter" date="dyeing_plan"/>
-                <group expand="0" string="Group By">
-                    <filter name="year_group" string="Yearly" domain="[]" context="{'group_by': 'closing_date:year'}"/>
-                    <filter name="month_group" string="Monthly" domain="[]" context="{'group_by': 'closing_date:month'}"/>
-                    <filter name="day_group" string="Daily" domain="[]" context="{'group_by': 'closing_date:day'}"/>
-                    
-                    <filter name="oa_group" string="OA" domain="[]" context="{'group_by': 'oa_id'}"/>
-                    <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'fg_categ_type'}"/>
-                    <filter name="shade_group" string="Shade" domain="[]" context="{'group_by': 'shade'}"/>
-                    <filter name="shaderef_group" string="Shade Ref" domain="[]" context="{'group_by': 'shade_ref'}"/>
-                    <filter name="finish_group" string="Finish" domain="[]" context="{'group_by': 'finish'}"/>
-                    <filter name="slider_group" string="Slider" domain="[]" context="{'group_by': 'slidercodesfg'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+    <data>
+        <record id="view_form_new_fg_packing" model="ir.ui.view">
+            <field name="name">fg.packing.form.view</field>
+            <field name="model">fg.packing</field>
+    			<field name="arch" type="xml">
+                    <form string="FG Packing New">
+                        <group>
+                            <field name="name"/>
+                            <field name="carton_no"/>
+                            <field name="total_weight"/>
+                            <field name="qty"/>
+                            <field name="buyer_name"/>
+                        </group>
+                        <group>
+                            <notebook>
+                                <page name="carton_line" string="Packing Line">
+                                    <field name="carton_line">
+                                        <tree string="Packing Line" editable="bottom">
+                                            <field name="fg_carton" invisible="1"/>
+                                            <field name="oa_id"/>
+                                            <field name="product_id" force_save="1"/>
+                                            <field name="product_template_id"/>
+                                            <field name="action_date"/>
+                                            <field name="shade"/>
+                                            <field name="shade_ref" readonly="1" force_save="1"/>
+                                            <field name="finish"/>
+                                            <field name="slidercodesfg" required="True" optional="show" sum="Quantity" decoration-bf="True"/>
+                                            <field name="top"/>
+                                            <field name="bottom" force_save="1"/>
+                                            <field name="pinbox"/>
+                                            <field name="sizcommon"/>
+                                            <field name="qty"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </group>
+                    </form>
+                </field>
+		</record>
 
-    <!-- <record model="ir.rule" id="record_not_shared_mrp_multi_company_rule">
-        <field name="name">Non Shared Records:model</field>
-        <field name="model_id" ref="model_manufacturing_order"/>
-        <field name="global" eval="True"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-    </record> -->
+        <record id="view_new_fg_packing_tree" model="ir.ui.view">
+            <field name="name">fg.new_packing.tree</field>
+            <field name="model">fg.packing</field>
+            <field name="arch" type="xml" >
+                <tree string="FG Packing" create="true">
+                     <!-- delete ="false" editable="top" class="custom_column" -->
+                    <field name="name"/>
+                    <field name="carton_no"/>
+                    <field name="carton_line"/>
+                    <field name="total_weight"/>
+                    <field name="qty"/>
+                    <field name="buyer_name"/>
+                </tree>
+            </field>
+        </record>        
+
+        
+        <record id="view_new_fg_packing_line_tree" model="ir.ui.view">
+            <field name="name">fg.packing.line.tree</field>
+            <field name="model">fg.packing.line</field>
+            <field name="arch" type="xml" >
+                <tree string="FG Packing Line" create="true">
+                     <!-- delete ="false" editable="top" class="custom_column" -->
+                    <field name="fg_carton" invisible="1"/>
+                    <field name="oa_id"/>
+                    <field name="product_id" force_save="1"/>
+                    <field name="product_template_id"/>
+                    <field name="action_date"/>
+                    <field name="shade"/>
+                    <field name="shade_ref" readonly="1" force_save="1"/>
+                    <field name="finish"/>
+                    <field name="slidercodesfg" required="True" optional="show" sum="Quantity" decoration-bf="True"/>
+                    <field name="top"/>
+                    <field name="bottom" force_save="1"/>
+                    <field name="pinbox"/>
+                    <field name="sizcommon"/>
+                    <field name="qty"/>
     
-    <record id="view_manufacturing_tree" model="ir.ui.view">
-        <field name="name">fg.packing.tree</field>
-        <field name="model">fg.packing</field>
-        <field name="arch" type="xml" >
-            <tree string="Manufacturing Order" create="false" delete ="false" editable="top" class="custom_column"> 
-                <!-- editable="top" -->
-                <header>
-                    <button name="new_cartoon" type="object" string="New Cartoon"/>
-                    <!-- <button name="button_createlot" type="object" string="Create Lot"/>
-                    <button name="button_output" type="object" string="Output"/> -->
-                </header>
-                <field name="oa_id" optional="show"/>
-                <field name="company_id" optional="show"/>
-                <field name="partner_id" optional="show"/>
-                <field name="buyer_name" optional="show"/>
-                <field name="payment_term" optional="show"/>
-                <field name="date_order" optional="show"/>
-                <field name="validity_date" optional="show"/>
-                <field name="lead_time" optional="show"/>
-                <field name="product_id" invisible="1"/>
-                <field name="product_template_id" optional="show"/>
-                <field name="fg_categ_type" optional="show"/>
-                <field name="product_uom" optional="show"/>
-                <field name="topbottom" optional="show"/>
-                <field name="slidercodesfg" optional="show"/>
-                <field name="finish" optional="show"/>
-                <field name="shade" optional="show"/>
-                <field name="shade_ref" optional="show"/>
-                <field name="sizein" optional="show"/>
-                <field name="sizecm" optional="show"/>
-                <field name="sizemm" optional="show"/>
-                 <!-- optional="show" attrs="{'invisible': [['company_id','in', (1,2)]]}" -->
-                <field name="logo" invisible="1"/>
-                <field name="logoref" invisible="1"/>
-                <field name="logo_type" invisible="1"/>
-                <field name="style" invisible="1"/>
-                <field name="gmt" invisible="1"/>
-                <field name="shapefin" invisible="1"/>
-                <field name="b_part" invisible="1"/>
-                <field name="c_part" invisible="1"/>
-                <field name="d_part" invisible="1"/>
-                <field name="finish_ref" invisible="1"/>
-                <field name="product_code" invisible="1"/>
-                <field name="shape" invisible="1"/>
-                <field name="back_part" invisible="1"/>
-                
-                <field name="remarks" optional="show"/>
-                <!-- widget -->
-                <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>
-                <field name="done_qty" readonly="1" force_save="1" optional="show" sum="Done Qty" decoration-bf="True"/>
-                <field name="balance_qty" optional="show" sum="Balance" decoration-bf="True"/>
-                <field name="tape_con" force_save="1" optional="show" sum="Tape C." decoration-bf="True"/>
-                <field name="slider_con" readonly="1" force_save="1" optional="show" sum="Slider C." decoration-bf="True"/>
-                <field name="topwire_con" invisible="1" optional="show" sum="Topwire C." decoration-bf="True"/>
-                <field name="botomwire_con" invisible="1" optional="show" sum="Botomwire C." decoration-bf="True"/>
-                <field name="wire_con" invisible="1" optional="show" sum="Wire C." decoration-bf="True"/>
-                <field name="pinbox_con" optional="show" sum="Pinbox C." decoration-bf="True"/>
-                <field name="dyeing_plan" readonly="1" force_save="1" optional="show"/>
-                <field name="dyeing_plan_end" invisible="1"/>
-                <field name="dyeing_plan_qty" readonly="1" force_save="1" optional="show" sum="Dye Plan Qty" decoration-bf="True"/>
-                <field name="dy_rec_plan_qty" readonly="1" force_save="1" optional="show" sum="Dye Last Plan" decoration-bf="True"/>
-                <field name="dyeing_plan_due" readonly="1" force_save="1" optional="show" sum="Dye Plan Due" decoration-bf="True"/>
-                <field name="dyeing_output" readonly="1" force_save="1" optional="show" sum="Dye Output" decoration-bf="True"/>
-                <field name="dyeing_qc_pass" invisible="1" readonly="1" force_save="1" optional="show" sum="Dye QC Pass" decoration-bf="True"/>
-
-				<field name="plating_plan" readonly="1" force_save="1" optional="show"/>
-                <field name="plating_plan_end" invisible="1"/>
-                <field name="plating_plan_qty" readonly="1" force_save="1" optional="show" sum="Plat/Paint Plan Qty" decoration-bf="True"/>
-                <field name="pl_rec_plan_qty"  invisible="1"/>
-                <field name="plating_output" readonly="1" force_save="1" optional="show" sum="Plat/Paint Output" decoration-bf="True"/>
-				
-                <field name="top_plat_plan" readonly="1" force_save="1" optional="show"/>
-                <field name="top_plat_plan_end" invisible="1"/>
-                <field name="top_plat_plan_qty" readonly="1" force_save="1" optional="show" sum="Top Plat/Paint Plan Qty" decoration-bf="True"/>
-                <field name="tpl_rec_plan_qty"  invisible="1"/>
-                <field name="top_plat_output" readonly="1" force_save="1" optional="show" sum="Top Plat/Paint Output" decoration-bf="True"/> 
-
-                <field name="bot_plat_plan" invisible="1" />
-                <field name="bot_plat_plan_end" invisible="1"/>
-                <field name="bot_plat_plan_qty" invisible="1"  optional="show" sum="Btm Plat/Paint Plan Qty" decoration-bf="True"/>
-                <field name="bpl_rec_plan_qty"  invisible="1"/>
-                <field name="bot_plat_output" invisible="1"  optional="show" sum="Btm Plat/Paint Output" decoration-bf="True"/>      
- 
-                <field name="pin_plat_plan" invisible="1" />
-                <field name="pin_plat_plan_end" invisible="1"/>
-                <field name="pin_plat_plan_qty" invisible="1"  optional="show" sum="Pbox Plat/Paint Plan Qty" decoration-bf="True"/>
-                <field name="ppl_rec_plan_qty"  invisible="1"/>
-                <field name="pin_plat_output" invisible="1"  optional="show" sum="Pbox Plat/Paint Output" decoration-bf="True"/>      
-
-                <field name="sli_asmbl_plan" invisible="1" />
-                <field name="sli_asmbl_plan_end" invisible="1"/>
-                <field name="sli_asmbl_plan_qty" invisible="1"  optional="show" sum="Slider Asmbl Plan Qty" decoration-bf="True"/>
-                <field name="sass_rec_plan_qty"  invisible="1"/>
-                <field name="sli_asmbl_output" invisible="1"  optional="show" sum="Slider Asmbl Output" decoration-bf="True"/>
-				
-				<field name="chain_making_done" readonly="1" force_save="1" optional="show" sum="CM Output" decoration-bf="True"/>
-				<field name="diping_done" readonly="1" force_save="1" optional="show" sum="Dipping Output" decoration-bf="True"/>
-				<field name="assembly_done" readonly="1" force_save="1" optional="show" sum="Assembly Output" decoration-bf="True"/>
-				<field name="packing_done" readonly="1" force_save="1" optional="show" sum="Packing Output" decoration-bf="True"/>
-				<field name="oa_total_qty" readonly="1" force_save="1" invisible="1"/>
-				<field name="oa_total_balance" readonly="1" force_save="1" invisible="1"/>
-				<field name="closing_date" readonly="1" force_save="1" optional="show"/>
-                
-                <field name="plan_ids" readonly="1" invisible="1" force_save="1"/>
-                <field name="state" readonly="1" force_save="1" optional="show"/>
-                <!-- <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
-                    attrs="{'invisible': [('dyeing_plan', '=', False)]}"/> -->
-                 <!-- attrs="{'invisible': [('operation_of', '!=', 'plan')]}" -->
-                <field name="num_of_lots" optional="show"/>
-                <field name="exp_close_date" readonly="1" force_save="1" optional="show"/>
-                <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
-				 <!-- attrs="{'invisible': [('num_of_lots', '=', 0)]}" -->
-            </tree>
-        </field>
-    </record>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_new_fg_packing" model="ir.actions.act_window">
+            <field name="name">FG Packing New</field>
+            <field name="res_model">fg.packing</field>
+            <field name="view_mode">tree</field>
+        </record>
     
-    <record  model="ir.ui.view" id="view_manufacturing_process_tree">
-        <field name="name">manufacturing.order.process.tree</field>
-        <field name="model">manufacturing.order</field>
-        <field name="arch" type="xml" >
-            <tree string="Manufacturing Process" create="false" delete ="false" editable="top" class="custom_column"> 
-                <!-- editable="top" -->
-                <!-- <header> -->
-                    <!-- <button name="button_plan" type="object" string="Plan"/> -->
-                    <!-- <button name="button_requisition" type="object" string="Requisition"/> -->
-                    <!-- <button name="button_createlot" type="object" string="Create Lot"/>
-                    <button name="button_output" type="object" string="Output"/> -->
-                <!-- </header> -->
-                <field name="oa_id" optional="show"/>
-                <field name="company_id" optional="show"/>
-                <field name="partner_id" optional="show"/>
-                <field name="buyer_name" optional="show"/>
-                <field name="payment_term" optional="show"/>
-                <field name="date_order" optional="show"/>
-                <field name="validity_date" optional="show"/>
-                <field name="lead_time" optional="show"/>
-                <field name="product_id" invisible="1"/>
-                <field name="product_template_id" optional="show"/>
-                <field name="fg_categ_type" optional="show"/>
-                <field name="product_uom" optional="show"/>
-                <field name="topbottom" optional="show"/>
-                <field name="slidercodesfg" optional="show"/>
-                <field name="finish" optional="show"/>
-                <field name="shade" optional="show"/>
-                <field name="shade_ref" optional="show"/>
-                <field name="sizein" optional="show"/>
-                <field name="sizecm" optional="show"/>
-                <field name="sizemm" optional="show"/>
-                
-                <field name="logo" invisible="1"/>
-                <field name="logoref" invisible="1"/>
-                <field name="logo_type" invisible="1"/>
-                <field name="style" invisible="1"/>
-                <field name="gmt" invisible="1"/>
-                <field name="shapefin" invisible="1"/>
-                <field name="b_part" invisible="1"/>
-                <field name="c_part" invisible="1"/>
-                <field name="d_part" invisible="1"/>
-                <field name="finish_ref" invisible="1"/>
-                <field name="product_code" invisible="1"/>
-                <field name="shape" invisible="1"/>
-                <field name="back_part" invisible="1"/>
-                
-                <field name="remarks" optional="show"/>
-                <!-- widget -->
-                <field name="product_uom_qty" optional="show" sum="Quantity" decoration-bf="True"/>
-                <field name="done_qty" optional="show" sum="Done Qty" decoration-bf="True"/>
-                <field name="balance_qty" optional="show" sum="Balance" decoration-bf="True"/>
-                <field name="tape_con" optional="show" sum="Tape C." decoration-bf="True"/>
-                <field name="dyeing_plan"/>
-                <!-- <field name="dyeing_plan_end" invisible="1"/> -->
-                <field name="dyeing_output" optional="show" sum="Dye Output" decoration-bf="True"/>
-                <!-- <field name="dyeing_qc_pass" optional="show" sum="Dye QC Pass" decoration-bf="True"/> -->
-				<field name="chain_making_done" optional="show" sum="CM Output" decoration-bf="True"/>
-				<field name="diping_done" optional="show" sum="Dipping Output" decoration-bf="True"/>
-				<field name="assembly_done" optional="show" sum="Assembly Output" decoration-bf="True"/>
-				<field name="packing_done" optional="show" sum="Packing Output" decoration-bf="True"/>
-				<field name="oa_total_qty" invisible="1"/>
-				<field name="oa_total_balance" invisible="1"/>
-                <field name="state" optional="show"/>
-                <button name="button_createlot" type="object" string="Create Lot" class="btn-success" 
-                    attrs="{'invisible': [('dyeing_plan', '=', False)]}"/>
-                 <!-- attrs="{'invisible': [('operation_of', '!=', 'plan')]}" -->
-                <field name="num_of_lots"/>
-                <button name="action_view_lots" type="object" string="Lots" class="btn-success" attrs="{'invisible': [('num_of_lots', '=', 0)]}"/>
-				 <!-- attrs="{'invisible': [('num_of_lots', '=', 0)]}" -->
-            </tree>
-        </field>
-    </record>
+        <menuitem id="menu_new_fg_packing" 
+                  name="FG Packing New" 
+                  action="action_new_fg_packing" 
+                  parent="mrp.menu_mrp_root"
+                  sequence="6"/>
 
-    <record id="view_lead_time_tree" model="ir.ui.view">
-        <field name="name">lead.time.tree</field>
-        <field name="model">manufacturing.order</field>
-        <field name="arch" type="xml" >
-            <tree string="Average Lead Time" create="false" delete ="false" editable="top"> 
-                <field name="oa_id" optional="show"/>
-                <field name="date_order" optional="show"/>
-                <field name="closing_date" optional="show"/>
-                <field name="partner_id" optional="show"/>
-                <field name="buyer_name" optional="show"/>
-                <field name="product_id" readonly="1" invisible="1"/>
-                <field name="product_template_id" readonly="1" optional="show"/>
-                <field name="fg_categ_type" optional="show"/>
-                <field name="product_uom_qty" readonly="1"/>
-                <field name="done_qty" readonly="1"/>
-                <field name="lead_time" avg="Average Lead Time"/>
-                <field name="state" readonly="1"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="action_manufacturing_process_order" model="ir.actions.act_window">
-        <field name="name">Manufacturing Process</field>
-        <field name="res_model">manufacturing.order</field>
-        <field name="view_mode">tree</field>
-        <field name="view_id" ref="view_manufacturing_process_tree" />
-        <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
-        <!-- <field name="context">{'search_default_running': 1}</field> -->
-    </record>
-    
-    <record id="action_manufacturing_order" model="ir.actions.act_window">
-        <field name="name">Manufacturing Order</field>
-        <field name="res_model">manufacturing.order</field>
-        <field name="view_mode">tree</field>
-        <field name="view_id" ref="view_manufacturing_tree" />
-        <field name="search_view_id" ref="view_mrp_order_search" />
-        <field name="context">{'search_default_running': 1}</field>
-    </record>
-
-    <record id="action_lead_time" model="ir.actions.act_window">
-        <field name="name">Average Lead Time</field>
-        <field name="res_model">manufacturing.order</field>
-        <field name="view_mode">tree</field>
-        <field name="view_id" ref="view_lead_time_tree" />
-        <field name="domain">[('state','=','closed')]</field>
-        <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
-        <field name="context">{'search_default_closed': 1}</field>
-        <field name="context">{'search_default_closed': 1, 'search_default_year_group':1, 'search_default_month_group':1, 'search_default_day_group':1, 'search_default_item_group':1}</field>
-    </record>
-    
-    <menuitem id="menu_manufacturing_order" 
-              name="Manufacturing Orders(New)" 
-              action="action_manufacturing_order" 
-              parent="mrp.menu_mrp_manufacturing"
-              sequence="5"/>
-
-    <menuitem id="menu_lead_time" 
-          name="Lead Time" 
-          action="action_lead_time" 
-          parent="mrp.menu_mrp_manufacturing"
-          sequence="9"/>
+    </data>
 </odoo>

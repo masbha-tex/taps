@@ -18,6 +18,7 @@ class ProvisionalNaf(models.Model):
     ],string="Type", required=True)
 
     name = fields.Char(index=True, string="Name", required=True)
+    # visit_id = fields.Many2one('crm.visit','Visit')
     
 
     

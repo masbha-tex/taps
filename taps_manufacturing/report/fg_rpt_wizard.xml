@@ -24,15 +24,20 @@
         </field>
     </record>
     
-    <record id="fg_reports" model="ir.actions.act_window">
-        <field name="name">FG Reports</field>
-        <field name="res_model">fg.report</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-    </record>
-    <menuitem id="menu_fg_reports"
-              name="FG Reports"
-              sequence="13"
-              action="fg_reports"
-              parent="mrp.menu_mrp_reporting"/>
+     <!-- <record id="action_fg_packing" model="ir.actions.act_window"> -->
+        <!-- <field name="name">FG Packing</field> -->
+        <!-- <field name="res_model">fg.packing</field> -->
+        <!-- <field name="view_mode">tree</field> -->
+        <!-- <field name="view_id" ref="view_operation_packing_topbottom_tree" /> -->
+        <!-- <field name="search_view_id" ref="view_mrp_operation_topbottom_packing_search" /> -->
+        <!-- <field name="domain">[('oa_id','!=',False)]</field> -->
+        <!-- <field name="search_view_id" ref="view_mrp_order_process_search" /> -->
+        <!-- <field name="context">{'search_default_pending': 1}</field> -->
+    <!-- </record> -->
+
+    <!-- <menuitem id="menu_fg_packing" 
+              name="FG Packing" 
+              action="action_fg_packing" 
+              parent="mrp.menu_mrp_root"
+              sequence="6"/> -->
 </odoo>

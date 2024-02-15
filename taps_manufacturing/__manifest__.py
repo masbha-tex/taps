@@ -66,6 +66,7 @@
         'report/ppc_rpt_wizard.xml',
         'wizard/set_exp_close_date.xml',
         # 'wizard/manufacturing_report_wizard.xml'
+        'views/fg_packing.xml',
     ],
     'qweb': [
         "static/src/xml/qweb_templates.xml",

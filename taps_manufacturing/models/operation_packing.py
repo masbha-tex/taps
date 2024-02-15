@@ -247,9 +247,7 @@ class OperationPacking(models.Model):
             if (out.state not in ('partial','waiting')):
                 raise UserError(('You can not update this data because of state is done/closed'))
                 
-            s = out.write({'done_qty':done_qty})#done_qty = done_qty
-            # manufac_ids = self.env["manufacturing.order"].browse(out.mrp_lines)
-            # mrp_lines = [int(id_str) for id_str in out.mrp_lines.split(',')]
+            s = out.write({'done_qty':done_qty})
             mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
             
             move_line = None

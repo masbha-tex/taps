@@ -18,7 +18,7 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly taps_manufacturing
-    'depends':['base','sale','stock','web_studio','web','report_xlsx','account','crm'],
+    'depends':['base','sale','stock','web_studio','web','report_xlsx','account'],
 
     # always loaded
     'data': [
@@ -26,6 +26,7 @@
         'security/ir.model.access.csv',
         'reports/paperformat.xml',
         'views/sale_representative.xml',
+        'views/provisional_naf.xml',
         'views/sale.xml',
         'views/buyer_name.xml',
         'views/sale_overview.xml',
@@ -35,6 +36,7 @@
         'views/sale_ccr_view.xml',
         'views/sale_ccr_view_old.xml',
         'views/naf_template_view.xml',
+        
         # 'views/bank.xml',
         'reports/report_action.xml',
         'reports/report_proforma_invoice.xml',
@@ -65,7 +67,7 @@
         'wizard/ccr_wizard.xml',
         'wizard/order_modification_warning.xml',
         'views/activity.xml',
-        'views/provisional_naf.xml'
+        
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",
              "static/src/xml/sale_reporting_dashboard.xml",

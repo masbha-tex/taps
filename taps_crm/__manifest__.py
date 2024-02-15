@@ -20,7 +20,7 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','crm','taps_sale','whatsapp_mail_messaging','web_domain_field','web_studio'],
+    'depends': ['base','crm','whatsapp_mail_messaging','web_domain_field','taps_sale',],
 
     # always loaded
     'data': [
@@ -29,15 +29,16 @@
         'views/crm_views.xml',
         'views/visit_template_views.xml',
         'views/assets.xml',
-        'views/crm_team_view.xml',
         'views/custom_chart_view.xml',
         'views/google_chart_view.xml',
         'views/saleperson_wise_customer_view.xml',
+        'views/crm_team_view.xml',
         'views/approval_matrix.xml',
         'views/customer_reallocation.xml',
         'views/brand_reallocation.xml',
         'views/crm_team_transfer.xml',
         'views/activity.xml',
+        
         # 'views/provisional_naf.xml',
     ],
     # only loaded in demonstration mode

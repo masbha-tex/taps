@@ -1529,7 +1529,7 @@ class MrpReportWizard(models.TransientModel):
     
                     else:
                         if pack_pcs == 0:
-                            pack_pcs = None
+                            pack_pcs = None 
                         if pending_pcs <= 0:
                             pending_pcs,
                             pending_usd,

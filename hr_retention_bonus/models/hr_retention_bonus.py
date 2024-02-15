@@ -258,7 +258,7 @@ class HrRetentionBonus(models.Model):
         ctx = {
             'name': self.display_name,
             'employee_to_name': self.employee_id.display_name,
-            'recipient_users': self.employee_id.user_id,
+            'recipient_users': self.uid.user_id,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
         _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
@@ -267,39 +267,39 @@ class HrRetentionBonus(models.Model):
         body = RenderMixin._render_template(_template_submit, 'hr.retention.bonus', self.ids, post_process=True)[self.id]
         body = f"{body}"
         # post the message
-        matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILTO')], limit=1)
-        if matrix:
-            mailto = ','.join([email.email for email in matrix.next_user if email])
-        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)
+        # matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILTO')], limit=1)
+        # if matrix:
+        #     mailto = ','.join([email.email for email in matrix.next_user if email])
+        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
         if matrix_cc:
             mailcc = ','.join([email.email for email in matrix_cc.next_user if email])#+','+bonus.parent_id.email
-        if matrix or matrix_cc:
-            mail_values = {
-                'email_from': 'odoo@texzipperbd.com',
-                'author_id': self.env.user.partner_id.id,
-                'model': None,
-                'res_id': None,
-                'subject': 'Retention Bonus for %s is waiting for HoD Approval' % self.employee_id.display_name,
-                'body_html': body,
-                'auto_delete': True,
-                'email_to': mailto or '',
-                'email_cc': mailcc or '',
-            }
-            try:
-                template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
-            except ValueError:
-                _logger.warning('QWeb template mail.mail_notification_light not found when sending retention bonus confirmed mails. Sending without layouting.')
-            else:
-                template_ctx = {
-                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'])),
-                    'model_description': self.env['ir.model']._get('hr.retention.bonus').display_name,
-                    'company': self.env.company,
-                }
-                body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
-                mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            self.env['mail.mail'].sudo().create(mail_values)#.send()
+        # if matrix or matrix_cc:
+        mail_values = {
+            'email_from': self.env.user.email_formatted,
+            'author_id': self.env.user.partner_id.id,
+            'model': None,
+            'res_id': None,
+            'subject': 'Retention Bonus for %s is waiting for HoD Approval' % self.employee_id.display_name,
+            'body_html': body,
+            'auto_delete': True,
+            'email_to': self.uid.email or '',
+            'email_cc': mailcc or '',
+        }
+        try:
+            template = self.env.ref('mail.mail_notification_light', raise_if_not_found=True)
+        except ValueError:
+            _logger.warning('QWeb template mail.mail_notification_light not found when sending retention bonus confirmed mails. Sending without layouting.')
         else:
-            raise UserError(('Maybe forget to add Email Matrix like..RE-MAILTO, RE-MAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
+            template_ctx = {
+                'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.employee_id.display_name)),
+                'model_description': self.env['ir.model']._get('hr.retention.bonus').display_name,
+                'company': self.env.company,
+            }
+            body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+            mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
+        self.env['mail.mail'].sudo().create(mail_values).send()
+        # else:
+        #     raise UserError(('Maybe forget to add Email Matrix like..RE-MAILTO, RE-MAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
         
         return {
             'effect': {
@@ -313,12 +313,17 @@ class HrRetentionBonus(models.Model):
         
     
     def action_approval_0(self):
-        self.write({'state': 'approve0', 'approve0_uid': self.uid})
+        # raise UserError((self.uid.user_id.id))      
+        if self.uid.user_id.id == self.env.user.id:
+            self.write({'state': 'approve0', 'approve0_uid': self.env.user.id})
+        else:
+            raise UserError(('You are not allowed to HoD Approve !!'))       
+
         template_submit = self.env.ref('hr_retention_bonus.mail_bonus_approval_0_template', raise_if_not_found=True)
         ctx = {
             'name': self.display_name,
             'employee_to_name': self.employee_id.display_name,
-            'recipient_users': self.employee_id.user_id,
+            'recipient_users': self.uid.user_id,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
         _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
@@ -330,12 +335,12 @@ class HrRetentionBonus(models.Model):
         matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-1')], limit=1)
         if matrix:
             mailto = ','.join([email.email for email in matrix.next_user if email])
-        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)
+        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
         if matrix_cc:
             mailcc = ','.join([email.email for email in matrix_cc.next_user if email])#+','+bonus.parent_id.email
         if matrix or matrix_cc:
             mail_values = {
-                'email_from': 'odoo@texzipperbd.com',
+                'email_from': self.env.user.email_formatted,
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
@@ -351,13 +356,13 @@ class HrRetentionBonus(models.Model):
                 _logger.warning('QWeb template mail.mail_notification_light not found when sending retention bonus confirmed mails. Sending without layouting.')
             else:
                 template_ctx = {
-                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'])),
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.employee_id.display_name)),
                     'model_description': self.env['ir.model']._get('hr.retention.bonus').display_name,
                     'company': self.env.company,
                 }
                 body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                 mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            self.env['mail.mail'].sudo().create(mail_values)#.send()
+            self.env['mail.mail'].sudo().create(mail_values).send()
         else:
             raise UserError(('Maybe forget to add Email Matrix like..RE-MAILTO, RE-MAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
         
@@ -372,12 +377,17 @@ class HrRetentionBonus(models.Model):
         # self.write({'state': 'approve0', 'approve0_uid': self.env.context.get('user_id', self.env.user.id)})
                 
     def action_approval_1(self):
-        self.write({'state': 'approve1', 'approve1_uid': self.env.context.get('user_id', self.env.user.id)})
+        app1 = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-1')], limit=1)
+        if app1.next_user.id == self.env.user.id:
+            self.write({'state': 'approve1', 'approve1_uid': self.env.context.get('user_id', self.env.user.id)})
+        else:
+            raise UserError(('You are not allowed to HoHR Approve !!'))               
+
         template_submit = self.env.ref('hr_retention_bonus.mail_bonus_approval_1_template', raise_if_not_found=True)
         ctx = {
             'name': self.display_name,
             'employee_to_name': self.employee_id.display_name,
-            'recipient_users': self.employee_id.user_id,
+            'recipient_users': app1.next_user,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
         _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
@@ -389,12 +399,12 @@ class HrRetentionBonus(models.Model):
         matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-2')], limit=1)
         if matrix:
             mailto = ','.join([email.email for email in matrix.next_user if email])
-        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)
+        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
         if matrix_cc:
             mailcc = ','.join([email.email for email in matrix_cc.next_user if email])#+','+bonus.parent_id.email
         if matrix or matrix_cc:
             mail_values = {
-                'email_from': 'odoo@texzipperbd.com',
+                'email_from': self.env.user.email_formatted,
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
@@ -410,13 +420,13 @@ class HrRetentionBonus(models.Model):
                 _logger.warning('QWeb template mail.mail_notification_light not found when sending retention bonus confirmed mails. Sending without layouting.')
             else:
                 template_ctx = {
-                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'])),
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.employee_id.display_name)),
                     'model_description': self.env['ir.model']._get('hr.retention.bonus').display_name,
                     'company': self.env.company,
                 }
                 body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                 mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            self.env['mail.mail'].sudo().create(mail_values)#.send()
+            self.env['mail.mail'].sudo().create(mail_values).send()
         else:
             raise UserError(('Maybe forget to add Email Matrix like..RE-MAILTO, RE-MAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
         
@@ -430,12 +440,17 @@ class HrRetentionBonus(models.Model):
         }
         
     def action_approval_2(self):
-        self.write({'state': 'approve2', 'approve2_uid': self.env.context.get('user_id', self.env.user.id)})  
+        app2 = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-2')], limit=1)
+        if app2.next_user.id == self.env.user.id:
+            self.write({'state': 'approve2', 'approve2_uid': self.env.context.get('user_id', self.env.user.id)})  
+        else:
+            raise UserError(('You are not allowed to HoFC Approve !!'))       
+
         template_submit = self.env.ref('hr_retention_bonus.mail_bonus_approval_2_template', raise_if_not_found=True)
         ctx = {
             'name': self.display_name,
             'employee_to_name': self.employee_id.display_name,
-            'recipient_users': self.employee_id.user_id,
+            'recipient_users': app2.next_user,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
         _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
@@ -447,12 +462,12 @@ class HrRetentionBonus(models.Model):
         matrix = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-3')], limit=1)
         if matrix:
             mailto = ','.join([email.email for email in matrix.next_user if email])
-        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'RE-MAILCC')], limit=1)
+        matrix_cc = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
         if matrix_cc:
             mailcc = ','.join([email.email for email in matrix_cc.next_user if email])#+','+bonus.parent_id.email
         if matrix or matrix_cc:
             mail_values = {
-                'email_from': 'odoo@texzipperbd.com',
+                'email_from': self.env.user.email_formatted,
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
@@ -468,13 +483,13 @@ class HrRetentionBonus(models.Model):
                 _logger.warning('QWeb template mail.mail_notification_light not found when sending retention bonus confirmed mails. Sending without layouting.')
             else:
                 template_ctx = {
-                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'])),
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.employee_id.display_name)),
                     'model_description': self.env['ir.model']._get('hr.retention.bonus').display_name,
                     'company': self.env.company,
                 }
                 body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                 mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            self.env['mail.mail'].sudo().create(mail_values)#.send()
+            self.env['mail.mail'].sudo().create(mail_values).send()
         else:
             raise UserError(('Maybe forget to add Email Matrix like..RE-MAILTO, RE-MAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
         
@@ -488,12 +503,17 @@ class HrRetentionBonus(models.Model):
         }
         
     def action_approval_3(self):
-        self.write({'state': 'approve3', 'approve3_uid': self.env.context.get('user_id', self.env.user.id)})  
+        app3 = self.env['hr.retention.matrix'].sudo().search([('name', '=', 'APPROVAL-3')], limit=1)
+        if app3.next_user.id == self.env.user.id:
+            self.write({'state': 'approve3', 'approve3_uid': self.env.context.get('user_id', self.env.user.id)})  
+        else:
+            raise UserError(('You are not allowed to DS Approve !!'))               
+
         template_submit = self.env.ref('hr_retention_bonus.mail_bonus_approval_3_template', raise_if_not_found=True)
         ctx = {
             'name': self.display_name,
             'employee_to_name': self.employee_id.display_name,
-            'recipient_users': self.employee_id.user_id,
+            'recipient_users': app3.next_user,
             'url': '/mail/view?model=%s&res_id=%s' % ('hr.retention.bonus', self.id),
         }
         _template_submit = template_submit._render(ctx, engine='ir.qweb', minimal_qcontext=True)
@@ -510,7 +530,7 @@ class HrRetentionBonus(models.Model):
             mailcc = ','.join([email.email for email in matrix_cc.next_user if email])#+','+bonus.parent_id.email
         if matrix or matrix_cc:
             mail_values = {
-                'email_from': 'odoo@texzipperbd.com',
+                'email_from': self.env.user.email_formatted,
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
@@ -526,13 +546,13 @@ class HrRetentionBonus(models.Model):
                 _logger.warning('QWeb template mail.mail_notification_light not found when sending retention bonus confirmed mails. Sending without layouting.')
             else:
                 template_ctx = {
-                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'])),
+                    'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.employee_id.display_name)),
                     'model_description': self.env['ir.model']._get('hr.retention.bonus').display_name,
                     'company': self.env.company,
                 }
                 body = template._render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
                 mail_values['body_html'] = self.env['mail.render.mixin']._replace_local_links(body)
-            self.env['mail.mail'].sudo().create(mail_values)#.send()
+            self.env['mail.mail'].sudo().create(mail_values).send()
         else:
             raise UserError(('Maybe forget to add Email Matrix like..RE-MAILTO, RE-MAILCC. Please add Email Matrix in Configuration or contact with Odoo Team.'))
         
