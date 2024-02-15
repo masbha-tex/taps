@@ -84,16 +84,24 @@
         </record>
         
         <record id="action_new_fg_packing" model="ir.actions.act_window">
+            <field name="name">FG Packing List</field>
+            <field name="res_model">fg.packing</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- <record id="action_fg_packing_form" model="ir.actions.act_window">
             <field name="name">FG Packing New</field>
             <field name="res_model">fg.packing</field>
-            <field name="view_mode">tree</field>
-        </record>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="taps_manufacturing.view_form_new_fg_packing"/>
+            <field name="target">main</field>
+        </record>         -->
     
-        <menuitem id="menu_new_fg_packing" 
-                  name="FG Packing New" 
-                  action="action_new_fg_packing" 
-                  parent="mrp.menu_mrp_root"
-                  sequence="6"/>
+        <menuitem id="menu_new_fg_packing"
+            name="FG Packing New" 
+            action="action_new_fg_packing" 
+            parent="mrp.menu_mrp_root"
+            sequence="6"/>
 
     </data>
 </odoo>

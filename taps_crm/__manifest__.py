@@ -20,7 +20,7 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','crm','whatsapp_mail_messaging','web_domain_field','taps_sale',],
+    'depends': ['base','crm','taps_sale','whatsapp_mail_messaging','web_domain_field','web_studio'],
 
     # always loaded
     'data': [
