@@ -85,7 +85,7 @@ class tapsHelpdeskTicket(models.Model):
         # res = self.env.ref('taps_sale.view_sale_ccr_form', False)
         # form_view = [(res and res.id or False, 'form')]
         # result['views'] = form_view 
-        
+        a =  ''
         return result
 
     
