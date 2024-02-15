@@ -100,7 +100,7 @@ class HrRetentionBonus(models.Model):
     balance_amount = fields.Float(string="Balance Amount", store=True, compute='_compute_retention_bonus_amount', help="Balance amount")
     total_paid_amount = fields.Float(string="Total Paid Amount", tracking=True, store=True, compute='_compute_retention_bonus_amount',
                                      help="Total paid amount")
-    uid = fields.Many2one('res.users', string='HoD Approval', index=True, store=True, tracking=True) #, default=lambda self: self.env.user
+    uid = fields.Many2one('hr.employee', string='HoD Approval', domain="[('user_id', '!=', False)]", index=True, store=True, tracking=True)
     criteria = fields.Selection([
         ('Appointment Terms', 'Appointment Terms'),
         ('Special Retention Bonus', 'Special Retention Bonus'),

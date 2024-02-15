@@ -593,39 +593,14 @@ class StockForecastReport(models.TransientModel):
         com_month = from_date.date().strftime('%b, %Y')
         com_month = com_month + ' & ' + to_date.date().strftime('%b, %Y')
         # to_date
-
-#         all_product = self.env['product.product'].sudo().search([('product.product_tmpl_id.company_id', '=', self.env.company.id)])
-#         price_comparison = []
-#         for p in all_product:
-
-#             all_product = self.env['purchase.order.line'].sudo().search([('product_id', '=', self.env.company.id)])
-
-# # -- / cast(po.currency_rate as decimal))
-        
-#         (select round(ol.price_unit,4) from purchase_order_line as ol 
-#         inner join purchase_order as po on po.id=ol.order_id
-#         where ol.product_id=product.id and date_part('month',po.date_approve)=%s
-#         and date_part('year',po.date_approve)=%s
-#         and po.state='purchase' and po.company_id=pt.company_id order by ol.id desc limit 1) as second_last_price,
-
-            
-#             p.id as product_id,
-#         p.product_tmpl_id.id as product_template_id,
-#         p.product_tmpl_id.uom_id.id as product_uom,
-#         p.default_code as pr_code,
-#         p.product_tmpl_idcateg_type.id as product_category,
-#         p.product_tmpl_idcateg_type.id as parent_category,
-#         com_month as comparison_month,
-        
-#         p.product_tmpl_id.company_id,
-
-        
         query_ = """truncate table product_price_comparison;"""
         self.env.cr.execute(query_)
+
+
         query = """
-        insert into product_price_comparison(id,product_id,product_template_id,pr_code,product_category,parent_category,comparison_month,second_last_price,last_price)
+        insert into product_price_comparison(id,product_id,product_template_id,pr_code,product_category,parent_category,comparison_month,s_last_currency,second_last_price,last_currency,last_price)
         select ROW_NUMBER () OVER (ORDER BY product_id) as id,product_id,product_template_id,pr_code,product_category,
-        parent_category,comparison_month,second_last_price,last_price from (
+        parent_category,comparison_month,s_last_currency,second_last_price,last_currency,last_price from (
         select product.id as product_id,
         pt.id as product_template_id,
         pt.uom_id as product_uom,
@@ -634,7 +609,11 @@ class StockForecastReport(models.TransientModel):
         catype.id as parent_category,
         %s as comparison_month,
         
-        -- / cast(po.currency_rate as decimal))
+        (select ol.currency_id from purchase_order_line as ol 
+        inner join purchase_order as po on po.id=ol.order_id
+        where ol.product_id=product.id and date_part('month',po.date_approve)=%s
+        and date_part('year',po.date_approve)=%s
+        and po.state='purchase' and po.company_id=pt.company_id order by ol.id desc limit 1) as s_last_currency,
         
         (select round(ol.price_unit,4) from purchase_order_line as ol 
         inner join purchase_order as po on po.id=ol.order_id
@@ -642,7 +621,11 @@ class StockForecastReport(models.TransientModel):
         and date_part('year',po.date_approve)=%s
         and po.state='purchase' and po.company_id=pt.company_id order by ol.id desc limit 1) as second_last_price,
         
-        -- / cast(po.currency_rate as decimal))
+        (select ol.currency_id from purchase_order_line as ol
+        inner join purchase_order as po on po.id=ol.order_id
+        where ol.product_id=product.id and date_part('month',po.date_approve)=%s
+        and date_part('year',po.date_approve)=%s
+        and po.state='purchase' and po.company_id=pt.company_id order by ol.id desc limit 1) as last_currency,
         
         (select round(ol.price_unit,4) from purchase_order_line as ol
         inner join purchase_order as po on po.id=ol.order_id
@@ -658,4 +641,31 @@ class StockForecastReport(models.TransientModel):
         where pt.company_id = %s
         ) as stock
         """
-        self.env.cr.execute(query, (com_month,from_date.month,from_date.year,to_date.month,to_date.year,self.env.company.id))        
+        self.env.cr.execute(query, (com_month,from_date.month,from_date.year,from_date.month,from_date.year,to_date.month,to_date.year,to_date.month,to_date.year,self.env.company.id))        
+
+
+
+
+        # all_product = self.env['product.product'].sudo().search([('product_tmpl_id.company_id', '=', self.env.company.id)])
+        # price_comparison = []
+        # for p in all_product:
+        #     po_line = self.env['purchase.order.line'].sudo().search([('product_id', '=', p.id),('order_id.date_approve', '!=', False)])
+        #     first_po = po_line.filtered(lambda pr: pr.order_id.date_approve.month == from_date.month and pr.order_id.date_approve.year == from_date.year).sorted(key=lambda pr: pr.id, reverse=True)[:1]
+            
+        #     last_po = po_line.filtered(lambda pr: pr.order_id.date_approve.month == to_date.month and pr.order_id.date_approve.year == to_date.year).sorted(key=lambda pr: pr.id, reverse=True)[:1]
+        #     po_datas = []
+        #     stockmove = self.env["product.price.comparison"].create({
+        #         'product_id':p.id,
+        #         'product_template_id':p.product_tmpl_id.id,
+        #         'pr_code':p.default_code,
+        #         'product_category':p.product_tmpl_id.categ_type.id,
+        #         'parent_category':p.product_tmpl_id.categ_type.id,
+        #         'comparison_month':com_month,
+        #         's_last_currency':first_po.currency_id.id,
+        #         'second_last_price':round(first_po.price_unit,4),
+        #         'last_currency':last_po.currency_id.id,
+        #         'last_price':round(last_po.price_unit,4)
+        #         })
+        #     # po_datas = []
+        #     # price_comparison.append(po_datas)
+            

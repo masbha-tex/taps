@@ -96,6 +96,7 @@ class MrpReportWizard(models.TransientModel):
                     'nitish.bassi@texzipperbd.com',
                     'shahid.hossain@texzipperbd.com',
                     'ranjeet.singh@texzipperbd.com',
+                    'odoo.support@texzipperbd.com',
                     'abu.sayed@texzipperbd.com',
                     ]
             if rec.id == 3:
@@ -105,6 +106,8 @@ class MrpReportWizard(models.TransientModel):
                     'nitish.bassi@texzipperbd.com',
                     'shahid.hossain@texzipperbd.com',
                     'kumar.abhishek@texzipperbd.com',
+                    'ppc.metaltrims@texzipperbd.com',
+                    'odoo.support@texzipperbd.com',
                     'abu.sayed@texzipperbd.com',
                     ]
                 

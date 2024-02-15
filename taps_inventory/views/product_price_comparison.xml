@@ -32,15 +32,17 @@
         <field name="arch" type="xml" >
             <tree string="RM Stock" create="false" delete="false" >
                 <field name="company_id"/>
-                <field name="product_id" invisible="1"/>
+                <field name="product_id" invisible="1" readonly="1" force_save="1" />
                 <field name="product_template_id"/>
                 <field name="product_uom"/>
                 <field name="pr_code"/>
                 <field name="product_category"/>
                 <field name="parent_category" invisible="1"/>
-                <field name="comparison_month"/>
-                <field name="second_last_price"/>
-                <field name="last_price"/>
+                <field name="comparison_month" readonly="1" force_save="1" />
+                <field name="s_last_currency" readonly="1" force_save="1" />
+                <field name="second_last_price" readonly="1" force_save="1" />
+                <field name="last_currency" readonly="1" force_save="1" />
+                <field name="last_price" readonly="1" force_save="1" />
                 <field name="qty"/>
             </tree>
         </field>

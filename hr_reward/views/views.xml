@@ -9,11 +9,12 @@
         <field name="arch" type="xml">
             <form string="">
                 <header>
-                    <button name="action_submit" confirm="Are you sure to submit HR Team?" type="object" class="btn-success" string="Submit to HR Team" states="draft"/> 
-                    <button name="action_hod_approval" confirm="Are you sure to submit HR Team?" type="object" class="btn-success" string="HoD Approve" states="Submit"/>
+                    <button name="action_submit" confirm="Are you sure to submit HR Team?" type="object" class="btn-primary" string="Submit to HoD" states="draft"/> 
+                    <button name="action_hod_approval" confirm="Are you sure to submit HR Team?" type="object" class="btn-warning" string="HoD Approve" states="Submit"/>
                     <button name="action_closed" confirm="Are you sure to Approved?" type="object" class="btn-success" string="Approved" states="HoD" groups="hr.group_hr_manager"/> 
-                    <button name="action_refused" confirm="Are you sure to Refused?" type="object" class="btn-success" string="Refused" states="Submit" groups="hr.group_hr_manager"/>
-					<field name="state" widget="statusbar"/>
+                    <button name="action_refused" confirm="Are you sure to Refused?" type="object" class="btn-danger" string="Refused" states="Submit,HoD,Approved"/>
+                    <button name="action_draft" type="object" string="Set To Draft" states="Refused"/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,Submit,HoD,Approved"/>
 				</header>
 				<sheet>
                     <field name="active" invisible="1"/>   
@@ -44,7 +45,7 @@
                             <!-- <field name="r_type" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
                             <field name="submit_by" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="issue_date" attrs="{}"/>
-                            <field name="uid" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'Submit')]}"/>
+                            <field name="hod_uid" options="{'no_create':true, 'no_open':true}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <!-- {'invisible': [('state', '!=', 'Approved')]} -->
                         </group>                       
                     </group>
@@ -75,7 +76,7 @@
                 <field name="submit_by" options="{'no_create':true, 'no_open':true}"/>
                 <field name="issue_date"/>
                 <!-- <field name="state" optional="show" widget="badge" decoration-success="state == 'approved' or state == 'done'" decoration-bf="1" options="{'color_field': 'color'}"/>   -->
-                <field name="state" widget="badge" decoration-success="state == 'Approved'" decoration-warning="state == 'Submit'" decoration-danger="state == 'Refused'" decoration-info="state == 'draft'"/>  
+                <field name="state" widget="badge" decoration-success="state == 'Approved'" decoration-warning="state == 'Submit'" decoration-danger="state == 'Refused'" decoration-muted="state == 'draft'" decoration-info="state == 'HoD'"/>  
             </tree>
         </field>
     </record>

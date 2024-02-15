@@ -28,7 +28,7 @@ class HrReward(models.Model):
     criteria_id = fields.Many2one('reward.criteria', required=True, string='Title')
     title_ids = fields.Many2one('reward.title', string='Scope', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")    
     details = fields.Html('Reward For', tracking=True)
-    uid = fields.Many2one('res.users', string='HoD Approval', index=True, store=True, tracking=True)
+    hod_uid = fields.Many2one('hr.employee', string='HoD Approval', domain="[('user_id', '!=', False)]", index=True, store=True, tracking=True)
 
     # @api.model
     # def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
@@ -268,8 +268,11 @@ class HrReward(models.Model):
 
     
     def action_submit(self):
-        if self.state == 'draft':
-            self.state = 'Submit'
+        if self.hod_uid:
+            if self.state == 'draft':
+                self.state = 'Submit'
+        else:
+            raise UserError(('Maybe you forget to add HoD Approval !!'))            
         for reward in self:
             reward_mail_template = reward.details
             mapped_data = {
@@ -345,12 +348,8 @@ class HrReward(models.Model):
         }
 
     def action_hod_approval(self):
-        if self.uid:
-            if self.state == 'Submit':
-                self.state = 'HoD'
-        else:
-            raise UserError(('Maybe you forget to add HoD!!'))
-        # self.write({'state': 'approve0', 'approve0_uid': self.uid})
+        if self.state == 'Submit':
+            self.state = 'HoD'
         
         template_submit = self.env.ref('hr_reward.mail_hod_template', raise_if_not_found=True)
         ctx = {
@@ -377,7 +376,7 @@ class HrReward(models.Model):
                 'author_id': self.env.user.partner_id.id,
                 'model': None,
                 'res_id': None,
-                'subject': 'R & R for %s is waiting for Approval' % self.employee_id.display_name,
+                'subject': 'R & R for %s is waiting for HoD Approval' % self.employee_id.display_name,
                 'body_html': body,
                 'auto_delete': True,
                 'email_to': mailto or '',
@@ -409,7 +408,7 @@ class HrReward(models.Model):
         }
             
     def action_closed(self):
-        if self.state == 'Submit':
+        if self.state == 'HoD':
             self.issue_date = fields.Date.today()
             self.state = 'Approved'
         for reward in self:
@@ -508,9 +507,13 @@ class HrReward(models.Model):
                 'type': 'rainbow_man',
             }
         }
+
+    def action_draft(self):
+        if self.state == 'Refused':
+            self.state = 'draft'    
              
     def action_refused(self):
-        if self.state == 'Submit':
+        if self.state in ('Submit', 'HoD', 'Approved'):
             self.issue_date = fields.Date.today()
             self.state = 'Refused'
         for reward in self:
@@ -574,7 +577,7 @@ class HrReward(models.Model):
                     'effect': {
                         'fadeout': 'slow',
                         'message': 'Reward Refused',
-                        # 'type': 'cancel',
+                        'type': 'rainbow_man',
                     }
                 }
      

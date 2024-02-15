@@ -9,15 +9,17 @@ class ProductPriceComparison(models.Model):
     _description = "Product Price Comparison"
     _check_company_auto = True
     
-    product_id = fields.Many2one('product.product', string='Item', readonly=True, store=True)
+    product_id = fields.Many2one('product.product', string='Item', readonly=False, store=True)
     product_template_id = fields.Many2one('product.template', string='Product', related="product_id.product_tmpl_id",  store=True)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', related='product_template_id.uom_id')
     pr_code = fields.Char(string='Item Code', store=True)
     product_category = fields.Many2one('category.type', string='Category')
     parent_category = fields.Many2one('category.type', string='Product Type')
     comparison_month = fields.Char(string='Comparison Month', store=True)
-    second_last_price = fields.Float(string='Second Last Price', readonly=True)
-    last_price = fields.Float(string='Last Price', readonly=True)
+    s_last_currency = fields.Many2one('res.currency', string='Currency', readonly=False, store=True)
+    second_last_price = fields.Float(string='Second Last Price', readonly=False)
+    last_currency = fields.Many2one('res.currency', string='Last Currency', readonly=False, store=True)
+    last_price = fields.Float(string='Last Price', readonly=False)
     
     qty = fields.Float(related='product_template_id.qty_available', string='Qty On Hand', readonly=True)
     company_id = fields.Many2one('res.company', 'Company', related='product_id.company_id', readonly=True, index=True, default=lambda self: self.env.company.id)

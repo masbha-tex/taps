@@ -1880,46 +1880,37 @@ class HeadwisePDFReport(models.TransientModel):
         if data.get('year'):
             deadlines = str(data.get('year') + '-03-31')
             domain.append(('deadline', '=', deadlines))   
-        if data.get('mode_company_id'):
-            domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
-        if data.get('department_id'):
-            domain.append(('employee_id.department_id.parent_id.id', '=', data.get('department_id')))
-        if data.get('category_id'):
-            domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
-        if data.get('employee_group'):
-            domain.append(('employee_id.employee_group.id', '=', data.get('employee_group')))
-        if data.get('employee_id'):
-            domain.append(('employee_id.id', '=', data.get('employee_id')))
-#         if data.get('bank_id'):
-#             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
-        if data.get('employee_type'):
-            if data.get('employee_type')=='staff':
-                domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
-            if data.get('employee_type')=='expatriate':
-                domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
-            if data.get('employee_type')=='worker':
-                domain.append(('employee_id.category_ids.id', 'in',(20,30)))
-            if data.get('employee_type')=='cstaff':
-                domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
-            if data.get('employee_type')=='cworker':
-                domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
-        if data.get('company_all'):
-            if data.get('company_all')=='allcompany':
-                domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))                
-#         domain.append(('code', '=', 'NET'))
+        # if data.get('mode_company_id'):
+        #     domain.append(('employee_id.company_id.id', '=', data.get('mode_company_id')))
+        # if data.get('department_id'):
+        #     domain.append(('employee_id.department_id.parent_id.id', '=', data.get('department_id')))
+        # if data.get('category_id'):
+        #     domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
+        # if data.get('employee_group'):
+        #     domain.append(('employee_id.employee_group.id', '=', data.get('employee_group')))
+        # if data.get('employee_id'):
+        #     domain.append(('employee_id.id', '=', data.get('employee_id')))
+        # if data.get('bank_id'):
+        #     domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
+        # if data.get('employee_type'):
+        #     if data.get('employee_type')=='staff':
+        #         domain.append(('employee_id.category_ids.id', 'in',(15,21,31)))
+        #     if data.get('employee_type')=='expatriate':
+        #         domain.append(('employee_id.category_ids.id', 'in',(16,22,32)))
+        #     if data.get('employee_type')=='worker':
+        #         domain.append(('employee_id.category_ids.id', 'in',(20,30)))
+        #     if data.get('employee_type')=='cstaff':
+        #         domain.append(('employee_id.category_ids.id', 'in',(26,44,47)))
+        #     if data.get('employee_type')=='cworker':
+        #         domain.append(('employee_id.category_ids.id', 'in',(25,42,43)))
+        # if data.get('company_all'):
+        #     if data.get('company_all')=='allcompany':
+        #         domain.append(('employee_id.company_id.id', 'in',(1,2,3,4)))
+                
         
         # raise UserError((domain))
         docs1 = self.env['hr.appraisal.goal'].search(domain).sorted(key = 'id', reverse=False)
-        # raise UserError((docs1))
-        # if docs1.filtered(lambda x: x.employee_id.company_id.id == 1):
-        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,27)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-        # elif docs1.filtered(lambda x: x.employee_id.company_id.id == 3):
-        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (26,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-        # else:
-        #     docs2 = self.env['hr.appraisal.goal'].search([('id', 'in', (25,26,27,28)), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-        
-        # docs = docs2 | docs1
-        #raise UserError((docs.id))
+       
         docs = None
         datefrom = data.get('date_from')
         dateto = data.get('date_to')
@@ -1927,739 +1918,327 @@ class HeadwisePDFReport(models.TransientModel):
         emply = docs1.mapped('employee_id')
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        for emp in emply:
-            if emp.company_id.id == 1:
-                docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Zipper','$ PAT (Thousand) - Zipper')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-            elif emp.company_id.id == 3:
-                docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Metal Trims','$ PAT (Thousand) - Metal Trims')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
-            else:
-                docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Zipper','$ PAT (Thousand) - Zipper','$ Revenue (Thousand)  - Metal Trims','$ PAT (Thousand) - Metal Trims')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+        # for emp in emply:
+        #     if emp.company_id.id == 1:
+        #         docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Zipper','$ PAT (Thousand) - Zipper')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+        #     elif emp.company_id.id == 3:
+        #         docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Metal Trims','$ PAT (Thousand) - Metal Trims')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
+        #     else:
+        docs2 = self.env['hr.appraisal.goal'].search([('name', 'in', ('$ Revenue (Thousand)  - Zipper','$ PAT (Thousand) - Zipper','$ Revenue (Thousand)  - Metal Trims','$ PAT (Thousand) - Metal Trims')), ('deadline', '=', deadlines)]).sorted(key = 'id', reverse=False)
             
-            docs = docs2 | docs1.filtered(lambda x: x.employee_id.id == emp.id)   
-            
-            report_data = []
-            emp_data = []
-            slnumber=0
-            for edata in docs:
-                slnumber = slnumber+1
-                emp_data = [
-                    slnumber,
-                    edata.name,
-                    edata.description,
-                    round(edata.baseline,2),
-                    round(edata.target,2),
-                    (edata.weight/100),
-                    'Target',
-                    edata.t_apr,
-                    edata.t_may,
-                    edata.t_jun,
-                    edata.t_q1,
-                    edata.t_jul,
-                    edata.t_aug,
-                    edata.t_sep,
-                    edata.t_q2,
-                    edata.t_oct,
-                    edata.t_nov,
-                    edata.t_dec,
-                    edata.t_q3,
-                    edata.t_jan,
-                    edata.t_feb,
-                    edata.t_mar,
-                    edata.t_q4,
-                    edata.y_t_ytd,
-                    'ACVD',
-                    edata.a_apr,
-                    edata.a_may,
-                    edata.a_jun,
-                    edata.a_q1,
-                    edata.a_jul,
-                    edata.a_aug,
-                    edata.a_sep,
-                    edata.a_q2,
-                    edata.a_oct,
-                    edata.a_nov,
-                    edata.a_dec,
-                    edata.a_q3,
-                    edata.a_jan,
-                    edata.a_feb,
-                    edata.a_mar,
-                    edata.a_q4,
-                    edata.y_a_ytd,
-                    'KPI ACVD',
-                    edata.apr_k,
-                    edata.may_k,
-                    edata.jun_k,
-                    edata.q1_k,
-                    edata.jul_k,
-                    edata.aug_k,
-                    edata.sep_k,
-                    edata.q2_k,
-                    edata.oct_k,
-                    edata.nov_k,
-                    edata.dec_k,
-                    edata.q3_k,
-                    edata.jan_k,
-                    edata.feb_k,
-                    edata.mar_k,
-                    edata.q4_k,
-                    edata.ytd_k,
-                    'Weightage',
-                    edata.apr,
-                    edata.may,
-                    edata.jun,
-                    edata.q_1_ytd,
-                    edata.jul,
-                    edata.aug,
-                    edata.sep,
-                    edata.q_2_ytd,
-                    edata.oct,
-                    edata.nov,
-                    edata.dec,
-                    edata.q_3_ytd,
-                    edata.jan,
-                    edata.feb,
-                    edata.mar,
-                    edata.q_4_ytd,
-                    edata.y_ytd,
-                    edata.employee_id.id,
-                ]
-                report_data.append(emp_data)
-            month = docs.mapped('month')[1:]
-            mm = 'Month'
-            for m in month:
-                if m == 'apr':
-                    mm = 'April'
-                elif m == 'may':
-                    mm = 'May'
-                elif m == 'jun':
-                    mm = 'Jun'
-                elif m == 'jul':
-                    mm = 'July'
-                elif m == 'aug':
-                    mm = 'August'
-                elif m == 'sep':
-                    mm = 'September'
-                elif m == 'oct':
-                    mm = 'October'
-                elif m == 'nov':
-                    mm = 'November'
-                elif m == 'dec':
-                    mm = 'December'
-                elif m == 'jan':
-                    mm = 'January'
-                elif m == 'feb':
-                    mm = 'February'
-                elif m == 'mar':
-                    mm = 'March'
-            weight = 0
-            apr = 0
-            may = 0
-            jun = 0
-            q_1_ytd = 0
-            jul = 0
-            aug = 0
-            sep = 0
-            q_2_ytd = 0
-            oct = 0
-            nov = 0
-            dec = 0
-            q_3_ytd = 0
-            jan = 0
-            feb = 0
-            mar = 0
-            q_4_ytd = 0  
-            ytd = 0
-            for de in docs1.filtered(lambda x: x.employee_id.id == emp.id):
-                weight = weight + de.weight
-                apr = apr + de.apr
-                may = may + de.may
-                jun = jun + de.jun
-                q_1_ytd = q_1_ytd + de.q_1_ytd
-                jul = jul + de.jul
-                aug = aug + de.aug
-                sep = sep + de.sep
-                q_2_ytd = q_2_ytd + de.q_2_ytd
-                oct = oct + de.oct
-                nov = nov + de.nov
-                dec = dec + de.dec
-                q_3_ytd = q_3_ytd + de.q_3_ytd
-                jan = jan + de.jan
-                feb = feb + de.feb
-                mar = mar + de.mar
-                q_4_ytd = q_4_ytd + de.q_4_ytd
-                ytd = ytd + de.y_ytd
-                
-            
-            worksheet = workbook.add_worksheet(('%s - %s' % (emp.emp_id,emp.name)))
-            worksheet.set_zoom(64)
-            report_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 16, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
-            report_title_style1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'font_size': 13, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
-            report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
-            report_column_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12,'bold': True,'font_color':'#FFFFFF','bg_color': '#714B35', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
-            report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00'})
-           
-            report_column_style_2.set_text_wrap()
-            report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
-            report_column_style_4 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
-            report_column_style_5 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12,'font_color':'#B00020', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
-            worksheet.merge_range('A1:E1',('%s' % (emp.name)), report_title_style)
-            
-            # img = io.BytesIO(base64.b64decode(emp.image_1920))
-            # worksheet.insert_image(0, 1, '', {'image_data': img, "x_scale": 0.06, "y_scale": 0.06,'align': 'center','valign': 'vcenter' })
-            
-            # img_ = io.BytesIO(base64.b64decode(emp.parent_id.image_1920))
-            # worksheet.insert_image(0, 23, '', {'image_data': img_, "x_scale": 0.3, "y_scale": 0.3, 'object_position': 1})
-            
-            worksheet.merge_range('F1:M1', '', report_title_style)
-            worksheet.merge_range('N1:X1', 'KPI Scorecard Quarterly', report_title_style)
-    
-            report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
-    #         worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
-            worksheet.merge_range('A2:E2',('%s' % (emp.job_title)), report_title_style1)
-            worksheet.merge_range('F2:M2', '', report_title_style1)
-            worksheet.merge_range('N2:X2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style1)
-            # worksheet.merge_range('C3:F3', ('KPI objective'), report_small_title_style)
-            # worksheet.merge_range('A4:F4', ('%s - %s' % (emp.pin,emp.name)), report_title_style)
-            worksheet.merge_range('F4:F4', "",report_title_style)
-            # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
-    #         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
-            merge_format = workbook.add_format({'align': 'center','valign': 'vcenter', 'left': True, 'top': True, 'right': True, 'bottom': True})
-            merge_format.set_text_wrap()
-            merge_format_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF'})
-            merge_format_.set_text_wrap()
-            
-            column_product_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
-            column_product_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B35', 'font_size': 14, 'font_color':'#FFFFFF', 'border': True})
-            column_product_style2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
-            column_product_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00%'})
-            column_product_style_5 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
-            column_product_style_6 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
-            column_product_style_7 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#00B050', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
-            column_product_style_8 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#B00020', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
-            
-            column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
-            column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
-            row_categ_style = workbook.add_format({'border': True})
-            gray_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
-            gray_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
-            gray_style_1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True,"num_format": "0.00%"})
-            gray_style_2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'border': True,"num_format": "0%"})
-            gray_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#B00020', 'border': True,"num_format": "0%"})
-            # set the width od the column
-            percent_format = workbook.add_format({"num_format": "0%"})
-            worksheet.freeze_panes(6, 0)
-    
-            
-            worksheet.write(2, 6, 'WEIGHT', column_product_style_6)
-            worksheet.write(2, 7, 'APR', column_product_style_6)
-            worksheet.write(2, 8, 'MAY', column_product_style_6)
-            worksheet.write(2, 9, 'JUN', column_product_style_6)
-            worksheet.write(2, 10, 'Q1', gray_style_)
-            worksheet.write(2, 11, 'JUL', column_product_style_6)
-            worksheet.write(2, 12, 'AUG', column_product_style_6)
-            worksheet.write(2, 13,  'SEP', column_product_style_6)
-            worksheet.write(2, 14, 'Q2', gray_style_)
-            worksheet.write(2, 15, 'OCT', column_product_style_6)
-            worksheet.write(2, 16, 'NOV', column_product_style_6)
-            worksheet.write(2, 17, 'DEC', column_product_style_6)
-            worksheet.write(2, 18, 'Q3', gray_style_)
-            worksheet.write(2, 19, 'JAN', column_product_style_6)
-            worksheet.write(2, 20, 'FEB', column_product_style_6)
-            worksheet.write(2, 21, 'MAR', column_product_style_6)
-            worksheet.write(2, 22, 'Q4', gray_style_)
-            worksheet.write(2, 23, 'YTD', column_product_style_5)
-             
-            
-            worksheet.write(3, 6, weight, column_product_style_6)
-            worksheet.write(3, 7, apr, column_product_style_6)
-            worksheet.write(3, 8, may, column_product_style_6)
-            worksheet.write(3, 9, jun, column_product_style_6)
-            worksheet.write(3, 10, q_1_ytd, gray_style_)
-            worksheet.write(3, 11, jul, column_product_style_6)
-            worksheet.write(3, 12, aug, column_product_style_6)
-            worksheet.write(3, 13, sep, column_product_style_6)
-            worksheet.write(3, 14, q_2_ytd, gray_style_)
-            worksheet.write(3, 15, oct, column_product_style_6)
-            worksheet.write(3, 16, nov, column_product_style_6)
-            worksheet.write(3, 17, dec, column_product_style_6)
-            worksheet.write(3, 18, q_3_ytd, gray_style_)
-            worksheet.write(3, 19, jan, column_product_style_6)
-            worksheet.write(3, 20, feb, column_product_style_6)
-            worksheet.write(3, 21, mar, column_product_style_6)
-            worksheet.write(3, 22, q_4_ytd, gray_style_)
-            worksheet.write(3, 23, ytd, column_product_style_5)
-            # raise UserError((weight + de.weight))
-            
-            worksheet.set_column(0,0,3)
-            worksheet.set_column(1,1,50)
-            worksheet.set_column(2,2,20)
-            worksheet.set_column(3,4,8)
-            worksheet.set_column(5,5,10.20)
-            worksheet.set_column(6,6,11)
-            worksheet.set_column(23,23,11)
-            
-            worksheet.set_row(0, 20)
-            
-            worksheet.write(5, 0, 'SL.', column_product_style)
-            worksheet.write(5, 1, 'Objectives', column_product_style)
-            worksheet.write(5, 2, 'Description', column_product_style)
-            worksheet.write(5, 3, 'Baseline', column_product_style)
-            worksheet.write(5, 4, 'Target', column_product_style)
-            worksheet.write(5, 5, 'Weight', column_product_style)
-            worksheet.write(5, 6, 'Particulars', column_product_style)
-            worksheet.write(5, 7, 'Apr', column_product_style)
-            worksheet.write(5, 8, 'May', column_product_style)
-            worksheet.write(5, 9, 'Jun', column_product_style)
-            worksheet.write(5, 10, 'Q1', column_product_style)
-            worksheet.write(5, 11, 'Jul', column_product_style)
-            worksheet.write(5, 12, 'Aug', column_product_style)
-            worksheet.write(5, 13, 'Sep', column_product_style)
-            worksheet.write(5, 14, 'Q2', column_product_style)
-            worksheet.write(5, 15, 'Oct', column_product_style)
-            worksheet.write(5, 16, 'Nov', column_product_style)
-            worksheet.write(5, 17, 'Dec', column_product_style)
-            worksheet.write(5, 18, 'Q3', column_product_style)
-            worksheet.write(5, 19, 'Jan', column_product_style)
-            worksheet.write(5, 20, 'Feb', column_product_style)
-            worksheet.write(5, 21, 'Mar', column_product_style)
-            worksheet.write(5, 22, 'Q4', column_product_style)
-            worksheet.write(5, 23, 'YTD', column_product_style)
-            col = 0
-            row=6
-            grandtotal = 0
-            slnumber = 0
-            total_weight_43 = 0
-            total_weight_44 = 0
-            total_weight_45 = 0
-            total_weight_46 = 0
-            total_weight_47 = 0
-            total_weight_48 = 0
-            total_weight_49 = 0
-            total_weight_50 = 0
-            total_weight_51 = 0
-            total_weight_52 = 0
-            total_weight_53 = 0
-            total_weight_54 = 0
-            total_weight_55 = 0
-            total_weight_56 = 0
-            total_weight_57 = 0
-            total_weight_58 = 0
-            total_weight_59 = 0
-            worksheet.set_row(8, 35)
-            worksheet.merge_range(row, 0, row, 23, 'Revenue & PAT', merge_format_)
-            row=7
-            
-            for line in report_data:
-                mrg_val = None    
-                if not line[78]:
-                    total_weight_43 += line[61]
-                    total_weight_44 += line[62]
-                    total_weight_45 += line[63]
-                    total_weight_46 += line[64]
-                    total_weight_47 += line[65]
-                    total_weight_48 += line[66]
-                    total_weight_49 += line[67]
-                    total_weight_50 += line[68]
-                    total_weight_51 += line[69]
-                    total_weight_52 += line[70]
-                    total_weight_53 += line[71]
-                    total_weight_54 += line[72]
-                    total_weight_55 += line[73]
-                    total_weight_56 += line[74]
-                    total_weight_57 += line[75]
-                    total_weight_58 += line[76]
-                    total_weight_59 += line[77]
-                    slnumber += 1
-                    col=0
-                    line.pop(78)
-                    if line[1]:
-                        worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
-                        worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
-                        worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
-                        worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
-                        worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
-                        worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
-                        # worksheet.write(sum(row, 0, row[2], 0, l, merge_format))
-                    wei = None
-                    for l in line:
-                        # len (line)
-                        # if line[6] == 'Weightage':
-                        #     raise UserError(('fefefgrgr'))
-                        if col == 1:
-                            etype = l[:1]
-                        if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style)
-                        if col == 1:
+        docs = docs2
+        
+        report_data = []
+        emp_data = []
+        slnumber=0
+        for edata in docs:
+            slnumber = slnumber+1
+            emp_data = [
+                slnumber,
+                edata.name,
+                edata.description,
+                round(edata.baseline,2),
+                round(edata.target,2),
+                (edata.weight/100),
+                'Target',
+                edata.t_apr,
+                edata.t_may,
+                edata.t_jun,
+                edata.t_q1,
+                edata.t_jul,
+                edata.t_aug,
+                edata.t_sep,
+                edata.t_q2,
+                edata.t_oct,
+                edata.t_nov,
+                edata.t_dec,
+                edata.t_q3,
+                edata.t_jan,
+                edata.t_feb,
+                edata.t_mar,
+                edata.t_q4,
+                edata.y_t_ytd,
+                'ACVD',
+                edata.a_apr,
+                edata.a_may,
+                edata.a_jun,
+                edata.a_q1,
+                edata.a_jul,
+                edata.a_aug,
+                edata.a_sep,
+                edata.a_q2,
+                edata.a_oct,
+                edata.a_nov,
+                edata.a_dec,
+                edata.a_q3,
+                edata.a_jan,
+                edata.a_feb,
+                edata.a_mar,
+                edata.a_q4,
+                edata.y_a_ytd,
+                'KPI ACVD',
+                edata.apr_k,
+                edata.may_k,
+                edata.jun_k,
+                edata.q1_k,
+                edata.jul_k,
+                edata.aug_k,
+                edata.sep_k,
+                edata.q2_k,
+                edata.oct_k,
+                edata.nov_k,
+                edata.dec_k,
+                edata.q3_k,
+                edata.jan_k,
+                edata.feb_k,
+                edata.mar_k,
+                edata.q4_k,
+                edata.ytd_k,
+                'Weightage',
+                edata.apr,
+                edata.may,
+                edata.jun,
+                edata.q_1_ytd,
+                edata.jul,
+                edata.aug,
+                edata.sep,
+                edata.q_2_ytd,
+                edata.oct,
+                edata.nov,
+                edata.dec,
+                edata.q_3_ytd,
+                edata.jan,
+                edata.feb,
+                edata.mar,
+                edata.q_4_ytd,
+                edata.y_ytd,
+                edata.employee_id.id,
+            ]
+            report_data.append(emp_data)
+        
+        worksheet = workbook.add_worksheet(('PAT & Revenue'))
+        worksheet.set_zoom(64)
+        report_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 16, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
+        report_title_style1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'font_size': 13, 'bg_color': '#343A40','right': True, 'border': True, 'font_color':'#FFFFFF'})
+        report_column_style = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12})
+        report_column_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','font_size': 12,'bold': True,'font_color':'#FFFFFF','bg_color': '#714B35', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
+        report_column_style_2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00'})
+       
+        report_column_style_2.set_text_wrap()
+        report_column_style_3 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0.00%'})
+        report_column_style_4 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
+        report_column_style_5 = workbook.add_format({'align': 'left','valign': 'vcenter','bold': True,'font_size': 12,'font_color':'#B00020', 'left': True, 'top': True, 'right': True, 'bottom': True, 'num_format': '0%'})
+        worksheet.merge_range('A1:E1','', report_title_style)
+        
+        
+        worksheet.merge_range('F1:M1', 'PAT & Revenue', report_title_style)
+        worksheet.merge_range('N1:X1', '', report_title_style)
+
+        report_small_title_style = workbook.add_format({'bold': True, 'font_size': 14, 'border': True,'num_format': '0.00%'})
+        
+        worksheet.merge_range('A2:E2','', report_title_style1)
+        worksheet.merge_range('F2:M2', (datetime.strptime(str(dateto), '%Y-%m-%d').strftime('%B  %Y')), report_title_style1)
+        worksheet.merge_range('N2:X2', '', report_title_style1)
+        
+        
+        worksheet.merge_range('F4:F4', "",report_title_style)
+        # worksheet.merge_range('I4:L4', ('Weekly Plan'), report_title_style)
+#         worksheet.write(2, 1, ('TZBD,%s EMPLOYEE %s TRANSFER LIST' % (categname,bankname)), report_small_title_style)
+        merge_format = workbook.add_format({'align': 'center','valign': 'vcenter', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        merge_format.set_text_wrap()
+        merge_format_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF'})
+        merge_format_.set_text_wrap()
+        
+        column_product_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+        column_product_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B35', 'font_size': 14, 'font_color':'#FFFFFF', 'border': True})
+        column_product_style2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True})
+        column_product_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00%'})
+        column_product_style_5 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#714B62', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+        column_product_style_6 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#343A40', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+        column_product_style_7 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#00B050', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
+        column_product_style_8 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#B00020', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0%'})
+        
+        column_received_style = workbook.add_format({'bold': True, 'bg_color': '#A2D374', 'font_size': 12, 'border': True})
+        column_issued_style = workbook.add_format({'bold': True, 'bg_color': '#F8715F', 'font_size': 12, 'border': True})
+        row_categ_style = workbook.add_format({'border': True})
+        gray_style = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+        gray_style_ = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 16, 'font_color':'#FFFFFF', 'border': True, 'num_format': '0.00'})
+        gray_style_1 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#FFFFFF', 'border': True,"num_format": "0.00%"})
+        gray_style_2 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'border': True,"num_format": "0%"})
+        gray_style_3 = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True, 'bg_color': '#808080', 'font_size': 12, 'font_color':'#B00020', 'border': True,"num_format": "0%"})
+        # set the width od the column
+        percent_format = workbook.add_format({"num_format": "0%"})
+        worksheet.freeze_panes(3, 0)
+  
+        worksheet.set_column(0,0,3)
+        worksheet.set_column(1,1,50)
+        worksheet.set_column(2,2,20)
+        worksheet.set_column(3,4,8)
+        worksheet.set_column(5,5,10.20)
+        worksheet.set_column(6,6,11)
+        worksheet.set_column(23,23,11)
+        
+        worksheet.set_row(0, 20)
+        
+        worksheet.write(2, 0, 'SL.', column_product_style)
+        worksheet.write(2, 1, 'Objectives', column_product_style)
+        worksheet.write(2, 2, 'Description', column_product_style)
+        worksheet.write(2, 3, 'Baseline', column_product_style)
+        worksheet.write(2, 4, 'Target', column_product_style)
+        worksheet.write(2, 5, 'Weight', column_product_style)
+        worksheet.write(2, 6, 'Particulars', column_product_style)
+        worksheet.write(2, 7, 'Apr', column_product_style)
+        worksheet.write(2, 8, 'May', column_product_style)
+        worksheet.write(2, 9, 'Jun', column_product_style)
+        worksheet.write(2, 10, 'Q1', column_product_style)
+        worksheet.write(2, 11, 'Jul', column_product_style)
+        worksheet.write(2, 12, 'Aug', column_product_style)
+        worksheet.write(2, 13, 'Sep', column_product_style)
+        worksheet.write(2, 14, 'Q2', column_product_style)
+        worksheet.write(2, 15, 'Oct', column_product_style)
+        worksheet.write(2, 16, 'Nov', column_product_style)
+        worksheet.write(2, 17, 'Dec', column_product_style)
+        worksheet.write(2, 18, 'Q3', column_product_style)
+        worksheet.write(2, 19, 'Jan', column_product_style)
+        worksheet.write(2, 20, 'Feb', column_product_style)
+        worksheet.write(2, 21, 'Mar', column_product_style)
+        worksheet.write(2, 22, 'Q4', column_product_style)
+        worksheet.write(2, 23, 'YTD', column_product_style)
+        col = 0
+        row=6
+        grandtotal = 0
+        slnumber = 0
+        total_weight_43 = 0
+        total_weight_44 = 0
+        total_weight_45 = 0
+        total_weight_46 = 0
+        total_weight_47 = 0
+        total_weight_48 = 0
+        total_weight_49 = 0
+        total_weight_50 = 0
+        total_weight_51 = 0
+        total_weight_52 = 0
+        total_weight_53 = 0
+        total_weight_54 = 0
+        total_weight_55 = 0
+        total_weight_56 = 0
+        total_weight_57 = 0
+        total_weight_58 = 0
+        total_weight_59 = 0
+        worksheet.set_row(8, 35)
+        # worksheet.merge_range(row, 0, row, 23, 'Revenue & PAT', merge_format_)
+        row=3
+        
+        for line in report_data:
+            mrg_val = None    
+            if not line[78]:
+                total_weight_43 += line[61]
+                total_weight_44 += line[62]
+                total_weight_45 += line[63]
+                total_weight_46 += line[64]
+                total_weight_47 += line[65]
+                total_weight_48 += line[66]
+                total_weight_49 += line[67]
+                total_weight_50 += line[68]
+                total_weight_51 += line[69]
+                total_weight_52 += line[70]
+                total_weight_53 += line[71]
+                total_weight_54 += line[72]
+                total_weight_55 += line[73]
+                total_weight_56 += line[74]
+                total_weight_57 += line[75]
+                total_weight_58 += line[76]
+                total_weight_59 += line[77]
+                slnumber += 1
+                col=0
+                line.pop(78)
+                if line[1]:
+                    worksheet.merge_range(row, 0, row+2, 0, '', merge_format)
+                    worksheet.merge_range(row, 1, row+2, 1, '', merge_format)
+                    worksheet.merge_range(row, 2, row+2, 2, '', merge_format)
+                    worksheet.merge_range(row, 3, row+2, 3, '', merge_format)
+                    worksheet.merge_range(row, 4, row+2, 4, '', merge_format)
+                    worksheet.merge_range(row, 5, row+2, 5, '', merge_format)
+                    # worksheet.write(sum(row, 0, row[2], 0, l, merge_format))
+                wei = None
+                for l in line:
+                    # len (line)
+                    # if line[6] == 'Weightage':
+                    #     raise UserError(('fefefgrgr'))
+                    if col == 1:
+                        etype = l[:1]
+                    if col == 0:
+                        worksheet.write(row, col, slnumber, report_column_style)
+                    if col == 1:
+                        worksheet.write(row, col, l, report_column_style_2)
+                    if col == 2:
+                        worksheet.write(row, col, '', report_column_style_2)
+                    elif col == 3:
+                        
+                        if etype == '%':
+                            ld = l/100
+                            worksheet.write(row, col, ld, report_column_style_3)
+                        else:
+                            worksheet.write(row, col, l, report_column_style_2)                    
+                    elif col == 4:
+                        
+                        if etype == '%':
+                            ld = l/100
+                            worksheet.write(row, col, ld, report_column_style_3)
+                        else:
                             worksheet.write(row, col, l, report_column_style_2)
-                        if col == 2:
-                            worksheet.write(row, col, '', report_column_style_2)
-                        elif col == 3:
-                            
-                            if etype == '%':
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                worksheet.write(row, col, l, report_column_style_2)                    
-                        elif col == 4:
-                            
-                            if etype == '%':
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                worksheet.write(row, col, l, report_column_style_2)
-                        elif col == 6:
-                            wei = l
-                            worksheet.write(row, col, l, column_product_style)
-                        
-                        elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, report_column_style_3)
-                        
-                        elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, report_column_style_2)
-                            
-                        elif (col in (10,14,18,22)) and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, gray_style_1)
-                        
-                        elif (col in (10,14,18,22)) and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, gray_style)
-                                # total_sum += l
-                        elif col == 23 and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, column_product_style_3)
-                            row+=1
-                            col=5
-                        elif col == 23 and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, column_product_style)
-                            row+=1
-                            col=5
-                        elif col==5:
-                            # grandtotal = grandtotal+l
-                            worksheet.write(row, col, l, report_column_style_3)
-                            
-                        col+=1
-    
-                    row = row-1
-                    row+=1
-            worksheet.write(row, 6, 'Total', column_product_style_)
-            worksheet.write(row, 7, total_weight_43/100, report_column_style_)
-            worksheet.write(row, 8, total_weight_44/100, report_column_style_)
-            worksheet.write(row, 9, total_weight_45/100, report_column_style_)
-            worksheet.write(row, 10, total_weight_46/100, gray_style_1)
-            worksheet.write(row, 11, total_weight_47/100, report_column_style_)
-            worksheet.write(row, 12, total_weight_48/100, report_column_style_)
-            worksheet.write(row, 13, total_weight_49/100, report_column_style_)
-            worksheet.write(row, 14, total_weight_50/100, gray_style_1)
-            worksheet.write(row, 15, total_weight_51/100, report_column_style_)
-            worksheet.write(row, 16, total_weight_52/100, report_column_style_)
-            worksheet.write(row, 17, total_weight_53/100, report_column_style_)
-            worksheet.write(row, 18, total_weight_54/100, gray_style_1)
-            worksheet.write(row, 19, total_weight_55/100, report_column_style_)
-            worksheet.write(row, 20, total_weight_56/100, report_column_style_)
-            worksheet.write(row, 21, total_weight_57/100, report_column_style_)
-            worksheet.write(row, 22, total_weight_58/100, gray_style_1)
-            worksheet.write(row, 23, total_weight_59/100, report_column_style_)
-            row+=1
-            
+                    elif col == 6:
+                        wei = l
+                        worksheet.write(row, col, l, column_product_style)
                     
-            worksheet.merge_range(row, 0, row, 23, 'Revenue & PAT', merge_format_)
-            row+=1
-    
-            total_weight_43_ = 0
-            total_weight_44_ = 0
-            total_weight_45_ = 0
-            total_weight_46_ = 0
-            total_weight_47_ = 0
-            total_weight_48_ = 0
-            total_weight_49_ = 0
-            total_weight_50_ = 0
-            total_weight_51_ = 0
-            total_weight_52_ = 0
-            total_weight_53_ = 0
-            total_weight_54_ = 0
-            total_weight_55_ = 0
-            total_weight_56_ = 0
-            total_weight_57_ = 0
-            total_weight_58_ = 0
-            total_weight_59_ = 0
-            for line in report_data:
-                mrg_val = None 
-                if line[2] != 'Strategic Projects' and line[2]:
-                    total_weight_43_ += line[61]
-                    total_weight_44_ += line[62]
-                    total_weight_45_ += line[63]
-                    total_weight_46_ += line[64]
-                    total_weight_47_ += line[65]
-                    total_weight_48_ += line[66]
-                    total_weight_49_ += line[67]
-                    total_weight_50_ += line[68]
-                    total_weight_51_ += line[69]
-                    total_weight_52_ += line[70]
-                    total_weight_53_ += line[71]
-                    total_weight_54_ += line[72]
-                    total_weight_55_ += line[73]
-                    total_weight_56_ += line[74]
-                    total_weight_57_ += line[75]
-                    total_weight_58_ += line[76]
-                    total_weight_59_ += line[77]
-                    if line[78] == emp.id:
-                        slnumber += 1
-                        col=0
-                        line.pop(78)
-                        if line[1]:
-                            worksheet.merge_range(row, 0, row+3, 0, '', merge_format)
-                            worksheet.merge_range(row, 1, row+3, 1, '', merge_format)
-                            worksheet.merge_range(row, 2, row+3, 2, '', merge_format)
-                            worksheet.merge_range(row, 3, row+3, 3, '', merge_format)
-                            worksheet.merge_range(row, 4, row+3, 4, '', merge_format)
-                            worksheet.merge_range(row, 5, row+3, 5, '', merge_format)
+                    elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'Weightage'):
+                        worksheet.write(row, col, l/100, report_column_style_3)
+                    
+                    elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei != 'Weightage'):
+                        worksheet.write(row, col, l, report_column_style_2)
                         
-                    wei = None
-                    for l in line:
-                        # len (line)
-                        # if line[6] == 'Weightage':
-                        #     raise UserError(('fefefgrgr'))
-                        if col == 1:
-                            etype = l[:1]
-                        if col == 0:
-                            worksheet.write(row, col, slnumber, report_column_style)
-                        if col == 1:
-                            worksheet.write(row, col, l, report_column_style_2)
-                        if col == 2:
-                            worksheet.write(row, col, l, report_column_style_2)
-                        elif col == 3:
-                            
-                            if etype == '%':
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                worksheet.write(row, col, l, report_column_style_2)                    
-                        elif col == 4:
-                            
-                            if etype == '%':
-                                ld = l/100
-                                worksheet.write(row, col, ld, report_column_style_3)
-                            else:
-                                worksheet.write(row, col, l, report_column_style_2)
-                        elif col == 6:
-                            wei = l
-                            worksheet.write(row, col, l, column_product_style)
+                    elif (col in (10,14,18,22)) and (wei == 'Weightage'):
+                        worksheet.write(row, col, l/100, gray_style_1)
+                    
+                    elif (col in (10,14,18,22)) and (wei != 'Weightage'):
+                        worksheet.write(row, col, l, gray_style)
+                            # total_sum += l
+                    elif col == 23 and (wei == 'Weightage'):
+                        worksheet.write(row, col, l/100, column_product_style_3)
+                        row+=1
+                        col=5
+                    elif col == 23 and (wei != 'Weightage'):
+                        worksheet.write(row, col, l, column_product_style)
+                        row+=1
+                        col=5
+                    elif col==5:
+                        # grandtotal = grandtotal+l
+                        worksheet.write(row, col, l, report_column_style_3)
+                        
+                    col+=1
 
-                        elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'KPI ACVD'):
-                            if l > 60:
-                                worksheet.write(row, col, l/100, report_column_style_4)
-                            else:
-                                worksheet.write(row, col, l/100, report_column_style_5)
-                        
-                        elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, report_column_style_3)
-                        
-                        elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, report_column_style_2)
+                row = row-1
+                row+=1
+        worksheet.write(row, 6, 'Total', column_product_style_)
+        worksheet.write(row, 7, total_weight_43/100, report_column_style_)
+        worksheet.write(row, 8, total_weight_44/100, report_column_style_)
+        worksheet.write(row, 9, total_weight_45/100, report_column_style_)
+        worksheet.write(row, 10, total_weight_46/100, gray_style_1)
+        worksheet.write(row, 11, total_weight_47/100, report_column_style_)
+        worksheet.write(row, 12, total_weight_48/100, report_column_style_)
+        worksheet.write(row, 13, total_weight_49/100, report_column_style_)
+        worksheet.write(row, 14, total_weight_50/100, gray_style_1)
+        worksheet.write(row, 15, total_weight_51/100, report_column_style_)
+        worksheet.write(row, 16, total_weight_52/100, report_column_style_)
+        worksheet.write(row, 17, total_weight_53/100, report_column_style_)
+        worksheet.write(row, 18, total_weight_54/100, gray_style_1)
+        worksheet.write(row, 19, total_weight_55/100, report_column_style_)
+        worksheet.write(row, 20, total_weight_56/100, report_column_style_)
+        worksheet.write(row, 21, total_weight_57/100, report_column_style_)
+        worksheet.write(row, 22, total_weight_58/100, gray_style_1)
+        worksheet.write(row, 23, total_weight_59/100, report_column_style_)
+        row+=1
 
-                        elif (col in (10,14,18,22)) and (wei == 'KPI ACVD'):
-                            if l > 60:
-                                worksheet.write(row, col, l/100, gray_style_2)
-                            else:
-                                worksheet.write(row, col, l/100, gray_style_3)
-                                            
-                        elif (col in (10,14,18,22)) and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, gray_style_1)
-                        
-                        elif (col in (10,14,18,22)) and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, gray_style)
-
-                        elif col == 23 and (wei == 'KPI ACVD'):
-                            if l > 60:
-                                worksheet.write(row, col, l/100, column_product_style_7)
-                            else:
-                                worksheet.write(row, col, l/100, column_product_style_8)
-                            row+=1
-                            col=5
-                                # total_sum += l
-                        elif col == 23 and (wei == 'Weightage'):
-                            worksheet.write(row, col, l/100, column_product_style_3)
-                            row+=1
-                            col=5
-                        elif col == 23 and (wei != 'Weightage'):
-                            worksheet.write(row, col, l, column_product_style)
-                            row+=1
-                            col=5
-                        elif col==5:
-                            # grandtotal = grandtotal+l
-                            worksheet.write(row, col, l, report_column_style_3)
-                            
-                        col+=1
-    
-                    row = row-1
-                    row+=1
-            worksheet.write(row, 6, 'Total', column_product_style_)
-            worksheet.write(row, 7, total_weight_43_/100, report_column_style_)
-            worksheet.write(row, 8, total_weight_44_/100, report_column_style_)
-            worksheet.write(row, 9, total_weight_45_/100, report_column_style_)
-            worksheet.write(row, 10, total_weight_46_/100, gray_style_1)
-            worksheet.write(row, 11, total_weight_47_/100, report_column_style_)
-            worksheet.write(row, 12, total_weight_48_/100, report_column_style_)
-            worksheet.write(row, 13, total_weight_49_/100, report_column_style_)
-            worksheet.write(row, 14, total_weight_50_/100, gray_style_1)
-            worksheet.write(row, 15, total_weight_51_/100, report_column_style_)
-            worksheet.write(row, 16, total_weight_52_/100, report_column_style_)
-            worksheet.write(row, 17, total_weight_53_/100, report_column_style_)
-            worksheet.write(row, 18, total_weight_54_/100, gray_style_1)
-            worksheet.write(row, 19, total_weight_55_/100, report_column_style_)
-            worksheet.write(row, 20, total_weight_56_/100, report_column_style_)
-            worksheet.write(row, 21, total_weight_57_/100, report_column_style_)
-            worksheet.write(row, 22, total_weight_58_/100, gray_style_1)
-            worksheet.write(row, 23, total_weight_59_/100, report_column_style_)
-            row+=1
-            
-            # worksheet.merge_range(row, 0, row, 23, 'Strategic Projects', merge_format_)
-            # row+=1
-    
-            # total_weight_43_l = 0
-            # total_weight_44_l = 0
-            # total_weight_45_l = 0
-            # total_weight_46_l = 0
-            # total_weight_47_l = 0
-            # total_weight_48_l = 0
-            # total_weight_49_l = 0
-            # total_weight_50_l = 0
-            # total_weight_51_l = 0
-            # total_weight_52_l = 0
-            # total_weight_53_l = 0
-            # total_weight_54_l = 0
-            # total_weight_55_l = 0
-            # total_weight_56_l = 0
-            # total_weight_57_l = 0
-            # total_weight_58_l = 0
-            # total_weight_59_l = 0
-            # # raise UserError((row,col))
-            # for line in report_data:
-            #     mrg_val = None 
-            #     if line[2] == 'Strategic Projects':
-            #         total_weight_43_l += line[61]
-            #         total_weight_44_l += line[62]
-            #         total_weight_45_l += line[63]
-            #         total_weight_46_l += line[64]
-            #         total_weight_47_l += line[65]
-            #         total_weight_48_l += line[66]
-            #         total_weight_49_l += line[67]
-            #         total_weight_50_l += line[68]
-            #         total_weight_51_l += line[69]
-            #         total_weight_52_l += line[70]
-            #         total_weight_53_l += line[71]
-            #         total_weight_54_l += line[72]
-            #         total_weight_55_l += line[73]
-            #         total_weight_56_l += line[74]
-            #         total_weight_57_l += line[75]
-            #         total_weight_58_l += line[76]
-            #         total_weight_59_l += line[77]
-            #         if line[78] == emp.id:
-                        
-            #             slnumber += 1
-            #             col=0
-            #             line.pop(78)
-            #             if line[1]:
-            #                 worksheet.merge_range(row, 0, row+3, 0, '', merge_format)
-            #                 worksheet.merge_range(row, 1, row+3, 1, '', merge_format)
-            #                 worksheet.merge_range(row, 2, row+3, 2, '', merge_format)
-            #                 worksheet.merge_range(row, 3, row+3, 3, '', merge_format)
-            #                 worksheet.merge_range(row, 4, row+3, 4, '', merge_format)
-            #                 worksheet.merge_range(row, 5, row+3, 5, '', merge_format)
-            #         wei = None
-            #         for l in line:
-            #             # len (line)
-            #             # if line[6] == 'Weightage':
-            #             #     raise UserError(('fefefgrgr'))
-            #             if col == 1:
-            #                 etype = l[:1]
-            #             if col == 0:
-            #                 worksheet.write(row, col, slnumber, report_column_style)
-            #             if col == 1:
-            #                 worksheet.write(row, col, l, report_column_style_2)
-            #             if col == 2:
-            #                 worksheet.write(row, col, l, report_column_style_2)
-            #             elif col == 3:
-                            
-            #                 if etype == '%':
-            #                     ld = l/100
-            #                     worksheet.write(row, col, ld, report_column_style_3)
-            #                 else:
-            #                     worksheet.write(row, col, l, report_column_style_2)                    
-            #             elif col == 4:
-                            
-            #                 if etype == '%':
-            #                     ld = l/100
-            #                     worksheet.write(row, col, ld, report_column_style_3)
-            #                 else:
-            #                     worksheet.write(row, col, l, report_column_style_2)
-            #             elif col == 6:
-            #                 wei = l
-            #                 worksheet.write(row, col, l, column_product_style)
-
-            #             elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'KPI ACVD'):
-            #                 if l > 60:
-            #                     worksheet.write(row, col, l/100, report_column_style_4)
-            #                 else:
-            #                     worksheet.write(row, col, l/100, report_column_style_5)
-                        
-            #             elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei == 'Weightage'):
-            #                 worksheet.write(row, col, l/100, report_column_style_3)
-                        
-            #             elif (col in (7,8,9,11,12,13,15,16,17,19,20,21)) and (wei != 'Weightage'):
-            #                 worksheet.write(row, col, l, report_column_style_2)
-
-            #             elif (col in (10,14,18,22)) and (wei == 'KPI ACVD'):
-            #                 worksheet.write(row, col, l/100, gray_style_2)
-                            
-            #             elif (col in (10,14,18,22)) and (wei == 'Weightage'):
-            #                 worksheet.write(row, col, l/100, gray_style_1)
-                        
-            #             elif (col in (10,14,18,22)) and (wei != 'Weightage'):
-            #                 worksheet.write(row, col, l, gray_style)
-            #                     # total_sum += l
-            #             elif col == 23 and (wei == 'KPI ACVD'):
-            #                 if l > 60:
-            #                     worksheet.write(row, col, l/100, column_product_style_7)
-            #                 else:
-            #                     worksheet.write(row, col, l/100, column_product_style_8)
-            #                 row+=1
-            #                 col=5
-                            
-            #             elif col == 23 and (wei == 'Weightage'):
-            #                 worksheet.write(row, col, l/100, column_product_style_3)
-            #                 row+=1
-            #                 col=5
-            #             elif col == 23 and (wei != 'Weightage'):
-            #                 worksheet.write(row, col, l, column_product_style)
-            #                 row+=1
-            #                 col=5
-            #             elif col==5:
-            #                 # grandtotal = grandtotal+l
-            #                 worksheet.write(row, col, l, report_column_style_3)
-                            
-            #             col+=1
-    
-            #         row = row-1
-            #         row+=1
-            # worksheet.write(row, 6, 'Total', column_product_style_)
-            # worksheet.write(row, 7, total_weight_43_l/100, report_column_style_)
-            # worksheet.write(row, 8, total_weight_44_l/100, report_column_style_)
-            # worksheet.write(row, 9, total_weight_45_l/100, report_column_style_)
-            # worksheet.write(row, 10, total_weight_46_l/100, gray_style_1)
-            # worksheet.write(row, 11, total_weight_47_l/100, report_column_style_)
-            # worksheet.write(row, 12, total_weight_48_l/100, report_column_style_)
-            # worksheet.write(row, 13, total_weight_49_l/100, report_column_style_)
-            # worksheet.write(row, 14, total_weight_50_l/100, gray_style_1)
-            # worksheet.write(row, 15, total_weight_51_l/100, report_column_style_)
-            # worksheet.write(row, 16, total_weight_52_l/100, report_column_style_)
-            # worksheet.write(row, 17, total_weight_53_l/100, report_column_style_)
-            # worksheet.write(row, 18, total_weight_54_l/100, gray_style_1)
-            # worksheet.write(row, 19, total_weight_55_l/100, report_column_style_)
-            # worksheet.write(row, 20, total_weight_56_l/100, report_column_style_)
-            # worksheet.write(row, 21, total_weight_57_l/100, report_column_style_)
-            # worksheet.write(row, 22, total_weight_58_l/100, gray_style_1)
-            # worksheet.write(row, 23, total_weight_59_l/100, report_column_style_)
-            # row+=1
-            
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -2671,7 +2250,7 @@ class HeadwisePDFReport(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('%s - Scorecard Quarterly'% (emp.department_id.parent_id.name if data.get('department_id') else emp.name))),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id,('PAT and Revenue')),
             'target': 'self',
         }
 

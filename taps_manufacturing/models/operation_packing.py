@@ -109,8 +109,8 @@ class OperationPacking(models.Model):
             if s.actual_qty>0:
                 s.ac_balance_qty = round((s.actual_qty - s.done_qty),2)
                 s.balance_qty = round((s.actual_qty - s.done_qty),2)
-            if s.qty>0:
-                s.balance_qty = round((s.qty - s.done_qty),2)
+            # if s.qty>0:
+            #     s.balance_qty = round((s.qty - s.done_qty),2)
 
     
     actual_qty = fields.Float(string='OA Qty', related='sale_order_line.product_uom_qty', readonly=True, store=True, group_operator="sum")
@@ -120,7 +120,7 @@ class OperationPacking(models.Model):
     # price_unit = fields.Float('Unit Price', digits='Product Price', default=0.0, store=True)
     price_unit = fields.Float('Unit Price', related='sale_order_line.price_unit', digits='Product Price', default=0.0, readonly=True, store=True)
     done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
-    balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_balance', group_operator="sum")
+    balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_ac_balance', group_operator="sum")
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
     revision_no = fields.Char(string='Revision No', store=True)
     closing_date = fields.Datetime(string='Closing Date', readonly=False)
