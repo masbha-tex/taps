@@ -109,8 +109,9 @@ class FgPackingLine(models.Model):
     _description = "Packing Line"
     _check_company_auto = True
     
-    fg_carton = fields.Many2one('fg.packing', string='Carton ID', ondelete='cascade')
-    oa_id = fields.Many2one('operation.details', string='OA', store=True)
+    l_code = fields.Many2one('operation.details', string='L Code', store=True)
+    oa_id = fields.Char(string='OA',store=True)
+    fg_carton = fields.Many2one('fg.packing', string='Carton ID', ondelete='cascade')    
     product_id = fields.Char(string='product_id',store=True)
     product_template_id = fields.Char(string='product_template_id',store=True)
     action_date = fields.Datetime(string='action_date',store=True)
@@ -123,3 +124,27 @@ class FgPackingLine(models.Model):
     pinbox = fields.Char(string='pinbox',store=True)
     sizcommon = fields.Char(string='sizcommon',store=True)
     qty = fields.Char(string='qty',store=True)
+
+
+    @api.onchange('l_code')
+    def onchange_l_code(self):
+        if self.l_code:
+            # Assuming l_code is a Many2one field
+            operation_details = self.l_code
+            # operation_details = self.env['operation.details'].search([('name','=',l_code),('company_id','=',self.env.company.id)])
+
+            # Update other fields based on the selected operation_details
+            self.oa_id = operation_details.oa_id.name
+            # self.fg_carton = operation_details.fg_carton
+            self.product_id = operation_details.product_id
+            self.product_template_id = operation_details.product_template_id
+            self.action_date = operation_details.action_date
+            self.shade = operation_details.shade
+            self.shade_ref = operation_details.shade_ref
+            self.finish = operation_details.finish
+            self.slidercodesfg = operation_details.slidercodesfg
+            self.top = operation_details.top
+            self.bottom = operation_details.bottom
+            self.pinbox = operation_details.pinbox
+            self.sizcommon = operation_details.sizcommon
+            self.qty = operation_details.done_qty

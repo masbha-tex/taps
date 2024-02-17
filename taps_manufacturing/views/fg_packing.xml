@@ -7,11 +7,11 @@
     			<field name="arch" type="xml">
                     <form string="FG Packing New">
                         <group>
-                            <field name="name"/>
+                            <!-- <field name="name"/> -->
                             <field name="carton_no"/>
                             <field name="total_weight"/>
                             <field name="qty"/>
-                            <field name="buyer_name"/>
+                            <!-- <field name="buyer_name"/> -->
                         </group>
                         <group>
                             <notebook>
@@ -19,19 +19,20 @@
                                     <field name="carton_line">
                                         <tree string="Packing Line" editable="bottom">
                                             <field name="fg_carton" invisible="1"/>
-                                            <field name="oa_id"/>
-                                            <field name="product_id" force_save="1"/>
-                                            <field name="product_template_id"/>
+                                            <field name="l_code"/>
+                                            <field name="oa_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="slidercodesfg" required="True" optional="show" sum="Quantity" decoration-bf="True" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="product_id" invisible="1" force_save="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="product_template_id" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" />
                                             <field name="action_date"/>
-                                            <field name="shade"/>
-                                            <field name="shade_ref" readonly="1" force_save="1"/>
-                                            <field name="finish"/>
-                                            <field name="slidercodesfg" required="True" optional="show" sum="Quantity" decoration-bf="True"/>
-                                            <field name="top"/>
-                                            <field name="bottom" force_save="1"/>
-                                            <field name="pinbox"/>
-                                            <field name="sizcommon"/>
-                                            <field name="qty"/>
+                                            <field name="shade" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="shade_ref" readonly="1" force_save="1" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="finish" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="top" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="bottom" force_save="1" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="pinbox" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="sizcommon" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                            <field name="qty" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                                         </tree>
                                     </field>
                                 </page>
@@ -47,9 +48,9 @@
             <field name="arch" type="xml" >
                 <tree string="FG Packing" create="true">
                      <!-- delete ="false" editable="top" class="custom_column" -->
-                    <field name="name"/>
+                    <!-- <field name="name"/> -->
                     <field name="carton_no"/>
-                    <field name="carton_line"/>
+                    <!-- <field name="carton_line"/> -->
                     <field name="total_weight"/>
                     <field name="qty"/>
                     <field name="buyer_name"/>
@@ -65,18 +66,19 @@
                 <tree string="FG Packing Line" create="true">
                      <!-- delete ="false" editable="top" class="custom_column" -->
                     <field name="fg_carton" invisible="1"/>
+                    <field name="l_code"/>
                     <field name="oa_id"/>
                     <field name="product_id" force_save="1"/>
-                    <field name="product_template_id"/>
+                    <!-- <field name="product_template_id"/> -->
                     <field name="action_date"/>
                     <field name="shade"/>
                     <field name="shade_ref" readonly="1" force_save="1"/>
                     <field name="finish"/>
                     <field name="slidercodesfg" required="True" optional="show" sum="Quantity" decoration-bf="True"/>
+                    <field name="sizcommon"/>
                     <field name="top"/>
                     <field name="bottom" force_save="1"/>
                     <field name="pinbox"/>
-                    <field name="sizcommon"/>
                     <field name="qty"/>
     
                 </tree>

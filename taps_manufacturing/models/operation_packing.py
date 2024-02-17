@@ -242,145 +242,152 @@ class OperationPacking(models.Model):
             fraction_pc_of_pack = 0
             pr_pac_qty = 0
             done_qty = out.done_qty + out.uotput_qty
-            if (round(out.balance_qty,0) < round(out.uotput_qty,0)):
+            if (out.balance_qty < out.uotput_qty):
                 raise UserError(('You can not produce more then balance'))
+            if (out.uotput_qty < 0):
+                raise UserError(('Minus is not exceptable'))
             if (out.state not in ('partial','waiting')):
                 raise UserError(('You can not update this data because of state is done/closed'))
-                
-            s = out.write({'done_qty':done_qty})
-            mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
+            if done_qty > 0:
+                s = out.write({'done_qty':done_qty})
+                if out.done_qty == done_qty:
+                    mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
+                    
+                    move_line = None
+                    pr_pac_qty = mrp_data[0].product_template_id.pack_qty
+                    # mrp_lines = None
+                    if pr_pac_qty:
+                        pack_qty = math.ceil(out.uotput_qty/pr_pac_qty)
+                        fraction_pc_of_pack = round(((out.uotput_qty/pr_pac_qty) % 1)*pr_pac_qty)
+        
+                    if mrp_data:
+                        up_date = mrp_data.update({'packing_done': mrp_data[0].packing_done + out.uotput_qty, 'done_qty':mrp_data[0].done_qty + out.uotput_qty})
+                        out_qty = out.uotput_qty / len(mrp_data)
+                        extra = out_qty
+                        
+                        move_qty = out.uotput_qty
+                        if (extra > 0) and (out.uotput_qty != extra):
+                            move_qty = out.uotput_qty - extra
+                        mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
+                        top_bottom = self.env["operation.packing.topbottom"].search([('oa_id','=',out.oa_id.id),('balance_qty','>',0)])
+                        tot_b =  sum(mrp_oa_data.mapped('oa_total_balance'))/ len(mrp_oa_data) # mrp_oa_data.oa_total_balance - out.uotput_qty
+                        tot_b = tot_b - move_qty #out.uotput_qty
+                        if (tot_b == 0) and (not top_bottom):
+                            mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b,'closing_date':datetime.now(),'state':'closed'})
+                            sl_closed = self.env["sale.order"].browse(out.oa_id.id)
+                            _slclosed = sl_closed.write({'closing_date':datetime.now().date()})
+                        else:
+                            mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b})
+                        
+                        locations = self.env["stock.location"].search([('company_id','=',self.env.company.id),('name', 'in', ('Stock','Production'))])
+                        locationid = locations.filtered(lambda pr: pr.name == 'Stock').id
+                        
+                        des_locationid = locations.filtered(lambda pr: pr.name == 'Production').id
+        
+                        picking_types = self.env["stock.picking.type"].search([('company_id','=',self.env.company.id),('code', '=', 'mrp_operation' )])#('Z_Manufacturing','M_Manufacturing')
+                        pic_typeid = picking_types.id
+                        warehouse_id = picking_types.warehouse_id.id
+                        
+                        if move_qty > 0:
+                            stockmove = self.env["stock.move"].create({'name':'New',
+                                                                       'sequence':10,
+                                                                       'company_id':self.env.company.id,
+                                                                       'product_id':out.product_id.id,
+                                                                       'product_uom_qty':move_qty,
+                                                                       'product_uom':out.product_id.product_tmpl_id.uom_id.id,
+                                                                       'location_id':des_locationid,
+                                                                       'location_dest_id':locationid,
+                                                                       'state':'done',
+                                                                       'procure_method':'make_to_stock',
+                                                                       'scrapped':False,
+                                                                       'propagate_cancel':False,
+                                                                       'picking_type_id':pic_typeid,
+                                                                       'warehouse_id':warehouse_id,
+                                                                       'additional':False,
+                                                                       'is_done':True,
+                                                                       'unit_factor':move_qty
+                                                                       })
+                            lot_producing_id = self.env['stock.production.lot'].create({
+                                'product_id': out.product_id.id,
+                                'company_id': self.env.company.id
+                            })
+                          
+                            stockmove_line = self.env["stock.move.line"].create({'move_id': stockmove.id,
+                                                                                 'company_id':self.env.company.id,
+                                                                                 'product_id':out.product_id.id,
+                                                                                 'product_uom_id':out.product_id.product_tmpl_id.uom_id.id,
+                                                                                 'qty_done':move_qty,
+                                                                                 'lot_id':lot_producing_id.id,
+                                                                                 'date':datetime.now(),
+                                                                                 'location_id':des_locationid,
+                                                                                 'location_dest_id':locationid,
+                                                                                 'state':'done',
+                                                                                 'qty_onhand':move_qty
+                                                                                 })
+                            move_line = stockmove_line.id
             
-            move_line = None
-            pr_pac_qty = mrp_data[0].product_template_id.pack_qty
-            # mrp_lines = None
-            if pr_pac_qty:
-                pack_qty = math.ceil(out.uotput_qty/pr_pac_qty)
-                fraction_pc_of_pack = round(((out.uotput_qty/pr_pac_qty) % 1)*pr_pac_qty)
-
-            if mrp_data:
-                up_date = mrp_data.update({'packing_done': mrp_data[0].packing_done + out.uotput_qty, 'done_qty':mrp_data[0].done_qty + out.uotput_qty})
-                out_qty = out.uotput_qty / len(mrp_data)
-                extra = out_qty
-                
-                move_qty = out.uotput_qty
-                if (extra > 0) and (out.uotput_qty != extra):
-                    move_qty = out.uotput_qty - extra
-                mrp_oa_data = self.env["manufacturing.order"].search([('oa_id','=',out.oa_id.id)])
-                top_bottom = self.env["operation.packing.topbottom"].search([('oa_id','=',out.oa_id.id),('balance_qty','>',0)])
-                tot_b =  sum(mrp_oa_data.mapped('oa_total_balance'))/ len(mrp_oa_data) # mrp_oa_data.oa_total_balance - out.uotput_qty
-                tot_b = tot_b - move_qty #out.uotput_qty
-                if (tot_b == 0) and (not top_bottom):
-                    mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b,'closing_date':datetime.now(),'state':'closed'})
-                    sl_closed = self.env["sale.order"].browse(out.oa_id.id)
-                    _slclosed = sl_closed.write({'closing_date':datetime.now().date()})
+                            picking = self.env["stock.picking"].search([('origin','=',out.oa_id.name),('state','not in',('draft','done','cancel'))])
+                            if picking:
+                                picking.action_assign()
+                        
+                    next = None
+                    w_center = None
+                    operation_of = 'output'
+                    can_create = True
+                    next = 'FG Packing'
+                    if can_create:
+                        ope = self.env['operation.details'].create({'name':out.name,
+                                                                'mrp_lines':out.mrp_line.id,
+                                                                'sale_lines':out.sale_order_line.id,
+                                                                'mrp_line':out.mrp_line.id,
+                                                                'sale_order_line':out.sale_order_line.id,
+                                                                'parent_id':out.id,
+                                                                'oa_id':out.oa_id.id,
+                                                                'buyer_name':out.buyer_name,
+                                                                'product_id':out.product_id.id,
+                                                                'product_template_id':out.product_template_id.id,
+                                                                'action_date':datetime.now(),
+                                                                'shade':out.shade,
+                                                                'shade_ref':out.shade_ref,
+                                                                'finish':out.finish,
+                                                                'logo':out.logo,
+                                                                'logoref':out.logoref,
+                                                                'logo_type':out.logo_type,
+                                                                'style':out.style,
+                                                                'gmt':out.gmt,
+                                                                'shapefin':out.shapefin,
+                                                                'b_part':out.b_part,
+                                                                'c_part':out.c_part,
+                                                                'd_part':out.d_part,
+                                                                'finish_ref':out.finish_ref,
+                                                                'product_code':out.product_code,
+                                                                'shape':out.shape,
+                                                                'back_part':out.back_part,
+                                                                'sizein':out.sizein,
+                                                                'sizecm':out.sizecm,
+                                                                'sizemm':out.sizemm,
+                                                                'slidercodesfg':out.slidercodesfg,
+                                                                'top':out.top,
+                                                                'bottom':out.bottom,
+                                                                'pinbox':out.pinbox,
+                                                                'operation_of':operation_of,
+                                                                'work_center':w_center,
+                                                                'operation_by':'Packing',
+                                                                'based_on':'Lot Code',
+                                                                'next_operation':next,
+                                                                'actual_qty':out.actual_qty,
+                                                                'qty':out.uotput_qty,
+                                                                'pack_qty':pack_qty,
+                                                                'fr_pcs_pack':fraction_pc_of_pack,
+                                                                'capacity':pr_pac_qty,
+                                                                'move_line':move_line,
+                                                                'price_unit':out.price_unit,
+                                                                })
+                    out.uotput_qty = 0
                 else:
-                    mrp_all_oa = mrp_oa_data.update({'oa_total_balance':tot_b})
-                
-                locations = self.env["stock.location"].search([('company_id','=',self.env.company.id),('name', 'in', ('Stock','Production'))])
-                locationid = locations.filtered(lambda pr: pr.name == 'Stock').id
-                
-                des_locationid = locations.filtered(lambda pr: pr.name == 'Production').id
-
-                picking_types = self.env["stock.picking.type"].search([('company_id','=',self.env.company.id),('code', '=', 'mrp_operation' )])#('Z_Manufacturing','M_Manufacturing')
-                pic_typeid = picking_types.id
-                warehouse_id = picking_types.warehouse_id.id
-                
-                if move_qty > 0:
-                    stockmove = self.env["stock.move"].create({'name':'New',
-                                                               'sequence':10,
-                                                               'company_id':self.env.company.id,
-                                                               'product_id':out.product_id.id,
-                                                               'product_uom_qty':move_qty,
-                                                               'product_uom':out.product_id.product_tmpl_id.uom_id.id,
-                                                               'location_id':des_locationid,
-                                                               'location_dest_id':locationid,
-                                                               'state':'done',
-                                                               'procure_method':'make_to_stock',
-                                                               'scrapped':False,
-                                                               'propagate_cancel':False,
-                                                               'picking_type_id':pic_typeid,
-                                                               'warehouse_id':warehouse_id,
-                                                               'additional':False,
-                                                               'is_done':True,
-                                                               'unit_factor':move_qty
-                                                               })
-                    lot_producing_id = self.env['stock.production.lot'].create({
-                        'product_id': out.product_id.id,
-                        'company_id': self.env.company.id
-                    })
-                  
-                    stockmove_line = self.env["stock.move.line"].create({'move_id': stockmove.id,
-                                                                         'company_id':self.env.company.id,
-                                                                         'product_id':out.product_id.id,
-                                                                         'product_uom_id':out.product_id.product_tmpl_id.uom_id.id,
-                                                                         'qty_done':move_qty,
-                                                                         'lot_id':lot_producing_id.id,
-                                                                         'date':datetime.now(),
-                                                                         'location_id':des_locationid,
-                                                                         'location_dest_id':locationid,
-                                                                         'state':'done',
-                                                                         'qty_onhand':move_qty
-                                                                         })
-                    move_line = stockmove_line.id
-    
-                    picking = self.env["stock.picking"].search([('origin','=',out.oa_id.name),('state','not in',('draft','done','cancel'))])
-                    if picking:
-                        picking.action_assign()
-                
-            next = None
-            w_center = None
-            operation_of = 'output'
-            can_create = True
-            next = 'FG Packing'
-            if can_create:
-                ope = self.env['operation.details'].create({'name':out.name,
-                                                        'mrp_lines':out.mrp_line.id,
-                                                        'sale_lines':out.sale_order_line.id,
-                                                        'mrp_line':out.mrp_line.id,
-                                                        'sale_order_line':out.sale_order_line.id,
-                                                        'parent_id':out.id,
-                                                        'oa_id':out.oa_id.id,
-                                                        'buyer_name':out.buyer_name,
-                                                        'product_id':out.product_id.id,
-                                                        'product_template_id':out.product_template_id.id,
-                                                        'action_date':datetime.now(),
-                                                        'shade':out.shade,
-                                                        'shade_ref':out.shade_ref,
-                                                        'finish':out.finish,
-                                                        'logo':out.logo,
-                                                        'logoref':out.logoref,
-                                                        'logo_type':out.logo_type,
-                                                        'style':out.style,
-                                                        'gmt':out.gmt,
-                                                        'shapefin':out.shapefin,
-                                                        'b_part':out.b_part,
-                                                        'c_part':out.c_part,
-                                                        'd_part':out.d_part,
-                                                        'finish_ref':out.finish_ref,
-                                                        'product_code':out.product_code,
-                                                        'shape':out.shape,
-                                                        'back_part':out.back_part,
-                                                        'sizein':out.sizein,
-                                                        'sizecm':out.sizecm,
-                                                        'sizemm':out.sizemm,
-                                                        'slidercodesfg':out.slidercodesfg,
-                                                        'top':out.top,
-                                                        'bottom':out.bottom,
-                                                        'pinbox':out.pinbox,
-                                                        'operation_of':operation_of,
-                                                        'work_center':w_center,
-                                                        'operation_by':'Packing',
-                                                        'based_on':'Lot Code',
-                                                        'next_operation':next,
-                                                        'actual_qty':out.actual_qty,
-                                                        'qty':out.uotput_qty,
-                                                        'pack_qty':pack_qty,
-                                                        'fr_pcs_pack':fraction_pc_of_pack,
-                                                        'capacity':pr_pac_qty,
-                                                        'move_line':move_line,
-                                                        'price_unit':out.price_unit,
-                                                        })
-            out.uotput_qty = 0
+                    raise UserError(('Please check something is wrong'))
+            else:
+                raise UserError(('Please check something is wrong'))
 
 
 
