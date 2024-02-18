@@ -12,7 +12,6 @@ class ProvisionalNaf(models.Model):
 
     type = fields.Selection([
         ('customer', 'Customer'),
-        ('buyer', 'Buyer'),
         ('buyinghouse', 'Buying House'),
         
     ],string="Type", required=True)
@@ -42,6 +41,7 @@ class ProvisionalNaf(models.Model):
     property_payment_term_id = fields.Many2one('account.payment.term', string="Payment Terms")
     state = fields.Selection([
         ('draft', 'Draft'),
+        ('inter', 'Intermediate'),
         ('to approve', 'To Approve'),
         ('approved', 'Approved'),
         ('cancel', 'Cancel'),
@@ -51,9 +51,21 @@ class ProvisionalNaf(models.Model):
         string="Approved By",
         comodel_name="res.users",
     )
-    
+    customer_group = fields.Many2one('res.partner', string="Customer Group", domain="[['customer_group_rank', '=', 1]]")
+    buyer = fields.Many2one('res.partner', string="Buyer", domain="[['buyer_rank' ,'=', 1]]")
+    salesperson = fields.Many2one('res.users', domain="[['share', '=', False],['sale_team_id', '!=', False]]",)
 
-    
-    
+    @api.model
+    def create(self, vals):
+        
+        if vals.get('name', _('New')) == _('New'):
+            seq_date = None
+            # seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
+            vals['name'] = self.env['ir.sequence'].next_by_code('provisional.template', sequence_date=seq_date) or _('New')
+        if vals.get('state'):
+            vals['state'] = 'inter'
+            
+        result = super(ProvisionalNaf, self).create(vals)
+        return result
     
     

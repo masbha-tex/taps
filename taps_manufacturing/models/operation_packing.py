@@ -241,7 +241,13 @@ class OperationPacking(models.Model):
             pack_qty = 0
             fraction_pc_of_pack = 0
             pr_pac_qty = 0
-            done_qty = out.done_qty + out.uotput_qty
+            
+            op_packing = self.env["operation.details"].search([('sale_order_line','=',out.sale_order_line.id),('next_operation','=','FG Packing')])
+            d_q = 0
+            if op_packing:
+                d_q = sum(op_packing.mapped('qty'))
+            
+            done_qty = d_q + out.uotput_qty
             if (out.balance_qty < out.uotput_qty):
                 raise UserError(('You can not produce more then balance'))
             if (out.uotput_qty < 0):
@@ -384,7 +390,6 @@ class OperationPacking(models.Model):
                                                                 'price_unit':out.price_unit,
                                                                 })
                     out.uotput_qty = 0
-                    out.done_qty = done_qty
                 else:
                     raise UserError(('Please check something is wrong'))
             else:

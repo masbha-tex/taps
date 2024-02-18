@@ -10,8 +10,8 @@
                         <!-- <button name="action_submit_approval" type="object" string="Submit" attrs= "{'invisible': [('state', 'not in', ['draft'])]}" help="Click On Submit to send for approval "/>
                         <button name="action_approve" type="object" string="Approve" attrs= "{'invisible': [('state', 'not in', ['to approve'])]}" help="Click On Approve to create a record"/>
                         <button name="action_set_draft" type="object" string="Set to Draft" attrs= "{'invisible': [('state', 'not in', ['cancel'])]}"/>
-                        <button name="action_cancel" type="object" string="Cancel" attrs= "{'invisible': [('state', 'not in', ['approved'])]}"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,to approve,approved"/> -->
+                        <button name="action_cancel" type="object" string="Cancel" attrs= "{'invisible': [('state', 'not in', ['approved'])]}"/> -->
+                        <field name="state" widget="statusbar" statusbar_visible="draft,inter,to approve,approved"/>
                     </header>
                     <sheet>
                         <group>
@@ -24,6 +24,17 @@
                                 <field name="name" default_focus="1" placeholder="Name"/>
                             </h1>
                         </div>
+                        <group>
+                            <group>
+                                <field name="customer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|',['type', '=', 'buyinghouse'],['state', '=', 'draft']]}"/>
+                                <field name="buyer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|',['type', '=', 'buyinghouse'],['state', '=', 'draft']]}"/>
+                            </group>
+                            <group>
+                                <field name="salesperson" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['state', '=', 'draft']]}"/>
+                                
+                            </group>
+                                
+                        </group>
                         <group>
                             <group>
                                 <span class="o_form_label o_td_label" name="address_name">
@@ -45,6 +56,27 @@
                                 <field name="email" widget="email" context="{'gravatar_image': True}"/>
                                 <field name="website" widget="url" placeholder="e.g. https://www.odoo.com"/>
                         </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="swift_code" attrs="{'invisible': [['state', '=', 'draft']]}"/>
+                                <field name="bond_license" attrs="{'invisible': [['state', '=', 'draft']]}"/>
+                                <!-- <field name="property_product_pricelist" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/> -->
+                                
+                            </group>
+                            <group>
+                                <field name="property_payment_term_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['state', '=', 'draft']]}"/>
+                                <field name="incoterms" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['state', '=', 'draft']]}"/>
+                                
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="delivery_address" attrs="{'invisible': [['state', '=', 'draft']]}"/>
+                            </group>
+                            <group>
+                                <field name="billing_address" attrs="{'invisible': [['state', '=', 'draft']]}"/>
+                            </group>
                         </group>
                     </sheet>
                     <div class="oe_chatter">
@@ -69,7 +101,7 @@
             </field>
         </record>
         <record id="action_provisional_template" model="ir.actions.act_window">
-            <field name="name">NAF</field>
+            <field name="name">Provisional NAF</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">provisional.template</field>
             <field name="view_mode">tree,kanban,form</field>

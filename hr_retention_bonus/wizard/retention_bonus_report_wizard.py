@@ -81,7 +81,7 @@ class RetentionPDFReport(models.TransientModel):
         current_year = datetime.today().year
         year_options = []
         
-        for year in range(current_year - 3, current_year + 3):
+        for year in range(current_year - 2, current_year + 3):
             year_str = str(year)
             next_year = str(year+1)
             year_label = f'{year_str}-{next_year[2:]}'

@@ -25,3 +25,5 @@ access_naf_template,access_naf_template,model_naf_template,sales_team.group_sale
 access_buyer_sourcing_office,access_buyer_sourcing_office,model_buyer_sourcing_office,base.group_user,1,1,1,1
 access_buyer_sourcing_type,access_buyer_sourcing_type,model_buyer_sourcing_type,base.group_user,1,1,1,1
 access_provisional_template,access_provisional_template,model_provisional_template,base.group_user,1,1,1,1
+access_sale_approval_matrix,access_sale_approval_matrix,model_sale_approval_matrix,base.group_user,1,1,1,0
+

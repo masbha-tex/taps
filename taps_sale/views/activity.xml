@@ -5,4 +5,12 @@
         <field name="res_model_id" ref="taps_sale.model_naf_template"/>
         
     </record>
+    <record id="mail_activity_provisional_naf_first_approval" model="mail.activity.type">
+        <field name="name">P-NAF First Approval</field>
+        <field name="res_model_id" ref="taps_sale.model_provisional_template"/>
+    </record>
+    <record id="mail_activity_provisional_naf_final_approval" model="mail.activity.type">
+        <field name="name">P-NAF Final Approval</field>
+        <field name="res_model_id" ref="taps_sale.model_provisional_template"/>
+    </record>
 </odoo>

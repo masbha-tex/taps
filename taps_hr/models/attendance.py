@@ -209,7 +209,7 @@ class HrAttendance(models.Model):
                     if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
                         delta = worked_hours+0.01999
                         delta = (delta * 3600 / 60) / 30
-                        delta = int(delta) * 30 * 60 / 3600
+                        delta = (int(delta) * 30 * 60 / 3600) - 1
                         com_delta = 0
                     if lv_type.code == 'CO':
                         delta = (get_att_data.outHour - outTime)
@@ -236,7 +236,7 @@ class HrAttendance(models.Model):
                     if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
                         delta = worked_hours+0.01999
                         delta = (delta * 3600 / 60) / 30
-                        delta = int(delta) * 30 * 60 / 3600
+                        delta = (int(delta) * 30 * 60 / 3600) - 1
                         com_delta = 0
                     if lv_type.code == 'CO':
                         delta = (get_att_data.outHour - outTime)
@@ -263,7 +263,7 @@ class HrAttendance(models.Model):
                 if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
                     delta = worked_hours+0.01999
                     delta = (delta * 3600 / 60) / 30
-                    delta = int(delta) * 30 * 60 / 3600
+                    delta = (int(delta) * 30 * 60 / 3600) - 1
                     com_delta = 0
                 if lv_type.code == 'CO':
                     delta = (get_att_data.outHour - outTime)
