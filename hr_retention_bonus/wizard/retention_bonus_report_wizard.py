@@ -414,7 +414,21 @@ class RetentionPDFReport(models.TransientModel):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
 
         # oifj = 0
+        shee_count = 0
+        sum_row = 1
         for rec in data.get('year_list'):
+            column_product_style = workbook.add_format({'bold': True, 'font_size': 11})
+            column_product_style_s = workbook.add_format({'bg_color': '#714B62', 'font_color':'#FFFFFF','font':'Calibri', 'font_size': 11, 'valign': 'right',  'left': True, 'top': True, 'right': True, 'bottom': True, 'bold': True,'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
+            if sum_row == 1:
+                summary_sheet = workbook.add_worksheet('Summary')
+                summary_sheet.set_column(0, 1, 15)
+                summary_sheet.write(0, 0, 'April to March', column_product_style_s)
+                summary_sheet.write(0, 1, '', column_product_style_s)
+                
+                summary_sheet.write(sum_row, 0, 'Payment Period', column_product_style)
+                summary_sheet.write(sum_row, 1, 'Total', column_product_style)
+                sum_row +=1
+                
             # if oifj > 2:
             #     raise UserError((rec[0],rec))
             year_from = int(rec[0])-1
@@ -433,7 +447,7 @@ class RetentionPDFReport(models.TransientModel):
             report_title_style3 = workbook.add_format({'font_size': 11, 'num_format': '_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)'})
             report_title_style4 = workbook.add_format({'font_size': 11, 'num_format': 'dd/mm/yy'})
             # worksheet.merge_range('A1:F1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
-            worksheet.merge_range('B2:C2', ('April to Mar (%s - %s)' % (str(year_from),str(year_to))), report_title_style)
+            worksheet.merge_range('B2:C2', ('April to March (%s - %s)' % (str(year_from),str(year_to))), report_title_style)
             
             report_small_title_style = workbook.add_format({'align': 'center','bold': True, 'font_size': 14})
             # worksheet.write(1, 2, ('From %s to %s' % (datefrom,dateto)), report_small_title_style)
@@ -587,7 +601,16 @@ class RetentionPDFReport(models.TransientModel):
             worksheet.write(row, 18, '=SUM(S{0}:S{1})'.format(5, row), column_issued_style)
             worksheet.write(row, 19, '=SUM(T{0}:T{1})'.format(5, row), column_issued_style)
             worksheet.write(row, 20, '=SUM(U{0}:U{1})'.format(5, row), column_issued_style)
+
+            # '2023 - 2024'!I7
+            formula_string = '=SUM(\'{0}\'!I{1}:I{2})'.format(sheet_name, 5, row)
         
+            summary_sheet.write(sum_row, 0, sheet_name, column_issued_style)
+            summary_sheet.write(sum_row, 1, formula_string, column_issued_style)
+            sum_row += 1
+        summary_sheet.write(sum_row, 0, 'Grand Total', column_product_style_s)
+        summary_sheet.write(sum_row, 1, '=SUM(B{0}:B{1})'.format(1, sum_row), column_product_style_s)
+        sum_row += 1
 
         
         #raise UserError((datefrom,dateto,bankname,categname))

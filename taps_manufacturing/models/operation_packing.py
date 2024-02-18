@@ -384,6 +384,7 @@ class OperationPacking(models.Model):
                                                                 'price_unit':out.price_unit,
                                                                 })
                     out.uotput_qty = 0
+                    out.done_qty = done_qty
                 else:
                     raise UserError(('Please check something is wrong'))
             else:
