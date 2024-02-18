@@ -97,6 +97,7 @@
         'reports/kpi_objective_pdf_template.xml',
         'reports/kpi_objective_score_pdf_template.xml',
         'reports/kpi_objective_score_quarter_pdf_template.xml',
+        'reports/kpi_goal_list.xml',
         'wizard/headwise_report_wizard_view.xml',
         'wizard/salary_report_wizard_view.xml',
         'wizard/att_reprocess_wizard_view.xml',

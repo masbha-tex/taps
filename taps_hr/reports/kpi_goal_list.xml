@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<template id="report_kpi_goal_list">
+		<t t-call="web.basic_layout">
+            <div class="page">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 text-left py-1 bg-dark" style="border-radius: 8pt; font-weight: bold;">
+								<div class="float-left mb-2 mt-2 ml-3 mr-2  pb-1 pl-3 pr-1 pt-2">
+									<div>
+                                        <!-- <br/> -->
+										<!--<h5 class="bg-white text-dark py-2 squared-pill">Owner</h5>-->
+										<!-- <img class="img-fluid rounded-circle mb-2" style="height:60pt;width:60pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/> -->
+										<h3 class="text-white">
+											<!-- <t t-esc="docs.employee_id.name"/> -->
+                                            <span>KPI Objectives and Scorecard</span>
+										</h3>
+										<p class="text-gray">
+                                            <span>Q1</span>
+											<!-- <t t-esc="docs.employee_id.job_id.name"/> -->
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+                    </div>
+                <div class="container mt-2 ">
+                    <div class="col-4">
+                        <div class="container mt-2 " style="border: 1pt solid black;">
+                            <div class="row">
+                                
+                                    <div class="col-4 float-left">
+                                        <img class="img-fluid mb-2" style="height:100pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/>
+            										
+                                            <!-- <table class="float-left" style="font-size:12px; width:320pt; height:100pt; table-layout: fixed !important; ">
+                                                <tr>
+                                                    <td>
+                                                        <img class="img-fluid mb-2" style="height:100pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/>
+                                                    </td>
+                                                </tr>
+                                            </table> -->
+                                        </div>
+                                        <div class="col-8 float-right">
+                                            <h4>
+    											<t t-esc="docs.employee_id.name"/>
+                                            <!-- <span>KPI Objectives and Scorecard</span> -->
+    										</h4>
+                                            <p class="text-gray">
+                                            <!-- <span>Q1</span> -->
+											<t t-esc="docs.employee_id.job_id.name"/>
+    										</p>
+                                            <table class="table table-sm p-0 m-0 left bg-dark" style="font-size:7.5pt; width:100%; table-layout:fixed;color: white">
+                                                <thead>
+                                                    <tr align="left" >
+                                                        <th style="background-color:grey;color:white; text-align: center">Q1</th>
+                                                        <th style="background-color:grey;color:white; text-align: center">Q2</th>
+                                                        <th style="background-color:grey;color:white; text-align: center">Q3</th>
+                                                        <th style="background-color:grey;color:white; text-align: center">Q4</th>
+                                                        <th style="background-color:#714B67; color: white; text-align: center">YTD</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="p-0 m-0" align="left">
+                                                        <td style="background-color:grey;color:white; text-align: center">
+                                                            <field name="docs.q_1_ytd"/>
+                                                        </td>
+                                                        <td style="background-color:grey;color:white; text-align: center">
+                                                            <field name="docs.q_2_ytd"/>
+                                                        </td>
+                                                        <td style="background-color:grey;color:white; text-align: center">
+                                                            <field name="docs.q_3_ytd"/>
+                                                        </td>
+                                                        <td style="background-color:grey;color:white; text-align: center">
+                                                            <field name="docs.q_4_ytd"/>
+                                                        </td>
+                                                        <td style="background-color:#714B67;color:white; text-align: center">
+                                                            <field name="docs.ytd_weightage_acvd"/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+            							</div>
+                                    <!-- </div> -->
+        						</div>
+    						<!-- <div class="col-4 float-right">
+    							
+                                <table class="table table-sm p-0 m-0 left bg-dark" style="font-size:7.5pt; width:100%; table-layout:fixed;color: white">
+                            <thead>
+                                <tr align="left" >
+                                    <th style="background-color:grey;color:white; text-align: center">Q1</th>
+                                    <th style="background-color:grey;color:white; text-align: center">Q2</th>
+                                    <th style="background-color:grey;color:white; text-align: center">Q3</th>
+                                    <th style="background-color:grey;color:white; text-align: center">Q4</th>
+                                    <th style="background-color:#714B67; color: white; text-align: center">YTD</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="p-0 m-0" align="left">
+                                    <td style="background-color:grey;color:white; text-align: center">
+                                        <field name="docs.q_1_ytd"/>
+                                    </td>
+                                    <td style="background-color:grey;color:white; text-align: center">
+                                        <field name="docs.q_2_ytd"/>
+                                    </td>
+                                    <td style="background-color:grey;color:white; text-align: center">
+                                        <field name="docs.q_3_ytd"/>
+                                    </td>
+                                    <td style="background-color:grey;color:white; text-align: center">
+                                        <field name="docs.q_4_ytd"/>
+                                    </td>
+                                    <td style="background-color:#714B67;color:white; text-align: center">
+                                        <field name="docs.ytd_weightage_acvd"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+    						</div> -->
+                    </div>
+                </div>
+                <div class="col-8">
+                </div>
+            </div>
+                </div>
+        </t>
+	</template>
+</odoo>

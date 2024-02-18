@@ -401,6 +401,22 @@
             </xpath>
             <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[6]/div[2]/t[1]/img[1]" position="replace"/>
             
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[4]/div[1]/t[1]" position="replace"/>
+            
+            <xpath expr="//div[hasclass('dropdown-menu')]" position="inside">
+                <a role="menuitem" class="dropdown-item" name="action_report_kpi_list_1" type="action">
+                    Q-1 Dashboard
+                </a>
+                <a role="menuitem" class="dropdown-item" name="action_report_kpi_list_2" type="action">
+                    Q-2 Dashboard
+                </a>
+                <a role="menuitem" class="dropdown-item" name="action_report_kpi_list_3" type="action">
+                    Q-3 Dashboard
+                </a>
+                <a role="menuitem" class="dropdown-item" name="action_report_kpi_list_4" type="action">
+                    Q-4 Dashboard
+                </a>                
+            </xpath>            
             <!-- <xpath expr="//field[@name='activity_ids']" position="replace"/> -->
             <xpath expr="//field[@name='department_id']" position="replace"/>
             <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[5]/div[1]" position="after">

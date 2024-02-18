@@ -67,11 +67,13 @@
         'wizard/ccr_wizard.xml',
         'wizard/order_modification_warning.xml',
         'views/activity.xml',
+        'views/approval_matrix.xml',
         
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",
              "static/src/xml/sale_reporting_dashboard.xml",
              "static/src/ccr/ccr_dashboard.xml",
+             # "static/src/xml/similar_customer.xml",
              # "static/src/xml/confirmation_box.xml",
             ],
     # only loaded in demonstration mode

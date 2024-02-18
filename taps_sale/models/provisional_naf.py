@@ -64,8 +64,64 @@ class ProvisionalNaf(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('provisional.template', sequence_date=seq_date) or _('New')
         if vals.get('state'):
             vals['state'] = 'inter'
-            
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)    
         result = super(ProvisionalNaf, self).create(vals)
+        self.env['mail.activity'].sudo().create({
+                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id,
+                'res_id': result.id,
+                'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
+                'user_id': user.first_approval.id
+        })
         return result
-    
+
+
+    def action_hod(self):
+        user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)
+        if user.first_approval.id == self.env.user.id:
+            activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id)])
+            activity_id.action_feedback(feedback="Approved")
+            self.write({'state':'to approve'})
+            self.activity_schedule('taps_sale.mail_activity_provisional_naf_final_approval', user_id=user.second_approval.id)
+        else:
+            raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
+        return {}
+
+    def action_approve(self):
+        user = self.env['sale.approval.matrix'].search([('model_name','=','provisional.template.customer')],limit=1)
+        
+        if user.second_approval.id == self.env.user.id:
+            result = self._check_duplicate_partner(self.type)
+            raise UserError((result))
+                    
+        # else:
+        #     raise UserError(("Only "+ user.second_approval.partner_id.name + " can approve this"))
+        return {}
+
+    def _check_duplicate_partner(self, type):
+        
+        list = ['limited','ltd','co','mpany', '.',',',' ','(',')', 'pvt', 'private','apparels','apparel']
+        duplicate = 0
+        duplicate_name = ''
+        if type == 'customer':
+            exists = self.env['res.partner'].search([('customer_rank', '>=', 1)])
+        if type == 'buyinghouse':
+            exists = self.env['res.partner'].search([('buying_house_rank', '>=', 1)])
+        
+        # raise UserError((exists))
+        output_string = self.name.lower()
+        for record in exists:
+            check_string = record.name.lower()
+            for word in list:
+                output_string = output_string.replace(word,'')
+                check_string = check_string.replace(word,'')
+                if record.name and (check_string == output_string):
+                    duplicate_name = record.name
+                    duplicate = 1
+            
+            
+        
+        return duplicate
+
+    def open_similar_customers_popup(self):
+        return {}
     

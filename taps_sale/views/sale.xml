@@ -66,7 +66,7 @@
 						<field name="team_id" readonly="1"/>
 						<span class="ml-4"><b>Region</b></span>
 						<div class="o_row oe_inline">
-							<field name="region_id" class="oe_inline" readonly="1" options="{'no_open': true}"/>
+							<field name="region_id" class="oe_inline" readonly="1" options="{'no_open': true}" force_save="1"/>
 						</div>
 					</div>
                     
@@ -113,7 +113,7 @@
 					<field name="cause_of_revision" attrs="{'invisible': [('is_revised', '=', False), ('is_hold', '=', False)]}"/>
                     <field name="department" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
 					<field name="division" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
-					<field name="buyer_name" domain="[('buyer_rank', '=', True)]" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" context="{'default_buyer_rank': 1}"/>
+					<field name="buyer_name" domain="[('buyer_rank', '=', True)]" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" context="{'default_buyer_rank': 1}" required="1"/>
 					<field name="hs_code" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="production_type" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
 					<field name="production_group" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>

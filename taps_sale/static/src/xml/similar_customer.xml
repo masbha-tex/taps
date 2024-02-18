@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <template id="view_similar_customers_popup" inherit_id="web.dialog">
+            <xpath expr="//div[@name='modal-content']" position="inside">
+                <div class="modal-body">
+                    <ul id="similar_customers_list"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

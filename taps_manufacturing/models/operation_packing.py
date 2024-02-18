@@ -197,6 +197,12 @@ class OperationPacking(models.Model):
     # @api.model
     def write(self, vals):
         if 'done_qty' in vals:
+            op_packing = self.env["operation.details"].search([('sale_order_line','=',self.sale_order_line.id),('next_operation','=','FG Packing')])
+            d_q = 0
+            if op_packing:
+                d_q = sum(op_packing.mapped('qty'))
+            vals['done_qty'] = d_q
+            # ope = operation_p.write({'done_qty':d_q})
             if self.state not in('done','closed'):
                 if round(self.actual_qty,2) <= round(vals.get('done_qty'),2):
                     vals['state'] = 'done'
@@ -242,12 +248,7 @@ class OperationPacking(models.Model):
             fraction_pc_of_pack = 0
             pr_pac_qty = 0
             
-            op_packing = self.env["operation.details"].search([('sale_order_line','=',out.sale_order_line.id),('next_operation','=','FG Packing')])
-            d_q = 0
-            if op_packing:
-                d_q = sum(op_packing.mapped('qty'))
-            
-            done_qty = d_q + out.uotput_qty
+            done_qty = out.done_qty + out.uotput_qty
             if (out.balance_qty < out.uotput_qty):
                 raise UserError(('You can not produce more then balance'))
             if (out.uotput_qty < 0):
@@ -255,7 +256,7 @@ class OperationPacking(models.Model):
             if (out.state not in ('partial','waiting')):
                 raise UserError(('You can not update this data because of state is done/closed'))
             if done_qty > 0:
-                s = out.write({'done_qty':done_qty})
+                s = out.update({'done_qty':done_qty})
                 if out.done_qty == done_qty:
                     mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
                     
@@ -389,6 +390,8 @@ class OperationPacking(models.Model):
                                                                 'move_line':move_line,
                                                                 'price_unit':out.price_unit,
                                                                 })
+
+                    s = out.write({'done_qty':done_qty})
                     out.uotput_qty = 0
                 else:
                     raise UserError(('Please check something is wrong'))
