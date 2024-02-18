@@ -727,7 +727,14 @@ class MrpReportWizard(models.TransientModel):
         }
 
     def closed_pi_xls_template(self, docids, data=None):
+
         start_time = fields.datetime.now()
+        g_date = start_time.date() - relativedelta(months=1)
+
+        
+        query_ = """update sale_order set closing_date=a.closing_date from(select distinct oa_id,closing_date from manufacturing_order as a where closing_date is not null and date(closing_date) >= %s and company_id = %s ) as a where sale_order.company_id = %s and a.oa_id=sale_order.id"""
+        self.env.cr.execute(query_,(g_date,self.env.company.id,self.env.company.id))
+        
         closed_orders = self.env['manufacturing.order'].search([('oa_id','!=',None),('state','=','closed'),('closing_date','!=',None),('company_id','=',self.env.company.id)])
         closed_orders = closed_orders.filtered(lambda pr: pr.closing_date.date() >= data.get('date_from') and pr.closing_date.date() <= data.get('date_to'))
                 

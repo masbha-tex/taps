@@ -167,6 +167,7 @@ class OperationDetails(models.Model):
     fg_output = fields.Integer(string='FG Output', default=0, readonly=False, group_operator="sum")
     cartoon_no = fields.Many2one('operation.details', string='Cartoon No', required=False, 
                                  domain="[('next_operation', '=', 'Delivery')]")
+    # cartoon_no = fields.Many2one('fg.carton', string='Carton No', required=False, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     machine_no = fields.Many2one('machine.list', string='Machine No', required=False)
