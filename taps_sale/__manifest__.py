@@ -68,6 +68,7 @@
         'wizard/order_modification_warning.xml',
         'views/activity.xml',
         'views/approval_matrix.xml',
+        'views/allocated_customer_view.xml',
         
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",

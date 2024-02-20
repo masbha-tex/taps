@@ -1253,6 +1253,7 @@ class MrpReportWizard(models.TransientModel):
         # first_day_of_m = full_date
         
         all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
+        # raise UserError((self.env.company.id))
         daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= first_day_of_m.date() and pr.action_date.date() <= data.get('date_to'))#.sorted(key=lambda pr: pr.sequence)
         
         output = io.BytesIO()
@@ -1573,10 +1574,15 @@ class MrpReportWizard(models.TransientModel):
                 type_exists = []
                 closed_col = 11
                 for line in report_data:
-                    item_type = line[0].replace('CE','').replace('OE','')
+                    item_type = line[0]
+                    if (('CE' in line[0]) or ('OE' in line[0])):
+                        item_type = line[0].replace('CE','').replace('OE','')
                     if (((line[1] or 0) + (line[3] or 0)) > 0) and (item_type not in type_exists):
                         closed_row = 2
-                        itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE','').replace('OE','') == item_type)
+                        if self.env.company.id == 1: #company_check
+                            itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE','').replace('OE','') == item_type)
+                        else :
+                            itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == item_type)
                         c_col = closed_col
                         if line[0] == 'M#4 CE':
                             sheet.merge_range(1, closed_col, 1, closed_col+1, item_type, column_style)

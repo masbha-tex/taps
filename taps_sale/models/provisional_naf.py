@@ -53,8 +53,8 @@ class ProvisionalNaf(models.Model):
         comodel_name="res.users",
     )
     customer_group = fields.Many2one('res.partner', string="Customer Group", domain="[['customer_group_rank', '=', 1]]")
-    buyer = fields.Many2one('res.partner', string="Buyer", domain="[['buyer_rank' ,'=', 1]]")
-    salesperson = fields.Many2one('res.users', domain="[['share', '=', False],['sale_team_id', '!=', False]]",)
+    buyer = fields.Many2many('res.partner', string="Buyer", domain="[['buyer_rank' ,'=', 1]]")
+    # salesperson = fields.Many2one('res.users', domain="[['share', '=', False],['sale_team_id', '!=', False]]",)
 
     @api.model
     def create(self, vals):
@@ -106,7 +106,7 @@ class ProvisionalNaf(models.Model):
                 'name': self.name,
                 'group': self.customer_group.id,
                 'related_buyer': self.buyer,
-                'user_id' : self.salesperson.id,
+                # 'user_id' : self.salesperson.id,
                 'street' : self.street,
                 # 'street2': self.strret2,
                 'city' : self.city,
@@ -171,5 +171,5 @@ class AssignUser(models.Model):
     name = fields.Char(string="Description")
     provisional_id = fields.Many2one('provisional.template', string='Provisional ID', index=True, required=True, ondelete='cascade')
     buyer = fields.Many2one('res.partner', string='Buyer')
-    salesperson = fields.Many2one('res.users', domain=[('share', '=', False),('sale_team_id', '!=', False),('sale_team_id.name', '!=', "MARKETING")], string="Salesperson")
+    salesperson = fields.Many2one('customer.allocated', string="Salesperson")
     
