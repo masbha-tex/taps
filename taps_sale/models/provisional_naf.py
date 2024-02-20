@@ -9,7 +9,8 @@ class ProvisionalNaf(models.Model):
     _order = "name ASC, id DESC"
     _rec_name="name"
 
-
+    assign_line = fields.One2many('assign.user', 'provisional_id', string='Assign Line', copy=True, states={'approved': [('readonly', True)]})
+    
     type = fields.Selection([
         ('customer', 'Customer'),
         ('buyinghouse', 'Buying House'),
@@ -161,4 +162,14 @@ class ProvisionalNaf(models.Model):
         return duplicate
 
 
+class AssignUser(models.Model):
+    _name = 'assign.user'
+    _description = 'Assign User'
+    
+    # _order = "name ASC, id DESC"
+    # _rec_name="name"
+    name = fields.Char(string="Description")
+    provisional_id = fields.Many2one('provisional.template', string='Provisional ID', index=True, required=True, ondelete='cascade')
+    buyer = fields.Many2one('res.partner', string='Buyer')
+    salesperson = fields.Many2one('res.users', domain=[('share', '=', False),('sale_team_id', '!=', False),('sale_team_id.name', '!=', "MARKETING")], string="Salesperson")
     

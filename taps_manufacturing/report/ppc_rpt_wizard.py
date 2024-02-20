@@ -241,7 +241,7 @@ class PpcReportWizard(models.TransientModel):
 
             sheet.set_row(0, 32)
             sheet.set_row(1, 20)
-            mrp_datas = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('balance_qty','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id),('fg_categ_type','=',item.name)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
+            mrp_datas = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id),('fg_categ_type','=',item.name)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
 
             
             all_oa = mrp_datas.mapped('oa_id').sorted(key=lambda pr: pr.id)

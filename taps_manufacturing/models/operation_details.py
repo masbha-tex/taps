@@ -803,10 +803,7 @@ class OperationDetails(models.Model):
                                                             'carton_weight':vals.get('carton_weight')
                                                             })
                 vals['fg_output'] = 0
-                if name:
-                    a = ''
-                else:
-                    vals['cartoon_no'] = vals.get('cartoon_no') #ope.id
+                vals['cartoon_no'] = ope.cartoon_no.id
         # raise UserError((vals.get('state')))
         result = super(OperationDetails, self).write(vals)
         return result                

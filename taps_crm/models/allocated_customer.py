@@ -37,7 +37,7 @@ class AllocatedCustomerLine(models.Model):
 
     
         
-    allocated_id = fields.Many2one('customer.allocated', string='Allocated Line', index=True, required=True, ondelete='cascade')
+    allocated_id = fields.Many2one('customer.allocated', string='Allocated Id', index=True, required=True, ondelete='cascade')
     name = fields.Char(string="Description")
     # domain = fields.Char()
     customer_domain = fields.Char(compute="_compute_customer",readonly=True, store=True)

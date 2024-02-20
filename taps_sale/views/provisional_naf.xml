@@ -32,10 +32,11 @@
                             </group>
                             <group>
                                 <field name="salesperson" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['state', '=', 'draft']], 'required': [['state', '=', 'inter']]}"/>
-                                
+                                <!-- <field name="assign_salesperson"/> -->
                             </group>
                                 
                         </group>
+                        
                         <group>
                             <group>
                                 <span class="o_form_label o_td_label" name="address_name">
@@ -79,6 +80,30 @@
                                 <field name="billing_address" attrs="{'invisible': [['state', '=', 'draft']],'required': [['state', '=', 'inter']]}"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Assign Salesperson" name="allocated_line">
+                                <field name="assign_line" widget="section_and_note_one2many" mode="tree">
+                                <tree
+                                    string="Assign Line"
+                                    editable="bottom">
+                                        <control>
+                                        <create name="add_product_control" string="Add a Line" />
+                                    </control>
+                                        
+                                        
+                                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                        
+                                        <field name="salesperson"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" force_save="1"/>
+                                        
+                                        
+                                        <field name="name" invisible="1"/>
+                                       
+                                    
+                                    </tree>
+                                </field>
+                             </page>
+                            
+                        </notebook>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids"/>
@@ -98,6 +123,21 @@
                     <field name="type"/>
                     <!-- <field name="create_uid" widget="many2one_avatar_user"/>
                     <field name="approved_by" widget="many2one_avatar_user"/> -->
+                </tree>
+            </field>
+        </record>
+        <record id="assign_user_line_tree" model="ir.ui.view">
+            <field name="name">assign.user.line.tree</field>
+            <field name="model">assign.user</field>
+            <field name="arch" type="xml">
+                <tree string="Assign Line Tree" create="false">
+                   
+                    
+                    
+                    <field name="buyer"/>
+                    
+                    <field name="salesperson"/>
+                    <field name="name" invisible="1"/>
                 </tree>
             </field>
         </record>
