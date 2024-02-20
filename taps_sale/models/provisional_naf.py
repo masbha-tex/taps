@@ -84,18 +84,56 @@ class ProvisionalNaf(models.Model):
             self.activity_schedule('taps_sale.mail_activity_provisional_naf_final_approval', user_id=user.second_approval.id)
         else:
             raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
-        return {}
+        
 
     def action_approve(self):
         user = self.env['sale.approval.matrix'].search([('model_name','=','provisional.template.customer')],limit=1)
         
         if user.second_approval.id == self.env.user.id:
             result = self._check_duplicate_partner(self.type)
-            raise UserError((result))
-                    
-        # else:
-        #     raise UserError(("Only "+ user.second_approval.partner_id.name + " can approve this"))
-        return {}
+            if result == 1:
+                raise UserError(("This Customer already exist in Database"))
+            else:
+                customer_rank = 0
+                buying_house_rank = 0
+                if self. type == 'customer':
+                    customer_rank=1
+                if self. type == 'buyinghouse':
+                    buying_house_rank=1
+                
+                data = {
+                'name': self.name,
+                'group': self.customer_group.id,
+                'related_buyer': self.buyer,
+                'user_id' : self.salesperson.id,
+                'street' : self.street,
+                # 'street2': self.strret2,
+                'city' : self.city,
+                'state_id': self.state_id.id,
+                'country_id' : self.country_id.id,
+                'contact_person': self.contact_person,
+                'phone': self.phone,
+                'mobile' : self.mobile,
+                'email' : self.email,
+                'website' : self.website,
+                'swift_code' : self.swift_code,
+                'bond_license': self.bond_license,
+                'property_payment_term_id': self.property_payment_term_id.id,
+                'delivery_address': self.delivery_address,
+                'billing_address': self.billing_address,
+                'customer_rank' : customer_rank,
+                'buying_house_rank' : buying_house_rank,
+                'incoterms': self.incoterms.id,
+                'company_type': 'company',
+                }
+                new_customer = self.env['res.partner'].create(data)
+                activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_final_approval').id)])
+                activity_id.action_feedback(feedback="Approved")
+                self.write({'state': 'approved'})
+                
+        else:
+            raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
+            
 
     def _check_duplicate_partner(self, type):
         
@@ -122,6 +160,5 @@ class ProvisionalNaf(models.Model):
         
         return duplicate
 
-    def open_similar_customers_popup(self):
-        return {}
+
     

@@ -808,6 +808,7 @@ class SaleOrder(models.Model):
                 'sale_representative' : saleorder.order_ref.sale_representative.id,
                 'user_id' : saleorder.order_ref.user_id,
                 'team_id' : saleorder.order_ref.team_id,
+                'region_id' : saleorder.order_ref.region_id,
                 'mockup_details' : saleorder.order_ref.mockup_details,
                 
             })
@@ -995,6 +996,7 @@ class SaleOrder(models.Model):
                     'sale_representative' : saleorder.sample_ref[0].sale_representative.id,
                     'user_id' : saleorder.sample_ref[0].user_id,
                     'team_id' : saleorder.sample_ref[0].team_id,
+                    'region_id' : saleorder.sample_ref[0].region_id,
                     'mockup_details' : saleorder.sample_ref[0].mockup_details,
                 })
             

@@ -23,7 +23,7 @@
                             <h1>
                                 <field name="name" default_focus="1" placeholder="Name"/>
                             </h1>
-                            <button name="open_similar_customers_popup" type="object" string="Check Similar" context="{'type': 'type'}"/>
+                            <!-- <button name="open_similar_customers_popup" type="object" string="Check Similar" context="{'type': 'type'}"/> -->
                         </div>
                         <group>
                             <group>

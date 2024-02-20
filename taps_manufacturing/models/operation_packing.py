@@ -101,7 +101,15 @@ class OperationPacking(models.Model):
     #             s.balance_qty = round((s.actual_qty - s.done_qty),2)
     #         else:
     #             s.balance_qty = round((s.qty - s.done_qty),2)
-    
+    @api.depends('qty', 'done_qty', 'uotput_qty')
+    def get_done_qty(self):
+        for s in self:
+            op_packing = self.env["operation.details"].search([('sale_order_line','=',self.sale_order_line.id),('next_operation','=','FG Packing')])
+            d_q = 0
+            if op_packing:
+                d_q = sum(op_packing.mapped('qty'))
+            s.done_qty = d_q
+ 
     
     @api.depends('qty', 'done_qty', 'actual_qty')
     def get_ac_balance(self):
@@ -119,7 +127,7 @@ class OperationPacking(models.Model):
     qty = fields.Float(string='Qty', readonly=False)
     # price_unit = fields.Float('Unit Price', digits='Product Price', default=0.0, store=True)
     price_unit = fields.Float('Unit Price', related='sale_order_line.price_unit', digits='Product Price', default=0.0, readonly=True, store=True)
-    done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False)
+    done_qty = fields.Float(string='Qty Done', default=0.0, readonly=False, store=True, compute='get_done_qty')
     balance_qty = fields.Float(string='Balance', readonly=False, store=True, compute='get_ac_balance', group_operator="sum")
     uotput_qty = fields.Float(string='Output', default=0.0, readonly=False)
     revision_no = fields.Char(string='Revision No', store=True)

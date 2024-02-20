@@ -165,9 +165,8 @@ class OperationDetails(models.Model):
     fg_done_qty = fields.Integer(string='FG Done', default=0, readonly=False)
     fg_balance = fields.Integer(string='FG Balance', readonly=False, store=True, compute='get_fg_balance', group_operator="sum")
     fg_output = fields.Integer(string='FG Output', default=0, readonly=False, group_operator="sum")
-    cartoon_no = fields.Many2one('operation.details', string='Cartoon No', required=False, 
-                                 domain="[('next_operation', '=', 'Delivery')]")
-    # cartoon_no = fields.Many2one('fg.carton', string='Carton No', required=False, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    # cartoon_no = fields.Many2one('operation.details', string='Cartoon No', required=False, domain="[('next_operation', '=', 'Delivery')]")
+    cartoon_no = fields.Many2one('fg.packaging', string='Carton No', required=False, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     machine_no = fields.Many2one('machine.list', string='Machine No', required=False)
@@ -190,6 +189,7 @@ class OperationDetails(models.Model):
     return_qty = fields.Float(string='Return Qty', default=0.0, readonly=False)
     
     sale_line_of_top = fields.Integer(string='Sale Line of Top', store=True, readonly=True)
+    carton_weight = fields.Float(string='Weight', default=0.0, readonly=False)
     # @api.model
     # def action_unplan(self):
     #     if self.state == 'waiting':
@@ -708,12 +708,16 @@ class OperationDetails(models.Model):
             ref = self.env['ir.sequence'].next_by_code('mrp.lot', sequence_date=seq_date)
             vals['name'] = ref
         if vals.get('next_operation') == "Delivery":
-            if 'name' in vals:
-                if vals.get('name'):
-                    vals['name'] = vals.get('name')
+            if 'cartoon_no' in vals:
+                if vals.get('cartoon_no'):
+                    vals['cartoon_no'] = vals.get('cartoon_no')
                 else:
-                    ref = self.env['ir.sequence'].next_by_code('fg.cartoon', sequence_date=seq_date)
-                    vals['name'] = ref
+                    weight = 0
+                    if vals.get('carton_weight'):
+                        weight = vals.get('carton_weight')
+                    packing = self.env['fg.packaging'].create({'company_id':self.env.company.id,'total_weight':weight})
+                    # ref = self.env['ir.sequence'].next_by_code('fg.cartoon', sequence_date=seq_date)
+                    vals['cartoon_no'] = packing.id
         vals['state'] = 'waiting'
         result = super(OperationDetails, self).create(vals)
         return result                
@@ -737,6 +741,7 @@ class OperationDetails(models.Model):
                         vals['state'] = 'waiting'
                     else:
                         vals['state'] = 'partial'
+        
         if 'fg_output' in vals:
             if self.fg_balance < vals.get('fg_output'):
                 raise UserError(('You can not pack more then balance'))
@@ -756,7 +761,7 @@ class OperationDetails(models.Model):
                 name = None
                 if 'cartoon_no' in vals:
                     # cartoon = vals.get('cartoon_no')
-                    out = self.env['operation.details'].search([('id', '=', vals.get('cartoon_no'))])
+                    out = self.env['operation.details'].search([('cartoon_no', '=', vals.get('cartoon_no')),('next_operation', '=', 'FG Packing')])
                     #self.env['operation.details'].filtered(lambda op: op.id == 120)
                     #.sorted(key=lambda pr: pr.id)[:1]
                     if out:
@@ -764,7 +769,8 @@ class OperationDetails(models.Model):
                 #     out.update({'qty': out.qty + vals.get('fg_output')})
                 # else:
                 # raise UserError((qty,vals.get('fg_output')))
-                ope = self.env['operation.details'].create({'name':name,
+                # raise UserError((vals.get('cartoon_no')))
+                ope = self.env['operation.details'].create({'name':None,
                                                             'mrp_lines':self.mrp_lines,
                                                             'sale_lines':self.sale_lines,
                                                             'mrp_line':self.mrp_line.id,
@@ -792,13 +798,15 @@ class OperationDetails(models.Model):
                                                             'qty':qty,
                                                             'pack_qty':vals.get('fg_output'),
                                                             'fr_pcs_pack':ret_qty,
-                                                            'move_line':self.move_line.id
+                                                            'move_line':self.move_line.id,
+                                                            'cartoon_no':vals.get('cartoon_no'),
+                                                            'carton_weight':vals.get('carton_weight')
                                                             })
                 vals['fg_output'] = 0
                 if name:
                     a = ''
                 else:
-                    vals['cartoon_no'] = ope.id
+                    vals['cartoon_no'] = vals.get('cartoon_no') #ope.id
         # raise UserError((vals.get('state')))
         result = super(OperationDetails, self).write(vals)
         return result                

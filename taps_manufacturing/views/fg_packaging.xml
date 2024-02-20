@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="view_form_new_fg_packing" model="ir.ui.view">
-            <field name="name">fg.packing.form.view</field>
-            <field name="model">fg.packing</field>
+        <record id="view_form_fg_packaging" model="ir.ui.view">
+            <field name="name">fg.packaging.form.view</field>
+            <field name="model">fg.packaging</field>
     			<field name="arch" type="xml">
-                    <form string="FG Packing New">
+                    <form string="FG packaging">
                         <group>
-                            <!-- <field name="name"/> -->
-                            <field name="carton_no"/>
+                            <field name="name"/>
+                            <field name="internal_ref"/>
+                            <field name="company_id"/>
+                            <!-- <field name="packaging_line"/> -->
                             <field name="total_weight"/>
-                            <field name="qty"/>
-                            <!-- <field name="buyer_name"/> -->
+                            <field name="total_qty"/>
+                            <field name="total_pack"/>
+                            <field name="customer_id"/>
                         </group>
                         <group>
                             <notebook>
-                                <page name="carton_line" string="Packing Line">
-                                    <field name="carton_line">
-                                        <tree string="Packing Line" editable="bottom">
-                                            <field name="fg_carton" invisible="1"/>
+                                <page name="packaging_line" string="packaging Line">
+                                    <field name="packaging_line">
+                                        <tree string="packaging Line" editable="bottom">
+                                            <field name="packaging_id" invisible="1"/>
                                             <field name="l_code"/>
                                             <field name="oa_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                                             <field name="slidercodesfg" required="True" optional="show" sum="Quantity" decoration-bf="True" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
@@ -42,30 +45,30 @@
                 </field>
 		</record>
 
-        <record id="view_new_fg_packing_tree" model="ir.ui.view">
-            <field name="name">fg.new_packing.tree</field>
-            <field name="model">fg.packing</field>
+        <record id="view_fg_packaging_tree" model="ir.ui.view">
+            <field name="name">fg.packaging.tree</field>
+            <field name="model">fg.packaging</field>
             <field name="arch" type="xml" >
-                <tree string="FG Packing" create="true">
-                     <!-- delete ="false" editable="top" class="custom_column" -->
-                    <!-- <field name="name"/> -->
-                    <field name="carton_no"/>
-                    <!-- <field name="carton_line"/> -->
+                <tree string="FG Packaging" create="true">
+                    <field name="name"/>
+                    <field name="internal_ref"/>
+                    <field name="company_id"/>
                     <field name="total_weight"/>
-                    <field name="qty"/>
-                    <field name="buyer_name"/>
+                    <field name="total_qty"/>
+                    <field name="total_pack"/>
+                    <field name="customer_id"/>
                 </tree>
             </field>
         </record>        
 
         
-        <record id="view_new_fg_packing_line_tree" model="ir.ui.view">
-            <field name="name">fg.packing.line.tree</field>
-            <field name="model">fg.packing.line</field>
+        <record id="view_fg_packaging_line_tree" model="ir.ui.view">
+            <field name="name">fg.packaging.line.tree</field>
+            <field name="model">fg.packaging.line</field>
             <field name="arch" type="xml" >
-                <tree string="FG Packing Line" create="true">
+                <tree string="FG Packaging Line" create="true">
                      <!-- delete ="false" editable="top" class="custom_column" -->
-                    <field name="fg_carton" invisible="1"/>
+                    <field name="packaging_id" invisible="1"/>
                     <field name="l_code"/>
                     <field name="oa_id"/>
                     <field name="product_id" force_save="1"/>
@@ -85,9 +88,9 @@
             </field>
         </record>
         
-        <record id="action_new_fg_packing" model="ir.actions.act_window">
-            <field name="name">FG Packing List</field>
-            <field name="res_model">fg.packing</field>
+        <record id="action_fg_packaging" model="ir.actions.act_window">
+            <field name="name">FG Packaging List</field>
+            <field name="res_model">fg.packaging</field>
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -99,9 +102,9 @@
             <field name="target">main</field>
         </record>         -->
     
-        <menuitem id="menu_new_fg_packing"
-            name="FG Packing New" 
-            action="action_new_fg_packing" 
+        <menuitem id="menu_fg_packaging"
+            name="FG Packaging" 
+            action="action_fg_packaging" 
             parent="mrp.menu_mrp_root"
             sequence="6"/>
 

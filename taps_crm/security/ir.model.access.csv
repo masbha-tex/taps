@@ -13,4 +13,8 @@ access_customer_reallocation,access_customer_reallocation,model_customer_realloc
 access_customer_reallocation_line,access_customer_reallocation_line,model_customer_reallocation_line,base.group_user,1,1,1,1
 access_brand_reallocation,access_brand_reallocation,model_brand_reallocation,base.group_user,1,1,1,1
 access_brand_reallocation_line,access_brand_reallocation_line,model_brand_reallocation_line,base.group_user,1,1,1,1
+access_customer_allocated,access_customer_allocated,model_customer_allocated,base.group_user,1,1,1,1
+access_customer_allocated_line,access_customer_allocated_line,model_customer_allocated_line,base.group_user,1,1,1,1
+access_buyer_allocated,access_buyer_allocated,model_buyer_allocated,base.group_user,1,1,1,1
+access_buyer_allocated_line,access_buyer_allocated_line,model_buyer_allocated_line,base.group_user,1,1,1,1
 

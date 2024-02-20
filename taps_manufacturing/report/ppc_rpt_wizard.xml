@@ -7,7 +7,7 @@
             <form string="PPC Reports">
                 <group>
                     <group>
-                        <field name="report_category" string="Report Category"/>
+                        <!-- <field name="report_category" string="Report Category" /> -->
                         <field name="report_type" string="Report Type"/>
                         <field name="date_from"/>
                         <field name="date_to"/>

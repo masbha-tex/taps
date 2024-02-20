@@ -37,5 +37,5 @@ access_oa_check,access_oa_check,model_oa_check,base.group_user,1,1,1,1
 access_label_print_data,access_label_print_data,model_label_print_data,base.group_user,1,1,1,1
 access_ppc_report,access_ppc_report,model_ppc_report,base.group_user,1,1,1,1
 access_set_exp_cd,access_set_exp_cd,model_set_exp_cd,base.group_user,1,1,1,1
-access_fg_packing,access_fg_packing,model_fg_packing,base.group_user,1,1,1,1
-access_fg_packing_line,access_fg_packing_line,model_fg_packing_line,base.group_user,1,1,1,1
+access_fg_packaging,access_fg_packaging,model_fg_packaging,base.group_user,1,1,1,1
+access_fg_packaging_line,access_fg_packaging_line,model_fg_packaging_line,base.group_user,1,1,1,1
