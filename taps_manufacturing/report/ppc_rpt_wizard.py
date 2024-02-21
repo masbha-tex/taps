@@ -235,8 +235,8 @@ class PpcReportWizard(models.TransientModel):
             sheet.set_column(0, 0, 6)
             sheet.set_column(1, 1, 0)
             sheet.set_column(2, 2, 10)
-            sheet.set_column(6, 6, 18)
             sheet.set_column(4, 4, 22)
+            sheet.set_column(6, 6, 18)
             sheet.set_column(8, 8, 0)
             sheet.set_column(9, 11, 16)
             sheet.set_column(13, 13, 24)
@@ -361,21 +361,18 @@ class PpcReportWizard(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('All Item')),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Item Wise')),
             'target': 'self',
         }
-
-        
+        #iteam wise all end here 
+    
+        #team wise all started 
     def team_wise_all(self, docids, data=None):
         start_time = fields.datetime.now()
-
-
         running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
-
+        
         m_orders = running_orders.search([('revision_no','=',None)])
-        
         rev_orders = running_orders - m_orders
-        
         m_orders = running_orders
         # oa_total_balance revision_no
         output = io.BytesIO()
@@ -384,6 +381,7 @@ class PpcReportWizard(models.TransientModel):
         column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
         
         row_style = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'center', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_left = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'left', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
         row_style_ = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'left', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
         row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
         row_style_border_top_bottom = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'top': True,'valign': 'vcenter','align': 'center', 'bottom': True})
@@ -436,6 +434,7 @@ class PpcReportWizard(models.TransientModel):
             sheet.set_column(0, 0, 6)
             sheet.set_column(1, 1, 0)
             sheet.set_column(2, 2, 10)
+            sheet.set_column(4, 4, 45)
             sheet.set_column(6, 6, 18)
             sheet.set_column(4, 4, 22)
             sheet.set_column(8, 8, 0)
@@ -485,7 +484,7 @@ class PpcReportWizard(models.TransientModel):
                         sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d %b"), row_style)
                         # sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d/%m/%Y"), row_style)
                     elif col == 4:
-                        sheet.write(row, col, o_data[0].slidercodesfg, row_style)
+                        sheet.write(row, col, o_data[0].slidercodesfg, row_style_left)
                     elif col == 5:
                         dyeing_plan_date = o_data[0].dyeing_plan.strftime("%d %b") if o_data[0].dyeing_plan else ''
                         sheet.write(row, col, dyeing_plan_date, row_style)                     
@@ -557,9 +556,11 @@ class PpcReportWizard(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('All Item Team Wise')),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Team Wise')),
             'target': 'self',
         }
+
+    #team wise end here 
 
     # Buyer wise pending order start here 
     def buyer_wise_all(self, docids, data=None):
@@ -580,23 +581,25 @@ class PpcReportWizard(models.TransientModel):
         column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
         
         row_style = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'center', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_left = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'left', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
         row_style_ = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'left', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
         row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
         row_style_border_top_bottom = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'top': True,'valign': 'vcenter','align': 'center', 'bottom': True})
         row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True,'bottom': True})
         row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
   
-        teams = self.env['crm.team'].search([('id','in',m_orders.oa_id.team_id.ids)]).sorted(key=lambda pr: pr.sequence)
+        buyers = self.env['res.partner'].search([('id','in',m_orders.oa_id.buyer_name.ids)])
+        #.sorted(key=lambda pr: pr.sequence)
 
-        for team in teams:
+        for buyer in buyers:
             all_orders = None
             all_orders = self.env['sale.order'].browse(m_orders.oa_id.ids)
-            all_orders = all_orders.filtered(lambda pr: pr.team_id.id == team.id).sorted(key=lambda pr: pr.id)        
+            all_orders = all_orders.filtered(lambda pr: pr.buyer_name.id == buyer.id).sorted(key=lambda pr: pr.id)        
             
             # sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
-            report_name = team.name
-            # raise UserError((teams))
+            report_name = buyer.name
+            # raise UserError((buyers))
             
             sheet = workbook.add_worksheet(('%s' % (report_name)))
             sheet.set_default_row(30)
@@ -633,7 +636,7 @@ class PpcReportWizard(models.TransientModel):
             sheet.set_column(1, 1, 0)
             sheet.set_column(2, 2, 10)
             sheet.set_column(6, 6, 18)
-            sheet.set_column(4, 4, 22)
+            sheet.set_column(4, 4, 45)
             sheet.set_column(8, 8, 0)
             sheet.set_column(9, 11, 16)
             sheet.set_column(13, 13, 24)
@@ -649,7 +652,7 @@ class PpcReportWizard(models.TransientModel):
                 ('oa_id', '!=', None),
                 ('state', 'not in', ('closed', 'cancel')),
                 ('company_id', '=', self.env.company.id),
-                ('oa_id.team_id', '=', team.name)
+                ('oa_id.buyer_name', '=', buyer.name)
             ]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
 
             
@@ -681,7 +684,7 @@ class PpcReportWizard(models.TransientModel):
                         sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d %b"), row_style)
                         # sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d/%m/%Y"), row_style)
                     elif col == 4:
-                        sheet.write(row, col, o_data[0].slidercodesfg, row_style)
+                        sheet.write(row, col, o_data[0].slidercodesfg, row_style_left)
                     elif col == 5:
                         dyeing_plan_date = o_data[0].dyeing_plan.strftime("%d %b") if o_data[0].dyeing_plan else ''
                         sheet.write(row, col, dyeing_plan_date, row_style)                     
@@ -756,4 +759,383 @@ class PpcReportWizard(models.TransientModel):
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Buyer Wise')),
             'target': 'self',
         }
+
+    # buyer wise end here 
+    
+    #Customer wise start here
+    def customer_wise_all(self, docids, data=None):
+        start_time = fields.datetime.now()
+
+        
+        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+
+        m_orders = running_orders.search([('revision_no','=',None)])
+        rev_orders = running_orders - m_orders
+        m_orders = running_orders 
+        # oa_total_balance revision_no
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        
+        column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
+        
+        row_style = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'center', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_left = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'left', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_ = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'left', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
+        row_style_border_top_bottom = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'top': True,'valign': 'vcenter','align': 'center', 'bottom': True})
+        row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True,'bottom': True})
+        row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
+  
+        customers = self.env['res.partner'].search([('id','in',m_orders.oa_id.partner_id.ids)])
+        #.sorted(key=lambda pr: pr.sequence)
+
+        for customer in customers:
+            all_orders = None
+            all_orders = self.env['sale.order'].browse(m_orders.oa_id.ids)
+            all_orders = all_orders.filtered(lambda pr: pr.partner_id.id == customer.id).sorted(key=lambda pr: pr.id)        
+            
+            # sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
+            
+            report_name = customer.name
+            # raise UserError((buyers))
+            
+            sheet = workbook.add_worksheet(('%s' % (report_name)))
+            sheet.set_default_row(30)
+  
+            sheet.set_margins(left=0.2, right=0.3, top=0.2, bottom=0.2)
+            sheet.set_footer('Iteam: &A Page: &P of &N Printed at &D &T', {'margin': 0.08, 'align': 'center', 'font_size': 12})
+            # sheet.set_footer('Page: &P of &N','Printed at &D &T', {'margin': 0.08, 'align': 'right', 'font_size': 10})
+            
+            sheet.fit_to_pages(1, 0)
+            sheet.set_zoom(75)
+            sheet.freeze_panes(1, 0)
+            sheet.set_paper(9)
+            
+            sheet.write(0, 0, "Sl. No", column_style)
+            # sheet.write(0, 1, f"PRODUCT: {report_name}", column_style)
+            sheet.write(0, 1, "PI NO", column_style)
+            sheet.write(0, 2, "OA NO", column_style)
+            sheet.write(0, 3, "OA DATE", column_style)
+            sheet.write(0, 4, "SLIDER", column_style)
+            sheet.write(0, 5, "DYE Plan DATE", column_style)
+            sheet.write(0, 6, "SHADE OK ", column_style)
+            sheet.write(0, 7, "SLIDR OK", column_style)
+            sheet.write(0, 8, "DIPPING", column_style)
+            sheet.write(0, 9, "ORDER QTY", column_style)
+            sheet.write(0, 10, "READY QTY", column_style)
+            sheet.write(0, 11, "PENDING", column_style)
+            sheet.write(0, 12, "LEAD TIME", column_style)
+            sheet.write(0, 13, "BUYER", column_style)
+            sheet.write(0, 14, "CUSTOMER", column_style)
+            sheet.write(0, 15, "CLOSING DATE", column_style)
+            sheet.write(0, 16, "REMARKS", column_style)
+           
+            sheet.set_column(0, 0, 6)
+            sheet.set_column(1, 1, 0)
+            sheet.set_column(2, 2, 10)
+            sheet.set_column(6, 6, 18)
+            sheet.set_column(4, 4, 45)
+            sheet.set_column(8, 8, 0)
+            sheet.set_column(9, 11, 16)
+            sheet.set_column(13, 13, 24)
+            sheet.set_column(14, 14, 34)
+            sheet.set_column(15, 15, 20)
+            sheet.set_column(16, 16, 24)
+           
+
+            sheet.set_row(0, 32)
+            sheet.set_row(1, 20)
+            mrp_datas = self.env['manufacturing.order'].search([
+                ('oa_total_balance', '>', 0),
+                ('oa_id', '!=', None),
+                ('state', 'not in', ('closed', 'cancel')),
+                ('company_id', '=', self.env.company.id),
+                ('oa_id.partner_id', '=', customer.name)
+            ]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
+
+            
+            all_oa = mrp_datas.mapped('oa_id').sorted(key=lambda pr: pr.id)
+            # all_oa = set(mrp_datas.mapped('oa_id'))
+            
+            row = 1
+            for oa in all_oa:
+                o_data = mrp_datas.filtered(lambda pr: pr.oa_id.id == oa.id)
+                col = 0
+                for l in range(17):
+                    if col == 0:
+                        sheet.write(row, col, row, row_style)
+                    elif col == 1:
+                        sheet.write(row, col, o_data[0].oa_id.order_ref.pi_number, row_style)
+                    elif col == 2:
+                        sheet.write(row, col, str(o_data[0].oa_id.name.replace("OA00", "")), row_style)
+                        # sheet.write(row, col, o_data[0].oa_id.name, row_style)
+                    elif col == 3:
+                        sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d %b"), row_style)
+                        # sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d/%m/%Y"), row_style)
+                    elif col == 4:
+                        sheet.write(row, col, o_data[0].slidercodesfg, row_style_left)
+                    elif col == 5:
+                        dyeing_plan_date = o_data[0].dyeing_plan.strftime("%d %b") if o_data[0].dyeing_plan else ''
+                        sheet.write(row, col, dyeing_plan_date, row_style)                     
+                        # sheet.write(row, col, o_data[0].dyeing_plan, row_style) #Dye Plan Date
+                    elif col == 6:
+                        total_shade = round(sum(o_data.mapped('tape_con')), 2)
+                        dyed_shade = round(sum(o_data.mapped('dyeing_qc_pass')), 2)
+                        sheet.write(row, col, f"{dyed_shade} of {total_shade}", row_style)
+                        # sheet.write(row, col, dyed_shade, row_style) 
+                    elif col == 7:
+                        sheet.write(row, col, sum(o_data.mapped('plating_output')), row_style) #slider plating ok
+                    elif col == 8:
+                        sheet.write(row, col, '', row_style)
+                    elif col == 9:
+                        sheet.write(row, col, sum(o_data.mapped('product_uom_qty')), row_style)
+                    elif col == 10:
+                        sheet.write(row, col,sum( o_data.mapped('done_qty')) , row_style)
+                    elif col == 11:
+                        sheet.write(row, col, sum(o_data.mapped('balance_qty')), row_style)
+                    elif col == 12:
+                        oa_create_date = o_data[0].oa_id.create_date
+                        today = datetime.now().date()
+                        date_difference = today - oa_create_date.date()
+                        
+                        sheet.write(row, col, date_difference, row_style) #lead Time
+                    elif col == 13:
+                        sheet.write(row, col, o_data[0].oa_id.buyer_name.name, row_style)
+                    elif col == 14:
+                        sheet.write(row, col, o_data[0].oa_id.partner_id.name, row_style_)
+                    elif col == 15:
+                        # raise UserError((o_data[0].exp_close_date))
+                        exp_close_date = o_data[0].exp_close_date.strftime("%d %b") if o_data[0].exp_close_date else ''
+                        sheet.write(row, col, exp_close_date, row_style)
+                    elif col == 16:
+                        sheet.write(row, col, '', row_style)
+
+                    col += 1
+                row += 1
+            sum_start_row = 2
+            sum_end_row = row 
+            row += 1
+            sheet.write(row, 0, '',row_style_border_top_bottom)
+            sheet.write(row, 1, '',row_style_border_top_bottom)
+            sheet.write(row, 2, '',row_style_border_top_bottom)
+            sheet.write(row, 3, '',row_style_border_top_bottom)
+            sheet.write(row, 4, '',row_style_border_top_bottom)
+            sheet.write(row, 5, '',row_style_border_top_bottom)
+            sheet.write(row, 6, '',row_style_border_top_bottom)
+            sheet.write(row, 7, '',row_style_border_top_bottom)
+            sheet.write(row, 8, '',row_style_border_top_bottom)
+            sheet.write(row, 9, f'=SUM(J{sum_start_row}:J{sum_end_row})', row_style_sum)
+            sheet.write(row, 10, f'=SUM(K{sum_start_row}:K{sum_end_row})', row_style_sum)
+            sheet.write(row, 11, f'=SUM(L{sum_start_row}:L{sum_end_row})', row_style_sum)
+            sheet.write(row, 12, '',row_style_border_top_bottom)
+            sheet.write(row, 13, '',row_style_border_top_bottom)
+            sheet.write(row, 14, '',row_style_border_top_bottom)            
+            sheet.write(row, 15, '',row_style_border_top_bottom)
+            sheet.write(row, 16, '',row_style_border_top_bottom)
+            
+             
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Customer Wise')),
+            'target': 'self',
+        }
+    # Customer Wise end here
+
+    #Stoper wise start here
+    def stopper_wise_all(self, docids, data=None):
+        start_time = fields.datetime.now()
+
+        
+        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+
+        m_orders = running_orders.search([('revision_no','=',None)])
+        rev_orders = running_orders - m_orders
+        m_orders = running_orders 
+        # oa_total_balance revision_no
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        
+        column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
+        
+        row_style = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'center', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_left = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'left', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_ = workbook.add_format({'bold': True,'valign': 'vcenter','align': 'left', 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True})
+        row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'left': True, 'top': True, 'right': True,'valign': 'vcenter','align': 'center', 'bottom': True})
+        row_style_border_top_bottom = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'top': True,'valign': 'vcenter','align': 'center', 'bottom': True})
+        row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True,'bottom': True})
+        row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
+  
+        top_bottoms = self.env['sale.order.line'].search([('id','in',m_orders.oa_id.topbottom.ids)])
+        #.sorted(key=lambda pr: pr.sequence)
+
+        for top_bottom in top_bottoms:
+            all_orders = None
+            all_orders = self.env['sale.order'].browse(m_orders.oa_id.ids)
+            all_orders = all_orders.filtered(lambda pr: pr.oa_id.topbottom.id == top_bottom.id).sorted(key=lambda pr: pr.id)        
+            
+            # sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
+            
+            report_name = top_bottom.name
+            # raise UserError((buyers))
+            
+            sheet = workbook.add_worksheet(('%s' % (report_name)))
+            sheet.set_default_row(30)
+  
+            sheet.set_margins(left=0.2, right=0.3, top=0.2, bottom=0.2)
+            sheet.set_footer('Iteam: &A Page: &P of &N Printed at &D &T', {'margin': 0.08, 'align': 'center', 'font_size': 12})
+            # sheet.set_footer('Page: &P of &N','Printed at &D &T', {'margin': 0.08, 'align': 'right', 'font_size': 10})
+            
+            sheet.fit_to_pages(1, 0)
+            sheet.set_zoom(75)
+            sheet.freeze_panes(1, 0)
+            sheet.set_paper(9)
+            
+            sheet.write(0, 0, "Sl. No", column_style)
+            # sheet.write(0, 1, f"PRODUCT: {report_name}", column_style)
+            sheet.write(0, 1, "PI NO", column_style)
+            sheet.write(0, 2, "OA NO", column_style)
+            sheet.write(0, 3, "OA DATE", column_style)
+            sheet.write(0, 4, "SLIDER", column_style)
+            sheet.write(0, 5, "DYE Plan DATE", column_style)
+            sheet.write(0, 6, "SHADE OK ", column_style)
+            sheet.write(0, 7, "SLIDR OK", column_style)
+            sheet.write(0, 8, "DIPPING", column_style)
+            sheet.write(0, 9, "ORDER QTY", column_style)
+            sheet.write(0, 10, "READY QTY", column_style)
+            sheet.write(0, 11, "PENDING", column_style)
+            sheet.write(0, 12, "LEAD TIME", column_style)
+            sheet.write(0, 13, "BUYER", column_style)
+            sheet.write(0, 14, "CUSTOMER", column_style)
+            sheet.write(0, 15, "CLOSING DATE", column_style)
+            sheet.write(0, 16, "REMARKS", column_style)
+           
+            sheet.set_column(0, 0, 6)
+            sheet.set_column(1, 1, 0)
+            sheet.set_column(2, 2, 10)
+            sheet.set_column(6, 6, 18)
+            sheet.set_column(4, 4, 45)
+            sheet.set_column(8, 8, 0)
+            sheet.set_column(9, 11, 16)
+            sheet.set_column(13, 13, 24)
+            sheet.set_column(14, 14, 34)
+            sheet.set_column(15, 15, 20)
+            sheet.set_column(16, 16, 24)
+           
+
+            sheet.set_row(0, 32)
+            sheet.set_row(1, 20)
+            mrp_datas = self.env['manufacturing.order'].search([
+                ('oa_total_balance', '>', 0),
+                ('oa_id', '!=', None),
+                ('state', 'not in', ('closed', 'cancel')),
+                ('company_id', '=', self.env.company.id),
+                ('oa_id.topbottom', '=', top_bottom.name)
+            ]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
+
+            
+            all_oa = mrp_datas.mapped('oa_id').sorted(key=lambda pr: pr.id)
+            # all_oa = set(mrp_datas.mapped('oa_id'))
+            
+            row = 1
+            for oa in all_oa:
+                o_data = mrp_datas.filtered(lambda pr: pr.oa_id.id == oa.id)
+                col = 0
+                for l in range(17):
+                    if col == 0:
+                        sheet.write(row, col, row, row_style)
+                    elif col == 1:
+                        sheet.write(row, col, o_data[0].oa_id.order_ref.pi_number, row_style)
+                    elif col == 2:
+                        sheet.write(row, col, str(o_data[0].oa_id.name.replace("OA00", "")), row_style)
+                        # sheet.write(row, col, o_data[0].oa_id.name, row_style)
+                    elif col == 3:
+                        sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d %b"), row_style)
+                        # sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d/%m/%Y"), row_style)
+                    elif col == 4:
+                        sheet.write(row, col, o_data[0].slidercodesfg, row_style_left)
+                    elif col == 5:
+                        dyeing_plan_date = o_data[0].dyeing_plan.strftime("%d %b") if o_data[0].dyeing_plan else ''
+                        sheet.write(row, col, dyeing_plan_date, row_style)                     
+                        # sheet.write(row, col, o_data[0].dyeing_plan, row_style) #Dye Plan Date
+                    elif col == 6:
+                        total_shade = round(sum(o_data.mapped('tape_con')), 2)
+                        dyed_shade = round(sum(o_data.mapped('dyeing_qc_pass')), 2)
+                        sheet.write(row, col, f"{dyed_shade} of {total_shade}", row_style)
+                        # sheet.write(row, col, dyed_shade, row_style) 
+                    elif col == 7:
+                        sheet.write(row, col, sum(o_data.mapped('plating_output')), row_style) #slider plating ok
+                    elif col == 8:
+                        sheet.write(row, col, '', row_style)
+                    elif col == 9:
+                        sheet.write(row, col, sum(o_data.mapped('product_uom_qty')), row_style)
+                    elif col == 10:
+                        sheet.write(row, col,sum( o_data.mapped('done_qty')) , row_style)
+                    elif col == 11:
+                        sheet.write(row, col, sum(o_data.mapped('balance_qty')), row_style)
+                    elif col == 12:
+                        oa_create_date = o_data[0].oa_id.create_date
+                        today = datetime.now().date()
+                        date_difference = today - oa_create_date.date()
+                        
+                        sheet.write(row, col, date_difference, row_style) #lead Time
+                    elif col == 13:
+                        sheet.write(row, col, o_data[0].oa_id.buyer_name.name, row_style)
+                    elif col == 14:
+                        sheet.write(row, col, o_data[0].oa_id.partner_id.name, row_style_)
+                    elif col == 15:
+                        # raise UserError((o_data[0].exp_close_date))
+                        exp_close_date = o_data[0].exp_close_date.strftime("%d %b") if o_data[0].exp_close_date else ''
+                        sheet.write(row, col, exp_close_date, row_style)
+                    elif col == 16:
+                        sheet.write(row, col, '', row_style)
+
+                    col += 1
+                row += 1
+            sum_start_row = 2
+            sum_end_row = row 
+            row += 1
+            sheet.write(row, 0, '',row_style_border_top_bottom)
+            sheet.write(row, 1, '',row_style_border_top_bottom)
+            sheet.write(row, 2, '',row_style_border_top_bottom)
+            sheet.write(row, 3, '',row_style_border_top_bottom)
+            sheet.write(row, 4, '',row_style_border_top_bottom)
+            sheet.write(row, 5, '',row_style_border_top_bottom)
+            sheet.write(row, 6, '',row_style_border_top_bottom)
+            sheet.write(row, 7, '',row_style_border_top_bottom)
+            sheet.write(row, 8, '',row_style_border_top_bottom)
+            sheet.write(row, 9, f'=SUM(J{sum_start_row}:J{sum_end_row})', row_style_sum)
+            sheet.write(row, 10, f'=SUM(K{sum_start_row}:K{sum_end_row})', row_style_sum)
+            sheet.write(row, 11, f'=SUM(L{sum_start_row}:L{sum_end_row})', row_style_sum)
+            sheet.write(row, 12, '',row_style_border_top_bottom)
+            sheet.write(row, 13, '',row_style_border_top_bottom)
+            sheet.write(row, 14, '',row_style_border_top_bottom)            
+            sheet.write(row, 15, '',row_style_border_top_bottom)
+            sheet.write(row, 16, '',row_style_border_top_bottom)
+            
+             
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        #raise UserError(('sfrgr'))
+        
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Customer Wise')),
+            'target': 'self',
+        }
+
+
         

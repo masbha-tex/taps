@@ -101,6 +101,7 @@ class ResPartner(models.Model):
     ], string="Customer Status", default='New')
 
     color = fields.Integer('Color Index', default=0)
+    buying_house = fields.Many2one('res.partner', string="Buying House", domain="[('buying_house_rank', '=', 1)]")
 
     # user_id = fields.Many2one(
     #     'res.users', string='Salesperson', index=True, tracking=2, default=lambda self: self.env.user,

@@ -130,7 +130,8 @@
             name="NAF"
             parent="sale.sale_menu_root"
             action="action_naf_template"
-            sequence="2"/>
+            sequence="2"
+            groups = "sales_team.group_sale_manager"/>
         
     </data>
 </odoo>

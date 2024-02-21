@@ -472,7 +472,6 @@ class SaleOrder(models.Model):
             email_to_list = [
                 'mudit.tandon@texfasteners.com',
                 'deepak.shah@bd.texfasteners.com',
-                'mis@taps-testing-11226241.dev.odoo.com'
                 ]
             email_from_list = ['odoo@texzipperbd.com']
             email_cc_list = [

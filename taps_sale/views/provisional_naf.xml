@@ -28,6 +28,9 @@
                         <group>
                             <group>
                                 <field name="customer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|',['type', '=', 'buyinghouse'],['state', '=', 'draft']], 'required': [['state', '=', 'inter'],['type', '=', 'customer']]}"/>
+                                <field name="buying_house" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|',['type', '=', 'buyinghouse'],['state', '=', 'draft']]}"/>
+                                <field name="related_customer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|',['type', '=', 'customer'],['state', '=', 'draft']],'required': [['state', '=', 'inter'],['type', '=', 'buyinghouse']]}" widget="many2many_tags"/>
+                                
                                 
                             </group>
                             <group>
@@ -62,6 +65,7 @@
                             <group>
                                 <field name="swift_code" attrs="{'invisible': [['state', '=', 'draft']], 'required': [['state', '=', 'inter']]}"/>
                                 <field name="bond_license" attrs="{'invisible': [['state', '=', 'draft']], 'required': [['state', '=', 'inter']]}"/>
+                                <field name="custom_delivery_method"/>
                                 <!-- <field name="property_product_pricelist" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/> -->
                                 
                             </group>
@@ -79,8 +83,8 @@
                                 <field name="billing_address" attrs="{'invisible': [['state', '=', 'draft']],'required': [['state', '=', 'inter']]}"/>
                             </group>
                         </group>
-                        <notebook>
-                            <page string="Assign Salesperson" name="allocated_line" attrs="{'invisible': [('type', '!=', 'customer')]}">
+                        <notebook attrs="{'invisible': ['|',('type', '=', 'buyinghouse'),('state','=','draft')]}">
+                            <page string="Assign Salesperson" name="allocated_line" >
                                 <field name="assign_line" widget="section_and_note_one2many" mode="tree">
                                 <tree
                                     string="Assign Line"
@@ -160,7 +164,8 @@
             name="Provisional NAF"
             parent="sale.sale_menu_root"
             action="action_provisional_template"
-            sequence="3"/>
+            sequence="3"
+            groups = "sales_team.group_sale_manager"/>
         
     </data>
 </odoo>
