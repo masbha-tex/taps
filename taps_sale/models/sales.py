@@ -20,6 +20,8 @@ from werkzeug.urls import url_encode
 import logging
 from odoo.tools.profiler import profile
 from odoo.exceptions import RedirectWarning
+import re
+
 _logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):

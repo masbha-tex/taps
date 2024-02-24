@@ -30,7 +30,14 @@
 								<h2 class="mt15" style="font-size: 15px">
 									<span>PI # TZBD-
                                         <t t-if="o.buyer_name.name == 'RALPH LAUREN'">
-                                          <span><t t-esc="o.order_line[0].product_template_id.default_code"/>-</span>  
+                                            <t t-set="text" t-value="o.order_line[0].product_template_id.generic_name" />
+                                            <t t-set="start_index" t-value="text.find('[')" />
+                                            <t t-set="end_index" t-value="text.find(']')" />
+                                            <t t-if="start_index != -1 and end_index != -1">
+                                            <t t-set="result" t-value="text[start_index + 1:end_index]" />
+                                                <span t-esc="result" />
+                                            </t>
+                                            <span>-</span>
                                         </t>
                                         <t t-esc="o.pi_number"/>
                                         
@@ -472,12 +479,11 @@
 												<td rowspan="1">
 													<strong>
 														<span t-esc="line.sizemm"/>
-														<t t-if="line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213086' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213083' or line.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100212195' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194' or line.product_template_id.name == 'BRASS SNAP 100214447' or line.product_template_id.name == 'BRASS SNAP 100214454' or line.product_template_id.name == 'BRASS SNAP 100214445' or line.product_template_id.name == 'BRASS SNAP 100214449' or line.product_template_id.name == 'BRASS SNAP 100214444' or line.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100214448' or line.product_template_id.name == 'BRASS SNAP 100214456' or line.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100214452' or line.product_template_id.name == 'BRASS SHANK 100217521' or line.product_template_id.name == 'BRASS SHANK 100217522' or line.product_template_id.name == 'BRASS SNAP 100217662'  or line.product_template_id.name == 'BRASS SNAP 100217762'">
-                                                            <span>L</span>
+                                                        <span>MM</span>
+                                                        <t t-if="o.buyer_name.name == 'RALPH LAUREN' and line.sizemm">
+                                                            (<span t-esc="float(line.sizemm) * 1.60" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/> L)
                                                         </t>
-                                                        <t t-else="">
-                                                            <span>MM</span>
-                                                        </t>
+                                                        
 													</strong>
 												</td>
 												<td rowspan="1">

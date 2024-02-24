@@ -53,6 +53,7 @@ class OperationDetails(models.Model):
     date_order = fields.Datetime(string='Order Date', related='oa_id.date_order', readonly=True)
     action_date = fields.Datetime(string='Action Date', readonly=True)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
+    
     buyer_name = fields.Char(string='Buyer', readonly=True)
     
     slidercodesfg = fields.Char(string='Slider Code', store=True, readonly=True)

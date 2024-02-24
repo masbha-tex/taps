@@ -50,7 +50,7 @@ class OperationPacking(models.Model):
     date_order = fields.Datetime(string='Order Date', related='oa_id.date_order', readonly=True)
     action_date = fields.Datetime(string='Action Date', readonly=True)
     partner_id = fields.Many2one('res.partner', related='oa_id.partner_id', string='Customer', readonly=True)
-    buyer_name = fields.Char(string='Buyer', readonly=True)
+    buyer_name = fields.Many2one(string='Buyer', related='oa_id.buyer_name', readonly=False, store=True)
     
     slidercodesfg = fields.Text(string='Slider Code', related='sale_order_line.slidercodesfg', store=True, readonly=True)
     finish = fields.Text(string='Finish', related='sale_order_line.finish', store=True, readonly=True)
@@ -212,7 +212,7 @@ class OperationPacking(models.Model):
             vals['done_qty'] = d_q
             # ope = operation_p.write({'done_qty':d_q})
             if self.state not in('done','closed'):
-                if round(self.actual_qty,2) <= round(vals.get('done_qty'),2):
+                if self.actual_qty <= round(vals.get('done_qty'),2):
                     vals['state'] = 'done'
                 elif vals.get('done_qty') == 0:
                     vals['state'] = 'waiting'
@@ -255,15 +255,23 @@ class OperationPacking(models.Model):
             pack_qty = 0
             fraction_pc_of_pack = 0
             pr_pac_qty = 0
+            ac_qty = sum(out.mapped('sale_order_line.product_uom_qty'))
+            op_packing = self.env["operation.details"].search([('sale_order_line','=',out.sale_order_line.id),('next_operation','=','FG Packing')])
+            done_qty = 0
+            done_qty = sum(op_packing.mapped('qty'))
+            bl_qty = ac_qty - done_qty
             
-            done_qty = out.done_qty + out.uotput_qty
-            if (out.balance_qty < out.uotput_qty):
+
+            
+            done_qty = done_qty + out.uotput_qty
+            if (bl_qty < out.uotput_qty):
                 raise UserError(('You can not produce more then balance'))
             if (out.uotput_qty < 0):
                 raise UserError(('Minus is not exceptable'))
             if (out.state not in ('partial','waiting')):
                 raise UserError(('You can not update this data because of state is done/closed'))
             if done_qty > 0:
+                bl_qty = ac_qty - done_qty
                 s = out.update({'done_qty':done_qty})
                 if out.done_qty == done_qty:
                     mrp_data = self.env["manufacturing.order"].browse(out.mrp_line.id)
@@ -358,7 +366,7 @@ class OperationPacking(models.Model):
                                                                 'sale_order_line':out.sale_order_line.id,
                                                                 'parent_id':out.id,
                                                                 'oa_id':out.oa_id.id,
-                                                                'buyer_name':out.buyer_name,
+                                                                'buyer_name':out.buyer_name.name,
                                                                 'product_id':out.product_id.id,
                                                                 'product_template_id':out.product_template_id.id,
                                                                 'action_date':datetime.now(),
@@ -399,7 +407,7 @@ class OperationPacking(models.Model):
                                                                 'price_unit':out.price_unit,
                                                                 })
 
-                    s = out.write({'done_qty':done_qty})
+                    s = out.write({'actual_qty':ac_qty,'done_qty':done_qty,'balance_qty':bl_qty})
                     out.uotput_qty = 0
                 else:
                     raise UserError(('Please check something is wrong'))

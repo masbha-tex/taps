@@ -65,7 +65,7 @@
                             <group>
                                 <field name="swift_code" attrs="{'invisible': [['state', '=', 'draft']], 'required': [['state', '=', 'inter']]}"/>
                                 <field name="bond_license" attrs="{'invisible': [['state', '=', 'draft']], 'required': [['state', '=', 'inter']]}"/>
-                                <field name="custom_delivery_method"/>
+                                <field name="custom_delivery_method" attrs="{'invisible': [['state', '=', 'draft']]}"/>
                                 <!-- <field name="property_product_pricelist" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/> -->
                                 
                             </group>

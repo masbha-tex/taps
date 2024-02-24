@@ -42,6 +42,12 @@ class CustomerVisit(models.Model):
 
     name = fields.Char(string="Name",required=True, copy=False, index=True, readonly=True,  default=lambda self: _('New'))
     # description = fields.Char(string="Description")
+    type_of_acc = fields.Selection([
+        ('nbncbh', 'New Buyer, New Customer/Buying House'),
+        ('ecnb', 'Existing Customer, New Buyer'),
+        ('ebhnb', 'Existing Buying House, New Buyer'),
+        ('ebncbh', 'Existing Buyer, New Customer/Buying House'),
+    ],string="Type Of Acc", default='nbncbh')
     type = fields.Selection([
         ('customer', 'Customer'),
         ('brand', 'Brand'),
@@ -49,7 +55,8 @@ class CustomerVisit(models.Model):
         ('pacc', 'Potential Account'),
     ],string="Type", required=True, default='customer')
     partner_id = fields.Many2one('res.partner', string='Customer')
-    provisional_id = fields.Many2one('provisional.template', string='Provisional Acc')
+    potential_customer = fields.Many2one('provisional.template', string='New Customer/Buying House')
+    potential_buyer = fields.Many2one('provisional.template', string='New Buyer')
     buying_house = fields.Many2one('res.partner', string='Buying House', domain="[('buying_house_rank', '>',0)]")
     buyer = fields.Many2one('res.partner', string='Buyer')
     concern = fields.Char(string="Concern")
@@ -76,6 +83,9 @@ class CustomerVisit(models.Model):
     @api.onchange('core_purpose')
     def onchange_core_purpose(self):
         self.visit_purpose = False
+    @api.onchange('type')
+    def onchange_type(self):
+        self.type_of_acc = False
 
     @api.model
     def retrieve_dashboard(self):

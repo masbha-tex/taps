@@ -11,23 +11,16 @@ class NewAccountForm(models.Model):
     _rec_name="name"
 
 
+    assign_line = fields.One2many('assign.user.line', 'naf_id', string='Assign Line', copy=True)
+    
     type = fields.Selection([
-        ('buyer', 'Buyer'),
         ('customer', 'Customer'),
-    ],string="Type", required=True, default='customer')
+        ('buyinghouse', 'Buying House'),
+        ('buyer', 'Buyer'),
+        
+    ],string="Type", required=True)
 
     name = fields.Char(index=True, string="Name", required=True)
-    brand = fields.Many2one('res.partner', domain="[['brand_rank', '=', 1]]", string="Brand")
-    group = fields.Many2one('res.partner', string="Group", domain="[['customer_group_rank', '=', 1]]")
-    salesperson = fields.Many2one('res.users', domain="[['share', '=', False],['sale_team_id', '!=', False]]", required=True)
-    sourcing_type = fields.Selection([
-        ('agent', 'AGENT'),
-        ('direct', 'DIRECT'),
-        ('importer', 'IMPORTER'),
-        ('licence', 'LICENCE'),
-        ('lo', 'LO'),
-    ], string="Sourcing Type")
-    sourcing_office = fields.Char(string="Sourcing Office")
     street = fields.Char(required=True)
     street2 = fields.Char()
     zip = fields.Char(change_default=True)
@@ -50,24 +43,9 @@ class NewAccountForm(models.Model):
     bond_license = fields.Char(string="Bond License", index=True, help="The Bond License Number.")
     incoterms = fields.Many2one('account.incoterms', string="Incoterms")
     property_payment_term_id = fields.Many2one('account.payment.term', string="Payment Terms")
-    # property_product_pricelist = fields.Many2one('product.pricelist', string="Pricelist")
-    # property_delivery_carrier_id = fields.Many2one('delivery.carrier', string="Delivery Method")
-    related_buyer = fields.Many2many('res.partner', relation='customer_related_buyer',column1='partner_id',column2='buyer_id',string="Related Buyer", domain="[['buyer_rank', '=', 1]]" ,required=True)
-    
-    # customer_type = fields.Selection([
-    #     ('A', 'A'),
-    #     ('B', 'B'),
-    #     ('C', 'C'),
-    # ], string="Customer Type",  default='C')
-    # customer_status = fields.Selection([
-    #     ('REGULAR', 'REGULAR'),
-    #     ('NON REGULAR', 'NON REGULAR'),
-    #     ('NEW', 'NEW'),
-    # ], string="Customer Status",  default='NEW')
-    
-
     state = fields.Selection([
         ('draft', 'Draft'),
+        ('inter', 'Intermediate'),
         ('to approve', 'To Approve'),
         ('approved', 'Approved'),
         ('cancel', 'Cancel'),
@@ -77,6 +55,18 @@ class NewAccountForm(models.Model):
         string="Approved By",
         comodel_name="res.users",
     )
+    customer_group = fields.Many2one('res.partner', string="Customer Group", domain="[['customer_group_rank', '=', 1]]")
+    buyer = fields.Many2many('res.partner', string="Buyer", domain="[['buyer_rank' ,'=', 1]]")
+    buying_house = fields.Many2one('res.partner', string="Buying House", domain="[('buying_house_rank', '=', 1)]")
+    custom_delivery_method = fields.Selection([
+        ('By Road', 'By Road'),
+        ('By Air', 'By Air'),
+        ('By Sea', 'By Sea'),
+        ('By Air/By Sea', 'By Air/By Sea'),
+    ], string="Delivery Method", default='By Road')
+    related_customer = fields.Many2many('res.partner', relation='partner_related_customer_naf',column1='partner',column2='customer',string="Related Customer", domain="[['customer_rank', '=',1]]")
+    buyer_group = fields.Many2one('res.partner', string="Buyer Group", domain="[('brand_rank', '=', 1)]")
+    sourcing_office = fields.Many2many('buyer.sourcing.office', string="Sourcing Office")
 
 
 
@@ -119,7 +109,7 @@ class NewAccountForm(models.Model):
             # activity_type=self.env.ref()
             self.activity_schedule('taps_sale.mail_activity_naf_approve', user_id=user.id)
         
-        self.write({'state':'to approve'})
+        self.write({'state':'inter'})
 
     def action_approve(self):
         self.write({'state':'cancel'})
@@ -136,8 +126,21 @@ class NewAccountForm(models.Model):
     def action_cancel(self):
         self.write({'state':'cancel'})
 
+
+
+
+class AssignUserLine(models.Model):
+    _name = 'assign.user.line'
+    _description = 'Assign User Line'
     
-    
+    # _order = "name ASC, id DESC"
+    # _rec_name="name"
+    name = fields.Char(string="Description")
+    naf_id = fields.Many2one('naf.template', string='NAF ID', index=True, required=True, ondelete='cascade')
+    buyer = fields.Many2one('res.partner', string='Buyer', domain="[('buyer_rank', '=', 1)]")
+    salesperson = fields.Many2one('customer.allocated', string="Salesperson")
+    marketing_person = fields.Many2one('res.partner', string="Marketing Person")
+    type_naf = fields.Selection(related="naf_id.type")
     
     
 

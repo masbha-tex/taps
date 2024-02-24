@@ -11,7 +11,7 @@
                         <button name="action_approve" type="object" string="Approve" attrs= "{'invisible': [('state', 'not in', ['to approve'])]}" help="Click On Approve to create a record"/>
                         <button name="action_set_draft" type="object" string="Set to Draft" attrs= "{'invisible': [('state', 'not in', ['cancel'])]}"/>
                         <button name="action_cancel" type="object" string="Cancel" attrs= "{'invisible': [('state', 'not in', ['approved'])]}"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,to approve,approved"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,inter,to approve,approved"/>
                     </header>
                     <sheet>
                         <group>
@@ -23,28 +23,24 @@
                             <h1>
                                 <field name="name" default_focus="1" placeholder="Name"/>
                             </h1>
+                            <!-- <button name="open_similar_customers_popup" type="object" string="Check Similar" context="{'type': 'type'}"/> -->
                         </div>
                         <group>
                             <group>
-                                <field name="brand" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible':[('type', '=', 'customer')]}"/>
-                                <field name="group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible':[('type', '=', 'buyer')]}"/>
-                                <span class="o_form_label o_td_label" name="address_name">
-                                <b>
-                                    <label for="salesperson" string="Salesperson" attrs="{'invisible':[('type', '=', 'buyer')]}"/>
-                                    <label for="salesperson" string="Marketingperson" attrs="{'invisible':[('type', '=', 'customer')]}"/>
-                                </b>
-                                </span>
-                               
-                                <field name="salesperson" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" nolabel="1" widget="many2one_avatar_user"/>
+                                <field name="customer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'customer']], 'required': [['state', '=', 'inter'],['type', '=', 'customer']]}"/>
+                                <field name="buyer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '=', 'buyer']]}"/>
+                                <field name="buying_house" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'customer']]}"/>
+                                <field name="related_customer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '=', 'customer']], 'required': [['state', '=', 'inter'],['type', '!=', 'customer']]}" widget="many2many_tags"/>
+                                
+                                
                             </group>
                             <group>
-                                <field name="sourcing_type" attrs="{'invisible':[('type', '=', 'customer')]}"/>
-                                <field name="sourcing_office" attrs="{'invisible':[('type', '=', 'customer')]}"/>
-                                <field name="related_buyer"  widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_open': True}" attrs="{'invisible':[('type', '=', 'buyer')]}"/>
-                                <!-- <field name="customer_type" attrs="{'invisible':[('type', '=', 'buyer')]}"/> -->
-                                <!-- <field name="customer_status" attrs="{'invisible':[('type', '=', 'buyer')]}"/> -->
+                                <field name="buyer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'customer']],'required': [['state', '=', 'inter'],['type', '=', 'customer']]}" widget="many2many_tags"/>
+                                <field name="sourcing_office" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'buyer']]}" widget="many2many_tags"/>
                             </group>
+                                
                         </group>
+                        
                         <group>
                             <group>
                                 <span class="o_form_label o_td_label" name="address_name">
@@ -67,27 +63,53 @@
                                 <field name="website" widget="url" placeholder="e.g. https://www.odoo.com"/>
                         </group>
                         </group>
-                        <group attrs="{'invisible':[('type', '=', 'buyer')]}" >
+                        <group>
                             <group>
-                                <field name="swift_code"/>
-                                <field name="bond_license"/>
+                                <field name="swift_code" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
+                                <field name="bond_license" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
+                                <field name="custom_delivery_method" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
                                 <!-- <field name="property_product_pricelist" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/> -->
                                 
                             </group>
                             <group>
-                                <field name="property_payment_term_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/>
-                                <field name="incoterms" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/>
-                                <!-- <field name="property_delivery_carrier_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/> -->
+                                <field name="property_payment_term_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
+                                <field name="incoterms" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
+                                
                             </group>
                         </group>
                         <group>
                             <group>
-                                <field name="delivery_address"/>
+                                <field name="delivery_address" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
                             </group>
                             <group>
-                                <field name="billing_address"/>
+                                <field name="billing_address" attrs="{'required': [['state', '=', 'inter']]}"/>
                             </group>
                         </group>
+                        <notebook attrs="{'invisible': ['|',['type', '=', 'buyinghouse'],['state', '=', 'draft']]}">
+                            <page string="Assign Salesperson or Marketing person" name="allocated_line">
+                                <field name="assign_line" widget="section_and_note_one2many" mode="tree">
+                                <tree
+                                    string="Assign Line"
+                                    editable="bottom">
+                                        <control>
+                                        <create name="add_product_control" string="Add a Line" />
+                                    </control>
+                                        
+                                        <field name="type_naf" invisible="1"/>
+                                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type_naf', '=', 'buyer']], 'required': [['type_naf', '=', 'customer']]}"/>
+                                        
+                                        <field name="salesperson"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"  attrs="{'invisible': [['type_naf', '=', 'buyer']], 'required': [['type_naf', '=', 'customer']]}"/>
+                                        <field name="marketing_person"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type_naf', '!=', 'buyer']], 'required': [['type_naf', '=', 'buyer']]}"/>
+                                        
+                                        
+                                        <field name="name" invisible="1"/>
+                                       
+                                    
+                                    </tree>
+                                </field>
+                             </page>
+                            
+                        </notebook>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids"/>
@@ -107,6 +129,23 @@
                     <field name="type"/>
                     <field name="create_uid" widget="many2one_avatar_user"/>
                     <field name="approved_by" widget="many2one_avatar_user"/>
+                </tree>
+            </field>
+        </record>
+        <record id="naf_assign_user_line_tree" model="ir.ui.view">
+            <field name="name">naf.assign.user.line.tree</field>
+            <field name="model">assign.user.line</field>
+            <field name="arch" type="xml">
+                <tree string="Assign Line Tree" create="false">
+                   
+                    
+                    
+                    <field name="buyer" />
+                    
+                    <field name="salesperson" />
+                    <field name="marketing_person" />
+                    <field name="type_naf"/>
+                    <field name="name" invisible="1"/>
                 </tree>
             </field>
         </record>

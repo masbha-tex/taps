@@ -207,3 +207,4 @@ class AssignUser(models.Model):
     buyer = fields.Many2one('res.partner', string='Buyer', domain="[('buyer_rank', '=', 1)]")
     salesperson = fields.Many2one('customer.allocated', string="Salesperson")
     
+    

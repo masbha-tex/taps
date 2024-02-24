@@ -254,8 +254,8 @@
                 <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_balance" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
+                <field name="carton_weight" attrs="{'readonly': [('next_operation', '!=', 'FG Packing'),('cartoon_no', '=', False)]}" optional="show"/>
                 <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
-                <!-- <field name="carton_weight" attrs="{'readonly': [('next_operation', '!=', 'FG Packing'),('cartoon_no', '=', False)]}" optional="show"/> -->
                 <field name="state" readonly="1" force_save="1" optional="show"/>
                 <field name="revision_no" readonly="1" force_save="1" optional="show"/>
             </tree>
@@ -312,8 +312,8 @@
                 <field name="fg_done_qty" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_balance" readonly="1" force_save="1" optional="show"/>
                 <field name="fg_output" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
-                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
                 <field name="carton_weight" attrs="{'readonly': [('next_operation', '!=', 'FG Packing'),('cartoon_no', '=', False)]}" optional="show"/>
+                <field name="cartoon_no" attrs="{'readonly': [('next_operation', '!=', 'FG Packing')]}" optional="show"/>
                 <field name="state" readonly="1" force_save="1" optional="show"/>
                 <field name="revision_no" readonly="1" force_save="1" optional="show"/>
             </tree>
@@ -332,6 +332,7 @@
                 </header>
                 <field name="name" readonly="1"/>
                 <field name="cartoon_no" readonly="1"/>
+                <field name="carton_weight" readonly="1" optional="show"/>
                 <field name="mrp_lines" invisible="1"/>
                 <field name="sale_lines" invisible="1"/>
                 <field name="mrp_line" invisible="1"/>
