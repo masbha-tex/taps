@@ -2135,11 +2135,13 @@ class SaleOrderLine(models.Model):
             if rec.attribute_id.name == '2 NO. Washer Material & Size':
                 self.nu2washer = rec.product_attribute_value_id.name
                 continue
-        if self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213086':
-            self.logo='WAVY POLO R.LAUREN'
+        if self.product_template_id.name == 'SHANK BUTTON 100213086':
+            self.logo='WAVY POLO'
+            self.logoref='T-5252'
             self.finish_ref='TG-4117'
-        elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100213083':
-            self.logo='WAVY POLO R.LAUREN'
+        elif self.product_template_id.name == 'SHANK BUTTON 100213083':
+            self.logo='WAVY POLO'
+            self.logoref='T-5252'
             self.finish_ref='TS-411703'
         elif self.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100212195':
             self.logo='WREATH'
@@ -2147,42 +2149,65 @@ class SaleOrderLine(models.Model):
         elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194':
             self.logo='RALPH LAUREN WORKWEAR'
             self.finish_ref='TG-4117'
-        elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100214452':
-            self.logo='RALPH LAUREN WORKWEAR'
+        elif self.product_template_id.name == 'SHANK BUTTON 100214452':
+            self.logo='WORK-WEAR'
+            self.logoref='T-4998'
             self.finish_ref='TS-411703'
-        elif self.product_template_id.name == 'BRASS SNAP 100214456':
-            self.logo='RALPH LAUREN WORKWEAR'
+        elif self.product_template_id.name == 'SNAP BUTTON 100214456':
+            self.logo='WORK-WEAR'
+            self.logoref='T-4998'
             self.finish_ref='TS-411703'
-        elif self.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100214448':
-            self.logo='LAUREN WREATH'
+        elif self.product_template_id.name == 'HOLE SHANK BUTTON 100214448':
+            self.logo='WREATH'
+            self.logoref='D-785'
             self.finish_ref='TS-411703'
-        elif self.product_template_id.name == 'BRASS SNAP 100214444':
-            self.logo='LAUREN WREATH'
+        elif self.product_template_id.name == 'SNAP BUTTON 100214444':
+            self.logo='LAUREL WREATH'
+            self.logoref='D-786'
             self.finish_ref='TS-411703'
-        elif self.product_template_id.name == 'BRASS SNAP 100214449':
-            self.logo='WAVY POLO R.LAUREN'
+        elif self.product_template_id.name == 'SNAP BUTTON 100214449':
+            self.logo='WAVY POLO'
+            self.logoref='T-5252'
             self.finish_ref='TS-411703'
-        elif self.product_template_id.name == 'BRASS SNAP 100214445':
-            self.logo='LAUREN WREATH'
+        elif self.product_template_id.name == 'SNAP BUTTON 100214445':
+            self.logo='LAUREL WREATH'
+            self.logoref='D-786'
             self.finish_ref='TG-4117'
-        elif self.product_template_id.name == 'BRASS SNAP 100214454':
-            self.logo='RALPH LAUREN WORKWEAR'
+        elif self.product_template_id.name == 'SNAP BUTTON 100214454':
+            self.logo='WORK-WEAR'
+            self.logoref = 'T-4998'
             self.finish_ref='TG-4117'
-        elif self.product_template_id.name == 'BRASS SNAP 100214447':
+        elif self.product_template_id.name == 'SNAP BUTTON 100214447':
             self.logo='WAVY POLO R.LAUREN'
             self.finish_ref='TG-4117'
-        elif self.product_template_id.name == 'BRASS SHANK 100217521':
-            self.logo='WAVY POLO R.LAUREN'
+        elif self.product_template_id.name == 'SHANK BUTTON 100217521':
+            self.logo='WAVY POLO'
+            self.logoref='T-5252'
             self.finish_ref='TS-4117'
-        elif self.product_template_id.name == 'BRASS SHANK 100217522':
-            self.logo='RALPH LAUREN WORKWEAR'
+        elif self.product_template_id.name == 'SHANK BUTTON 100217522':
+            self.logo='WORK-WEAR'
+            self.logoref='T-4998'
             self.finish_ref='TS-4117'
-        elif self.product_template_id.name == 'BRASS SNAP 100217662':
-            self.logo='RALPH LAUREN WORKWEAR'
+        elif self.product_template_id.name == 'SNAP BUTTON 100217662':
+            self.logo='WORK-WEAR'
+            self.logoref='T-4998'
             self.finish_ref='TS-4117'
-        elif self.product_template_id.name == 'BRASS SNAP 100217762':
-            self.logo='RALPH LAUREN POLO'
+        elif self.product_template_id.name == 'SNAP BUTTON 100217762':
+            self.logo=' CLASSIC POLO RALPH LAUREN'
+            self.logoref='T-3844'
             self.finish_ref='TS-4117'
+        elif self.product_template_id.name == 'HOLE SHANK BUTTON 100214985':
+            self.logo='WREATH'
+            self.logoref='D-866'
+            self.finish_ref='TG-4117'
+        elif self.product_template_id.name == 'SNAP BUTTON 100215284':
+            self.logo='WORK-WEAR'
+            self.logoref='T-5784'
+            self.finish_ref='TS-411006'
+        elif self.product_template_id.name == 'SNAP BUTTON 100215290':
+            self.logo='WORK-WEAR'
+            self.logoref='T-4998'
+            self.finish_ref='TS-411006'
         
                 
         self._compute_tax_id()

@@ -60,7 +60,7 @@
                 <field name="date_order" optional="show"/>
                 <field name="action_date" optional="show"/>
                 <field name="partner_id" optional="show"/>
-                <field name="buyer_name"  readonly="1" force_save="1" optional="show"/>
+                <field name="buyer_name" optional="show"/>
                 <field name="product_id" readonly="1" invisible="1"/>
                 <field name="product_template_id" readonly="1"/>
                 <field name="fg_categ_type" optional="show"/>
@@ -71,9 +71,23 @@
                 <field name="shade_ref" optional="show"/>
                 <field name="sizein" optional="show"/>
                 <field name="sizecm" optional="show"/>
+                <field name="sizemm" optional="show"/>
                 <field name="sizcommon" optional="show"/>
                 
                 <field name="company_id" invisible="1"/>
+                <field name="logo" optional="show"/>
+                <field name="logoref" optional="show"/>
+                <field name="logo_type" optional="show"/>
+                <field name="style" optional="show"/>
+                <field name="gmt" optional="show"/>
+                <field name="shapefin" optional="show"/>
+                <field name="b_part" optional="show"/>
+                <field name="c_part" optional="show"/>
+                <field name="d_part" optional="show"/>
+                <field name="finish_ref" optional="show"/>
+                <field name="product_code" optional="show"/>
+                <field name="shape" optional="show"/>
+                <field name="back_part" optional="show"/>
                 
                 <field name="actual_qty" readonly="1" optional="show"/>
                 <field name="ac_balance_qty" readonly="1" force_save="1" optional="show"/>
@@ -107,7 +121,7 @@
                 <field name="date_order" optional="show"/>
                 <field name="action_date" optional="show"/>
                 <field name="partner_id" optional="show"/>
-                <field name="buyer_name"  readonly="1" force_save="1"  optional="show"/>
+                <field name="buyer_name" optional="show"/>
                 <field name="product_id" readonly="1" invisible="1"/>
                 <field name="product_template_id" readonly="1"/>
                 <field name="fg_categ_type" optional="show"/>
