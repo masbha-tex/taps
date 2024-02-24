@@ -931,6 +931,7 @@ class SaleOrder(models.Model):
                     'wire_con':lines.wire_con,
                     'pinbox_con':lines.pinbox_con,
                     'color' : lines.color,
+                    'material_code' : lines.material_code,
                 }]            
             
             #saleorder.order_ref.order_line#
@@ -1118,6 +1119,7 @@ class SaleOrder(models.Model):
                     'wire_con':re_lines.wire_con,
                     'pinbox_con':re_lines.pinbox_con,
                     'dimension' : re_lines.dimension,
+                    'material_code': re_lines.material_code,
         
                 }]
 
@@ -1235,6 +1237,7 @@ class SaleOrder(models.Model):
                     'wire_con':lines.wire_con,
                     'pinbox_con':lines.pinbox_con,
                     'dimension' : lines.dimension,
+                    'material_code': re_lines.material_code,
                 }]
             
             #saleorder.order_ref.order_line#
@@ -1651,6 +1654,7 @@ class SaleOrderLine(models.Model):
     last_update_gsheet = fields.Datetime(string='Last Update GSheet')
     rmc = fields.Float(string='RMC', store=True)
     sale_line_of_top = fields.Integer(string='Sale Line of Top', store=True, readonly=True)
+    material_code = fields.Char(string="Material Code")
     
     def _inverse_compute_product_code(self):
         pass
@@ -2135,6 +2139,9 @@ class SaleOrderLine(models.Model):
             if rec.attribute_id.name == '2 NO. Washer Material & Size':
                 self.nu2washer = rec.product_attribute_value_id.name
                 continue
+            if rec.attribute_id.name == 'Material Code':
+                self.material_code = rec.product_attribute_value_id.name
+                continue
         if self.product_template_id.name == 'SHANK BUTTON 100213086':
             self.logo='WAVY POLO'
             self.logoref='T-5252'
@@ -2143,11 +2150,13 @@ class SaleOrderLine(models.Model):
             self.logo='WAVY POLO'
             self.logoref='T-5252'
             self.finish_ref='TS-411703'
-        elif self.product_template_id.name == 'BRASS HOLE SHANK WITH DOUBLE PRONG NAIL 100212195':
+        elif self.product_template_id.name == 'HOLE SHANK BUTTON 100212195':
             self.logo='WREATH'
+            self.logoref='D-785'
             self.finish_ref='TG-4117'
-        elif self.product_template_id.name == 'BRASS SHANK WITH DOUBLE PRONG NAIL 100212194':
-            self.logo='RALPH LAUREN WORKWEAR'
+        elif self.product_template_id.name == 'SHANK BUTTON 100212194':
+            self.logo='WORK-WEAR'
+            self.logoref='T-4998'
             self.finish_ref='TG-4117'
         elif self.product_template_id.name == 'SHANK BUTTON 100214452':
             self.logo='WORK-WEAR'
@@ -2193,7 +2202,15 @@ class SaleOrderLine(models.Model):
             self.logoref='T-4998'
             self.finish_ref='TS-4117'
         elif self.product_template_id.name == 'SNAP BUTTON 100217762':
-            self.logo=' CLASSIC POLO RALPH LAUREN'
+            self.logo='CLASSIC POLO RALPH LAUREN'
+            self.logoref='D-786'
+            self.finish_ref='TS-4117'
+        elif self.product_template_id.name == 'SHANK BUTTON 100217763':
+            self.logo='WREATH'
+            self.logoref='D-785'
+            self.finish_ref='TS-4117'
+        elif self.product_template_id.name == 'SNAP BUTTON 100217792':
+            self.logo='LAUREL WREATH'
             self.logoref='T-3844'
             self.finish_ref='TS-4117'
         elif self.product_template_id.name == 'HOLE SHANK BUTTON 100214985':
@@ -2208,6 +2225,24 @@ class SaleOrderLine(models.Model):
             self.logo='WORK-WEAR'
             self.logoref='T-4998'
             self.finish_ref='TS-411006'
+        elif self.product_template_id.name == 'D RING 100072579':
+            self.logo='RALPH LAUREN'
+            self.logoref='A-1925'
+        elif self.product_template_id.name == 'D RING 100100335':
+            self.logo='RALPH LAUREN'
+            self.logoref='A-1925'
+        elif self.product_template_id.name == 'SHANK BUTTON 100217764':
+            self.logo='CLASSIC POLO RALPH LAUREN'
+            self.logoref='T-3844'
+            self.finish_ref='TS-4117'
+        elif self.product_template_id.name == 'SNAP BUTTON 100217661':
+            self.logo='WAVY POLO'
+            self.logoref='T-5252'
+            self.finish_ref='TS-4117'
+        elif self.product_template_id.name == 'SNAP BUTTON 100217813':
+            self.logo='WORK-WEAR'
+            self.logoref='T-5784'
+            self.finish_ref='TS-411703'
         
                 
         self._compute_tax_id()
