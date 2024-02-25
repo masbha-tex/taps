@@ -28,15 +28,10 @@ class CombineInvoice(models.Model):
     # ==== Business fields ====
     name = fields.Char(string='Number', copy=False, readonly=False, store=True, index=True, tracking=True)
     currency_id = fields.Many2one('res.currency', store=True, readonly=True, tracking=True, required=True,
-        states={'draft': [('readonly', False)]},
-        string='Currency',
-        default=_get_default_currency)
-    line_ids = fields.One2many('combine.invoice.line', 'invoice_id', string='Customer Invoice Items', copy=True, readonly=True,
-        states={'draft': [('readonly', False)]})
-    partner_id = fields.Many2one('res.partner', readonly=True, tracking=True,
-        states={'draft': [('readonly', False)]},
-        check_company=True,
-        string='Partner', change_default=True, ondelete='restrict')
+        states={'draft': [('readonly', False)]}, string='Currency')
+    line_ids = fields.One2many('combine.invoice.line', 'invoice_id', string='Customer Invoice Items', copy=True, readonly=True, states={'draft': [('readonly', False)]})
+    partner_id = fields.Many2one('res.partner', readonly=True, tracking=True, states={'draft': [('readonly', False)]},
+        check_company=True, string='Partner', change_default=True, ondelete='restrict')
     # commercial_partner_id = fields.Many2one('res.partner', string='Commercial Entity', store=True, readonly=True,
     #     compute='_compute_commercial_partner_id', ondelete='restrict')
     # country_code = fields.Char(related='company_id.country_id.code', readonly=True)

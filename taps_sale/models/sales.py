@@ -1237,7 +1237,8 @@ class SaleOrder(models.Model):
                     'wire_con':lines.wire_con,
                     'pinbox_con':lines.pinbox_con,
                     'dimension' : lines.dimension,
-                    'material_code': re_lines.material_code,
+                    'material_code':lines.material_code,
+                    
                 }]
             
             #saleorder.order_ref.order_line#
