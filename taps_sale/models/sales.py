@@ -1119,7 +1119,7 @@ class SaleOrder(models.Model):
                     'wire_con':re_lines.wire_con,
                     'pinbox_con':re_lines.pinbox_con,
                     'dimension' : re_lines.dimension,
-                    'material_code': re_lines.material_code,
+                    
         
                 }]
 
