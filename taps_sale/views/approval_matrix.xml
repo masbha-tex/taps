@@ -7,6 +7,7 @@
                 <field name="model_name"/>
                 <field name="first_approval" widget="many2many_tags"/>
                 <field name="second_approval" widget="many2many_tags"/>
+                <field name="third_approval" widget="many2many_tags"/>
             </tree>
         </field>
     </record>

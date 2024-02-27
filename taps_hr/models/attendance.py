@@ -193,6 +193,12 @@ class HrAttendance(models.Model):
         att_obj = self.env['hr.attendance']
         get_att_data = att_obj.search([('empID', '=', emp_id), ('attDate', '=', att_date)])
         activeemplist = self.env['hr.employee'].search([('emp_id', '=', emp_id), ('active', 'in',(False,True))])
+
+        get_transfer = self.env['shift.transfer'].search([('empid', '=', emp_id), ('activationDate', '<=', att_date)])
+        trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]
+        breaktime = 0
+        breaktime = trans_data.transferGroup.lunchoutTime - trans_data.transferGroup.lunchinTime
+        # raise UserError((breaktime))
                 
         holiday_record = self.env['resource.calendar.leaves'].search([('resource_id', '=', False),('date_from', '<=', att_date),('date_to', '>=', att_date)])
         
@@ -209,7 +215,7 @@ class HrAttendance(models.Model):
                     if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
                         delta = worked_hours+0.01999
                         delta = (delta * 3600 / 60) / 30
-                        delta = (int(delta) * 30 * 60 / 3600) - 1
+                        delta = (int(delta) * 30 * 60 / 3600) - breaktime
                         com_delta = 0
                     if lv_type.code == 'CO':
                         delta = (get_att_data.outHour - outTime)
@@ -236,7 +242,7 @@ class HrAttendance(models.Model):
                     if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
                         delta = worked_hours+0.01999
                         delta = (delta * 3600 / 60) / 30
-                        delta = (int(delta) * 30 * 60 / 3600) - 1
+                        delta = (int(delta) * 30 * 60 / 3600) - breaktime
                         com_delta = 0
                     if lv_type.code == 'CO':
                         delta = (get_att_data.outHour - outTime)
@@ -263,7 +269,7 @@ class HrAttendance(models.Model):
                 if (int(att_date.strftime("%w")))==5 or len(holiday_record)==1:
                     delta = worked_hours+0.01999
                     delta = (delta * 3600 / 60) / 30
-                    delta = (int(delta) * 30 * 60 / 3600) - 1
+                    delta = (int(delta) * 30 * 60 / 3600) - breaktime
                     com_delta = 0
                 if lv_type.code == 'CO':
                     delta = (get_att_data.outHour - outTime)

@@ -9,13 +9,13 @@
                 <button name="create_view_ccr" string="Create Ccr" type="object" class="oe_highlight" groups="helpdesk.group_helpdesk_user" attrs="{'invisible': ['&amp;', '|',('ticket_type_id', 'in', [1,2,False]),('stage_id', '!=', 'new'),('ccr_count', '>', 0)]}"/>
             </header>
             <xpath expr="//field[@name='partner_id']" position="before">
-                <field name="oa_number" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])]}" domain="[('sales_type','=', 'oa'),('state', '=', 'sale')]" />
+                <field name="oa_number" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])], 'required': [['ticket_type_id', '=', 4]], 'readonly': [['stage_id', '!=', 1]]}" domain="[('sales_type','=', 'oa'),('state', '=', 'sale')]" />
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="buyer" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])]}"/>
             </xpath>
             <xpath expr="//field[@name='email_cc']" position="after">
-                <field name="complain" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])]}"/>
+                <field name="complain" attrs="{'invisible': [('ticket_type_id', 'in', [1,2,False])], 'required': [['ticket_type_id', '=', 4]], 'readonly': [['stage_id', '!=', 1]]}"/>
             </xpath>
             <xpath expr="//field[@name='email_cc']" position="attributes">
                 <attribute name="attrs">{'invisible': [['ticket_type_id','=',4]]}</attribute>
@@ -28,15 +28,27 @@
             </xpath>
             <xpath expr="//field[@name='team_id']" position="attributes">
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+                <attribute name="attrs">{'readonly': True}</attribute>
             </xpath>
             <xpath expr="//field[@name='user_id']" position="attributes">
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+                <attribute name="attrs">{'readonly': True}</attribute>
+                
             </xpath>
             <xpath expr="//field[@name='ticket_type_id']" position="attributes">
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+                <attribute name="attrs">{'readonly': True}</attribute>
             </xpath>
             <xpath expr="//field[@name='oa_number']" position="attributes">
                 <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="attributes">
+                
+                <attribute name="attrs">{'readonly': [['stage_id', '!=', 1]]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                
+                <attribute name="attrs">{'readonly': [['stage_id', '!=', 1]]}</attribute>
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="attributes" >
                 <!-- <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True}</attribute> -->
@@ -57,7 +69,7 @@
                     name="create_view_ccr"
                     class="oe_stat_button"
                     icon="fa-thumbs-down"
-                    >
+                    attrs="{'invisible': [('ccr_count', '=', 0)]}" >
                     <field name="ccr_count" widget="statinfo" string="Ccr" />
                     <field name="ccr_ids" invisible="1"/>
                 </button>

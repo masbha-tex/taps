@@ -1,0 +1,131 @@
+<odoo>
+    <record id="combine_invoice_list_view" model="ir.ui.view">
+            <field name="name">combine.invoice.list</field>
+            <field name="model">combine.invoice</field>
+            <field name="arch" type="xml">
+                <tree string="Combine Invoice List">
+                    <field name="name"/>
+                    <field name="currency_id"/>
+                    <field name="partner_id"/>
+                    <field name="partner_bank_id"/>
+                    <field name="payment_reference"/>
+                    <field name="invoice_date"/>
+                    <field name="invoice_payment_term_id"/>
+                    <field name="invoice_incoterm_id"/>
+                    <field name="z_invoice"/>
+                    <field name="m_invoice"/>
+                    <field name="state"/>
+                
+                </tree>
+            </field>
+    </record>
+    <record id="combine_invoice_form_view" model="ir.ui.view">
+            <field name="name">combine.invoice.form</field>
+            <field name="model">combine.invoice</field>
+            <field name="arch" type="xml">
+                
+                <form string="Combine Invoice Form">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted,cancel"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="currency_id"/>
+                            <field name="partner_id"/>
+                            <field name="partner_bank_id"/>
+                            <field name="payment_reference"/>
+                        </group>
+                        <group>
+                            <field name="invoice_date"/>
+                            <field name="invoice_payment_term_id"/>
+                            <field name="invoice_incoterm_id"/>
+                            <field name="z_invoice"/>
+                            <field name="m_invoice"/>
+                        </group>
+                        <notebook>
+                            <page string="Invoice Lines" name="line_ids">
+                                <field name="line_id" widget="section_and_note_one2many" mode="tree">
+                                    <tree string="Invoice Line" editable="bottom">
+                                        <control>
+                                            <create name="add_product_control" string="Add a Line"/>
+                                        <!-- <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                        <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/> -->
+                                        </control>
+                                        
+                                        <field name="invoice_id" invisible="1"/>
+                                        <!-- <field name="sale_order_line"/> -->
+                                        <!-- <field name="account_move_line"/> -->
+                                        <!-- <field name="parent_state"/> -->
+                                        <!-- <field name="sequence"/> -->
+                                        <!-- <field name="currency_id"/> -->
+                                        <!-- <field name="product_id"/> -->
+                                        <!-- <field name="product_uom_category_id"/> -->
+                                        <field name="product_template_id"/>
+                                        <field name="product_uom_id"/>
+                                        <field name="fg_categ_type"/>
+                                        <field name="finish"/>
+                                        <field name="shade"/>
+                                        <field name="sizcommon"/>
+                                        <field name="quantity"/>
+                                        <field name="price_unit"/>
+                                        <field name="discount"/>
+                                        <field name="price_subtotal"/>
+                                        <field name="price_total"/>
+                                    </tree>
+                                </field>
+                             </page>
+                        </notebook>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids"/>
+                            <field name="activity_ids"/>
+                            <field name="message_ids"/>
+                          </div>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+    <record id="combine_invoice_line_tree" model="ir.ui.view">
+            <field name="name">combine.invoice.line.tree</field>
+            <field name="model">combine.invoice.line</field>
+            <field name="arch" type="xml">
+                <tree string="Combine Invoice Line" create="false">
+                    <field name="invoice_id"/>
+                    <field name="sale_order_line"/>
+                    <field name="account_move_line"/>
+                    <field name="parent_state"/>
+                    <field name="sequence"/>
+                    <!-- <field name="currency_id"/> -->
+                    <field name="product_uom_id"/>
+                    <field name="product_id"/>
+                    <field name="product_uom_category_id"/>
+                    <field name="product_template_id"/>
+                    <field name="fg_categ_type"/>
+                    <field name="finish"/>
+                    <field name="shade"/>
+                    <field name="sizcommon"/>
+                    <field name="quantity"/>
+                    <field name="price_unit"/>
+                    <field name="discount"/>
+                    <field name="price_subtotal"/>
+                    <field name="price_total"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="combine_invoice_action">
+                <field name="name">Customer Invoice</field>
+                <field name="res_model">combine.invoice</field>
+                <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem
+        id="combine_invoice_line_menu"
+        name="Combine Invoice"
+        parent="account.menu_finance_receivables"
+        action="taps_accounts.combine_invoice_action"
+        sequence="10"/>
+</odoo>
+

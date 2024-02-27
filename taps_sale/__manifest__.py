@@ -69,6 +69,7 @@
         'views/activity.xml',
         'views/approval_matrix.xml',
         'views/allocated_customer_view.xml',
+        'views/allocated_buyer_view.xml',
         
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",

@@ -39,7 +39,7 @@
         'views/crm_team_transfer.xml',
         'views/activity.xml',
         # 'views/allocated_customer_view.xml',
-        'views/allocated_buyer_view.xml'
+        # 'views/allocated_buyer_view.xml'
         
         # 'views/provisional_naf.xml',
     ],

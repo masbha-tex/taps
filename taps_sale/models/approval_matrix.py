@@ -21,3 +21,4 @@ class SaleApprovalMatrix(models.Model):
     model_name = fields.Char(string="Model Name")
     first_approval = fields.Many2many('res.users', string="First Approval" , relation='sale_approval_matrix_first_approval')
     second_approval = fields.Many2many('res.users', string="Second Approval", relation='sale_approval_matrix_second_approval')
+    third_approval = fields.Many2many('res.users', string="Third Approval", relation='sale_approval_matrix_third_approval')

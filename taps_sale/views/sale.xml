@@ -18,8 +18,8 @@
 				<xpath expr="//field[@name='partner_id']" position="before">
 					<field name="sales_type" attrs="{'readonly':[('state','=','sale')]}"/>
                     <field name="sample_type" attrs="{'readonly':[('state','=','sale')], 'invisible': [['sales_type', '!=', 'sample']]}"/>
-                    <field name="provisionals_id" attrs="{'readonly':[('state','=','sale')], 'invisible': ['|',['sales_type', '!=', 'sample'],['sample_type', '!=', 'pacc']]}" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/>
-                    <field name="buying_house" attrs="{'readonly':[('state','=','sale')], 'invisible': ['|',['sales_type', '!=', 'sample'],['sample_type', '!=', 'buyinghouse']]}"/>
+                    <field name="provisionals_id" attrs="{'readonly':[('state','=','sale')], 'invisible': ['|',['sales_type', '!=', 'sample'],['sample_type', '!=', 'pacc']], 'required':[['sales_type', '=', 'sample'],['sample_type', '=', 'pacc']]}" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/>
+                    <field name="buying_house" attrs="{'readonly':[('state','=','sale')], 'invisible': ['|',['sales_type', '!=', 'sample'],['sample_type', '!=', 'buyinghouse']], 'required':[['sales_type', '=', 'sample'],['sample_type', '=', 'buyinghouse']]}"/>
                     <field name="pi_type" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']],'readonly':[('state','=','sale')] }"/>
                     <field name="cause_of_replacement" attrs="{'invisible': ['|',['pi_type','=','regular'],['pi_type','=','block']]}"/>
                     
@@ -41,6 +41,7 @@
 				</xpath>
 				<xpath expr="//field[@name='partner_shipping_id']" position="after">
 					<field name="delivery_details" options="{'no_create': True, 'no_create_edit':True}" attrs="{'invisible': [['sales_type','=','sample'],['sample_type','!=','customer']]}"/>
+                    <field name="buying_house_delivery_details" options="{'no_create': True, 'no_create_edit':True}" attrs="{'invisible': ['|', ['sales_type','!=','sample'],['sample_type','!=','buyinghouse']]}"/>
 					<field name="kind_attention"/>
 				</xpath>
 				<xpath expr="//field[@name='sale_order_template_id']" position="attributes">
@@ -113,7 +114,9 @@
 					<field name="cause_of_revision" attrs="{'invisible': [('is_revised', '=', False), ('is_hold', '=', False)]}"/>
                     <field name="department" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
 					<field name="division" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
-					<field name="buyer_name" domain="[('buyer_rank', '=', True)]" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" context="{'default_buyer_rank': 1}" required="1"/>
+                    <field name="buyer_type"  attrs="{'invisible': [['sales_type','!=', 'sample']], 'required':[['sales_type', '=', 'sample']]}"/>
+                        <field name="provisionals_buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|',['buyer_type','!=', 'potential'],['sales_type','!=', 'sample']], 'required': [['buyer_type', '=', 'potential']]}"/>
+					<field name="buyer_name" domain="[('buyer_rank', '=', True)]" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" context="{'default_buyer_rank': 1}" attrs="{'invisible': [['buyer_type','=', 'potential']], 'required': [['buyer_type', '!=', 'potential']]}"/>
 					<field name="hs_code" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="production_type" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
 					<field name="production_group" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>

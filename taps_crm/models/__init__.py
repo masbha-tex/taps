@@ -13,7 +13,7 @@ from . import approval_matrix
 from . import customer_reallocation
 from . import brand_reallocation
 # from . import allocated_customer
-from . import allocated_buyer
+# from . import allocated_buyer
 
 # from . import provisional_naf
 

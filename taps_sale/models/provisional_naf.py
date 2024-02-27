@@ -14,6 +14,7 @@ class ProvisionalNaf(models.Model):
     type = fields.Selection([
         ('customer', 'Customer'),
         ('buyinghouse', 'Buying House'),
+        ('buyer', 'Buyer'),
         
     ],string="Type", required=True)
 
@@ -43,6 +44,8 @@ class ProvisionalNaf(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('inter', 'Intermediate'),
+        ('pnaf', 'P-Naf'),
+        ('hod', 'HOD Approval'),
         ('to approve', 'To Approve'),
         ('approved', 'Approved'),
         ('cancel', 'Cancel'),
@@ -63,6 +66,8 @@ class ProvisionalNaf(models.Model):
     ], string="Delivery Method", default='By Road')
     related_customer = fields.Many2many('res.partner', relation='partner_related_customer',column1='partner',column2='customer',string="Related Customer", domain="[['customer_rank', '=',1]]")
     # salesperson = fields.Many2one('res.users', domain="[['share', '=', False],['sale_team_id', '!=', False]]",)
+    buyer_group = fields.Many2one('res.partner', string="Buyer Group", domain="[('brand_rank', '=', 1)]")
+    sourcing_office = fields.Many2many('buyer.sourcing.office', string="Sourcing Office")
 
     @api.model
     def create(self, vals):
@@ -72,25 +77,75 @@ class ProvisionalNaf(models.Model):
             # seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
             vals['name'] = self.env['ir.sequence'].next_by_code('provisional.template', sequence_date=seq_date) or _('New')
         
-        vals['state'] = 'inter'   
+        
         result = super(ProvisionalNaf, self).create(vals)
-        user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1) 
+        return result
+        
+    def action_approval(self):
+        user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template')],limit=1) 
         self.env['mail.activity'].sudo().create({
-                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id,
-                'res_id': result.id,
+                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_pre_first_approval').id,
+                'res_id': self.id,
                 'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
                 'user_id': user.first_approval.id
         })
-        return result
+        self.write({'state':'inter'})
+        
+    def action_pre_approve(self):
+        user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template')],limit=1)
+        if user.first_approval.id == self.env.user.id:
+            activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_pre_first_approval').id)])
+            activity_id.action_feedback(feedback="Approved")
+            if self.type == 'buyer':
+                user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.buyer')],limit=1)
+                self.env['mail.activity'].sudo().create({
+                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id,
+                'res_id': self.id,
+                'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
+                'user_id': user.first_approval.id
+            })
+            else:
+                user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)
+                self.env['mail.activity'].sudo().create({
+                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id,
+                'res_id': self.id,
+                'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
+                'user_id': user.first_approval.id
+            })
+            self.write({'state':'pnaf'})
+        else:
+            raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
 
-
-    def action_hod(self):
-        user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)
+    def action_teamleader(self):
+        if self.type == 'buyer':
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.buyer')],limit=1)
+        else:
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)
+            
         if user.first_approval.id == self.env.user.id:
             activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id)])
             activity_id.action_feedback(feedback="Approved")
+            self.env['mail.activity'].sudo().create({
+                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_second_approval').id,
+                'res_id': self.id,
+                'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
+                'user_id': user.second_approval.id
+            })
+            self.write({'state':'hod'})
+        else:
+            raise UserError(("Only "+ user.second_approval.partner_id.name + " can approve this"))
+        
+            
+        
+
+    def action_hod(self):
+        if self.type == 'buyer':
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.buyer')],limit=1)
+        if user.second_approval.id == self.env.user.id:
+            activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_second_approval').id)])
+            activity_id.action_feedback(feedback="Approved")
             self.write({'state':'to approve'})
-            self.activity_schedule('taps_sale.mail_activity_provisional_naf_final_approval', user_id=user.second_approval.id)
+            self.activity_schedule('taps_sale.mail_activity_provisional_naf_final_approval', user_id=user.third_approval.id)
         else:
             raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
         
@@ -108,10 +163,13 @@ class ProvisionalNaf(models.Model):
                 
                 customer_rank = 0
                 buying_house_rank = 0
+                buyer_rank = 0
                 if self. type == 'customer':
                     customer_rank=1
                 if self. type == 'buyinghouse':
                     buying_house_rank=1
+                if self. type == 'buyer':
+                    buyer_rank=1
                 data = {
                         'name': self.name,
                         'group': self.customer_group.id,
@@ -133,9 +191,11 @@ class ProvisionalNaf(models.Model):
                         'delivery_address': self.delivery_address,
                         'billing_address': self.billing_address,
                         'customer_rank' : customer_rank,
+                        'buyer_rank' : buyer_rank,
                         'buying_house_rank' : buying_house_rank,
                         'incoterms': self.incoterms.id,
                         'company_type': 'company',
+                        'property_product_pricelist': 1,
                         }
                 new_customer = self.env['res.partner'].sudo().create(data)
                 self.env.cr.commit()
@@ -172,9 +232,11 @@ class ProvisionalNaf(models.Model):
         duplicate = 0
         duplicate_name = ''
         if type == 'customer':
-            exists = self.env['res.partner'].search([('customer_rank', '>=', 1)])
+            exists = self.env['res.partner'].search([('customer_rank', '=', 1)])
         if type == 'buyinghouse':
-            exists = self.env['res.partner'].search([('buying_house_rank', '>=', 1)])
+            exists = self.env['res.partner'].search([('buying_house_rank', '=', 1)])
+        if type == 'buyer':
+            exists = self.env['res.partner'].search([('buyer_rank', '=', 1)])
         
         # raise UserError((exists))
         output_string = self.name.lower()

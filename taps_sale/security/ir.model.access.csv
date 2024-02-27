@@ -30,4 +30,6 @@ access_assign_user,access_assign_user,model_assign_user,base.group_user,1,1,1,1
 access_customer_allocated,access_customer_allocated,model_customer_allocated,base.group_user,1,1,1,1
 access_customer_allocated_line,access_customer_allocated_line,model_customer_allocated_line,base.group_user,1,1,1,1
 ccess_assign_user_line,access_assign_user_line,model_assign_user_line,base.group_user,1,1,1,1
+access_buyer_allocated,access_buyer_allocated,model_buyer_allocated,base.group_user,1,1,1,1
+access_buyer_allocated_line,access_buyer_allocated_line,model_buyer_allocated_line,base.group_user,1,1,1,1
 

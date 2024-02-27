@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_taps_helpdesk_taps_helpdesk,taps_helpdesk.taps_helpdesk,model_taps_helpdesk_taps_helpdesk,base.group_user,1,1,1,1
+access_helpdesk_ticket,helpdesk.ticket,model_helpdesk_ticket,helpdesk.group_helpdesk_user,1,1,1,0

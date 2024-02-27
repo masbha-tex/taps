@@ -19,15 +19,14 @@ class tapsHelpdeskTicket(models.Model):
     oa_number = fields.Many2one('sale.order', string='Oa Number')
     buyer = fields.Many2one('res.partner', string='Buyer')
     complain = fields.Text(string='Detail Complaint')
-    ccr_count = fields.Integer(compute='_compute_ccr_number', string='Ccr count', store=True)
-    ccr_ids = fields.Many2many('sale.ccr', compute='_compute_ccr_number', string='Ccr', copy=False, store=True)
+    ccr_count = fields.Integer(compute='_compute_ccr_number', string='Ccr count')
+    ccr_ids = fields.Many2many('sale.ccr', compute='_compute_ccr_number', string='Ccr', copy=False)
 
     
         
     def _compute_ccr_number(self):
-        
         for order in self:
-            ccr = order.env['sale.ccr'].search([('ticket_id', '=', self.id)])
+            ccr = order.env['sale.ccr'].sudo().search([('ticket_id', '=', self.id)])
             order.ccr_ids = ccr
             # raise UserError((len(ccr)))
             order.ccr_count = len(ccr)

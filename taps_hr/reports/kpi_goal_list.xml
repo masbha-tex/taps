@@ -22,19 +22,19 @@
                     <div class="col-4">
 
                         <br/>
-                            <div class="container mt-1 ml-0" style="border: 1pt solid black;">
+                            <div class="container" style="border: 1pt solid black;">
                                 <div class="row">
                                     <div class="col-4 float-left">
-                                        <img class="img-fluid"  style="height:100pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/>
+                                        <img class="img-fluid pt-1 pb-1"  style="height:100pt;" t-if="docs.employee_id.image_1920" t-att-src="image_data_uri(docs.employee_id.image_1920)"/>
                                     </div>
                                     <div class="col-8 float-right">
-                                        <span style="font-size: 16px;">
+                                        <span style="font-size: 18px;">
                                             <t t-esc="docs.employee_id.emp_id"/> - <t t-esc="docs.employee_id.name"/>
                                         </span>
-                                        <p style="font-size: 13px; color: #424242;">
+                                        <p style="font-size: 14px; color: #424242;">
                                             <t t-esc="docs.employee_id.job_id.name"/>
                                         </p>
-                                        <table class="table table-sm p-0 m-0 left bg-dark" style="font-size:7.5pt; width:100%; table-layout:fixed;color: white">
+                                        <table class="table table-sm left bg-dark" style="font-size:8pt; width:100%; table-layout:fixed;color: white">
                                             <thead>
                                                 <tr align="left">
                                                     <th style="background-color:grey;color:white; text-align: center">Q1</th>
@@ -74,7 +74,7 @@
                             <br/>
                             <span>What does it means? </span>
                             <br/>
-                            <div class="container mt-2 " style="border: 1pt solid black;font-size:10pt">
+                            <div class="container mt-2 " style="border: 1pt solid black;">
 
                                     
                                     <div class="row">

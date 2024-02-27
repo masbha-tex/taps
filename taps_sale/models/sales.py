@@ -62,7 +62,12 @@ class SaleOrder(models.Model):
     
     priority_sales = fields.Selection(
         [('0', 'Normal'), ('1', 'Urgent')], 'Priority Sales', default='0', index=True)
-    buyer_name = fields.Many2one('res.partner', string='Buyer Name')
+    buyer_type = fields.Selection([
+            ('existing', 'Existing'),
+            ('potential', 'Potential')],
+            string='Type of Buyer', default='existing')
+    buyer_name = fields.Many2one('res.partner', string='Buyer')
+    provisionals_buyer = fields.Many2one('provisional.template', string='Provisional Buyer')
     season = fields.Char(string='Season')
     sample_ref = fields.Many2many(comodel_name='sale.order',
                                   relation='id_name',column1='id',column2='name',
@@ -78,6 +83,8 @@ class SaleOrder(models.Model):
             string='Sales Type', required=True)
     invoice_details = fields.Char(string='Invoice Details', related='partner_invoice_id.contact_address_complete')
     delivery_details = fields.Char(string='Delivery Details', readonly=True, related='partner_shipping_id.contact_address_complete')
+    buying_house_delivery_details = fields.Char(string='BH Delivery Details', readonly=True, related='buying_house.contact_address_complete')
+    # potential_delivery_details = fields.Char(string='PA Delivery Details', readonly=True, related='provisionals_id.contact_address_complete')
     po_no = fields.Char(string='PO No.')
     po_date = fields.Date(string='PO Date')
     revised_date = fields.Date(string=' PI Revised Date')
@@ -173,6 +180,19 @@ class SaleOrder(models.Model):
     is_mockup_needed = fields.Boolean(string="mockup required", default=False)
     exp_close_date = fields.Date(string='Expected Closing Date')
 
+    @api.onchange('sample_type')
+    def _on_change_sample_type(self):
+        self.partner_id = False
+        self.buying_house= False
+        self.provisionals_id = False
+
+    @api.onchange('buyer_type')
+    def _on_change_buyer_type(self):
+        self.buyer_name = False
+        self.provisionals_buyer= False
+
+    
+
     @api.onchange('user_id')
     def compute_region_id(self):
         
@@ -243,7 +263,7 @@ class SaleOrder(models.Model):
         #     )._get_default_team_id(domain=['|', ('company_id', '=', self.company_id.id), ('company_id', '=', False)], user_id=user_id)
         self.update(values)
 
-    
+
     def write(self, values):
         # return pickings_to_backorder.action_confirmation_wizard(show_transfers=self._should_show_transfers())
         state = self.state

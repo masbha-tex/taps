@@ -91,6 +91,6 @@
         id="allocated_buyer_menu"
         name="Allocated Buyer"
         parent="taps_crm.crm_menu_brands"
-        action="taps_crm.allocated_buyer_template_action"
+        action="taps_sale.allocated_buyer_template_action"
         sequence="6"/>
 </odoo>

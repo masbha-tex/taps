@@ -17,3 +17,4 @@ from . import sale_order_rmc
 from . import naf_template
 from . import approval_matrix
 from . import allocated_customer
+from . import allocated_buyer

@@ -19,12 +19,13 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['account'],
+    'depends': ['account','taps_inventory','taps_sale'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/accounts_budget.xml',
+        'views/combine_invoice_view.xml'
     ],
     # only loaded in demonstration mode
     #'demo': [

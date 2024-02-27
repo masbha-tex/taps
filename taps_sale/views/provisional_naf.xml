@@ -7,11 +7,14 @@
             <field name="arch" type="xml">
                 <form string="provisional NAF">
                     <header>
-                        <button name="action_hod" type="object" string="HOD Sales" attrs= "{'invisible': [('state', 'not in', ['inter'])]}" help="Click On HOD Sales"/>
+                        <button name="action_approval"  type="object" string="Send For Approval" attrs= "{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_teamleader"  type="object" string="Team Leader Approval" attrs= "{'invisible': [('state', '!=', 'pnaf')]}"/>
+                        <button name="action_pre_approve"  type="object" string="Pre Approval" attrs= "{'invisible': [('state', '!=', 'inter')]}"/>
+                        <button name="action_hod" type="object" string="HOD Sales" attrs= "{'invisible': [('state', '!=', 'hod')]}" help="Click On HOD Sales"/>
                         <button name="action_approve" type="object" string="Approve" attrs= "{'invisible': [('state', 'not in', ['to approve'])]}" help="Click On Approve to create a record"/>
                         
                         
-                        <field name="state" widget="statusbar" statusbar_visible="draft,inter,to approve,approved"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,inter,pnaf,hod,to approve,approved"/>
                     </header>
                     <sheet>
                         <group>
@@ -27,14 +30,16 @@
                         </div>
                         <group>
                             <group>
-                                <field name="customer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|',['type', '=', 'buyinghouse'],['state', '=', 'draft']], 'required': [['state', '=', 'inter'],['type', '=', 'customer']]}"/>
-                                <field name="buying_house" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|',['type', '=', 'buyinghouse'],['state', '=', 'draft']]}"/>
-                                <field name="related_customer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|',['type', '=', 'customer'],['state', '=', 'draft']],'required': [['state', '=', 'inter'],['type', '=', 'buyinghouse']]}" widget="many2many_tags"/>
+                                <field name="customer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|','|',['type', '=', 'buyinghouse'],['type', '=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']], 'required': [['state', '=', 'pnaf'],['type', '=', 'customer']]}"/>
+                                <field name="buyer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['type', '!=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']], 'required': [['type', '=', 'buyer'],['state', '=', 'pnaf']]}"/>
+                                <field name="buying_house" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|','|',['type', '=', 'buyinghouse'],['type', '=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']]}"/>
+                                <field name="related_customer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['type', '=', 'customer'],['state', '=', 'draft'],['state', '=', 'inter']], 'required': ['&amp;',['state', '=', 'pnaf'],'|',['type', '=', 'buyinghouse'], ['type', '=', 'buyer']]}" widget="many2many_tags"/>
                                 
                                 
                             </group>
                             <group>
-                                <field name="buyer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|',['type', '=', 'buyinghouse'],['state', '=', 'draft']],'required': [['state', '=', 'inter'],['type', '=', 'customer']]}" widget="many2many_tags"/>
+                                <field name="buyer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|','|',['type', '=', 'buyinghouse'],['type', '=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']],'required': [['state', '=', 'pnaf'],['type', '=', 'customer']]}" widget="many2many_tags"/>
+                                <field name="sourcing_office" widget="many2many_tags" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['type', '!=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']], 'required': [['type', '=', 'buyer'],['state', '=', 'pnaf']]}"/>
                             </group>
                                 
                         </group>
@@ -63,27 +68,27 @@
                         </group>
                         <group>
                             <group>
-                                <field name="swift_code" attrs="{'invisible': [['state', '=', 'draft']], 'required': [['state', '=', 'inter']]}"/>
-                                <field name="bond_license" attrs="{'invisible': [['state', '=', 'draft']], 'required': [['state', '=', 'inter']]}"/>
-                                <field name="custom_delivery_method" attrs="{'invisible': [['state', '=', 'draft']]}"/>
+                                <field name="swift_code" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']], 'required': ['&amp;',['state', '=', 'pnaf'], '|', ['type', '=', 'customer'],['type', '=', 'buyinghouse']]}"/>
+                                <field name="bond_license" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']], 'required': ['&amp;',['state', '=', 'pnaf'], '|', ['type', '=', 'customer'],['type', '=', 'buyinghouse']]}"/>
+                                <field name="custom_delivery_method" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '!=', 'customer']], 'required': [['state', '=', 'pnaf'],['type', '=', 'customer']]}"/>
                                 <!-- <field name="property_product_pricelist" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/> -->
                                 
                             </group>
                             <group>
-                                <field name="property_payment_term_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['state', '=', 'draft']],'required': [['state', '=', 'inter']]}"/>
-                                <field name="incoterms" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['state', '=', 'draft']],'required': [['state', '=', 'inter']]}"/>
+                                <field name="property_payment_term_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']],'required': ['&amp;',['state', '=', 'pnaf'], '|', ['type', '=', 'customer'],['type', '=', 'buyinghouse']]}"/>
+                                <field name="incoterms" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']], 'required': ['&amp;',['state', '=', 'pnaf'], '|', ['type', '=', 'customer'],['type', '=', 'buyinghouse']]}"/>
                                 
                             </group>
                         </group>
                         <group>
                             <group>
-                                <field name="delivery_address" attrs="{'invisible': [['state', '=', 'draft']], 'required': [['state', '=', 'inter']]}"/>
+                                <field name="delivery_address" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']], 'required': [['type', '!=', 'buyer'],['state', '=', 'pnaf']]}"/>
                             </group>
                             <group>
-                                <field name="billing_address" attrs="{'invisible': [['state', '=', 'draft']],'required': [['state', '=', 'inter']]}"/>
+                                <field name="billing_address" attrs="{'invisible': ['|',['state', '=', 'draft'],['state', '=', 'inter']],'required': [['state', '=','pnaf']]}"/>
                             </group>
                         </group>
-                        <notebook attrs="{'invisible': ['|',('type', '=', 'buyinghouse'),('state','=','draft')]}">
+                        <notebook attrs="{'invisible': ['|','|',('type', '=', 'buyinghouse'),('state','=','inter'),('state','=','draft')]}">
                             <page string="Assign Salesperson" name="allocated_line" >
                                 <field name="assign_line" widget="section_and_note_one2many" mode="tree">
                                 <tree
