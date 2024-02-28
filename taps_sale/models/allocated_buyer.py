@@ -37,7 +37,7 @@ class AllocatedBuyerLine(models.Model):
 
     
         
-    allocated_id = fields.Many2one('buyer.allocated', string='Allocated Line', index=True, required=True, ondelete='cascade')
+    allocated_id = fields.Many2one('buyer.allocated', string='Allocated Line', index=True, required=True, )
     name = fields.Char(string="Description")
     # domain = fields.Char()
     # customer_domain = fields.Char(compute="_compute_buyer",readonly=True, store=True)

@@ -1297,10 +1297,10 @@ class MrpReportWizard(models.TransientModel):
                     sheet.write(44, col_number, None, row_style_sum)
                 for col_number in range(2):  
                     sheet.write(46, col_number, None, row_style_sum)
-                for col_number in range(20): 
+                for col_number in range(19): 
                     sheet.write(25, col_number, None, row_style_sum)
                     
-                for col_number in range(20): 
+                for col_number in range(19): 
                     sheet.write(0, col_number, None, row_style_head)
                 for col_number in range(3): 
                     sheet.write(27, col_number, None, row_style_head)
@@ -1313,7 +1313,7 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(0, 1, full_date.date().strftime("%d-%b-%Y"), column_style)
                 # sheet.write(0, 11, "DATE :", column_style)
                 # sheet.merge_range(0, 12, 0, 13, full_date.date().strftime("%d-%b-%Y"), column_style)
-                sheet.merge_range(0, 11, 0, 20, 'CLOSED ORDER', column_style)
+                sheet.merge_range(0, 10, 0, 18, 'CLOSED ORDER', column_style)
                 sheet.freeze_panes(2, 0)
                 if start_time.date() == full_date.date():
                     sheet.activate()
@@ -1343,7 +1343,7 @@ class MrpReportWizard(models.TransientModel):
                 sheet.set_column(7, 7, 13)
                 sheet.set_column(8, 8, 13)
                 sheet.set_column(9, 9, 13)
-                sheet.set_column(10, 10, 0)
+                # sheet.set_column(10, 10, 0)
                 # sheet.set_column(10, 10, 0)
                 sheet.set_column(11, 18, 6)
     
@@ -1572,7 +1572,7 @@ class MrpReportWizard(models.TransientModel):
                 
                 row = 2
                 type_exists = []
-                closed_col = 11
+                closed_col = 10
                 for line in report_data:
                     item_type = line[0]
                     if (('CE' in line[0]) or ('OE' in line[0])):
@@ -1600,7 +1600,7 @@ class MrpReportWizard(models.TransientModel):
                                     sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
                                     closed_row += 1
                         
-                        if closed_row < 24 and c_col == 11:
+                        if closed_row < 24 and c_col == 10:
                             for i in range(closed_row,25):
                                 sheet.write(closed_row, c_col, '', format_label_1)
                                 if closed_row == 24 and line[0] == 'M#4 CE':
@@ -1610,7 +1610,7 @@ class MrpReportWizard(models.TransientModel):
                             # for i in range(24)[:closed_row]:
                             #     sheet.write(closed_row, c_col, '', format_label_1)
                             #     closed_row += 1
-                        if closed_row < 24 and c_col != 11:
+                        if closed_row < 24 and c_col != 10:
                             for i in range(closed_row, 25):
                                 sheet.write(closed_row, c_col, '', format_label_1)
                                 closed_row += 1

@@ -1,0 +1,108 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record model="ir.ui.view" id="view_hr_health_safety_list">
+        <field name="name">hr_health_safety.list</field>
+        <field name="model">hr.health_safety</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="" sample="1">
+              <field name="name"/>
+              <field name="criteria_id"/>
+              <field name="title_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_hr_health_safety_form">
+        <field name="name">hr_health_safety.form</field>
+        <field name="model">hr.health_safety</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="">
+                
+				<sheet>
+                    <field name="active" invisible="1"/>   
+                    
+                    <field name="name"/>
+                    
+                    <group>
+                        
+                            <field name="criteria_id" options="{'no_create':true, 'no_open':true}"/>
+                            <field name="title_ids" options="{'no_create':true, 'no_open':true}"/>
+                        
+                                             
+                    </group>
+                                        
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" options="{'open_attachments': True}"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>                
+            </form>
+        </field>
+    </record>
+
+    
+
+
+    <!-- actions opening views on models -->
+    <!-- <record model="ir.actions.act_window" id="action_hr_health_safety">
+        <field name="name">Health &amp; Safety</field>
+        <field name="res_model">hr.health_safety</field>
+        <field name="view_mode">tree,form</field>
+    </record> -->
+
+      <record model="ir.actions.act_window" id="action_hr_health_safety">
+        <field name="name">Health &amp; Safety</field>
+        <field name="res_model">hr.health_safety</field>
+        <field name="context" eval="{}"/>
+        <field name="view_mode">tree,form</field>
+        <field name="target">main</field>
+        <field name="view_id" ref="hr_health_safety.view_hr_health_safety_list"/>
+        <!-- <field name="search_view_id" ref="taps_retention_matrix.view_hr_health_safety_search_view"/> -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first Health &amp; Safety
+            </p>
+        </field>
+    </record>
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="hr_health_safety.action_server">
+      <field name="name">hr_health_safety server</field>
+      <field name="model_id" ref="model_hr_health_safety_hr_health_safety"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+    <!-- <menuitem name="hr_health_safety" id="hr_health_safety.menu_root"/> -->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="hr_health_safety.menu_1" parent="hr_health_safety.menu_root"/>
+    <menuitem name="Menu 2" id="hr_health_safety.menu_2" parent="hr_health_safety.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="hr_health_safety.menu_1_list" parent="hr_health_safety.menu_1"
+              action="hr_health_safety.action_window"/>
+    <menuitem name="Server to list" id="hr_health_safety" parent="hr_health_safety.menu_2"
+              action="hr_health_safety.action_server"/>
+-->
+      <menuitem 
+        id="main_hr_health_safety_menu" 
+        name="Health &amp; Safety"
+        action="action_hr_health_safety"
+        groups="hr_health_safety.group_user_health_safety"
+        web_icon="hr_health_safety,static/src/img/icon.png"/>
+  </data>
+</odoo>

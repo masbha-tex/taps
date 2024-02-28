@@ -76,43 +76,55 @@ class ProvisionalNaf(models.Model):
             seq_date = None
             # seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
             vals['name'] = self.env['ir.sequence'].next_by_code('provisional.template', sequence_date=seq_date) or _('New')
-        
-        
-        result = super(ProvisionalNaf, self).create(vals)
-        return result
+        a = self._check_duplicate_partner(vals)
+        if a == 1:
+            raise UserError(("This "+vals['type'] + "already exist in Database"))
+        else:
+            result = super(ProvisionalNaf, self).create(vals)
+            return result
         
     def action_approval(self):
-        user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template')],limit=1) 
-        self.env['mail.activity'].sudo().create({
-                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_pre_first_approval').id,
-                'res_id': self.id,
-                'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
-                'user_id': user.first_approval.id
-        })
-        self.write({'state':'inter'})
+        
+        user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template')],limit=1)
+        if user.first_approval.id == self.env.user.id:
+            result = self._check_duplicate_partner()
+            if result == 1:
+                raise UserError(("This "+self.type + "already exist in Database"))
+            else:
+                self.env['mail.activity'].sudo().create({
+                        'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_pre_first_approval').id,
+                        'res_id': self.id,
+                        'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
+                        'user_id': user.first_approval.id
+                })
+                self.write({'state':'inter'})
         
     def action_pre_approve(self):
         user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template')],limit=1)
         if user.first_approval.id == self.env.user.id:
-            activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_pre_first_approval').id)])
-            activity_id.action_feedback(feedback="Approved")
-            if self.type == 'buyer':
-                user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.buyer')],limit=1)
-                self.env['mail.activity'].sudo().create({
-                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id,
-                'res_id': self.id,
-                'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
-                'user_id': user.first_approval.id
-            })
+            result = self._check_duplicate_partner()
+            if result == 1:
+                raise UserError(("This "+self.type + "already exist in Database"))
             else:
-                user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)
-                self.env['mail.activity'].sudo().create({
-                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id,
-                'res_id': self.id,
-                'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
-                'user_id': user.first_approval.id
-            })
-            self.write({'state':'pnaf'})
+                activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_pre_first_approval').id)])
+                activity_id.action_feedback(feedback="Approved")
+                if self.type == 'buyer':
+                    user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.buyer')],limit=1)
+                    self.env['mail.activity'].sudo().create({
+                    'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id,
+                    'res_id': self.id,
+                    'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
+                    'user_id': user.first_approval.id
+                })
+                else:
+                    user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)
+                    self.env['mail.activity'].sudo().create({
+                    'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id,
+                    'res_id': self.id,
+                    'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
+                    'user_id': user.first_approval.id
+                })
+                self.write({'state':'pnaf'})
         else:
             raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
 
@@ -123,15 +135,20 @@ class ProvisionalNaf(models.Model):
             user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)
             
         if user.first_approval.id == self.env.user.id:
-            activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id)])
-            activity_id.action_feedback(feedback="Approved")
-            self.env['mail.activity'].sudo().create({
-                'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_second_approval').id,
-                'res_id': self.id,
-                'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
-                'user_id': user.second_approval.id
-            })
-            self.write({'state':'hod'})
+            result = self._check_duplicate_partner()
+            if result == 1:
+                raise UserError(("This "+self.type + "already exist in Database"))
+            else:
+                
+                activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_first_approval').id)])
+                activity_id.action_feedback(feedback="Approved")
+                self.env['mail.activity'].sudo().create({
+                    'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_second_approval').id,
+                    'res_id': self.id,
+                    'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
+                    'user_id': user.second_approval.id
+                })
+                self.write({'state':'hod'})
         else:
             raise UserError(("Only "+ user.second_approval.partner_id.name + " can approve this"))
         
@@ -141,22 +158,31 @@ class ProvisionalNaf(models.Model):
     def action_hod(self):
         if self.type == 'buyer':
             user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.buyer')],limit=1)
+        else:
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)
         if user.second_approval.id == self.env.user.id:
-            activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_second_approval').id)])
-            activity_id.action_feedback(feedback="Approved")
-            self.write({'state':'to approve'})
-            self.activity_schedule('taps_sale.mail_activity_provisional_naf_final_approval', user_id=user.third_approval.id)
+            result = self._check_duplicate_partner()
+            if result == 1:
+                raise UserError(("This "+self.type + "already exist in Database"))
+            else:
+                activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_second_approval').id)])
+                activity_id.action_feedback(feedback="Approved")
+                self.write({'state':'to approve'})
+                self.activity_schedule('taps_sale.mail_activity_provisional_naf_final_approval', user_id=user.third_approval.id)
         else:
             raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
         
 
     def action_approve(self):
-        user = self.env['sale.approval.matrix'].search([('model_name','=','provisional.template.customer')],limit=1)
+        if self.type == 'buyer':
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.buyer')],limit=1)
+        else:
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template.customer')],limit=1)
         
-        if user.second_approval.id == self.env.user.id:
-            result = self._check_duplicate_partner(self.type)
+        if user.third_approval.id == self.env.user.id:
+            result = self._check_duplicate_partner()
             if result == 1:
-                raise UserError(("This Customer already exist in Database"))
+                raise UserError(("This "+self.type + "already exist in Database"))
             else:
                 
                 
@@ -173,7 +199,8 @@ class ProvisionalNaf(models.Model):
                 data = {
                         'name': self.name,
                         'group': self.customer_group.id,
-                        'related_buyer': self.buyer,
+                        'brand' : self.buyer_group.id,
+                        'sourcing_office': self.sourcing_office,
                         # 'user_id' : self.salesperson.id,
                         'street' : self.street,
                         # 'street2': self.strret2,
@@ -208,38 +235,57 @@ class ProvisionalNaf(models.Model):
                     buyers.write({'related_customer': [(4, customer)for customer in new_customer.ids]})
                     if self.buying_house:
                         self.buying_house.write({'related_customer': [(4, customer)for customer in new_customer.ids]})
-                if self. type == 'buyinghouse':
+                if self. type == 'buyinghouse' or self.type == 'buyer':
                     # raise UserError((self.related_customer))
                     customers = self.env['res.partner'].search([('id', 'in', self.related_customer.ids)])
                     new_customer.write({'related_customer': [(4, customer)for customer in customers.ids]})
                 if self.assign_line:
                     for rec in self.assign_line:
-                        data = {'buyer': rec.buyer.id,
-                                'customer': new_customer.id,
-                                'allocated_id': rec.salesperson.id,
-                               }
-                        new_allocation = self.env['customer.allocated.line'].sudo().create(data)
+                        if self.type == 'customer':
+                            data = {'buyer': rec.buyer.id,
+                                    'customer': new_customer.id,
+                                    'allocated_id': rec.salesperson.id,
+                                   }
+                            new_allocation = self.env['customer.allocated.line'].sudo().create(data)
+                        if self.type == 'buyer':
+                            # raise UserError((rec.marketing_person.id))
+                            data_1 = {'buyer': new_customer.id,
+                                    'allocated_id': rec.marketing_person.id,
+                                   }
+                            new_allocation_1 = self.env['buyer.allocated.line'].sudo().create(data_1)
+                            
                 self.write({'state': 'approved'})
                 
                 
         else:
-            raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
+            raise UserError(("Only "+ user.third_approval.partner_id.name + " can approve this"))
             
 
-    def _check_duplicate_partner(self, type):
+    def _check_duplicate_partner(self, vals=None):
         
         list = ['limited','ltd','co','mpany', '.',',',' ','(',')', 'pvt', 'private','apparels','apparel']
         duplicate = 0
         duplicate_name = ''
-        if type == 'customer':
-            exists = self.env['res.partner'].search([('customer_rank', '=', 1)])
-        if type == 'buyinghouse':
-            exists = self.env['res.partner'].search([('buying_house_rank', '=', 1)])
-        if type == 'buyer':
-            exists = self.env['res.partner'].search([('buyer_rank', '=', 1)])
+        if vals:
+            if vals['type'] == 'customer':
+                exists = self.env['res.partner'].search([('customer_rank', '=', 1)])
+            if vals['type'] == 'buyinghouse':
+                exists = self.env['res.partner'].search([('buying_house_rank', '=', 1)])
+            if vals['type'] == 'buyer':
+                exists = self.env['res.partner'].search([('buyer_rank', '=', 1)])
+        else:
+            if self.type == 'customer':
+                exists = self.env['res.partner'].search([('customer_rank', '=', 1)])
+            if self.type == 'buyinghouse':
+                exists = self.env['res.partner'].search([('buying_house_rank', '=', 1)])
+            if self.type == 'buyer':
+                exists = self.env['res.partner'].search([('buyer_rank', '=', 1)])
         
-        # raise UserError((exists))
-        output_string = self.name.lower()
+        # raise UserError((vals['name']))
+        if vals:
+            output_string = vals['name'].lower()
+        else:
+            output_string = self.name.lower()
         for record in exists:
             check_string = record.name.lower()
             for word in list:
@@ -268,5 +314,7 @@ class AssignUser(models.Model):
     provisional_id = fields.Many2one('provisional.template', string='Provisional ID', index=True, required=True, ondelete='cascade')
     buyer = fields.Many2one('res.partner', string='Buyer', domain="[('buyer_rank', '=', 1)]")
     salesperson = fields.Many2one('customer.allocated', string="Salesperson")
+    marketing_person = fields.Many2one('buyer.allocated', string="Marketing Person")
+    type_pnaf = fields.Selection(related="provisional_id.type")
     
     

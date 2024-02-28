@@ -139,7 +139,7 @@ class AssignUserLine(models.Model):
     naf_id = fields.Many2one('naf.template', string='NAF ID', index=True, required=True, ondelete='cascade')
     buyer = fields.Many2one('res.partner', string='Buyer', domain="[('buyer_rank', '=', 1)]")
     salesperson = fields.Many2one('customer.allocated', string="Salesperson")
-    marketing_person = fields.Many2one('res.partner', string="Marketing Person")
+    marketing_person = fields.Many2one('buyer.allocated', string="Marketing Person")
     type_naf = fields.Selection(related="naf_id.type")
     
     

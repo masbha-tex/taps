@@ -47,6 +47,15 @@
                             <field name="z_invoice"/>
                             <field name="m_invoice"/>
                         </group>
+                        <group>
+                            <field name="applicant_tin"/>
+                            <field name="bin_vat_reg"/>
+                            <field name="bond_licence"/>
+                            <field name="tin_no"/>
+                            <field name="bank_bin"/>
+                            <field name="lc_no"/>
+                            <field name="master_lc"/>
+                        </group>
                         <notebook>
                             <page string="Invoice Lines" name="line_ids">
                                 <field name="line_id" widget="section_and_note_one2many" mode="tree">
@@ -117,9 +126,14 @@
             </field>
         </record>
         <record model="ir.actions.act_window" id="combine_invoice_action">
-                <field name="name">Customer Invoice</field>
-                <field name="res_model">combine.invoice</field>
-                <field name="view_mode">tree,form</field>
+            <field name="name">Customer Invoice</field>
+            <field name="res_model">combine.invoice</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="combine_invoice_list_view"/>
+            <!-- <field name="search_view_id" ref="view_account_invoice_filter"/> -->
+            <field name="domain">[]</field>
+            <!-- <field name="context">{'default_move_type': 'out_invoice'}</field> -->
+            
         </record>
         <menuitem
         id="combine_invoice_line_menu"

@@ -339,6 +339,8 @@ class SaleCcr(models.Model):
             if self.company_id.id == 3:
                 email_cc_list.append('kumar.abhishek@texzipperbd.com')
                 email_to_list.append('quality2.metaltrims@texzipperbd.com')
+                email_to_list.append('quality4.metaltrims@texzipperbd.com')
+                
                 # email_from_list.append('nasir.csd@texzipperbd.com')
 
             email_cc = ','.join(email_cc_list)

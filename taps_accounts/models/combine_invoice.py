@@ -57,7 +57,15 @@ class CombineInvoice(models.Model):
             ('cancel', 'Cancelled'),
         ], string='Status', required=True, readonly=True, copy=False, tracking=True,
         default='draft')
+    applicant_tin = fields.Char(string="APPLICANT'S TIN", store=True, readonly=False)
+    bin_vat_reg = fields.Char(string='BIN/VAT REG.NO', store=True, readonly=False)
+    bond_licence = fields.Char(string='BOND LICENSE NO', store=True, readonly=False)
+    tin_no = fields.Char(string='TIN NO', store=True, readonly=False)
+    bank_bin = fields.Char(string='BANK BIN NO', store=True, readonly=False)
+    lc_no = fields.Char(string='LC', store=True, readonly=False)
+    master_lc = fields.Char(string='Export LC NO', store=True, readonly=False)
 
+    
     @api.model
     def create(self, vals):
         if 'company_id' in vals:

@@ -275,6 +275,8 @@
             <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="arch" type="xml">
                 <search string="Search Sales Order">
+                    <filter string="Ready to Invoice" name="oa_to_invoice"
+                        domain="[('sales_type','=','oa'),('state','=','sale')]"/>
                     <filter string="Sample" name="current_month_sa"
                         domain="[('sales_type','=','sample'),('state','=','sale'),('date_order','&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d 00:00:00')),
                  ('date_order','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d 23:59:59'))]"/>
@@ -301,13 +303,12 @@
                 <xpath expr="//tree" position="attributes">
                     <attribute name="js_class">sale_tree_dashboard_upload</attribute>
                 </xpath>
+                <xpath expr="//tree//field[@name='create_date']" position="after">
+                    <field name="order_ref"/>
+                </xpath>
                 <xpath expr="//tree//field[@name='amount_total']" position="after">
                     <field name="rmc"/>
                 </xpath>
-                
-                
-                
-                    
             </field>
         </record>
         <record model="ir.ui.view" id="view_order_line_tree_inherit">

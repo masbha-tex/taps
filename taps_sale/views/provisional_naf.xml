@@ -5,7 +5,7 @@
             <field name="model">provisional.template</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <form string="provisional NAF">
+                <form string="provisional NAF" >
                     <header>
                         <button name="action_approval"  type="object" string="Send For Approval" attrs= "{'invisible': [('state', '!=', 'draft')]}"/>
                         <button name="action_teamleader"  type="object" string="Team Leader Approval" attrs= "{'invisible': [('state', '!=', 'pnaf')]}"/>
@@ -90,7 +90,7 @@
                         </group>
                         <notebook attrs="{'invisible': ['|','|',('type', '=', 'buyinghouse'),('state','=','inter'),('state','=','draft')]}">
                             <page string="Assign Salesperson" name="allocated_line" >
-                                <field name="assign_line" widget="section_and_note_one2many" mode="tree">
+                                <field name="assign_line" widget="section_and_note_one2many" mode="tree" attrs="{'required': [['type', '!=', 'buyinghouse']]}">
                                 <tree
                                     string="Assign Line"
                                     editable="bottom">
@@ -98,10 +98,11 @@
                                         <create name="add_product_control" string="Add a Line" />
                                     </control>
                                         
+                                        <field name="type_pnaf" invisible="1"/>
+                                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type_pnaf', '=', 'buyer']], 'required': [['type_pnaf', '=', 'customer']]}"/>
                                         
-                                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                                        
-                                        <field name="salesperson"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" force_save="1"/>
+                                        <field name="salesperson"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" force_save="1" attrs="{'invisible': [['type_pnaf', '=', 'buyer']], 'required': [['type_pnaf', '=', 'customer']]}"/>
+                                        <field name="marketing_person"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type_pnaf', '!=', 'buyer']], 'required': [['type_pnaf', '=', 'buyer']]}"/>
                                         
                                         
                                         <field name="name" invisible="1"/>
