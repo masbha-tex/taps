@@ -23,6 +23,11 @@
 
     # always loaded
     'data': [
+        'report/paperformat.xml',
+        'report/report_action.xml',
+        'report/report_customer_invoice.xml',
+        'data/ir_invoice_sequence.xml',
+        
         'security/ir.model.access.csv',
         'views/accounts_budget.xml',
         'views/combine_invoice_view.xml'

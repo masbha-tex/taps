@@ -107,7 +107,9 @@
                     <!-- <field name="description"/> -->
                     <field name="visit_date"/>
                     <field name="partner_id"/>
+                    <field name="buying_house"/>
                     <field name="buyer"/>
+                    <field name="potential_customer"/>
                     <field name="concern"/>
                     <field name="designation"/>
                     <field name="mobile"/>

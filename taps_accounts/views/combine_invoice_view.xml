@@ -15,7 +15,6 @@
                     <field name="z_invoice" readonly="1" force_save="1" optional="show"/>
                     <field name="m_invoice" readonly="1" force_save="1" optional="show"/>
                     <field name="state"/>
-                
                 </tree>
             </field>
     </record>

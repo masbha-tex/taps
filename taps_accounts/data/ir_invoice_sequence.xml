@@ -1,0 +1,11 @@
+<odoo>
+	<data noupdate="1">
+		<record id="combine_invoice" model="ir.sequence">
+			<field name="name">Combine Invoice</field>
+			<field name="code">combine.invoice</field>
+			<field name="prefix">INV/%(year)s/</field>
+			<field name="padding">4</field>
+			<field name="company_id" eval="False"/>
+		</record>
+	</data>
+</odoo>
