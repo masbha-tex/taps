@@ -266,7 +266,7 @@ class SaleOrder(models.Model):
 
     def action_view_invoice(self):
         invoices = self.mapped('invoice_ids')
-        com_inv = self.env['combine.invoice'].search([('z_invoice','in', invoices),('m_invoice','in', invoices)])
+        com_inv = self.env['combine.invoice'].search([('z_invoice','in', invoices.ids) or ('m_invoice','in', invoices.id)])
         # action = self.env["ir.actions.actions"]._for_xml_id("account.action_move_out_invoice_type")
         action = self.env["ir.actions.actions"]._for_xml_id("taps_accounts.combine_invoice_action")
         if len(invoices) > 0:
@@ -278,8 +278,10 @@ class SaleOrder(models.Model):
             # else:
             action['views'] = form_view
             action['res_id'] = com_inv[0].id
+            # raise UserError(('invoices'))
         else:
             action = {'type': 'ir.actions.act_window_close'}
+        return action
 
         # context = {
         #     'default_move_type': 'out_invoice',
@@ -292,7 +294,6 @@ class SaleOrder(models.Model):
         #         'default_invoice_origin': self.name,
         #     })
         # action['context'] = context
-        return action
 
     
 

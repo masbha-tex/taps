@@ -6,11 +6,12 @@
     'author': "Mohammad Adnan",
     'category': 'Generic Modules/Health Safety',
     'version': '0.1',
-    'depends': ['base'],
+    'depends': ['base','mail','web'],
 
     
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/res_groups.xml',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
     ],

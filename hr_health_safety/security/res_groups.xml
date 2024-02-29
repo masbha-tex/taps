@@ -11,10 +11,10 @@
              <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>        
     
-        <record id="group_manager_retention" model="res.groups">
+        <record id="group_manager_health_safety" model="res.groups">
             <field name="name">Manager</field>
             <field name="category_id" ref="base.module_category_generic_modules_hr_health_safety"/>
-            <field name="implied_ids" eval="[(4, ref('taps_retention_matrix.group_user_health_safety'))]"/>
+            <field name="implied_ids" eval="[(4, ref('hr_health_safety.group_user_health_safety'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>            
         </record>
     </data>

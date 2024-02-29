@@ -974,11 +974,14 @@ class PpcReportWizard(models.TransientModel):
         row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True,'bottom': True})
         row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
   
-        top_bottoms = self.env['sale.order.line'].search([('id','in',m_orders.oa_id.topbottom.ids)])
+        
         #.sorted(key=lambda pr: pr.sequence)
+        top_bottoms = m_orders.mapped('topbottom')
 
         for top_bottom in top_bottoms:
             all_orders = None
+            raise UserError((top_bottom))
+            # top_bottoms = self.env['sale.order.line'].search([('order_id','=',m_orders.oa_id),('topbottom','in',m_orders.topbottom)])
             all_orders = self.env['sale.order'].browse(m_orders.oa_id.ids)
             all_orders = all_orders.filtered(lambda pr: pr.oa_id.topbottom.id == top_bottom.id).sorted(key=lambda pr: pr.id)        
             
@@ -1133,7 +1136,7 @@ class PpcReportWizard(models.TransientModel):
         _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Customer Wise')),
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('Stopper Wise')),
             'target': 'self',
         }
 

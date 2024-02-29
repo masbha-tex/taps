@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_health_safety_hr_health_safety,hr_health_safety.hr_health_safety,model_hr_health_safety_hr_health_safety,base.group_user,1,1,1,1
+access_hr_health_safety_user,hr.health.safety,model_hr_health_safety,group_user_health_safety,1,1,1,0
+access_hr_health_safety_manager,hr.health.safety,model_hr_health_safety,group_manager_health_safety,1,1,1,1

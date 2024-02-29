@@ -11,6 +11,7 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
         sale_orders = self.env['sale.order'].browse(self._context.get('active_ids', []))
         if self.advance_payment_method == 'delivered':
             moves = sale_orders._create_invoices(final=self.deduct_down_payments)
+            moves.action_post()
             if moves:
                 # for mv in moves:
                 invoice_vals_list = []

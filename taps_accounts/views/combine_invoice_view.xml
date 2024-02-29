@@ -3,17 +3,17 @@
             <field name="name">combine.invoice.list</field>
             <field name="model">combine.invoice</field>
             <field name="arch" type="xml">
-                <tree string="Combine Invoice List">
-                    <field name="name"/>
-                    <field name="currency_id"/>
-                    <field name="partner_id"/>
-                    <field name="partner_bank_id"/>
-                    <field name="payment_reference"/>
-                    <field name="invoice_date"/>
-                    <field name="invoice_payment_term_id"/>
-                    <field name="invoice_incoterm_id"/>
-                    <field name="z_invoice"/>
-                    <field name="m_invoice"/>
+                <tree string="Combine Invoice List" create="true">
+                    <field name="name" readonly="1" force_save="1" optional="show"/>
+                    <field name="currency_id" readonly="1" force_save="1" optional="show"/>
+                    <field name="partner_id" readonly="1" force_save="1" optional="show"/>
+                    <field name="partner_bank_id" readonly="1" force_save="1" optional="show"/>
+                    <field name="payment_reference" readonly="1" force_save="1" optional="show"/>
+                    <field name="invoice_date" readonly="1" force_save="1" optional="show"/>
+                    <field name="invoice_payment_term_id" readonly="1" force_save="1" optional="show"/>
+                    <field name="invoice_incoterm_id" readonly="1" force_save="1" optional="show"/>
+                    <field name="z_invoice" readonly="1" force_save="1" optional="show"/>
+                    <field name="m_invoice" readonly="1" force_save="1" optional="show"/>
                     <field name="state"/>
                 
                 </tree>
@@ -31,30 +31,31 @@
                     <sheet>
                         <div class="oe_title">
                             <h1>
-                                <field name="name" />
+                                <field name="name" readonly="1" force_save="1"/>
                             </h1>
                         </div>
                         <group>
-                            <field name="currency_id"/>
-                            <field name="partner_id"/>
-                            <field name="partner_bank_id"/>
-                            <field name="payment_reference"/>
-                        </group>
-                        <group>
-                            <field name="invoice_date"/>
-                            <field name="invoice_payment_term_id"/>
-                            <field name="invoice_incoterm_id"/>
-                            <field name="z_invoice"/>
-                            <field name="m_invoice"/>
-                        </group>
-                        <group>
-                            <field name="applicant_tin"/>
-                            <field name="bin_vat_reg"/>
-                            <field name="bond_licence"/>
-                            <field name="tin_no"/>
-                            <field name="bank_bin"/>
-                            <field name="lc_no"/>
-                            <field name="master_lc"/>
+                            <group>
+                                <field name="currency_id" readonly="1" force_save="1"/>
+                                <field name="partner_id" readonly="1" force_save="1"/>
+                                <field name="partner_bank_id" readonly="1" force_save="1"/>
+                                <field name="payment_reference" readonly="1" force_save="1"/>
+                                
+                                <field name="invoice_date"/>
+                                <field name="invoice_payment_term_id" readonly="1" force_save="1"/>
+                                <field name="invoice_incoterm_id" readonly="1" force_save="1"/>
+                                <field name="z_invoice" readonly="1" force_save="1"/>
+                                <field name="m_invoice" readonly="1" force_save="1"/>
+                            </group>
+                            <group>
+                                <field name="applicant_tin"/>
+                                <field name="bin_vat_reg"/>
+                                <field name="bond_licence"/>
+                                <field name="tin_no"/>
+                                <field name="bank_bin"/>
+                                <field name="lc_no"/>
+                                <field name="master_lc"/>
+                            </group>
                         </group>
                         <notebook>
                             <page string="Invoice Lines" name="line_ids">
@@ -102,7 +103,7 @@
             <field name="name">combine.invoice.line.tree</field>
             <field name="model">combine.invoice.line</field>
             <field name="arch" type="xml">
-                <tree string="Combine Invoice Line" create="false">
+                <tree string="Combine Invoice Line" create="true">
                     <field name="invoice_id"/>
                     <field name="sale_order_line"/>
                     <field name="account_move_line"/>

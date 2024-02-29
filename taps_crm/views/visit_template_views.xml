@@ -136,10 +136,10 @@
                             string="Customer"
                              options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"
                             attrs="{'invisible':['|',['type', '=', 'buyinghouse'],['type', '=', 'pacc']], 'required': [['type', '=', 'customer']]}"
-                            domain="[('customer_rank', '>',0)]"/>
-                        <field name="buying_house" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type', '!=', 'buyinghouse']], 'required': [['type', '=', 'buyinghouse']]}"/>
-                        <field name="potential_customer" attrs="{'invisible': [['type', '!=', 'pacc'],] , 'required':[['type', '=', 'pacc']] }"/>
-                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'required': [['type', '=', 'brand']]}"/>
+                            domain="[('customer_rank', '>',0)]" force_save="1"/>
+                        <field name="buying_house" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type', '!=', 'buyinghouse']], 'required': [['type', '=', 'buyinghouse']]}" force_save="1"/>
+                        <field name="potential_customer" attrs="{'invisible': [['type', '!=', 'pacc'],] , 'required':[['type', '=', 'pacc']] }" force_save="1"/>
+                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'required': [['type', '=', 'brand']]}" force_save="1"/>
                         <field name="concern" />
                         <field name="designation" />
                         <field name="mobile" />
