@@ -7,12 +7,12 @@
 						<div class="row">
 							<div class="col-12 text-left py-1 bg-dark" style="border-radius: 10pt; font-weight: bold;">
 								<div class="float-left mt-2 ml-3 mr-2  pl-3 pr-1 pt-2">
-                                    <h3 class="text-white">
+                                    <h2 class="text-white">
                                         <span>KPI Objectives and Scorecard</span>
-                                    </h3>
-                                    <p class="text-gray">
-                                        <span>Q1</span>
-                                    </p>
+                                    </h2>
+                                    <!-- <p class="text-gray">
+                                        <span></span>
+                                    </p> -->
 								</div>
 							</div>
 						</div>
@@ -147,39 +147,39 @@
             												 <t t-esc="o.weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>% 
             											</td>
             											<td colspan="2" style="border: 1pt solid black;text-align: left; vertical-align:middle">
-            											   <t t-if="o.q1_k &lt;= 30">
+            											   <t t-if="o.ytd_k &lt;= 30">
                                         <div class="progress">
-                                            <t t-set="progress_width" t-value="'width: %s%%%;' % o.q1_k" />
+                                            <t t-set="progress_width" t-value="'width: %s%%%;' % o.ytd_k" />
                                             <div class="progress-bar bg-danger" role="progressbar" t-att-style="progress_width" aria-valuenow="progress_width" aria-valuemin="0" aria-valuemax="100">
 
-                                              <span class="text-center"><t t-esc="o.q1_k" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>%</span>
+                                              <span class="text-center"><t t-esc="o.ytd_k" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>%</span>
                                           </div>
                                         </div>
                                       </t>
-                                      <t t-elif="o.q1_k &gt; 30 and o.q1_k &lt;= 69">
+                                      <t t-elif="o.ytd_k &gt; 30 and o.ytd_k &lt;= 69">
                                         <div class="progress">
-                                            <t t-set="progress_width" t-value="'width: %s%%%;' % o.q1_k" />
+                                            <t t-set="progress_width" t-value="'width: %s%%%;' % o.ytd_k" />
                                             <div class="progress-bar bg-warning" role="progressbar" t-att-style="progress_width" aria-valuenow="progress_width" aria-valuemin="0" aria-valuemax="100">
 
-                                              <span class="text-center"><t t-esc="o.q1_k" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>%</span>
+                                              <span class="text-center"><t t-esc="o.ytd_k" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>%</span>
                                           </div>
                                         </div>
                                       </t>
-                                      <t t-elif="o.q1_k &gt; 69 and o.q1_k &lt;= 99">
+                                      <t t-elif="o.ytd_k &gt; 69 and o.ytd_k &lt;= 99">
                                         <div class="progress">
-                                            <t t-set="progress_width" t-value="'width: %s%%%;' % o.q1_k" />
+                                            <t t-set="progress_width" t-value="'width: %s%%%;' % o.ytd_k" />
                                             <div class="progress-bar bg-success" role="progressbar" t-att-style="progress_width" aria-valuenow="progress_width" aria-valuemin="0" aria-valuemax="100">
 
-                                              <span class="text-center"><t t-esc="o.q1_k" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>%</span>
+                                              <span class="text-center"><t t-esc="o.ytd_k" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>%</span>
                                           </div>
                                         </div>
                                       </t>
-                                      <t t-elif="o.q1_k &gt; 99">
+                                      <t t-elif="o.ytd_k &gt; 99">
                                         <div class="progress">
-                                            <t t-set="progress_width" t-value="'width: %s%%%;' % o.q1_k" />
+                                            <t t-set="progress_width" t-value="'width: %s%%%;' % o.ytd_k" />
                                             <div class="progress-bar" role="progressbar" t-att-style="progress_width" aria-valuenow="progress_width" aria-valuemin="0" aria-valuemax="100">
 
-                                              <span class="text-center"><t t-esc="o.q1_k" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>%</span>
+                                              <span class="text-center"><t t-esc="o.ytd_k" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>%</span>
                                           </div>
                                         </div>
                                       </t>
@@ -187,7 +187,7 @@
             											</td>
             											
             											<td colspan="2" style="border: 1pt solid black;text-align: left; vertical-align:middle">
-            												 <t t-esc="o.q1" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>% 
+            												 <t t-esc="o.y_ytd" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>% 
             											</td>
 
             										</tr>

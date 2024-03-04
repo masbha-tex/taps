@@ -154,6 +154,12 @@ class MrpReportWizard(models.TransientModel):
                 return self.oa_details(self, data=data)
             if self.env.company.id == 3:
                 return self.oa_details_mt(self, data=data)
+        if self.report_type == "invs":
+            data = {'date_from': self.date_from,'date_to': self.date_to}
+            if self.env.company.id == 1:
+                return self.invs(self, data=data)
+            if self.env.company.id == 3:
+                return self.oa_details_mt(self, data=data)
         if self.report_type == "pis":
             data = {'date_from': self.date_from,'date_to': self.date_to}
             return self.pis_xls_template(self, data=data)
@@ -1297,10 +1303,10 @@ class MrpReportWizard(models.TransientModel):
                     sheet.write(44, col_number, None, row_style_sum)
                 for col_number in range(2):  
                     sheet.write(46, col_number, None, row_style_sum)
-                for col_number in range(19): 
+                for col_number in range(20): 
                     sheet.write(25, col_number, None, row_style_sum)
                     
-                for col_number in range(19): 
+                for col_number in range(20): 
                     sheet.write(0, col_number, None, row_style_head)
                 for col_number in range(3): 
                     sheet.write(27, col_number, None, row_style_head)
@@ -2254,6 +2260,143 @@ class MrpReportWizard(models.TransientModel):
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(self._name, self.id, ('MT PI File')),
             'target': 'self',
         }
+
+
+    # Invoice Summary
+    def iterate_days(self, year, month):
+        _, last_day = calendar.monthrange(year, month)
+        # Iterate over all days in the month
+        for day in range(1, last_day + 1):
+            yield day
+
+
+    
+    # Code for packing_invoice
+    def invs(self, docids, data=None):
+        def xl_col_to_name(col_num):
+            dividend = col_num
+            col_name = ''
+            while dividend:
+                module = (dividend - 1) % 26
+                col_name = chr(65 + module) + col_name
+                dividend = (dividend - module) // 26
+            return col_name
+        
+        start_time = fields.datetime.now()
+        month_ = None
+        _day = to_day = None
+        if data.get('date_from'):
+            month_ = int(data.get('date_from').month)
+            year = int(data.get('date_from').year)
+            _day = int(data.get('date_from').day)
+        if data.get('date_to'):
+            to_day = int(data.get('date_to').day)
+    
+        first_day_of_m = fields.datetime.now().replace(day=1).replace(month=int(month_)).replace(year=year)
+        
+        all_outputs = self.env['operation.details'].sudo().search([('next_operation','=','FG Packing'),('company_id','=',self.env.company.id)])
+        daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= first_day_of_m.date() and pr.action_date.date() <= data.get('date_to'))
+        
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        
+        column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center', 'bg_color':'#8DB4E2'})
+        
+        sheet = workbook.add_worksheet("Production and Invoiced Data")
+    
+        sheet.set_zoom(85)
+        sheet.fit_to_pages(1, 0)
+        
+        row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
+        row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#FFFF00','left': True, 'top': True, 'right': True, 'bottom': True}) 
+        row_style_head = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#8DB4E2','left': True, 'top': True, 'right': True, 'bottom': True}) 
+        
+        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        
+        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
+        
+        sheet.write(0, 0, "DATE", column_style)
+        
+        items = [
+            "M#4 CE", "M#5 CE", "M#5 OE", "M#8 CE", "M#8 OE", "M#10 OE",
+            "AL#4 CE", "AL#5 CE", "AL#5 OE",
+            "C#3 CE", "C#3 Inv CE", "C#3 OE", "C#3 Inv OE",
+            "C#5 CE", "C#5 OE",
+            "P#3 CE", "P#3 OE", "P#5 CE", "P#5 OE", "P#8 CE", "P#8 OE",
+            "Others","Total"
+        ]
+        
+        for col, item in enumerate(items, start=2):
+            sheet.write(0, col, item, column_style)
+    
+        row = 1
+        for day in self.iterate_days(year, int(month_)):
+            if day >= _day and day <= to_day:
+                full_date = fields.datetime.now().replace(day=_day).replace(month=int(month_)).replace(year=year)
+                full_date = full_date.replace(day=day)
+                
+                datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
+                
+                sheet.write(row, 0, full_date.date().strftime("%d-%b-%Y"), column_style)
+                sheet.write(row, 1, "pcs", format_label_1)
+                sheet.write(row + 1, 1, "usd", format_label_2)
+                
+                for col, item in enumerate(items, start=2):
+                    itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item)
+                    
+                    production_pcs = sum(itemwise_outputs.mapped('qty'))
+                    invoiced_usd = sum(pack.qty * pack.price_unit for pack in itemwise_outputs)
+                    
+                    sheet.write(row, col, production_pcs, format_label_1)
+                    if item == 'Total':
+                        sheet.write(row, col, '=SUM(C{0}:X{1})'.format(row+1, row+1), format_label_1)
+                    sheet.write(row + 1, col, invoiced_usd, format_label_2)
+                    if item == 'Total':
+                        sheet.write(row + 1, col, '=SUM(C{0}:X{1})'.format(row+2, row+2), format_label_1)
+                    
+
+        
+                row += 2
+    
+        # After writing data for each day
+        # start_col = 2  # Column C
+        # end_col = len(items) + 1  # Assuming len(items) corresponds to the last column index
+        
+        # Calculate the sum using a formula
+        # sum_formula = f'=SUM({xl_col_to_name(start_col)}{row}:{xl_col_to_name(end_col)}{row})'
+        # all_row = row
+        # for row in all_row:
+        #     # Write the formula to the cell in column Y (assuming column Y is len(items) + 2)
+        #     sheet.write_formula(row, len(items) + 2, sum_formula)
+
+
+        # Calculate item-wise sums at the end of each row
+        for col, item in enumerate(items, start=2):
+            itemwise_outputs = daily_outputs.filtered(lambda pr: pr.fg_categ_type == item)
+            
+            production_pcs_sum = sum(itemwise_outputs.mapped('qty'))
+            invoiced_usd_sum = sum(pack.qty * pack.price_unit for pack in itemwise_outputs)
+            
+            sheet.write(row, col, production_pcs_sum, row_style_sum)
+            sheet.write(row + 1, col, invoiced_usd_sum, row_style_sum)
+    
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+        
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(
+                self._name, self.id, ('Invoice')),
+            'target': 'self',
+        }
+
+
+
+
 
 
 

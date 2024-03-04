@@ -527,12 +527,10 @@
 			<field name="binding_model_id" ref="model_hr_appraisal"/>
 			<field name="binding_type">report</field>
             <field name="paperformat_id" ref="taps_hr.paperformat_kpi_dashboard_report"/>
-			<!-- <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/> -->
 			<field name="default_print_option">print</field>
-			<!-- <field name="print_report_name">(object.pi_number)</field> -->
-            <field name="print_report_name">"KPI Q-1 Dashboard"</field>
+            <field name="print_report_name">"KPI Dashboard Report"</field>
 		</record>
-        <record id="action_report_kpi_list_2" model="ir.actions.report">
+        <!-- <record id="action_report_kpi_list_2" model="ir.actions.report">
 			<field name="name">KPI Q-2 Dashboard</field>
 			<field name="model">hr.appraisal</field>
 			<field name="report_type">qweb-pdf</field>
@@ -542,10 +540,9 @@
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_hr.paperformat_kpi_dashboard_report"/>
 			<field name="default_print_option">print</field>
-			<!-- <field name="print_report_name">(object.pi_number)</field> -->
             <field name="print_report_name">"KPI Q-2 Dashboard"</field>
-		</record> 
-        <record id="action_report_kpi_list_3" model="ir.actions.report">
+		</record>  -->
+        <!-- <record id="action_report_kpi_list_3" model="ir.actions.report">
 			<field name="name">KPI Q-3 Dashboard</field>
 			<field name="model">hr.appraisal</field>
 			<field name="report_type">qweb-pdf</field>
@@ -555,10 +552,9 @@
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_hr.paperformat_kpi_dashboard_report"/>
 			<field name="default_print_option">print</field>
-			<!-- <field name="print_report_name">(object.pi_number)</field> -->
             <field name="print_report_name">"KPI Q-3 Dashboard"</field>
-		</record>   
-        <record id="action_report_kpi_list_4" model="ir.actions.report">
+		</record>    -->
+        <!-- <record id="action_report_kpi_list_4" model="ir.actions.report">
 			<field name="name">KPI Q-4 Dashboard</field>
 			<field name="model">hr.appraisal</field>
 			<field name="report_type">qweb-pdf</field>
@@ -568,9 +564,8 @@
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_hr.paperformat_kpi_dashboard_report"/>
 			<field name="default_print_option">print</field>
-			<!-- <field name="print_report_name">(object.pi_number)</field> -->
             <field name="print_report_name">"KPI Q-4 Dashboard"</field>
-		</record>              
+		</record>               -->
         <record id="action_hris_retention_risk_matrix_pdf_report" model="ir.actions.report">
             <field name="name">Retention Risk Matrix Report</field>
             <field name="model">employee.profile.card.pdf.report</field>

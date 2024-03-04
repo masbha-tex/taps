@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_current_stock_search" model="ir.ui.view">
+        <field name="name">current.stock.search</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml" >
+            <search string="Stock">
+                <filter string="RM" name="rm_stock" domain="[('categ_id.complete_name', 'ilike',
+                                                            'All / RM')]" />
+                <filter string="Spare" name="spare_stock" domain="[('categ_id.complete_name', 'ilike',
+                                                                  'All / Spare Parts')]" />
+                <filter string="Machinary" name="machinaries_stock" domain="[('categ_id.complete_name', 'ilike',
+                                                                  'All / Spare Parts')]" />
+<!--                 <filter string="Current Month" name="month" domain="[('punching_time', '&gt;=', datetime.datetime.now().strftime('%Y-%m-01'))]" /> -->
+                <separator/>
+                <field name="id" string="Product"/>
+                <group expand="0" string="Group By">
+                    <!-- <filter name="product_group" string="Product" domain="[]" context="{'group_by': 'parent_category'}"/> -->
+                    <filter name="category_group" string="Category" domain="[]" context="{'group_by': 'categ_type'}"/>
+                    <filter name="item_group" string="Item" domain="[]" context="{'group_by': 'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record model="ir.rule" id="record_current_stock_multi_company_rule">
+        <field name="name">Non Shared Records:model</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="view_current_stock_tree" model="ir.ui.view">
+        <field name="name">current.stock.tree</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml" >
+            <tree string="Current Stock" create="false" delete="false" >
+                
+                <field name="categ_type"/>
+                <field name="categ_id"/>
+                <field name="default_code"/>
+                <field name="name"/>
+                <field name="uom_id"/>
+                <field name="qty_available"/>
+                <!-- <field name="parent_category"/> -->
+                <!-- <field name="product_category"/> -->
+                <!-- <field name="id"/> -->
+                
+                <!-- <field name="product_id"/>
+                <field name="pr_code"/>
+                <field name="lot_id"/>
+                <field name="rejected"/>
+                <field name="lot_price"/>
+                <field name="pur_price"/>
+                <field name="landed_cost"/>
+                <field name="opening_qty" optional="show" sum="Opening Quantity" decoration-bf="True"/>
+                <field name="opening_value" optional="show" sum="Opening Value" decoration-bf="True"/>
+                <field name="receive_date"/>
+                <field name="receive_qty" optional="show" sum="Receive Quantity" decoration-bf="True"/>
+                <field name="receive_value" optional="show" sum="Receive Value" decoration-bf="True"/>
+                <field name="issue_qty" optional="show" sum="Issue Quantity" decoration-bf="True"/>
+                <field name="issue_value" optional="show" sum="Issue Value" decoration-bf="True"/>
+                <field name="cloing_qty" optional="show" sum="Closing Quantity" decoration-bf="True"/>
+                <field name="cloing_value" optional="show" sum="Closing Value" decoration-bf="True"/>
+                <field name="shipment_mode"/>
+                <field name="po_type"/> -->
+                <!-- <field name="company_id" groups="base.group_multi_company"/> -->
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_current_stock" model="ir.actions.act_window">
+        <field name="name">Current Stock</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'search_default_rm_stock':1, 'search_default_category_group':1,'search_default_item_group':1}</field>
+        <field name="search_view_id" ref="view_current_stock_search" />
+    </record>
+     <!-- 'search_default_category_group':1,  -->
+
+    <menuitem id="menu_current_stock"
+              name="Current Stock"
+              action="action_current_stock"
+              parent="stock.menu_warehouse_report"
+              sequence="10"/>
+</odoo>    
