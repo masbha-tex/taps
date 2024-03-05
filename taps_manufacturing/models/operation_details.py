@@ -167,7 +167,7 @@ class OperationDetails(models.Model):
     fg_balance = fields.Integer(string='FG Balance', readonly=False, store=True, compute='get_fg_balance', group_operator="sum")
     fg_output = fields.Integer(string='FG Output', default=0, readonly=False, group_operator="sum")
     # cartoon_no = fields.Many2one('operation.details', string='Cartoon No', required=False, domain="[('next_operation', '=', 'Delivery')]")
-    cartoon_no = fields.Many2one('fg.packaging', string='Carton No', required=False, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    cartoon_no = fields.Many2one('fg.packaging', string='Carton No', required=False, domain="['|','&', ('company_id', '=', False), ('company_id', '=', company_id), ('oa_id', '=', oa_id)]")
     
     num_of_lots = fields.Integer(string='N. of Lots', readonly=True, compute='get_lots')
     machine_no = fields.Many2one('machine.list', string='Machine No', required=False)
@@ -712,11 +712,12 @@ class OperationDetails(models.Model):
             if 'cartoon_no' in vals:
                 if vals.get('cartoon_no'):
                     vals['cartoon_no'] = vals.get('cartoon_no')
+                    raise UserError((self.oa_id.id))
                 else:
                     weight = 0
                     if vals.get('carton_weight'):
                         weight = vals.get('carton_weight')
-                    packing = self.env['fg.packaging'].create({'company_id':self.env.company.id,'total_weight':weight})
+                    packing = self.env['fg.packaging'].create({'company_id':self.env.company.id,'total_weight':weight,'oa_id':self.oa_id.id})
                     # ref = self.env['ir.sequence'].next_by_code('fg.cartoon', sequence_date=seq_date)
                     vals['cartoon_no'] = packing.id
         vals['state'] = 'waiting'

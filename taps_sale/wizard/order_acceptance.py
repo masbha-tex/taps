@@ -12,21 +12,20 @@ import re
 import math
 _logger = logging.getLogger(__name__)
 
-class SalesReport(models.TransientModel):
-    _name = 'sale.pdf.report'
-    _description = 'All Sales Report'    
+class OrderAcceptanceReport(models.TransientModel):
+    _name = 'order.acceptance.report'
+    _description = 'Order Acceptance Report'    
 
     
     date_from = fields.Datetime('Date from', required=True, default=lambda self: (fields.Datetime.now()))
     date_to = fields.Datetime('Date to', required=True, default=lambda self: (fields.Datetime.now()))
     report_type = fields.Selection([
-        ('orderacc','Order Acceptance'),
         ('team_orderacc', 'Team Wise Order Acceptance'),
         ],
         string='Report Type', required=True,
-        help='By Salary Head Wise Report', default='orderacc')
+         default='team_orderacc')
     
-    mode_company_id = fields.Many2one('res.company',  string='Company Mode', readonly=False, required=True, default=lambda self: self.env.company.id)
+    team_id = fields.Many2one('crm.team',  string='Team', readonly=False)
 
     file_data = fields.Binary(readonly=True, attachment=False)
 
@@ -38,10 +37,9 @@ class SalesReport(models.TransientModel):
                 'mode_company_id': self.mode_company_id.id,
                 'report_type': self.report_type,
                 }
-        if self.report_type == 'orderacc' and data.get('mode_company_id') == 1:
+        if self.report_type == 'team_orderacc':
             return self.order_acceptance_xls(self, data=data)
-        if self.report_type == 'orderacc' and data.get('mode_company_id') == 3:
-            return self.order_acceptance_xls_mt(self, data=data)
+        
 
     def order_acceptance_xls(self,docids,data):
         start_time = fields.datetime.now()
@@ -50,9 +48,10 @@ class SalesReport(models.TransientModel):
             domain.append(('date_order', '>=',data.get("date_from")))
         if data.get('date_to'):
             domain.append(('date_order', '<=',data.get("date_to")))
-        if data.get('mode_company_id'):
-            domain.append(('company_id', '=', data.get('mode_company_id')))
-
+        if data.get('team_id'):
+            domain.append(('team_id', '=', data.get('mode_company_id')))
+            
+        domain.append(('company_id', 'in', '(1,3)'))
         domain.append(('sales_type', '=', 'oa'))
         domain.append(('state', '=', 'sale'))
         domain.append('|')
@@ -63,7 +62,7 @@ class SalesReport(models.TransientModel):
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        worksheet = workbook.add_worksheet()
+        worksheet = workbook.add_worksheet("Zipper")
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, })
         report_title_style_2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 13, })
         worksheet.merge_range('A1:F1',  'ORDER ACCEPTANCE', report_title_style)

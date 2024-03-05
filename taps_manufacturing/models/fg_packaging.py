@@ -31,6 +31,7 @@ class FgPackaging(models.Model):
     total_qty = fields.Integer(string='Total Qty', store=True)
     total_pack = fields.Integer(string='Total Pack', store=True)
     customer_id = fields.Many2one('res.partner', string='Customer', readonly=True)
+    oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=False)
     # customer_id = fields.Char(string='Customer')
     
     # @api.model

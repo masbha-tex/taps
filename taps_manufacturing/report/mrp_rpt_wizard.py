@@ -1583,7 +1583,7 @@ class MrpReportWizard(models.TransientModel):
                     item_type = line[0]
                     if (('CE' in line[0]) or ('OE' in line[0])):
                         item_type = line[0].replace('CE','').replace('OE','')
-                    if (((line[1] or 0) + (line[3] or 0) + (line[5] or 0)) > 0) and (item_type not in type_exists):
+                    if (((line[1] or 0) + (line[3] or 0) + (line[5] or 0)) > 0 or item_type == 'Others') and (item_type not in type_exists):
                         closed_row = 2
                         if self.env.company.id == 1: #company_check
                             itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE','').replace('OE','') == item_type)

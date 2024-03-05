@@ -15,6 +15,7 @@
                             <field name="total_qty"/>
                             <field name="total_pack"/>
                             <field name="customer_id"/>
+                            <field name="oa_id" force_save="1" readonly="1"/>
                         </group>
                         <group>
                             <notebook>
@@ -57,6 +58,7 @@
                     <field name="total_qty"/>
                     <field name="total_pack"/>
                     <field name="customer_id"/>
+                    <field name="oa_id" force_save="1" readonly="1"/>
                 </tree>
             </field>
         </record>        

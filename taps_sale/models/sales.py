@@ -760,13 +760,13 @@ class SaleOrder(models.Model):
                 else:
                     text+=' cents '
             rec.amount_in_word = text.upper()
-            # raise UserError((total,rec.amount_in_word))
+        
             
             
 
 
     
-    #dlfkdjfk
+    
     def _compute_avg_price (self): 
         for rec in self:
             if rec.amount_total>0:
