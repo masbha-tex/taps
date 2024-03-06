@@ -90,15 +90,16 @@
 									 <t t-esc="o.partner_bank_id"/>
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-								  <strong>BANK BIN NO</strong>
-									
+									<strong>IRC NO:</strong>
 									<br/>
-									 <t t-esc="o.bank_bin"/> 
+									 <!--<t t-if="o.po_no">-->
+										<!--<t t-esc="o.partner_bank_id"/>-->
+									<!--</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>APPLICANT'S TIN :</strong>
 									<br/>
@@ -120,8 +121,11 @@
 								</p>
 							</div>
 							
+							
+							
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
+                            
 						  <div class="col-auto col-2 mw-100 mb-2">
 								 <p>
 								<strong>TIN NO:</strong>
@@ -129,13 +133,12 @@
 								 <t t-esc="o.tin_no"/>  
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>IRC NO:</strong>
+								  <strong>BANK BIN NO</strong>
+									
 									<br/>
-									 <!--<t t-if="o.po_no">-->
-										<!--<t t-esc="o.partner_bank_id"/>-->
-									<!--</t> -->
+									 <t t-esc="o.bank_bin"/> 
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
@@ -156,7 +159,7 @@
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>ISSUED BY</strong>
 									<br/>
@@ -165,7 +168,7 @@
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<strong>STYLE REF</strong>
 								<p>
 									<!-- <t t-if="o.style_ref">
@@ -173,6 +176,7 @@
 									</t> -->
 								</p>
 							</div>
+							
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
 							
@@ -215,7 +219,7 @@
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
-								<!--<strong>STYLE REF</strong>-->
+								<strong>SALESPERSON</strong>
 								<p>
 									<!-- <t t-if="o.style_ref">
 										<t t-esc="o.style_ref"/>
@@ -268,6 +272,42 @@
 							
 						</div>
 						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
+                             <div class="row float-left pl-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>No. of Catn</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Gross weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+                                        <tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Net weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
 							<div class="row float-right pr-3">
 								<div>
 									<table class="table table-sm o_main_table">
@@ -294,51 +334,30 @@
 									</table>
 								</div>
 							</div>
+                             <br/>
+                             <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div> -->
+						</div>
+						<br/>
+                        <br/>
 							<div class="clearfix" style="font-size:12px">
 								<strong>AMOUNT IN WORDS(USD): 
 								<!--<span t-esc="o.amount_in_word"/>-->
 								</strong>
 								<br/>
-								<!--<strong>PLACE OF LOADING: -->
-								<!--<span t-esc="o.appr_weight"/>-->
-								<!--</strong>-->
+								
 							</div>
-						</div>
-						<br/>
+                        <br/>
 						<div style="font-size:12px;page-break-inside:avoid;">
 							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
 								<t t-set="payment_count" t-value="0"/>
-								<!--<t t-if="o.payment_term_id">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>PAYMENT TERM:</strong>
-											<br/>
-											<!--<t t-esc="o.payment_term_id.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
-										</p>
-									</div>
-								<!--</t>-->
-								<!--<t t-if="o.incoterm">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>SHIPMENT TERM:</strong>
-											<br/>
-											<!--<t t-esc="o.incoterm.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
-										</p>
-									</div>
-								<!--</t>-->
-								<!--<t t-if="o.shipment_mode">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>SHIPMENT MODE:</strong>
-											<br/>
-											<!--<t t-esc="o.shipment_mode"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
-										</p>
-									</div>
-								<!--</t>-->
-								<!--<t t-if="o.loading_place">-->
+                                <!--<t t-if="o.loading_place">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
 											<strong>PLACE OF LOADING:</strong>
@@ -348,17 +367,48 @@
 										</p>
 									</div>
 								<!--</t>-->
-						<!--		<t t-foreach="int((12-payment_count)/3)" t-as="p_count">-->
-						<!--			<div class="col-auto col-3 mw-100 mb-2">-->
-						<!--</div>-->
-						<!--		</t>-->
+                                <!--		<t t-foreach="int((12-payment_count)/3)" t-as="p_count">-->
+                                <!--			<div class="col-auto col-3 mw-100 mb-2">-->
+                                <!--</div>-->
+                                <!--		</t>-->
+								<!--<t t-if="o.payment_term_id">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>EXPORT LC NO:</strong>
+											<br/>
+											<!--<t t-esc="o.payment_term_id.name"/>-->
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.incoterm">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>TRADE TERM:</strong>
+											<br/>
+											<!--<t t-esc="o.incoterm.name"/>-->
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.shipment_mode">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>CARRIER:</strong>
+											<br/>
+											<!--<t t-esc="o.shipment_mode"/>-->
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								
 							</div>
 							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
 								<t t-set="desc_count" t-value="0"/>
 								<!--<t t-if="o.destination_port">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>DESTINATION PORT:</strong>
+											<strong>PACKING:</strong>
 											<br/>
 											<!--<t t-esc="o.destination_port"/>-->
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
@@ -386,9 +436,9 @@
 									</div>
 								<!--</t>-->
 								<!--<t t-foreach="int((12-desc_count)/3)" t-as="d_count">-->
-                <div class="col-auto col-3 mw-100 mb-2">
+                        <div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>SALESPERSON</strong>
+											<!-- <strong>SALESPERSON</strong> -->
 											<br/>
 											<!--<t t-esc="o.shipment_mode"/>-->
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
@@ -399,7 +449,7 @@
 						</div>
 						<div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
 							<!--<t t-if="o.note">-->
-								<div class="col-8">
+								<div class="col-12">
 								  
 									<p>
 										<!--<strong>TERMS AND CONDITIONS:</strong>-->
@@ -414,24 +464,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</p>
 								</div>
 							<!--</t>-->
-							<div class="col-4">
-								<!--<t t-if="o.remarks">-->
-								<!--	<div>-->
-								<!--		<p>-->
-								<!--			<strong>REMARKS:</strong>-->
-								<!--			<br/>-->
-								<!--			<t t-if="isinstance(o.remarks, str)">-->
-								<!--				<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>-->
-								<!--				<t t-foreach="string_to_output" t-as="string_line">-->
-								<!--					<span style="font-size:12px;" t-esc="string_line"/>-->
-								<!--					<br/>-->
-								<!--				</t>-->
-								<!--			</t>-->
-								<!--		</p>-->
-								<!--	</div>-->
-								<!--</t>-->
-								<!--<br/>-->
-								<!--<br/>-->
+							<!-- <div class="col-4">
+								
 								<div class="float-right mt32 mb32 ! important">
 									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
 									<div>
@@ -440,20 +474,21 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<span>Authorised Signature</span>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<br/>
 							<br/>
 						</div>
-						<!--<footer>-->
-      <!--                  <div class="float-right mt32 mb32 ! important">-->
-      <!--  									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>-->
-      <!--  									<div>-->
-      <!--  										<span>______________________</span>-->
-      <!--  										<br/>-->
-      <!--  										<span>Authorised Signature</span>-->
-      <!--  									</div>-->
-      <!--  								</div>-->
-      <!--        </footer>-->
+                        <br/>
+						<footer>
+                           <div class="float-right mt32 mb32 ! important" style="font-size:12px">
+                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                <div>
+                                    <span>______________________</span>
+                                    <br/>
+                                    <span>AUTHORISED SIGNATORY</span>
+                                </div>
+                            </div>
+                     </footer>
 					</div>
 					<br/>
 					
@@ -536,22 +571,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.lc_no"/> 
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>BANK REF NO:</strong>
-									<br/>
-									 <t t-esc="o.partner_bank_id"/>
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-								  <strong>BANK BIN NO</strong>
-									
-									<br/>
-									 <t t-esc="o.bank_bin"/> 
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>APPLICANT'S TIN :</strong>
 									<br/>
@@ -560,35 +580,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>BIN/VAT REG.NO.</strong>
+									<strong>VAT REG.NO.</strong>
 									<br/>
 									 <t t-esc="o.bin_vat_reg"/> 
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>BOND LICENSE NO:</strong>
-									<br/>
-									 <t t-esc="o.bond_licence"/> 
-								</p>
-							</div>
-							
-						</div>
-						<div class="row mt32 mb32" style="font-size:12px">
-						  <div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								 <p>
 								<strong>TIN NO:</strong>
 								<br/> 
 								 <t t-esc="o.tin_no"/>  
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>IRC NO:</strong>
+								  <strong>BANK BIN NO</strong>
+									
 									<br/>
-									 <!--<t t-if="o.po_no">-->
-										<!--<t t-esc="o.partner_bank_id"/>-->
-									<!--</t> -->
+									 <t t-esc="o.bank_bin"/> 
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
@@ -600,7 +609,10 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>PAYMENT TERMS </strong>
 									<br/>
@@ -609,7 +621,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>ISSUED BY</strong>
 									<br/>
@@ -618,7 +630,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<strong>STYLE REF</strong>
 								<p>
 									<!-- <t t-if="o.style_ref">
@@ -626,10 +638,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-						</div>
-						<div class="row mt32 mb32" style="font-size:12px">
-							
-							<div class="col-auto col-2 mw-50 mb-2">
+                            
+						  <div class="col-auto col-2 mw-100 mb-2">
 								<strong>DATE</strong>
 								<p>
 									<!--<t t-if="o.order_type">-->
@@ -637,7 +647,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>INVOICE/BILL DATE</strong>
 								<p>
 									<!--<t t-if="o.order_type">-->
@@ -645,7 +655,16 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<strong>CURRENCY</strong>
+								<p>
+									<t t-esc="o.currency_id.name"/>
+								</p>
+							</div>
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PO NO.</strong>
 								<p>
 									<!-- <t t-if="o.kind_attention">
@@ -653,7 +672,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PI NO.</strong>
 								<p>
 									<!-- <t t-if="o.user_id">
@@ -661,21 +680,36 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>CURRENCY</strong>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>CURRENCY</strong>
 								<p>
 									<t t-esc="o.currency_id.name"/>
-								</p>
+								</p> -->
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
-								<!--<strong>STYLE REF</strong>-->
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>SALESPERSON</strong> -->
 								<p>
 									<!-- <t t-if="o.style_ref">
 										<t t-esc="o.style_ref"/>
 									</t> -->
 								</p>
 							</div>
-							
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>DATE</strong> -->
+								<p>
+									<!--<t t-if="o.order_type">-->
+										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
+									<!--</t>-->
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>INVOICE/BILL DATE</strong> -->
+								<p>
+									<!--<t t-if="o.order_type">-->
+										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
+									<!--</t>-->
+								</p>
+							</div>
 						</div>
 						
 						 <div style="font-size:12px">
@@ -715,6 +749,42 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							
 						</div>
 						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
+                             <div class="row float-left pl-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>No. of Catn</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Gross weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+                                        <tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Net weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
 							<div class="row float-right pr-3">
 								<div>
 									<table class="table table-sm o_main_table">
@@ -741,24 +811,47 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</table>
 								</div>
 							</div>
-							<div class="clearfix" style="font-size:12px">
+                             <br/>
+                             <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
 								<strong>AMOUNT IN WORDS(USD): 
-								<!--<span t-esc="o.amount_in_word"/>-->
+								<span t-esc="o.amount_in_word"/>
 								</strong>
 								<br/>
-								<strong>PLACE OF LOADING: 
-								<!--<span t-esc="o.appr_weight"/>-->
-								</strong>
-							</div>
+								
+							</div> -->
 						</div>
 						<br/>
+                        <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div>
+                        <br/> -->
 						<div style="font-size:12px;page-break-inside:avoid;">
 							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
 								<t t-set="payment_count" t-value="0"/>
+                                <!--<t t-if="o.loading_place">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>PLACE OF LOADING:</strong>
+											<br/>
+											<!--<t t-esc="o.loading_place"/>-->
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+                                <!--		<t t-foreach="int((12-payment_count)/3)" t-as="p_count">-->
+                                <!--			<div class="col-auto col-3 mw-100 mb-2">-->
+                                <!--</div>-->
+                                <!--		</t>-->
 								<!--<t t-if="o.payment_term_id">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>PAYMENT TERM:</strong>
+											<strong>EXPORT LC NO:</strong>
 											<br/>
 											<!--<t t-esc="o.payment_term_id.name"/>-->
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
@@ -768,7 +861,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 								<!--<t t-if="o.incoterm">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>SHIPMENT TERM:</strong>
+											<strong>TRADE TERM:</strong>
 											<br/>
 											<!--<t t-esc="o.incoterm.name"/>-->
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
@@ -778,34 +871,17 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 								<!--<t t-if="o.shipment_mode">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>SHIPMENT MODE:</strong>
+											<strong>CARRIER:</strong>
 											<br/>
 											<!--<t t-esc="o.shipment_mode"/>-->
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
 								<!--</t>-->
-								<!--<t t-if="o.loading_place">-->
+                                <!--<t t-if="o.destination_port">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>PLACE OF LOADING:</strong>
-											<br/>
-											<!--<t t-esc="o.loading_place"/>-->
-											<t t-set="payment_count" t-value="payment_count+3"/>
-										</p>
-									</div>
-								<!--</t>-->
-								<t t-foreach="int((12-payment_count)/3)" t-as="p_count">
-									<div class="col-auto col-3 mw-100 mb-2">
-						</div>
-								</t>
-							</div>
-							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
-								<t t-set="desc_count" t-value="0"/>
-								<!--<t t-if="o.destination_port">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>DESTINATION PORT:</strong>
+											<strong>PACKING:</strong>
 											<br/>
 											<!--<t t-esc="o.destination_port"/>-->
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
@@ -822,68 +898,22 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										</p>
 									</div>
 								<!--</t>-->
-								<!--<t t-if="o.validity_period">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>PERIOD OF VALIDITY:</strong>
-											<br/>
-											<!--<t t-esc="o.validity_period"/>-->
-											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
-										</p>
-									</div>
-								<!--</t>-->
-								<!--<t t-foreach="int((12-desc_count)/3)" t-as="d_count">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-						  </div>
-								<!--</t>-->
+								
 							</div>
+							
 						</div>
-						<div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
-							<!--<t t-if="o.note">-->
-								<div class="col-8">
-									<!--<p>-->
-									<!--	<strong>TERMS AND CONDITIONS:</strong>-->
-									<!--	<br/>-->
-									<!--	<t t-if="isinstance(o.note, str)">-->
-									<!--		<t t-set="string_to_output" t-value="o.note.split('\n')"/>-->
-									<!--		<t t-foreach="string_to_output" t-as="string_line">-->
-									<!--			<span style="font-size:12px" t-esc="string_line"/>-->
-									<!--			<br/>-->
-									<!--		</t>-->
-									<!--	</t>-->
-									<!--</p>-->
-								</div>
-							<!--</t>-->
-							<div class="col-4">
-								<!--<t t-if="o.remarks">-->
-								<!--	<div>-->
-								<!--		<p>-->
-								<!--			<strong>REMARKS:</strong>-->
-								<!--			<br/>-->
-								<!--			<t t-if="isinstance(o.remarks, str)">-->
-								<!--				<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>-->
-								<!--				<t t-foreach="string_to_output" t-as="string_line">-->
-								<!--					<span style="font-size:12px;" t-esc="string_line"/>-->
-								<!--					<br/>-->
-								<!--				</t>-->
-								<!--			</t>-->
-								<!--		</p>-->
-								<!--	</div>-->
-								<!--</t>-->
-								<br/>
-								<br/>
-								<div class="float-right mt32 mb32 ! important">
-									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
-									<div>
-										<span>______________________</span>
-										<br/>
-										<span>Authorised Signature</span>
-									</div>
-								</div>
-							</div>
-							<br/>
-							<br/>
-						</div>
+						
+                        <br/>
+						<footer>
+                           <div class="float-right mt32 mb32 ! important" style="font-size:12px">
+                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                <div>
+                                    <span>______________________</span>
+                                    <br/>
+                                    <span>AUTHORISED SIGNATORY</span>
+                                </div>
+                            </div>
+                     </footer>
 					</div>
 					<br/>
 					
@@ -899,7 +929,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<div>
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
-									<span style="color: Black ! important">INVOICE #  
+									<span style="color: Black ! important">DELIVERY CHALLAN #  
                                          <t t-esc="o.name"/> 
 									</span>
 									<!-- <t t-if="o.is_revised == True">
@@ -910,7 +940,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="float-right">
 								<h5 style="font-size: 12px">
-									<strong>BIN NO: 000230362-0305</strong>
+									<strong>INVOICE NO: <t t-esc="o.name"/></strong>
 								</h5>
 							</div>
 						</div>
@@ -918,7 +948,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">INVOICE DETAILS</strong>
+									<strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -928,7 +958,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">DESPATCH DETAILS</strong>
+									<strong style="font-size:12px">DESPATCH ADDRESS</strong>
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -937,9 +967,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 								</p>
 							</div>
 							<div class="col-auto col-3 mw-50 mb-2">
-								<!--<div>-->
-								<!--	<strong style="font-size:12px">DELIVERY ADDRESS</strong>-->
-								<!--</div>-->
+								<div>
+								<strong style="font-size:12px">CONSIGNED TO</strong>
+								</div>
 								<p>
 									<!-- <span style="font-size:12px;" t-esc="o.partner_shipping_id.name"/>
 									<br/>
@@ -966,22 +996,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.lc_no"/> 
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>BANK REF NO:</strong>
-									<br/>
-									 <t t-esc="o.partner_bank_id"/>
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-								  <strong>BANK BIN NO</strong>
-									
-									<br/>
-									 <t t-esc="o.bank_bin"/> 
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>APPLICANT'S TIN :</strong>
 									<br/>
@@ -990,35 +1005,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>BIN/VAT REG.NO.</strong>
+									<strong>VAT REG.NO.</strong>
 									<br/>
 									 <t t-esc="o.bin_vat_reg"/> 
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>BOND LICENSE NO:</strong>
-									<br/>
-									 <t t-esc="o.bond_licence"/> 
-								</p>
-							</div>
-							
-						</div>
-						<div class="row mt32 mb32" style="font-size:12px">
-						  <div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								 <p>
 								<strong>TIN NO:</strong>
 								<br/> 
 								 <t t-esc="o.tin_no"/>  
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>IRC NO:</strong>
+								  <strong>BANK BIN NO</strong>
+									
 									<br/>
-									 <!--<t t-if="o.po_no">-->
-										<!--<t t-esc="o.partner_bank_id"/>-->
-									<!--</t> -->
+									 <t t-esc="o.bank_bin"/> 
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
@@ -1030,7 +1034,10 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>PAYMENT TERMS </strong>
 									<br/>
@@ -1039,7 +1046,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>ISSUED BY</strong>
 									<br/>
@@ -1048,7 +1055,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<strong>STYLE REF</strong>
 								<p>
 									<!-- <t t-if="o.style_ref">
@@ -1056,10 +1063,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-						</div>
-						<div class="row mt32 mb32" style="font-size:12px">
-							
-							<div class="col-auto col-2 mw-50 mb-2">
+                            
+						  <div class="col-auto col-2 mw-100 mb-2">
 								<strong>DATE</strong>
 								<p>
 									<!--<t t-if="o.order_type">-->
@@ -1067,7 +1072,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>INVOICE/BILL DATE</strong>
 								<p>
 									<!--<t t-if="o.order_type">-->
@@ -1075,7 +1080,16 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<strong>CURRENCY</strong>
+								<p>
+									<t t-esc="o.currency_id.name"/>
+								</p>
+							</div>
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PO NO.</strong>
 								<p>
 									<!-- <t t-if="o.kind_attention">
@@ -1083,7 +1097,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PI NO.</strong>
 								<p>
 									<!-- <t t-if="o.user_id">
@@ -1091,21 +1105,36 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>CURRENCY</strong>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>CURRENCY</strong>
 								<p>
 									<t t-esc="o.currency_id.name"/>
-								</p>
+								</p> -->
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
-								<!--<strong>STYLE REF</strong>-->
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>SALESPERSON</strong> -->
 								<p>
 									<!-- <t t-if="o.style_ref">
 										<t t-esc="o.style_ref"/>
 									</t> -->
 								</p>
 							</div>
-							
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>DATE</strong> -->
+								<p>
+									<!--<t t-if="o.order_type">-->
+										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
+									<!--</t>-->
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>INVOICE/BILL DATE</strong> -->
+								<p>
+									<!--<t t-if="o.order_type">-->
+										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
+									<!--</t>-->
+								</p>
+							</div>
 						</div>
 						
 						 <div style="font-size:12px">
@@ -1121,9 +1150,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                 <th>SHADE</th>
                                 <th>INCH</th>
                                 <th>QTY</th>
-                                <th>UNIT</th>
-                                <th>PRICE/UNIT</th>
-                                <th>AMOUNT</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1141,9 +1167,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
                                 <!--</tr>-->
                             </t>
                         </tbody>
@@ -1151,6 +1174,42 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							
 						</div>
 						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
+                             <div class="row float-left pl-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>No. of Catn</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Gross weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+                                        <tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Net weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
 							<div class="row float-right pr-3">
 								<div>
 									<table class="table table-sm o_main_table">
@@ -1177,71 +1236,45 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</table>
 								</div>
 							</div>
-							<div class="clearfix" style="font-size:12px">
+                             <br/>
+                             <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
 								<strong>AMOUNT IN WORDS(USD): 
-								<!--<span t-esc="o.amount_in_word"/>-->
+								<span t-esc="o.amount_in_word"/>
 								</strong>
 								<br/>
-								<strong>PLACE OF LOADING: 
-								<!--<span t-esc="o.appr_weight"/>-->
-								</strong>
-							</div>
+								
+							</div> -->
 						</div>
 						<br/>
+                        <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div>
+                        <br/> -->
 						<div style="font-size:12px;page-break-inside:avoid;">
 							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
 								<t t-set="payment_count" t-value="0"/>
-								<!--<t t-if="o.payment_term_id">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>PAYMENT TERM:</strong>
-											<br/>
-											<!--<t t-esc="o.payment_term_id.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
-										</p>
-									</div>
-								<!--</t>-->
-								<!--<t t-if="o.incoterm">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>SHIPMENT TERM:</strong>
-											<br/>
-											<!--<t t-esc="o.incoterm.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
-										</p>
-									</div>
-								<!--</t>-->
+                                
+									
 								<!--<t t-if="o.shipment_mode">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>SHIPMENT MODE:</strong>
+											<strong>CARRIER:</strong>
 											<br/>
 											<!--<t t-esc="o.shipment_mode"/>-->
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
 								<!--</t>-->
-								<!--<t t-if="o.loading_place">-->
+                                <!--<t t-if="o.destination_port">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>PLACE OF LOADING:</strong>
-											<br/>
-											<!--<t t-esc="o.loading_place"/>-->
-											<t t-set="payment_count" t-value="payment_count+3"/>
-										</p>
-									</div>
-								<!--</t>-->
-								<t t-foreach="int((12-payment_count)/3)" t-as="p_count">
-									<div class="col-auto col-3 mw-100 mb-2">
-						</div>
-								</t>
-							</div>
-							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
-								<t t-set="desc_count" t-value="0"/>
-								<!--<t t-if="o.destination_port">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>DESTINATION PORT:</strong>
+											<strong>PACKING:</strong>
 											<br/>
 											<!--<t t-esc="o.destination_port"/>-->
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
@@ -1258,70 +1291,73 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										</p>
 									</div>
 								<!--</t>-->
-								<!--<t t-if="o.validity_period">-->
-									<div class="col-auto col-3 mw-100 mb-2">
+                                <div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>PERIOD OF VALIDITY:</strong>
+											<strong>EXPORT LC NO:</strong>
 											<br/>
-											<!--<t t-esc="o.validity_period"/>-->
-											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+											<!--<t t-esc="o.payment_term_id.name"/>-->
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
 								<!--</t>-->
-								<!--<t t-foreach="int((12-desc_count)/3)" t-as="d_count">-->
+								<!--<t t-if="o.incoterm">-->
 									<div class="col-auto col-3 mw-100 mb-2">
-						  </div>
-								<!--</t>-->
-							</div>
-						</div>
-						<div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
-							<!--<t t-if="o.note">-->
-								<div class="col-8">
-									<!--<p>-->
-									<!--	<strong>TERMS AND CONDITIONS:</strong>-->
-									<!--	<br/>-->
-									<!--	<t t-if="isinstance(o.note, str)">-->
-									<!--		<t t-set="string_to_output" t-value="o.note.split('\n')"/>-->
-									<!--		<t t-foreach="string_to_output" t-as="string_line">-->
-									<!--			<span style="font-size:12px" t-esc="string_line"/>-->
-									<!--			<br/>-->
-									<!--		</t>-->
-									<!--	</t>-->
-									<!--</p>-->
-								</div>
-							<!--</t>-->
-							<div class="col-4">
-								<!--<t t-if="o.remarks">-->
-								<!--	<div>-->
-								<!--		<p>-->
-								<!--			<strong>REMARKS:</strong>-->
-								<!--			<br/>-->
-								<!--			<t t-if="isinstance(o.remarks, str)">-->
-								<!--				<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>-->
-								<!--				<t t-foreach="string_to_output" t-as="string_line">-->
-								<!--					<span style="font-size:12px;" t-esc="string_line"/>-->
-								<!--					<br/>-->
-								<!--				</t>-->
-								<!--			</t>-->
-								<!--		</p>-->
-								<!--	</div>-->
-								<!--</t>-->
-								<br/>
-								<br/>
-								<div class="float-right mt32 mb32 ! important">
-									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
-									<div>
-										<span>______________________</span>
-										<br/>
-										<span>Authorised Signature</span>
+										<p>
+											<strong>TRADE TERM:</strong>
+											<br/>
+											<!--<t t-esc="o.incoterm.name"/>-->
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
 									</div>
-								</div>
+								<!--</t>-->
+								
 							</div>
-							<br/>
-							<br/>
+							
 						</div>
+                        <br/>
+                        <div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
+							<!--<t t-if="o.note">-->
+								<div class="col-12">
+								  
+									<p>
+										<br/><strong>RECEIVING ACKNOWLEDGMENT: </strong>WE THE BUYER HERE BY CONFIRM THAT WE HAVE RECEIVED THE ABOVE GOODS 
+                                        <br/>IN GOOD ORDER &amp; CONDITION AS PER L/C TERMS AND ASPER SPECIFICATION OF THE PROFORMA INVOICE 
+                                        <br/>THIS DELIVERY CHALLAN ALSO TREAT AS TRUCK RECEIPT
+                                    </p>
+									<br/>
+								</div>
+						</div>
+                        <br/>
+						<footer style="font-size:12px;page-break-inside:avoid;">
+                            <div class="float-left mt32 mb32 ! important">
+                                
+                                <div>
+                                    <span>CHECK &amp; APPROVED BY</span>
+                                    <br/>
+                                    <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                    <br/>
+                                    <span>______________________</span>
+                                    <br/>
+                                    <span>Signature &amp; Seal</span>
+                                </div>
+                            </div>
+                           <div class="float-right mt32 mb32 ! important">
+                                
+                                <div>
+                                    <!-- <span style="float: right;">CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span> -->
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <!-- <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/> -->
+                                    <br/>
+                                    <span>______________________________________________________</span>
+                                    <br/>
+                                    <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                </div>
+                            </div>
+                     </footer>
 					</div>
-					
 					<br/>
 				<div class="page" style="page-break-after: always;">
 					<div class="footer text-center" style="margin:0px; padding:0px;">
@@ -1335,7 +1371,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<div>
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
-									<span style="color: Black ! important">INVOICE #  
+									<span style="color: Black ! important">TRUCK RECEIPT #  
                                          <t t-esc="o.name"/> 
 									</span>
 									<!-- <t t-if="o.is_revised == True">
@@ -1346,7 +1382,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="float-right">
 								<h5 style="font-size: 12px">
-									<strong>BIN NO: 000230362-0305</strong>
+									<strong>INVOICE NO: <t t-esc="o.name"/></strong>
 								</h5>
 							</div>
 						</div>
@@ -1354,7 +1390,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">INVOICE DETAILS</strong>
+									<strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -1364,7 +1400,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">DESPATCH DETAILS</strong>
+									<strong style="font-size:12px">DESPATCH ADDRESS</strong>
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -1373,9 +1409,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 								</p>
 							</div>
 							<div class="col-auto col-3 mw-50 mb-2">
-								<!--<div>-->
-								<!--	<strong style="font-size:12px">DELIVERY ADDRESS</strong>-->
-								<!--</div>-->
+								<div>
+								<strong style="font-size:12px">CONSIGNED TO</strong>
+								</div>
 								<p>
 									<!-- <span style="font-size:12px;" t-esc="o.partner_shipping_id.name"/>
 									<br/>
@@ -1402,22 +1438,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.lc_no"/> 
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>BANK REF NO:</strong>
-									<br/>
-									 <t t-esc="o.partner_bank_id"/>
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-								  <strong>BANK BIN NO</strong>
-									
-									<br/>
-									 <t t-esc="o.bank_bin"/> 
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>APPLICANT'S TIN :</strong>
 									<br/>
@@ -1426,35 +1447,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>BIN/VAT REG.NO.</strong>
+									<strong>VAT REG.NO.</strong>
 									<br/>
 									 <t t-esc="o.bin_vat_reg"/> 
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>BOND LICENSE NO:</strong>
-									<br/>
-									 <t t-esc="o.bond_licence"/> 
-								</p>
-							</div>
-							
-						</div>
-						<div class="row mt32 mb32" style="font-size:12px">
-						  <div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								 <p>
 								<strong>TIN NO:</strong>
 								<br/> 
 								 <t t-esc="o.tin_no"/>  
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>IRC NO:</strong>
+								  <strong>BANK BIN NO</strong>
+									
 									<br/>
-									 <!--<t t-if="o.po_no">-->
-										<!--<t t-esc="o.partner_bank_id"/>-->
-									<!--</t> -->
+									 <t t-esc="o.bank_bin"/> 
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
@@ -1466,7 +1476,10 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>PAYMENT TERMS </strong>
 									<br/>
@@ -1475,16 +1488,25 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY</strong>
+									<strong>NOTIFY PARTY IF OTHER</strong>
 									<br/>
 									<!-- <t t-if="o.revised_date">
 										<t t-esc="o.revised_date.strftime('%d-%m-%Y')"/>
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>THEN APPLICANT</strong>
+									<br/>
+									<!-- <t t-if="o.revised_date">
+										<t t-esc="o.revised_date.strftime('%d-%m-%Y')"/>
+									</t> -->
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
 								<strong>STYLE REF</strong>
 								<p>
 									<!-- <t t-if="o.style_ref">
@@ -1492,10 +1514,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-						</div>
-						<div class="row mt32 mb32" style="font-size:12px">
-							
-							<div class="col-auto col-2 mw-50 mb-2">
+                            
+						  <div class="col-auto col-2 mw-100 mb-2">
 								<strong>DATE</strong>
 								<p>
 									<!--<t t-if="o.order_type">-->
@@ -1503,7 +1523,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>INVOICE/BILL DATE</strong>
 								<p>
 									<!--<t t-if="o.order_type">-->
@@ -1511,7 +1531,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<!--</t>-->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+                            
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PO NO.</strong>
 								<p>
 									<!-- <t t-if="o.kind_attention">
@@ -1519,7 +1543,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PI NO.</strong>
 								<p>
 									<!-- <t t-if="o.user_id">
@@ -1527,21 +1551,36 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t> -->
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
+							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>CURRENCY</strong>
 								<p>
 									<t t-esc="o.currency_id.name"/>
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-50 mb-2">
-								<!--<strong>STYLE REF</strong>-->
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>SALESPERSON</strong> -->
 								<p>
 									<!-- <t t-if="o.style_ref">
 										<t t-esc="o.style_ref"/>
 									</t> -->
 								</p>
 							</div>
-							
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>DATE</strong> -->
+								<p>
+									<!--<t t-if="o.order_type">-->
+										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
+									<!--</t>-->
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<!-- <strong>INVOICE/BILL DATE</strong> -->
+								<p>
+									<!--<t t-if="o.order_type">-->
+										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
+									<!--</t>-->
+								</p>
+							</div>
 						</div>
 						
 						 <div style="font-size:12px">
@@ -1557,9 +1596,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                 <th>SHADE</th>
                                 <th>INCH</th>
                                 <th>QTY</th>
-                                <th>UNIT</th>
-                                <th>PRICE/UNIT</th>
-                                <th>AMOUNT</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1577,9 +1613,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
                                 <!--</tr>-->
                             </t>
                         </tbody>
@@ -1587,6 +1620,42 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							
 						</div>
 						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
+                             <div class="row float-left pl-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>No. of Catn</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Gross weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+                                        <tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Net weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
 							<div class="row float-right pr-3">
 								<div>
 									<table class="table table-sm o_main_table">
@@ -1613,71 +1682,45 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</table>
 								</div>
 							</div>
-							<div class="clearfix" style="font-size:12px">
+                             <br/>
+                             <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
 								<strong>AMOUNT IN WORDS(USD): 
-								<!--<span t-esc="o.amount_in_word"/>-->
+								<span t-esc="o.amount_in_word"/>
 								</strong>
 								<br/>
-								<strong>PLACE OF LOADING: 
-								<!--<span t-esc="o.appr_weight"/>-->
-								</strong>
-							</div>
+								
+							</div> -->
 						</div>
 						<br/>
+                        <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div>
+                        <br/> -->
 						<div style="font-size:12px;page-break-inside:avoid;">
 							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
 								<t t-set="payment_count" t-value="0"/>
-								<!--<t t-if="o.payment_term_id">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>PAYMENT TERM:</strong>
-											<br/>
-											<!--<t t-esc="o.payment_term_id.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
-										</p>
-									</div>
-								<!--</t>-->
-								<!--<t t-if="o.incoterm">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>SHIPMENT TERM:</strong>
-											<br/>
-											<!--<t t-esc="o.incoterm.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
-										</p>
-									</div>
-								<!--</t>-->
+                                
+									
 								<!--<t t-if="o.shipment_mode">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>SHIPMENT MODE:</strong>
+											<strong>CARRIER:</strong>
 											<br/>
 											<!--<t t-esc="o.shipment_mode"/>-->
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
 								<!--</t>-->
-								<!--<t t-if="o.loading_place">-->
+                                <!--<t t-if="o.destination_port">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>PLACE OF LOADING:</strong>
-											<br/>
-											<!--<t t-esc="o.loading_place"/>-->
-											<t t-set="payment_count" t-value="payment_count+3"/>
-										</p>
-									</div>
-								<!--</t>-->
-								<t t-foreach="int((12-payment_count)/3)" t-as="p_count">
-									<div class="col-auto col-3 mw-100 mb-2">
-						</div>
-								</t>
-							</div>
-							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
-								<t t-set="desc_count" t-value="0"/>
-								<!--<t t-if="o.destination_port">-->
-									<div class="col-auto col-3 mw-100 mb-2">
-										<p>
-											<strong>DESTINATION PORT:</strong>
+											<strong>PACKING:</strong>
 											<br/>
 											<!--<t t-esc="o.destination_port"/>-->
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
@@ -1694,75 +1737,79 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										</p>
 									</div>
 								<!--</t>-->
-								<!--<t t-if="o.validity_period">-->
-									<div class="col-auto col-3 mw-100 mb-2">
+                                <div class="col-auto col-3 mw-100 mb-2">
 										<p>
-											<strong>PERIOD OF VALIDITY:</strong>
+											<strong>EXPORT LC NO:</strong>
 											<br/>
-											<!--<t t-esc="o.validity_period"/>-->
-											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+											<!--<t t-esc="o.payment_term_id.name"/>-->
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
 								<!--</t>-->
-								<!--<t t-foreach="int((12-desc_count)/3)" t-as="d_count">-->
+								<!--<t t-if="o.incoterm">-->
 									<div class="col-auto col-3 mw-100 mb-2">
-						  </div>
-								<!--</t>-->
-							</div>
-						</div>
-						<div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
-							<!--<t t-if="o.note">-->
-								<div class="col-8">
-									<!--<p>-->
-									<!--	<strong>TERMS AND CONDITIONS:</strong>-->
-									<!--	<br/>-->
-									<!--	<t t-if="isinstance(o.note, str)">-->
-									<!--		<t t-set="string_to_output" t-value="o.note.split('\n')"/>-->
-									<!--		<t t-foreach="string_to_output" t-as="string_line">-->
-									<!--			<span style="font-size:12px" t-esc="string_line"/>-->
-									<!--			<br/>-->
-									<!--		</t>-->
-									<!--	</t>-->
-									<!--</p>-->
-								</div>
-							<!--</t>-->
-							<div class="col-4">
-								<!--<t t-if="o.remarks">-->
-								<!--	<div>-->
-								<!--		<p>-->
-								<!--			<strong>REMARKS:</strong>-->
-								<!--			<br/>-->
-								<!--			<t t-if="isinstance(o.remarks, str)">-->
-								<!--				<t t-set="string_to_output" t-value="o.remarks.split('\n')"/>-->
-								<!--				<t t-foreach="string_to_output" t-as="string_line">-->
-								<!--					<span style="font-size:12px;" t-esc="string_line"/>-->
-								<!--					<br/>-->
-								<!--				</t>-->
-								<!--			</t>-->
-								<!--		</p>-->
-								<!--	</div>-->
-								<!--</t>-->
-								<br/>
-								<br/>
-								<div class="float-right mt32 mb32 ! important">
-									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
-									<div>
-										<span>______________________</span>
-										<br/>
-										<span>Authorised Signature</span>
+										<p>
+											<strong>TRADE TERM:</strong>
+											<br/>
+											<!--<t t-esc="o.incoterm.name"/>-->
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
 									</div>
-								</div>
+								<!--</t>-->
+								
 							</div>
-							<br/>
-							<br/>
+							
 						</div>
+                        <br/>
+                        <div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
+							<!--<t t-if="o.note">-->
+								<div class="col-12">
+								  
+									<p>
+										<br/><strong>RECEIVING ACKNOWLEDGMENT: </strong>WE THE BUYER HERE BY CONFIRM THAT WE HAVE RECEIVED THE ABOVE GOODS 
+                                        <br/>IN GOOD ORDER &amp; CONDITION AS PER L/C TERMS AND ASPER SPECIFICATION OF THE PROFORMA INVOICE 
+                                        <br/>THIS DELIVERY CHALLAN ALSO TREAT AS TRUCK RECEIPT
+                                    </p>
+									<br/>
+								</div>
+						</div>
+                        <br/>
+						<footer style="font-size:12px;page-break-inside:avoid;">
+                            <div class="float-left mt32 mb32 ! important">
+                                
+                                <div>
+                                    <span>CHECK &amp; APPROVED BY</span>
+                                    <br/>
+                                    <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                    <br/>
+                                    <span>______________________</span>
+                                    <br/>
+                                    <span>Signature &amp; Seal</span>
+                                </div>
+                            </div>
+                           <div class="float-right mt32 mb32 ! important">
+                                
+                                <div>
+                                    <!-- <span style="float: right;">CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span> -->
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <!-- <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/> -->
+                                    <br/>
+                                    <span>______________________________________________________</span>
+                                    <br/>
+                                    <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                </div>
+                            </div>
+                     </footer>
 					</div>
 					<br/>
 					<div class="page" style="page-break-after: always;">
 						<div class="footer text-center" style="margin:0px; padding:0px;">
                     Page: <span class="page"/>/<span class="topage"/>
 						</div>
-                        <div class="container" style="border: 1pt solid black;">
+						<div class="container" style="border: 1pt solid black;">
                             <br/>
 						<h4 class="text-center">
 							<strong>
@@ -1799,6 +1846,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-3" style="font-size:12px">
                                         Against Invoice No:   <strong></strong>
                                         <br/>
+                                        <br/>
                                         Drawn letter of Credit No:   <strong></strong>
                                         <br/>
                                         APPLICANT'S TIN: <strong></strong>
@@ -1819,8 +1867,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         Drawn Under : 
                                         <br/>
                                     </div>
-                                    <div class="col-3" style="font-size:12px">
+                                    <div class="col-6" style="font-size:12px">
                                         <strong><t t-esc="o.name"/> </strong>
+                                        <br/>
                                         <br/>
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
@@ -1842,28 +1891,48 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
                                     </div>
-                                    <div class="col-3">
-                                        
+                                    <div class="col-1" style="font-size:12px">
+                                         DATE:   <strong></strong>
+                                        <br/>
+                                        <br/>
+                                         DATE:  <strong></strong>
+                                        <br/>
                                     </div>
-                                    <div class="col-3">
-                                        
+                                    <div class="col-2" style="font-size:12px">
+                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                        <br/>
+                                        <br/>
+                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
                                         <br/>
                                         <br/>
                                         <br/>
                                         <br/>
-                                        <br/>
-                                        <br/>
-                                        <div class="float-right mt32 mb32 ! important">
+                                        <!-- <div class="float-right mt32 mb32 ! important">
         									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
         									<div>
         										<span>______________________</span>
         										<br/>
         										<span>Authorised Signature</span>
         									</div>
+        								</div> -->
+                                    </div>
+                                
+                                </div>
+                        <div class="row">
+                                   
+                                    <div class="col-12" style="font-size:12px">
+                                        
+                                        <div class="float-right mt32 mb32 ! important">
+        									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+        									<div>
+        										<span>______________________</span>
+        										<br/>
+        										<span>AUTHORISED SIGNATORY</span>
+        									</div>
         								</div>
                                     </div>
+                                
                                 </div>
-                           
 						
                         </div>
 
@@ -1905,6 +1974,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-3" style="font-size:12px">
                                         Against Invoice No:   <strong></strong>
                                         <br/>
+                                        <br/>
                                         Drawn letter of Credit No:   <strong></strong>
                                         <br/>
                                         APPLICANT'S TIN: <strong></strong>
@@ -1925,8 +1995,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         Drawn Under : 
                                         <br/>
                                     </div>
-                                    <div class="col-3" style="font-size:12px">
+                                    <div class="col-6" style="font-size:12px">
                                         <strong><t t-esc="o.name"/> </strong>
+                                        <br/>
                                         <br/>
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
@@ -1948,31 +2019,50 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
                                     </div>
-                                    <div class="col-3">
-                                        
+                                    <div class="col-1" style="font-size:12px">
+                                         DATE:   <strong></strong>
+                                        <br/>
+                                        <br/>
+                                         DATE:  <strong></strong>
+                                        <br/>
                                     </div>
-                                    <div class="col-3">
-                                        
+                                    <div class="col-2" style="font-size:12px">
+                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                        <br/>
+                                        <br/>
+                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
                                         <br/>
                                         <br/>
                                         <br/>
                                         <br/>
-                                        <br/>
-                                        <br/>
-                                        <div class="float-right mt32 mb32 ! important">
+                                        <!-- <div class="float-right mt32 mb32 ! important">
         									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
         									<div>
         										<span>______________________</span>
         										<br/>
         										<span>Authorised Signature</span>
         									</div>
+        								</div> -->
+                                    </div>
+                                
+                                </div>
+                        <div class="row">
+                                   
+                                    <div class="col-12" style="font-size:12px">
+                                        
+                                        <div class="float-right mt32 mb32 ! important">
+        									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+        									<div>
+        										<span>______________________</span>
+        										<br/>
+        										<span>AUTHORISED SIGNATORY</span>
+        									</div>
         								</div>
                                     </div>
+                                
                                 </div>
-                           
 						
                         </div>
-                        
 					</div>
 				</t>
 			</t>

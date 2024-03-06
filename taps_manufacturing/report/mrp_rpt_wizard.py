@@ -2273,24 +2273,15 @@ class MrpReportWizard(models.TransientModel):
 
 
     # Invoice Summary
+    # Invoice Summary
     def iterate_days(self, year, month):
         _, last_day = calendar.monthrange(year, month)
         # Iterate over all days in the month
         for day in range(1, last_day + 1):
             yield day
 
-
-    
     # Code for packing_invoice
     def invs(self, docids, data=None):
-        def xl_col_to_name(col_num):
-            dividend = col_num
-            col_name = ''
-            while dividend:
-                module = (dividend - 1) % 26
-                col_name = chr(65 + module) + col_name
-                dividend = (dividend - module) // 26
-            return col_name
         
         start_time = fields.datetime.now()
         month_ = None
@@ -2312,18 +2303,23 @@ class MrpReportWizard(models.TransientModel):
         
         column_style = workbook.add_format({'bold': True, 'font_size': 12, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'valign': 'vcenter', 'align': 'center', 'bg_color':'#8DB4E2'})
         
-        sheet = workbook.add_worksheet("Production and Invoiced Data")
+        
+        sheet = workbook.add_worksheet("INVOICE SUMMERY")
     
         sheet.set_zoom(85)
         sheet.fit_to_pages(1, 0)
         
         row_style = workbook.add_format({'bold': True, 'bg_color':'#FFFF00','font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
         row_style_sum = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#FFFF00','left': True, 'top': True, 'right': True, 'bottom': True}) 
+        row_style_sum_ = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#FFFF00','left': True, 'top': True, 'right': True, 'bottom': True,'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
         row_style_head = workbook.add_format({'bold': True, 'font_size': 13, 'bg_color': '#8DB4E2','left': True, 'top': True, 'right': True, 'bottom': True}) 
         
-        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'vcenter', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
+        production_pcs_label = workbook.add_format({'font':'Calibri', 'font_size': 11, 'align': 'vcenter', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        production_usd_label = workbook.add_format({'font':'Calibri','bg_color':'#D9D9D9', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})
+        
+        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'align': 'vcenter', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True, 'num_format': '_("$"* #,##0_);_("$"* \(#,##0\);_("$"* "-"_);_(@_)'})#'num_format': '$#,##0'
         
         sheet.write(0, 0, "DATE", column_style)
         
@@ -2333,11 +2329,14 @@ class MrpReportWizard(models.TransientModel):
             "C#3 CE", "C#3 Inv CE", "C#3 OE", "C#3 Inv OE",
             "C#5 CE", "C#5 OE",
             "P#3 CE", "P#3 OE", "P#5 CE", "P#5 OE", "P#8 CE", "P#8 OE",
-            "Others","Total"
+            "Others","TOTAL"
         ]
         
         for col, item in enumerate(items, start=2):
             sheet.write(0, col, item, column_style)
+
+        sheet.set_column(0, 0, 14)
+        sheet.set_column(2, 24, 12)
     
         row = 1
         for day in self.iterate_days(year, int(month_)):
@@ -2347,49 +2346,63 @@ class MrpReportWizard(models.TransientModel):
                 
                 datewise_outputs = daily_outputs.filtered(lambda pr: pr.action_date.date() == full_date.date())
                 
-                sheet.write(row, 0, full_date.date().strftime("%d-%b-%Y"), column_style)
-                sheet.write(row, 1, "pcs", format_label_1)
-                sheet.write(row + 1, 1, "usd", format_label_2)
-                
+                # sheet.write(row, 0, full_date.date().strftime("%d-%b-%Y"), column_style)
+                sheet.merge_range(row, 0, row + 1, 0, full_date.date().strftime("%d-%b-%Y"), column_style)
+                sheet.write(row, 1, " PCS", production_pcs_label)
+                sheet.write(row + 1, 1, "USD", production_usd_label)
+
+                last_col = None
                 for col, item in enumerate(items, start=2):
+                    last_col = col
                     itemwise_outputs = datewise_outputs.filtered(lambda pr: pr.fg_categ_type == item)
                     
                     production_pcs = sum(itemwise_outputs.mapped('qty'))
                     invoiced_usd = sum(pack.qty * pack.price_unit for pack in itemwise_outputs)
                     
-                    sheet.write(row, col, production_pcs, format_label_1)
-                    if item == 'Total':
-                        sheet.write(row, col, '=SUM(C{0}:X{1})'.format(row+1, row+1), format_label_1)
-                    sheet.write(row + 1, col, invoiced_usd, format_label_2)
-                    if item == 'Total':
-                        sheet.write(row + 1, col, '=SUM(C{0}:X{1})'.format(row+2, row+2), format_label_1)
+                    if production_pcs == 0:
+                        sheet.write(row, col, "", production_pcs_label)
+                    else :
+                        sheet.write(row, col, production_pcs, production_pcs_label)
+                    if item == 'TOTAL':
+                        sheet.write(row, col, '=SUM(C{0}:X{1})'.format(row+1, row+1), production_pcs_label)
+                    if invoiced_usd == 0:
+                        sheet.write(row + 1, col, "", production_usd_label)
+                    else :
+                        sheet.write(row + 1, col, invoiced_usd, production_usd_label)
+                    
+                    if item == 'TOTAL':
+                        sheet.write(row + 1, col, '=SUM(C{0}:X{1})'.format(row+2, row+2), production_usd_label)
                     
 
         
+                
                 row += 2
-    
-        # After writing data for each day
-        # start_col = 2  # Column C
-        # end_col = len(items) + 1  # Assuming len(items) corresponds to the last column index
         
-        # Calculate the sum using a formula
-        # sum_formula = f'=SUM({xl_col_to_name(start_col)}{row}:{xl_col_to_name(end_col)}{row})'
-        # all_row = row
-        # for row in all_row:
-        #     # Write the formula to the cell in column Y (assuming column Y is len(items) + 2)
-        #     sheet.write_formula(row, len(items) + 2, sum_formula)
 
 
         # Calculate item-wise sums at the end of each row
         for col, item in enumerate(items, start=2):
             itemwise_outputs = daily_outputs.filtered(lambda pr: pr.fg_categ_type == item)
             
-            production_pcs_sum = sum(itemwise_outputs.mapped('qty'))
-            invoiced_usd_sum = sum(pack.qty * pack.price_unit for pack in itemwise_outputs)
+            production_pcs_sum = int(sum(itemwise_outputs.mapped('qty')))
+            invoiced_usd_sum = int(sum(pack.qty * pack.price_unit for pack in itemwise_outputs))
+
+            sheet.merge_range(row, 0, row + 1, 0, "TOTAL", column_style)
+            sheet.write(row, 1, " PCS", format_label_1)
+            sheet.write(row + 1, 1, "USD", format_label_2)
+            if production_pcs_sum==0:
+                sheet.write(row, col, "", row_style_sum)
+            else :
+                sheet.write(row, col, production_pcs_sum, row_style_sum)
+                
             
-            sheet.write(row, col, production_pcs_sum, row_style_sum)
-            sheet.write(row + 1, col, invoiced_usd_sum, row_style_sum)
+            if invoiced_usd_sum == 0:
+                sheet.write(row + 1, col, "", row_style_sum)
+            else :
+                sheet.write(row + 1, col, invoiced_usd_sum, row_style_sum_)
     
+        sheet.write(row, last_col, '=SUM(C{0}:X{1})'.format(row+1, row+1), row_style_sum)
+        sheet.write(row+1, last_col, '=SUM(C{0}:X{1})'.format(row+2, row+2), row_style_sum_)
         workbook.close()
         output.seek(0)
         xlsx_data = output.getvalue()
@@ -2400,7 +2413,7 @@ class MrpReportWizard(models.TransientModel):
         return {
             'type': 'ir.actions.act_url',
             'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(
-                self._name, self.id, ('Invoice')),
+                self._name, self.id, ('Invoice Summery')),
             'target': 'self',
         }
 

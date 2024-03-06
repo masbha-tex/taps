@@ -11,6 +11,7 @@ from odoo.exceptions import UserError
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+import numpy as np
 
 _logger = logging.getLogger(__name__)
 
@@ -30,14 +31,14 @@ class HrAppraisal(models.Model):
     kpi_state = fields.Char(string="Kpi Status",store=True)
     employee_group = fields.Many2one('hr.employee.group', store=True, related = 'employee_id.employee_group', string="Group", related_sudo=False, help="What would be the group of this employee?")
     category = fields.Selection(store=True, related = 'employee_id.contract_id.category', string="Category", related_sudo=False, help='Category of the Employee')
+    chart_image = fields.Binary(string="Pie Chart Image", compute='_generate_chart_image', copy=True)    
     
   
 
-    # @api.depends('ytd_weightage_acvd')
     def _generate_chart_image(self):
         for record in self:
-            data = [('Q 1', record.q_1_ytd), ('Q 2', record.q_2_ytd), ('Q 3', record.q_3_ytd), ('Q 4', record.q_4_ytd)] # Replace 'kpi_data' with the actual field containing your data
-            chart_image = record.generate_pie_chart(data)
+            data = [('Q 1', record.q_1_ytd if record.q_1_ytd else 0), ('Q 2', record.q_2_ytd if record.q_2_ytd else 0), ('Q 3', record.q_3_ytd if record.q_3_ytd else 0), ('Q 4', record.q_4_ytd if record.q_4_ytd else 0)] # Replace 'kpi_data' with the actual field containing your data
+            chart_image = self.generate_pie_chart(data)
             # record.chart_image = base64.b64encode(chart_image.getvalue()).decode('utf-8')
             record.chart_image = base64.b64encode(chart_image.getvalue())
             # raise UserError((record.chart_image))
@@ -47,7 +48,8 @@ class HrAppraisal(models.Model):
         labels = [item[0] for item in data]
         values = [item[1] for item in data]
 
-        # raise UserError((values))
+        # raise UserError((labels,values))
+        # values = [0 if np.isnan(val) else val for val in values]
         def my_autopct(pct):
             total = sum(values)
             val = round((pct * total / 100.0),2)
@@ -63,7 +65,8 @@ class HrAppraisal(models.Model):
         buffer.seek(0)
 
         return buffer
-    chart_image = fields.Image(string="Pie Chart Image", compute='_generate_chart_image', store=True)    
+        
+  
   
     
     
@@ -93,7 +96,7 @@ class HrAppraisal(models.Model):
             appraisal.q_2_ytd = sum(app_goal.mapped('q_2_ytd'))
             appraisal.q_3_ytd = sum(app_goal.mapped('q_3_ytd'))
             appraisal.q_4_ytd = sum(app_goal.mapped('q_4_ytd'))
-            appraisal._generate_chart_image()
+            # appraisal._generate_chart_image()
 
     def action_open_goals(self):
         self.ensure_one()

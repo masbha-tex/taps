@@ -35,8 +35,9 @@ class PackingReturn(models.TransientModel):
         return res 
             
     def done_mo_return(self):
-        if self.done_qty < self.return_qty:
-            raise UserError(('You can not return more then qty'))
+        if self.done_qty < self.return_qty or self.return_qty < 0:
+        # if self.done_qty < self.return_qty:
+            raise UserError(('You can not return this qty'))
             return
         mo_id = self.env.context.get("active_id")
         production = self.env["operation.details"].browse(mo_id)

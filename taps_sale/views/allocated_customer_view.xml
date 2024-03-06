@@ -29,10 +29,80 @@
                             <button type="object"
                                 name="view_customer"
                                 class="oe_stat_button"
-                                icon="fa-user"
+                                icon="fa-users"
                                 attrs="{}" >
                                 
                                 <field name="customer_count" widget="statinfo" string="My Customers" />
+                                <field name="customer_ids" invisible="1"/>
+                                
+                            </button>
+                            <button type="object"
+                                name="view_sample"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o"
+                                attrs="{}" >
+                                
+                                <field name="sa_count" widget="statinfo" string="SA" />
+                                <field name="sa_ids" invisible="1"/>
+                                
+                            </button>
+                            <button type="object"
+                                name="view_pi"
+                                class="oe_stat_button"
+                                icon="fa-dollar"
+                                attrs="{}" >
+                                
+                                <field name="pi_count" widget="statinfo" string="PI" />
+                                <field name="pi_ids" invisible="1"/>
+                                
+                            </button>
+                            <button type="object"
+                                name="view_oa"
+                                class="oe_stat_button"
+                                icon="fa-flask"
+                                attrs="{}" >
+                                
+                                <field name="oa_count" widget="statinfo" string="OA" />
+                                <field name="oa_ids" invisible="1"/>
+                                
+                            </button>
+                            <button type="object"
+                                name="view_opportunity"
+                                class="oe_stat_button"
+                                icon="fa-star"
+                                attrs="{}" >
+                                
+                                <field name="opportunity_count" widget="statinfo" string="Opportunity" />
+                                <field name="customer_ids" invisible="1"/>
+                                
+                            </button>
+                            <!-- <button type="object"
+                                name="view_visit"
+                                class="oe_stat_button"
+                                icon="fa-star-half-o"
+                                attrs="{}" >
+                                
+                                <field name="visit_count" widget="statinfo" string="Visit" />
+                                <field name="customer_ids" invisible="1"/>
+                                
+                            </button> -->
+                            <button type="object"
+                                name="view_meeting"
+                                class="oe_stat_button"
+                                icon="fa-calendar"
+                                attrs="{}" >
+                                
+                                <field name="meeting_count" widget="statinfo" string="Meeting" />
+                                <field name="customer_ids" invisible="1"/>
+                                
+                            </button>
+                            <button type="object"
+                                name="view_activity"
+                                class="oe_stat_button"
+                                icon="fa-tasks"
+                                attrs="{}" >
+                                
+                                <field name="activity_count" widget="statinfo" string="Activity" />
                                 <field name="customer_ids" invisible="1"/>
                                 
                             </button>
@@ -48,6 +118,7 @@
                             <group>
                                 <field name="team_id"/>
                                 <field name="team_leader_id"/>
+                                <field name="region_id"/>
                                 
                             </group>
                             <group>
@@ -56,6 +127,16 @@
                             </group>
                             
                         </group>
+                        <notebook>
+                            <page string="Q1">
+                            </page>
+                            <page string="Q2">
+                            </page>
+                            <page string="Q3">
+                            </page>
+                            <page string="Q4">
+                            </page>
+                        </notebook>
                         <!-- <notebook>
                             <page string="Allocated Line" name="allocated_line">
                                 <field name="allocated_line" widget="section_and_note_one2many" mode="tree">

@@ -10,6 +10,7 @@ from . import custom_chart
 from . import google_chart
 from . import saleperson_wise_customer
 from . import approval_matrix
+from . import customer_allocated_inherit
 # from . import customer_reallocation
 # from . import brand_reallocation
 # from . import allocated_customer

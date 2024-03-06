@@ -1,0 +1,17 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="allocated_customer_template_form_inherit">
+          <field name="name">customer.allocated.form.inherited</field>
+          <field name="model">customer.allocated</field>
+          <field name="inherit_id" ref="taps_sale.allocated_customer_template_form"/>
+          <field name="arch" type="xml">
+               <xpath expr="//button[@name='view_oa']" position="after">
+                    <button class="oe_stat_button" icon="fa-star-half-o" type="object" name="view_visit">
+                          <field name="visit_count" widget="statinfo" string="Visit" />
+                          <field name="visit_ids" invisible="1"/>
+                    </button>
+              </xpath>
+          </field>
+    </record>
+    </data>
+</odoo>

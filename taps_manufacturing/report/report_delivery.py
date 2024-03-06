@@ -26,8 +26,8 @@ class ReportDyePlan(models.AbstractModel):
         exporter = "\n".join([exporter,del_ids[0].company_id.partner_id.street2+ del_ids[0].company_id.partner_id.city+' '+ del_ids[0].company_id.partner_id.zip])
         exporter = "\n".join([exporter,del_ids[0].company_id.partner_id.country_id.name])
 
-        # buyer = 'BUYER: '+del_ids[0].buyer_name
-        buyer = "'BUYER: '+del_ids[0].buyer_name"
+        buyer = 'BUYER: '+del_ids[0].buyer_name
+        # buyer = "'BUYER: '+del_ids[0].buyer_name"
         customer = 'CUSTOMER: '+del_ids[0].partner_id.name
         style_ref = 'STYLE REF: ' + (del_ids[0].oa_id.style_ref or '')
         invoice_no = 'INVOICE NO: ' + (del_ids[0].mrp_delivery.name or '')
@@ -38,11 +38,16 @@ class ReportDyePlan(models.AbstractModel):
         del_ids = del_ids.sorted(key = 'name')
         carton = del_ids.mapped('name')
         carton = list(set(carton))
-        report_name = 'Carton Label'#orders.name
+        report_name =('OA-'+ (del_ids[0].oa_id.name + "  " + 'PI-'+ (del_ids[0].oa_id.pi_number or '')).replace("OA00","")).replace("PI00","")
         # for m in machines:
         #     raise UserError((m.name))
 
         sheet = workbook.add_worksheet(report_name[:41])
+        sheet.set_margins(left=0.2, right=0.3, top=0.2, bottom=0.2)
+        sheet.fit_to_pages(1, 0)
+        sheet.set_paper(9)
+        sheet.set_landscape()
+        
         column_style = workbook.add_format({'bold': True, 'font_size': 11, 'text_wrap':True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'middle'})
         
         _row_style = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
@@ -64,21 +69,21 @@ class ReportDyePlan(models.AbstractModel):
 # customer
 # style_ref
 
-        sheet.merge_range(0, 0, 2, 1, exporter, merge_format)
+        sheet.merge_range(0, 0, 2, 3, exporter, merge_format)
         
-        sheet.merge_range(0, 2, 2, 5, title_text, merge_format)
+        sheet.merge_range(0, 4, 2, 8, title_text, merge_format)
         
-        sheet.merge_range(0, 6, 0, 8, buyer, merge_format)
-        sheet.merge_range(1, 6, 1, 8, customer, merge_format)
-        sheet.merge_range(2, 6, 2, 8, style_ref, merge_format)
+        sheet.merge_range(0, 9, 0, 12, buyer, merge_format)
+        sheet.merge_range(1, 9, 1, 12, customer, merge_format)
+        sheet.merge_range(2, 9, 2, 12, style_ref, merge_format)
         
-        sheet.merge_range(3, 0, 3, 1, invoice_no, merge_format)
-        sheet.merge_range(4, 0, 4, 1, oa_no, merge_format)
+        sheet.merge_range(3, 0, 3, 3, invoice_no, merge_format)
+        sheet.merge_range(4, 0, 4, 3, oa_no, merge_format)
 
-        sheet.merge_range(3, 2, 4, 5, item_name, merge_format)
+        sheet.merge_range(3, 4, 4, 8, item_name, merge_format)
         
-        sheet.merge_range(3, 6, 3, 8, po_no, merge_format)
-        sheet.merge_range(4, 6, 4, 8, pi_no, merge_format)
+        sheet.merge_range(3, 9, 3, 12, po_no, merge_format)
+        sheet.merge_range(4, 9, 4, 12, pi_no, merge_format)
         
         sheet.write(5, 0, "CTN NO", column_style)
         sheet.write(5, 1, "SHADE", column_style)
@@ -89,6 +94,9 @@ class ReportDyePlan(models.AbstractModel):
         sheet.write(5, 6, "CARTON TOTAL (pcs)", column_style)
         sheet.write(5, 7, "GROSS WEIGHT (kgs)", column_style)
         sheet.write(5, 8, "NET WEIGHT (kgs)", column_style)
+
+        sheet.set_column(0, 1,15)
+        sheet.set_column(2, 12,10)
 
 
         row = 5
@@ -157,7 +165,7 @@ class ReportDyePlan(models.AbstractModel):
             #     break
 
         row += 1
-        sheet.merge_range(row, 0, row, 8, 'DELIVERY SUMMARY',merge_format)
+        sheet.merge_range(row, 0, row, 12, 'DELIVERY SUMMARY',merge_format)
         row += 1
         sheet.merge_range(row, 0, row, 1, 'SHADE',merge_format)
         sheet.write(row, 2,  'Size', column_style)
@@ -171,9 +179,7 @@ class ReportDyePlan(models.AbstractModel):
         sheet.write(row, 10,  '7th DEL', column_style)
         sheet.write(row, 11, 'SAMPLE', column_style)
         sheet.write(row, 12,  'BALANCE', column_style)
-        
-        # mr = self.env["operation.details"].search([('oa_id','=',del_ids[0].oa_id.id),
-        #                                            ('next_operation','=','Operation Packing')]).sorted(key=lambda pr: pr.shade)
+
         mr = self.env["operation.packing"].search([('oa_id','=',del_ids[0].oa_id.id)]).sorted(key=lambda pr: pr.shade)
         # raise UserError((del_ids[0].oa_id.id))
         # if mr:
@@ -222,55 +228,38 @@ class ReportDyePlan(models.AbstractModel):
     
 
         # raise UserError((fst_del,snd_del,trd_del,frt_del,fit_del,sit_del,set_del))
+        
         row += 1
+        row_range_start = row
         for re in report_data:
             sheet.merge_range(row, 0, row, 1, re[0], _row_style)    
             sheet.write(row, 2, re[1], _row_style)
             sheet.write(row, 3, re[2], _row_style)
-            sheet.write(row, 4, re[3], _row_style)
-            sheet.write(row, 5, re[4], _row_style)
-            sheet.write(row, 6, re[5], _row_style)
-            sheet.write(row, 7, re[6], _row_style)
-            sheet.write(row, 8, re[7], _row_style)
-            sheet.write(row, 9, re[8], _row_style)
-            sheet.write(row, 10, re[9], _row_style)
-            sheet.write(row, 11, re[10], _row_style)
-            sheet.write(row, 12, re[11], _row_style)
+            
+            for col_num, value in enumerate(re[3:11], start=4):
+                if value == 0:
+                    sheet.write(row, col_num, "", _row_style)
+                else:
+                    sheet.write(row, col_num, value, _row_style)
+
+            sheet.write_formula(row, 12, '=D{0}-(SUM(E{1}:L{2}))'.format(row + 1,row + 1, row + 1), _row_style)
+
+           
             row += 1
             
-        # if mr:
-        #     for m in mr:
-        #         row += 1
-        #         delivered = self.env["operation.details"].search([('oa_id','=',del_ids[0].oa_id.id),('next_operation','=','Delivery'),('mrp_line','=',m.id)])
-                # total_del = 0
-                # del_dates = None
-                # unique_dates = None
-                # fst_del = snd_del = trd_del = 0
-                # if delivered:
-                #     total_del = sum(delivered.mapped('qty'))
-                #     unique_dates = set(record.action_date.date() for record in delivered)
-                #     # del_dates = delivered.mapped('action_date')
-                # if unique_dates:
-                #     num_unique_dates  = len(unique_dates)
-                #     raise UserError((num_unique_dates))
-                #     for dt in range(num_unique_dates):
-                #         if dt == 0:
-                #             fst_del = 0
-                #         if dt == 1:
-                #             snd_del = 0
-                #         if dt >= 3:
-                #             trd_del = 0
-                            
-                    # raise UserError((unique_dates[0]))
-                # sheet.merge_range(row, 0, row, 1, m.shade, _row_style)    
-                # sheet.write(row, 1, m.shade, _row_style)
-                # sheet.write(row, 2, m.sizecm, _row_style)
-                # sheet.write(row, 3, m.product_uom_qty, _row_style)
-                # sheet.write(row, 4, fst_del, _row_style)
-                # sheet.write(row, 5, snd_del, _row_style)
-                # sheet.write(row, 6, trd_del, _row_style)
-                # sheet.write(row, 7, 0, _row_style)
-                # sheet.write(row, 8, m.product_uom_qty - total_del, _row_style)
-            
-
+        sheet.merge_range(row, 0, row, 2, 'TOTAL',merge_format)
         
+        # Assuming col_names contains the column names (A, B, C, ..., M)
+        col_names = [chr(ord('A') + i) for i in range(13)]
+        
+        # Iterate over the columns (from B to M) and write sum formulas
+        for col_num, col_name in enumerate(col_names[1:], start=1):  # Start from 1 to skip A
+            sheet.write_formula(row, col_num, '=SUM({0}{1}:{2}{3})'.format(col_name, row_range_start+1, col_name, row), column_style)
+
+        row += 1
+
+
+
+
+            
+ 

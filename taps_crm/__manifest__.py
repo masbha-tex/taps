@@ -34,6 +34,7 @@
         'views/saleperson_wise_customer_view.xml',
         'views/crm_team_view.xml',
         'views/approval_matrix.xml',
+        'views/customer_allocated_inherit.xml',
         # 'views/customer_reallocation.xml',
         # 'views/brand_reallocation.xml',
         'views/crm_team_transfer.xml',

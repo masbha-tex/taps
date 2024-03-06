@@ -710,12 +710,14 @@ class OperationDetails(models.Model):
             vals['name'] = ref
         if vals.get('next_operation') == "Delivery":
             if 'cartoon_no' in vals:
+                weight = 0
+                if vals.get('carton_weight'):
+                    weight = vals.get('carton_weight')
                 if vals.get('cartoon_no'):
                     vals['cartoon_no'] = vals.get('cartoon_no')
+                    packing = self.env['fg.packaging'].browse(vals.get('cartoon_no'))
+                    packing.update({'total_weight':weight,'oa_id':vals.get('oa_id')})
                 else:
-                    weight = 0
-                    if vals.get('carton_weight'):
-                        weight = vals.get('carton_weight')
                     # raise UserError((vals.get('oa_id'),'dds'))
                     packing = self.env['fg.packaging'].create({'company_id':self.env.company.id ,'total_weight':weight,'oa_id':self.oa_id.id})
                     packing.update({'total_weight':weight,'oa_id':vals.get('oa_id')})
