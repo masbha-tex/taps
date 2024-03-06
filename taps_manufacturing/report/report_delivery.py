@@ -26,7 +26,8 @@ class ReportDyePlan(models.AbstractModel):
         exporter = "\n".join([exporter,del_ids[0].company_id.partner_id.street2+ del_ids[0].company_id.partner_id.city+' '+ del_ids[0].company_id.partner_id.zip])
         exporter = "\n".join([exporter,del_ids[0].company_id.partner_id.country_id.name])
 
-        buyer = 'BUYER: '+del_ids[0].buyer_name
+        # buyer = 'BUYER: '+del_ids[0].buyer_name
+        buyer = "'BUYER: '+del_ids[0].buyer_name"
         customer = 'CUSTOMER: '+del_ids[0].partner_id.name
         style_ref = 'STYLE REF: ' + (del_ids[0].oa_id.style_ref or '')
         invoice_no = 'INVOICE NO: ' + (del_ids[0].mrp_delivery.name or '')
@@ -159,49 +160,117 @@ class ReportDyePlan(models.AbstractModel):
         sheet.merge_range(row, 0, row, 8, 'DELIVERY SUMMARY',merge_format)
         row += 1
         sheet.merge_range(row, 0, row, 1, 'SHADE',merge_format)
-        sheet.write(row, 2,  'Size CM', column_style)
-        sheet.write(row, 3,  'OA  QTY', column_style)
+        sheet.write(row, 2,  'Size', column_style)
+        sheet.write(row, 3,  'OA QTY', column_style)
         sheet.write(row, 4,  '1ST DEL', column_style)
         sheet.write(row, 5,  '2ND DEL', column_style)
-        sheet.write(row, 6,  '2RD DEL', column_style)
-        sheet.write(row, 7,  'SAMPLE', column_style)
-        sheet.write(row, 8,  'BALANCE', column_style)
+        sheet.write(row, 6,  '3RD DEL', column_style)
+        sheet.write(row, 7,  '4th DEL', column_style)
+        sheet.write(row, 8,  '5th DEL', column_style)
+        sheet.write(row, 9,  '6th DEL', column_style)
+        sheet.write(row, 10,  '7th DEL', column_style)
+        sheet.write(row, 11, 'SAMPLE', column_style)
+        sheet.write(row, 12,  'BALANCE', column_style)
         
-        mr = self.env["manufacturing.order"].search([('oa_id','=',del_ids[0].oa_id.id)]).sorted(key=lambda pr: pr.sizein and pr.shade)
+        # mr = self.env["operation.details"].search([('oa_id','=',del_ids[0].oa_id.id),
+        #                                            ('next_operation','=','Operation Packing')]).sorted(key=lambda pr: pr.shade)
+        mr = self.env["operation.packing"].search([('oa_id','=',del_ids[0].oa_id.id)]).sorted(key=lambda pr: pr.shade)
+        # raise UserError((del_ids[0].oa_id.id))
+        # if mr:
+            # raise UserError((del_ids[0].oa_id.id))
         shades = mr.mapped('shade')
-        
-        if mr:
-            for m in mr:
-                row += 1
-                delivered = self.env["operation.details"].search([('oa_id','=',del_ids[0].oa_id.id),('next_operation','=','Delivery'),('mrp_line','=',m.id)])
-                total_del = 0
-                del_dates = None
-                unique_dates = None
-                fst_del = snd_del = trd_del = 0
-                if delivered:
-                    total_del = sum(delivered.mapped('qty'))
-                    unique_dates = set(record.action_date.date() for record in delivered)
-                    # del_dates = delivered.mapped('action_date')
-                if unique_dates:
-                    num_unique_dates  = len(unique_dates)
-                    for dt in range(num_unique_dates):
-                        if dt == 0:
-                            fst_del = 0
-                        if dt == 1:
-                            snd_del = 0
-                        if dt >= 3:
-                            trd_del = 0
+        report_data = []
+        shades = list(set(shades))
+        # raise UserError((shades))
+        for shad in shades:
+            all_size = mr.search([('shade','=',shade)])#filtered(lambda pr: pr.shade == shade)
+            sizes = all_size.mapped('sizcommon')
+            sizes = list(set(sizes))
+            # raise UserError((sizes))
+            for size in sizes:
+                single_size = all_size.filtered(lambda pr: pr.sizcommon == size)
+                qty = sum(single_size.mapped('actual_qty'))
+                delivered = self.env["operation.details"].search([('oa_id','=',del_ids[0].oa_id.id),('next_operation','=','Delivery'),('shade','=',shad),('sizcommon','=',size)])
+                total_del = sum(delivered.mapped('qty'))
+                unique_dates = set(record.action_date.date() for record in delivered)
+                num_unique_dates  = len(unique_dates)
+                # raise UserError((num_unique_dates))
+                fst_del = snd_del = trd_del = frt_del = fit_del = sit_del = set_del = 0
+                in_num = 0
+                for dt in range(num_unique_dates):
+                    datewise = delivered.filtered(lambda pr: pr.action_date.date() == dt)
+                    d_qty = sum(delivered.mapped('qty'))
+                    if in_num == 0:
+                        fst_del = d_qty
+                    if in_num == 1:
+                        snd_del = d_qty
+                    if in_num == 2:
+                        trd_del = d_qty
+                    if in_num == 3:
+                        frt_del = d_qty
+                    if in_num == 4:
+                        fit_del = d_qty
+                    if in_num == 5:
+                        sit_del = d_qty
+                    if in_num == 6:
+                        set_del = d_qty
+                    in_num += 1
+
+                r_data = []
+                r_data = [shad,size,qty,fst_del,snd_del,trd_del,frt_del,fit_del,sit_del,set_del,0,total_del]
+                report_data.append(r_data)
+    
+
+        # raise UserError((fst_del,snd_del,trd_del,frt_del,fit_del,sit_del,set_del))
+        row += 1
+        for re in report_data:
+            sheet.merge_range(row, 0, row, 1, re[0], _row_style)    
+            sheet.write(row, 2, re[1], _row_style)
+            sheet.write(row, 3, re[2], _row_style)
+            sheet.write(row, 4, re[3], _row_style)
+            sheet.write(row, 5, re[4], _row_style)
+            sheet.write(row, 6, re[5], _row_style)
+            sheet.write(row, 7, re[6], _row_style)
+            sheet.write(row, 8, re[7], _row_style)
+            sheet.write(row, 9, re[8], _row_style)
+            sheet.write(row, 10, re[9], _row_style)
+            sheet.write(row, 11, re[10], _row_style)
+            sheet.write(row, 12, re[11], _row_style)
+            row += 1
+            
+        # if mr:
+        #     for m in mr:
+        #         row += 1
+        #         delivered = self.env["operation.details"].search([('oa_id','=',del_ids[0].oa_id.id),('next_operation','=','Delivery'),('mrp_line','=',m.id)])
+                # total_del = 0
+                # del_dates = None
+                # unique_dates = None
+                # fst_del = snd_del = trd_del = 0
+                # if delivered:
+                #     total_del = sum(delivered.mapped('qty'))
+                #     unique_dates = set(record.action_date.date() for record in delivered)
+                #     # del_dates = delivered.mapped('action_date')
+                # if unique_dates:
+                #     num_unique_dates  = len(unique_dates)
+                #     raise UserError((num_unique_dates))
+                #     for dt in range(num_unique_dates):
+                #         if dt == 0:
+                #             fst_del = 0
+                #         if dt == 1:
+                #             snd_del = 0
+                #         if dt >= 3:
+                #             trd_del = 0
                             
                     # raise UserError((unique_dates[0]))
-                sheet.merge_range(row, 0, row, 1, m.shade, _row_style)    
+                # sheet.merge_range(row, 0, row, 1, m.shade, _row_style)    
                 # sheet.write(row, 1, m.shade, _row_style)
-                sheet.write(row, 2, m.sizecm, _row_style)
-                sheet.write(row, 3, m.product_uom_qty, _row_style)
-                sheet.write(row, 4, fst_del, _row_style)
-                sheet.write(row, 5, snd_del, _row_style)
-                sheet.write(row, 6, trd_del, _row_style)
-                sheet.write(row, 7, 0, _row_style)
-                sheet.write(row, 8, m.product_uom_qty - total_del, _row_style)
+                # sheet.write(row, 2, m.sizecm, _row_style)
+                # sheet.write(row, 3, m.product_uom_qty, _row_style)
+                # sheet.write(row, 4, fst_del, _row_style)
+                # sheet.write(row, 5, snd_del, _row_style)
+                # sheet.write(row, 6, trd_del, _row_style)
+                # sheet.write(row, 7, 0, _row_style)
+                # sheet.write(row, 8, m.product_uom_qty - total_del, _row_style)
             
 
         

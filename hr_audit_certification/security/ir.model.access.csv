@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_audit_certification_hr_audit_certification,hr_audit_certification.hr_audit_certification,model_hr_audit_certification_hr_audit_certification,base.group_user,1,1,1,1

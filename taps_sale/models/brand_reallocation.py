@@ -93,11 +93,11 @@ class ReAllocationLine(models.Model):
     reallocation_id = fields.Many2one('brand.reallocation', string='Reallocation', index=True, required=True, ondelete='cascade')
     name = fields.Char(string="Description")
     # domain = fields.Char()
-    brand_domain = fields.Char(compute="_compute_brand",readonly=True, store=True)
+    brand_domain = fields.Char(compute='_compute_brand',readonly=True, store=True)
 
     select_brand = fields.Many2many('res.partner', string='Allocate Brands', store=True, required=True)
-    existing_user = fields.Many2one('brand.allocation', string="Existing Marketing Person",)
-    new_user = fields.Many2one('brand.allocation', string="New Marketing Person",)
+    existing_user = fields.Many2one('buyer.allocated', string="Existing Marketing Person",)
+    new_user = fields.Many2one('buyer.allocated', string="New Marketing Person",)
      
     
     keep_both = fields.Boolean('Keep In Both', help="Select to Keep the brand for both salesperson", default=False)
@@ -113,8 +113,9 @@ class ReAllocationLine(models.Model):
        
        
        for rec in self:
-           if self.existing_user.marketing_person:
-                  self.brand_domain = json.dumps([('id', 'in', self.existing_user.brand.ids)])
+           if self.existing_user.marketingperson:
+               buyer = self.env['buyer.allocated.line'].search([('allocated_id', '=', self.existing_user.ids)])
+               self.brand_domain = json.dumps([('id', 'in', buyer.buyer.ids)])
            else:
                self.brand_domain = json.dumps([('id', '=', False)])
            

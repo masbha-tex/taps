@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="business_excellence.list">
+      <field name="name">business_excellence list</field>
+      <field name="model">business_excellence.business_excellence</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="business_excellence.action_window">
+      <field name="name">business_excellence window</field>
+      <field name="res_model">business_excellence.business_excellence</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="business_excellence.action_server">
+      <field name="name">business_excellence server</field>
+      <field name="model_id" ref="model_business_excellence_business_excellence"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="business_excellence" id="business_excellence.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="business_excellence.menu_1" parent="business_excellence.menu_root"/>
+    <menuitem name="Menu 2" id="business_excellence.menu_2" parent="business_excellence.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="business_excellence.menu_1_list" parent="business_excellence.menu_1"
+              action="business_excellence.action_window"/>
+    <menuitem name="Server to list" id="business_excellence" parent="business_excellence.menu_2"
+              action="business_excellence.action_server"/>
+-->
+  </data>
+</odoo>

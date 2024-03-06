@@ -43,6 +43,7 @@ class HrRetentionBonus(models.Model):
          
 
     name = fields.Char(string="Number", readonly=True, help="Name of the Retention Bonus Scheme")
+    active = fields.Boolean('Active', default=True, tracking=True)
     employee_id = fields.Many2one('hr.employee', string="Employee", tracking=True, required=True, help="Employee")    
     date = fields.Date(string="Effective Date ", compute=_compute_default_date, store=True, required=True, readonly=False,  tracking=True, help="Effective Date") 
     duration = fields.Integer(default=1, string="Duration in Month", required=True, tracking=True, help="Duration in Month")
@@ -157,6 +158,15 @@ class HrRetentionBonus(models.Model):
         if vals.get('bonus_amount') or vals.get('payment_date') or vals.get('instant_payment'):
             for reten in self:
                 reten.compute_installment()
+        if vals.get('active') is True:
+            for retention_bonus in self:
+                retention_bonus_line = self.env['hr.retention.bonus.line'].sudo().search([('employee_id', '=', retention_bonus.employee_id.id), ('active', 'in', (False,True))])
+                if retention_bonus_line:            
+                    retention_bonus_line.sudo().write({'active': True})                     
+        if vals.get('active') is False:
+            for retention_bonus in self:
+                if retention_bonus.bonus_lines:            
+                    retention_bonus.bonus_lines.sudo().write({'active': False})                 
         return res    
             
     # @api.onchange('bonus_amount', 'payment_date', 'installment')    
@@ -707,17 +717,9 @@ class InstallmentLine(models.Model):
     bonus_id = fields.Many2one('hr.retention.bonus', string="Retention Bonus Ref.", help="Retention Bonus Scheme")
     payment_date = fields.Date(string="Payment Start Date", related="bonus_id.payment_date", store=True)
     bonus_amount = fields.Float(string="Bonus Amount", related="bonus_id.bonus_amount", store=True)
+    active = fields.Boolean('Active', default=True)
     
     
     # adjustment_type = fields.Many2one('hr.payslip.input.type', string='Type',required=True,store=True, domain="[('code', '=', 'INCENTIVE')]", default=44)
 
 
-class HrEmployee(models.Model):
-    _inherit = "hr.employee"
-
-    def _compute_retention_bonus_scheme(self):
-        """This compute the bonus amount and total retention scheme count of an employee.
-            """
-        self.retention_bonus_scheme_count = self.env['hr.retention.bonus'].sudo().search_count([('employee_id', '=', self.id)])
-
-    retention_bonus_scheme_count = fields.Integer(string="Retention Bonus Scheme Count", compute='_compute_retention_bonus_scheme', groups="hr_retention_bonus.group_manager_retention_bonus,hr_retention_bonus.group_user_retention_bonus")

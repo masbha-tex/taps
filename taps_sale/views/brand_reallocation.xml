@@ -100,6 +100,6 @@
         id="brand_reallocation_menu"
         name="Brand Reallocation"
         parent="taps_crm.crm_menu_brands"
-        action="taps_crm.brand_reallocation_template_action"
+        action="taps_sale.brand_reallocation_template_action"
         sequence="2"/>
 </odoo>

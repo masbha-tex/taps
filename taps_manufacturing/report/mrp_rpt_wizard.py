@@ -208,7 +208,7 @@ class MrpReportWizard(models.TransientModel):
         red_fill_format = workbook.add_format({'bg_color': '#A7A7A7', 'align': 'center', 'valign': 'vcenter','left': True, 'top': True, 'right': True, 'bottom': True})
         
         
-        # column_style = workbook.add_format({'bold': True, 'font_size': 13,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center','text_wrap':True})
+        column_style_ = workbook.add_format({'bold': True, 'font_size': 24,'bg_color': '#9BBB59','left': True, 'top': True, 'right': True, 'bottom': True,'valign': 'vcenter','align': 'center'})
         
         _row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
@@ -591,8 +591,8 @@ class MrpReportWizard(models.TransientModel):
                             sheet.write(row, col, l, format_label_3)
                         elif col == 8:
                             sheet.write(row, col, l, format_label_4)
-                        elif col == 9:
-                            sheet.write(row, col, l, format_label_4)
+                        # elif col == 9:
+                        #     sheet.write(row, col, l, format_label_4)
                         elif col == 9 :
                             # sheet.write(row, col, l, format_label_4)
                             if isinstance(l, bool):
@@ -628,6 +628,8 @@ class MrpReportWizard(models.TransientModel):
                             bottom_total += l
                         if col == 20:
                             top_total += l
+                        if col == 21:
+                            sheet.write(row, col, l, column_style_)
                         col += 1
 
                     # Set the row height dynamically based on the content
@@ -639,6 +641,14 @@ class MrpReportWizard(models.TransientModel):
                     inline_row += 1
                     row_p = row_sl = row_f = row_sh = inline_row - 1
 
+
+                # # Add borders for column 'D' and subsequent columns
+                # for r in range(row_rang, row + 1):
+                #     sheet.write_blank(r, 3, '', {'border': 1})  # Top border for column 'D'
+                #     sheet.write_blank(r, 3, '', {'border': 2})  # Bottom border for column 'D'
+                #     for i in range(4, 22):  # Assuming you have columns E to Z
+                #         sheet.write_blank(r, i, '', {'border': 2})  # Bottom border
+                        
                 sheet.set_row(row, 32)
                 sheet.write(row, 0, '',row_style_border_left)
                 sheet.write(row, 1, '',row_style_border_top_bottom)

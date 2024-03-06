@@ -18,3 +18,5 @@ from . import naf_template
 from . import approval_matrix
 from . import allocated_customer
 from . import allocated_buyer
+from . import customer_reallocation
+from . import brand_reallocation

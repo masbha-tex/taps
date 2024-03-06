@@ -1,25 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="mail_activity_customer_reallocation_first_approval" model="mail.activity.type">
-        <field name="name">Customer Reallocation First Approval</field>
-        <field name="res_model_id" ref="taps_crm.model_customer_reallocation"/>
-        
-    </record>
-    <record id="mail_activity_customer_reallocation_final_approval" model="mail.activity.type">
-        <field name="name">Customer Reallocation Final Approval</field>
-        <field name="res_model_id" ref="taps_crm.model_customer_reallocation"/>
-        
-    </record>
-    <record id="mail_activity_brand_reallocation_first_approval" model="mail.activity.type">
-        <field name="name">Brand Reallocation First Approval</field>
-        <field name="res_model_id" ref="taps_crm.model_brand_reallocation"/>
-        
-    </record>
-    <record id="mail_activity_brand_reallocation_final_approval" model="mail.activity.type">
-        <field name="name">Brand Reallocation Final Approval</field>
-        <field name="res_model_id" ref="taps_crm.model_brand_reallocation"/>
-        
-    </record>
+    
     <record id="mail_activity_team_transfer_first_approval" model="mail.activity.type">
         <field name="name">Team Transfer First Approval</field>
         <field name="res_model_id" ref="taps_crm.model_crm_team_transfer"/>

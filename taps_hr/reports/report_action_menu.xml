@@ -519,7 +519,7 @@
 <!--             <field name="default_print_option">print</field> -->
         </record> 
         <record id="action_report_kpi_list_1" model="ir.actions.report">
-			<field name="name">KPI Q-1 Dashboard</field>
+			<field name="name">KPI Dashboard</field>
 			<field name="model">hr.appraisal</field>
 			<field name="report_type">qweb-pdf</field>
 			<field name="report_name">taps_hr.report_kpi_goal_list</field>
@@ -534,8 +534,8 @@
 			<field name="name">KPI Q-2 Dashboard</field>
 			<field name="model">hr.appraisal</field>
 			<field name="report_type">qweb-pdf</field>
-			<field name="report_name">taps_hr.report_kpi_goal_q2</field>
-			<field name="report_file">taps_hr.report_kpi_goal_q2</field>
+			<field name="report_name">taps_hr.report_kpi_document</field>
+			<field name="report_file">taps_hr.report_kpi_document</field>
 			<field name="binding_model_id" ref="model_hr_appraisal"/>
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_hr.paperformat_kpi_dashboard_report"/>

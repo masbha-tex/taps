@@ -34,7 +34,7 @@ class FgPackaging(models.Model):
     oa_id = fields.Many2one('sale.order', string='OA', store=True, readonly=False)
     # customer_id = fields.Char(string='Customer')
     
-    # @api.model
+    @api.model
     def name_get(self):
         result = []
         for packaging in self:

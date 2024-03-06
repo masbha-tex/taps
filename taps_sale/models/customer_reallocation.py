@@ -109,11 +109,12 @@ class ReAllocationLine(models.Model):
     # domain = fields.Char()
     
     customer_domain = fields.Char(compute="_compute_customer",readonly=True, store=True)
+    buyer_domain = fields.Char(compute="_compute_buyer",readonly=True, store=True)
 
-    select_customer = fields.Many2many('res.partner', string='Allocate Customers', store=True, required=True)
-    existing_user = fields.Many2one('customer.allocation', string="Existing Salesperson",)
-    new_user = fields.Many2one('customer.allocation', string="New Salesperson",)
-    buyer = fields.Many2one('res.partner',string="Buyer", domain="[['buyer_rank', '=', 1]]") 
+    select_customer = fields.Many2one('res.partner', string='Allocate Customers', store=True, required=True)
+    existing_user = fields.Many2one('customer.allocated', string="Existing Salesperson",)
+    new_user = fields.Many2one('customer.allocated', string="New Salesperson",)
+    buyer = fields.Many2one('res.partner',string="Buyer") 
     
     keep_both = fields.Boolean('Keep In Both', help="Select to Keep the customer for both salesperson", default=False)
     
@@ -121,18 +122,30 @@ class ReAllocationLine(models.Model):
     
     @api.onchange('existing_user')
     def _on_change_salesperson(self):
+        self.buyer = False
         self.select_customer = False
 
-    @api.depends('existing_user')
+    @api.depends('buyer')
     def _compute_customer(self):
        
        
        for rec in self:
            if self.existing_user.salesperson:
-                  self.customer_domain = json.dumps([('id', 'in', self.existing_user.customers.ids)])
+               
+               customer = self.env['customer.allocated.line'].search([('allocated_id', '=', self.existing_user.ids),('buyer', '=', self.buyer.ids)])
+               self.customer_domain = json.dumps([('id', 'in', customer.customer.ids)])
            else:
                self.customer_domain = json.dumps([('id', '=', False)])
            # raise UserError((self.customer_domain)) 
-        
+
+    @api.depends('existing_user')
+    def _compute_buyer(self):
+        for rec in self:
+            if self.existing_user.salesperson:
+               buyer = self.env['customer.allocated.line'].search([('allocated_id', '=', self.existing_user.ids)])
+               self.buyer_domain = json.dumps([('id', 'in', buyer.buyer.ids)])
+            else:
+                self.buyer_domain = json.dumps([('id', '=', False)])
+               
             
     

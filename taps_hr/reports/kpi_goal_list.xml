@@ -71,6 +71,11 @@
                                     </div>
             					    </div>
                       </div>
+                        <br/>
+                        <div class="row">
+                            <img t-att-src="image_data_uri(docs.chart_image)" width="400" height="300"/>
+                        </div>
+                         
                             <br/>
                             <span>What does it means? </span>
                             <br/>
@@ -120,8 +125,8 @@
             									<td colspan="2" style="border: 1pt solid black;">Baseline</td>
             									<td colspan="2" style="border: 1pt solid black;">Target</td>
             									<td colspan="2" style="border: 1pt solid black;">Weight</td>
-            									<td colspan="2" style="border: 1pt solid black;">KPI ACVD</td>
-            									<td colspan="2" style="border: 1pt solid black;">Weightage</td>
+            									<td colspan="2" style="border: 1pt solid black;">KPI Score</td>
+            									<td colspan="2" style="border: 1pt solid black;">Weightage ACVD</td>
             									
             								</tr>
             							</thead>

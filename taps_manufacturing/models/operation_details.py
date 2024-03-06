@@ -64,7 +64,7 @@ class OperationDetails(models.Model):
     sizein = fields.Char(string='Size (Inch)', store=True, readonly=True)
     sizecm = fields.Char(string='Size (CM)', store=True, readonly=True)
     sizemm = fields.Char(string='Size (MM)', store=True, readonly=True)
-    sizcommon = fields.Char(string='Size', store=True, readonly=True, compute='compute_size')
+    sizcommon = fields.Char(string='Size', store=True, readonly=False, compute='compute_size')
 
     @api.depends('sizein', 'sizecm', 'sizemm')
     def compute_size(self):
@@ -712,12 +712,13 @@ class OperationDetails(models.Model):
             if 'cartoon_no' in vals:
                 if vals.get('cartoon_no'):
                     vals['cartoon_no'] = vals.get('cartoon_no')
-                    raise UserError((self.oa_id.id))
                 else:
                     weight = 0
                     if vals.get('carton_weight'):
                         weight = vals.get('carton_weight')
-                    packing = self.env['fg.packaging'].create({'company_id':self.env.company.id,'total_weight':weight,'oa_id':self.oa_id.id})
+                    # raise UserError((vals.get('oa_id'),'dds'))
+                    packing = self.env['fg.packaging'].create({'company_id':self.env.company.id ,'total_weight':weight,'oa_id':self.oa_id.id})
+                    packing.update({'total_weight':weight,'oa_id':vals.get('oa_id')})
                     # ref = self.env['ir.sequence'].next_by_code('fg.cartoon', sequence_date=seq_date)
                     vals['cartoon_no'] = packing.id
         vals['state'] = 'waiting'
@@ -745,6 +746,7 @@ class OperationDetails(models.Model):
                         vals['state'] = 'partial'
         
         if 'fg_output' in vals:
+            # raise UserError((vals.get('cartoon_no')))
             if self.fg_balance < vals.get('fg_output'):
                 raise UserError(('You can not pack more then balance'))
             else:

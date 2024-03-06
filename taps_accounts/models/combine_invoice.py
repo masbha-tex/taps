@@ -64,6 +64,9 @@ class CombineInvoice(models.Model):
     bank_bin = fields.Char(string='BANK BIN NO', store=True, readonly=False)
     lc_no = fields.Char(string='LC', store=True, readonly=False)
     master_lc = fields.Char(string='Export LC NO', store=True, readonly=False)
+    numberof_carton = fields.Float('No. of Ctn', default=0.0, store=True)
+    gross_weight = fields.Float('Gross Weight', default=0.0, store=True)
+    net_weight = fields.Float('Net Weight', default=0.0, store=True)
 
     
     @api.model

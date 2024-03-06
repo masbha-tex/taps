@@ -8,6 +8,9 @@ from dateutil.relativedelta import relativedelta
 from odoo import tools
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
 
 _logger = logging.getLogger(__name__)
 
@@ -26,7 +29,42 @@ class HrAppraisal(models.Model):
     q_4_ytd = fields.Float(string="Q4",copy=True, compute='_compute_ytd_weightage_acvd', default="0")
     kpi_state = fields.Char(string="Kpi Status",store=True)
     employee_group = fields.Many2one('hr.employee.group', store=True, related = 'employee_id.employee_group', string="Group", related_sudo=False, help="What would be the group of this employee?")
-    category = fields.Selection(store=True, related = 'employee_id.contract_id.category', string="Category", related_sudo=False, help='Category of the Employee')       
+    category = fields.Selection(store=True, related = 'employee_id.contract_id.category', string="Category", related_sudo=False, help='Category of the Employee')
+    
+  
+
+    # @api.depends('ytd_weightage_acvd')
+    def _generate_chart_image(self):
+        for record in self:
+            data = [('Q 1', record.q_1_ytd), ('Q 2', record.q_2_ytd), ('Q 3', record.q_3_ytd), ('Q 4', record.q_4_ytd)] # Replace 'kpi_data' with the actual field containing your data
+            chart_image = record.generate_pie_chart(data)
+            # record.chart_image = base64.b64encode(chart_image.getvalue()).decode('utf-8')
+            record.chart_image = base64.b64encode(chart_image.getvalue())
+            # raise UserError((record.chart_image))
+
+    def generate_pie_chart(self, data):
+        # Assuming data is a tuple, modify this according to your actual data structure
+        labels = [item[0] for item in data]
+        values = [item[1] for item in data]
+
+        # raise UserError((values))
+        def my_autopct(pct):
+            total = sum(values)
+            val = round((pct * total / 100.0),2)
+            return f'{val}%'        
+
+        plt.pie(values, labels=labels, autopct=my_autopct, startangle=90)
+        plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+        # Save the plot to a BytesIO buffer
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png')
+        plt.close()
+        buffer.seek(0)
+
+        return buffer
+    chart_image = fields.Image(string="Pie Chart Image", compute='_generate_chart_image', store=True)    
+  
     
     
     # @api.multi
@@ -55,6 +93,7 @@ class HrAppraisal(models.Model):
             appraisal.q_2_ytd = sum(app_goal.mapped('q_2_ytd'))
             appraisal.q_3_ytd = sum(app_goal.mapped('q_3_ytd'))
             appraisal.q_4_ytd = sum(app_goal.mapped('q_4_ytd'))
+            appraisal._generate_chart_image()
 
     def action_open_goals(self):
         self.ensure_one()

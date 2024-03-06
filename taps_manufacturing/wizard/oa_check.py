@@ -18,8 +18,12 @@ class OaCheck(models.TransientModel):
     action_date_list = fields.Many2one('selection.fields.data',string='Dates',  domain="[('field_name', '=', 'action_date')]", check_company=True)
     Shade_list = fields.Many2one('selection.fields.data', string='Shade List',  domain="[('field_name', '=', 'shade')]", check_company=True)
     Size_list = fields.Many2one('selection.fields.data', string='Size List', domain="[('field_name', '=', 'size')]", check_company=True)
+
+    Shade_list_2 = fields.Many2one('selection.fields.data', string='Shade List (All)',  domain="[('field_name', '=', 'shade')]", check_company=True)
     
     total_packed = fields.Integer(string='Total Packed (OA) ',readonly = False, help='Total Packed in this OA')
+    total_packed_shade = fields.Integer(string='Total Packed (Shade) ',readonly = False, help='Total Packed in this OA')
+    total_packed_size = fields.Integer(string='Total Packed (Size) ',readonly = False, help='Total Packed in this OA')
     total_packed_date = fields.Integer(string='Total Packed (Date) ',readonly = False, help='Total Packed in current Date')
     # compute='_compute_total_packed_date',
     Shade_wise_packed = fields.Integer(string='Total Packed (Shade)',readonly = False, help='Shade wise packed in Current Date') 
@@ -51,6 +55,10 @@ class OaCheck(models.TransientModel):
             'total_packed_date': False,
             'Shade_wise_packed': False,
             'Size_wise_packed': False,
+            'total_packed_shade': False,
+            'total_packed_size': False,
+            'Shade_list_2': False,
+            
         })
 
         # Return the view id to stay on the same form view after resetting
@@ -62,13 +70,13 @@ class OaCheck(models.TransientModel):
             'view_id': self.env.ref('taps_manufacturing.oa_checkform_view').id,
             'target': 'new',
         }
-
-        
+    
     @api.onchange('lookup_oa')
     def _oa(self):
         oa_id= None
         action_date = None
         total_packed = None
+        Shade_list_2 = None
         if self.lookup_oa:
             oa_packed = None
             oa_id = self.lookup_oa
@@ -83,7 +91,19 @@ class OaCheck(models.TransientModel):
                     for _date in unique_dates:
                         self.env["selection.fields.data"].sudo().create({'field_name':'action_date', 'name': _date})
                     self.action_date_list = [(0, 0, {'field_name': 'action_date', 'name': _date}) for _date in unique_dates]
-                    
+                 # Shade list
+                unique_shade = set(record.shade for record in operations)
+                shade_records = self.env['selection.fields.data'].sudo().search([
+                    ('field_name', '=', 'shade')
+                ])
+                shade_records.unlink()  # Remove existing records
+        
+                for _shade in unique_shade:
+                    shade_cr = self.env["selection.fields.data"].sudo().create({
+                        'field_name': 'shade',
+                        'name': _shade
+                    })
+                self.Shade_list_2 = [(0, 0, {'field_name': 'shade', 'name': _date}) for _shade in unique_shade]    
             self.lookup_oa = oa_id
             self.action_date_list = action_date
             self.total_packed = total_packed
@@ -225,4 +245,5 @@ class OaCheck(models.TransientModel):
         self.Shade_list = Shade_list 
         self.action_date_list = action_date_list
         self.Size_wise_packed = Size_wise_packed
+        
                         

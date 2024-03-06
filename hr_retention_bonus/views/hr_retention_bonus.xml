@@ -49,6 +49,7 @@
                 </header>
 
                 <sheet>
+                    <field name="active" invisible="1"/>
                     <widget name="web_ribbon" title="Refuse" bg_color="bg-danger" attrs="{'invisible': [('state', '!=', 'refuse')]}"/>
                     <widget name="web_ribbon" title="Cancel" bg_color="bg-dark" attrs="{'invisible': [('state', '!=', 'cancel')]}"/>
                     <widget name="web_ribbon" title="Waiting for HoD Approval" bg_color="bg-primary" attrs="{'invisible': [('state', '!=', 'submit')]}"/>
@@ -115,6 +116,7 @@
         <field name="model">hr.retention.bonus</field>
         <field name="arch" type="xml">
            <search string="Retention">
+               <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
                <filter string="My Requests" name="myrequest" domain="[('employee_id.user_id.id', '=', uid)]" />
                 <field name="employee_id" string="Employee"/>
                 <field name="department_id" string="Department"/>

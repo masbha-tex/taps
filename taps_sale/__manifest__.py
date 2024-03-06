@@ -70,6 +70,8 @@
         'views/approval_matrix.xml',
         'views/allocated_customer_view.xml',
         'views/allocated_buyer_view.xml',
+        'views/customer_reallocation.xml',
+        'views/brand_reallocation.xml',
         
     ],
     'qweb': ["static/src/xml/sale_dashboard.xml",

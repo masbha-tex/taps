@@ -54,6 +54,9 @@
                                 <field name="bank_bin"/>
                                 <field name="lc_no"/>
                                 <field name="master_lc"/>
+                                <field name="numberof_carton"/>
+                                <field name="gross_weight"/>
+                                <field name="net_weight"/>
                             </group>
                         </group>
                         <notebook>

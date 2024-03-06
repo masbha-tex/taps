@@ -15,15 +15,18 @@
                         <field name="Size_list" options="{'no_create':true, 'no_open':true}"/>  
                         </group>
                         <group>
-                        <field name="total_packed" force_save="1" readonly="1"/>
-                        <field name="total_packed_date" force_save="1" readonly="1"/>
-                        <field name="Shade_wise_packed" force_save="1" readonly="1"/>
-                        <field name="Size_wise_packed" force_save="1" readonly="1"/>  
+                            <field name="total_packed_date" force_save="1" readonly="1"/>
+                            <field name="Shade_wise_packed" force_save="1" readonly="1"/>
+                            <field name="Size_wise_packed" force_save="1" readonly="1"/>  
+                        </group>
+                        <group>
+                            <field name="total_packed" force_save="1" readonly="1"/>
+                            <field name="total_packed_shade" force_save="1" readonly="1"/>
+                            <field name="total_packed_size" force_save="1" readonly="1"/>  
                         </group>
                 </group>
                 <footer>
                     <!-- <button string="Print" name="action_print_report" type="object" class="btn-primary"/> -->
-<!--                     <button string="Generate xlsx" name="action_generate_xlsx_report" type="object" class="btn-primary"/> -->
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                      <button string="Reset" class="oe_highlight" type="object" icon="fa-refresh"
                     name="action_reset"/>
