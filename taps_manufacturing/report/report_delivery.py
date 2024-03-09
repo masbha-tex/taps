@@ -34,7 +34,14 @@ class ReportDyePlan(models.AbstractModel):
         oa_no = 'OA NO: '+del_ids[0].oa_id.name
         po_no = 'PO NO: '+(del_ids[0].oa_id.po_no or '')
         pi_no = 'PI NO: '+ (del_ids[0].oa_id.pi_number or '')
-        item_name = del_ids[0].fg_categ_type + del_ids[0].finish + del_ids[0].slidercodesfg
+
+        slider_code_match = re.search(r'TZP-\s*(.+)', str(del_ids[0].slidercodesfg)) 
+        slider_part = slider_code_match.group(1) if slider_code_match else ''
+        if slider_part:
+            slider = f" WITH TZP-{slider_part}"
+
+        
+        item_name = del_ids[0].fg_categ_type +" " + del_ids[0].finish + slider
         del_ids = del_ids.sorted(key = 'name')
         carton = del_ids.mapped('name')
         carton = list(set(carton))
@@ -50,20 +57,20 @@ class ReportDyePlan(models.AbstractModel):
         
         column_style = workbook.add_format({'bold': True, 'font_size': 11, 'text_wrap':True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'align': 'center', 'valign': 'middle'})
         
-        _row_style = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
-        _row_style_m = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True,'right': True, 'text_wrap':True})
+        _row_style = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True ,'align': 'center', 'valign': 'middle'})
+        _row_style_m = workbook.add_format({'font_size': 11, 'font':'Arial', 'left': True,'right': True, 'text_wrap':True,'align': 'center', 'valign': 'middle'})
         
-        row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,})
-        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        row_style = workbook.add_format({'bold': True, 'font_size': 12, 'font':'Arial', 'left': True, 'top': True, 'right': True, 'bottom': True,'align': 'center', 'valign': 'middle'})
+        format_label_1 = workbook.add_format({'font':'Calibri', 'font_size': 11, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,'align': 'center', 'valign': 'middle'})
         
-        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        format_label_2 = workbook.add_format({'font':'Calibri', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,'align': 'center', 'valign': 'middle'})
         
-        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
+        format_label_3 = workbook.add_format({'font':'Calibri', 'font_size': 16, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True,'align': 'center', 'valign': 'middle'})
         
         format_label_4 = workbook.add_format({'font':'Arial', 'font_size': 12, 'valign': 'top', 'bold': True, 'left': True, 'top': True, 'right': True, 'bottom': True, 'text_wrap':True})
         
-        merge_format = workbook.add_format({'align': 'top', 'bold': True, 'align': 'center', 'text_wrap':True, 'left': True, 'top': True, 'right': True, 'bottom': True})
-        merge_format_ = workbook.add_format({'align': 'bottom', 'bold': True})
+        merge_format = workbook.add_format({'align': 'top', 'bold': True, 'align': 'center', 'text_wrap':True, 'left': True, 'top': True, 'right': True, 'bottom': True,'align': 'center', 'valign': 'middle'})
+        merge_format_ = workbook.add_format({'align': 'bottom', 'bold': True,'align': 'center', 'valign': 'middle'})
 
 # buyer
 # customer
@@ -85,22 +92,24 @@ class ReportDyePlan(models.AbstractModel):
         sheet.merge_range(3, 9, 3, 12, po_no, merge_format)
         sheet.merge_range(4, 9, 4, 12, pi_no, merge_format)
         
-        sheet.write(5, 0, "CTN NO", column_style)
-        sheet.write(5, 1, "SHADE", column_style)
-        sheet.write(5, 2, "SIZE", column_style)
-        sheet.write(5, 3, "PCS IN PACKET", column_style)
-        sheet.write(5, 4, "NO OF PACKET", column_style)
-        sheet.write(5, 5, "TOTAL QTY (pcs)", column_style)
-        sheet.write(5, 6, "CARTON TOTAL (pcs)", column_style)
-        sheet.write(5, 7, "GROSS WEIGHT (kgs)", column_style)
-        sheet.write(5, 8, "NET WEIGHT (kgs)", column_style)
+        sheet.write(5, 1, "CTN NO", column_style)
+        sheet.merge_range(5, 2, 5, 4, "SHADE", column_style)
+        # sheet.write(5, 3, "SHADE", column_style)
+        sheet.write(5, 5, "SIZE", column_style)
+        sheet.write(5, 6, "PCS IN PACKET", column_style)
+        sheet.write(5, 7, "NO OF PACKET", column_style)
+        sheet.write(5, 8, "TOTAL QTY (pcs)", column_style)
+        sheet.write(5, 9, "CARTON TOTAL (pcs)", column_style)
+        sheet.write(5, 10, "GROSS WEIGHT (kgs)", column_style)
+        sheet.write(5, 11, "NET WEIGHT (kgs)", column_style)
 
-        sheet.set_column(0, 1,15)
+        sheet.set_column(0, 0,10)
+        sheet.set_column(1, 1,15)
         sheet.set_column(2, 12,10)
 
 
         row = 5
-        
+        row_range_start_ = row
         order_data = []
         report_data = []
         for c in carton:
@@ -153,10 +162,15 @@ class ReportDyePlan(models.AbstractModel):
             
         row += 1
         for line in report_data:
-            col = 0
+            col = 1
+            sheet.merge_range(row, 2, row, 4, '', _row_style)
             for l in line:
-                if col == 0 and l == '':
+                # raise UserError((line))
+                if col == 1 and l == '':
                     sheet.write(row, col, l, _row_style_m)
+                if col == 3:
+                    col += 2
+                    sheet.write(row, col, l, _row_style)
                 else:
                     sheet.write(row, col, l, _row_style)
                 col += 1
@@ -164,9 +178,19 @@ class ReportDyePlan(models.AbstractModel):
             # if row == 8:
             #     break
 
+        sheet.merge_range(row, 0, row, 2, 'TOTAL',merge_format)
+        # Assuming col_names contains the column names (A, B, C, ..., M)
+        col_names = [chr(ord('A') + i) for i in range(13)]
+        
+        # Iterate over the columns (from B to M) and write sum formulas
+        for col_num, col_name in enumerate(col_names[8:12], start=8):  # Start from 1 to skip A
+            sheet.write_formula(row, col_num, '=SUM({0}{1}:{2}{3})'.format(col_name, row_range_start_ +1, col_name, row), column_style)
+            
         row += 1
+        
         sheet.merge_range(row, 0, row, 12, 'DELIVERY SUMMARY',merge_format)
         row += 1
+        
         sheet.merge_range(row, 0, row, 1, 'SHADE',merge_format)
         sheet.write(row, 2,  'Size', column_style)
         sheet.write(row, 3,  'OA QTY', column_style)
@@ -231,12 +255,12 @@ class ReportDyePlan(models.AbstractModel):
         
         row += 1
         row_range_start = row
-        for re in report_data:
-            sheet.merge_range(row, 0, row, 1, re[0], _row_style)    
-            sheet.write(row, 2, re[1], _row_style)
-            sheet.write(row, 3, re[2], _row_style)
+        for rex in report_data:
+            sheet.merge_range(row, 0, row, 1, rex[0], _row_style)    
+            sheet.write(row, 2, rex[1], _row_style)
+            sheet.write(row, 3, rex[2], _row_style)
             
-            for col_num, value in enumerate(re[3:11], start=4):
+            for col_num, value in enumerate(rex[3:11], start=4):
                 if value == 0:
                     sheet.write(row, col_num, "", _row_style)
                 else:

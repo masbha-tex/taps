@@ -95,25 +95,25 @@
         id="crm_menu_customers"
         name="Customers"
         parent="crm.crm_menu_root"
-        groups = "sales_team.group_sale_manager"
+        groups = "sales_team.group_sale_salesman"
         sequence="3"/>
     <menuitem
         id="crm_menu_brands"
         name="Brands"
         parent="crm.crm_menu_root"
-        groups = "sales_team.group_sale_manager"
+        groups = "sales_team.group_sale_salesman"
         sequence="4"/>
-    <menuitem
+    <!-- <menuitem
         id="salespersonwise_customer_allocation"
         name="Customer Allocation"
         parent="taps_crm.crm_menu_customers"
         action="taps_crm.salesperson_wise_customer_action"
-        sequence="1"/>
-    <menuitem
+        sequence="1"/> -->
+    <!-- <menuitem
         id="marketingpersonwise_brand_allocation"
         name="Brand Allocation"
         parent="taps_crm.crm_menu_brands"
         action="taps_crm.marketingperson_wise_customer_action"
-        sequence="1"/>
+        sequence="1"/> -->
     
 </odoo>

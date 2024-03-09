@@ -132,4 +132,57 @@ class CombineInvoiceLine(models.Model):
 
 
 
+class CombineInvoiceReport(models.AbstractModel):
+    _name = 'report.taps_accounts.report_customer_invoice'
+    _description = 'Customer Invoice'     
+
+    def _get_report_values(self, docids, data=None):
+        # raise UserError((docids))
+        docs = self.env['combine.invoice'].sudo().browse(docids)
+        line_data = self.env['combine.invoice.line'].sudo().search([('invoice_id','in',docids)])
+        report_data = []
+        if line_data:
+            all_item = line_data.mapped('product_template_id')
+            # raise UserError((all_item.id))
+            for item in all_item:
+                single_item = line_data.filtered(lambda x: x.product_template_id.id == item.id)
+                all_finish = single_item.mapped('finish')
+                all_finish = list(set(all_finish))
+                for finish in all_finish:
+                    single_finish = single_item.filtered(lambda x: x.finish == finish)
+                    all_shade = single_finish.mapped('shade')
+                    all_shade = list(set(all_shade))
+                    for shade in all_shade:
+                        single_shade = single_finish.filtered(lambda x: x.shade == shade)
+                        all_size = single_shade.mapped('sizcommon')
+                        all_size = list(set(all_size))
+                        for size in all_size:
+                            single_size = single_finish.filtered(lambda x: x.sizcommon == size)
+                            qty = sum(single_size.mapped('quantity'))
+                            value = sum(single_size.mapped('price_subtotal'))
+                            price = value/qty
+                            
+                            order_data = []
+                            order_data = [
+                                item.name,
+                                finish,
+                                shade,
+                                size,
+                                qty,
+                                price,
+                                value,
+                                ]
+                            report_data.append(order_data)
+
+        # raise UserError((report_data))
+        return {
+            'docs': docs,
+            'datas': report_data,
+            # 'report_date':report_date,
+            # 'company': com_id,
+            'doc_model': 'combine.invoice',
+            }
+            
+
+
 

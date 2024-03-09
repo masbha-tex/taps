@@ -35,9 +35,39 @@ class HrAppraisal(models.Model):
     
   
 
+    # def _generate_chart_image(self):
+    #     for record in self:
+    #         data = [('Q 1', record.q_1_ytd if record.q_1_ytd else 0), ('Q 2', record.q_2_ytd if record.q_2_ytd else 0), ('Q 3', record.q_3_ytd if record.q_3_ytd else 0), ('Q 4', record.q_4_ytd if record.q_4_ytd else 0)] # Replace 'kpi_data' with the actual field containing your data
+    #         chart_image = self.generate_pie_chart(data)
+    #         # record.chart_image = base64.b64encode(chart_image.getvalue()).decode('utf-8')
+    #         record.chart_image = base64.b64encode(chart_image.getvalue())
+    #         # raise UserError((record.chart_image))
+
+
     def _generate_chart_image(self):
+        # if self.ytd_k <= 30:
+        q1 = q2 = q3 = q4 = 0    
         for record in self:
-            data = [('Q 1', record.q_1_ytd if record.q_1_ytd else 0), ('Q 2', record.q_2_ytd if record.q_2_ytd else 0), ('Q 3', record.q_3_ytd if record.q_3_ytd else 0), ('Q 4', record.q_4_ytd if record.q_4_ytd else 0)] # Replace 'kpi_data' with the actual field containing your data
+            app_goal = self.env['hr.appraisal.goal'].search([('employee_id', '=', record.employee_id.id), ('deadline', '=', record.date_close), ('description', '!=', 'Strategic Projects'), ('description', '!=', False)])
+            # mapp = app_goal.mapped('description')
+            # raise UserError((mapp))
+            f_1 = app_goal.filtered(lambda x: x.ytd_k <= 30)
+            if f_1:
+                q1 = len(f_1)
+            f_2 = app_goal.filtered(lambda x: x.ytd_k > 30 and x.ytd_k <= 69)
+            if f_2:
+                q2 = len(f_2)
+            f_3 = app_goal.filtered(lambda x: x.ytd_k > 69 and x.ytd_k <= 99)
+            if f_3:
+                q3 = len(f_3)
+            f_4 = app_goal.filtered(lambda x: x.ytd_k > 99)
+            if f_4:
+                q4 = len(f_4)
+
+            
+
+                
+            data = [('More then 100', q4), ('30 to 69', q2), ('70 to 99', q3), ('Less Then 30', q1)] # Replace 'kpi_data' with the actual field containing your data
             chart_image = self.generate_pie_chart(data)
             # record.chart_image = base64.b64encode(chart_image.getvalue()).decode('utf-8')
             record.chart_image = base64.b64encode(chart_image.getvalue())
@@ -50,12 +80,14 @@ class HrAppraisal(models.Model):
 
         # raise UserError((labels,values))
         # values = [0 if np.isnan(val) else val for val in values]
+        
         def my_autopct(pct):
             total = sum(values)
-            val = round((pct * total / 100.0),2)
-            return f'{val}%'        
+            # val = round((pct * total / 100.0),2)
+            val = round((pct * total / 100.0))
+            return f'{val}'
 
-        plt.pie(values, labels=labels, autopct=my_autopct, startangle=90)
+        plt.pie(values, labels=labels, autopct=my_autopct, startangle=90, wedgeprops=dict(width=0.5), textprops={'fontsize': 11}, pctdistance=0.7)
         plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
         # Save the plot to a BytesIO buffer

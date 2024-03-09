@@ -21,6 +21,18 @@
         <field name="name">P-NAF Final Approval</field>
         <field name="res_model_id" ref="taps_sale.model_provisional_template"/>
     </record>
+    <record id="mail_activity_naf_first_approval" model="mail.activity.type">
+        <field name="name">NAF First Approval</field>
+        <field name="res_model_id" ref="taps_sale.model_naf_template"/>
+    </record>
+    <record id="mail_activity_naf_second_approval" model="mail.activity.type">
+        <field name="name">NAF Second Approval</field>
+        <field name="res_model_id" ref="taps_sale.model_naf_template"/>
+    </record>
+    <record id="mail_activity_naf_final_approval" model="mail.activity.type">
+        <field name="name">NAF Final Approval</field>
+        <field name="res_model_id" ref="taps_sale.model_provisional_template"/>
+    </record>
     <record id="mail_activity_brand_reallocation_first_approval" model="mail.activity.type">
         <field name="name">Brand Reallocation First Approval</field>
         <field name="res_model_id" ref="taps_sale.model_brand_reallocation"/>

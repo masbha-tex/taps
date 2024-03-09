@@ -35,6 +35,7 @@ class AllocatedCustomer(models.Model):
     pi_ids = fields.Many2many('sale.order', compute='_compute_pi_for_individuals', string='PI', copy=False)
     oa_ids = fields.Many2many('sale.order', compute='_compute_oa_for_individuals', string='OA', copy=False)
     sa_ids = fields.Many2many('sale.order', compute='_compute_sa_for_individuals', string='SA', copy=False)
+    active = fields.Boolean(string="Active", default="True")
     # visit_ids = fields.Many2many('crm.visit', compute='_compute_visit', string='Customers', copy=False)
 
     @api.depends('salesperson')
@@ -84,7 +85,7 @@ class AllocatedCustomer(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'My Customers',
-            'view_mode': 'tree',
+            'view_mode': 'tree,kanban',
             'res_model': 'customer.allocated.line',
             'domain': [('allocated_id', '=', self.id)],
             'context': "{'create': False}"
@@ -182,7 +183,7 @@ class AllocatedCustomerLine(models.Model):
     buyer = fields.Many2one('res.partner', string='Buyer', domain="[('buyer_rank', '=', 1)]" ,store=True, required=True)
     customer = fields.Many2one('res.partner', string='Customer',store=True, required=True)
     assign_date = fields.Date(string="Assign Date", default=date.today())
-     
+    active = fields.Boolean(string="Active", default="True")
     
     
     

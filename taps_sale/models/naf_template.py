@@ -21,6 +21,7 @@ class NewAccountForm(models.Model):
     ],string="Type", required=True)
 
     name = fields.Char(index=True, string="Name", required=True)
+    code = fields.Char(index=True, string="Code")
     street = fields.Char(required=True)
     street2 = fields.Char()
     zip = fields.Char(change_default=True)
@@ -46,6 +47,7 @@ class NewAccountForm(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('inter', 'Intermediate'),
+        ('hod', 'HOD'),
         ('to approve', 'To Approve'),
         ('approved', 'Approved'),
         ('cancel', 'Cancel'),
@@ -69,7 +71,20 @@ class NewAccountForm(models.Model):
     sourcing_office = fields.Many2many('buyer.sourcing.office', string="Sourcing Office")
 
 
-
+    @api.model
+    def create(self, vals):
+        
+        if vals.get('code', _('New')) == _('New'):
+            seq_date = None
+            # seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
+            vals['code'] = self.env['ir.sequence'].next_by_code('naf.template', sequence_date=seq_date) or _('New')
+        a = self._check_duplicate_partner(vals)
+        if a == 1:
+            raise UserError(("This "+vals['type'] + "already exist in Database"))
+        else:
+            result = super(NewAccountForm, self).create(vals)
+            return result
+    
     @api.depends('name', 'email')
     def _compute_email_formatted(self):
         """ Compute formatted email for partner, using formataddr. Be defensive
@@ -104,15 +119,24 @@ class NewAccountForm(models.Model):
                 ))
                 
     def action_submit_approval(self):
-        users = self.env.ref('sales_team.group_sale_manager').users
-        for user in users:
-            # activity_type=self.env.ref()
-            self.activity_schedule('taps_sale.mail_activity_naf_approve', user_id=user.id)
-        
-        self.write({'state':'inter'})
+        if self.type == 'buyer':
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.buyer')],limit=1)
+        else:
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
+            
+        result = self._check_duplicate_partner()
+        if result == 1:
+            raise UserError(("This "+self.type + "already exist in Database"))
+        else:
+            self.env['mail.activity'].sudo().create({
+                    'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_first_approval').id,
+                    'res_id': self.id,
+                    'res_model_id': self.env.ref('taps_sale.model_naf_template').id,
+                    'user_id': user.first_approval.id
+            })
+            self.write({'state':'inter'})
 
-    def action_approve(self):
-        self.write({'state':'cancel'})
+    
         
         activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_approve').id)])
         activity_id.action_feedback(feedback="Approved")
@@ -122,9 +146,181 @@ class NewAccountForm(models.Model):
 
     def action_set_draft(self):
         self.write({'state':'draft'})
+        
+    def action_teamleader(self):
+        if self.type == 'buyer':
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.buyer')],limit=1)
+        else:
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
+          
+        if user.first_approval.id == self.env.user.id:
+            result = self._check_duplicate_partner()
+            if result == 1:
+                raise UserError(("This "+self.type + "already exist in Database"))
+            else:
+                if (self.type == 'customer' and self.assign_line) or (self.type == 'buyer' and self.assign_line) or (self.type == 'buyinghouse'):
+                    activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_first_approval').id)])
+                    activity_id.action_feedback(feedback="Approved")
+                    self.env['mail.activity'].sudo().create({
+                        'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_second_approval').id,
+                        'res_id': self.id,
+                        'res_model_id': self.env.ref('taps_sale.model_naf_template').id,
+                        'user_id': user.second_approval.id
+                    })
+                    self.write({'state':'hod'})
+                else:
+                    raise UserError(("Kindly Assign Salesperson Or Marketing Person"))
+        else:
+            raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
 
-    def action_cancel(self):
-        self.write({'state':'cancel'})
+    def action_hod(self):
+        if self.type == 'buyer':
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.buyer')],limit=1)
+        else:
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
+        if user.second_approval.id == self.env.user.id:
+            result = self._check_duplicate_partner()
+            if result == 1:
+                raise UserError(("This "+self.type + "already exist in Database"))
+            else:
+                if (self.type == 'customer' and self.assign_line) or (self.type == 'buyer' and self.assign_line) or (self.type == 'buyinghouse'):
+                    activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_second_approval').id)])
+                    activity_id.action_feedback(feedback="Approved")
+                    self.write({'state':'to approve'})
+                    self.activity_schedule('taps_sale.mail_activity_naf_final_approval', user_id=user.third_approval.id)
+                else:
+                    raise UserError(("Kindly Assign Salesperson Or Marketing Person"))
+        else:
+            raise UserError(("Only "+ user.second_approval.partner_id.name + " can approve this"))
+
+
+    def action_approve(self):
+        if self.type == 'buyer':
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.buyer')],limit=1)
+        else:
+            user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
+        
+        if user.third_approval.id == self.env.user.id:
+            result = self._check_duplicate_partner()
+            if result == 1:
+                raise UserError(("This "+self.type + "already exist in Database"))
+            else:
+                
+                
+                
+                customer_rank = 0
+                buying_house_rank = 0
+                buyer_rank = 0
+                if self. type == 'customer':
+                    customer_rank=1
+                if self. type == 'buyinghouse':
+                    buying_house_rank=1
+                if self. type == 'buyer':
+                    buyer_rank=1
+                data = {
+                        'name': self.name,
+                        'group': self.customer_group.id,
+                        'brand' : self.buyer_group.id,
+                        'sourcing_office': self.sourcing_office,
+                        # 'user_id' : self.salesperson.id,
+                        'street' : self.street,
+                        # 'street2': self.strret2,
+                        'city' : self.city,
+                        'state_id': self.state_id.id,
+                        'country_id' : self.country_id.id,
+                        'contact_person': self.contact_person,
+                        'phone': self.phone,
+                        'mobile' : self.mobile,
+                        'email' : self.email,
+                        'website' : self.website,
+                        'swift_code' : self.swift_code,
+                        'bond_license': self.bond_license,
+                        'property_payment_term_id': self.property_payment_term_id.id,
+                        'delivery_address': self.delivery_address,
+                        'billing_address': self.billing_address,
+                        'customer_rank' : customer_rank,
+                        'buyer_rank' : buyer_rank,
+                        'buying_house_rank' : buying_house_rank,
+                        'incoterms': self.incoterms.id,
+                        'company_type': 'company',
+                        'property_product_pricelist': 1,
+                        }
+                new_customer = self.env['res.partner'].sudo().create(data)
+                self.env.cr.commit()
+                # raise UserError((new_customer))
+                
+                activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_final_approval').id)])
+                activity_id.action_feedback(feedback="Approved")
+                if self. type == 'customer':
+                    buyers = self.env['res.partner'].search([('id', 'in', self.buyer.ids)])
+                    buyers.write({'related_customer': [(4, customer)for customer in new_customer.ids]})
+                    if self.buying_house:
+                        self.buying_house.write({'related_customer': [(4, customer)for customer in new_customer.ids]})
+                if self. type == 'buyinghouse' or self.type == 'buyer':
+                    # raise UserError((self.related_customer))
+                    customers = self.env['res.partner'].search([('id', 'in', self.related_customer.ids)])
+                    new_customer.write({'related_customer': [(4, customer)for customer in customers.ids]})
+                if self.assign_line:
+                    for rec in self.assign_line:
+                        if self.type == 'customer':
+                            data = {'buyer': rec.buyer.id,
+                                    'customer': new_customer.id,
+                                    'allocated_id': rec.salesperson.id,
+                                   }
+                            new_allocation = self.env['customer.allocated.line'].sudo().create(data)
+                        if self.type == 'buyer':
+                            # raise UserError((rec.marketing_person.id))
+                            data_1 = {'buyer': new_customer.id,
+                                    'allocated_id': rec.marketing_person.id,
+                                   }
+                            new_allocation_1 = self.env['buyer.allocated.line'].sudo().create(data_1)
+                            
+                self.write({'state': 'approved'})
+                
+                
+        else:
+            raise UserError(("Only "+ user.third_approval.partner_id.name + " can approve this"))
+
+    # def action_cancel(self):
+    #     self.write({'state':'cancel'})
+
+    def _check_duplicate_partner(self, vals=None):
+        
+        list = ['limited','ltd','co','mpany', '.',',',' ','(',')', 'pvt', 'private','apparels','apparel']
+        duplicate = 0
+        duplicate_name = ''
+        if vals:
+            if vals['type'] == 'customer':
+                exists = self.env['res.partner'].search([('customer_rank', '=', 1)])
+            if vals['type'] == 'buyinghouse':
+                exists = self.env['res.partner'].search([('buying_house_rank', '=', 1)])
+            if vals['type'] == 'buyer':
+                exists = self.env['res.partner'].search([('buyer_rank', '=', 1)])
+        else:
+            if self.type == 'customer':
+                exists = self.env['res.partner'].search([('customer_rank', '=', 1)])
+            if self.type == 'buyinghouse':
+                exists = self.env['res.partner'].search([('buying_house_rank', '=', 1)])
+            if self.type == 'buyer':
+                exists = self.env['res.partner'].search([('buyer_rank', '=', 1)])
+        
+        # raise UserError((vals['name']))
+        if vals:
+            output_string = vals['name'].lower()
+        else:
+            output_string = self.name.lower()
+        for record in exists:
+            check_string = record.name.lower()
+            for word in list:
+                output_string = output_string.replace(word,'')
+                check_string = check_string.replace(word,'')
+                if record.name and (check_string == output_string):
+                    duplicate_name = record.name
+                    duplicate = 1
+            
+            
+        
+        return duplicate
 
 
 

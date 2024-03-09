@@ -230,7 +230,7 @@
 						</div>
 						
 						 <div style="font-size:12px">
-							
+						
 							
 							<table class="table table-sm m-0 p-0 table-bordered">
                         <thead>
@@ -238,9 +238,9 @@
                                 <th>ITEM</th>
                                 <th>CODE</th>
                                 <th>FINISH</th>
-                                <th>NO.OF.TOP</th>
                                 <th>SHADE</th>
-                                <th>INCH</th>
+                                <th>SIZE</th>
+                                <!-- <th>INCH</th> -->
                                 <th>QTY</th>
                                 <th>UNIT</th>
                                 <th>PRICE/UNIT</th>
@@ -249,26 +249,26 @@
                         </thead>
                         <tbody>
                             <t>
+                                <!-- <tr> -->
                                 <!--<tr t-as="employee" t-foreach="docs.attendance_ids">-->
-                                    <td>
-                                        <!--<span t-esc="employee_index+1" class="text-nowrap"/>-->
-                                    </td>
-                                    <td>
-                                         <!--<span t-field="employee.attendee_id"/> -->
-                                        
-                                    </td>
+                                <tr t-foreach="datas" t-as="line">	
+                                    <td><t t-esc="line[0]"/></td>
+                                    <td></td>
+                                    <td><t t-esc="line[1]"/></td>
+                                    <td><t t-esc="line[2]"/></td>
+                                    <td><t t-esc="line[3]"/></td>
+                                    <td><t t-esc="line[4]"/></td>
+                                    <td><t t-esc="line[5]"/></td>
+                                    <td><t t-esc="line[6]"/></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                <!--</tr>-->
+                                </tr>
                             </t>
+                        <!-- </t> -->
                         </tbody>
                     </table>
+                        
 							
 						</div>
 						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">

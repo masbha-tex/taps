@@ -96,6 +96,7 @@ class MrpReportWizard(models.TransientModel):
                     'nitish.bassi@texzipperbd.com',
                     'shahid.hossain@texzipperbd.com',
                     'ranjeet.singh@texzipperbd.com',
+                    'costing@texzipperbd.com',
                     'odoo.support@texzipperbd.com',
                     'abu.sayed@texzipperbd.com',
                     ]
@@ -107,6 +108,7 @@ class MrpReportWizard(models.TransientModel):
                     'shahid.hossain@texzipperbd.com',
                     'kumar.abhishek@texzipperbd.com',
                     'ppc.metaltrims@texzipperbd.com',
+                    'costing@texzipperbd.com',
                     'odoo.support@texzipperbd.com',
                     'abu.sayed@texzipperbd.com',
                     ]
@@ -2416,21 +2418,6 @@ class MrpReportWizard(models.TransientModel):
                 self._name, self.id, ('Invoice Summery')),
             'target': 'self',
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

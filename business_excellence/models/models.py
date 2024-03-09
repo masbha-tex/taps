@@ -3,9 +3,9 @@
 # from odoo import models, fields, api
 
 
-# class business_excellence(models.Model):
-#     _name = 'business_excellence.business_excellence'
-#     _description = 'business_excellence.business_excellence'
+# class BusinessExcellence(models.Model):
+#     _name = 'business.excellence'
+#     _description = 'Business Excellence'
 
 #     name = fields.Char()
 #     value = fields.Integer()

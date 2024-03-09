@@ -10,33 +10,37 @@
                         <button name="action_submit_approval" type="object" string="Submit" attrs= "{'invisible': [('state', 'not in', ['draft'])]}" help="Click On Submit to send for approval "/>
                         <button name="action_approve" type="object" string="Approve" attrs= "{'invisible': [('state', 'not in', ['to approve'])]}" help="Click On Approve to create a record"/>
                         <button name="action_set_draft" type="object" string="Set to Draft" attrs= "{'invisible': [('state', 'not in', ['cancel'])]}"/>
-                        <button name="action_cancel" type="object" string="Cancel" attrs= "{'invisible': [('state', 'not in', ['approved'])]}"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,inter,to approve,approved"/>
+                        <!-- <button name="action_cancel" type="object" string="Cancel" attrs= "{'invisible': [('state', 'not in', ['approved'])]}"/> -->
+                        <button name="action_teamleader"  type="object" string="Team Leader Approval" attrs= "{'invisible': [('state', '!=', 'inter')]}"/>
+                        <button name="action_hod" type="object" string="HOD Sales" attrs= "{'invisible': [('state', '!=', 'hod')]}" help="Click On HOD Sales"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,inter,hod,to approve,approved"/>
+                        
                     </header>
                     <sheet>
                         <group>
                             <group>
-                                <field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}"/>
+                                <h3><field name="code"  readonly="1"/></h3><br/>
+                                <field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}" attrs="{'readonly': [('state', 'not in', ('draft', 'inter'))]}"/>
                             </group>
                         </group>
                         <div class="oe_title">
                             <h1>
-                                <field name="name" default_focus="1" placeholder="Name"/>
+                                <field name="name" default_focus="1" placeholder="Name" attrs="{'readonly': [('state', '=', 'approved')]}"/>
                             </h1>
                             <!-- <button name="open_similar_customers_popup" type="object" string="Check Similar" context="{'type': 'type'}"/> -->
                         </div>
                         <group>
                             <group>
-                                <field name="customer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'customer']], 'required': [['state', '=', 'inter'],['type', '=', 'customer']]}"/>
-                                <field name="buyer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '=', 'buyer']]}"/>
-                                <field name="buying_house" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'customer']]}"/>
-                                <field name="related_customer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '=', 'customer']], 'required': [['state', '=', 'inter'],['type', '!=', 'customer']]}" widget="many2many_tags"/>
+                                <field name="customer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'customer']], 'required': [['state', '=', 'inter'],['type', '=', 'customer']], 'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="buyer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '=', 'buyer']], 'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="buying_house" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'customer']], 'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="related_customer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '=', 'customer']], 'required': [['state', '=', 'inter'],['type', '!=', 'customer']], 'readonly': [('state', '=', 'approved')]}" widget="many2many_tags"/>
                                 
                                 
                             </group>
                             <group>
-                                <field name="buyer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'customer']],'required': [['state', '=', 'inter'],['type', '=', 'customer']]}" widget="many2many_tags"/>
-                                <field name="sourcing_office" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'buyer']]}" widget="many2many_tags"/>
+                                <field name="buyer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'customer']],'required': [['state', '=', 'inter'],['type', '=', 'customer']], 'readonly': [('state', '=', 'approved')]}" widget="many2many_tags"/>
+                                <field name="sourcing_office" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': [['type', '!=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '=', 'buyer']], 'readonly': [('state', '=', 'approved')]}" widget="many2many_tags"/>
                             </group>
                                 
                         </group>
@@ -47,47 +51,47 @@
                                 <b>Company Address</b></span>
                                 <div class="o_address_format">
                                 
-                                    <field name="street" placeholder="Street..." class="o_address_street"/>
-                                    <field name="street2" placeholder="Street 2..." class="o_address_street"/>
-                                    <field name="city" placeholder="City" class="o_address_city"/>
-                                    <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
-                                    <field name="zip" placeholder="ZIP" class="o_address_zip"/>
-                                    <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                    <field name="street" placeholder="Street..." class="o_address_street" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                    <field name="street2" placeholder="Street 2..." class="o_address_street" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                    <field name="city" placeholder="City" class="o_address_city" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                    <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                    <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}' attrs="{'readonly': [('state', '=', 'approved')]}"/>
                             </div>
                             </group>
                             <group>
-                                <field name="contact_person"/>
-                                <field name="phone" widget="phone"/>
-                                <field name="mobile" widget="phone"/>
-                                <field name="email" widget="email" context="{'gravatar_image': True}"/>
-                                <field name="website" widget="url" placeholder="e.g. https://www.odoo.com"/>
+                                <field name="contact_person" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="phone" widget="phone" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="mobile" widget="phone" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="email" widget="email" context="{'gravatar_image': True}" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="website" widget="url" placeholder="e.g. https://www.odoo.com" attrs="{'readonly': [('state', '=', 'approved')]}"/>
                         </group>
                         </group>
                         <group>
                             <group>
-                                <field name="swift_code" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
-                                <field name="bond_license" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
-                                <field name="custom_delivery_method" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
+                                <field name="swift_code" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']], 'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="bond_license" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']], 'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="custom_delivery_method" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']], 'readonly': [('state', '=', 'approved')]}"/>
                                 <!-- <field name="property_product_pricelist" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/> -->
                                 
                             </group>
                             <group>
-                                <field name="property_payment_term_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
-                                <field name="incoterms" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
+                                <field name="property_payment_term_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']], 'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="incoterms" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']], 'readonly': [('state', '=', 'approved')]}"/>
                                 
                             </group>
                         </group>
                         <group>
                             <group>
-                                <field name="delivery_address" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']]}"/>
+                                <field name="delivery_address" attrs="{'invisible':[['type', '=', 'buyer']], 'required': [['state', '=', 'inter'],['type', '!=', 'buyer']], 'readonly': [('state', '=', 'approved')]}"/>
                             </group>
                             <group>
-                                <field name="billing_address" attrs="{'required': [['state', '=', 'inter']]}"/>
+                                <field name="billing_address" attrs="{'required': [['state', '=', 'inter']], 'readonly': [('state', '=', 'approved')]}"/>
                             </group>
                         </group>
                         <notebook attrs="{'invisible': ['|',['type', '=', 'buyinghouse'],['state', '=', 'draft']]}">
                             <page string="Assign Salesperson or Marketing person" name="allocated_line">
-                                <field name="assign_line" widget="section_and_note_one2many" mode="tree">
+                                <field name="assign_line" widget="section_and_note_one2many" mode="tree" attrs="{'readonly': [('state', '=', 'approved')]}">
                                 <tree
                                     string="Assign Line"
                                     editable="bottom">
@@ -119,6 +123,58 @@
                 </form>
             </field>
         </record>
+        <record model="ir.ui.view" id="view_naf_template_kanban">
+            <field name="name">naf.template.kanban</field>
+            <field name="model">naf.template</field>
+            <field name="arch" type="xml">
+                <kanban class="o_res_partner_kanban">
+                    <field name="id"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="state"/>
+                    <field name="create_uid"/>
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                                
+                                <!-- <field name="image_field" widget="image" class="o_kanban_image_fill_left" options="{'zoom': true, 'zoom_delay': 1000, 'background': true, 'preventClicks': false}"/> -->
+                                <div class="oe_kanban_details">
+                                    <div>
+                                        <span><field name="code"/></span>
+                                    </div>
+                                   <div class="o_kanban_record_top">
+                                       <div class="o_kanban_record_headings">
+                                           <strong class="o_kanban_record_title">
+                                                <h3><field name="name"/></h3>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        
+                                       <span>Type: </span><strong><field name="type"/></strong>
+                                        <!-- <field name="create_uid"/> -->
+                                        
+                                    </div>
+                                    
+                                    <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left text-muted">
+                                        
+                                        <field name="create_uid"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="state" widget="label_selection" options="{'classes': {'draft': 'default',  'done': 'success'}}"/>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
         <record id="view_naf_template_tree" model="ir.ui.view">
             <field name="name">naf.template.tree</field>
             <field name="model">naf.template</field>
@@ -128,7 +184,8 @@
                     <field name="name"/>
                     <field name="type"/>
                     <field name="create_uid" widget="many2one_avatar_user"/>
-                    <field name="approved_by" widget="many2one_avatar_user"/>
+                    <field name="state"/>
+                    <!-- <field name="approved_by" widget="many2one_avatar_user"/> -->
                 </tree>
             </field>
         </record>
@@ -170,7 +227,27 @@
             parent="sale.sale_menu_root"
             action="action_naf_template"
             sequence="2"
-            groups = "sales_team.group_sale_manager"/>
+            groups = "sales_team.group_sale_salesman"/>
+        <menuitem
+            id="crm_menu_naf"
+            name="NAF"
+            parent="crm.crm_menu_root"
+            groups = "sales_team.group_sale_salesman"
+            sequence="5"/>
+        <menuitem
+            id="crm_menu_pnaf_template"
+            name="P-NAF"
+            parent="taps_sale.crm_menu_naf"
+            action="action_provisional_template"
+            groups = "sales_team.group_sale_salesman"
+            sequence="1"/>
+        <menuitem
+            id="crm_menu_naf_template"
+            name="NAF"
+            parent="taps_sale.crm_menu_naf"
+            action="action_naf_template"
+            groups = "sales_team.group_sale_salesman"
+            sequence="3"/>
         
     </data>
 </odoo>
