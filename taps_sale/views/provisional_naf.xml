@@ -8,10 +8,8 @@
                 <form string="provisional NAF" >
                     <header>
                         <button name="action_approval"  type="object" string="Send For Approval" attrs= "{'invisible': [('state', '!=', 'draft')]}"/>
-                        <button name="action_teamleader"  type="object" string="Team Leader Approval" attrs= "{'invisible': [('state', '!=', 'pnaf')]}"/>
-                        <button name="action_pre_approve"  type="object" string="Pre Approval" attrs= "{'invisible': [('state', '!=', 'inter')]}"/>
-                        <button name="action_hod" type="object" string="HOD Sales" attrs= "{'invisible': [('state', '!=', 'hod')]}" help="Click On HOD Sales"/>
-                        <button name="action_approve" type="object" string="Approve" attrs= "{'invisible': [('state', 'not in', ['to approve'])]}" help="Click On Approve to create a record"/>
+                        
+                        <button name="action_approve" type="object" string="Approve" attrs= "{'invisible': [('state', '!=', 'to approve')]}" help="Click On Approve to create a record"/>
                         
                         
                         <field name="state" widget="statusbar" statusbar_visible="draft,inter,pnaf,hod,to approve,approved"/>
@@ -27,23 +25,9 @@
                             <h1>
                                 <field name="name" default_focus="1" placeholder="Name" attrs="{'readonly': [('state', '=', 'approved')]}"/>
                             </h1>
-                            <!-- <button name="open_similar_customers_popup" type="object" string="Check Similar" context="{'type': 'type'}"/> -->
+                            
                         </div>
-                        <group>
-                            <group>
-                                <field name="customer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|','|',['type', '=', 'buyinghouse'],['type', '=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']], 'required': [['state', '=', 'pnaf'],['type', '=', 'customer']], 'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="buyer_group" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['type', '!=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']], 'required': [['type', '=', 'buyer'],['state', '=', 'pnaf']], 'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="buying_house" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|','|',['type', '=', 'buyinghouse'],['type', '=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']], 'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="related_customer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['type', '=', 'customer'],['state', '=', 'draft'],['state', '=', 'inter']], 'required': ['&amp;',['state', '=', 'pnaf'],'|',['type', '=', 'buyinghouse'], ['type', '=', 'buyer']], 'readonly': [('state', '=', 'approved')]}" widget="many2many_tags"/>
-                                
-                                
-                            </group>
-                            <group>
-                                <field name="buyer" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|','|',['type', '=', 'buyinghouse'],['type', '=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']],'required': [['state', '=', 'pnaf'],['type', '=', 'customer']], 'readonly': [('state', '=', 'approved')]}" widget="many2many_tags"/>
-                                <field name="sourcing_office" widget="many2many_tags" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['type', '!=', 'buyer'],['state', '=', 'draft'],['state', '=', 'inter']], 'required': [['type', '=', 'buyer'],['state', '=', 'pnaf']], 'readonly': [('state', '=', 'approved')]}"/>
-                            </group>
-                                
-                        </group>
+                        
                         
                         <group>
                             <group>
@@ -67,53 +51,7 @@
                                 <field name="website" widget="url" placeholder="e.g. https://www.odoo.com" attrs="{'readonly': [('state', '=', 'approved')]}"/>
                         </group>
                         </group>
-                        <group>
-                            <group>
-                                <field name="swift_code" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']], 'required': ['&amp;',['state', '=', 'pnaf'], '|', ['type', '=', 'customer'],['type', '=', 'buyinghouse']], 'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="bond_license" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']], 'required': ['&amp;',['state', '=', 'pnaf'], '|', ['type', '=', 'customer'],['type', '=', 'buyinghouse']], 'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="custom_delivery_method" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '!=', 'customer']], 'required': [['state', '=', 'pnaf'],['type', '=', 'customer']], 'readonly': [('state', '=', 'approved')]}"/>
-                                <!-- <field name="property_product_pricelist" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/> -->
-                                
-                            </group>
-                            <group>
-                                <field name="property_payment_term_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']],'required': ['&amp;',['state', '=', 'pnaf'], '|', ['type', '=', 'customer'],['type', '=', 'buyinghouse']], 'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="incoterms" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']], 'required': ['&amp;',['state', '=', 'pnaf'], '|', ['type', '=', 'customer'],['type', '=', 'buyinghouse']], 'readonly': [('state', '=', 'approved')]}"/>
-                                
-                            </group>
-                        </group>
-                        <group>
-                            <group>
-                                <field name="delivery_address" attrs="{'invisible': ['|','|',['state', '=', 'draft'],['state', '=', 'inter'],['type', '=', 'buyer']], 'required': [['type', '!=', 'buyer'],['state', '=', 'pnaf']], 'readonly': [('state', '=', 'approved')]}"/>
-                            </group>
-                            <group>
-                                <field name="billing_address" attrs="{'invisible': ['|',['state', '=', 'draft'],['state', '=', 'inter']], 'required': [['state', '=','pnaf']], 'readonly': [('state', '=', 'approved')]}"/>
-                            </group>
-                        </group>
-                        <notebook attrs="{'invisible': ['|','|',('type', '=', 'buyinghouse'),('state','=','inter'),('state','=','draft')]}">
-                            <page string="Assign Salesperson" name="allocated_line" >
-                                <field name="assign_line" widget="section_and_note_one2many" mode="tree" attrs="{'required': [['type', '!=', 'buyinghouse'],['state', '=', 'pnaf']]}">
-                                <tree 
-                                    string="Assign Line"
-                                    editable="bottom">
-                                        <control>
-                                        <create name="add_product_control" string="Add a Line" />
-                                    </control>
-                                        
-                                        <field name="type_pnaf" invisible="1"/>
-                                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type_pnaf', '=', 'buyer']], 'required': [['type_pnaf', '=', 'customer']]}"/>
-                                        
-                                        <field name="salesperson"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" force_save="1" attrs="{'invisible': [['type_pnaf', '=', 'buyer']], 'required': [['type_pnaf', '=', 'customer']]}"/>
-                                        <field name="marketing_person"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type_pnaf', '!=', 'buyer']], 'required': [['type_pnaf', '=', 'buyer']]}"/>
-                                        
-                                        
-                                        <field name="name" invisible="1"/>
-                                       
-                                    
-                                    </tree>
-                                </field>
-                             </page>
-                            
-                        </notebook>
+                       
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids"/>
@@ -186,27 +124,11 @@
                     <field name="type"/>
                     <field name="create_uid" widget="many2one_avatar_user"/>
                     <field name="state"/>
-                    <!-- <field name="create_uid" widget="many2one_avatar_user"/>
-                    <field name="approved_by" widget="many2one_avatar_user"/> -->
+                    
                 </tree>
             </field>
         </record>
-        <record id="assign_user_line_tree" model="ir.ui.view">
-            <field name="name">assign.user.line.tree</field>
-            <field name="model">assign.user</field>
-            <field name="arch" type="xml">
-                <tree string="Assign Line Tree" create="false">
-                   
-                    
-                    <field name="type_pnaf"/>
-                    <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type_pnaf', '=', 'buyer']], 'required': [['type_pnaf', '=', 'customer']]}"/>
-                    
-                    <field name="salesperson" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" force_save="1" attrs="{'invisible': [['type_pnaf', '=', 'buyer']], 'required': [['type_pnaf', '=', 'customer']]}"/>
-                    <field name="marketing_person"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type_pnaf', '!=', 'buyer']], 'required': [['type_pnaf', '=', 'buyer']]}"/>
-                    <field name="name" invisible="1"/>
-                </tree>
-            </field>
-        </record>
+        
         <record id="action_provisional_template" model="ir.actions.act_window">
             <field name="name">Provisional NAF</field>
             <field name="type">ir.actions.act_window</field>

@@ -52,12 +52,12 @@
                             </h1>
                         </div>
                         <group>
-                                <field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}"/>
+                                <field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                                 
                         </group>
                         <group>
                             <group>
-                                <field name="type_of_acc" widget="selection" attrs="{'invisible': [['type', '!=' , 'pacc']], 'required': [['type', '=','pacc']]}"/>
+                                <field name="type_of_acc" widget="selection" attrs="{'invisible': [['type', '!=' , 'pacc']], 'required': [['type', '=','pacc']], 'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             </group>
                         </group>
                         <group>
@@ -66,7 +66,7 @@
                             <field name="buying_house" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]], 'invisible':['|','|',['type', '=', 'customer'],['type', '=', 'brand'],'&amp;',['type', '=', 'pacc'],['type_of_acc', '!=', 'ebhnb']], 'required': ['|',['type', '=', 'buyinghouse'],['type_of_acc', '=', 'ebhnb']]}"/>
                             <field name="potential_customer" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]], 'invisible': ['|','|',('type', '!=', 'pacc'),('type_of_acc', '=', 'ecnb'), ('type_of_acc', '=', 'ebhnb')], 'required': ['|',['type_of_acc', '=', 'nbncbh'],['type_of_acc', '=', 'ebncbh']]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'readonly': [['stages', 'in', ('2_done','(9_cancel')]], 'required': ['|','|','|',['type', '=', 'customer'],['type', '=', 'brand'],['type', '=', 'buyinghouse'],['type_of_acc', '=', 'ebncbh']], 'invisible':[['type', '=', 'pacc'],['type_of_acc', '!=', 'ebncbh']]}"/>
-                            <field name="potential_buyer" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]], 'invisible': ['|',('type', '!=', 'pacc'),('type_of_acc', '=', 'ebncbh')], 'required': ['|','|',['type_of_acc', '=', 'nbncbh'],['type_of_acc', '=', 'ecnb'],['type_of_acc', '=', 'ebhnb']]}"/>
+                            <field name="potential_buyer" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]], 'invisible': ['|',('type', '!=', 'pacc'),('type_of_acc', '=', 'ebncbh')], 'required': ['|','|',['type_of_acc', '=', 'nbncbh'],['type_of_acc', '=', 'ecnb'],['type_of_acc', '=', 'ebhnb']]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="concern" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             <field name="designation" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
                             <field name="mobile" attrs="{'readonly': [['stages', 'in', ('2_done','9_cancel')]]}"/>
@@ -134,14 +134,15 @@
                 <form>
                     <group>
                         <field name="type" widget="radio" nolabel="1"/>
+                        <field name="type_of_acc" widget="selection" attrs="{'invisible': [['type', '!=' , 'pacc']], 'required': [['type', '=','pacc']]}"/>
                         <field name="partner_id" widget="res_partner_many2one"
                             string="Customer"
                              options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"
-                            attrs="{'invisible':['|',['type', '=', 'buyinghouse'],['type', '=', 'pacc']], 'required': [['type', '=', 'customer']]}"
-                            domain="[('customer_rank', '>',0)]" force_save="1"/>
-                        <field name="buying_house" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['type', '!=', 'buyinghouse']], 'required': [['type', '=', 'buyinghouse']]}" force_save="1"/>
-                        <field name="potential_customer" attrs="{'invisible': [['type', '!=', 'pacc'],] , 'required':[['type', '=', 'pacc']] }" force_save="1"/>
-                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'required': [['type', '=', 'brand']]}" force_save="1"/>
+                            attrs="{'invisible':['|',['type', '=', 'buyinghouse'],'&amp;',['type', '=', 'pacc'],['type_of_acc', '!=', 'ecnb']], 'required': ['|',['type', '=', 'customer'],['type_of_acc', '=', 'ecnb']]}" domain="[('customer_rank', '>',0)]" force_save="1"/>
+                        <field name="buying_house" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible':['|','|',['type', '=', 'customer'],['type', '=', 'brand'],'&amp;',['type', '=', 'pacc'],['type_of_acc', '!=', 'ebhnb']], 'required': ['|',['type', '=', 'buyinghouse'],['type_of_acc', '=', 'ebhnb']]}" force_save="1"/>
+                        <field name="potential_customer" attrs="{'invisible': ['|','|',('type', '!=', 'pacc'),('type_of_acc', '=', 'ecnb'), ('type_of_acc', '=', 'ebhnb')], 'required': ['|',['type_of_acc', '=', 'nbncbh'],['type_of_acc', '=', 'ebncbh']]}" force_save="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" domain="[('buyer_rank','>', 0)]" attrs="{'required': ['|','|','|',['type', '=', 'customer'],['type', '=', 'brand'],['type', '=', 'buyinghouse'],['type_of_acc', '=', 'ebncbh']], 'invisible':[['type', '=', 'pacc'],['type_of_acc', '!=', 'ebncbh']]}" force_save="1"/>
+                        <field name="potential_buyer" attrs="{'invisible': ['|',('type', '!=', 'pacc'),('type_of_acc', '=', 'ebncbh')], 'required': ['|','|',['type_of_acc', '=', 'nbncbh'],['type_of_acc', '=', 'ecnb'],['type_of_acc', '=', 'ebhnb']]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="concern" />
                         <field name="designation" />
                         <field name="mobile" />
@@ -153,35 +154,7 @@
                         <field name="visit_date"/>
                         <field name="user_id" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         <field name="team_id" invisible="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                        <!-- <field name="email_from" string="Email" /> -->
-                        <!-- <field name="phone" string="Phone" /> -->
-                        <!-- <label for="expected_revenue"/> -->
-                        <!-- <div class="o_row">
-                            <field name="expected_revenue" class="oe_inline mr-5" widget="monetary" options="{'currency_field': 'company_currency'}"/>
-                            <field name="priority" class="oe_inline" nolabel="1" widget="priority"/>
-                        </div>
-                        <div class="o_row">
-                            <field name="recurring_revenue" class="oe_inline pr-4" widget="monetary" options="{'currency_field': 'company_currency'}"/>
-                            <field name="recurring_plan" class="oe_inline" placeholder="E.g. Monthly"
-                                   attrs="{'required': [('recurring_revenue', '!=', 0)]}" options="{'no_create': True, 'no_open': True}"/>
-                        </div>
-                        <field name="company_currency" invisible="1"/>
-                        <field name="company_id" invisible="1"/>
-                        <field name="user_id" invisible="1"/>
-                        <field name="team_id" invisible="1"/>
-                        <field name="type" invisible="1"/>
-                        <field name="partner_name" invisible="1"/>
-                        <field name="contact_name" invisible="1"/>
-                        <field name="country_id" invisible="1"/>
-                        <field name="state_id" invisible="1"/>
-                        <field name="city" invisible="1"/>
-                        <field name="street" invisible="1"/>
-                        <field name="street2" invisible="1"/>
-                        <field name="zip" invisible="1"/>
-                        <field name="mobile" invisible="1"/>
-                        <field name="website" invisible="1"/>
-                        <field name="function" invisible="1"/>
-                        <field name="title" invisible="1"/> -->
+                        
                     </group>
                 </form>
             </field>

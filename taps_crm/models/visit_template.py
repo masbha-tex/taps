@@ -55,8 +55,8 @@ class CustomerVisit(models.Model):
         ('pacc', 'Potential Account'),
     ],string="Type", required=True, default='customer')
     partner_id = fields.Many2one('res.partner', string='Customer')
-    potential_customer = fields.Many2one('provisional.template', string='New Customer/Buying House', domain="[['state', 'not in', ['draft','inter']],'|', ['type', '=','customer'],['type', '=','buyinghouse']]")
-    potential_buyer = fields.Many2one('provisional.template', string='New Buyer', domain="[['state', 'not in', ['draft', 'inter']],['type', '=','buyer']]")
+    potential_customer = fields.Many2one('provisional.template', string='New Customer/Buying House', domain="[['state', '=', 'approved'],'|', ['type', '=','customer'],['type', '=','buyinghouse']]")
+    potential_buyer = fields.Many2one('provisional.template', string='New Buyer', domain="[['state', '=', 'approved'],['type', '=','buyer']]")
     buying_house = fields.Many2one('res.partner', string='Buying House', domain="[('buying_house_rank', '>',0)]")
     buyer = fields.Many2one('res.partner', string='Buyer')
     concern = fields.Char(string="Concern")
@@ -86,6 +86,22 @@ class CustomerVisit(models.Model):
     @api.onchange('type')
     def onchange_type(self):
         self.type_of_acc = False
+        self.partner_id = False
+        self.potential_customer = False
+        self.potential_buyer = False
+        self.buying_house = False
+        self.buyer = False
+    @api.onchange('type_of_acc')
+    def onchange_type_of_acc(self):
+        
+        self.partner_id = False
+        self.potential_customer = False
+        self.potential_buyer = False
+        self.buying_house = False
+        self.buyer = False
+        
+        
+        
 
     @api.model
     def retrieve_dashboard(self):
@@ -152,7 +168,7 @@ class CustomerVisit(models.Model):
         result = super(CustomerVisit, self).create(vals)
         return result
 
-
+    
     @api.depends('user_id')
     def _compute_team_id(self):
         """ When changing the user, also set a team_id or restrict team id

@@ -56,6 +56,7 @@
         'data/oa_release_body.xml',
         'data/oa_release_body_team_wise.xml',
         'data/mail_data_ccr.xml',
+        'data/mail_data_pnaf.xml',
         # 'views/assets.xml',
         'views/variant_templates.xml',
         'views/action_reporting_dashboard.xml',

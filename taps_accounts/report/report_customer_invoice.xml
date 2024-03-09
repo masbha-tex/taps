@@ -234,11 +234,15 @@
 							
 						<table class="table table-sm o_main_table">
                                 <thead>
+                                    <t t-set="line_count" t-value="0"/>
                                     <tr>
                                         <th>ITEM</th>
+                                        <t t-set="line_count" t-value="2"/>
                                         <!-- <th>CODE</th> -->
                                         <th>FINISH</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
                                         <th>SHADE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
                                         <th>SIZE</th>
                                         <th>QTY</th>
                                         <th>PRICE/UNIT</th>
@@ -280,17 +284,20 @@
                                             <td><t t-esc="line[5]"/></td>
                                             <td><t t-esc="line[6]"/></td>
                                         </tr>
-                                        </t>
+                                    </t>
                                             
-                                        <!-- <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td><t t-esc="line[4]"/></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr> -->
+                                    <tr>
+										<td t-att-colspan="line_count" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;"/>
+										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
+										<!--	<strong>Total Quantity :</strong>-->
+										<!--</td>-->
+										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>
+												<!-- <t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/> -->44
+											</strong>
+										</td>
+										<td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/>
+									</tr>
                                     
                                 </tbody>
                             </table>
@@ -308,27 +315,27 @@
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.numberof_carton" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
 										<tr class="border-black o_subtotal">
-											<td style="background-color: white ! important; color: Black ! important">
+											<td>
 												<strong>Gross weight</strong>
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.gross_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
                                         <tr class="border-black o_subtotal">
-											<td style="background-color: white ! important; color: Black ! important">
+											<td>
 												<strong>Net weight</strong>
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.net_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
@@ -742,37 +749,72 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						 <div style="font-size:12px">
 							
 							
-							<table class="table table-sm m-0 p-0 table-bordered">
-                        <thead>
-                            <tr>
-                                <th>ITEM</th>
-                                <th>CODE</th>
-                                <th>FINISH</th>
-                                <th>NO.OF.TOP</th>
-                                <th>SHADE</th>
-                                <th>INCH</th>
-                                <th>QTY</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t>
-                                <!--<tr t-as="employee" t-foreach="docs.attendance_ids">-->
-                                    <td>
-                                        <!--<span t-esc="employee_index+1" class="text-nowrap"/>-->
-                                    </td>
-                                    <td>
-                                         <!--<span t-field="employee.attendee_id"/> -->
-                                        
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                <!--</tr>-->
-                            </t>
-                        </tbody>
-                    </table>
+							<table class="table table-sm o_main_table">
+                                <thead>
+                                    <t t-set="line_count" t-value="0"/>
+                                    <tr>
+                                        <th>ITEM</th>
+                                        <t t-set="line_count" t-value="2"/>
+                                        <!-- <th>CODE</th> -->
+                                        <th>FINISH</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SHADE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SIZE</th>
+                                        <!-- <t t-set="line_count" t-value="line_count+1"/> -->
+                                        <th>QTY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="prev_item" t-value="False"/>
+                                    <t t-set="prev_item_1" t-value="False"/>
+                                    <t t-set="prev_item_2" t-value="False"/>
+                                    <t t-foreach="datas" t-as="line">
+                                        <tr>
+                                            <t t-if="prev_item == line[0]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[0]"/></td>
+                                                <t t-set="prev_item" t-value="line[0]"/>
+                                            </t>
+                                            <!-- <td></td> -->
+                                            <t t-if="prev_item_1 == line[1]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[1]"/></td>
+                                                <t t-set="prev_item_1" t-value="line[1]"/>
+                                            </t>
+                                            <t t-if="prev_item_2 == line[2]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[2]"/></td>
+                                                <t t-set="prev_item_2" t-value="line[2]"/>
+                                            </t>
+                                            <!-- <td><t t-esc="line[1]"/></td> -->
+                                            <!-- <td><t t-esc="line[2]"/></td> -->
+                                            <td><t t-esc="line[3]"/></td>
+                                            <td><t t-esc="line[4]"/></td>
+                                        </tr>
+                                    </t>
+                                            
+                                    <tr>
+										<td t-att-colspan="line_count" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;"/>
+										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
+										<!--	<strong>Total Quantity :</strong>-->
+										<!--</td>-->
+										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>
+												<!-- <t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/> -->44
+											</strong>
+										</td>
+										<!-- <td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/> -->
+									</tr>
+                                    
+                                </tbody>
+                            </table>
 							
 						</div>
 						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
@@ -785,27 +827,27 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.numberof_carton" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
 										<tr class="border-black o_subtotal">
-											<td style="background-color: white ! important; color: Black ! important">
+											<td>
 												<strong>Gross weight</strong>
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.gross_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
                                         <tr class="border-black o_subtotal">
-											<td style="background-color: white ! important; color: Black ! important">
+											<td>
 												<strong>Net weight</strong>
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.net_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
@@ -1167,37 +1209,72 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						 <div style="font-size:12px">
 							
 							
-							<table class="table table-sm m-0 p-0 table-bordered">
-                        <thead>
-                            <tr>
-                                <th>ITEM</th>
-                                <th>CODE</th>
-                                <th>FINISH</th>
-                                <th>NO.OF.TOP</th>
-                                <th>SHADE</th>
-                                <th>INCH</th>
-                                <th>QTY</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t>
-                                <!--<tr t-as="employee" t-foreach="docs.attendance_ids">-->
-                                    <td>
-                                        <!--<span t-esc="employee_index+1" class="text-nowrap"/>-->
-                                    </td>
-                                    <td>
-                                         <!--<span t-field="employee.attendee_id"/> -->
-                                        
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                <!--</tr>-->
-                            </t>
-                        </tbody>
-                    </table>
+							<table class="table table-sm o_main_table">
+                                <thead>
+                                    <t t-set="line_count" t-value="0"/>
+                                    <tr>
+                                        <th>ITEM</th>
+                                        <t t-set="line_count" t-value="2"/>
+                                        <!-- <th>CODE</th> -->
+                                        <th>FINISH</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SHADE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SIZE</th>
+                                        <!-- <t t-set="line_count" t-value="line_count+1"/> -->
+                                        <th>QTY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="prev_item" t-value="False"/>
+                                    <t t-set="prev_item_1" t-value="False"/>
+                                    <t t-set="prev_item_2" t-value="False"/>
+                                    <t t-foreach="datas" t-as="line">
+                                        <tr>
+                                            <t t-if="prev_item == line[0]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[0]"/></td>
+                                                <t t-set="prev_item" t-value="line[0]"/>
+                                            </t>
+                                            <!-- <td></td> -->
+                                            <t t-if="prev_item_1 == line[1]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[1]"/></td>
+                                                <t t-set="prev_item_1" t-value="line[1]"/>
+                                            </t>
+                                            <t t-if="prev_item_2 == line[2]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[2]"/></td>
+                                                <t t-set="prev_item_2" t-value="line[2]"/>
+                                            </t>
+                                            <!-- <td><t t-esc="line[1]"/></td> -->
+                                            <!-- <td><t t-esc="line[2]"/></td> -->
+                                            <td><t t-esc="line[3]"/></td>
+                                            <td><t t-esc="line[4]"/></td>
+                                        </tr>
+                                    </t>
+                                            
+                                    <tr>
+										<td t-att-colspan="line_count" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;"/>
+										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
+										<!--	<strong>Total Quantity :</strong>-->
+										<!--</td>-->
+										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>
+												<!-- <t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/> -->44
+											</strong>
+										</td>
+										<!-- <td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/> -->
+									</tr>
+                                    
+                                </tbody>
+                            </table>
 							
 						</div>
 						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
@@ -1210,27 +1287,27 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.numberof_carton" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
 										<tr class="border-black o_subtotal">
-											<td style="background-color: white ! important; color: Black ! important">
+											<td>
 												<strong>Gross weight</strong>
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.gross_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
                                         <tr class="border-black o_subtotal">
-											<td style="background-color: white ! important; color: Black ! important">
+											<td>
 												<strong>Net weight</strong>
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.net_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
@@ -1613,37 +1690,72 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						 <div style="font-size:12px">
 							
 							
-							<table class="table table-sm m-0 p-0 table-bordered">
-                        <thead>
-                            <tr>
-                                <th>ITEM</th>
-                                <th>CODE</th>
-                                <th>FINISH</th>
-                                <th>NO.OF.TOP</th>
-                                <th>SHADE</th>
-                                <th>INCH</th>
-                                <th>QTY</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t>
-                                <!--<tr t-as="employee" t-foreach="docs.attendance_ids">-->
-                                    <td>
-                                        <!--<span t-esc="employee_index+1" class="text-nowrap"/>-->
-                                    </td>
-                                    <td>
-                                         <!--<span t-field="employee.attendee_id"/> -->
-                                        
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                <!--</tr>-->
-                            </t>
-                        </tbody>
-                    </table>
+							<table class="table table-sm o_main_table">
+                                <thead>
+                                    <t t-set="line_count" t-value="0"/>
+                                    <tr>
+                                        <th>ITEM</th>
+                                        <t t-set="line_count" t-value="2"/>
+                                        <!-- <th>CODE</th> -->
+                                        <th>FINISH</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SHADE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SIZE</th>
+                                        <!-- <t t-set="line_count" t-value="line_count+1"/> -->
+                                        <th>QTY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="prev_item" t-value="False"/>
+                                    <t t-set="prev_item_1" t-value="False"/>
+                                    <t t-set="prev_item_2" t-value="False"/>
+                                    <t t-foreach="datas" t-as="line">
+                                        <tr>
+                                            <t t-if="prev_item == line[0]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[0]"/></td>
+                                                <t t-set="prev_item" t-value="line[0]"/>
+                                            </t>
+                                            <!-- <td></td> -->
+                                            <t t-if="prev_item_1 == line[1]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[1]"/></td>
+                                                <t t-set="prev_item_1" t-value="line[1]"/>
+                                            </t>
+                                            <t t-if="prev_item_2 == line[2]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[2]"/></td>
+                                                <t t-set="prev_item_2" t-value="line[2]"/>
+                                            </t>
+                                            <!-- <td><t t-esc="line[1]"/></td> -->
+                                            <!-- <td><t t-esc="line[2]"/></td> -->
+                                            <td><t t-esc="line[3]"/></td>
+                                            <td><t t-esc="line[4]"/></td>
+                                        </tr>
+                                    </t>
+                                            
+                                    <tr>
+										<td t-att-colspan="line_count" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;"/>
+										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
+										<!--	<strong>Total Quantity :</strong>-->
+										<!--</td>-->
+										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>
+												<!-- <t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/> -->44
+											</strong>
+										</td>
+										<!-- <td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/> -->
+									</tr>
+                                    
+                                </tbody>
+                            </table>
 							
 						</div>
 						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
@@ -1656,27 +1768,27 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.numberof_carton" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
 										<tr class="border-black o_subtotal">
-											<td style="background-color: white ! important; color: Black ! important">
+											<td>
 												<strong>Gross weight</strong>
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.gross_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
                                         <tr class="border-black o_subtotal">
-											<td style="background-color: white ! important; color: Black ! important">
+											<td>
 												<strong>Net weight</strong>
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<t t-esc="o.net_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
@@ -1895,19 +2007,19 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                     </div>
                                     <div class="col-6" style="font-size:12px">
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.z_invoice"/> </strong>
                                         <br/>
                                         <br/>
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.applicant_tin"/> </strong>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.bin_vat_reg"/> </strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.tin_no"/> </strong>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.bank_bin"/> </strong>
                                         <br/>
                                         <strong></strong>
                                         <br/>
@@ -1915,7 +2027,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.lc_no"/> </strong>
                                         <br/>
                                     </div>
                                     <div class="col-1" style="font-size:12px">
@@ -2023,19 +2135,19 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                     </div>
                                     <div class="col-6" style="font-size:12px">
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.z_invoice"/> </strong>
                                         <br/>
                                         <br/>
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.applicant_tin"/> </strong>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.bin_vat_reg"/> </strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.tin_no"/> </strong>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.bank_bin"/> </strong>
                                         <br/>
                                         <strong></strong>
                                         <br/>
@@ -2043,7 +2155,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.lc_no"/> </strong>
                                         <br/>
                                     </div>
                                     <div class="col-1" style="font-size:12px">

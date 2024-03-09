@@ -9,6 +9,10 @@
         <field name="name">P-NAF Pre Approval</field>
         <field name="res_model_id" ref="taps_sale.model_provisional_template"/>
     </record>
+    <record id="mail_activity_provisional_naf_approval" model="mail.activity.type">
+        <field name="name">P-NAF Approval</field>
+        <field name="res_model_id" ref="taps_sale.model_provisional_template"/>
+    </record>
     <record id="mail_activity_provisional_naf_first_approval" model="mail.activity.type">
         <field name="name">P-NAF First Approval</field>
         <field name="res_model_id" ref="taps_sale.model_provisional_template"/>
