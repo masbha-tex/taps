@@ -204,7 +204,7 @@
                                             <tr>
                                               <td colspan="19" style="border-bottom-style: hidden;border-left-style: hidden"></td>
                                               <td colspan="2" class="text-center font-weight-bold" style="border: 1pt solid black;">Total:</td>
-                                              <td colspan="2" class="text-center font-weight-bold" style="border: 1pt solid black;"><t t-esc="total_wt" /><span>%</span></td>
+                                              <td colspan="2" class="text-center font-weight-bold" style="border: 1pt solid black;"><t t-esc="total_wt" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><span>%</span></td>
                                             </tr>
             							</tbody>
             						</table>

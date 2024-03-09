@@ -242,7 +242,7 @@
                                 <th>SIZE</th>
                                 <!-- <th>INCH</th> -->
                                 <th>QTY</th>
-                                <th>UNIT</th>
+                                <!-- <th>UNIT</th> -->
                                 <th>PRICE/UNIT</th>
                                 <th>AMOUNT</th>
                             </tr>
@@ -260,9 +260,7 @@
                                     <td><t t-esc="line[4]"/></td>
                                     <td><t t-esc="line[5]"/></td>
                                     <td><t t-esc="line[6]"/></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    
                                 </tr>
                             </t>
                         <!-- </t> -->
