@@ -87,7 +87,10 @@ class HrAppraisal(models.Model):
             val = round((pct * total / 100.0))
             return f'{val}'
 
-        plt.pie(values, labels=labels, autopct=my_autopct, startangle=90, wedgeprops=dict(width=0.5), textprops={'fontsize': 11}, pctdistance=0.7)
+        plt.pie(values, labels=labels, autopct=my_autopct, startangle=90, wedgeprops=dict(width=0.5), textprops={'fontsize': 15}, pctdistance=0.7)
+        # plt.gca().set_title('KPI Score', fontsize=20)
+        plt.suptitle('KPI Score', fontsize=15, y=0.5, color='#BDBDBD')
+        
         plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
         # Save the plot to a BytesIO buffer

@@ -129,6 +129,18 @@
 			<field name="default_print_option">print</field>
 			<field name="print_report_name">"Sa_Submission_"+(object.name)</field>
 		</record>
+		<record id="action_report_so_rmc" model="ir.actions.report">
+			<field name="name">Sale Order RMC</field>
+			<field name="model">sale.order.rmc</field>
+			<field name="report_type">xlsx</field>
+			<field name="report_name">taps_sale.report_so_rmc</field>
+			<field name="report_file">taps_sale.report_so_rmc</field>
+			<field name="binding_model_id" ref="model_sale_order_rmc"/>
+			<field name="binding_type">report</field>
+			<!-- <field name="paperformat_id" ref="taps_sale.paperformat_sale_report"/> -->
+			<field name="default_print_option">print</field>
+			<field name="print_report_name">Sale Order RMC</field>
+		</record>
         
 		
 	</data>

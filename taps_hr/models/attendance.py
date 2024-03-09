@@ -6,6 +6,8 @@ import datetime
 from odoo.tools import format_datetime
 from dateutil.relativedelta import relativedelta
 import warnings
+import logging
+_logger = logging.getLogger(__name__)
 
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
@@ -308,10 +310,11 @@ class HrAttendance(models.Model):
 
     def generate_attdate(self,attdate=None):
         activeemplist = self.env['hr.employee'].search([('active', '=', True)])
-        base_auto = self.env['base.automation'].search([('id', '=', 23)])
-        if base_auto:
-            base_auto.write({'active': False})
+        # base_auto = self.env['base.automation'].search([('id', '=', 23)])
+        # if base_auto:
+        #     base_auto.write({'active': False})
         for employeelist in activeemplist:
+            _logger.info("Loop Start...")
             att_obj = self.env['hr.attendance']
             dateGenerate = datetime.datetime.now() + timedelta(hours=6)
             if attdate:
@@ -323,23 +326,28 @@ class HrAttendance(models.Model):
             trans_data = get_transfer.sorted(key = 'activationDate', reverse=True)[:1]
             
             get_att_date = att_obj.search([('employee_id', '=', employeelist.id), ('attDate', '=', dateGenerate)])
+            
+            
             if len(get_att_date) == 1:
+                _logger.info("Start att days updating...")
                 get_att_date[-1].write({'attDate': dateGenerate,
                                         'inTime': trans_data.inTime,
                                         'outTime': trans_data.outTime})
                 self.generateAttFlag(get_att_date.empID,get_att_date.attDate,get_att_date.inTime,get_att_date.inHour,
                                      get_att_date.outTime,get_att_date.outHour)
             else:
-                att_obj.create({'attDate': dateGenerate,
-                                'employee_id': employeelist.id,
-                                'inTime': trans_data.inTime,
-                                'outTime': trans_data.outTime})
-                self.generateAttFlag(att_obj.empID,dateGenerate,att_obj.inTime,att_obj.inHour,att_obj.outTime,att_obj.outHour)
-        
-        if base_auto:
-            base_auto.write({'active': True})
+                try:
+                    _logger.info("Creating Start att days...")
+                    att = att_obj.create({'attDate': dateGenerate,
+                                    'employee_id': employeelist.id,
+                                    'inTime': trans_data.inTime,
+                                    'outTime': trans_data.outTime})
+                    
+                except ValueError:
+                    _logger.warning('Creating att days error...')
                     
     def generateAttFlag(self,emp_id,att_date,office_in_time,in_time,office_out_time,out_time):
+        # _logger.info("Start generateAttFlag method...")
         att_obj = self.env['hr.attendance']
         shift_record = self.env['shift.transfer'].search([('empid', '=', emp_id),('activationDate', '<=',att_date)])
         shift_data = shift_record.sorted(key = 'activationDate', reverse=True)[:1]

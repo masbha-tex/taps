@@ -38,7 +38,8 @@ class PpcReportWizard(models.TransientModel):
          ('tw','Team Wise Production Summery'),
          ('stw','Stopper Wise Production Summery'),
          ('tzpw','TZP Wise Production Summery'),
-        ('sbtm','SAMPLE BTM DATA')],
+         ('sbtm','SAMPLE BTM DATA'),
+         ('dmis','Daily MIS')],
         string='Report Type', required=True, help='Report Type', default='pw'
     )
 
@@ -1146,15 +1147,13 @@ class PpcReportWizard(models.TransientModel):
 
     #Sample BTM DATA
     def sample_btm_data(self, docids, data=None):
+        
         start_time = fields.datetime.now()
-        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
 
-        m_orders = running_orders.search([('revision_no','=',None)])
-        
-        rev_orders = running_orders - m_orders
-        
-        m_orders = running_orders
-        # oa_total_balance revision_no
+
+        # running_orders = self.env['manufacturing.order'].search([('oa_id','!=',None),('sales_type','=','Sample'),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+        m_orders = self.env['sale.order'].search([('sales_type','=','sample'),('state','=','sale'),('state','!=','cancel'),('company_id','=',self.env.company.id)])
+
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         
@@ -1167,10 +1166,11 @@ class PpcReportWizard(models.TransientModel):
         row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True,'bottom': True})
         row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
         
-        all_orders = self.env['sale.order.line'].browse(m_orders.sale_order_line.ids)
+        all_orders = self.env['sale.order.line'].browse(m_orders.order_line.ids)
+        # raise UserError(('items'))
         sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
             
-        report_name = "Input Data"
+        report_name = start_time.month
         # raise UserError((items))
         
         sheet = workbook.add_worksheet(('%s' % (report_name)))
@@ -1207,61 +1207,72 @@ class PpcReportWizard(models.TransientModel):
 
         sheet.set_row(0, 32)
         sheet.set_row(1, 20)
-        mrp_datas = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
+        mrp_datas = self.env['sale.order'].search([('sales_type','=','sample'),('state','=','sale'),('state','!=','cancel'),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.id)
 
-        
-        all_oa = mrp_datas.mapped('oa_id').sorted(key=lambda pr: pr.id)
-        # all_oa = set(mrp_datas.mapped('oa_id'))
+        all_oa = mrp_datas #.search([('order_line.id','!=',True)])
+        # raise UserError((all_oa))
+
         
         row = 1
         for oa in all_oa:
-            o_data = mrp_datas.filtered(lambda pr: pr.oa_id.id == oa.id)
-
-            col = 0
-            for l in range(14):
-                if col == 0:
-                    sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d %b"), row_style)
-                elif col == 1:
-                    sheet.write(row, col, str(o_data[0].oa_id.name.replace("OA00", "")), row_style)
-                elif col == 2:
-                     sheet.write(row, col, o_data[0].oa_id.buyer_name.name, row_style)
-                elif col == 3:
-                    sheet.write(row, col, o_data[0].oa_id.style_ref, row_style)
-                elif col == 4:
-                    sheet.write(row, col, o_data[0].oa_id.partner_id.name, row_style_)
-                elif col == 5:
-                    sheet.write(row, col, o_data[0].fg_categ_type, row_style_)
-                elif col == 6:
-                    all_shades = o_data.mapped('shade')
-                    all_shades = list(set(all_shades))
-                    number_of_shade = len(all_shades)
-                    sheet.write(row, col, number_of_shade, row_style_) #count of Shade
-                elif col == 7:
-                    sheet.write(row, col, sum(o_data.mapped('product_uom_qty')), row_style)
-                elif col == 8:
-                    sheet.write(row, col, '', row_style) #Partial 
-                elif col == 9:
-                    sheet.write(row, col, o_data[0].oa_id.closing_date, row_style_)
-                elif col == 10:
-                    sheet.write(row, col, "", row_style_)
-                elif col in(11,12):
-                    oa_create_date = o_data[0].oa_id.create_date
-                    closed_date = o_data[0].oa_id.closing_date
-                    if closed_date:
-                        date_difference = closed_date - oa_create_date.date()
-                        status = "Closed"
-                    else :
-                        date_difference=""
-                        status = "Pending"
-                    if col == 11:
-                        sheet.write(row, col, date_difference, row_style) #lead Time
-                    else:
-                        sheet.write(row, col, status, row_style)
-                elif col == 13:
-                    sheet.write(row, col, '', row_style)
-
-                col += 1
-            row += 1
+            if oa.order_line:
+            # o_data = all_oa.filtered(lambda pr: pr.id == oa.id)
+            # raise UserError((oa.order_line[0].product_template_id.fg_categ_type.name))
+                item = oa.order_line[0].product_template_id.fg_categ_type.name
+                
+                # raise UserError((all_oa.ids))
+    
+                col = 0
+                for l in range(14):
+                    if col == 0:
+                        sheet.write(row, col, oa.date_order.strftime("%d %b %Y"), row_style)
+                    elif col == 1:
+                        sheet.write(row, col, oa.name.replace("SA00", "").replace("SA0", "").replace("SA", ""), row_style)
+                    elif col == 2:
+                         sheet.write(row, col, oa.buyer_name.name, row_style)
+                    elif col == 3:
+                        if oa.style_ref:
+                            sheet.write(row, col, oa.style_ref, row_style)
+                        else :
+                            sheet.write(row, col, "", row_style)
+                    elif col == 4:
+                        sheet.write(row, col, oa.partner_id.name, row_style_)
+                    elif col == 5:
+                        sheet.write(row, col, item, row_style_)
+                    elif col == 6:
+                        all_shades = oa.mapped('order_line.shade')
+                        all_shades = list(set(all_shades))
+                        number_of_shade = len(all_shades)
+                        sheet.write(row, col, number_of_shade, row_style_) #count of Shade
+                    elif col == 7:
+                        sheet.write(row, col, oa.total_product_qty, row_style)
+                    elif col == 8:
+                        sheet.write(row, col, '', row_style) #Partial 
+                    elif col == 9:
+                        if oa.closing_date:
+                            sheet.write(row, col, oa.closing_date.strftime("%d %b %Y"), row_style_)
+                        else :
+                            sheet.write(row, col, "", row_style_)
+                    elif col == 10:
+                        sheet.write(row, col, "", row_style_)
+                    elif col in(11,12):
+                        oa_create_date = oa.create_date
+                        closed_date = oa.closing_date
+                        if closed_date:
+                            date_difference = closed_date - oa_create_date.date()
+                            status = "Closed"
+                        else :
+                            date_difference=""
+                            status = "Pending"
+                        if col == 11:
+                            sheet.write(row, col, date_difference, row_style) #lead Time
+                        else:
+                            sheet.write(row, col, status, row_style)
+                    elif col == 13:
+                        sheet.write(row, col, '', row_style)
+    
+                    col += 1
+                row += 1
         # sum_start_row = 2
         # sum_end_row = row 
         # row += 1

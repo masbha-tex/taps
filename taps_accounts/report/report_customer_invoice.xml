@@ -232,40 +232,69 @@
 						 <div style="font-size:12px">
 						
 							
-							<table class="table table-sm m-0 p-0 table-bordered">
-                        <thead>
-                            <tr>
-                                <th>ITEM</th>
-                                <th>CODE</th>
-                                <th>FINISH</th>
-                                <th>SHADE</th>
-                                <th>SIZE</th>
-                                <!-- <th>INCH</th> -->
-                                <th>QTY</th>
-                                <!-- <th>UNIT</th> -->
-                                <th>PRICE/UNIT</th>
-                                <th>AMOUNT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t>
-                                <!-- <tr> -->
-                                <!--<tr t-as="employee" t-foreach="docs.attendance_ids">-->
-                                <tr t-foreach="datas" t-as="line">	
-                                    <td><t t-esc="line[0]"/></td>
-                                    <td></td>
-                                    <td><t t-esc="line[1]"/></td>
-                                    <td><t t-esc="line[2]"/></td>
-                                    <td><t t-esc="line[3]"/></td>
-                                    <td><t t-esc="line[4]"/></td>
-                                    <td><t t-esc="line[5]"/></td>
-                                    <td><t t-esc="line[6]"/></td>
+						<table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr>
+                                        <th>ITEM</th>
+                                        <!-- <th>CODE</th> -->
+                                        <th>FINISH</th>
+                                        <th>SHADE</th>
+                                        <th>SIZE</th>
+                                        <th>QTY</th>
+                                        <th>PRICE/UNIT</th>
+                                        <th>AMOUNT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="prev_item" t-value="False"/>
+                                    <t t-set="prev_item_1" t-value="False"/>
+                                    <t t-set="prev_item_2" t-value="False"/>
+                                    <t t-foreach="datas" t-as="line">
+                                        <tr>
+                                            <t t-if="prev_item == line[0]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[0]"/></td>
+                                                <t t-set="prev_item" t-value="line[0]"/>
+                                            </t>
+                                            <!-- <td></td> -->
+                                            <t t-if="prev_item_1 == line[1]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[1]"/></td>
+                                                <t t-set="prev_item_1" t-value="line[1]"/>
+                                            </t>
+                                            <t t-if="prev_item_2 == line[2]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[2]"/></td>
+                                                <t t-set="prev_item_2" t-value="line[2]"/>
+                                            </t>
+                                            <!-- <td><t t-esc="line[1]"/></td> -->
+                                            <!-- <td><t t-esc="line[2]"/></td> -->
+                                            <td><t t-esc="line[3]"/></td>
+                                            <td><t t-esc="line[4]"/></td>
+                                            <td><t t-esc="line[5]"/></td>
+                                            <td><t t-esc="line[6]"/></td>
+                                        </tr>
+                                        </t>
+                                            
+                                        <!-- <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><t t-esc="line[4]"/></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr> -->
                                     
-                                </tr>
-                            </t>
-                        <!-- </t> -->
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+
                         
 							
 						</div>

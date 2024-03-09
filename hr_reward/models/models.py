@@ -475,7 +475,7 @@ class HrReward(models.Model):
                     mailfo = ','.join([email.email for email in matrix.next_user if email])
                 matrix_cc = self.env['hr.reward.matrix'].sudo().search([('name', '=', 'MAILCC')], limit=1)
                 if matrix_cc:
-                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email])+','+employee.parent_id.email+','+employee.parent_id.parent_id.email
+                    mailcc = ','.join([email.email for email in matrix_cc.next_user if email])+','+employee.parent_id.email +','+employee.parent_id.parent_id.email if employee.parent_id.parent_id.email else ''
                 attachment = self.env['ir.attachment'].sudo().search([('res_model', '=', 'hr.reward'), ('res_id', 'in', self.ids)])
                 
                 mail_values = {
