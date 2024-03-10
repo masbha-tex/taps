@@ -173,6 +173,19 @@
                 </form>
             </field>
     </record>
+    <record model="ir.ui.view" id="allocated_customer_template_search">
+        <field name="name">customer.allocated.search</field>
+        <field name="model">customer.allocated</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search>             
+                <searchpanel>
+                    <field name="team_id"  icon="fa-building" enable_counters="1"/>
+                   
+                </searchpanel>                
+            </search>
+        </field>
+    </record>
     <record model="ir.ui.view" id="allocated_customer_kanban_view">
             <field name="name">customer.allocated.kanban</field>
             <field name="model">customer.allocated</field>

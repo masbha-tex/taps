@@ -82,7 +82,7 @@
                                         <field name="fg_categ_type"/>
                                         <field name="finish"/>
                                         <field name="shade"/>
-                                        <field name="sizcommon"/>
+                                        <field name="sizcommon" readonly="1" force_save="1"/>
                                         <field name="quantity"/>
                                         <field name="price_unit"/>
                                         <field name="discount"/>
@@ -119,7 +119,7 @@
                     <field name="fg_categ_type"/>
                     <field name="finish"/>
                     <field name="shade"/>
-                    <field name="sizcommon"/>
+                    <field name="sizcommon" readonly="1" force_save="1"/>
                     <field name="quantity"/>
                     <field name="price_unit"/>
                     <field name="discount"/>

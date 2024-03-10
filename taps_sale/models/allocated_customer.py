@@ -19,7 +19,7 @@ class AllocatedCustomer(models.Model):
     allocated_line = fields.One2many('customer.allocated.line', 'allocated_id', string='Allocated Line', copy=True)
     salesperson = fields.Many2one('res.users', domain=[('share', '=', False),('sale_team_id', '!=', False),('sale_team_id.name', '!=', "MARKETING")], string="Salesperson")
     image_field = fields.Image('Photo', related="salesperson.image_1920")
-    team_id = fields.Many2one('crm.team', string= "Team", related="salesperson.sale_team_id")
+    team_id = fields.Many2one('crm.team', string= "Team", related="salesperson.sale_team_id", store=True)
     region_id = fields.Many2one('team.region', string= "Region", compute="_compute_region")
     team_leader_id = fields.Many2one('res.users', string= "Team Leader", related="team_id.user_id")
     # customers = fields.Many2many('res.partner', string="Customers", domain="[['customer_rank', '=', 1]]")

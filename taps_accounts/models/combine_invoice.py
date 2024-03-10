@@ -108,7 +108,7 @@ class CombineInvoiceLine(models.Model):
     
     finish = fields.Text(string='Finish', related='sale_order_line.finish', store=True, readonly=True)
     shade = fields.Text(string='Shade', related='sale_order_line.shade', store=True, readonly=True)
-    sizcommon = fields.Text(string='Size', store=True, readonly=True, compute='compute_size')
+    sizcommon = fields.Text(string='Size', store=True, readonly=False, compute='compute_size')
     quantity = fields.Float(string='Quantity', digits='Product Unit of Measure')
     price_unit = fields.Float(string='Unit Price', digits='Product Price')
     discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
@@ -120,7 +120,7 @@ class CombineInvoiceLine(models.Model):
     
 
 
-    # @api.depends('sale_order_line.sizein', 'sale_order_line.sizecm', 'sale_order_line.sizemm')
+    @api.depends('sale_order_line.sizein', 'sale_order_line.sizecm', 'sale_order_line.sizemm')
     def compute_size(self):
         for s in self:
             if s.sale_order_line.sizein !=False and s.sale_order_line.sizein != 'N/A':
