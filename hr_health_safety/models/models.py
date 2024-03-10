@@ -18,7 +18,18 @@ class HrHealthSafety(models.Model):
     accident_date = fields.Date(string = "Date of Accident Occurred")
     shift = fields.Selection(selection=[
         ('1', 'Day'),
-        ('2', 'Night')], string="Shift", tracking=True, help="How likely is it that this employee will shift?" )    
+        ('2', 'Night'),
+        ('3', 'Common')], string="Shift", tracking=True, help="How likely is it that this employee will shift?" )   
+    type = fields.Selection(selection=[
+        ('1', 'Critical Severity'),
+        ('2', 'High Severity'),
+        ('3', 'Low Severity'),
+        ('4', 'Major Severity')], string="Type Of Accident", tracking=True)
+    # accident_nature = fields.Selection(selection=[
+    #     ('1', 'Critical Severity'),
+    #     ('2', 'High Severity'),
+    #     ('3', 'Low Severity'),
+    #     ('4', 'Major Severity')], string="Nature  Of Accident", tracking=True)
     criteria_id = fields.Many2one('hs.criteria', required=True, string='')
     title_ids = fields.Many2one('hs.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
     

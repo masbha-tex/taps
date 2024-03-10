@@ -200,7 +200,7 @@ class ReportDyePlan(models.AbstractModel):
         sheet.write(row, 7,  '4th DEL', column_style)
         sheet.write(row, 8,  '5th DEL', column_style)
         sheet.write(row, 9,  '6th DEL', column_style)
-        sheet.write(row, 10,  '7th DEL', column_style)
+        sheet.write(row, 10, '7th DEL', column_style)
         sheet.write(row, 11, 'SAMPLE', column_style)
         sheet.write(row, 12,  'BALANCE', column_style)
 

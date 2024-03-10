@@ -183,17 +183,17 @@
 							<div class="col-auto col-2 mw-50 mb-2">
 								<strong>DATE</strong>
 								<p>
-									<!--<t t-if="o.order_type">-->
+									<t t-if="o.invoice_date">
 										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									<!--</t>-->
+									</t>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
 								<strong>INVOICE/BILL DATE</strong>
 								<p>
-									<!--<t t-if="o.order_type">-->
+									<t t-if="o.invoice_date">
 										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									<!--</t>-->
+									</t>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
@@ -250,11 +250,47 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <t t-set="prev_item" t-value="False"/>
+                                    <t t-set="prev_item" t-value=""/>
                                     <t t-set="prev_item_1" t-value="False"/>
-                                    <t t-set="prev_item_2" t-value="False"/>
+                                    <t t-set="prev_item_2" t-value=""/>
                                     <t t-foreach="datas" t-as="line">
                                         <tr>
+                                            <!-- <t>
+												<t t-if="line[0]">
+													<t t-if="prev_item == line[0]">
+														<td colspan="3" style="border-top:hidden !important"/>
+													</t>
+													<t t-if="prev_item != line[0]">
+														<td colspan="3" class="text-left" style="border-top:1px solid black;">
+															<span style="font-size:14px">
+																<t t-esc="line[0]"/>
+																<t t-set="prev_item" t-value="line[0]"/>
+															</span>
+														</td>
+													</t>
+												</t>
+												<t t-if="not line[0]">
+													<td colspan="3"/>
+												</t>
+											</t>
+                                            <t>
+												<t t-if="line[1]">
+													<t t-if="prev_item == line[1]">
+														<td colspan="3" style="border-top:hidden !important"/>
+													</t>
+													<t t-if="prev_item != line[1]">
+														<td colspan="3" class="text-left" style="border-top:1px solid black;">
+															<span style="font-size:14px">
+																<t t-esc="line[1]"/>
+																<t t-set="prev_item" t-value="line[1]"/>
+															</span>
+														</td>
+													</t>
+												</t>
+												<t t-if="not line[1]">
+													<td colspan="3"/>
+												</t>
+											</t> -->
                                             <t t-if="prev_item == line[0]">
                                                 <td></td>
                                             </t>
@@ -263,6 +299,7 @@
                                                 <t t-set="prev_item" t-value="line[0]"/>
                                             </t>
                                             <!-- <td></td> -->
+                                            <t>
                                             <t t-if="prev_item_1 == line[1]">
                                                 <td></td>
                                             </t>
@@ -276,6 +313,7 @@
                                             <t t-else="">
                                                 <td><t t-esc="line[2]"/></td>
                                                 <t t-set="prev_item_2" t-value="line[2]"/>
+                                            </t>
                                             </t>
                                             <!-- <td><t t-esc="line[1]"/></td> -->
                                             <!-- <td><t t-esc="line[2]"/></td> -->
@@ -305,7 +343,7 @@
                         
 							
 						</div>
-						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
+                          <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
                              <div class="row float-left pl-3">
 								<div>
 									<table class="table table-sm o_main_table">
@@ -342,6 +380,7 @@
 									</table>
 								</div>
 							</div>
+                             
 							<div class="row float-right pr-3">
 								<div>
 									<table class="table table-sm o_main_table">
@@ -351,7 +390,7 @@
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<!-- <t t-esc="datas.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
 												</span>
 											</td>
 										</tr>
@@ -361,7 +400,7 @@
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+													<!-- <t t-esc="datas.price_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
 												</span>
 											</td>
 										</tr>
@@ -378,7 +417,10 @@
 								
 							</div> -->
 						</div>
-						<br/>
+                         
+                                      
+						 
+						<!-- <br/> -->
                         <br/>
 							<div class="clearfix" style="font-size:12px">
 								<strong>AMOUNT IN WORDS(USD): 
@@ -415,16 +457,16 @@
 										</p>
 									</div>
 								<!--</t>-->
-								<!--<t t-if="o.incoterm">-->
+								<!-- <t t-if="o.invoice_incoterm_id == 'EX WORKS (EXW)'"> -->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
 											<strong>TRADE TERM:</strong>
 											<br/>
-											<!--<t t-esc="o.incoterm.name"/>-->
+											<t t-esc="o.invoice_incoterm_id.name"/>
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
-								<!--</t>-->
+								<!-- </t> -->
 								<!--<t t-if="o.shipment_mode">-->
 									<div class="col-auto col-3 mw-100 mb-2">
 										<p>
@@ -481,6 +523,23 @@
 								<!--</t>-->
 							</div>
 						</div>
+                            <!-- <t t-if="'EX WORKS (EXW)' in o.invoice_incoterm_id.name">
+                                 <div class="row mb32 mt32">
+                                     <div class="col-7">
+                                         <strong style="background-color:yellow">
+    									</strong>
+                                     </div>
+                                     <div class="col-3">
+                                         <strong style="background-color:yellow">
+                                             <span>FREIGHT COLLECT</span>
+    									</strong>
+                                     </div>
+                                     <div class="col-2">
+                                         <strong style="background-color:yellow">
+    									</strong>
+                                     </div>
+                                 </div>
+                             </t> -->
 						<div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
 							<!--<t t-if="o.note">-->
 								<div class="col-12">
@@ -676,17 +735,17 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						  <div class="col-auto col-2 mw-100 mb-2">
 								<strong>DATE</strong>
 								<p>
-									<!--<t t-if="o.order_type">-->
+									<t t-if="o.invoice_date">
 										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									<!--</t>-->
+									</t>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>INVOICE/BILL DATE</strong>
 								<p>
-									<!--<t t-if="o.order_type">-->
+									<t t-if="o.invoice_date">
 										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									<!--</t>-->
+									</t>
 								</p>
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
@@ -1136,9 +1195,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						  <div class="col-auto col-2 mw-100 mb-2">
 								<strong>DATE</strong>
 								<p>
-									<!--<t t-if="o.order_type">-->
+									<t t-if="o.invoice_date">
 										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									<!--</t>-->
+									</t>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
@@ -1622,17 +1681,17 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						  <div class="col-auto col-2 mw-100 mb-2">
 								<strong>DATE</strong>
 								<p>
-									<!--<t t-if="o.order_type">-->
+									<t t-if="o.invoice_date">
 										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									<!--</t>-->
+									</t>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>INVOICE/BILL DATE</strong>
 								<p>
-									<!--<t t-if="o.order_type">-->
+									<t t-if="o.invoice_date">
 										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									<!--</t>-->
+									</t>
 								</p>
 							</div>
                             
@@ -1969,7 +2028,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="float-right">
 								<h5 style="font-size: 12px">
-									<strong>Date : <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></strong>
+									<strong>Date : <t t-if="o.invoice_date"><t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></t></strong>
                                     
 								</h5>
 							</div>
@@ -2038,10 +2097,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                     </div>
                                     <div class="col-2" style="font-size:12px">
-                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                        <t t-if="o.invoice_date">
+										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									</t>
                                         <br/>
                                         <br/>
-                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                        <t t-if="o.invoice_date">
+										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									</t>
                                         <br/>
                                         <br/>
                                         <br/>
@@ -2097,7 +2160,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="float-right">
 								<h5 style="font-size: 12px">
-									<strong>Date : <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></strong>
+									<strong>Date : <t t-if="o.invoice_date">
+										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									</t></strong>
                                     
 								</h5>
 							</div>
@@ -2166,10 +2231,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                     </div>
                                     <div class="col-2" style="font-size:12px">
-                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                        <t t-if="o.invoice_date">
+										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									</t>
                                         <br/>
                                         <br/>
-                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                        <t t-if="o.invoice_date">
+										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									</t>
                                         <br/>
                                         <br/>
                                         <br/>

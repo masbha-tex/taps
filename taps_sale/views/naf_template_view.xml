@@ -20,7 +20,8 @@
                         <group>
                             <group>
                                 <h3><field name="code"  readonly="1"/></h3><br/>
-                                <field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}" attrs="{'readonly': [('state', 'not in', ('draft', 'inter'))]}"/>
+                                <h4><field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}" attrs="{'readonly': [('state', 'not in', ('draft', 'inter'))]}"/></h4><br/>
+                                <h5><field name="pnaf_code"  readonly="1"/></h5><br/>
                             </group>
                         </group>
                         <div class="oe_title">

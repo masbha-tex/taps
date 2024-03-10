@@ -118,22 +118,22 @@ class ProvisionalNaf(models.Model):
                         'state' : 'inter',
                         }
                 new_record = self.env['naf.template'].sudo().create(data)
-                self.env.cr.commit()
+                # self.env.cr.commit()
                 # raise UserError((new_customer))
                 
-                activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_approval').id)])
+                activity_id = self.env['mail.activity'].sudo().search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_approval').id)])
                 activity_id.action_feedback(feedback="Approved")
-                if self. type == 'customer' or self. type == 'buyinghouse':
-                    app_mat = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
-                if self.type == 'buyer':
-                    app_mat = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.buyer')],limit=1)
+                # if self. type == 'customer' or self. type == 'buyinghouse':
+                #     app_mat = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
+                # else:
+                #     app_mat = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.buyer')],limit=1)
                     
-                self.env['mail.activity'].sudo().create({
-                    'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_first_approval').id,
-                    'res_id': new_record.id,
-                    'res_model_id': self.env.ref('taps_sale.model_naf_template').id,
-                    'user_id': app_mat.first_approval.id
-                    })
+                # self.env['mail.activity'].sudo().create({
+                #     'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_first_approval').id,
+                #     'res_id': new_record.id,
+                #     'res_model_id': self.env.ref('taps_sale.model_naf_template').id,
+                #     'user_id': app_mat.first_approval.id
+                #     })
                 template_id = self.env.ref('taps_sale.p_naf_confirm_email_template')
             
                 if template_id:

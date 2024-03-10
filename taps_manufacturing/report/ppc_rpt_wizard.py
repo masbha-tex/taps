@@ -240,7 +240,7 @@ class PpcReportWizard(models.TransientModel):
             sheet.set_column(0, 0, 6)
             sheet.set_column(1, 1, 0)
             sheet.set_column(2, 2, 10)
-            sheet.set_column(4, 4, 22)
+            sheet.set_column(4, 4, 45)
             sheet.set_column(6, 6, 18)
             sheet.set_column(8, 8, 0)
             sheet.set_column(9, 11, 16)
@@ -283,10 +283,11 @@ class PpcReportWizard(models.TransientModel):
                         sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d %b"), row_style)
                         # sheet.write(row, col, o_data[0].oa_id.create_date.strftime("%d/%m/%Y"), row_style)
                     elif col == 4:
-                        slider_code_match = re.search(r'TZP-\s*(.+)', str(o_data[0].slidercodesfg)) #after all part tzp
-                        slider_part = slider_code_match.group(1) if slider_code_match else ''
-                        if slider_part:
-                            sheet.write(row, col, f"TZP-{slider_part}", row_style)
+                        sheet.write(row, col, o_data[0].slidercodesfg, row_style)
+                        # slider_code_match = re.search(r'TZP-\s*(.+)', str(o_data[0].slidercodesfg)) #after all part tzp
+                        # slider_part = slider_code_match.group(1) if slider_code_match else ''
+                        # if slider_part:
+                        #     sheet.write(row, col, f"TZP-{slider_part}", row_style)
                         
                         
                         # slider_code_match = re.search(r'TZP-\s*([^\s]+)', str(o_data[0].slidercodesfg)) #after tzp number only 
@@ -439,8 +440,8 @@ class PpcReportWizard(models.TransientModel):
             sheet.set_column(0, 0, 6)
             sheet.set_column(1, 1, 0)
             sheet.set_column(2, 2, 10)
-            sheet.set_column(4, 4, 45)
-            sheet.set_column(6, 6, 18)
+            sheet.set_column(4, 4, 60)
+            # sheet.set_column(6, 6, 18)
             sheet.set_column(4, 4, 22)
             sheet.set_column(8, 8, 0)
             sheet.set_column(9, 11, 16)
@@ -448,6 +449,7 @@ class PpcReportWizard(models.TransientModel):
             sheet.set_column(14, 14, 34)
             sheet.set_column(15, 15, 20)
             sheet.set_column(16, 16, 24)
+            sheet.set_column(5, 7, 0)
            
 
             sheet.set_row(0, 32)
@@ -491,16 +493,20 @@ class PpcReportWizard(models.TransientModel):
                     elif col == 4:
                         sheet.write(row, col, o_data[0].slidercodesfg, row_style_left)
                     elif col == 5:
-                        dyeing_plan_date = o_data[0].dyeing_plan.strftime("%d %b") if o_data[0].dyeing_plan else ''
+                        # dyeing_plan_date = o_data[0].dyeing_plan.strftime("%d %b") if o_data[0].dyeing_plan else ''
+                        dyeing_plan_date =''
                         sheet.write(row, col, dyeing_plan_date, row_style)                     
                         # sheet.write(row, col, o_data[0].dyeing_plan, row_style) #Dye Plan Date
                     elif col == 6:
-                        total_shade = round(sum(o_data.mapped('tape_con')), 2)
-                        dyed_shade = round(sum(o_data.mapped('dyeing_qc_pass')), 2)
+                        # total_shade = round(sum(o_data.mapped('tape_con')), 2)
+                        total_shade =''
+                        # dyed_shade = round(sum(o_data.mapped('dyeing_qc_pass')), 2)
+                        dyed_shade =''
                         sheet.write(row, col, f"{dyed_shade} of {total_shade}", row_style)
                         # sheet.write(row, col, dyed_shade, row_style) 
                     elif col == 7:
-                        sheet.write(row, col, sum(o_data.mapped('plating_output')), row_style) #slider plating ok
+                        # sheet.write(row, col, sum(o_data.mapped('plating_output')), row_style) #slider plating ok
+                        sheet.write(row, col, '', row_style)
                     elif col == 8:
                         sheet.write(row, col, '', row_style)
                     elif col == 9:

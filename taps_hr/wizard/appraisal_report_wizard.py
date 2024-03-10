@@ -2267,6 +2267,8 @@ class HeadwisePDFReport(models.TransientModel):
             domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('employee_group'):
+            domain.append(('employee_id.employee_group.id', '=', data.get('employee_group')))
 #         if data.get('bank_id'):
 #             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
         if data.get('employee_type'):
@@ -2597,6 +2599,8 @@ class HeadwisePDFReport(models.TransientModel):
             domain.append(('employee_id.category_ids.id', '=', data.get('category_id')))
         if data.get('employee_id'):
             domain.append(('employee_id.id', '=', data.get('employee_id')))
+        if data.get('employee_group'):
+            domain.append(('employee_id.employee_group.id', '=', data.get('employee_group')))
 #         if data.get('bank_id'):
 #             domain.append(('employee_id.bank_account_id.bank_id', '=', data.get('bank_id')))
         if data.get('employee_type'):

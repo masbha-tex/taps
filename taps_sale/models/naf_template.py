@@ -23,6 +23,7 @@ class NewAccountForm(models.Model):
     name = fields.Char(index=True, string="Name", required=True)
     code = fields.Char(index=True, string="Code")
     pnaf = fields.Many2one('provisional.template', string="P-NAF")
+    pnaf_code = fields.Char(related='pnaf.code' , string="P-Naf Code")
     street = fields.Char(required=True)
     street2 = fields.Char()
     zip = fields.Char(change_default=True)

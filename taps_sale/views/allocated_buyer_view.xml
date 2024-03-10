@@ -18,6 +18,51 @@
                 <form string="Buyer Allocated Form View">
                     
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object"
+                                name="view_buyer"
+                                class="oe_stat_button"
+                                icon="fa-users"
+                                attrs="{}" >
+                                
+                                <field name="buyer_count" widget="statinfo" string="My Buyers" />
+                                <field name="buyer_ids" invisible="1"/>
+                                
+                            </button>
+                            <button type="object"
+                                name="view_opportunity"
+                                class="oe_stat_button"
+                                icon="fa-star"
+                                attrs="{}" >
+                                
+                                <field name="opportunity_count" widget="statinfo" string="Opportunity" />
+                                <field name="buyer_ids" invisible="1"/>
+                                
+                            </button>
+                            <button type="object"
+                                name="view_meeting"
+                                class="oe_stat_button"
+                                icon="fa-calendar"
+                                attrs="{}" >
+                                
+                                <field name="meeting_count" widget="statinfo" string="Meeting" />
+                                <field name="meeting_ids" invisible="1"/>
+                                
+                            </button>
+                            <button type="object"
+                                name="view_activity"
+                                class="oe_stat_button"
+                                icon="fa-tasks"
+                                attrs="{}" >
+                                
+                                <field name="activity_count" widget="statinfo" string="Activity" />
+                                <field name="buyer_ids" invisible="1"/>
+                                
+                            </button>
+                            
+                        </div>
+                        
+                        <field name="image_field" widget="image" class="oe_avatar"/>
                         <div class="oe_title">
                             <h1>
                                 <field name="marketingperson" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
@@ -35,7 +80,17 @@
                             </group>
                             
                         </group>
-                        <notebook>
+                         <notebook>
+                            <page string="Q1">
+                            </page>
+                            <page string="Q2">
+                            </page>
+                            <page string="Q3">
+                            </page>
+                            <page string="Q4">
+                            </page>
+                        </notebook>
+                        <!-- <notebook>
                             <page string="Buyer Allocated Line" name="allocated_line">
                                 <field name="allocated_line" widget="section_and_note_one2many" mode="tree">
                                     <tree
@@ -43,8 +98,6 @@
                                     editable="bottom">
                                         <control>
                                         <create name="add_product_control" string="Add a Buyer"/>
-                                        <!-- <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
-                                        <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/> -->
                                     </control>
                                         
                                         
@@ -56,14 +109,14 @@
                                 </field>
                              </page>
                             
-                        </notebook>
-                    <div class="oe_chatter">
-                                <field name="message_follower_ids"/>
-                                <field name="activity_ids"/>
-                                <field name="message_ids"/>
-                          </div>
-                    </sheet>
+                        </notebook> -->
                     
+                    </sheet>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids"/>
+                            <field name="activity_ids"/>
+                            <field name="message_ids"/>
+                        </div>
                     
                 </form>
             </field>
