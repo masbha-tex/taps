@@ -61,7 +61,7 @@
 </div>
 </field>
 </record>
-    <record id="naf_assign_naf_core_leader_email_template" model="mail.template">
+    <record id="naf_assign_core_leader_customer_email_template" model="mail.template">
         <field name="name">NAF: ASSIGNING TO CORE LEADER</field>
         <field name="model_id" ref="taps_sale.model_naf_template"/>
         <field name="subject">Approval For NAF</field>
@@ -75,11 +75,12 @@
     A Provisional Naf has been Converted To NAF<br/><br/>
     Type : <span>${object.type}</span><br/>
     Name : <span>${object.name}</span><br/><br/>
+    If you got Bulk order from this,
     Please, Click on "View NAF" and Click on "TEAM LEADER APPROVAL" button to proceed further.<br/><br/>
 
 
     <div>
-        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=provisional.template">View P-NAF</a><br/><br/>
+        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="/web#id=${object.id}&amp;view_type=form&amp;model=naf.template">View NAF</a><br/><br/>
     </div><br /><br/>
 
     
@@ -92,8 +93,9 @@
 </field>
 </record>
 
-    <record id="naf_assign_naf_core_leader_buyer_email_template" model="mail.template">
-        <field name="name">NAF: ASSIGNING TO CORE LEADER</field>
+    
+<record id="naf_assign_naf_core_leader_buyer_email_template" model="mail.template">
+        <field name="name">NAF: ASSIGNING TO CORE LEADERS</field>
         <field name="model_id" ref="taps_sale.model_naf_template"/>
         <field name="subject">Approval For NAF</field>
         <field name="email_from"></field>

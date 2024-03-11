@@ -67,6 +67,7 @@
         'wizard/oa_update_confirm.xml',
         'wizard/ccr_wizard.xml',
         'wizard/order_modification_warning.xml',
+        'wizard/set_sample_close_date.xml',
         'views/activity.xml',
         'views/approval_matrix.xml',
         'views/allocated_customer_view.xml',

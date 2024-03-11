@@ -5,6 +5,16 @@
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_form"/>
 			<field name="arch" type="xml">
+                <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d']" position="after">
+                    <!-- <button name="set_closing_date" string="Set Closing Date" type="action" class="btn-primary"/> -->
+                    <button name="%(taps_sale.action_set_sample_cd)d" string="Create Invoice"
+                        type="action" class="btn-primary"/>
+                </xpath>
+                
+                <!-- <xpath expr="//header" position="inside">
+                    <button name="set_closing_date" string="Set Closing Date" type="object" class="btn-primary"/>
+                </xpath> -->
+                <!-- %(taps_sale.action_set_sample_cd)d -->
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
                     <attribute name="domain">[('customer_rank', '=', 1)]</attribute>
@@ -12,6 +22,13 @@
                     <attribute name="attrs">{'required': [['sample_type', 'not in', ['buyinghouse','pacc']]], 'invisible': [['sales_type', '=', 'sample'],['sample_type', '!=', 'customer']]}</attribute>
                     <!-- <attribute name="autocomplete">off</attribute> -->
                 </xpath>
+                <!-- <xpath expr="//field[@name='name']"> -->
+                <!-- <button name="action_set_sample_cd" string="Create Invoice"
+                    type="action" class="btn-primary"
+                    attrs="{'invisible': [('sales_type', '!=', 'oa')]}"/> -->
+				<!-- </xpath> --> 
+                
+                
 				<xpath expr="//field[@name='name']" position="before">
 					<field name="priority_sales" widget="priority" class="mr-3"/>
 				</xpath>

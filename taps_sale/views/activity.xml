@@ -28,6 +28,7 @@
     <record id="mail_activity_naf_first_approval" model="mail.activity.type">
         <field name="name">NAF First Approval</field>
         <field name="res_model_id" ref="taps_sale.model_naf_template"/>
+        <!-- <field name="mail_template_ids" ref="taps_sale.naf_assign_core_leader_customer_email_template"/> -->
     </record>
     <record id="mail_activity_naf_second_approval" model="mail.activity.type">
         <field name="name">NAF Second Approval</field>

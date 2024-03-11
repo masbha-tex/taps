@@ -263,7 +263,14 @@ class SaleOrder(models.Model):
         #     )._get_default_team_id(domain=['|', ('company_id', '=', self.company_id.id), ('company_id', '=', False)], user_id=user_id)
         self.update(values)
 
-
+    def set_closing_date(self):
+        # self.ensure_one()
+        self._check_company()
+            
+        action = self.env["ir.actions.actions"]._for_xml_id("taps_sale.action_set_sample_cd")
+        action["domain"] = [('default_id','in',self.mapped('id'))]
+        return action     
+        
     def action_view_invoice(self):
         invoices = self.mapped('invoice_ids')
         com_inv = self.env['combine.invoice'].search([('z_invoice','in', invoices.ids) or ('m_invoice','in', invoices.ids)])

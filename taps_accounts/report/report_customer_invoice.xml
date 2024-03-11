@@ -390,7 +390,7 @@
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!-- <t t-esc="datas.price_subtotal" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+													<!-- <t t-esc="datas[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
 												</span>
 											</td>
 										</tr>

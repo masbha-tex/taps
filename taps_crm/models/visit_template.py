@@ -85,20 +85,46 @@ class CustomerVisit(models.Model):
         self.visit_purpose = False
     @api.onchange('type')
     def onchange_type(self):
-        self.type_of_acc = False
-        self.partner_id = False
-        self.potential_customer = False
-        self.potential_buyer = False
-        self.buying_house = False
-        self.buyer = False
+        if self.type == 'customer':
+            self.type_of_acc = False
+            self.potential_customer = False
+            self.potential_buyer = False
+        elif self.type == 'brand':
+            self.type_of_acc = False
+            self.potential_customer = False
+            self.potential_buyer = False
+        elif self.type == 'buyinghouse':
+            self.type_of_acc = False
+            self.potential_customer = False
+            self.potential_buyer = False
+            self.partner_id = False
+        
+        
     @api.onchange('type_of_acc')
     def onchange_type_of_acc(self):
+        if self.type_of_acc == 'nbncbh':
+            self.partner_id = False
+            self.buyer = False
+            self.buying_house = False
+        elif self.type_of_acc == 'ecnb':
+            self.buyer = False
+            self.buying_house = False
+        elif self.type_of_acc == 'ebhnb':
+            self.buyer = False
+            self.potential_customer = False
+            self.partner_id = False
+        elif self.type_of_acc == 'ebncbh':
+            self.partner_id = False
+            self.buying_house = False
+            
+            
         
-        self.partner_id = False
-        self.potential_customer = False
-        self.potential_buyer = False
-        self.buying_house = False
-        self.buyer = False
+        
+        # self.partner_id = False
+        # self.potential_customer = False
+        # self.potential_buyer = False
+        # self.buying_house = False
+        # self.buyer = False
         
         
         

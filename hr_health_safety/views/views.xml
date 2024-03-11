@@ -7,9 +7,24 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="" sample="1">
-              <field name="name"/>
-              <field name="criteria_id"/>
-              <field name="title_ids"/>
+                <field name="name"/>
+                <field name="employee_id" options="{'no_open': True}"/>
+                <field name="company_id"/>
+                <field name="department_id"/>
+                <field name="joining_date"/>
+                <field name="service_length"/>
+                <field name="accident_date"/>
+                <field name="shift"/>
+                <field name="type"/>
+                <field name="accident_nature"/>
+                <field name="description_accident"/>
+                <field name="corrective_action"/>
+                <field name="treatment_expense"/>
+                <field name="remarks"/>
+                <field name="rejoining_date"/>
+                <field name="preventive_action"/>
+              <!-- <field name="criteria_id"/>
+              <field name="title_ids"/> -->
             </tree>
         </field>
     </record>
@@ -27,11 +42,30 @@
                     <field name="name"/>
                     
                     <group>
-                        
-                            <field name="criteria_id" options="{'no_create':true, 'no_open':true}"/>
-                            <field name="title_ids" options="{'no_create':true, 'no_open':true}"/>
-                        
+                        <group>
+                            <!-- <field name="criteria_id" options="{'no_create':true, 'no_open':true}"/>
+                            <field name="title_ids" options="{'no_create':true, 'no_open':true}"/> -->
+                            <field name="employee_id" options="{'no_create':true, 'no_open':true}"/>
+                            <field name="company_id"/>
+                            <field name="department_id"/>
+                            <field name="joining_date"/>
+                            <field name="service_length"/>
+                            <field name="shift"/>
+                        </group>
+                        <group>
+                            <field name="accident_date"/>
+                            <field name="type"/>
+                            <field name="accident_nature"/>
+                            <field name="description_accident"/>
+                            <field name="corrective_action"/>
+                            <field name="treatment_expense"/>
+                            <field name="remarks"/>
+                            <field name="rejoining_date"/>
+                        </group>
                                              
+                    </group>
+                    <group>
+                        <field name="preventive_action"/>
                     </group>
                                         
                 </sheet>
@@ -65,6 +99,32 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create the first Health &amp; Safety
             </p>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="hr_health_safety_search_view">
+        <field name="name">hr_health_safety.search</field>
+        <field name="model">hr.health.safety</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                <field name="employee_id"/>
+                <field name="type"/>
+                <group string="Group By">
+                    <!-- <filter name="criteria_id" context="{'group_by': 'criteria_id'}"/> -->
+                    <!-- <filter name="title_ids" context="{'group_by': 'title_ids'}"/> -->
+                    <filter name="type" context="{'group_by': 'type'}"/>
+                    <filter name="accident_nature" context="{'group_by': 'accident_nature'}"/>
+                    <filter name="employee_id" context="{'group_by': 'employee_id'}"/>
+                </group>
+                <searchpanel>
+                    <field name="company_id" enable_counters="1"/>
+                    <field name="type" enable_counters="1"/>
+                    <field name="accident_nature" enable_counters="1"/>
+                    <field name="department_id" enable_counters="1"/>
+                </searchpanel>
+            </search>
         </field>
     </record>
 

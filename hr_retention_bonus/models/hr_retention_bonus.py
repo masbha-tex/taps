@@ -99,7 +99,7 @@ class HrRetentionBonus(models.Model):
     total_amount = fields.Float(string="Total Amount", store=True, readonly=True, compute='_compute_retention_bonus_amount',
                                 help="Total Retention Bonus Scheme amount")
     balance_amount = fields.Float(string="Balance Amount", store=True, compute='_compute_retention_bonus_amount', help="Balance amount")
-    total_paid_amount = fields.Float(string="Total Paid Amount", tracking=True, store=True, compute='_compute_retention_bonus_amount',
+    total_paid_amount = fields.Float(string="Total Paid Amount", store=True, compute='_compute_retention_bonus_amount',
                                      help="Total paid amount")
     uid = fields.Many2one('hr.employee', string='HoD Approval', domain="[('user_id', '!=', False)]", index=True, store=True, tracking=True)
     criteria = fields.Selection([
@@ -710,7 +710,7 @@ class InstallmentLine(models.Model):
     _name = "hr.retention.bonus.line"
     _description = "Installment Line"
 
-    date = fields.Date(string="Payment Date", required=True, help="Date of the payment")
+    date = fields.Date(string="Installment Date", required=True, help="Date of the installment")
     employee_id = fields.Many2one('hr.employee', string="Employee", help="Employee")
     amount = fields.Float(string="Amount", required=True, help="Amount")
     paid = fields.Boolean(string="Paid", help="Paid")
@@ -720,6 +720,6 @@ class InstallmentLine(models.Model):
     active = fields.Boolean('Active', default=True)
     
     
-    # adjustment_type = fields.Many2one('hr.payslip.input.type', string='Type',required=True,store=True, domain="[('code', '=', 'INCENTIVE')]", default=44)
+    adjustment_type = fields.Many2one('hr.payslip.input.type', string='Type',required=True,store=True, default=62)
 
 

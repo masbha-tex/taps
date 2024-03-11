@@ -325,7 +325,36 @@ class NewAccountForm(models.Model):
         return duplicate
 
 
-
+    def _update_activity(self, id):
+        naf = self.env['naf.template'].search([('id', '=', id)])
+        if naf.state == 'inter':
+            if (naf.type == 'customer') or (naf.type == 'buyinghouse'):
+                app_mat = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
+                template_id = self.env.ref('taps_sale.naf_assign_core_leader_customer_email_template')
+                email_to = 'abdur.rahman@texzipperbd.com'
+            elif naf.type == 'buyer':
+                app_mat = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.buyer')],limit=1)
+                template_id = self.env.ref('taps_sale.naf_assign_naf_core_leader_buyer_email_template')
+                email_to = 'abdur.rahman@texzipperbd.com'
+            self.env['mail.activity'].sudo().create({
+                        'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_first_approval').id,
+                        'res_id': naf.id,
+                        'res_model_id': self.env.ref('taps_sale.model_naf_template').id,
+                        'user_id': app_mat.first_approval.id,
+                        
+                        })
+            # if template_id:
+            #     template_id.write({
+            #             'email_to': email_to,
+            #             'email_from': 'odoo@texzipperbd.com',
+            #             'email_cc' : 'asraful.haque@texzipperbd.com',
+            #         })
+                    
+            #     template_id.send_mail(id, force_send=False)
+                
+            
+            
+       
 
 class AssignUserLine(models.Model):
     _name = 'assign.user.line'

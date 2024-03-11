@@ -15,7 +15,7 @@ class ProvisionalNaf(models.Model):
         ('buyinghouse', 'Buying House'),
         ('buyer', 'Buyer'),
         
-    ],string="Type", required=True)
+    ],string="Type", required=True, default="customer")
 
     name = fields.Char(index=True, string="Name", required=True)
     code = fields.Char(index=True, string="Code")
@@ -56,39 +56,48 @@ class ProvisionalNaf(models.Model):
             seq_date = None
             # seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
             vals['code'] = self.env['ir.sequence'].next_by_code('provisional.template', sequence_date=seq_date) or _('New')
-        a = self._check_duplicate_partner(vals)
-        if a == 1:
-            raise UserError(("This "+vals['type'] + "already exist in Database"))
+        naf= self._check_duplicate_naf(vals)
+        if naf == 1:
+            raise UserError(("This "+vals['type'] + "already exist in NAF"))
         else:
-            result = super(ProvisionalNaf, self).create(vals)
-            return result
+            a = self._check_duplicate_partner(vals)
+            if a == 1:
+                raise UserError(("This "+vals['type'] + "already exist in Database"))
+            else:
+                result = super(ProvisionalNaf, self).create(vals)
+        return result
         
     def action_approval(self):
         
         user = self.env['sale.approval.matrix'].search([('model_name', '=','provisional.template')],limit=1)
-        
-        result = self._check_duplicate_partner()
-        if result == 1:
-            raise UserError(("This "+self.type + "already exist in Database"))
+
+        naf= self._check_duplicate_naf()
+        if naf == 1:
+            raise UserError(("This "+ self.type + " already exist in NAF"))
         else:
-            self.env['mail.activity'].sudo().create({
-                    'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_approval').id,
-                    'res_id': self.id,
-                    'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
-                    'user_id': user.first_approval.id
-            })
             
-            template_id = self.env.ref('taps_sale.p_naf_assign_hod_email_template')
-            
-            if template_id:
-                template_id.write({
-                    'email_to': 'alamgir@texzipperbd.com',
-                    'email_from': 'odoo@texzipperbd.com',
-                    'email_cc' : 'asraful.haque@texzipperbd.com',
+            result = self._check_duplicate_partner()
+            if result == 1:
+                raise UserError(("This "+self.type + "already exist in Database"))
+            else:
+                self.env['mail.activity'].sudo().create({
+                        'activity_type_id': self.env.ref('taps_sale.mail_activity_provisional_naf_approval').id,
+                        'res_id': self.id,
+                        'res_model_id': self.env.ref('taps_sale.model_provisional_template').id,
+                        'user_id': user.first_approval.id
                 })
                 
-                template_id.send_mail(self.id, force_send=True)
-            self.write({'state':'to approve'})
+                template_id = self.env.ref('taps_sale.p_naf_assign_hod_email_template')
+                
+                if template_id:
+                    template_id.write({
+                        'email_to': 'alamgir@texzipperbd.com',
+                        'email_from': 'odoo@texzipperbd.com',
+                        'email_cc' : 'asraful.haque@texzipperbd.com',
+                    })
+                    
+                    template_id.send_mail(self.id, force_send=True)
+                self.write({'state':'to approve'})
         
     
 
@@ -151,6 +160,19 @@ class ProvisionalNaf(models.Model):
         else:
             raise UserError(("Only "+ user.first_approval.partner_id.name + " can approve this"))
         
+    def _check_duplicate_naf(self, vals=None):
+        duplicate = 0
+        exists = False
+        if vals:
+            exists = self.env['naf.template'].sudo().search([('name', '=', vals['name']),('type', '=', vals['type'])])
+        else:
+            exists = self.env['naf.template'].sudo().search([('name', '=', self.name),('type', '=', self.type)])
+
+        if exists:
+            duplicate = 1
+            
+        return duplicate
+            
             
 
     def _check_duplicate_partner(self, vals=None):

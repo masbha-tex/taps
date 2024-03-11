@@ -315,9 +315,17 @@ class HrPayslipsss(models.Model):
                     ('employee_id', '=', regular_payslip.employee_id.id),
                 ])
                 attendance_entries.write({'is_lock' : True})
+                retention_bonus = self.env['hr.retention.bonus.line'].search([
+                    ('bonus_id.state', '=', 'approve3'),
+                    ('date', '<=', regular_payslip.date_to), 
+                    ('date', '>=', regular_payslip.date_from), 
+                    ('employee_id', '=', regular_payslip.employee_id.id)])
+                if retention_bonus:
+                    retention_bonus.write({'paid' : True})
+                    retention_bonus.bonus_id._compute_retention_bonus_amount()
                 
                 
-                emp = self.env['hr.employee'].search([('id', '=', regular_payslip.employee_id.id),])
+                emp = self.env['hr.employee'].search([('id', '=', regular_payslip.employee_id.id)])
                 # for rec in emp:
                 pf_total = emp.contribution_sum
                 pf_total += regular_payslip.pf_empe_wage
@@ -657,6 +665,7 @@ class HrPayslipsss(models.Model):
         return res    
     
     def _input_compute_sheet(self, payslip_id, contract_id, employee_id, date_start, date_stop):
+        # raise UserError(('sdfsd'))
         
         others_adjust = self.env['hr.payslip.input']
         payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
@@ -684,6 +693,20 @@ class HrPayslipsss(models.Model):
                                               'input_type_id': int(type.adjustment_type),
                                               'contract_id':contract_id,
                                               'amount': sum(type.mapped('amount'))})
+        input_entries_retention_bonus = self.env['hr.retention.bonus.line'].search([('bonus_id.state', '=', 'approve3'),('date', '<=', date_stop), ('date', '>=', date_start), ('employee_id', '=', int(employee_id))])                        
+        if input_entries_retention_bonus:
+            for type in input_entries_retention_bonus:
+                adjust_exist = self.env['hr.payslip.input'].search([('payslip_id', '=', payslip_id), ('input_type_id', '=', int(type.adjustment_type))])
+                if adjust_exist:
+                    amount = sum(adjust_exist.mapped('amount'))
+                    amount = amount + sum(type.mapped('amount'))
+                    adjust_exist.write({'amount': amount})
+                else:
+                    others_adjust.create({'payslip_id': payslip_id,
+                                          'sequence':10,
+                                          'input_type_id': int(type.adjustment_type),
+                                          'contract_id':contract_id,
+                                          'amount': sum(type.mapped('amount'))})                           
                 
     def action_refresh_from_work_entries(self):
         # Refresh the whole payslip in case the HR has modified some work entries

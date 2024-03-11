@@ -1153,12 +1153,14 @@ class PpcReportWizard(models.TransientModel):
 
     #Sample BTM DATA
     def sample_btm_data(self, docids, data=None):
-        
+
         start_time = fields.datetime.now()
 
-
-        # running_orders = self.env['manufacturing.order'].search([('oa_id','!=',None),('sales_type','=','Sample'),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
-        m_orders = self.env['sale.order'].search([('sales_type','=','sample'),('state','=','sale'),('state','!=','cancel'),('company_id','=',self.env.company.id)])
+        # # running_orders = self.env['manufacturing.order'].search([('oa_id','!=',None),('sales_type','=','Sample'),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+        # m_orders = self.env['sale.order'].search([('sales_type','=','sample'),('state','=','sale'),('state','!=','cancel'),('company_id','=',self.env.company.id)]) 
+        # m_orders = m_orders.filtered(lambda pr: pr.create_date.date() >= data.get('date_from') and pr.create_date.date() <= data.get('date_to'))
+        # counta = len(m_orders)
+        # raise UserError((counta))
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -1172,9 +1174,10 @@ class PpcReportWizard(models.TransientModel):
         row_style_border_left = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial', 'valign': 'vcenter','align': 'center', 'left': True,'bottom': True})
         row_style_border_right = workbook.add_format({'bold': True, 'font_size': 13, 'font':'Arial',  'valign': 'vcenter','align': 'center', 'right': True})
         
-        all_orders = self.env['sale.order.line'].browse(m_orders.order_line.ids)
-        # raise UserError(('items'))
-        sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
+        # all_orders = self.env['sale.order.line'].browse(m_orders.order_line.ids)
+        # # raise UserError(('items'))
+        # sale_orders = self.env['sale.order'].browse(all_orders.order_id.ids).sorted(key=lambda pr: pr.id)
+        # sale_orders = sale_orders.filtered(lambda pr: pr.create_date.date() >= data.get('date_from') and pr.create_date.date() <= data.get('date_to'))
             
         report_name = start_time.month
         # raise UserError((items))
@@ -1213,11 +1216,8 @@ class PpcReportWizard(models.TransientModel):
 
         sheet.set_row(0, 32)
         sheet.set_row(1, 20)
-        mrp_datas = self.env['sale.order'].search([('sales_type','=','sample'),('state','=','sale'),('state','!=','cancel'),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.id)
-
-        all_oa = mrp_datas #.search([('order_line.id','!=',True)])
-        # raise UserError((all_oa))
-
+        all_oa = self.env['sale.order'].search([('sales_type','=','sample'),('state','=','sale'),('state','!=','cancel'),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.id).filtered(lambda pr: pr.create_date.date() >= data.get('date_from') and pr.create_date.date() <= data.get('date_to'))
+        
         
         row = 1
         for oa in all_oa:
@@ -1232,6 +1232,9 @@ class PpcReportWizard(models.TransientModel):
                 for l in range(14):
                     if col == 0:
                         sheet.write(row, col, oa.date_order.strftime("%d %b %Y"), row_style)
+                        # sheet.write_datetime(row, col, oa.date_order, workbook.add_format({'num_format': 'dd mmm yyyy'}))
+                        # sheet.write_datetime(row, col, oa.date_order, workbook.add_format({'num_format': 'dd mmm yyyy'}).merge(row_style))
+
                     elif col == 1:
                         sheet.write(row, col, oa.name.replace("SA00", "").replace("SA0", "").replace("SA", ""), row_style)
                     elif col == 2:
@@ -1257,6 +1260,7 @@ class PpcReportWizard(models.TransientModel):
                     elif col == 9:
                         if oa.closing_date:
                             sheet.write(row, col, oa.closing_date.strftime("%d %b %Y"), row_style_)
+                            # sheet.write_datetime(row, col, oa.closing_date, workbook.add_format({'num_format': 'dd mmm yyyy'}).merge(row_style))
                         else :
                             sheet.write(row, col, "", row_style_)
                     elif col == 10:

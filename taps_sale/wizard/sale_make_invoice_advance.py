@@ -12,21 +12,23 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
         if self.advance_payment_method == 'delivered':
             moves = sale_orders._create_invoices(final=self.deduct_down_payments)
             
-            # btn_order = sale_orders.filtered(lambda x: x.company_id.id == 3)
-            # # order_ref = btn_order.mapped('order_ref')
+            btn_order = sale_orders.filtered(lambda x: x.company_id.id == 3)
+            # order_ref = btn_order.mapped('order_ref')
             
-            # if btn_order:
-            #     pi_line = self.env['sale.order.line'].search([('order_id','in',btn_order.order_ref.ids)])
-            #     moulds = pi_line.filtered(lambda x: x.product_template_id.name == 'MOULD' and x.price_subtotal >= 0)
-            #     if moulds:
-            #         for m in moulds:
-            #             b_moves = moves.filtered(lambda x: x.company_id.id == 3)
-            #             ac_line = self.env['account.move.line'].search([('move_id','=',b_moves.id)])
-            #             if ac_line:
-            #                 # raise UserError((ac_line[1].account_id.id))
-            #                 eoij = ac_line.write({'move_id':b_moves.id,'product_id':m.product_id.id,'product_uom_id': m.product_uom.id,'quantity': m.product_uom_qty,'price_unit': m.price_unit,'price_subtotal': m.price_subtotal,'account_id':ac_line[0].account_id.id,'account_root_id':ac_line[0].account_root_id.id,'analytic_account_id': ac_line[0].analytic_account_id.id})
-                            
-                            # raise UserError(('uuuj')) ,'account_id':ac_line[0].account_id.id,'account_root_id':ac_line[0].account_root_id.id
+            if btn_order:
+                pi_line = self.env['sale.order.line'].search([('order_id','in',btn_order.order_ref.ids)])
+                moulds = pi_line.filtered(lambda x: x.product_template_id.name == 'MOULD' and x.price_subtotal >= 0)
+                if moulds:
+                    value = sum(moulds.mapped('price_subtotal'))
+                    b_moves = moves.filtered(lambda x: x.company_id.id == 3)
+                    ac_line = self.env['account.move.line'].search([('move_id','=',b_moves.id)])
+                    inv_line = ac_line.filtered(lambda x: 'INV/' in x.name)
+                    inv_line.write({'debit': inv_line.debit + value})
+                    for m in moulds:
+                        if ac_line:
+                            # raise UserError((b_moves.id,m.product_id.id,m.product_uom.id,m.product_uom_qty,m.price_unit,m.price_subtotal))
+                            eoij = ac_line.write({'move_id':b_moves.id,'product_id':m.product_id.id,'product_uom_id': m.product_uom.id,'quantity': m.product_uom_qty,'price_unit': m.price_unit,'price_subtotal': m.price_subtotal,'debit':0,'credit':m.price_subtotal})
+                            # raise UserError(('uuuj')) 'account_id':11, ,'account_root_id':51048 ,'account_id':ac_line[0].account_id.id,'account_root_id':ac_line[0].account_root_id.id
                             # account_id | account_root_id
                         # moves.invoice_line_ids.create({'product_id':m.product_id})
             #     btn_order.filtered(lambda x: x.company_id.id == 3)

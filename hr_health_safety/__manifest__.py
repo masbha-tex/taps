@@ -6,19 +6,20 @@
     'author': "Mohammad Adnan",
     'category': 'Generic Modules/Health Safety',
     'version': '0.1',
-    'depends': ['base','mail','web'],
+    'depends': ['base','mail','web','hr','taps_hr'],
 
     
     'data': [
         'security/res_groups.xml',
         'security/ir.model.access.csv',
+        'data/ir_sequence.xml',
         'views/views.xml',
         'views/templates.xml',
     ],
     
-    'demo': [
-        'demo/demo.xml',
-    ],
+    # 'demo': [
+    #     'demo/demo.xml',
+    # ],
     'qweb': [],    
     'license': 'AGPL-3',
     'installable': True,

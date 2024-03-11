@@ -5,7 +5,7 @@
             <field name="model">naf.template</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <form string="NAF">
+                <form string="NAF" create="false">
                     <header>
                         <button name="action_submit_approval" type="object" string="Submit" attrs= "{'invisible': [('state', 'not in', ['draft'])]}" help="Click On Submit to send for approval "/>
                         <button name="action_approve" type="object" string="Approve" attrs= "{'invisible': [('state', 'not in', ['to approve'])]}" help="Click On Approve to create a record"/>
@@ -181,7 +181,7 @@
             <field name="model">naf.template</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree string="NAF List">
+                <tree string="NAF List" create="false">
                     <field name="name"/>
                     <field name="type"/>
                     <field name="create_uid" widget="many2one_avatar_user"/>

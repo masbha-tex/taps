@@ -43,7 +43,7 @@ class ReportDyePlan(models.AbstractModel):
         
         item_name = del_ids[0].fg_categ_type +" " + del_ids[0].finish + slider
         del_ids = del_ids.sorted(key = 'name')
-        carton = del_ids.mapped('name')
+        carton = del_ids.mapped('internal_ref')
         carton = list(set(carton))
         report_name =('OA-'+ (del_ids[0].oa_id.name + "  " + 'PI-'+ (del_ids[0].oa_id.pi_number or '')).replace("OA00","")).replace("PI00","")
         # for m in machines:

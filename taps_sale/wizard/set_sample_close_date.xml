@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_form_set_sample_close_date" model="ir.ui.view">
+            <field name="name">expdd.form.view</field>
+            <field name="model">set.sample.cd</field>
+            <field name="arch" type="xml">
+                <form string="Set Sample Close Date">
+                    <group>
+                        <group>
+                            <field name="oa_id"/>
+                            <field name="oa_count" readonly="1" force_save="1"/>
+                            <field name="sample_closed_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="done_sample_cd" string="Done" type="object" default_focus="1" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- <record id="action_set_sample_cd" model="ir.actions.act_window">
+            <field name="name">Set Sample Close Date</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">set.sample.cd</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="taps_sale.model_set_sample_cd"/>
+            <field name="binding_view_types">form</field>
+        </record> -->
+
+        
+        <record id="action_set_sample_cd" model="ir.actions.act_window">
+            <field name="name">Set Sample Close Date</field>
+            <field name="res_model">set.sample.cd</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_form_set_sample_close_date"/>
+            <field name="target">new</field>
+        </record>
+
+        <!-- <record model="ir.ui.view" id="sale_order_list_view_inherited">
+        <field name="name">sale.order.list.view.inherited</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <header>
+                    <button type="object" class="btn-primary"
+                            name="action_set_sample_cd" icon="fa-whatsapp" string="Sample Closing Date"/>
+                </header>
+            </xpath>
+        </field>
+    </record>  -->
+ 
+    </data>    
+
+    <!-- Sale Order Form View -->
+    <!-- <record model="ir.ui.view" id="sale_order_form_view_inherited">
+        <field name="name">sale.order.form.view.inherited</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="string">Sale Order Form with Sample Closed Date</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_quotation_send']" position="after">
+                <button type="object" class="oe_stat_button" style="background-color: #FF5733; color: white;"
+                        name="done_sample_cd" string="Sample Closed Date"/>
+            </xpath>
+        </field>
+    </record> -->
+
+    <!-- Sale Order List View -->
+ <!-- <record model="ir.ui.view" id="sale_order_list_view_inherited">
+        <field name="name">sale.order.list.view.inherited</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <header>
+                    <button type="object" class="btn-primary"
+                            name="done_sample_cd" string="Sample Closed Date"/>
+                </header>
+            </xpath>
+        </field>
+    </record> -->
+
+    </odoo> 

@@ -14,13 +14,13 @@
     'live_test_url': 'https://youtu.be/LdUvXDMkd4Q',
     'website': "https://taps.odoo.com",
     'depends': [
-        'base', 'hr',
+        'base', 'hr','hr_payroll'
     ],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
         'views/hr_retention_bonus_seq.xml',
-        # 'data/salary_rule_loan.xml',
+        'data/salary_rule_loan.xml',
         'data/retention_matrix_rule.xml',
         'data/reminder_payment.xml',
         'views/hr_retention_bonus.xml',
