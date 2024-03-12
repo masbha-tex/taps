@@ -40,13 +40,13 @@ class HrHealthSafety(models.Model):
         ('12', 'Hot work related'),
         ('13', 'Environment related'),
         ('14', 'Chemical related')], string="Nature  of Accident", tracking=True)
-    description_accident = fields.Char('Place/machine And Description of Accident', size=250, tracking=True)
+    description_accident = fields.Char('Description of Accident', size=250, tracking=True)
     corrective_action = fields.Char('Corrective Action', size=250, tracking=True)
     preventive_action = fields.Char('Preventive Action', size=250, tracking=True)
     remarks = fields.Char('Remarks', size=250, tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency')
     treatment_expense = fields.Monetary(string='Treatment Expense', store=True, currency_field='currency_id')
-    rejoining_date = fields.Date(string = "Date of Re-joining")
+    rejoining_date = fields.Date(string = "Date of Re-Joining")
     # criteria_id = fields.Many2one('hs.criteria', required=True, string='')
     # title_ids = fields.Many2one('hs.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
     

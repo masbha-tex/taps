@@ -19,7 +19,7 @@
     'version': '14.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','web','web_studio','product', 'stock', 'resource','mrp', 'barcodes','report_xlsx','taps_sale'],
+    'depends': ['base','web','web_studio','product', 'stock', 'resource','mrp', 'barcodes','report_xlsx','taps_sale','sale', 'board'],
 
     # always loaded
     'data': [
@@ -64,13 +64,22 @@
         'report/report_label_print_blank.xml',
         'wizard/oa_check.xml',
         'report/ppc_rpt_wizard.xml',
+        # 'report/ppc_production_analysis.xml',
         'wizard/set_exp_close_date.xml',
         # 'wizard/manufacturing_report_wizard.xml'
+        # 'static/src/components/charts/chart_renderer.xml',
+        # 'static/src/components/score_cards/score_card.xml',
+        # 'static/src/components/ppc_production_analysis.xml',
+        # 'report/ppc_production_analysis.xml',
+        
         'views/fg_packaging.xml',
     ],
     'qweb': [
         "static/src/xml/qweb_templates.xml",
     ],
+    'installable': True,
+    'auto_install': False,
+    'application': True,
     
     'license': 'LGPL-3',
     # only loaded in demonstration mode

@@ -46,7 +46,7 @@ class SaleOrder(models.Model):
         ('buyinghouse', 'Buying House'),
         ('pacc', 'Potential Account'),
     ],string="Sample Submission", required=True, default='customer')    
-    provisionals_id = fields.Many2one(comodel_name='provisional.template', string='Provisional Acc')
+    provisionals_id = fields.Many2one(comodel_name='provisional.template', string='Provisional Acc', domain="[['type', '!=', 'buyer'],['state', '=', 'approved']]")
     buying_house = fields.Many2one('res.partner', string='Buying House', domain="[('buying_house_rank', '>',0)]")
     user_id = fields.Many2one(
         'res.users', string='Salesperson',  default=False, required=True,
@@ -67,7 +67,7 @@ class SaleOrder(models.Model):
             ('potential', 'Potential')],
             string='Type of Buyer', default='existing')
     buyer_name = fields.Many2one('res.partner', string='Buyer')
-    provisionals_buyer = fields.Many2one('provisional.template', string='Provisional Buyer')
+    provisionals_buyer = fields.Many2one('provisional.template', string='Provisional Buyer', domain="[['type', '=', 'buyer'],['state', '=', 'approved']]")
     season = fields.Char(string='Season')
     sample_ref = fields.Many2many(comodel_name='sale.order',
                                   relation='id_name',column1='id',column2='name',

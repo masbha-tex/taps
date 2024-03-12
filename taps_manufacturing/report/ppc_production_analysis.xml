@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="action_owl_sales_dashboard" model="ir.actions.client">
+            <field name="name">PPC Production Analysis</field>
+            <field name="tag">owl.PpcProductionAnalysis</field>
+        </record>
+
+         <menuitem id="id_ppc_production_analysis"
+              name="PRODUCTION ANALYSIS"
+              sequence="3"
+              parent="taps_manufacturing.ppc_reports"
+              action="action_owl_sales_dashboard"
+              />
+    </data>
+</odoo>

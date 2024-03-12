@@ -20,7 +20,7 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'views/hr_retention_bonus_seq.xml',
-        'data/salary_rule_loan.xml',
+        # 'data/salary_rule_loan.xml',
         'data/retention_matrix_rule.xml',
         'data/reminder_payment.xml',
         'views/hr_retention_bonus.xml',

@@ -5,16 +5,6 @@
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_form"/>
 			<field name="arch" type="xml">
-                <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d']" position="after">
-                    <!-- <button name="set_closing_date" string="Set Closing Date" type="action" class="btn-primary"/> -->
-                    <button name="%(taps_sale.action_set_sample_cd)d" string="Create Invoice"
-                        type="action" class="btn-primary"/>
-                </xpath>
-                
-                <!-- <xpath expr="//header" position="inside">
-                    <button name="set_closing_date" string="Set Closing Date" type="object" class="btn-primary"/>
-                </xpath> -->
-                <!-- %(taps_sale.action_set_sample_cd)d -->
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
                     <attribute name="domain">[('customer_rank', '=', 1)]</attribute>
@@ -133,7 +123,7 @@
 					<field name="division" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
                     <field name="buyer_type"  attrs="{'invisible': [['sales_type','!=', 'sample']], 'required':[['sales_type', '=', 'sample']]}"/>
                         <field name="provisionals_buyer" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|',['buyer_type','!=', 'potential'],['sales_type','!=', 'sample']], 'required': [['buyer_type', '=', 'potential']]}"/>
-					<field name="buyer_name" domain="[('buyer_rank', '=', True)]" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" context="{'default_buyer_rank': 1}" attrs="{'invisible': [['buyer_type','=', 'potential']], 'required': [['buyer_type', '!=', 'potential']]}"/>
+					<field name="buyer_name" domain="[('buyer_rank', '=', True)]" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [['sales_type','=', 'sample'],['buyer_type','=', 'potential']], 'required': [['buyer_type', '!=', 'potential']]}"/>
 					<field name="hs_code" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>
 					<field name="production_type" attrs="{'invisible': ['|','|',['sales_type','=','sample'],['sales_type','=',False],['sales_type','=','oldsa']]}"/>
 					<field name="production_group" attrs="{'invisible': ['|',['sales_type','=','sample'],['sales_type','=','oldsa']]}"/>

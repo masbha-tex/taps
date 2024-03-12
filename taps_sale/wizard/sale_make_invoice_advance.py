@@ -23,15 +23,13 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                     b_moves = moves.filtered(lambda x: x.company_id.id == 3)
                     ac_line = self.env['account.move.line'].search([('move_id','=',b_moves.id)])
                     inv_line = ac_line.filtered(lambda x: 'INV/' in x.name)
+                    # raise UserError((inv_line.debit,value))
                     inv_line.write({'debit': inv_line.debit + value})
                     for m in moulds:
+                        b_moves.update()
                         if ac_line:
-                            # raise UserError((b_moves.id,m.product_id.id,m.product_uom.id,m.product_uom_qty,m.price_unit,m.price_subtotal))
                             eoij = ac_line.write({'move_id':b_moves.id,'product_id':m.product_id.id,'product_uom_id': m.product_uom.id,'quantity': m.product_uom_qty,'price_unit': m.price_unit,'price_subtotal': m.price_subtotal,'debit':0,'credit':m.price_subtotal})
-                            # raise UserError(('uuuj')) 'account_id':11, ,'account_root_id':51048 ,'account_id':ac_line[0].account_id.id,'account_root_id':ac_line[0].account_root_id.id
-                            # account_id | account_root_id
-                        # moves.invoice_line_ids.create({'product_id':m.product_id})
-            #     btn_order.filtered(lambda x: x.company_id.id == 3)
+                            
             # moves.action_post()
             if moves:
                 # for mv in moves:

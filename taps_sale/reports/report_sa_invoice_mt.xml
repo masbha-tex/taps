@@ -90,7 +90,15 @@
 										<strong>CUSTOMER DETAILS</strong>
 									</div>
 									<p>
-										<span t-esc="o.partner_id.name"/>
+    										<t t-if="o.sample_type == 'customer'">
+    											<span t-esc="o.partner_id.name"/>
+                                            </t>
+                                            <t t-if="o.sample_type == 'buyinghouse'">
+    											<span t-esc="o.buying_house.name"/>
+                                            </t>
+                                            <t t-if="o.sample_type == 'pacc'">
+    											<span t-esc="o.provisionals_id.name"/>
+                                            </t>
 									
 									</p>
 								</div>
@@ -99,7 +107,12 @@
 										<strong>BUYER NAME</strong>
 									</div>
 									<p>
-										<span t-esc="o.buyer_name.name"/>
+										<t t-if="o.buyer_type == 'existing'">
+    										<span t-esc="o.buyer_name.name"/>
+                                        </t>
+                                        <t t-if="o.buyer_type == 'potential'">
+    										<span t-esc="o.provisionals_buyer.name"/>
+                                        </t>
 									</p>
 								</div>
 								<div class="col-auto col-2">

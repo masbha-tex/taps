@@ -24,7 +24,7 @@ class SetSampleCloseDate(models.TransientModel):
         active_model = self.env.context.get("active_model")
         active_ids = self.env.context.get("active_ids")
         mrp = self.env["sale.order"].browse(active_ids)
-        oa_ids = mrp.mapped('oa_id.name')
+        oa_ids = mrp.mapped('name')
         list_oa_ids = ','.join([i for i in oa_ids])
         
         res["oa_id"] = list_oa_ids
@@ -34,5 +34,5 @@ class SetSampleCloseDate(models.TransientModel):
     def done_sample_cd(self):
         mo_id = self.env.context.get("active_ids")
         mrp = self.env["sale.order"].browse(mo_id)
-        mrp_oa = mrp.update({'closing_date':self.Sample_Closed_Date})
+        mrp_oa = mrp.update({'closing_date':self.sample_closed_date})
         return

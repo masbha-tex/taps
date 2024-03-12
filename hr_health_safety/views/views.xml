@@ -39,10 +39,16 @@
 				<sheet>
                     <field name="active" invisible="1"/>   
                     
-                    <field name="name"/>
+                    <!-- <field name="name"/> -->
+                    <group colspan="2" col="2">
+                        <div class="oe_title">
+                            <!-- <label for="name" class="oe_edit_only"/> -->
+                            <h1 class="d-flex"><field name="name" readonly="True"/></h1>
+                        </div> 
+                    </group>
                     
                     <group>
-                        <group>
+                        <group string="General">
                             <!-- <field name="criteria_id" options="{'no_create':true, 'no_open':true}"/>
                             <field name="title_ids" options="{'no_create':true, 'no_open':true}"/> -->
                             <field name="employee_id" options="{'no_create':true, 'no_open':true}"/>
@@ -52,19 +58,22 @@
                             <field name="service_length"/>
                             <field name="shift"/>
                         </group>
-                        <group>
+                        <group string="Accident Details">
                             <field name="accident_date"/>
                             <field name="type"/>
+                            <!-- <field name="type" widget="badge" decoration-success="state == 'Approved'" decoration-warning="state == 'Submit'" decoration-danger="state == 'Refused'" decoration-muted="state == 'draft'" decoration-info="state == 'HoD'"/>  -->
                             <field name="accident_nature"/>
                             <field name="description_accident"/>
-                            <field name="corrective_action"/>
+                            
                             <field name="treatment_expense"/>
                             <field name="remarks"/>
                             <field name="rejoining_date"/>
                         </group>
                                              
                     </group>
-                    <group>
+                    <group string="CAPA">
+                        
+                        <field name="corrective_action"/>
                         <field name="preventive_action"/>
                     </group>
                                         

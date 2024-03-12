@@ -5,7 +5,7 @@
             <field name="name">expdd.form.view</field>
             <field name="model">set.sample.cd</field>
             <field name="arch" type="xml">
-                <form string="Set Sample Close Date">
+                <form string="Set Closing Date">
                     <group>
                         <group>
                             <field name="oa_id"/>
@@ -21,24 +21,24 @@
             </field>
         </record>
 
-        <!-- <record id="action_set_sample_cd" model="ir.actions.act_window">
-            <field name="name">Set Sample Close Date</field>
+        <record id="action_set_sample_cd" model="ir.actions.act_window">
+            <field name="name">Set Closing Date</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">set.sample.cd</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="binding_model_id" ref="taps_sale.model_set_sample_cd"/>
             <field name="binding_view_types">form</field>
-        </record> -->
+        </record>
 
         
-        <record id="action_set_sample_cd" model="ir.actions.act_window">
+        <!-- <record id="action_set_sample_cd" model="ir.actions.act_window">
             <field name="name">Set Sample Close Date</field>
             <field name="res_model">set.sample.cd</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_form_set_sample_close_date"/>
             <field name="target">new</field>
-        </record>
+        </record> -->
 
         <!-- <record model="ir.ui.view" id="sale_order_list_view_inherited">
         <field name="name">sale.order.list.view.inherited</field>
