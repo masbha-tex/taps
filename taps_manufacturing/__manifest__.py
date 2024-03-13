@@ -70,7 +70,7 @@
         # 'static/src/components/charts/chart_renderer.xml',
         # 'static/src/components/score_cards/score_card.xml',
         # 'static/src/components/ppc_production_analysis.xml',
-        # 'report/ppc_production_analysis.xml',
+        'report/ppc_production_analysis.xml',
         
         'views/fg_packaging.xml',
     ],

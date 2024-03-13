@@ -3,7 +3,7 @@
 	<template id="report_customer_invoice">
 		<t t-call="web.html_container">
 			<t t-foreach="docs" t-as="o">
-				<t t-call="web.external_layout">
+				<t t-call="web.external_layout_no_company">
 					<div class="page" style="page-break-after: always;">
 						<div class="footer text-center" style="margin:0px; padding:0px;">
                     Page: <span class="page"/>/<span class="topage"/>
@@ -35,7 +35,7 @@
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">INVOICE DETAILS</strong>
+									<strong style="font-size:12px">INVOICE ADDRESS</strong>
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -45,7 +45,7 @@
 							</div>
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">DESPATCH DETAILS</strong>
+									<strong style="font-size:12px">DESPATCH ADDRESS</strong>
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -87,7 +87,7 @@
 								<p>
 									<strong>BANK REF NO:</strong>
 									<br/>
-									 <t t-esc="o.partner_bank_id"/>
+									 <t t-esc="o.partner_bank_id.name"/>
 								</p>
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">

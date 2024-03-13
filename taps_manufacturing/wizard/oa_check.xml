@@ -15,14 +15,24 @@
                         <field name="Size_list" options="{'no_create':true, 'no_open':true}"/>  
                         </group>
                         <group>
+                            <field name="order_qty" force_save="1" readonly="1"/>
+                            <field name="oa_balance" force_save="1" readonly="1"/>
+                            <field name="total_packed" force_save="1" readonly="1"/>
                             <field name="total_packed_date" force_save="1" readonly="1"/>
                             <field name="Shade_wise_packed" force_save="1" readonly="1"/>
                             <field name="Size_wise_packed" force_save="1" readonly="1"/>  
                         </group>
                         <group>
-                            <field name="total_packed" force_save="1" readonly="1"/>
-                            <field name="total_packed_shade" force_save="1" readonly="1"/>
-                            <field name="total_packed_size" force_save="1" readonly="1"/>  
+                            <field name="lookup_oa_2" placeholder="Select OA"  force_save="1" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="Shade_list_2" options="{'no_create':true, 'no_open':true}"/>
+                            <field name="Size_list_2" options="{'no_create':true, 'no_open':true}"/>
+                        </group>
+                        <group>
+                            <field name="order_qty_2" force_save="1" readonly="1"/>
+                            <field name="oa_balance_2" force_save="1" readonly="1"/>
+                            <field name="total_packed_2" force_save="1" readonly="1"/>
+                            <field name="Shade_wise_packed_2" force_save="1" readonly="1"/>
+                            <field name="Size_wise_packed_2" force_save="1" readonly="1"/>  
                         </group>
                 </group>
                 <footer>

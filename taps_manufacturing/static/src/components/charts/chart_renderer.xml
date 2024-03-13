@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<templates xml:space="preserve">
-    <t t-name="owl.ChartRenderer" owl="1">
-        <canvas t-ref="chart"/>
-    </t>
-</templates>
+
+
+<odoo>
+    <data>
+        <template id="assets_backend" name="taps_manufacturing.assets_backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/taps_manufacturing/static/src/js/chart_renderer.js"></script>
+            </xpath>
+        </template>
+
+        <record id="view_chart_renderer" model="ir.ui.view">
+            <field name="name">chart.renderer.form</field>
+            <field name="model">ir.ui.view</field>
+            <!-- <field name="inherit_id" ref="web.view_form"/> -->
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="arch" widget="chart_renderer_widget"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

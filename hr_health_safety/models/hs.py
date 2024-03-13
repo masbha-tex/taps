@@ -47,9 +47,19 @@ class HrHealthSafety(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency')
     treatment_expense = fields.Monetary(string='Treatment Expense', store=True, currency_field='currency_id')
     rejoining_date = fields.Date(string = "Date of Re-Joining")
+    count = fields.Integer(string="Leave Days", compute="_compute_count")
+    
     # criteria_id = fields.Many2one('hs.criteria', required=True, string='')
     # title_ids = fields.Many2one('hs.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
-    
+    @api.depends('rejoining_date', 'accident_date')
+    def _compute_count(self):
+        for record in self:
+            if record.rejoining_date and record.accident_date:
+                # Calculate the difference in days
+                count = (record.rejoining_date - record.accident_date).days
+                record.count = count
+            else:
+                record.count = 0 
 
     @api.model
     def create(self, vals):

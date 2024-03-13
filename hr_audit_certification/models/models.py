@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# from odoo import models, fields, api
-
+# from odoo import models, fields, api, _ 
+# from odoo.exceptions import ValidationError, UserError
 
 # class HrAuditCertification(models.Model):
-#     _name = 'hr_audit_certification'
-#     _description = 'hr_audit_certification.hr_audit_certification'
+#     _name = 'hr.audit.certification'
+#     _description = 'Audit Certification'
+      # _inherit = ['mail.thread', 'mail.activity.mixin']  
 
 #     name = fields.Char()
 #     value = fields.Integer()

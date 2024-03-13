@@ -13,7 +13,7 @@
         'security/res_groups.xml',
         'security/ir.model.access.csv',
         'data/ir_sequence.xml',
-        'views/views.xml',
+        'views/hs.xml',
         'views/templates.xml',
     ],
     

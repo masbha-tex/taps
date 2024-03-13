@@ -140,45 +140,69 @@ class CombineInvoiceReport(models.AbstractModel):
         # raise UserError((docids))
         docs = self.env['combine.invoice'].sudo().browse(docids)
         line_data = self.env['combine.invoice.line'].sudo().search([('invoice_id','in',docids)])
+        z_items = line_data.filtered(lambda x: x.product_id.product_tmpl_id.company_id.id == 1)
+        m_items = line_data.filtered(lambda x: x.product_id.product_tmpl_id.company_id.id == 3)
+        z_total_qty = z_total_value = m_total_qty = m_total_value = m_total_pcs = total_value = 0
+        total_value = sum(line_data.mapped('price_total'))
+        if z_items:
+            z_total = sum(z_items.mapped('quantity'))
+            z_total_value = sum(z_items.mapped('price_total'))
+        if m_items:
+            m_total = sum(m_items.mapped('quantity'))
+            m_total_pcs = m_total*144
+            m_total_value = sum(m_items.mapped('price_total'))
         report_data = []
         if line_data:
-            all_item = line_data.mapped('product_template_id')
-            # raise UserError((all_item.id))
-            for item in all_item:
-                single_item = line_data.filtered(lambda x: x.product_template_id.id == item.id)
-                all_finish = single_item.mapped('finish')
-                all_finish = list(set(all_finish))
-                for finish in all_finish:
-                    single_finish = single_item.filtered(lambda x: x.finish == finish)
-                    all_shade = single_finish.mapped('shade')
-                    all_shade = list(set(all_shade))
-                    for shade in all_shade:
-                        single_shade = single_finish.filtered(lambda x: x.shade == shade)
-                        all_size = single_shade.mapped('sizcommon')
-                        all_size = list(set(all_size))
-                        for size in all_size:
-                            single_size = single_finish.filtered(lambda x: x.sizcommon == size)
-                            qty = sum(single_size.mapped('quantity'))
-                            value = sum(single_size.mapped('price_subtotal'))
-                            price = value/qty
-                            
-                            order_data = []
-                            order_data = [
-                                item.name,
-                                finish,
-                                shade,
-                                size,
-                                qty,
-                                price,
-                                value,
-                                ]
-                            report_data.append(order_data)
+            companies = line_data.mapped('product_template_id.company_id')
+            for com in companies:
+                com_line_data = line_data.filtered(lambda x: x.product_template_id.company_id.id == com.id)
+                # raise UserError((companies.id))
+                all_item = com_line_data.mapped('product_template_id')
+                # raise UserError((all_item.id))
+                for item in all_item:
+                    single_item = com_line_data.filtered(lambda x: x.product_template_id.id == item.id)
+                    all_finish = single_item.mapped('finish')
+                    all_finish = list(set(all_finish))
+                    for finish in all_finish:
+                        single_finish = single_item.filtered(lambda x: x.finish == finish)
+                        all_shade = single_finish.mapped('shade')
+                        all_shade = list(set(all_shade))
+                        for shade in all_shade:
+                            single_shade = single_finish.filtered(lambda x: x.shade == shade)
+                            all_size = single_shade.mapped('sizcommon')
+                            all_size = list(set(all_size))
+                            for size in all_size:
+                                single_size = single_finish.filtered(lambda x: x.sizcommon == size)
+                                qty = sum(single_size.mapped('quantity'))
+                                value = sum(single_size.mapped('price_subtotal'))
+                                price = value/qty
+                                
+                                order_data = []
+                                order_data = [
+                                    item.name,
+                                    finish,
+                                    shade,
+                                    size,
+                                    qty,
+                                    price,
+                                    value,
+                                    ]
+                                report_data.append(order_data)
+                order_data = []
+                if com.id == 1:
+                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),]
+                if com.id == 3:
+                    order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),]
+                # raise UserError((com.id,order_data))
+                report_data.append(order_data)
 
+        
+        common_data = [z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_value]
         # raise UserError((report_data))
         return {
             'docs': docs,
             'datas': report_data,
-            # 'report_date':report_date,
+            'common_date':common_data,
             # 'company': com_id,
             'doc_model': 'combine.invoice',
             }

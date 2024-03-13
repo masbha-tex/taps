@@ -8,6 +8,7 @@
                 <link rel="stylesheet"
                       href="/taps_manufacturing/static/src/scss/list_view.scss"/>
                 <script src="/taps_manufacturing/static/src/js/list_renderer.js"/>
+                <!-- <script src="/taps_manufacturing/static/src/js/chart_renderer.js"/> -->
                 <script type="text/javascript" src="/taps_manufacturing/static/src/js/lot_code_enter.js"/>
                 <!-- <script type="text/javascript" src="/taps_manufacturing/static/src/js/lot_code_enter_pack.js"/> -->
                 <script type="text/javascript" src="/taps_manufacturing/static/src/js/client_action.js"/>

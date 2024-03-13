@@ -30,6 +30,99 @@
             <field name="res_model">crm.visit.purpose</field>
             <field name="view_mode">tree</field>
     </record>
+    <record id="view_crm_customer_visit_filter" model="ir.ui.view">
+            <field name="name">crm.visit.search</field>
+            <field name="model">crm.visit</field>
+            <field name="priority">15</field>
+            <field name="arch" type="xml">
+                <search string="Search Visit">
+                    <field name="name" string="Visit" />
+                    <field name="partner_id" operator="child_of" string="Customer" filter_domain="[
+                        '|', '|', '|',
+                        ('partner_id', 'ilike', self),
+                        ('partner_name', 'ilike', self),
+                        ('email_from', 'ilike', self),
+                        ('contact_name', 'ilike', self)]"/>
+                    <field name="product" string="Product" filter_domain="[('product', 'ilike', self)]"/>
+                    <field name="user_id"/>
+                    <field name="team_id"/>
+                    <field name="stages"/>
+                    <!-- <field name="country_id"/> -->
+                    <!-- <field name="city"/> -->
+                    <!-- <field name="phone_mobile_search"/> -->
+                    <separator/>
+                    <filter string="My Visit" name="visited_by_me"
+                        domain="[('user_id', '=', uid)]"
+                        help="Visit that are made by Me "/>
+        
+                    <separator/>
+                    <filter string="Marketing" name="marketing" domain="[('team_id.name', '=', 'MARKETING'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Brahmaputra" name="brahmaputra" domain="[('team_id.name', '=', 'BRAHMAPUTRA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Meghna" name="meghna" domain="[('team_id.name', '=', 'MEGHNA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Shitalakhya" name="shitalakhya" domain="[('team_id.name', '=', 'SHITALAKHYA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Karnaphuli" name="karnaphuli" domain="[('team_id.name', '=', 'KARNAPHULI'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Padma" name="padma" domain="[('team_id.name', '=', 'PADMA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Teesta" name="teesta" domain="[('team_id.name', '=', 'TEESTA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Sangu" name="sangu" domain="[('team_id.name', '=', 'SANGU'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Jamuna" name="jamuna" domain="[('team_id.name', '=', 'JAMUNA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Halda" name="halda" domain="[('team_id.name', '=', 'HALDA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Turag" name="turag" domain="[('team_id.name', '=', 'TURAG'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Total" name="total" domain="[('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <!-- <filter string="Creation Date" name="creation_date" date="create_date"/> -->
+                    <!-- <filter string="Closed Date" name="close_date" date="date_closed"/> -->
+                    <separator/>
+                    <!-- <filter string="Won" name="won" domain="['&amp;', ('active', '=', True), ('stage_id.is_won', '=', True)]"/> -->
+                    <!-- <filter string="Lost" name="lost" domain="['&amp;', ('active', '=', False), ('probability', '=', 0)]"/> -->
+                    <separator/>
+                    <!-- <filter invisible="1" string="Overdue Opportunities" name="overdue_opp" domain="['&amp;', ('date_closed', '=', False), ('date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter invisible="1" string="Late Activities" name="activities_overdue"
+                        domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                        help="Show all opportunities for which the next action date is before today"/>
+                    <filter invisible="1" string="Today Activities" name="activities_today"
+                        domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
+                        domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/> -->
+                    <separator/>
+                    <!-- <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/> -->
+                    <!-- <group expand="0" string="Group By" colspan="16">
+                        <filter string="Salesperson" name="salesperson" context="{'group_by':'user_id'}"/>
+                        <filter string="Sales Team" name="saleschannel" context="{'group_by':'team_id'}"/>
+                        <filter name="stage" string="Stage" context="{'group_by':'stage_id'}"/>
+                        <filter name="city" string="City" context="{'group_by': 'city'}"/>
+                        <filter string="Country" name="country" context="{'group_by':'country_id'}" />
+                        <filter string="Lost Reason" name="lostreason" context="{'group_by':'lost_reason'}"/>
+                        <filter string="Company" name="company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                        <filter string="Campaign" name="compaign" domain="[]" context="{'group_by':'campaign_id'}"/>
+                        <filter string="Medium" name="medium" domain="[]" context="{'group_by':'medium_id'}"/>
+                        <filter string="Source" name="source" domain="[]" context="{'group_by':'source_id'}"/>
+                        <separator orientation="vertical" />
+                        <filter string="Creation Date" context="{'group_by':'create_date:month'}" name="month"/>
+                        <filter string="Conversion Date" name="date_conversion" context="{'group_by': 'date_conversion'}" groups="crm.group_use_lead"/>
+                        <filter string="Expected Closing" name="date_deadline" context="{'group_by':'date_deadline'}"/>
+                        <filter string="Closed Date" name="date_closed" context="{'group_by':'date_closed'}"/>
+                    </group> -->
+                    <group expand="0" string="Group By">
+                        <filter string="Team" name="team" context="{'group_by': 'team_id'}"/>
+                    </group>
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" name="customer" context="{'group_by': 'partner_id'}"/>
+                    </group>
+                    <group expand="0" string="Group By">
+                        <filter string="Buyer" name="buyer" context="{'group_by': 'buyer'}"/>
+                    </group>
+                    <group expand="0" string="Group By">
+                        <filter string="Visit Purpose" name="visit_purpose" context="{'group_by': 'visit_purpose'}"/>
+                    </group>
+                    <searchpanel>
+                        <field name="team_id"  icon="fa-users" enable_counters="1"/>
+                        <field class="mt32" name="stages"  icon="fa-filter" enable_counters="1"/>
+                        <field class="mt32" name="core_purpose"  icon="fa-magic" enable_counters="1"/>
+                   
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
             
 
     
@@ -164,8 +257,8 @@
             <field name="model">crm.visit</field>
             <!-- <field name="priority" eval="1"/> -->
             <field name="arch" type="xml">
-                <kanban default_order="visit_date desc" default_group_by="team_id" class="o_kanban_small_column" on_create="quick_create" quick_create_view="taps_crm.quick_create_visit_form"
-                    archivable="false" sample="1" js_class="taps_crm_visit_kanban_dashboard_upload">
+                <kanban default_order="visit_date desc" class="o_kanban_small_column" on_create="quick_create" quick_create_view="taps_crm.quick_create_visit_form"
+                    archivable="false" sample="1">
                     <!-- <field name="stages" options='{"group_by_tooltip": {"requirements": "stages"}}'/> -->
                     <field name="name"/>
                     <field name="partner_id"/>
@@ -183,7 +276,7 @@
                     <!-- <progressbar field="stages"/> -->
                     <templates>
                         <t t-name="kanban-box">
-                            <div t-attf-class="oe_kanban_content oe_kanban_global_click">
+                            <div t-attf-class="oe_kanban_global_click">
                                 <div>
                                     <strong class="o_kanban_record_title"><span><field name="partner_id"/></span></strong>
                                 </div>
@@ -216,93 +309,7 @@
                 </kanban>
             </field>
         </record>
-    <record id="view_crm_customer_visit_filter" model="ir.ui.view">
-            <field name="name">crm.visit.search</field>
-            <field name="model">crm.visit</field>
-            <field name="priority">15</field>
-            <field name="arch" type="xml">
-                <search string="Search Visit">
-                    <field name="name" string="Visit" />
-                    <field name="partner_id" operator="child_of" string="Customer" filter_domain="[
-                        '|', '|', '|',
-                        ('partner_id', 'ilike', self),
-                        ('partner_name', 'ilike', self),
-                        ('email_from', 'ilike', self),
-                        ('contact_name', 'ilike', self)]"/>
-                    <field name="product" string="Product" filter_domain="[('product', 'ilike', self)]"/>
-                    <field name="user_id"/>
-                    <field name="team_id"/>
-                    <field name="stages"/>
-                    <!-- <field name="country_id"/> -->
-                    <!-- <field name="city"/> -->
-                    <!-- <field name="phone_mobile_search"/> -->
-                    <separator/>
-                    <filter string="My Visit" name="visited_by_me"
-                        domain="[('user_id', '=', uid)]"
-                        help="Visit that are made by Me "/>
-        
-                    <separator/>
-                    <filter string="Marketing" name="marketing" domain="[('team_id.name', '=', 'MARKETING'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Brahmaputra" name="brahmaputra" domain="[('team_id.name', '=', 'BRAHMAPUTRA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Meghna" name="meghna" domain="[('team_id.name', '=', 'MEGHNA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Shitalakhya" name="shitalakhya" domain="[('team_id.name', '=', 'SHITALAKHYA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Karnaphuli" name="karnaphuli" domain="[('team_id.name', '=', 'KARNAPHULI'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Padma" name="padma" domain="[('team_id.name', '=', 'PADMA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Teesta" name="teesta" domain="[('team_id.name', '=', 'TEESTA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Sangu" name="sangu" domain="[('team_id.name', '=', 'SANGU'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Jamuna" name="jamuna" domain="[('team_id.name', '=', 'JAMUNA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Halda" name="halda" domain="[('team_id.name', '=', 'HALDA'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Turag" name="turag" domain="[('team_id.name', '=', 'TURAG'),('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="Total" name="total" domain="[('visit_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('visit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <separator/>
-                    <!-- <filter string="Creation Date" name="creation_date" date="create_date"/> -->
-                    <!-- <filter string="Closed Date" name="close_date" date="date_closed"/> -->
-                    <separator/>
-                    <!-- <filter string="Won" name="won" domain="['&amp;', ('active', '=', True), ('stage_id.is_won', '=', True)]"/> -->
-                    <!-- <filter string="Lost" name="lost" domain="['&amp;', ('active', '=', False), ('probability', '=', 0)]"/> -->
-                    <separator/>
-                    <!-- <filter invisible="1" string="Overdue Opportunities" name="overdue_opp" domain="['&amp;', ('date_closed', '=', False), ('date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter invisible="1" string="Late Activities" name="activities_overdue"
-                        domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
-                        help="Show all opportunities for which the next action date is before today"/>
-                    <filter invisible="1" string="Today Activities" name="activities_today"
-                        domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
-                        domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/> -->
-                    <separator/>
-                    <!-- <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/> -->
-                    <!-- <group expand="0" string="Group By" colspan="16">
-                        <filter string="Salesperson" name="salesperson" context="{'group_by':'user_id'}"/>
-                        <filter string="Sales Team" name="saleschannel" context="{'group_by':'team_id'}"/>
-                        <filter name="stage" string="Stage" context="{'group_by':'stage_id'}"/>
-                        <filter name="city" string="City" context="{'group_by': 'city'}"/>
-                        <filter string="Country" name="country" context="{'group_by':'country_id'}" />
-                        <filter string="Lost Reason" name="lostreason" context="{'group_by':'lost_reason'}"/>
-                        <filter string="Company" name="company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
-                        <filter string="Campaign" name="compaign" domain="[]" context="{'group_by':'campaign_id'}"/>
-                        <filter string="Medium" name="medium" domain="[]" context="{'group_by':'medium_id'}"/>
-                        <filter string="Source" name="source" domain="[]" context="{'group_by':'source_id'}"/>
-                        <separator orientation="vertical" />
-                        <filter string="Creation Date" context="{'group_by':'create_date:month'}" name="month"/>
-                        <filter string="Conversion Date" name="date_conversion" context="{'group_by': 'date_conversion'}" groups="crm.group_use_lead"/>
-                        <filter string="Expected Closing" name="date_deadline" context="{'group_by':'date_deadline'}"/>
-                        <filter string="Closed Date" name="date_closed" context="{'group_by':'date_closed'}"/>
-                    </group> -->
-                    <group expand="0" string="Group By">
-                        <filter string="Team" name="team" context="{'group_by': 'team_id'}"/>
-                    </group>
-                    <group expand="0" string="Group By">
-                        <filter string="Customer" name="customer" context="{'group_by': 'partner_id'}"/>
-                    </group>
-                    <group expand="0" string="Group By">
-                        <filter string="Buyer" name="buyer" context="{'group_by': 'buyer'}"/>
-                    </group>
-                    <group expand="0" string="Group By">
-                        <filter string="Visit Purpose" name="visit_purpose" context="{'group_by': 'visit_purpose'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
+    
     <record id="crm_customer_visit_view_graph" model="ir.ui.view">
             <field name="name">crm.visit.graph.view</field>
             <field name="model">crm.visit</field>
@@ -382,20 +389,6 @@
             </field>
         </record>
 
-    <record id="visit_action_dashboard_list" model="ir.actions.act_window">
-        <field name="name">Visit List</field>
-        <field name="res_model">crm.visit</field>
-        <field name="view_mode">tree,kanban,form,dashboard,graph,pivot</field>
-        <field name="view_id" ref="taps_crm.crm_visit_template_view_list"/>
-        <field name="search_view_id" ref="taps_crm.view_crm_customer_visit_filter"/>
-        <field name="target">main</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_empty_folder">
-                No Visit to display
-            </p>
-        </field>
-    </record>
-
     <!-- Dashboard action buttons: End in Kanban view-->
     <record id="visit_action_dashboard_kanban" model="ir.actions.act_window">
         <field name="name">Visit Kanban</field>
@@ -410,6 +403,22 @@
             </p>
         </field>
     </record>
+
+    <record id="visit_action_dashboard_list" model="ir.actions.act_window">
+        <field name="name">Visit List</field>
+        <field name="res_model">crm.visit</field>
+        <field name="view_mode">tree,kanban,form,dashboard,graph,pivot</field>
+        <field name="view_id" ref="taps_crm.crm_visit_template_view_list"/>
+        <field name="search_view_id" ref="taps_crm.view_crm_customer_visit_filter"/>
+        <field name="target">main</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No Visit to display
+            </p>
+        </field>
+    </record>
+
+    
 
 
     <menuitem

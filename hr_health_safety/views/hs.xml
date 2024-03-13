@@ -15,12 +15,14 @@
                 <field name="service_length"/>
                 <field name="accident_date"/>
                 <field name="shift"/>
-                <field name="type"/>
+                <!-- <field name="type"/> -->
+                <field name="type" widget="badge" decoration-warning="type == '2'" decoration-danger="type == '4'" decoration-success="type == '3'" decoration-info="type == '1'"/> 
                 <field name="accident_nature"/>
                 <field name="description_accident"/>
                 <field name="corrective_action"/>
-                <field name="treatment_expense"/>
+                <field name="treatment_expense" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="remarks"/>
+                <field name="count"/>
                 <field name="rejoining_date"/>
                 <field name="preventive_action"/>
               <!-- <field name="criteria_id"/>
@@ -61,18 +63,24 @@
                         <group string="Accident Details">
                             <field name="accident_date"/>
                             <field name="type"/>
-                            <!-- <field name="type" widget="badge" decoration-success="state == 'Approved'" decoration-warning="state == 'Submit'" decoration-danger="state == 'Refused'" decoration-muted="state == 'draft'" decoration-info="state == 'HoD'"/>  -->
+                            <!-- <field name="type" widget="badge" decoration-warning="type == '2'" decoration-danger="type == '4'" decoration-muted="type == '3'" decoration-info="type == '1'"/> -->
+                            <!-- <field name="type" widget="selection" options="{'color_field': 'color'}"/> -->
                             <field name="accident_nature"/>
                             <field name="description_accident"/>
-                            
-                            <field name="treatment_expense"/>
-                            <field name="remarks"/>
-                            <field name="rejoining_date"/>
                         </group>
-                                             
+                                           
+                    </group>
+                    <group>
+                        <group>
+                        <field name="treatment_expense" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="remarks"/>
+                        </group>
+                        <group>
+                            <field name="rejoining_date"/>
+                            <field name="count"/>
+                        </group>
                     </group>
                     <group string="CAPA">
-                        
                         <field name="corrective_action"/>
                         <field name="preventive_action"/>
                     </group>
@@ -97,20 +105,50 @@
         <field name="view_mode">tree,form</field>
     </record> -->
 
-      <record model="ir.actions.act_window" id="action_hr_health_safety">
-        <field name="name">Health &amp; Safety</field>
-        <field name="res_model">hr.health.safety</field>
-        <field name="context" eval="{}"/>
-        <field name="view_mode">tree,form</field>
-        <field name="target">main</field>
-        <field name="view_id" ref="hr_health_safety.view_hr_health_safety_list"/>
-        <!-- <field name="search_view_id" ref="taps_retention_matrix.view_hr_health_safety_search_view"/> -->
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Create the first Health &amp; Safety
-            </p>
+
+
+    <record id="view_hr_health_safety_dashboard" model="ir.ui.view">
+        <field name="name">hr.health.safety.dashboard</field>
+        <field name="model">hr.health.safety</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard sample="1">
+                <!-- <view type="graph" ref="hr_health_safety.view_hr_health_safety_graph"/> -->
+                <group>
+                    <group col="3">
+                        <aggregate name="employee_id" string="Employee" field="employee_id"/>
+                        <!-- <aggregate name="employee_id" string="Total Employee" field="employee_id"/> -->
+                        <!-- <aggregate name="treatment_expense" string="Expense" field="treatment_expense" group_operator="sum"/>  -->
+                        <!-- <aggregate name="impact" string="Total Impact" field="impact" group_operator="count"/> -->
+                        <!-- <aggregate name="risk" string="Total Risk" field="risk" group_operator="count"/> -->
+                    </group>
+
+                    <!-- <group col="1">
+                        <widget name="pie_chart" title="month" attrs="{'groupby': 'month'}"/>
+                        <widget name="pie_chart" title="Risk" attrs="{'groupby': 'risk'}"/>
+                        <widget name="pie_chart" title="Impact" attrs="{'groupby': 'impact'}"/>
+                        <widget name="pie_chart" title="Department" attrs="{'groupby': 'department_id'}"/>
+                    </group> -->
+
+                </group>
+                <!-- <view type="pivot" ref="taps_retention_matrix.view_retention_matrix_pivot"/> -->
+                
+            </dashboard>
         </field>
     </record>
 
+      <!-- <record model="ir.ui.view" id="view_hr_health_safety_graph">
+        <field name="name">hr.health.safety.graph</field>
+        <field name="model">hr.health.safety</field>
+        <field name="arch" type="xml">
+            <graph string="H &amp; S Graph Analysis" stacked="False" type="bar" sample="1">
+                
+                <field name="type" type="row"/>
+                <field name="treatment_expense" type="row"/>
+                <field name="accident_date" type="count"/>
+            </graph>
+        </field>
+    </record> -->
 
     <record model="ir.ui.view" id="hr_health_safety_search_view">
         <field name="name">hr_health_safety.search</field>
@@ -134,6 +172,21 @@
                     <field name="department_id" enable_counters="1"/>
                 </searchpanel>
             </search>
+        </field>
+    </record>
+
+      <record model="ir.actions.act_window" id="action_hr_health_safety">
+        <field name="name">Health &amp; Safety</field>
+        <field name="res_model">hr.health.safety</field>
+        <field name="context" eval="{}"/>
+        <!-- <field name="view_mode">tree,form,dashboard</field> -->
+          <field name="view_mode">tree,form</field>
+        <field name="target">main</field>
+        <field name="view_id" ref="hr_health_safety.view_hr_health_safety_list"/>
+        <!-- <field name="search_view_id" ref="taps_retention_matrix.view_hr_health_safety_search_view"/> -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first Health &amp; Safety
+            </p>
         </field>
     </record>
 
