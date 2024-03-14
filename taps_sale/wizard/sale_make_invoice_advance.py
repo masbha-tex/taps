@@ -30,7 +30,7 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                 #         if ac_line:
                 #             eoij = ac_line.write({'move_id':b_moves.id,'product_id':m.product_id.id,'product_uom_id': m.product_uom.id,'quantity': m.product_uom_qty,'price_unit': m.price_unit,'price_subtotal': m.price_subtotal,'debit':0,'credit':m.price_subtotal})
             
-            # moves.action_post()
+            moves.action_post()
             if moves:
                 # for mv in moves:
                 invoice_vals_list = []
@@ -45,12 +45,12 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                 
                 invoice_vals['line_id'] += invoice_line_vals
                 invoice_vals_list.append(invoice_vals)
-                
+                # raise UserError((com_line_data.sale_line_ids))
+                # 
                 com_in = self.env['combine.invoice'].sudo().create(invoice_vals_list)
                 # .with_context(default_move_type='out_invoice')
         else:
             # Create deposit product if necessary
-            raise UserError(('The'))
             if not self.product_id:
                 vals = self._prepare_deposit_product()
                 self.product_id = self.env['product.product'].create(vals)
@@ -77,15 +77,52 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
             return sale_orders.action_view_invoice()
         return {'type': 'ir.actions.act_window_close'}
 
-
-
     def _prepare_invoice(self,moves):
         z_invoice = m_invoice = None
+        pi_numbers = po_numbers = style_ref = ""
         for mv in moves:
             if mv.company_id.id == 1:
                 z_invoice = mv.id
+                order_list = [str(i) for i in sorted(mv.invoice_origin.split(','))]
+                i = 0
+                for order in order_list:
+                    order = order.strip()
+                    com_in = self.env['sale.order'].sudo().search([('company_id','=',1),('name','=',order)])
+                    or_ref = com_in.order_ref.name
+                    po_no = style = ""
+                    if com_in.po_no:
+                        po_no = com_in.po_no
+                    if com_in.style_ref:
+                        style = com_in.style_ref
+                    if pi_numbers:
+                        pi_numbers += "," + or_ref.replace('S','TZBD-Z')
+                        po_numbers += "," + po_no
+                        style_ref += "," + style
+                    else:
+                        pi_numbers += or_ref.replace('S','TZBD-Z')
+                        po_numbers += po_no
+                        style_ref += style
             else:
                 m_invoice = mv.id
+                order_list = [str(i) for i in sorted(mv.invoice_origin.split(','))]
+                for order in order_list:
+                    order = order.strip()
+                    com_in = self.env['sale.order'].sudo().search([('company_id','=',3),('name','=',order)])
+                    or_ref = com_in.order_ref.name
+                    po_no = style = ""
+                    if com_in.po_no:
+                        po_no = com_in.po_no
+                    if com_in.style_ref:
+                        style = com_in.style_ref
+                    if pi_numbers:
+                        pi_numbers += "," + or_ref.replace('S','TZBD-B')
+                        po_numbers += "," + po_no
+                        style_ref += "," + style
+                    else:
+                        pi_numbers += or_ref.replace('S','TZBD-B')
+                        po_numbers += po_no
+                        style_ref += style
+                    
         self.ensure_one()
         
         invoice_vals = {
@@ -100,6 +137,9 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
             'invoice_incoterm_id':moves[0].invoice_incoterm_id.id,
             'z_invoice':z_invoice,
             'm_invoice':m_invoice,
+            'pi_numbers':pi_numbers,
+            'po_numbers':po_numbers,
+            'style_ref':style_ref,
             'state':moves[0].state,
         }
         return invoice_vals

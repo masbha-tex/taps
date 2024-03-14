@@ -45,6 +45,9 @@
                                 <field name="invoice_incoterm_id" readonly="1" force_save="1"/>
                                 <field name="z_invoice" readonly="1" force_save="1"/>
                                 <field name="m_invoice" readonly="1" force_save="1"/>
+                                <field name="style_ref" readonly="1" force_save="1"/>
+                                <field name="pi_numbers" readonly="1" force_save="1"/>
+                                <field name="po_numbers" readonly="1" force_save="1"/>
                             </group>
                             <group>
                                 <field name="applicant_tin"/>
@@ -53,7 +56,9 @@
                                 <field name="tin_no"/>
                                 <field name="bank_bin"/>
                                 <field name="lc_no"/>
+                                <field name="lc_date"/>
                                 <field name="master_lc"/>
+                                <field name="master_date"/>
                                 <field name="numberof_carton"/>
                                 <field name="gross_weight"/>
                                 <field name="net_weight"/>

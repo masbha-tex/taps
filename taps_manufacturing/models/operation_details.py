@@ -776,7 +776,8 @@ class OperationDetails(models.Model):
                 # else:
                 # raise UserError((qty,vals.get('fg_output')))
                 # raise UserError((vals.get('cartoon_no')))
-                ope = self.env['operation.details'].create({'name':None,
+                packaging = self.env['fg.packaging'].browse(vals.get('cartoon_no'))
+                ope = self.env['operation.details'].create({'name':packaging.internal_ref,
                                                             'mrp_lines':self.mrp_lines,
                                                             'sale_lines':self.sale_lines,
                                                             'mrp_line':self.mrp_line.id,

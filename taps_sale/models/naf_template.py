@@ -152,8 +152,10 @@ class NewAccountForm(models.Model):
     def action_teamleader(self):
         if self.type == 'buyer':
             user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.buyer')],limit=1)
+            
         else:
             user = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
+            
           
         if user.first_approval.id == self.env.user.id:
             result = self._check_duplicate_partner()
@@ -163,12 +165,25 @@ class NewAccountForm(models.Model):
                 if (self.type == 'customer' and self.assign_line) or (self.type == 'buyer' and self.assign_line) or (self.type == 'buyinghouse'):
                     activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_first_approval').id)])
                     activity_id.action_feedback(feedback="Approved")
+                    other_activity_ids = self.env['mail.activity'].search([('res_id','=', self.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_first_approval').id)])
+                    if other_activity_ids:
+                        other_activity_ids.unlink()
                     self.env['mail.activity'].sudo().create({
                         'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_second_approval').id,
                         'res_id': self.id,
                         'res_model_id': self.env.ref('taps_sale.model_naf_template').id,
                         'user_id': user.second_approval.id
                     })
+                    template_id = self.env.ref('taps_sale.naf_assign_naf_hod_email_template')
+
+                    if template_id:
+                        template_id.write({
+                            'email_to': user.second_approval.partner_id.email,
+                            'email_from': 'odoo@texzipperbd.com',
+                            'email_cc' : 'asraful.haque@texzipperbd.com',
+                        })
+                        ctx ={'name': user.second_approval.partner_id.name}
+                        template_id.with_context(ctx).send_mail(self.id, force_send=True)
                     self.write({'state':'hod'})
                 else:
                     raise UserError(("Kindly Assign Salesperson Or Marketing Person"))
@@ -189,7 +204,23 @@ class NewAccountForm(models.Model):
                     activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_second_approval').id)])
                     activity_id.action_feedback(feedback="Approved")
                     self.write({'state':'to approve'})
-                    self.activity_schedule('taps_sale.mail_activity_naf_final_approval', user_id=user.third_approval.id)
+                    # self.activity_schedule('taps_sale.mail_activity_naf_final_approval', user_id=user.third_approval.id)
+                    self.env['mail.activity'].sudo().create({
+                        'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_final_approval').id,
+                        'res_id': self.id,
+                        'res_model_id': self.env.ref('taps_sale.model_naf_template').id,
+                        'user_id': user.third_approval.id
+                    })
+                    template_id = self.env.ref('taps_sale.naf_assign_naf_ceo_email_template')
+
+                    if template_id:
+                        template_id.write({
+                            'email_to': user.third_approval.partner_id.email,
+                            'email_from': 'odoo@texzipperbd.com',
+                            'email_cc' : 'asraful.haque@texzipperbd.com',
+                        })
+                        ctx ={'name': user.third_approval.partner_id.name}
+                        template_id.with_context(ctx).send_mail(self.id, force_send=True)
                 else:
                     raise UserError(("Kindly Assign Salesperson Or Marketing Person"))
         else:
@@ -250,7 +281,7 @@ class NewAccountForm(models.Model):
                 new_customer = self.env['res.partner'].sudo().create(data)
                 self.env.cr.commit()
                 # raise UserError((new_customer))
-                
+                self.write({'state': 'approved'})
                 activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_final_approval').id)])
                 activity_id.action_feedback(feedback="Approved")
                 if self. type == 'customer':
@@ -277,7 +308,7 @@ class NewAccountForm(models.Model):
                                    }
                             new_allocation_1 = self.env['buyer.allocated.line'].sudo().create(data_1)
                             
-                self.write({'state': 'approved'})
+                
                 
                 
         else:
@@ -329,17 +360,19 @@ class NewAccountForm(models.Model):
         naf = self.env['naf.template'].search([('id', '=', id)])
         if naf.state == 'inter':
             if (naf.type == 'customer') or (naf.type == 'buyinghouse'):
-                app_mat = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
-                template_id = self.env.ref('taps_sale.naf_assign_core_leader_customer_email_template')
+                app_mat = naf.env['sale.approval.matrix'].sudo().search([('model_name', '=','naf.template.customer')], limit=1)
+                # raise UserError((app_mat.id))
+                template_id = naf.env.ref('taps_sale.naf_assign_core_leader_customer_email_template')
                 email_to = 'abdur.rahman@texzipperbd.com'
             elif naf.type == 'buyer':
-                app_mat = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.buyer')],limit=1)
-                template_id = self.env.ref('taps_sale.naf_assign_naf_core_leader_buyer_email_template')
+                app_mat = naf.env['sale.approval.matrix'].sudo().search([('model_name', '=','naf.template.buyer')],limit=1)
+                template_id = naf.env.ref('taps_sale.naf_assign_naf_core_leader_buyer_email_template')
                 email_to = 'abdur.rahman@texzipperbd.com'
-            self.env['mail.activity'].sudo().create({
+            # raise UserError((app_mat.id))
+            naf.env['mail.activity'].sudo().create({
                         'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_first_approval').id,
                         'res_id': naf.id,
-                        'res_model_id': self.env.ref('taps_sale.model_naf_template').id,
+                        'res_model_id': naf.env.ref('taps_sale.model_naf_template').id,
                         'user_id': app_mat.first_approval.id,
                         
                         })

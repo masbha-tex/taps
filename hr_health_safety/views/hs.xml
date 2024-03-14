@@ -41,11 +41,15 @@
 				<sheet>
                     <field name="active" invisible="1"/>   
                     
-                    <!-- <field name="name"/> -->
+                    <field name="name"/>
                     <group colspan="2" col="2">
-                        <div class="oe_title">
-                            <!-- <label for="name" class="oe_edit_only"/> -->
+                        <!-- <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
                             <h1 class="d-flex"><field name="name" readonly="True"/></h1>
+                        </div>  -->
+                        <div class="oe_title">
+                            <label for="type" class="oe_edit_only"/>
+                            <h1 class="d-flex"><field name="type" placeholder="e.g. Titles" readonly="True"/></h1>
                         </div> 
                     </group>
                     
@@ -70,15 +74,18 @@
                         </group>
                                            
                     </group>
-                    <group>
+                    <group string="Treatment Details">
                         <group>
-                        <field name="treatment_expense" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                        <field name="remarks"/>
+                            <field name="treatment_type"/>
+                            <field name="treatment_expense" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                         </group>
                         <group>
                             <field name="rejoining_date"/>
                             <field name="count"/>
                         </group>
+                    </group>
+                    <group>
+                        <field name="remarks"/>
                     </group>
                     <group string="CAPA">
                         <field name="corrective_action"/>
@@ -117,7 +124,7 @@
                 <group>
                     <group col="3">
                         <aggregate name="employee_id" string="Employee" field="employee_id"/>
-                        <!-- <aggregate name="employee_id" string="Total Employee" field="employee_id"/> -->
+                        <aggregate name="type" string="Type" field="type"/>
                         <!-- <aggregate name="treatment_expense" string="Expense" field="treatment_expense" group_operator="sum"/>  -->
                         <!-- <aggregate name="impact" string="Total Impact" field="impact" group_operator="count"/> -->
                         <!-- <aggregate name="risk" string="Total Risk" field="risk" group_operator="count"/> -->
@@ -150,6 +157,21 @@
         </field>
     </record> -->
 
+    <record id="view_hr_health_safety_pivot" model="ir.ui.view">
+        <field name="name">hr.health.safety.pivot</field>
+        <field name="model">hr.health.safety</field>
+        <field name="arch" type="xml">
+            <pivot string="Pivot Analysis" disable_linking="True" sample="1">
+                <field name="company_id" type="row" string="Company"/>
+                <field name="department_id" type="row" string="Department"/>
+                <field name="type" type="row" string="Type"/>
+                <field name="description_accident" type="row" string="Accident Description"/>
+                <!-- <field name="date" type="col" string="Payment Date"/>
+                <field name="amount" type="measure" string="Amount"/> -->
+            </pivot>
+        </field>
+    </record>
+
     <record model="ir.ui.view" id="hr_health_safety_search_view">
         <field name="name">hr_health_safety.search</field>
         <field name="model">hr.health.safety</field>
@@ -180,7 +202,7 @@
         <field name="res_model">hr.health.safety</field>
         <field name="context" eval="{}"/>
         <!-- <field name="view_mode">tree,form,dashboard</field> -->
-          <field name="view_mode">tree,form</field>
+          <field name="view_mode">tree,form,pivot</field>
         <field name="target">main</field>
         <field name="view_id" ref="hr_health_safety.view_hr_health_safety_list"/>
         <!-- <field name="search_view_id" ref="taps_retention_matrix.view_hr_health_safety_search_view"/> -->

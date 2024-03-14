@@ -191,8 +191,6 @@ class SaleOrder(models.Model):
         self.buyer_name = False
         self.provisionals_buyer= False
 
-    
-
     @api.onchange('user_id')
     def compute_region_id(self):
         
@@ -770,12 +768,7 @@ class SaleOrder(models.Model):
                     text+=' cents '
             rec.amount_in_word = text.upper()
         
-            
-            
 
-
-    
-    
     def _compute_avg_price (self): 
         for rec in self:
             if rec.amount_total>0:

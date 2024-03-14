@@ -79,6 +79,7 @@ class CustomerVisit(models.Model):
         ('9_cancel', 'Cancel'),], 
         string='Status', copy=False, index=True, tracking=2, default='1_draft')
     color = fields.Integer('Color Index', default=0)
+    active = fields.Boolean(string="Active", default="True")
 
     @api.onchange('core_purpose')
     def onchange_core_purpose(self):

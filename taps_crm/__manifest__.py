@@ -40,6 +40,7 @@
         # 'views/brand_reallocation.xml',
         'views/crm_team_transfer.xml',
         'views/activity.xml',
+        'wizard/crm_report_wizard_view.xml',
         # 'views/allocated_customer_view.xml',
         # 'views/allocated_buyer_view.xml'
         

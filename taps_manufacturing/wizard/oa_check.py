@@ -96,9 +96,14 @@ class OaCheck(models.TransientModel):
                 ('oa_id','=',self.lookup_oa.id), ('next_operation','=','FG Packing')])
             if operations:
                 total_packed = sum(operations.mapped('qty'))
-                order_qty = sum(operations.mapped('actual_qty'))
+                
+                operations_2 = self.env['sale.order.line'].sudo().search([
+                ('order_id.id','=',self.lookup_oa.id)])
+                order_qty = sum(operations_2.mapped('product_uom_qty'))
+
+                
                 oa_balance = order_qty - total_packed
-                # raise UserError((total_packed))
+                # raise UserError((order_qty))
                     
                 unique_dates = set(record.action_date.date() for record in operations)
                 all_dates = self.env['selection.fields.data'].sudo().search([('field_name','=','action_date')]).unlink()
@@ -180,7 +185,12 @@ class OaCheck(models.TransientModel):
                 ('oa_id','=',self.lookup_oa_2.id), ('next_operation','=','FG Packing')])
             if operations:
                 total_packed_2 = sum(operations.mapped('qty'))
-                order_qty_2 = sum(operations.mapped('actual_qty'))
+
+                operations_2 = self.env['sale.order.line'].sudo().search([
+                ('order_id.id','=',self.lookup_oa.id)])
+                order_qty_2 = sum(operations_2.mapped('product_uom_qty'))
+                # order_qty_2 = sum(operations.mapped('actual_qty'))
+                
                 oa_balance_2 = order_qty_2 - total_packed_2
                     
                 

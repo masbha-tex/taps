@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+<record model="ir.ui.view" id="crm_report_wizard">
+        <field name="name">crm.report.wizard.form.view</field>
+        <field name="model">crm.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="CRM Report">
+                <group>
+                    <group>
+                        <field name="report_type" string="Report Type" />
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                       
+                    </group>
+                    <group>
+                        <!-- <field name="holiday_type" string="Mode" /> -->
+                
+                        <field name="team_id" string="Team" options="{'no_create': True, 'no_open': True}"/>
+                        
+                    </group>
+                </group>
+                <footer>
+                    <!-- <button string="Print" name="" type="object" class="btn-primary"/> -->
+                    <button string="Download Excel" name="action_generate_xlsx_report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="all_crm_report" model="ir.actions.act_window">
+        <field name="name">CRM Report Wizard</field>
+        <field name="res_model">crm.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem id="taps_crm.menu_report_wizard"
+              name="Wizard"
+              sequence="6"
+              action="all_crm_report"
+              parent="crm.crm_menu_root" />  
+    
+    
+    
+</odoo>

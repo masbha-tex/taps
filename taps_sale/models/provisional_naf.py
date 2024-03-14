@@ -91,12 +91,12 @@ class ProvisionalNaf(models.Model):
                 
                 if template_id:
                     template_id.write({
-                        'email_to': 'alamgir@texzipperbd.com',
+                        'email_to': user.first_approval.partner_id.email,
                         'email_from': 'odoo@texzipperbd.com',
                         'email_cc' : 'asraful.haque@texzipperbd.com',
                     })
-                    
-                    template_id.send_mail(self.id, force_send=True)
+                    ctx ={'name': user.third_approval.partner_id.name}
+                    template_id.with_context(ctx).send_mail(self.id, force_send=True)
                 self.write({'state':'to approve'})
         
     
@@ -132,6 +132,9 @@ class ProvisionalNaf(models.Model):
                 
                 activity_id = self.env['mail.activity'].sudo().search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_approval').id)])
                 activity_id.action_feedback(feedback="Approved")
+                other_activity_ids = self.env['mail.activity'].search([('res_id','=', self.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_provisional_naf_approval').id)])
+                if other_activity_ids:
+                    other_activity_ids.unlink()
                 # if self. type == 'customer' or self. type == 'buyinghouse':
                 #     app_mat = self.env['sale.approval.matrix'].search([('model_name', '=','naf.template.customer')],limit=1)
                 # else:

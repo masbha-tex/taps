@@ -51,6 +51,9 @@ class CombineInvoice(models.Model):
     invoice_incoterm_id = fields.Many2one('account.incoterms', string='Incoterm')
     z_invoice = fields.Many2one('account.move', string='Zipper Invoice',readonly=False, store=True)
     m_invoice = fields.Many2one('account.move', string='Metal Trims Invoice',readonly=False, store=True)
+    pi_numbers = fields.Char(string='PI No.', store=True, readonly=False)
+    po_numbers = fields.Char(string='PO No.', store=True, readonly=False)
+    style_ref = fields.Char(string='Style Ref.', store=True, readonly=False)
     state = fields.Selection(selection=[
             ('draft', 'Draft'),
             ('posted', 'Posted'),
@@ -63,7 +66,9 @@ class CombineInvoice(models.Model):
     tin_no = fields.Char(string='TIN NO', store=True, readonly=False)
     bank_bin = fields.Char(string='BANK BIN NO', store=True, readonly=False)
     lc_no = fields.Char(string='LC', store=True, readonly=False)
+    lc_date = fields.Date(string='LC Date', store=True, readonly=False)
     master_lc = fields.Char(string='Export LC NO', store=True, readonly=False)
+    master_date = fields.Date(string='Export LC Date', store=True, readonly=False)
     numberof_carton = fields.Float('No. of Ctn', default=0.0, store=True)
     gross_weight = fields.Float('Gross Weight', default=0.0, store=True)
     net_weight = fields.Float('Net Weight', default=0.0, store=True)
@@ -156,7 +161,7 @@ class CombineInvoiceReport(models.AbstractModel):
             companies = line_data.mapped('product_template_id.company_id')
             for com in companies:
                 com_line_data = line_data.filtered(lambda x: x.product_template_id.company_id.id == com.id)
-                # raise UserError((companies.id))
+                
                 all_item = com_line_data.mapped('product_template_id')
                 # raise UserError((all_item.id))
                 for item in all_item:
@@ -196,13 +201,15 @@ class CombineInvoiceReport(models.AbstractModel):
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
 
-        
-        common_data = [z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_value]
+        sales_person = None
+        sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
+            
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_value]
         # raise UserError((report_data))
         return {
             'docs': docs,
             'datas': report_data,
-            'common_date':common_data,
+            'common_data':common_data,
             # 'company': com_id,
             'doc_model': 'combine.invoice',
             }

@@ -40,6 +40,12 @@ class HrHealthSafety(models.Model):
         ('12', 'Hot work related'),
         ('13', 'Environment related'),
         ('14', 'Chemical related')], string="Nature  of Accident", tracking=True)
+    treatment_type = fields.Selection(selection=[
+        ('1', 'Lost Time'),
+        ('2', 'Medical Case'),
+        ('3', 'First Aid / BEPZA Medical'),
+        ('4', 'No Treatment'),
+        ('5', 'Lost Days')], string="Treatment Type", tracking=True)
     description_accident = fields.Char('Description of Accident', size=250, tracking=True)
     corrective_action = fields.Char('Corrective Action', size=250, tracking=True)
     preventive_action = fields.Char('Preventive Action', size=250, tracking=True)
