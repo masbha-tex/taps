@@ -24,7 +24,7 @@ class MrpReportWizard(models.TransientModel):
     
     # is_company = fields.Boolean(readonly=False, default=False)
     
-    report_type = fields.Selection([('pir', 'PI File'),('pic', 'Closed PI'),('pis', 'PI Summary'),('dpr', 'Invoice'),('dppr', 'Packing Production Report'),('dpcl', 'Production Report (FG)'),('oa_d', 'OA Details'),('invs', 'Invoice Summery')], string='Report Type', required=True, help='Report Type', default='pir')
+    report_type = fields.Selection([('pir', 'PI File'),('pic', 'Closed PI'),('pis', 'PI Summary'),('dpr', 'Invoice'),('dppr', 'Packing Production Report'),('dpcl', 'Production Report (FG)'),('oa_d', 'OA Details'),('invs', 'Invoice Summery'),('cos','Closed OA Summery')], string='Report Type', required=True, help='Report Type', default='pir')
     
     date_from = fields.Date('Date from', readonly=False, default=lambda self: self._compute_from_date())
     date_to = fields.Date('Date to', readonly=False, default=lambda self: self._compute_to_date())
@@ -154,6 +154,12 @@ class MrpReportWizard(models.TransientModel):
             data = {'date_from': self.date_from,'date_to': self.date_to}
             if self.env.company.id == 1:
                 return self.oa_details(self, data=data)
+            if self.env.company.id == 3:
+                return self.oa_details_mt(self, data=data)
+        if self.report_type == "cos":
+            data = {'date_from': self.date_from,'date_to': self.date_to}
+            if self.env.company.id == 1:
+                return self.cos(self, data=data)
             if self.env.company.id == 3:
                 return self.oa_details_mt(self, data=data)
         if self.report_type == "invs":
@@ -2275,14 +2281,13 @@ class MrpReportWizard(models.TransientModel):
 
 
     # Invoice Summary
-    # Invoice Summary
     def iterate_days(self, year, month):
         _, last_day = calendar.monthrange(year, month)
         # Iterate over all days in the month
         for day in range(1, last_day + 1):
             yield day
 
-    # Code for packing_invoice
+    # Code for packing_invoice_summery
     def invs(self, docids, data=None):
         
         start_time = fields.datetime.now()
@@ -2418,6 +2423,95 @@ class MrpReportWizard(models.TransientModel):
                 self._name, self.id, ('Invoice Summery')),
             'target': 'self',
         }
+
+    #closed Order Summery
+    def iterate_days(self, year, month):
+        # Function to iterate over the days of a given month
+        num_days = fields.Date.today().replace(year=year, month=month + 1, day=1).toordinal() - fields.Date.today().replace(year=year, month=month, day=1).toordinal()
+        for day in range(1, num_days + 1):
+            yield day
+    
+    def cos(self, docids, data=None):
+        start_time = fields.datetime.now()
+        month_ = None
+        _day = to_day = None
+        
+        # Check if data is provided and extract 'date_from' and 'date_to' values
+        if data and data.get('date_from'):
+            month_ = int(data.get('date_from').month)
+            year = int(data.get('date_from').year)
+            _day = int(data.get('date_from').day)
+        if data and data.get('date_to'):
+            to_day = int(data.get('date_to').day)
+    
+        first_day_of_m = fields.datetime.now().replace(day=1).replace(month=int(month_)).replace(year=year)
+    
+        all_outputs = self.env['operation.details'].sudo().search([('next_operation', '=', 'FG Packing'), ('company_id', '=', self.env.company.id)])
+        daily_outputs = all_outputs.filtered(lambda pr: pr.action_date.date() >= first_day_of_m.date() and pr.action_date.date() <= data.get('date_to'))
+        all_closed = self.env['manufacturing.order'].search([('state','=','closed'),('closing_date','!=',False),('company_id','=',self.env.company.id)])
+        items = self.env['fg.category'].search([('active','=',True),('name','!=','Revised PI')]).sorted(key=lambda pr: pr.sequence)
+    
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+    
+        # Initialize a dictionary to store the counts of closed OAs for each item and date
+        closed_oa_counts = {}
+    
+        # Iterate over the days
+        for day in self.iterate_days(year, int(month_)):
+            if day >= _day and day <= to_day:
+                full_date = fields.datetime.now().replace(day=_day).replace(month=int(month_)).replace(year=year)
+                full_date = full_date.replace(day=day)
+    
+                daily_closed_oa = None
+                if all_closed:
+                    daily_closed_oa = all_closed.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+    
+                    if daily_closed_oa:
+                        oa_ids = daily_closed_oa.mapped('oa_id')
+                        closed_ids = len(oa_ids)
+                
+                # Calculate closed OAs for each item
+                for item in items:
+                    if self.env.company.id == 1:  # company_check
+                        itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE', '').replace('OE', '') == item.name)
+                    else:
+                        itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == item.name)
+                    
+                    # Increment the count for the combination of item and date
+                    closed_oa_counts.setdefault((item.name, full_date.date()), 0)
+                    closed_oa_counts[(item.name, full_date.date())] += len(set(itemwise_closed.mapped('oa_id.name')))
+    
+        # Write the data to the Excel sheet
+        sheet = workbook.add_worksheet('Closed Order Summary')
+    
+        # Write headers
+        sheet.write(0, 0, 'Item')
+        for day, column in zip(self.iterate_days(year, int(month_)), range(1, to_day - _day + 2)):
+            sheet.write(0, column, str(day))
+    
+        # Write item-wise counts
+        for idx, item in enumerate(items, start=1):
+            sheet.write(idx, 0, item.name)
+            for col, day in zip(range(1, to_day - _day + 2), self.iterate_days(year, int(month_))):
+                count = closed_oa_counts.get((item.name, day), 0)
+                sheet.write(idx, col, count)
+    
+        workbook.close()
+        output.seek(0)
+        xlsx_data = output.getvalue()
+        self.file_data = base64.encodebytes(xlsx_data)
+        end_time = fields.datetime.now()
+        _logger.info("\n\nTOTAL PRINTING TIME IS : %s \n" % (end_time - start_time))
+    
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/?model={}&id={}&field=file_data&filename={}&download=true'.format(
+                self._name, self.id, ('Closed Order Summary')),
+            'target': 'self',
+    }
+
+
 
 
 

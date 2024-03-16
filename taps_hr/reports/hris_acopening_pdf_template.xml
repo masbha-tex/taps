@@ -29,7 +29,9 @@
                         </p>
                         <p>
                           The Manager<br/>
-                          <span t-esc="bank"/><br/>
+                          <!-- <span t-esc="bank"/> -->
+                            <t t-esc="datas[4]"/>
+                            <br/>
                           Dhaka.<br/>  
                         </p>
 
@@ -160,8 +162,8 @@ His/Her particular information are given below:
                           <br/>
                           (Authorized Signature)<br/>
                           Name: Md. Shahid Hossain<br/>
-                          Designation: Head of HR, Admin &amp; Compliance<br/>
-                          Department: HR &amp; Admin<br/>
+                          Designation: General Manager<br/>
+                          Department: HR, Admin &amp; Compliance<br/>
                           Official E-mail: shahid.hossain@texzipperbd.com<br/>
                           Contact: +8801918990450<br/>
                           

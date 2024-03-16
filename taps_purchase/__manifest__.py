@@ -16,8 +16,10 @@
     ],
     # Check data order
     "data": [
+        "security/ir.model.access.csv",
         "views/purchase_order.xml",
         "views/purchase_req.xml",
+        "views/purchase_approval_duration.xml",
     ],
     'qweb': [
         "static/src/xml/purchase_dashboard.xml",

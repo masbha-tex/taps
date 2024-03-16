@@ -17,6 +17,7 @@
                 <field name="shift"/>
                 <!-- <field name="type"/> -->
                 <field name="type" widget="badge" decoration-warning="type == '2'" decoration-danger="type == '4'" decoration-success="type == '3'" decoration-info="type == '1'"/> 
+                <field name="accident_type"/>
                 <field name="accident_nature"/>
                 <field name="description_accident"/>
                 <field name="corrective_action"/>
@@ -41,7 +42,8 @@
 				<sheet>
                     <field name="active" invisible="1"/>   
                     
-                    <field name="name"/>
+                    <!-- <field name="name"/> -->
+                    <h3><field name="name" readonly="1"/></h3>
                     <group colspan="2" col="2">
                         <!-- <div class="oe_title">
                             <label for="name" class="oe_edit_only"/>
@@ -67,6 +69,7 @@
                         <group string="Accident Details">
                             <field name="accident_date"/>
                             <field name="type"/>
+                            <field name="accident_type"/>
                             <!-- <field name="type" widget="badge" decoration-warning="type == '2'" decoration-danger="type == '4'" decoration-muted="type == '3'" decoration-info="type == '1'"/> -->
                             <!-- <field name="type" widget="selection" options="{'color_field': 'color'}"/> -->
                             <field name="accident_nature"/>
@@ -124,8 +127,12 @@
                 <group>
                     <group col="3">
                         <aggregate name="employee_id" string="Employee" field="employee_id"/>
-                        <aggregate name="type" string="Type" field="type"/>
+                        <aggregate name="type" string="Days since last accident" field="type" group_operator="count" measure="__count__"/>
                         <!-- <aggregate name="treatment_expense" string="Expense" field="treatment_expense" group_operator="sum"/>  -->
+                        <aggregate name="treatment_expense_aggregate" field="treatment_expense" invisible="1"/>
+                        <formula name="treatment_expense" string="Expense" value="record.treatment_expense_aggregate" widget="monetary"/>
+                         <!-- <aggregate name="Days since last accident" field="accident_date"/>
+                        <field name="accident_date" invisible="1" order="desc" domain="[('accident_date', '&lt;', date.today())]"/> -->
                         <!-- <aggregate name="impact" string="Total Impact" field="impact" group_operator="count"/> -->
                         <!-- <aggregate name="risk" string="Total Risk" field="risk" group_operator="count"/> -->
                     </group>
@@ -138,6 +145,7 @@
                     </group> -->
 
                 </group>
+                <!-- <view type="graph" ref="hr_health_safety.view_hr_health_safety_graph"/> -->
                 <!-- <view type="pivot" ref="taps_retention_matrix.view_retention_matrix_pivot"/> -->
                 
             </dashboard>
@@ -151,7 +159,7 @@
             <graph string="H &amp; S Graph Analysis" stacked="False" type="bar" sample="1">
                 
                 <field name="type" type="row"/>
-                <field name="treatment_expense" type="row"/>
+                <field name="treatment_expense" type="row" interval="week"/>
                 <field name="accident_date" type="count"/>
             </graph>
         </field>
@@ -202,7 +210,7 @@
         <field name="res_model">hr.health.safety</field>
         <field name="context" eval="{}"/>
         <!-- <field name="view_mode">tree,form,dashboard</field> -->
-          <field name="view_mode">tree,form,pivot</field>
+          <field name="view_mode">tree,form,pivot,dashboard</field>
         <field name="target">main</field>
         <field name="view_id" ref="hr_health_safety.view_hr_health_safety_list"/>
         <!-- <field name="search_view_id" ref="taps_retention_matrix.view_hr_health_safety_search_view"/> -->

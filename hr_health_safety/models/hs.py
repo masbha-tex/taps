@@ -24,7 +24,7 @@ class HrHealthSafety(models.Model):
         ('1', 'Critical Severity'),
         ('2', 'High Severity'),
         ('3', 'Low Severity'),
-        ('4', 'Major Severity')], string="Type of Accident", tracking=True)
+        ('4', 'Major Severity')], string="Severity", tracking=True)
     accident_nature = fields.Selection(selection=[
         ('1', 'Negligience of Work'),
         ('2', 'Negligence at work (SOP not maintained)'),
@@ -46,6 +46,12 @@ class HrHealthSafety(models.Model):
         ('3', 'First Aid / BEPZA Medical'),
         ('4', 'No Treatment'),
         ('5', 'Lost Days')], string="Treatment Type", tracking=True)
+    accident_type = fields.Selection(selection=[
+        ('Injury', 'Injury'),
+        ('Illness', 'Illness'),
+        ('Psychological', 'Psychological'),
+        ('Harassment', 'Harassment'),
+        ('Others', 'Others')], string="Type of Accident", tracking=True)
     description_accident = fields.Char('Description of Accident', size=250, tracking=True)
     corrective_action = fields.Char('Corrective Action', size=250, tracking=True)
     preventive_action = fields.Char('Preventive Action', size=250, tracking=True)

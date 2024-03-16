@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_po_approval_duration_search" model="ir.ui.view">
+        <field name="name">purchase.approval.duration.search</field>
+        <field name="model">purchase.approval.duration</field>
+        <field name="arch" type="xml" >
+            <search string="Approval Duration">
+                <field name="po_id" string="PO"/>
+                <filter string="PO" name="po_in_approval" domain="[('fun_a_date', '!=', False)]" />
+                <!-- <filter string="PO" name="po_in_approval" domain="[('state', 'not in', ('draft','cancel'))]" /> -->
+                <separator/>
+                <field name="po_id"/>
+                <group expand="0" string="Group By">
+                    <filter name="company_group" string="Company" domain="[]" context="{'group_by': 'company_id'}"/>
+                    <filter name="vendor_group" string="Vendor" domain="[]" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- <record model="ir.rule" id="record_not_shared_po_du_multi_company_rule">
+        <field name="name">Non Shared Records:model</field>
+        <field name="model_id" ref="model_purchase_approval_duration"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record> -->
+    
+
+    <record id="view_po_approval_duration_tree" model="ir.ui.view">
+        <field name="name">purchase.approval.duration.tree</field>
+        <field name="model">purchase.approval.duration</field>
+        <field name="arch" type="xml" >
+            <tree string="Purchase Approval Duration" create="false" delete="false" >
+                <field name="po_id"/>
+                <field name="partner_id" invisible="1"/>
+                <field name="company_id"/>
+                <field name="create_date"/>
+                <field name="fun_a_date"/>
+                <field name="scm_a_date"/>
+                <field name="fin_a_date"/>
+                <field name="date_approved"/>
+                <field name="amount_total" invisible="1"/>
+                <field name="duration_total"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_purchase_approval_duration" model="ir.actions.act_window">
+        <field name="name">Approval Duration</field>
+        <field name="res_model">purchase.approval.duration</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'search_default_po_in_approval':1, 'search_default_company_group':1}</field>
+        <field name="search_view_id" ref="view_po_approval_duration_search" />
+    </record>
+    
+
+    <menuitem id="menu_purchase_approval_duration" 
+              name="Approval Duration"
+              action="action_purchase_approval_duration"
+              parent="purchase.menu_purchase_root"
+              sequence="7"/>
+              <!-- groups="sales_team.group_sale_salesman_all_leads" -->
+</odoo>    
