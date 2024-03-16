@@ -46,11 +46,11 @@ class CrmReportWizard(models.TransientModel):
                 'team_id': self.team_id
                 }
         if self.report_type == 'team_orderacc':
-            return self.order_acceptance_xls(self, data=data)
-            # if (self.env.user.id == self.team_id.user_id.id) or (self.env.user.id == self.team_id.core_leader.id):
-            #     return self.order_acceptance_xls(self, data=data)
-            # else:
-            #     raise UserError(('You Can Only View/Download Your Own Team Data'))
+            # return self.order_acceptance_xls(self, data=data)
+            if (self.env.user.id == self.team_id.user_id.id) or (self.env.user.id == self.team_id.core_leader.id) or (self.env.user.id == 19):
+                return self.order_acceptance_xls(self, data=data)
+            else:
+                raise UserError(('You Can Only View/Download Your Own Team Data'))
         
 
     def order_acceptance_xls(self,docids,data):
@@ -295,7 +295,7 @@ class CrmReportWizard(models.TransientModel):
         
         worksheet = workbook.add_worksheet("Metal Trims")
         domain = []
-        if data.get('.date_from'):
+        if data.get('date_from'):
             time_from = time(00, 00, 00)
             date_time_from = datetime.combine(data.get('date_from'), time_from)
             domain.append(('order_id.date_order', '>=',date_time_from))
