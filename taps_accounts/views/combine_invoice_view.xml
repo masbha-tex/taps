@@ -59,6 +59,8 @@
                                 <field name="lc_date"/>
                                 <field name="master_lc"/>
                                 <field name="master_date"/>
+                                <field name="exp_no"/>
+                                <field name="exp_date"/>
                                 <field name="numberof_carton"/>
                                 <field name="gross_weight"/>
                                 <field name="net_weight"/>

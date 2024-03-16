@@ -89,7 +89,7 @@
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
-								<strong>LC DATE</strong>
+								<strong>LC DATE:</strong>
 								<p>
 									<t t-if="o.lc_date">
 										<t t-esc="o.lc_date.strftime('%d-%b-%Y')"/>
@@ -144,7 +144,7 @@
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-								  <strong>BANK BIN NO</strong>
+								  <strong>BANK BIN NO:</strong>
 									
 									<br/>
 									 <t t-esc="o.bank_bin"/> 
@@ -152,7 +152,7 @@
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>H.S.CODE</strong>
+									<strong>H.S.CODE:</strong>
 									<br/>
 									<!-- <t t-if="o.po_date">
 										<t t-esc="o.po_date.strftime('%d-%m-%Y')"/>
@@ -161,7 +161,7 @@
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>PAYMENT TERMS </strong>
+									<strong>PAYMENT TERMS:</strong>
 									<br/>
 									 <!--<t t-if="o.invoice_payment_term_id">-->
 										<t t-esc="o.invoice_payment_term_id.name"/>
@@ -170,7 +170,7 @@
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY</strong>
+									<strong>ISSUED BY:</strong>
 									<br/>
 									<!-- <t t-if="o.revised_date">
 										<t t-esc="o.revised_date.strftime('%d-%m-%Y')"/>
@@ -181,36 +181,33 @@
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>INVOICE/BILL DATE</strong>
+								<strong>DOCUMENT ARRIVAL NOTICE/EXP NO:</strong>
 								<p>
-									<t t-if="o.invoice_date">
-										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									<t t-if="o.exp_no">
+										<t t-esc="o.exp_no"/>
 									</t>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>SALESPERSON</strong>
+								<strong>DATE:</strong>
 								<p>
-									<t t-if="common_data[0]">
-										<t t-esc="common_data[0]"/>
+									<t t-if="o.exp_date">
+										<t t-esc="o.exp_date.strftime('%d-%b-%Y')"/>
 									</t>
 								</p>
 							</div>
-							
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>STYLE REF</strong>
+								<strong>STYLE REF:</strong>
 								<p>
 									<t t-if="o.style_ref">
 										<t t-esc="o.style_ref"/>
 									</t>
 								</p>
 							</div>
-						</div>
-						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>PO NO.</strong>
+								<strong>PO NO.:</strong>
 								<p>
 									<t t-if="o.po_numbers">
 										<t t-esc="o.po_numbers"/>
@@ -220,7 +217,7 @@
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>PI NO.</strong>
+								<strong>PI NO.:</strong>
 								<p>
 									<t t-if="o.pi_numbers">
 										<t t-esc="o.pi_numbers"/>
@@ -228,10 +225,7 @@
 								</p>
 							</div>
 						</div>
-						
-						 <div style="font-size:12px">
-						
-							
+                        <div style="font-size:12px">
 						<table class="table table-sm o_main_table">
                                 <thead>
                                     <t t-set="line_count" t-value="0"/>
@@ -869,7 +863,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<!--</td>-->
 										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 											<strong>
-												<!-- <t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/> -->44
+												<t t-esc="common_data[6]"/>
 											</strong>
 										</td>
 										<!-- <td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/> -->

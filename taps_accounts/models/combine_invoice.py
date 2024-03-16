@@ -69,6 +69,8 @@ class CombineInvoice(models.Model):
     lc_date = fields.Date(string='LC Date', store=True, readonly=False)
     master_lc = fields.Char(string='Export LC NO', store=True, readonly=False)
     master_date = fields.Date(string='Export LC Date', store=True, readonly=False)
+    exp_no = fields.Char(string='Document/Export NO', store=True, readonly=False)
+    exp_date = fields.Date(string='Document/Export Date', store=True, readonly=False)
     numberof_carton = fields.Float('No. of Ctn', default=0.0, store=True)
     gross_weight = fields.Float('Gross Weight', default=0.0, store=True)
     net_weight = fields.Float('Net Weight', default=0.0, store=True)
@@ -148,6 +150,7 @@ class CombineInvoiceReport(models.AbstractModel):
         z_items = line_data.filtered(lambda x: x.product_id.product_tmpl_id.company_id.id == 1)
         m_items = line_data.filtered(lambda x: x.product_id.product_tmpl_id.company_id.id == 3)
         z_total_qty = z_total_value = m_total_qty = m_total_value = m_total_pcs = total_value = 0
+        total_qty = sum(line_data.mapped('quantity'))
         total_value = sum(line_data.mapped('price_total'))
         if z_items:
             z_total = sum(z_items.mapped('quantity'))
@@ -204,7 +207,7 @@ class CombineInvoiceReport(models.AbstractModel):
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
             
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_value]
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value]
         # raise UserError((report_data))
         return {
             'docs': docs,

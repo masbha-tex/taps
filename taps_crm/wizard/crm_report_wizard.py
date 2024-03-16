@@ -46,11 +46,11 @@ class CrmReportWizard(models.TransientModel):
                 'team_id': self.team_id
                 }
         if self.report_type == 'team_orderacc':
-            # return self.order_acceptance_xls(self, data=data)
-            if (self.env.user.id == self.team_id.user_id.id) or (self.env.user.id == self.team_id.core_leader.id):
-                return self.order_acceptance_xls(self, data=data)
-            else:
-                raise UserError(('You Can Only View/Download Your Own Team Data'))
+            return self.order_acceptance_xls(self, data=data)
+            # if (self.env.user.id == self.team_id.user_id.id) or (self.env.user.id == self.team_id.core_leader.id):
+            #     return self.order_acceptance_xls(self, data=data)
+            # else:
+            #     raise UserError(('You Can Only View/Download Your Own Team Data'))
         
 
     def order_acceptance_xls(self,docids,data):

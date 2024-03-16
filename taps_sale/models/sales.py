@@ -138,7 +138,7 @@ class SaleOrder(models.Model):
     cause_of_replacement = fields.Text(string='Replacement Cuase')
     is_hold = fields.Boolean('Hold', tracking=True)
     price_tracking = fields.Text('Price Tracker')
-    avg_price = fields.Float(string='Average Price', compute="_compute_avg_price")
+    avg_price = fields.Float(string='Average Price', compute="_compute_avg_price", default=0.0)
     avg_size = fields.Float(string='Average Size', compute="_compute_avg_size")
     assortment = fields.Char(string='Assortment')
     dpi = fields.Char(string='DPI')
