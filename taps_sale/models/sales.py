@@ -274,7 +274,9 @@ class SaleOrder(models.Model):
         
     def action_view_invoice(self):
         invoices = self.mapped('invoice_ids')
-        com_inv = self.env['combine.invoice'].search([('z_invoice','in', invoices.ids) or ('m_invoice','in', invoices.ids)])
+        z_inv = self.env['combine.invoice'].search([('z_invoice','in', invoices.ids)])
+        b_inv = self.env['combine.invoice'].search([('m_invoice','in', invoices.ids)])
+        com_inv = z_inv + b_inv
         # raise UserError((invoices.ids))
         # action = self.env["ir.actions.actions"]._for_xml_id("account.action_move_out_invoice_type")
         action = self.env["ir.actions.actions"]._for_xml_id("taps_accounts.combine_invoice_action")
