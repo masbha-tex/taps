@@ -1,6 +1,8 @@
 
 from odoo import models, fields, api, _ 
 from odoo.exceptions import ValidationError, UserError
+from datetime import date, datetime
+
 
 
 class HrHealthSafety(models.Model):
@@ -53,13 +55,15 @@ class HrHealthSafety(models.Model):
         ('Harassment', 'Harassment'),
         ('Others', 'Others')], string="Type of Accident", tracking=True)
     description_accident = fields.Char('Description of Accident', size=250, tracking=True)
-    corrective_action = fields.Html('Corrective Action', tracking=True)
-    preventive_action = fields.Html('Preventive Action', tracking=True)
+    corrective_action = fields.Text('Corrective Action', tracking=True)
+    preventive_action = fields.Text('Preventive Action', tracking=True)
     remarks = fields.Char('Remarks', size=250, tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency')
     treatment_expense = fields.Monetary(string='Treatment Expense', store=True, currency_field='currency_id')
     rejoining_date = fields.Date(string = "Date of Re-Joining")
     count = fields.Integer(string="Leave Days", compute="_compute_count")
+    last_day_acc = fields.Integer(string="Days since last accident", compute="_compute_last_day_acc")
+    
     
     # criteria_id = fields.Many2one('hs.criteria', required=True, string='')
     # title_ids = fields.Many2one('hs.title', string='Title', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
@@ -67,11 +71,27 @@ class HrHealthSafety(models.Model):
     def _compute_count(self):
         for record in self:
             if record.rejoining_date and record.accident_date:
-                # Calculate the difference in days
                 count = (record.rejoining_date - record.accident_date).days
                 record.count = count
             else:
                 record.count = 0 
+                
+    @api.depends('accident_date')
+    def _compute_last_day_acc(self):
+        acc_ = self.env['hr.health.safety'].search([], order='accident_date desc', limit=1)
+        if acc_:
+            acc_date = acc_.accident_date
+            today = date.today()
+            count = (today - acc_date).days
+            self.last_day_acc = count
+        else:
+            self.last_day_acc = 0
+        # for record in self:
+        #     if record.accident_date:
+        #         count = (record.date.today() - record.accident_date).days
+        #         record.count = count
+        #     else:
+        #         record.count = 0 
 
     @api.model
     def create(self, vals):

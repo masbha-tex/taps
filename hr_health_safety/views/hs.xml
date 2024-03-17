@@ -85,14 +85,18 @@
                         <group>
                             <field name="rejoining_date"/>
                             <field name="count"/>
+                            <field name="last_day_acc"/>
                         </group>
                     </group>
                     <group>
                         <field name="remarks"/>
                     </group>
-                    <group string="CAPA">
-                        <field name="corrective_action"/>
-                        <field name="preventive_action"/>
+                    <div class="oe_title">
+                                <h2 style="color: #E54F6D">CAPA</h2>
+                        </div>
+                    <group>
+                        <group><field name="corrective_action"/></group>
+                        <group><field name="preventive_action"/></group>
                     </group>
                                         
                 </sheet>
@@ -127,7 +131,9 @@
                 <group>
                     <group col="3">
                         <aggregate name="employee_id" string="Employee" field="employee_id"/>
-                        <aggregate name="type" string="Days since last accident" field="type" group_operator="count" measure="__count__"/>
+                        <!-- <field name="last_day_acc"/> -->
+                        <!-- <aggregate name="last_day_acc" string="Days since last accident" field="last_day_acc"/> -->
+                        <!-- <aggregate name="last_day_acc" string="Days since last accident" field="last_day_acc" group_operator="count" measure="__count__"/> -->
                         <!-- <aggregate name="treatment_expense" string="Expense" field="treatment_expense" group_operator="sum"/>  -->
                         <aggregate name="treatment_expense_aggregate" field="treatment_expense" invisible="1"/>
                         <formula name="treatment_expense" string="Expense" value="record.treatment_expense_aggregate" widget="monetary"/>

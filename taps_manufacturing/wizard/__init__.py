@@ -14,3 +14,4 @@ from . import mrp_return
 from . import change_production_date
 from . import oa_check
 from . import set_exp_close_date
+from . import packing_error

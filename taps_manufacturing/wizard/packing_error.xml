@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="packing_error_form_view">
+        <field name="name">packing.error.form.view</field>
+        <field name="model">packing.error</field>
+        <field name="arch" type="xml">
+            <form string="Packing Error">
+                <group>
+                   <!-- <field name="oa_ids_string" widget="text" readonly="1"/> -->
+                </group>
+                <footer>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    <!-- <button string="Solve" class="btn-secondary" special="cancel"/> -->
+                </footer>
+            </form>
+        </field>
+    </record>        
+    
+    <record id="action_packing_error" model="ir.actions.act_window">
+        <field name="name">Packing Error</field>
+        <field name="res_model">packing.error</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>   
+    
+    <menuitem id="menu_packing_error"
+              name="Packing Error"
+              sequence="6"
+              parent="taps_manufacturing.menu_packing"
+              action="action_packing_error"    
+        /> 
+
+</odoo>

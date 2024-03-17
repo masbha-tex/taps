@@ -4,7 +4,7 @@ import datetime
 import math
 import operator as py_operator
 import re
-
+from num2words import num2words
 from collections import defaultdict
 from dateutil.relativedelta import relativedelta
 from itertools import groupby
@@ -74,7 +74,17 @@ class CombineInvoice(models.Model):
     numberof_carton = fields.Float('No. of Ctn', default=0.0, store=True)
     gross_weight = fields.Float('Gross Weight', default=0.0, store=True)
     net_weight = fields.Float('Net Weight', default=0.0, store=True)
+    amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all', tracking=4)
 
+    @api.depends('line_id.price_total')
+    def _amount_all(self):
+        for order in self:
+            amount_total = 0.0
+            for line in order.line_id:
+                amount_total += line.price_subtotal
+            order.update({
+                'amount_total': amount_total,
+            })
     
     @api.model
     def create(self, vals):
@@ -192,8 +202,8 @@ class CombineInvoiceReport(models.AbstractModel):
                                     shade,
                                     size,
                                     qty,
-                                    price,
-                                    value,
+                                    round(price,4),
+                                    round(value,4),
                                     ]
                                 report_data.append(order_data)
                 order_data = []
@@ -206,8 +216,8 @@ class CombineInvoiceReport(models.AbstractModel):
 
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
-            
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value]
+        amount_in_word = self._amount_in_words(total_value)    
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word]
         # raise UserError((report_data))
         return {
             'docs': docs,
@@ -218,5 +228,23 @@ class CombineInvoiceReport(models.AbstractModel):
             }
             
 
-
+    def _amount_in_words(self,amount):
+        total = 0.0
+        total = format(amount, ".2f")
+        text = ''
+        entire_num = int((str(total).split('.'))[0])
+        decimal_num = int((str(total).split('.'))[1])
+        text+=num2words(entire_num, lang='en_IN')
+        if entire_num == 1:
+            text+=' dollar '
+        else:
+            text+=' dollars '
+        if decimal_num > 0:
+            text+=num2words(decimal_num, lang='en_IN')
+            if decimal_num == 1:
+                text+=' cent '
+            else:
+                text+=' cents '
+        amount_in_word = text.upper()
+        return amount_in_word
 

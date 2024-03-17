@@ -244,7 +244,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <t t-set="prev_item" t-value=""/>
+                                    <!-- <t t-set="total_am" t-value="0"/> -->
+                                    <t t-set="prev_item" t-value="0.0"/>
                                     <t t-set="prev_item_1" t-value="False"/>
                                     <t t-set="prev_item_2" t-value=""/>
                                     <t t-foreach="datas" t-as="line">
@@ -311,10 +312,11 @@
                                             </t>
                                             <!-- <td><t t-esc="line[1]"/></td> -->
                                             <!-- <td><t t-esc="line[2]"/></td> -->
-                                            <td><t t-esc="line[3]"/></td>
-                                            <td><t t-esc="line[4]"/></td>
-                                            <td><t t-esc="line[5]"/></td>
-                                            <td><t t-esc="line[6]"/></td>
+                                            <td class="text-right"><t t-esc="line[3]"/></td>
+                                            <td class="text-right"><t t-esc="line[4]"/></td>
+                                            <td class="text-right"><t t-esc="line[5]"/></td>
+                                            <td class="text-right"><t t-esc="line[6]"/></td>
+                                            <!-- <t t-set="total_am" t-value="total_am+line[6]"/> -->
                                         </tr>
                                     </t>
                                             
@@ -325,10 +327,15 @@
 										<!--</td>-->
 										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 											<strong>
-												<!-- <t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/> -->44
+												<t t-esc="common_data[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 											</strong>
 										</td>
-										<td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/>
+										<td colspan="1" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/>
+                                        <td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-left: 1px solid black ! important;">
+											<strong>
+												<t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+											</strong>
+										</td>
 									</tr>
                                     
                                 </tbody>
@@ -378,23 +385,23 @@
 							<div class="row float-right pr-3">
 								<div>
 									<table class="table table-sm o_main_table">
-										<tr class="border-black o_subtotal">
+										<!-- <tr class="border-black o_subtotal">
 											<td>
 												<strong>Subtotal</strong>
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!-- <t t-esc="datas[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+													<t t-esc="datas[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
-										</tr>
+										</tr> -->
 										<tr class="border-black o_subtotal">
 											<td style="background-color: white ! important; color: Black ! important">
 												<strong>Total</strong>
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!-- <t t-esc="datas.price_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> -->
+													<t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 												</span>
 											</td>
 										</tr>
@@ -418,7 +425,7 @@
                         <br/>
 							<div class="clearfix" style="font-size:12px">
 								<strong>AMOUNT IN WORDS(USD): 
-								<!--<span t-esc="o.amount_in_word"/>-->
+								<span t-esc="common_data[8]"/>
 								</strong>
 								<br/>
 								
@@ -2033,7 +2040,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<br/>
                                 <div class="row">
                                     <div class="col-12 mt-4" style="font-size:12px">
-                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  4536.58  </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  120  </strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/>BANK ASIA LTD,PRINCIPAL BR DHAKA ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px">  USD FOUR  THOUSAND, FIVE HUNDRED THIRTY SIX &amp; CENT FIFTY EIGHT  ONLY </strong>   Value received for accessories for readymade garments </p>
+                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> </strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/>BANK ASIA LTD,PRINCIPAL BR DHAKA ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
                                           <br/>
                                     </div>
                                 </div>
@@ -2167,7 +2174,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<br/>
                                 <div class="row">
                                     <div class="col-12 mt-4" style="font-size:12px">
-                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  4536.58  </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  120  </strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/>BANK ASIA LTD,PRINCIPAL BR DHAKA ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px">  USD FOUR  THOUSAND, FIVE HUNDRED THIRTY SIX &amp; CENT FIFTY EIGHT  ONLY </strong>   Value received for accessories for readymade garments </p>
+                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> </strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/>BANK ASIA LTD,PRINCIPAL BR DHAKA ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
                                           <br/>
                                     </div>
                                 </div>

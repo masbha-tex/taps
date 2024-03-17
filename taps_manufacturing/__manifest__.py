@@ -63,6 +63,7 @@
         'report/report_label_print_mt.xml',
         'report/report_label_print_blank.xml',
         'wizard/oa_check.xml',
+        'wizard/packing_error.xml',
         'report/ppc_rpt_wizard.xml',
         # 'report/ppc_production_analysis.xml',
         'wizard/set_exp_close_date.xml',

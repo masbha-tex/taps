@@ -96,11 +96,15 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                         style = com_in.style_ref
                     if pi_numbers:
                         pi_numbers += "," + or_ref.replace('S','TZBD-Z')
-                        po_numbers += "," + po_no
-                        style_ref += "," + style
                     else:
                         pi_numbers += or_ref.replace('S','TZBD-Z')
+                    if po_numbers:
+                        po_numbers += "," + po_no
+                    else:
                         po_numbers += po_no
+                    if style_ref:
+                        style_ref += "," + style
+                    else:
                         style_ref += style
             else:
                 m_invoice = mv.id

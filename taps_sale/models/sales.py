@@ -182,9 +182,12 @@ class SaleOrder(models.Model):
 
     @api.onchange('sample_type')
     def _on_change_sample_type(self):
-        self.partner_id = False
-        self.buying_house= False
-        self.provisionals_id = False
+        if self.sample_type == 'customer':
+            self.buying_house= False
+            self.provisionals_id = False
+        elif (self.sample_type == 'buyinghouse') or (self.sample_type == 'pacc'):
+            self.partner_id = 184188
+
 
     @api.onchange('buyer_type')
     def _on_change_buyer_type(self):
@@ -546,20 +549,21 @@ class SaleOrder(models.Model):
                 'oa@bd.texfasteners.com',
                 'costing@texzipperbd.com',
                 'mis.mkt@texzipperbd.com',
-                'asraful.haque@texzipperbd.com',
                 ]
+            
+            
             author_id=0
 
             if rec.id == 1:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release', False)
                 email_cc_list.append('ranjeet.singh@texzipperbd.com')
                 email_cc_list.append('csd.zipper@texzipperbd.com')
-                # email_from_list.append('csd.zipper@texzipperbd.com')
+                email_from_list.append('csd.zipper@texzipperbd.com')
             if rec.id == 3:
                 report = rec.env.ref('taps_sale.action_report_daily_oa_release_mt', False)
                 email_cc_list.append('kumar.abhishek@texzipperbd.com')
                 email_cc_list.append('nasir.csd@texzipperbd.com')
-                # email_from_list.append('nasir.csd@texzipperbd.com')
+                email_from_list.append('nasir.csd@texzipperbd.com')
             pdf_content, content_type = report.sudo()._render_qweb_pdf()
             # author_list = ','.join(author_id)
             # raise UserError((pdf_content))
@@ -574,6 +578,7 @@ class SaleOrder(models.Model):
             email_cc = ','.join(email_cc_list)
             email_from = ','.join(email_from_list)
             email_to = ','.join(email_to_list)
+            
             mail_values = {
                 'email_from': email_from,
                 'author_id': self.env.user.partner_id.id,
@@ -1888,6 +1893,7 @@ class SaleOrderLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for values in vals_list:
+            
             if values.get('display_type', self.default_get(['display_type'])['display_type']):
                 values.update(product_id=False, price_unit=0, product_uom_qty=0, product_uom=False, customer_lead=0)
 

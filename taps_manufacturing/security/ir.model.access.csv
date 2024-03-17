@@ -39,3 +39,4 @@ access_ppc_report,access_ppc_report,model_ppc_report,base.group_user,1,1,1,1
 access_set_exp_cd,access_set_exp_cd,model_set_exp_cd,base.group_user,1,1,1,1
 access_fg_packaging,access_fg_packaging,model_fg_packaging,base.group_user,1,1,1,1
 access_fg_packaging_line,access_fg_packaging_line,model_fg_packaging_line,base.group_user,1,1,1,1
+access_packing_error,access_packing_error,model_packing_error,base.group_user,1,1,1,1
