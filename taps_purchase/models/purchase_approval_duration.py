@@ -37,7 +37,7 @@ class PurchaseApprovalDuration(models.Model):
             else:
                 s.duration_total = 0
     
-    
+    # (case when date_approved is not null then date_approved - create_date else case when fin_a_date is not null then fin_a_date - create_date else case when scm_a_date is not null then scm_a_date - create_date else case when fun_a_date is not null then fun_a_date - create_date else 0 end end end end)  as duration_total
 
     def init(self):
     # Drop the existing view if it exists
@@ -48,13 +48,14 @@ class PurchaseApprovalDuration(models.Model):
         CREATE OR REPLACE VIEW purchase_approval_duration AS (
         SELECT row_number() OVER() AS id, po_id,partner_id,company_id,
         create_date,fun_a_date,scm_a_date,fin_a_date,date_approved,amount_total,
-        0 as duration_total
+        (COALESCE(date_approved, fin_a_date, scm_a_date, fun_a_date) - create_date) AS duration_total
+        
         FROM (
             SELECT
                 p.id AS po_id,
                 p.partner_id,
                 p.company_id,
-                p.create_date,
+                date(p.create_date) as create_date,
                 (
                     SELECT date(ap.write_date)
                     FROM studio_approval_entry ap
@@ -82,7 +83,7 @@ class PurchaseApprovalDuration(models.Model):
                 date(p.date_approve) AS date_approved,
                 p.amount_total
             FROM
-                purchase_order p
+                purchase_order p order by date(create_date) desc
         ) AS a)
         """
         self.env.cr.execute(query)

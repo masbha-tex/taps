@@ -192,12 +192,14 @@
                     <!-- <filter name="criteria_id" context="{'group_by': 'criteria_id'}"/> -->
                     <!-- <filter name="title_ids" context="{'group_by': 'title_ids'}"/> -->
                     <filter name="type" context="{'group_by': 'type'}"/>
+                    <filter name="accident_type" context="{'group_by': 'accident_type'}"/>
                     <filter name="accident_nature" context="{'group_by': 'accident_nature'}"/>
                     <filter name="employee_id" context="{'group_by': 'employee_id'}"/>
                 </group>
                 <searchpanel>
                     <field name="company_id" enable_counters="1"/>
                     <field name="type" enable_counters="1"/>
+                    <field name="accident_type" enable_counters="1"/>
                     <field name="accident_nature" enable_counters="1"/>
                     <field name="department_id" enable_counters="1"/>
                 </searchpanel>

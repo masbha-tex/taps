@@ -53,8 +53,8 @@ class HrHealthSafety(models.Model):
         ('Harassment', 'Harassment'),
         ('Others', 'Others')], string="Type of Accident", tracking=True)
     description_accident = fields.Char('Description of Accident', size=250, tracking=True)
-    corrective_action = fields.Char('Corrective Action', size=250, tracking=True)
-    preventive_action = fields.Char('Preventive Action', size=250, tracking=True)
+    corrective_action = fields.Html('Corrective Action', tracking=True)
+    preventive_action = fields.Html('Preventive Action', tracking=True)
     remarks = fields.Char('Remarks', size=250, tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency')
     treatment_expense = fields.Monetary(string='Treatment Expense', store=True, currency_field='currency_id')
