@@ -38,7 +38,7 @@ class PackingError(models.TransientModel):
             # Joining oa_id values with commas
             self.oa_ids_string = ','.join(str(oa_id) for oa_id in oa_ids)
             
-            return {'oa_ids_string': oa_ids_string}  # Return as a dictionary
+            return {'oa_ids_string': self.oa_ids_string}  # Return as a dictionary
             
         except Exception as e:
             logging.error("Error occurred while fetching operation details: %s", str(e))

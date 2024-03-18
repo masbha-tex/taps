@@ -21,16 +21,16 @@ class OaCheck(models.TransientModel):
     Size_list = fields.Many2one('selection.fields.data', string='Size List', domain="[('field_name', '=', 'size')]", check_company=True)
 
     Shade_list_2 = fields.Many2one('selection.fields.data', string='Shade List (All)',  domain="[('field_name', '=', 'shade')]", check_company=True)
-    Size_list_2 = fields.Many2one('selection.fields.data', string='Size List (All)', domain="[('field_name', '=', 'size')]", check_company=True)
+    Size_list_2 = fields.Many2one('selection.fields.data', string='Size List (All).', domain="[('field_name', '=', 'size')]", check_company=True)
     
     total_packed = fields.Integer(string='Total Packed (OA) ',readonly = False, help='Total Packed in this OA')    
-    total_packed_2 = fields.Integer(string='Total Packed (OA) ',readonly = False, help='Total Packed in this OA')
+    total_packed_2 = fields.Integer(string='Total Packed (OA). ',readonly = False, help='Total Packed in this OA')
 
-    order_qty = fields.Integer(string='OA Qty ',readonly = False, help='Total Packed in this OA')
+    order_qty = fields.Integer(string='OA Qty. ',readonly = False, help='Total Packed in this OA')
     order_qty_2 = fields.Integer(string='OA Qty ',readonly = False, help='Total Packed in this OA')
 
     oa_balance = fields.Integer(string='OA Balance ',readonly = False, help='Total Packed in this OA')
-    oa_balance_2 = fields.Integer(string='OA Balance ',readonly = False, help='Total Packed in this OA')
+    oa_balance_2 = fields.Integer(string='OA Balance. ',readonly = False, help='Total Packed in this OA')
     
     # total_packed_size = fields.Integer(string='Total Packed (Size) ',readonly = False, help='Total Packed in this OA')
     # total_packed_size_2 = fields.Integer(string='Total Packed (Size) ',readonly = False, help='Total Packed in this OA')
@@ -38,10 +38,10 @@ class OaCheck(models.TransientModel):
     total_packed_date = fields.Integer(string='Total Packed (Date) ',readonly = False, help='Total Packed in current Date')
     # compute='_compute_total_packed_date',
     Shade_wise_packed = fields.Integer(string='Total Packed (Shade)',readonly = False, help='Shade wise packed in Current Date')
-    Shade_wise_packed_2 = fields.Integer(string='Total Packed (Shade)',readonly = False, help='Shade wise packed')
+    Shade_wise_packed_2 = fields.Integer(string='Total Packed (Shade).',readonly = False, help='Shade wise packed')
     
     Size_wise_packed = fields.Integer(string='Total Packed(Size)',  readonly = False, help='Size wise packed in Current Date')
-    Size_wise_packed_2 = fields.Integer(string='Total Packed(Size)',  readonly = False, help='Size wise packed in Current Date')
+    Size_wise_packed_2 = fields.Integer(string='Total Packed(Size).',  readonly = False, help='Size wise packed in Current Date')
     #compute='_compute_total_size_wise_packed',
 
 
