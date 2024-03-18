@@ -78,16 +78,18 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
         return {'type': 'ir.actions.act_window_close'}
 
     def _prepare_invoice(self,moves):
-        z_invoice = m_invoice = None
-        pi_numbers = po_numbers = style_ref = ""
+        z_invoice = m_invoice =  hs_code = beneficiary = None
+        pi_numbers = po_numbers = style_ref =""
         for mv in moves:
             if mv.company_id.id == 1:
+                hs_code = '9607.11.00'
                 z_invoice = mv.id
                 order_list = [str(i) for i in sorted(mv.invoice_origin.split(','))]
                 i = 0
                 for order in order_list:
                     order = order.strip()
                     com_in = self.env['sale.order'].sudo().search([('company_id','=',1),('name','=',order)])
+                    beneficiary = com_in[0].bank.id
                     or_ref = com_in.order_ref.name
                     po_no = style = ""
                     if com_in.po_no:
@@ -107,11 +109,16 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                     else:
                         style_ref += style
             else:
+                if hs_code:
+                    hs_code = '9607.11.00 AND 9606.22.00'
+                else:
+                    hs_code = '9606.22.00'
                 m_invoice = mv.id
                 order_list = [str(i) for i in sorted(mv.invoice_origin.split(','))]
                 for order in order_list:
                     order = order.strip()
                     com_in = self.env['sale.order'].sudo().search([('company_id','=',3),('name','=',order)])
+                    beneficiary = com_in[0].bank.id
                     or_ref = com_in.order_ref.name
                     po_no = style = ""
                     if com_in.po_no:
@@ -143,6 +150,8 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
             'm_invoice':m_invoice,
             'pi_numbers':pi_numbers,
             'po_numbers':po_numbers,
+            'hs_code':hs_code,
+            'beneficiary':beneficiary,
             'style_ref':style_ref,
             'state':moves[0].state,
         }

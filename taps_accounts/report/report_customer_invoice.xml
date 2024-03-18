@@ -172,9 +172,9 @@
 								<p>
 									<strong>ISSUED BY:</strong>
 									<br/>
-									<!-- <t t-if="o.revised_date">
-										<t t-esc="o.revised_date.strftime('%d-%m-%Y')"/>
-									</t> -->
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/>
+									</t>
 								</p>
 							</div>
 							
@@ -722,9 +722,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 								<p>
 									<strong>ISSUED BY</strong>
 									<br/>
-									<!-- <t t-if="o.revised_date">
-										<t t-esc="o.revised_date.strftime('%d-%m-%Y')"/>
-									</t> -->
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/>
+									</t>
 								</p>
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
@@ -1182,9 +1182,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 								<p>
 									<strong>ISSUED BY</strong>
 									<br/>
-									<!-- <t t-if="o.revised_date">
-										<t t-esc="o.revised_date.strftime('%d-%m-%Y')"/>
-									</t> -->
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/>
+									</t>
 								</p>
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
@@ -2070,10 +2070,10 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                     </div>
                                     <div class="col-6" style="font-size:12px">
-                                        <strong><t t-esc="o.z_invoice"/> </strong>
-                                        <br/>
-                                        <br/>
                                         <strong><t t-esc="o.name"/> </strong>
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.lc_no"/> </strong>
                                         <br/>
                                         <strong><t t-esc="o.applicant_tin"/> </strong>
                                         <br/>
@@ -2087,10 +2087,10 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong></strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.master_lc"/> </strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.lc_no"/> </strong>
+                                        <strong><t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/> </strong>
                                         <br/>
                                     </div>
                                     <div class="col-1" style="font-size:12px">
@@ -2102,13 +2102,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     </div>
                                     <div class="col-2" style="font-size:12px">
                                         <t t-if="o.invoice_date">
-										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									</t>
+                                            <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+    									</t>
                                         <br/>
                                         <br/>
                                         <t t-if="o.invoice_date">
-										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									</t>
+                                            <t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+    									</t>
                                         <br/>
                                         <br/>
                                         <br/>
@@ -2204,10 +2204,10 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                     </div>
                                     <div class="col-6" style="font-size:12px">
-                                        <strong><t t-esc="o.z_invoice"/> </strong>
-                                        <br/>
-                                        <br/>
                                         <strong><t t-esc="o.name"/> </strong>
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.lc_no"/> </strong>
                                         <br/>
                                         <strong><t t-esc="o.applicant_tin"/> </strong>
                                         <br/>
@@ -2221,10 +2221,10 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong></strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.name"/> </strong>
+                                        <strong><t t-esc="o.master_lc"/> </strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.lc_no"/> </strong>
+                                        <strong><t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/> </strong>
                                         <br/>
                                     </div>
                                     <div class="col-1" style="font-size:12px">
@@ -2236,13 +2236,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     </div>
                                     <div class="col-2" style="font-size:12px">
                                         <t t-if="o.invoice_date">
-										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									</t>
+                                            <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                        </t>
                                         <br/>
                                         <br/>
-                                        <t t-if="o.invoice_date">
-										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									</t>
+                                        <t t-if="o.lc_date">
+                                            <t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+                                        </t>
                                         <br/>
                                         <br/>
                                         <br/>

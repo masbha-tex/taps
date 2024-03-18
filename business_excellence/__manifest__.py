@@ -7,11 +7,13 @@
     'category': 'Generic Modules/Business Excellence',
     'version': '0.1',
 
-    'depends': ['base','mail','web'],
+    'depends': ['base','mail','web','hr','taps_hr'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/res_groups.xml',
+        'security/ir.model.access.csv',
+        'data/ir_sequence.xml',
         'views/business_excellence.xml',
         'views/templates.xml',
     ],

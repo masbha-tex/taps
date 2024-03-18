@@ -39,7 +39,7 @@ class CombineInvoice(models.Model):
     
     partner_bank_id = fields.Many2one('res.partner.bank', string='Recipient Bank',store=True, readonly=False)
     payment_reference = fields.Char(string='Payment Reference', store=True, readonly=False)
-    
+     
     invoice_date = fields.Date(string='Invoice/Bill Date', readonly=True, index=True, copy=False,)
     invoice_payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms',
         readonly=True)
@@ -49,11 +49,15 @@ class CombineInvoice(models.Model):
     #     domain=[('exclude_from_invoice_tab', '=', False)],
     #     states={'draft': [('readonly', False)]})
     invoice_incoterm_id = fields.Many2one('account.incoterms', string='Incoterm')
+    beneficiary = fields.Many2one('res.bank', string='Beneficiary',readonly=False, store=True)
+    issued_by = fields.Many2one('res.bank', string='Issued By',readonly=False, store=True)
+    issued_address = fields.Char(string='Bank Address', store=True, readonly=False)
     z_invoice = fields.Many2one('account.move', string='Zipper Invoice',readonly=False, store=True)
     m_invoice = fields.Many2one('account.move', string='Metal Trims Invoice',readonly=False, store=True)
     pi_numbers = fields.Char(string='PI No.', store=True, readonly=False)
     po_numbers = fields.Char(string='PO No.', store=True, readonly=False)
     style_ref = fields.Char(string='Style Ref.', store=True, readonly=False)
+    hs_code = fields.Char(string='HS Code', store=True, readonly=False)
     state = fields.Selection(selection=[
             ('draft', 'Draft'),
             ('posted', 'Posted'),
@@ -93,7 +97,15 @@ class CombineInvoice(models.Model):
         if vals.get('name', _('New')) == _('New'):
             seq_date = None
             # seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
-            vals['name'] = self.env['ir.sequence'].next_by_code('combine.invoice', sequence_date=seq_date) or _('New')
+            _name = 'New'
+            _name = self.env['ir.sequence'].next_by_code('combine.invoice', sequence_date=seq_date) or _('New')
+            match = re.search(r'(\d{4})', _name)
+            year = match.group(1)
+            n_year = str(int(year)+1)
+            n_year = n_year[-2:]
+            _name = _name.replace(str(year),str(year)+'-'+n_year)
+            # raise UserError((_name))
+            vals['name'] = _name
         
         result = super(CombineInvoice, self).create(vals)
         return result
@@ -135,8 +147,6 @@ class CombineInvoiceLine(models.Model):
         currency_field='currency_id')
 
     
-
-
     @api.depends('sale_order_line.sizein', 'sale_order_line.sizecm', 'sale_order_line.sizemm')
     def compute_size(self):
         for s in self:
@@ -217,6 +227,7 @@ class CombineInvoiceReport(models.AbstractModel):
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         amount_in_word = self._amount_in_words(total_value)    
+        
         common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word]
         # raise UserError((report_data))
         return {

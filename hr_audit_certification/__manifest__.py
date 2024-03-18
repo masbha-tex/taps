@@ -7,12 +7,13 @@
     'category': 'Generic Modules/Audit Certification',
     'version': '0.1',
 
-    # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','mail','web','hr','taps_hr'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/res_groups.xml',
+        'security/ir.model.access.csv',
+        'data/ir_sequence.xml',
         'views/audit_certification.xml',
         'views/templates.xml',
     ],

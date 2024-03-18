@@ -1,60 +1,73 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="hr_audit_certification.list">
-      <field name="name">hr_audit_certification list</field>
-      <field name="model">hr_audit_certification.hr_audit_certification</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
+    <record model="ir.ui.view" id="view_hr_audit_certification_list">
+        <field name="name">hr_audit_certification.list</field>
+        <field name="model">hr.audit.certification</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="" sample="1">
+                <field name="name"/>
+                <field name="employee_id" options="{'no_open': True}"/>
+                <field name="company_id"/>
+                <field name="department_id"/>
+                <field name="date"/>
+            </tree>
+        </field>
     </record>
--->
 
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="hr_audit_certification.action_window">
-      <field name="name">hr_audit_certification window</field>
-      <field name="res_model">hr_audit_certification.hr_audit_certification</field>
-      <field name="view_mode">tree,form</field>
+          <record model="ir.ui.view" id="view_hr_audit_certification_form">
+        <field name="name">hr_audit_certification.form</field>
+        <field name="model">hr.audit.certification</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="">
+                
+				<sheet>
+                    <field name="active" invisible="1"/>   
+                    
+                    <!-- <field name="name"/> -->
+                    <h3><field name="name" readonly="1"/></h3>
+                    
+                    <group>
+                        <group string="General">
+                            <field name="employee_id" options="{'no_create':true, 'no_open':true}"/>
+                            <field name="company_id"/>
+                            <field name="department_id"/>
+                            <field name="date"/>
+                        </group>
+                                           
+                    </group>
+                                        
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" options="{'open_attachments': True}"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>                
+            </form>
+        </field>
     </record>
--->
 
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="hr_audit_certification.action_server">
-      <field name="name">hr_audit_certification server</field>
-      <field name="model_id" ref="model_hr_audit_certification_hr_audit_certification"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
+    <record model="ir.actions.act_window" id="action_hr_audit_certification">
+        <field name="name">Audit Certification</field>
+        <field name="res_model">hr.audit.certification</field>
+        <field name="context" eval="{}"/>
+        <!-- <field name="view_mode">tree,form,dashboard</field> -->
+          <field name="view_mode">tree,form</field>
+        <field name="target">main</field>
+        <field name="view_id" ref="hr_audit_certification.view_hr_audit_certification_list"/>
+        <!-- <field name="search_view_id" ref="taps_retention_matrix.view_hr_audit_certification_search_view"/> -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first Audit Certification
+            </p>
+        </field>
     </record>
--->
 
-    <!-- Top menu item -->
-<!--
-    <menuitem name="hr_audit_certification" id="hr_audit_certification.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="hr_audit_certification.menu_1" parent="hr_audit_certification.menu_root"/>
-    <menuitem name="Menu 2" id="hr_audit_certification.menu_2" parent="hr_audit_certification.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="hr_audit_certification.menu_1_list" parent="hr_audit_certification.menu_1"
-              action="hr_audit_certification.action_window"/>
-    <menuitem name="Server to list" id="hr_audit_certification" parent="hr_audit_certification.menu_2"
-              action="hr_audit_certification.action_server"/>
--->
+      <menuitem 
+        id="main_hr_audit_certification_menu" 
+        name="BE"
+        action="action_hr_audit_certification"
+        groups="hr_audit_certification.group_user_hr_audit_certification"
+        web_icon="hr_audit_certification,static/src/img/icon.png"/>
   </data>
 </odoo>

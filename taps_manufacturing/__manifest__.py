@@ -65,18 +65,18 @@
         'wizard/oa_check.xml',
         'wizard/packing_error.xml',
         'report/ppc_rpt_wizard.xml',
-        # 'report/ppc_production_analysis.xml',
-        'wizard/set_exp_close_date.xml',
-        # 'wizard/manufacturing_report_wizard.xml'
-        # 'static/src/components/charts/chart_renderer.xml',
-        # 'static/src/components/score_cards/score_card.xml',
-        # 'static/src/components/ppc_production_analysis.xml',
         'report/ppc_production_analysis.xml',
+        'wizard/set_exp_close_date.xml',
+        # 'wizard/manufacturing_report_wizard.xml',
+        # 'static/src/components/charts/chart_renderer.xml',
+        # 'static/src/components/score_cards/score_card.xml',        
+        
         
         'views/fg_packaging.xml',
     ],
     'qweb': [
         "static/src/xml/qweb_templates.xml",
+        "static/src/components/ppc_production_analysis_.xml",
     ],
     'installable': True,
     'auto_install': False,

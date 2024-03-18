@@ -45,7 +45,7 @@
     
     <record id="manufacturing_pdf_report" model="ir.actions.act_window">
         <field name="name">Manufacturing Report</field>
-        <field name="res_model">mnufacturing.pdf.report</field>
+        <field name="res_model">manufacturing.pdf.report</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>   

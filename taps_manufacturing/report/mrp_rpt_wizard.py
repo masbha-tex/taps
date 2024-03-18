@@ -1563,8 +1563,14 @@ class MrpReportWizard(models.TransientModel):
                         if pack_pcs == 0:
                             pack_pcs = None 
                         if pending_pcs <= 0:
-                            pending_pcs,
-                            pending_usd,
+                            if pending_pcs == 0:
+                                pending_pcs = ""
+                            else :
+                                pending_pcs
+                            if pending_usd == 0:
+                                pending_usd = ""
+                            else :
+                                pending_usd
                         if comu_pcs == 0:
                             comu_pcs = None
                         if pending_ids == 0:
@@ -1624,18 +1630,18 @@ class MrpReportWizard(models.TransientModel):
                                     sheet.write(closed_row, c_col, int(oa.replace('OA','0')), format_label_1)
                                     closed_row += 1
                         
-                        if closed_row < 24 and c_col == 10:
-                            for i in range(closed_row,25):
+                        if closed_row < 25 and c_col == 10:
+                            for i in range(closed_row,26):
                                 sheet.write(closed_row, c_col, '', format_label_1)
-                                if closed_row == 24 and line[0] == 'M#4 CE':
+                                if closed_row == 25 and line[0] == 'M#4 CE':
                                     closed_row = 1
                                     c_col += 1
                                 closed_row += 1
                             # for i in range(24)[:closed_row]:
                             #     sheet.write(closed_row, c_col, '', format_label_1)
                             #     closed_row += 1
-                        if closed_row < 24 and c_col != 10:
-                            for i in range(closed_row, 25):
+                        if closed_row < 25 and c_col != 10:
+                            for i in range(closed_row, 26):
                                 sheet.write(closed_row, c_col, '', format_label_1)
                                 closed_row += 1
                     
@@ -2470,6 +2476,8 @@ class MrpReportWizard(models.TransientModel):
                     if daily_closed_oa:
                         oa_ids = daily_closed_oa.mapped('oa_id')
                         closed_ids = len(oa_ids)
+                        
+    
                 
                 # Calculate closed OAs for each item
                 for item in items:
@@ -2480,8 +2488,11 @@ class MrpReportWizard(models.TransientModel):
                     
                     # Increment the count for the combination of item and date
                     closed_oa_counts.setdefault((item.name, full_date.date()), 0)
+                    # raise UserError((closed_oa_counts))
+                    
                     closed_oa_counts[(item.name, full_date.date())] += len(set(itemwise_closed.mapped('oa_id.name')))
-    
+                    # raise UserError((len(set(itemwise_closed.mapped('oa_id.name')))))
+                    
         # Write the data to the Excel sheet
         sheet = workbook.add_worksheet('Closed Order Summary')
     
@@ -2490,12 +2501,29 @@ class MrpReportWizard(models.TransientModel):
         for day, column in zip(self.iterate_days(year, int(month_)), range(1, to_day - _day + 2)):
             sheet.write(0, column, str(day))
     
-        # Write item-wise counts
-        for idx, item in enumerate(items, start=1):
-            sheet.write(idx, 0, item.name)
-            for col, day in zip(range(1, to_day - _day + 2), self.iterate_days(year, int(month_))):
-                count = closed_oa_counts.get((item.name, day), 0)
-                sheet.write(idx, col, count)
+            # Write item-wise counts
+            for idx, item in enumerate(items, start=1):
+                sheet.write(idx, 0, item.name)
+                
+                for col, day in zip(range(1, to_day - _day + 2), self.iterate_days(year, int(month_))):
+                    daily_closed_oa = None
+                    if all_closed:
+                        daily_closed_oa = all_closed.filtered(lambda pr: pr.closing_date.date() == full_date.date())
+        
+                        if daily_closed_oa:
+                            oa_ids = daily_closed_oa.mapped('oa_id')
+                            closed_ids = len(oa_ids)
+    
+                    # Calculate closed OAs for each item
+                    for item in items:
+                        if self.env.company.id == 1:  # company_check
+                            itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type.replace('CE', '').replace('OE', '') == item.name)
+                        else:
+                            itemwise_closed = daily_closed_oa.filtered(lambda pr: pr.fg_categ_type == item.name)
+    
+                    closed_count = len(itemwise_closed)
+                    # count = closed_oa_counts.get((item.name, day), 0)
+                    sheet.write(idx, col, closed_count)
     
         workbook.close()
         output.seek(0)
