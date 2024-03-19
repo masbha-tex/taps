@@ -2248,6 +2248,115 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						
                         </div>
 					</div>
+                    <br/>
+					<div class="page" style="page-break-after: always; color: Black ! important; font-weight: bold;">
+						<div class="footer text-center" style="margin:0px; padding:0px;">
+                    Page: <span class="page"/>/<span class="topage"/>
+						</div>
+						<div class="container mt-4 mb-4 ml-4 mr-4">
+                            <br/>
+						
+        						<div>
+        							<div class="float-left">
+        								<h2 class="mt15" style="font-size: 12px">
+        									<span style="color: Black ! important">Applicant’s Certificate</span>
+        								</h2>
+        							</div>
+        						</div>
+                                <br/>
+        						<div>
+        							<div class="text-center" style="font-size: 12px">
+        								<strong>Date : <t t-if="o.invoice_date">
+                                            <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                        </t></strong>
+                                        <br/>
+                                        <br/>
+                                        <p style="text-decoration: underline;">ISSUING BANK:</p>
+                                        <br/>
+                                        <br/>
+                                        PUBALI BANK LTD.<br/>
+                                        MOTIJHEEL BRANCH<br/>
+                                        DHAKA<br/>
+        							</div>
+        						</div>
+        						<br/>
+                                <br/>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-12 mt-4" style="font-size:12px">
+                                      <p> We do hereby certify that the goods under Invoice No: TZBD/2023-24/3319 DT. 13.03.2024 against<br/><br/>L/C No: '' 0000019524120273 date 11.03.2024 have been shipped strictly in accordance with the terms and <br/><br/><span style="font-size:11px">condition of the Proforma Invoice No:</span> <br/>TZBD- Z007621 DT-29-02-2024,TZBD- B502070 DT-29-02-2024</p>
+                                          <br/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3" style="font-size:12px">
+                                        IRC NO:   <strong></strong>
+                                        <br/>
+                                        BIN NO:   <strong></strong>
+                                        <br/>
+                                        TIN NO: <strong></strong>
+                                        <br/>
+                                        BANK BIN NO:  
+                                        <br/>
+                                        H.S.CODE NO:
+                                        
+                                        <br/>
+                                    </div>
+                                    <div class="col-6" style="font-size:12px">
+                                        <strong></strong>
+                                        <br/>
+                                        <strong></strong>
+                                        <br/>
+                                        <strong></strong>
+                                        <br/>
+                                        <strong></strong>
+                                        <br/>
+                                        <strong></strong>
+                                        <br/>
+                                        
+                                    </div>
+                                </div>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-3" style="font-size:12px">
+                                            EXPORT CONTRACT NO.:  <strong></strong>
+                                    </div>
+                                    <div class="col-6" style="font-size:12px">
+                                            <strong>SAL/7751/10/2023 DT:01.08.2023</strong>
+                                    </div>
+                                </div>
+                                <br/>
+                                <br/>
+                                <div class="row" style="font-size:12px">
+                                    <div class="col-12 mt-4" style="font-size:12px">
+                                        <p>Above goods are acknowledged and received in good condition of package and full quantity as per PI</p>
+                                    </div>
+                                </div>
+                                <div class="row" style="text-decoration: underline; font-size:12px">
+                                    <div class="col-12 mt-4" style="font-size:12px">
+                                        <span t-esc="o.partner_id.name"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <div class="row">
+                                <div class="col-12" style="font-size:12px">
+                                        <div class="float-left mt32 mb32 ! important">
+                                            <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            <div>
+                                                <span>______________________</span>
+                                                <br/>
+                                                <span>AUTHORISED SIGNATORY</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+					</div>
 				</t>
 			</t>
 		</t>

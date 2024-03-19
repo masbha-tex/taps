@@ -187,6 +187,7 @@ class SaleOrder(models.Model):
             self.provisionals_id = False
         elif (self.sample_type == 'buyinghouse') or (self.sample_type == 'pacc'):
             self.partner_id = 184188
+            # self.partner_id = False
 
 
     @api.onchange('buyer_type')

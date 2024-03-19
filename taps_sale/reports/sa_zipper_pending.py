@@ -98,10 +98,24 @@ class SalesXlsx(models.AbstractModel):
                     for x,o_data in enumerate(docs):
                         slnumber = slnumber+1
                         if x == 0:
-                            if orders.buyer_name:
-                                customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name])
-                            else:
-                                customer = "\n".join([orders.partner_id.name])
+                            if (orders.sample_type == 'customer'):
+                                if orders.buyer_type == 'existing':
+                                    customer = "\n".join([orders.partner_id.name,"\n",orders.buyer_name.name])
+                                elif orders.buyer_type == 'potential':
+                                    customer = "\n".join([orders.partner_id.name,"\n",orders.provisionals_buyer.name])
+                            elif (orders.sample_type == 'buyinghouse'):
+                                if orders.buyer_type == 'existing':
+                                    customer = "\n".join([orders.buying_house.name,"\n",orders.buyer_name.name])
+                                elif orders.buyer_type == 'potential':
+                                    customer = "\n".join([orders.buying_house.name,"\n",orders.provisionals_buyer.name])
+                            elif (orders.sample_type == 'pacc'):
+                                if orders.buyer_type == 'existing':
+                                    customer = "\n".join([orders.provisionals_id.name,"\n",orders.buyer_name.name])
+                                elif orders.buyer_type == 'potential':
+                                    customer = "\n".join([orders.provisionals_id.name,"\n",orders.provisionals_buyer.name])
+                            
+                                
+                            
                             oa_num = orders.name
                             remarks = orders.remarks
                             create_date = orders.create_date.strftime("%d-%m-%Y")
