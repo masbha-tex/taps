@@ -19,7 +19,7 @@
                 <field name="type" widget="badge" decoration-warning="type == '2'" decoration-danger="type == '4'" decoration-success="type == '3'" decoration-info="type == '1'"/> 
                 <field name="accident_type"/>
                 <field name="accident_nature"/>
-                <field name="description_accident"/>
+                <field name="description_accident" optional="hide"/>
                 <field name="corrective_action"/>
                 <field name="treatment_expense" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="remarks"/>

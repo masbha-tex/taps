@@ -2264,21 +2264,19 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
         							</div>
         						</div>
                                 <br/>
-        						<div>
-        							<div class="text-center" style="font-size: 12px">
-        								<strong>Date : <t t-if="o.invoice_date">
-                                            <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-                                        </t></strong>
-                                        <br/>
-                                        <br/>
-                                        <p style="text-decoration: underline;">ISSUING BANK:</p>
-                                        <br/>
-                                        <br/>
-                                        PUBALI BANK LTD.<br/>
-                                        MOTIJHEEL BRANCH<br/>
-                                        DHAKA<br/>
-        							</div>
-        						</div>
+                                <div class="text-center" style="font-size: 12px">
+                                    <strong>Date : <t t-if="o.invoice_date">
+                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                    </t></strong>
+                                    <br/>
+                                    <br/>
+                                    <p style="text-decoration: underline;">ISSUING BANK:</p>
+                                    <br/>
+                                    <br/>
+                                    PUBALI BANK LTD.<br/>
+                                    MOTIJHEEL BRANCH<br/>
+                                    DHAKA<br/>
+                                </div>
         						<br/>
                                 <br/>
                                 <br/>

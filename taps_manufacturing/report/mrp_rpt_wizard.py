@@ -195,7 +195,7 @@ class MrpReportWizard(models.TransientModel):
         # domain = []
         # if data.get('date_from'):
         #     domain.append(('date_from', '=', data.get('date_from'))) 
-        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel','hold')),('company_id','=',self.env.company.id)])
         if data.get('date_from'):
             if data.get('date_to'):
                 running_orders = running_orders.filtered(lambda pr: pr.date_order.date() >= data.get('date_from') and pr.date_order.date() <= data.get('date_to'))
@@ -1374,7 +1374,7 @@ class MrpReportWizard(models.TransientModel):
                 closed_ids = 0
                 # items = datewise_outputs.mapped('fg_categ_type')
                 # items = list(set(items))
-                running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+                running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel','hold')),('company_id','=',self.env.company.id)])
     
                 daily_closed_oa = None
                 if all_closed:
@@ -1419,7 +1419,7 @@ class MrpReportWizard(models.TransientModel):
     
                     in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
                     
-                    all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','!=','cancel'),('company_id','=',self.env.company.id)])
+                    all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','not in',('cancel','hold')),('company_id','=',self.env.company.id)]) 
                     
                     
                     comu_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() >= first_day_of_m.date())#.month == int(month_) and pr.date_order.year == year and pr.date_order.day <= day
@@ -1462,7 +1462,7 @@ class MrpReportWizard(models.TransientModel):
                     # if get_pendings:
                     #     raise UserError(('yes'))
                                                          
-                    query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id and a.company_id = s.company_id where a.company_id = %s and a.state not in ('cancel') and date(s.create_date) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
+                    query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id and a.company_id = s.company_id where a.company_id = %s and a.state not in ('cancel','hold') and date(s.create_date) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
                     self.env.cr.execute(query, (self.env.company.id,full_date.date(),full_date.date(),item.name))
                     get_pending = self.env.cr.fetchone()
     
@@ -1822,7 +1822,7 @@ class MrpReportWizard(models.TransientModel):
                 closed_ids = 0
                 # items = datewise_outputs.mapped('fg_categ_type')
                 # items = list(set(items))
-                running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)])
+                running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel','hold')),('company_id','=',self.env.company.id)])
     
                 daily_closed_oa = None
                 if all_closed:
@@ -2100,7 +2100,7 @@ class MrpReportWizard(models.TransientModel):
         # domain = []
         # if data.get('date_from'):
         #     domain.append(('date_from', '=', data.get('date_from'))) 
-        docs = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('balance_qty','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
+        docs = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('balance_qty','>',0),('oa_id','!=',None),('state','not in',('closed','cancel','hold')),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -2196,7 +2196,7 @@ class MrpReportWizard(models.TransientModel):
         # domain = []
         # if data.get('date_from'):
         #     domain.append(('date_from', '=', data.get('date_from'))) 
-        docs = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('balance_qty','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
+        docs = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('balance_qty','>',0),('oa_id','!=',None),('state','not in',('closed','cancel','hold')),('company_id','=',self.env.company.id)]).sorted(key=lambda pr: pr.oa_id and pr.sale_order_line)
         
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -2584,7 +2584,7 @@ class ProductionReportPDF(models.AbstractModel):
 
         closed_ids = 0
         
-        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel')),('company_id.id','=',com_id)])
+        running_orders = self.env['manufacturing.order'].search([('oa_total_balance','>',0),('oa_id','!=',None),('state','not in',('closed','cancel','hold')),('company_id.id','=',com_id)])
 
         daily_closed_oa = None
         if all_closed:
@@ -2622,7 +2622,7 @@ class ProductionReportPDF(models.AbstractModel):
 
             in_pr = initial_pr.filtered(lambda pr: pr.fg_categ_type == item.name)
             
-            all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','!=','cancel'),('company_id.id','=',com_id)])
+            all_released = self.env['manufacturing.order'].sudo().search([('fg_categ_type','=',item.name),('state','not in',('cancel','hold')),('company_id.id','=',com_id)])
             
             
             comu_released = all_released.filtered(lambda pr: pr.oa_id.create_date.date() <= full_date.date() and pr.oa_id.create_date.date() >= first_day_of_m.date())
@@ -2651,7 +2651,7 @@ class ProductionReportPDF(models.AbstractModel):
             
             item_run_ord = running_orders.filtered(lambda pr: pr.fg_categ_type == item.name)
                                                  
-            query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id and a.company_id = s.company_id where a.company_id = %s and a.state not in ('cancel') and date(s.create_date) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
+            query = """ select count(distinct a.oa_id) oa_count,sum(a.product_uom_qty) qty,avg(a.price_unit) price,ARRAY_AGG(distinct a.oa_id) oa_ids  from manufacturing_order as a inner join sale_order as s on a.oa_id=s.id and a.company_id = s.company_id where a.company_id = %s and a.state not in ('cancel','hold') and date(s.create_date) <= %s and (a.closing_date is null or date(a.closing_date) > %s) and a.fg_categ_type = %s """
             self.env.cr.execute(query, (com_id,full_date.date(),full_date.date(),item.name))
             get_pending = self.env.cr.fetchone()
             

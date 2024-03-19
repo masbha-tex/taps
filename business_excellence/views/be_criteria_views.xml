@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_reward_criteria_form" model="ir.ui.view">
+            <field name="name">reward.criteria.form</field>
+            <field name="model">reward.criteria</field>
+            <field name="arch" type="xml">
+                <form string="R &amp; R Title">
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        <field name="active" invisible="1"/>
+                        <div class="oe_button_box" name="button_box"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="e.g. Employee Induction"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company" invisible="1"/>
+                            </group>                            
+                        </group>                        
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'open_attachments': True}"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_reward_criteria_tree" model="ir.ui.view">
+            <field name="name">reward.criteria.tree</field>
+            <field name="model">reward.criteria</field>
+            <field name="arch" type="xml">
+                <tree string="R &amp; R Title" sample="1">
+                    <field name="name"/>
+                    <field name="title_ids"/>
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_reward_criteria_filter" model="ir.ui.view">
+            <field name="name">reward.criteria.search</field>
+            <field name="model">reward.criteria</field>
+            <field name="arch" type="xml">
+                <search string="R &amp; R Title">
+                    <field name="name" string="Training Criteria"/>
+                    <field name="title_ids" />
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+             </field>
+        </record>
+
+        <record id="reward_criteria_view_kanban" model="ir.ui.view" >
+            <field name="name">reward.criteria.kanban</field>
+            <field name="model">reward.criteria</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey o_kanban_dashboard o_hr_kanban" sample="1">
+                    <field name="name"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="title_ids"/>
+                    <field name="color"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''}">
+                                <div t-attf-class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary"><field name="name"/></div>
+                                        <div class="o_secondary"><field name="company_id" groups="base.group_multi_company"/></div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section" t-if="!selection_mode">
+                                        <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <div class="o_kanban_card_manage_section">
+                                        <div role="menuitem" class="o_kanban_card_manage_section o_kanban_manage_reports">
+                                            <div class="o_kanban_card_manage_title">
+                                                <strong><span>Reporting</span></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a t-if="widget.editable" role="menuitem" class="dropdown-item" type="edit">Configuration</a>
+                                    <ul t-if="widget.editable" class="oe_kanban_colorpicker" data-field="color" role="menu"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="reward_criteria_kanban_action" model="ir.actions.act_window">
+            <field name="name">R &amp; R Title</field>
+            <field name="res_model">reward.criteria</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="view_reward_criteria_filter"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new Reward Criteria
+              </p><p>
+                Odoo's reward structure is used to manage all reward Criteria
+                related to employees by reward Title: employee, etc.
+              </p>
+            </field>
+        </record>
+        <record id="reward_criteria_tree_action" model="ir.actions.act_window">
+            <field name="name">R &amp; R Title</field>
+            <field name="res_model">reward.criteria</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="search_view_id" ref="view_reward_criteria_filter"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Training Criteria
+                </p><p>
+                    Odoo's LMS structure is used to manage all Training Criteria
+                    related to employees by Training Title: employee, etc.
+                </p>
+            </field>
+        </record>
+        <menuitem
+            id="menu_reward_criteria_tree"
+            name="Title"
+            action="reward_criteria_tree_action"
+            parent="hr_reward.menu_hr_reward_matrix"
+            groups="hr.group_hr_manager"
+            sequence="2"/>
+        
+    </data>
+</odoo>

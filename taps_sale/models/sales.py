@@ -1426,6 +1426,7 @@ class SaleOrder(models.Model):
                 op = operation.filtered(lambda mo: mo.sale_order_line.id == products.id)
                 if op:
                     op_can_create = False
+                    op_update = operation.update({'state':state})
             
             if can_create == True:
                 mrp_ = self.env['manufacturing.order'].create({'sale_order_line':products.id,'oa_id':products.order_id.id,'company_id':products.order_id.company_id.id,'buyer_name':products.order_id.buyer_name.name,'topbottom':products.topbottom,'slidercodesfg':products.slidercodesfg,'finish':products.finish,'shade':products.shade,'shade_ref':products.shade,'sizein':products.sizein,'sizecm':products.sizecm,'sizemm':products.sizemm,'dyedtape':products.dyedtape,'ptopfinish':products.ptopfinish,'numberoftop':products.numberoftop,'pbotomfinish':products.pbotomfinish,'ppinboxfinish':products.ppinboxfinish,'dippingfinish':products.dippingfinish,'gap':products.gap,'oa_total_qty':products.order_id.total_product_qty + qty,'oa_total_balance':products.order_id.total_product_qty + qty,'remarks':products.order_id.remarks,'state':state,'revision_no':self.revised_no,'logo':products.logo,'logoref':products.logoref,'logo_type':products.logo_type,'style':products.style,'gmt':products.gmt,'shapefin':products.shapefin,'b_part':products.b_part,'c_part':products.c_part,'d_part':products.d_part,'finish_ref':products.finish_ref,'product_code':products.product_code,'shape':products.shape,'back_part':products.back_part})

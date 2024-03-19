@@ -18,7 +18,7 @@
                 <field name="sizemm"/>
                 <field name="sizcommon"/>
                 <!-- <filter string="Ready" name="ready" domain="[('state','not in',('done','closed','cancel')),('balance_qty','&gt;',0)]"/> -->
-                <filter string="Pending" name="pending" domain="[('state','not in',('done','closed','cancel')),('balance_qty','&gt;',0)]"/>
+                <filter string="Pending" name="pending" domain="[('state','not in',('done','closed','cancel','hold')),('balance_qty','&gt;',0)]"/>
                 <filter string="Done" name="complete" domain="[('state','=','done'),('balance_qty','=',0)]"/>
                 <separator/>
                 <filter string="Start Date" name="action_date_filter" date="action_date"/>
@@ -60,7 +60,7 @@
                 <field name="date_order" optional="show"/>
                 <field name="action_date" optional="show"/>
                 <field name="partner_id" optional="show"/>
-                <field name="buyer_name" optional="show"/>
+                <field name="buyer_name"  readonly="1" force_save="1" optional="show"/>
                 <field name="product_id" readonly="1" invisible="1"/>
                 <field name="product_template_id" readonly="1"/>
                 <field name="fg_categ_type" optional="show"/>

@@ -4,7 +4,7 @@
         <record id="sequence_business_excellence" model="ir.sequence">
             <field name="name">business_excellence sequence</field>
             <field name="code">business.excellence</field>
-            <field name="prefix">BE/%(range_year)s/-</field>
+            <field name="prefix">BE/%(range_year)s/</field>
             <field eval="1" name="number_next"/>
             <field eval="1" name="number_increment"/>
             <field eval="True" name="use_date_range"/>

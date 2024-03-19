@@ -12,22 +12,20 @@ class PackingError(models.TransientModel):
     def get_operation_details(self):
         try:
             query = """
-            SELECT 
-                p.id,
-                p.oa_id,
-                p.actual_qty,
-                p.done_qty,
-                p.balance_qty,
-                m.product_uom_qty,
-                m.done_qty,
-                m.balance_qty,
-                m.state,
-                (SELECT SUM(op.qty) FROM operation_details AS op WHERE op.next_operation='FG Packing' AND op.sale_order_line=p.sale_order_line) AS fg_done
-            FROM 
-                operation_packing AS p
-                INNER JOIN manufacturing_order AS m ON p.sale_order_line=m.sale_order_line AND p.oa_id=m.oa_id
-            WHERE 
-                p.balance_qty<>m.balance_qty AND m.oa_total_balance>0 AND m.state NOT IN ('closed','cancel');
+            select 
+            p.id,
+            p.oa_id,
+            p.actual_qty,
+            p.done_qty,
+            p.balance_qty,
+            m.product_uom_qty,
+            m.done_qty,
+            m.balance_qty,
+            m.state,
+            (select sum(op.qty) from operation_details as op where op.next_operation='FG Packing' and op.sale_order_line=p.sale_order_line) as fg_done
+            from operation_packing as p
+            inner join manufacturing_order as m on p.sale_order_line=m.sale_order_line and p.oa_id=m.oa_id
+            where p.balance_qty<>m.balance_qty and m.oa_total_balance>0 and m.state not in('closed','cancel');
             """
             self.env.cr.execute(query)
             operation_details = self.env.cr.fetchall()
