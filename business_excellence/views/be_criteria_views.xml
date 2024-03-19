@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="view_reward_criteria_form" model="ir.ui.view">
-            <field name="name">reward.criteria.form</field>
-            <field name="model">reward.criteria</field>
+        <record id="view_business_excellence_criteria_form" model="ir.ui.view">
+            <field name="name">business.excellence.form</field>
+            <field name="model">business.excellence</field>
             <field name="arch" type="xml">
-                <form string="R &amp; R Title">
+                <form string="Business Excellence Title">
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <field name="active" invisible="1"/>
@@ -27,11 +27,11 @@
             </field>
         </record>
 
-        <record id="view_reward_criteria_tree" model="ir.ui.view">
-            <field name="name">reward.criteria.tree</field>
-            <field name="model">reward.criteria</field>
+        <record id="view_business_excellence_tree" model="ir.ui.view">
+            <field name="name">business.excellence.tree</field>
+            <field name="model">business.excellence</field>
             <field name="arch" type="xml">
-                <tree string="R &amp; R Title" sample="1">
+                <tree string="Business Excellence Title" sample="1">
                     <field name="name"/>
                     <field name="title_ids"/>
                     <field name="company_id" groups="base.group_multi_company" invisible="1"/>
@@ -39,11 +39,11 @@
             </field>
         </record>
 
-        <record id="view_reward_criteria_filter" model="ir.ui.view">
-            <field name="name">reward.criteria.search</field>
-            <field name="model">reward.criteria</field>
+        <record id="view_business_excellence_filter" model="ir.ui.view">
+            <field name="name">business.excellence.search</field>
+            <field name="model">business.excellence</field>
             <field name="arch" type="xml">
-                <search string="R &amp; R Title">
+                <search string="Business Excellence Title">
                     <field name="name" string="Training Criteria"/>
                     <field name="title_ids" />
                     <separator/>
@@ -52,9 +52,9 @@
              </field>
         </record>
 
-        <record id="reward_criteria_view_kanban" model="ir.ui.view" >
-            <field name="name">reward.criteria.kanban</field>
-            <field name="model">reward.criteria</field>
+        <record id="business_excellence_view_kanban" model="ir.ui.view" >
+            <field name="name">business.excellence.kanban</field>
+            <field name="model">business.excellence</field>
             <field name="arch" type="xml">
                 <kanban class="oe_background_grey o_kanban_dashboard o_hr_kanban" sample="1">
                     <field name="name"/>
@@ -91,11 +91,11 @@
             </field>
         </record>
 
-        <record id="reward_criteria_kanban_action" model="ir.actions.act_window">
-            <field name="name">R &amp; R Title</field>
-            <field name="res_model">reward.criteria</field>
+        <record id="business_excellence_kanban_action" model="ir.actions.act_window">
+            <field name="name">Business Excellence Title</field>
+            <field name="res_model">business.excellence</field>
             <field name="view_mode">kanban,tree,form</field>
-            <field name="search_view_id" ref="view_reward_criteria_filter"/>
+            <field name="search_view_id" ref="view_business_excellence_filter"/>
             <field name="help" type="html">
               <p class="o_view_nocontent_smiling_face">
                 Create a new Reward Criteria
@@ -105,11 +105,11 @@
               </p>
             </field>
         </record>
-        <record id="reward_criteria_tree_action" model="ir.actions.act_window">
-            <field name="name">R &amp; R Title</field>
-            <field name="res_model">reward.criteria</field>
+        <record id="business_excellence_tree_action" model="ir.actions.act_window">
+            <field name="name">Business Excellence Title</field>
+            <field name="res_model">business.excellence</field>
             <field name="view_mode">tree,form,kanban</field>
-            <field name="search_view_id" ref="view_reward_criteria_filter"/>
+            <field name="search_view_id" ref="view_business_excellence_filter"/>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a new Training Criteria
@@ -120,10 +120,10 @@
             </field>
         </record>
         <menuitem
-            id="menu_reward_criteria_tree"
+            id="menu_business_excellence_tree"
             name="Title"
-            action="reward_criteria_tree_action"
-            parent="hr_reward.menu_hr_reward_matrix"
+            action="business_excellence_tree_action"
+            parent="business_excellence.main_business_excellence_menu"
             groups="hr.group_hr_manager"
             sequence="2"/>
         

@@ -7,6 +7,7 @@ from datetime import date, datetime
 class BusinessExcellence(models.Model):
     _name = 'business.excellence'
     _description = 'Business Excellence'
+    _parent_name = 'parent_project_id'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New'))

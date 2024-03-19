@@ -42,7 +42,7 @@ class CombineInvoice(models.Model):
      
     invoice_date = fields.Date(string='Invoice/Bill Date', readonly=True, index=True, copy=False,)
     invoice_payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms',
-        readonly=True)
+        readonly=False)
     # /!\ invoice_line_ids is just a subset of line_ids.
     # invoice_line_ids = fields.One2many('account.move.line', 'move_id', string='Invoice lines',
     #     copy=False, readonly=True,
@@ -71,6 +71,8 @@ class CombineInvoice(models.Model):
     bank_bin = fields.Char(string='BANK BIN NO', store=True, readonly=False)
     lc_no = fields.Char(string='LC', store=True, readonly=False)
     lc_date = fields.Date(string='LC Date', store=True, readonly=False)
+    sc_no = fields.Char(string='SC NO.', store=True, readonly=False)
+    sc_date = fields.Date(string='SC Date', store=True, readonly=False)
     master_lc = fields.Char(string='Export LC NO', store=True, readonly=False)
     master_date = fields.Date(string='Export LC Date', store=True, readonly=False)
     exp_no = fields.Char(string='Document/Export NO', store=True, readonly=False)
