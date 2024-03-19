@@ -27,7 +27,7 @@ class PackingError(models.TransientModel):
                 operation_packing AS p
                 INNER JOIN manufacturing_order AS m ON p.sale_order_line=m.sale_order_line AND p.oa_id=m.oa_id
             WHERE 
-                p.balance_qty<>m.balance_qty AND m.oa_total_balance<0 AND m.state NOT IN ('closed','cancel');
+                p.balance_qty<>m.balance_qty AND m.oa_total_balance>0 AND m.state NOT IN ('closed','cancel');
             """
             self.env.cr.execute(query)
             operation_details = self.env.cr.fetchall()

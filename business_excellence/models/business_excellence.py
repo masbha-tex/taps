@@ -9,7 +9,15 @@ class BusinessExcellence(models.Model):
     _description = 'Business Excellence'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New')) 
+    name = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
+    
+    parent_project_id = fields.Many2one('business.excellence',
+                                       string="Project Name",
+                                       ondelete="cascade",
+                                       help="A project will inherit the tags of its parent project")
+    project = fields.Char(required=True, translate=True)
+    children_project_ids = fields.One2many('business.excellence', 'parent_project_id', string="Sub Project")
+    # sub_project = fields.Char(string='Project')
     active = fields.Boolean('Active', default=True)
     employee_id = fields.Many2one('hr.employee', "Employee", tracking=True, required=True)    
     company_id = fields.Many2one(related='employee_id.company_id', store=True)

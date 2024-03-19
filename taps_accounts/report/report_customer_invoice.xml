@@ -321,17 +321,20 @@
                                     </t>
                                             
                                     <tr>
-										<td t-att-colspan="line_count" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;"/>
-										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
-										<!--	<strong>Total Quantity :</strong>-->
-										<!--</td>-->
+										<td t-att-colspan="line_count" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;">
+										<!-- <td colspan="1" style="vertical-align:middle;border-top: 1px solid black;"> -->
+    										<strong>Total :</strong>
+										</td>
+										<!-- <td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>Total :</strong>
+										</td> -->
 										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 											<strong>
-												<t t-esc="common_data[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+												<t t-esc="common_data[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 											</strong>
 										</td>
-										<td colspan="1" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/>
-                                        <td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-left: 1px solid black ! important;">
+										<td colspan="1" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important;"/>
+                                        <td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;;border-left: 1px solid black;">
 											<strong>
 												<t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
 											</strong>
@@ -382,32 +385,7 @@
 								</div>
 							</div>
                              
-							<div class="row float-right pr-3">
-								<div>
-									<table class="table table-sm o_main_table">
-										<!-- <tr class="border-black o_subtotal">
-											<td>
-												<strong>Subtotal</strong>
-											</td>
-											<td style="background-color: white ! important">
-												<span>
-													<t t-esc="datas[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-												</span>
-											</td>
-										</tr> -->
-										<tr class="border-black o_subtotal">
-											<td style="background-color: white ! important; color: Black ! important">
-												<strong>Total</strong>
-											</td>
-											<td style="background-color: white ! important; color: Black ! important">
-												<span>
-													<t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
-												</span>
-											</td>
-										</tr>
-									</table>
-								</div>
-							</div>
+							<!-- here is the  -->
                              <br/>
                              <br/>
 							<!-- <div class="clearfix" style="font-size:12px">
@@ -864,10 +842,10 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     </t>
                                             
                                     <tr>
-										<td t-att-colspan="line_count" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;"/>
+										<td t-att-colspan="line_count" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;">
 										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
-										<!--	<strong>Total Quantity :</strong>-->
-										<!--</td>-->
+    										<strong>Total :</strong>
+										</td>
 										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 											<strong>
 												<t t-esc="common_data[6]"/>
@@ -917,7 +895,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</table>
 								</div>
 							</div>
-							<div class="row float-right pr-3">
+							<!-- <div class="row float-right pr-3">
 								<div>
 									<table class="table table-sm o_main_table">
 										<tr class="border-black o_subtotal">
@@ -926,7 +904,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
 												</span>
 											</td>
 										</tr>
@@ -936,13 +913,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
 												</span>
 											</td>
 										</tr>
 									</table>
 								</div>
-							</div>
+							</div> -->
                              <br/>
                              <br/>
 							<!-- <div class="clearfix" style="font-size:12px">
@@ -1324,13 +1300,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     </t>
                                             
                                     <tr>
-										<td t-att-colspan="line_count" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;"/>
+										<td t-att-colspan="line_count" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;">
 										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
-										<!--	<strong>Total Quantity :</strong>-->
-										<!--</td>-->
+    										<strong>Total :</strong>
+										</td>
 										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 											<strong>
-												<!-- <t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/> -->44
+												<t t-esc="common_data[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 											</strong>
 										</td>
 										<!-- <td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/> -->
@@ -1377,7 +1353,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</table>
 								</div>
 							</div>
-							<div class="row float-right pr-3">
+							<!-- <div class="row float-right pr-3">
 								<div>
 									<table class="table table-sm o_main_table">
 										<tr class="border-black o_subtotal">
@@ -1386,7 +1362,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
 												</span>
 											</td>
 										</tr>
@@ -1396,13 +1371,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
 												</span>
 											</td>
 										</tr>
 									</table>
 								</div>
-							</div>
+							</div> -->
                              <br/>
                              <br/>
 							<!-- <div class="clearfix" style="font-size:12px">
@@ -1805,13 +1779,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     </t>
                                             
                                     <tr>
-										<td t-att-colspan="line_count" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;"/>
+										<td t-att-colspan="line_count" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;">
 										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
-										<!--	<strong>Total Quantity :</strong>-->
-										<!--</td>-->
+    										<strong>Total :</strong>
+										</td>
 										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
 											<strong>
-												<!-- <t t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/> -->44
+												<t t-esc="common_data[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
 											</strong>
 										</td>
 										<!-- <td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/> -->
@@ -1858,7 +1832,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</table>
 								</div>
 							</div>
-							<div class="row float-right pr-3">
+							<!-- <div class="row float-right pr-3">
 								<div>
 									<table class="table table-sm o_main_table">
 										<tr class="border-black o_subtotal">
@@ -1867,7 +1841,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											</td>
 											<td style="background-color: white ! important">
 												<span>
-													<!--<t t-esc="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
 												</span>
 											</td>
 										</tr>
@@ -1877,13 +1850,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											</td>
 											<td style="background-color: white ! important; color: Black ! important">
 												<span>
-													<!--<t t-esc="o.amount_total" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
 												</span>
 											</td>
 										</tr>
 									</table>
 								</div>
-							</div>
+							</div> -->
                              <br/>
                              <br/>
 							<!-- <div class="clearfix" style="font-size:12px">
