@@ -229,9 +229,12 @@ class CombineInvoiceReport(models.AbstractModel):
 
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
+        shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
         amount_in_word = self._amount_in_words(total_value)    
-        
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word]
+        del_chalan = docs[0].name.replace('TZBD/','TZBD/DC/')
+        tr_receipt = docs[0].name.replace('TZBD/','TZBD/TR/')
+        be_no = docs[0].name.replace('TZBD/','TZBD/BE/')
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode]
         # raise UserError((report_data))
         return {
             'docs': docs,

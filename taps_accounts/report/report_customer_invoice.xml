@@ -434,8 +434,8 @@
 										<p>
 											<strong>PLACE OF LOADING:</strong>
 											<br/>
-											<!--<t t-esc="o.loading_place"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+											AEPZ Narayanganj
+											<!-- <t t-set="payment_count" t-value="payment_count+3"/> -->
 										</p>
 									</div>
 								<!--</t>-->
@@ -448,8 +448,11 @@
 										<p>
 											<strong>EXPORT LC NO:</strong>
 											<br/>
-											<!--<t t-esc="o.payment_term_id.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+                                            
+                                            <t t-if="o.master_lc">
+                                                <t t-esc="o.master_lc"/><t t-esc="o.master_date"/>
+                                            </t>
+											
 										</p>
 									</div>
 								<!--</t>-->
@@ -468,7 +471,7 @@
 										<p>
 											<strong>CARRIER:</strong>
 											<br/>
-											<!--<t t-esc="o.shipment_mode"/>-->
+											<t t-esc="common_data[12]"/>
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
@@ -482,7 +485,7 @@
 										<p>
 											<strong>PACKING:</strong>
 											<br/>
-											<!--<t t-esc="o.destination_port"/>-->
+											Export Standard
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
 										</p>
 									</div>
@@ -492,7 +495,7 @@
 										<p>
 											<strong>COUNTRY OF ORIGIN:</strong>
 											<br/>
-											<!--<t t-esc="o.origin_country"/>-->
+											BANGLADESH
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
 										</p>
 									</div>
@@ -964,7 +967,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>PLACE OF LOADING:</strong>
 											<br/>
-											<!--<t t-esc="o.loading_place"/>-->
+											AEPZ Narayanganj
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
@@ -978,8 +981,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>EXPORT LC NO:</strong>
 											<br/>
-											<!--<t t-esc="o.payment_term_id.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+                                            <t t-if="o.master_lc">
+                                                <t t-esc="o.master_lc"/><t t-esc="o.master_date"/>
+                                            </t>
 										</p>
 									</div>
 								<!--</t>-->
@@ -988,7 +992,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>TRADE TERM:</strong>
 											<br/>
-											<!--<t t-esc="o.incoterm.name"/>-->
+											<t t-esc="o.invoice_incoterm_id.name"/>
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
@@ -998,7 +1002,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>CARRIER:</strong>
 											<br/>
-											<!--<t t-esc="o.shipment_mode"/>-->
+											<t t-esc="common_data[12]"/>
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
@@ -1008,7 +1012,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>PACKING:</strong>
 											<br/>
-											<!--<t t-esc="o.destination_port"/>-->
+											Export Standard
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
 										</p>
 									</div>
@@ -1018,7 +1022,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>COUNTRY OF ORIGIN:</strong>
 											<br/>
-											<!--<t t-esc="o.origin_country"/>-->
+											BANGLADESH
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
 										</p>
 									</div>
@@ -1055,7 +1059,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
 									<span style="color: Black ! important">DELIVERY CHALLAN #  
-                                         <t t-esc="o.name"/> 
+                                         <t t-esc="common_data[9]"/> 
 									</span>
 									<!-- <t t-if="o.is_revised == True">
 										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
@@ -1437,7 +1441,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>CARRIER:</strong>
 											<br/>
-											<!--<t t-esc="o.shipment_mode"/>-->
+											<t t-esc="common_data[12]"/>
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
@@ -1447,7 +1451,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>PACKING:</strong>
 											<br/>
-											<!--<t t-esc="o.destination_port"/>-->
+											Export Standard
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
 										</p>
 									</div>
@@ -1457,7 +1461,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>COUNTRY OF ORIGIN:</strong>
 											<br/>
-											<!--<t t-esc="o.origin_country"/>-->
+											BANGLADESH
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
 										</p>
 									</div>
@@ -1466,8 +1470,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>EXPORT LC NO:</strong>
 											<br/>
-											<!--<t t-esc="o.payment_term_id.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+                                            <t t-if="o.master_lc">
+                                                <t t-esc="o.master_lc"/><t t-esc="o.master_date"/>
+                                            </t>
 										</p>
 									</div>
 								<!--</t>-->
@@ -1476,7 +1481,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>TRADE TERM:</strong>
 											<br/>
-											<!--<t t-esc="o.incoterm.name"/>-->
+											<t t-esc="o.invoice_incoterm_id.name"/>
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
@@ -1543,7 +1548,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
 									<span style="color: Black ! important">TRUCK RECEIPT #  
-                                         <t t-esc="o.name"/> 
+                                         <t t-esc="common_data[10]"/> 
 									</span>
 									<!-- <t t-if="o.is_revised == True">
 										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
@@ -1916,7 +1921,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>CARRIER:</strong>
 											<br/>
-											<!--<t t-esc="o.shipment_mode"/>-->
+											<t t-esc="common_data[12]"/>
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
@@ -1926,7 +1931,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>PACKING:</strong>
 											<br/>
-											<!--<t t-esc="o.destination_port"/>-->
+											Export Standard
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
 										</p>
 									</div>
@@ -1936,7 +1941,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>COUNTRY OF ORIGIN:</strong>
 											<br/>
-											<!--<t t-esc="o.origin_country"/>-->
+											BANGLADESH
 											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
 										</p>
 									</div>
@@ -1945,8 +1950,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>EXPORT LC NO:</strong>
 											<br/>
-											<!--<t t-esc="o.payment_term_id.name"/>-->
-											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+                                            <t t-if="o.master_lc">
+                                                <t t-esc="o.master_lc"/><t t-esc="o.master_date"/>
+                                            </t>
 										</p>
 									</div>
 								<!--</t>-->
@@ -1955,7 +1961,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 										<p>
 											<strong>TRADE TERM:</strong>
 											<br/>
-											<!--<t t-esc="o.incoterm.name"/>-->
+											<t t-esc="o.invoice_incoterm_id.name"/>
 											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
 										</p>
 									</div>
@@ -2024,7 +2030,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
 									<span style="color: Black ! important">BE #  
-                                         <t t-esc="o.name"/> 
+                                         <t t-esc="common_data[11]"/> 
 									</span>
 									<!-- <t t-if="o.is_revised == True">
 										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
@@ -2089,7 +2095,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong></strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.master_lc"/> </strong>
+                                        <strong><t t-esc="o.master_lc"/><t t-esc="o.master_date"/> </strong>
                                         <br/>
                                         <br/>
                                         <strong><t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/> </strong>
@@ -2156,7 +2162,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
 									<span style="color: Black ! important">BE #  
-                                         <t t-esc="o.name"/> 
+                                         <t t-esc="common_data[11]"/> 
 									</span>
 									<!-- <t t-if="o.is_revised == True">
 										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
@@ -2223,7 +2229,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong></strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.master_lc"/> </strong>
+                                        <strong><t t-esc="o.master_lc"/><t t-esc="o.master_date"/> </strong>
                                         <br/>
                                         <br/>
                                         <strong><t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/> </strong>

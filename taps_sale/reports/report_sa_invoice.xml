@@ -685,6 +685,35 @@
 								</tbody>
 							</table>
 						</div>
+                        <br/>
+                        <div class="row" style="font-size:12px;page-break-inside:avoid;">
+							<t t-if="o.cause_of_revision">
+								<div class="col-12">
+									<p>
+										<t t-if="(o.is_hold == False) and (o.is_revised == True)">
+											<strong>REVISION CAUSE:</strong>
+										</t>
+										<t t-if="(o.is_hold == True) and (o.is_revised == False)">
+											<strong>HOLDING CAUSE:</strong>
+										</t>
+										<t t-if="(o.is_hold == True) and (o.is_revised == True)">
+											<strong>REVISION &amp; HOLDING CAUSE:</strong>
+										</t>
+										<br/>
+										<t t-if="isinstance(o.cause_of_revision, str)">
+											<t t-set="string_to_output" t-value="o.cause_of_revision.split('\n')"/>
+											<t t-foreach="string_to_output" t-as="string_line">
+												<strong>
+													<span style="font-size:14px;" t-esc="string_line"/>
+												</strong>
+												<br/>
+											</t>
+										</t>
+									</p>
+								</div>
+							</t>
+						</div>
+                        <br/>
 						<div class="row  center" style="font-size:10px">
 							<div class="col-auto col-6 mw-50 mb-2">
 								<strong>______________</strong>

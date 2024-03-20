@@ -124,6 +124,11 @@
         action="action_business_excellence"
         groups="business_excellence.group_user_business_excellence"
         web_icon="business_excellence,static/src/img/icon.png"/>
+
+      <menuitem id="menu_business_excellence_config_settings"
+              name="Configuration"
+              parent="main_business_excellence_menu"
+              sequence="100"/>
       
   </data>
 </odoo>

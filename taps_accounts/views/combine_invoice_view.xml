@@ -6,6 +6,7 @@
                 <tree string="Combine Invoice List" create="true">
                     <field name="name" readonly="1" force_save="1" optional="show"/>
                     <field name="create_date" readonly="1" force_save="1" optional="show"/>
+                    <field name="create_uid" readonly="1" force_save="1" optional="show"/>
                     <field name="currency_id" readonly="1" force_save="1" optional="show"/>
                     <field name="partner_id" readonly="1" force_save="1" optional="show"/>
                     <field name="partner_bank_id" readonly="1" force_save="1" optional="show"/>
