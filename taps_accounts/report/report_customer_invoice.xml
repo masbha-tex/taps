@@ -197,6 +197,22 @@
 									</t>
 								</p>
 							</div>
+							<div class="col-auto col-2 mw-50 mb-2">
+								<strong>SC NO:</strong>
+								<p>
+									<t t-if="o.sc_no">
+										<t t-esc="o.sc_no"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-50 mb-2">
+								<strong>DATE:</strong>
+								<p>
+									<t t-if="o.sc_date">
+										<t t-esc="o.sc_date.strftime('%d-%b-%Y')"/>
+									</t>
+								</p>
+							</div>
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-2 mw-50 mb-2">
@@ -1098,13 +1114,26 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						</div>
 						<br/>
 						<div class="row mt32 mb32" style="font-size:12px">
-						  <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>LC NO.:</strong>
-									<br/>
-									 <t t-esc="o.lc_no"/> 
-								</p>
-							</div>
+                            
+                            <t t-if="o.sc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>S.C NO.:</strong>
+    									<br/>
+    									 <t t-esc="o.sc_no"/> 
+    								</p>
+    							</div>
+                            </t>
+                            <t t-elif="not o.sc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>LC NO.:</strong>
+    									<br/>
+    									 <t t-esc="o.lc_no"/> 
+    								</p>
+    							</div>
+                            </t>
+                            
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>APPLICANT'S TIN :</strong>
