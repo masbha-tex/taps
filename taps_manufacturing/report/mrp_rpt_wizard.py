@@ -26,7 +26,7 @@ class MrpReportWizard(models.TransientModel):
     
     report_type = fields.Selection([('pir', 'PI File'),('pic', 'Closed PI'),('pis', 'PI Summary'),('dpr', 'Invoice'),('dppr', 'Packing Production Report'),('dpcl', 'Production Report (FG)'),('oa_d', 'OA Details'),('invs', 'Invoice Summery'),('cos','Closed OA Summery')], string='Report Type', required=True, help='Report Type', default='pir')
 
-    iteam_report = report_type
+    # iteam_report = report_type
     # raise UserError((iteam_report))
     
     date_from = fields.Date('Date from', readonly=False, default=lambda self: self._compute_from_date())

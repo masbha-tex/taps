@@ -2,8 +2,8 @@
 <odoo>
     <data>
         <record id="view_business_excellence_criteria_form" model="ir.ui.view">
-            <field name="name">business.excellence.form</field>
-            <field name="model">business.excellence</field>
+            <field name="name">business.excellence.criteria.form</field>
+            <field name="model">business.excellence.criteria</field>
             <field name="arch" type="xml">
                 <form string="Business Excellence Title">
                     <sheet>
@@ -28,8 +28,8 @@
         </record>
 
         <record id="view_business_excellence_tree" model="ir.ui.view">
-            <field name="name">business.excellence.tree</field>
-            <field name="model">business.excellence</field>
+            <field name="name">business.excellence.criteria.tree</field>
+            <field name="model">business.excellence.criteria</field>
             <field name="arch" type="xml">
                 <tree string="Business Excellence Title" sample="1">
                     <field name="name"/>
@@ -40,8 +40,8 @@
         </record>
 
         <record id="view_business_excellence_filter" model="ir.ui.view">
-            <field name="name">business.excellence.search</field>
-            <field name="model">business.excellence</field>
+            <field name="name">business.excellence.criteria.search</field>
+            <field name="model">business.excellence.criteria</field>
             <field name="arch" type="xml">
                 <search string="Business Excellence Title">
                     <field name="name" string="Training Criteria"/>
@@ -53,8 +53,8 @@
         </record>
 
         <record id="business_excellence_view_kanban" model="ir.ui.view" >
-            <field name="name">business.excellence.kanban</field>
-            <field name="model">business.excellence</field>
+            <field name="name">business.excellence.criteria.kanban</field>
+            <field name="model">business.excellence.criteria</field>
             <field name="arch" type="xml">
                 <kanban class="oe_background_grey o_kanban_dashboard o_hr_kanban" sample="1">
                     <field name="name"/>
@@ -93,7 +93,7 @@
 
         <record id="business_excellence_kanban_action" model="ir.actions.act_window">
             <field name="name">Business Excellence Title</field>
-            <field name="res_model">business.excellence</field>
+            <field name="res_model">business.excellence.criteria</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="view_business_excellence_filter"/>
             <field name="help" type="html">
@@ -107,7 +107,7 @@
         </record>
         <record id="business_excellence_tree_action" model="ir.actions.act_window">
             <field name="name">Business Excellence Title</field>
-            <field name="res_model">business.excellence</field>
+            <field name="res_model">business.excellence.criteria</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="search_view_id" ref="view_business_excellence_filter"/>
             <field name="help" type="html">
@@ -123,7 +123,7 @@
             id="menu_business_excellence_tree"
             name="Title"
             action="business_excellence_tree_action"
-            parent="business_excellence.main_business_excellence_menu"
+            parent="business_excellence.menu_business_excellence_config_settings"
             groups="hr.group_hr_manager"
             sequence="2"/>
         

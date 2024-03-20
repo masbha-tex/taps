@@ -34,8 +34,8 @@ class BusinessExcellence(models.Model):
     date = fields.Date(string = "Start Date")
     finish_date = fields.Date(string = "Finish Date")
     count = fields.Integer(string="Est Days", compute="_compute_count")
-    # criteria_id = fields.Many2one('reward.criteria', required=True, string='Title')
-    # title_ids = fields.Many2one('reward.title', string='Scope', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
+    criteria_id = fields.Many2one('business.excellence.criteria', required=True, string='Title')
+    title_ids = fields.Many2one('business.excellence.title', string='Scope', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
 
     @api.depends('date', 'finish_date')
     def _compute_count(self):

@@ -15,6 +15,8 @@
         'security/ir.model.access.csv',
         'data/ir_sequence.xml',
         'views/business_excellence.xml',
+        'views/be_criteria_views.xml',
+        'views/be_title_views.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

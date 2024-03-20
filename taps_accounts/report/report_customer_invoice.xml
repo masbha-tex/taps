@@ -152,11 +152,11 @@
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>H.S.CODE:</strong>
+									<strong>H.S. CODE:</strong>
 									<br/>
-									<!-- <t t-if="o.po_date">
-										<t t-esc="o.po_date.strftime('%d-%m-%Y')"/>
-									</t> -->
+									<t t-if="o.hs_code">
+										<t t-esc="o.hs_code"/>
+									</t>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
@@ -697,11 +697,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>H.S.CODE</strong>
+									<strong>H.S. CODE</strong>
 									<br/>
-									<!-- <t t-if="o.po_date">
-										<t t-esc="o.po_date.strftime('%d-%m-%Y')"/>
-									</t> -->
+									<t t-if="o.hs_code">
+										<t t-esc="o.hs_code"/>
+									</t>
 								</p>
 							</div>
 							
@@ -1169,11 +1169,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>H.S.CODE</strong>
+									<strong>H.S. CODE</strong>
 									<br/>
-									<!-- <t t-if="o.po_date">
-										<t t-esc="o.po_date.strftime('%d-%m-%Y')"/>
-									</t> -->
+									<t t-if="o.hs_code">
+										<t t-esc="o.hs_code"/>
+									</t>
 								</p>
 							</div>
 							
@@ -1645,11 +1645,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>H.S.CODE</strong>
+									<strong>H.S. CODE</strong>
 									<br/>
-									<!-- <t t-if="o.po_date">
-										<t t-esc="o.po_date.strftime('%d-%m-%Y')"/>
-									</t> -->
+									<t t-if="o.hs_code">
+										<t t-esc="o.hs_code"/>
+									</t>
 								</p>
 							</div>
 							
@@ -2068,7 +2068,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         BANK BIN NO:
                                         <br/>
-                                        H.S.CODE 
+                                        H.S. CODE 
                                         <br/>
                                         <br/>
                                         Export LC no:
@@ -2092,7 +2092,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         <strong><t t-esc="o.bank_bin"/> </strong>
                                         <br/>
-                                        <strong></strong>
+                                        <strong><t t-esc="o.hs_code"/></strong>
                                         <br/>
                                         <br/>
                                         <strong><t t-esc="o.master_lc"/><t t-esc="o.master_date"/> </strong>
@@ -2202,7 +2202,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         BANK BIN NO:
                                         <br/>
-                                        H.S.CODE 
+                                        H.S. CODE 
                                         <br/>
                                         <br/>
                                         Export LC no:
@@ -2226,7 +2226,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         <strong><t t-esc="o.bank_bin"/> </strong>
                                         <br/>
-                                        <strong></strong>
+                                        <strong><t t-esc="o.hs_code"/></strong>
                                         <br/>
                                         <br/>
                                         <strong><t t-esc="o.master_lc"/><t t-esc="o.master_date"/> </strong>
@@ -2332,7 +2332,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         BANK BIN NO:  
                                         <br/>
-                                        H.S.CODE NO:
+                                        H.S. CODE NO:
                                         
                                         <br/>
                                     </div>

@@ -103,7 +103,7 @@
             id="menu_business_excellence_title_tree"
             name="Scope"
             action="action_business_excellence_title"
-            parent="business_excellence.main_business_excellence_menu"
+            parent="business_excellence.menu_business_excellence_config_settings"
             groups="hr.group_hr_manager"
             sequence="3"/>
 

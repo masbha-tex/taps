@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_business_excellence_user,business.excellence,model_business_excellence,group_user_business_excellence,1,1,1,0
 access_business_excellence_manager,business.excellence,model_business_excellence,group_manager_business_excellence,1,1,1,1
+access_business_excellence_criteria,business.excellence.criteria,model_business_excellence_criteria,base.group_user,1,1,1,1
+access_business_excellence_title,business.excellence.title,model_business_excellence_title,base.group_user,1,1,1,1
