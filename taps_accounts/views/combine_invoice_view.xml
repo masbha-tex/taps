@@ -41,7 +41,8 @@
                                 <field name="partner_bank_id" readonly="1" force_save="1"/>
                                 <field name="payment_reference" readonly="1" force_save="1"/>
                                 <field name="invoice_date"/>
-                                <field name="invoice_payment_term_id"/>
+                                <field name="invoice_payment_term_id" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}"/>
+                                <field name="pay_term_details"/>
                                 <field name="invoice_incoterm_id" readonly="1" force_save="1"/>
                                 <field name="beneficiary"/>
                                 <field name="issued_by"/>

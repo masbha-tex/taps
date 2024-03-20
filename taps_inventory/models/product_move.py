@@ -145,6 +145,7 @@ class IncludeCateTypeInPT(models.Model):
     duration = fields.Integer(string='Duration', compute='_compute_duration', store=True, readonly=True)
     pur_price = fields.Float(compute='_compute_purchase_price', readonly=True, string='Unit Price', digits='Unit Price')
     unit_price = fields.Float(related='lot_id.unit_price', readonly=False, store=True, string='Lot Price', digits='Unit Price')
+    reject_status = fields.Boolean(related='lot_id.rejected', readonly=True, store=True, string='Rejected')
     
     #pur_value = fields.Float(compute='_compute_purchase_value', readonly=True, string='Purchase Value')
     #product_id.categ_type.parent_id.name 

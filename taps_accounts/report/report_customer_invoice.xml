@@ -107,9 +107,9 @@
 								<p>
 									<strong>IRC NO:</strong>
 									<br/>
-									 <!--<t t-if="o.po_no">-->
-										<!--<t t-esc="o.partner_bank_id"/>-->
-									<!--</t> -->
+									 <t t-if="o.tin_no">
+										<t t-esc="o.tin_no"/>
+									</t>
 								</p>
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
@@ -139,7 +139,7 @@
 								 <p>
 								<strong>TIN NO:</strong>
 								<br/> 
-								 <t t-esc="o.tin_no"/>  
+								 <!-- <t t-esc="o.tin_no"/>   -->
 								</p>
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
@@ -164,7 +164,8 @@
 									<strong>PAYMENT TERMS:</strong>
 									<br/>
 									 <!--<t t-if="o.invoice_payment_term_id">-->
-										<t t-esc="o.invoice_payment_term_id.name"/>
+										<t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/>
+                                    
 									<!--</t>-->
 								</p>
 							</div>
@@ -692,7 +693,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<strong>PAYMENT TERMS </strong>
 									<br/>
 									 <!--<t t-if="o.invoice_payment_term_id">-->
-										<t t-esc="o.invoice_payment_term_id.name"/>
+										<t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/>
 									<!--</t>-->
 								</p>
 							</div>
@@ -1150,7 +1151,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<strong>PAYMENT TERMS </strong>
 									<br/>
 									 <!--<t t-if="o.invoice_payment_term_id">-->
-										<t t-esc="o.invoice_payment_term_id.name"/>
+										<t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/>
 									<!--</t>-->
 								</p>
 							</div>
@@ -1625,7 +1626,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<strong>PAYMENT TERMS </strong>
 									<br/>
 									 <!--<t t-if="o.invoice_payment_term_id">-->
-										<t t-esc="o.invoice_payment_term_id.name"/>
+										<t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/>
 									<!--</t>-->
 								</p>
 							</div>
@@ -2012,7 +2013,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<br/>
                                 <div class="row">
                                     <div class="col-12 mt-4" style="font-size:12px">
-                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> </strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/>BANK ASIA LTD,PRINCIPAL BR DHAKA ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
+                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/></strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/>BANK ASIA LTD,PRINCIPAL BR DHAKA ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
                                           <br/>
                                     </div>
                                 </div>
@@ -2146,7 +2147,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<br/>
                                 <div class="row">
                                     <div class="col-12 mt-4" style="font-size:12px">
-                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> </strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/>BANK ASIA LTD,PRINCIPAL BR DHAKA ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
+                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/> </strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/>BANK ASIA LTD,PRINCIPAL BR DHAKA ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
                                           <br/>
                                     </div>
                                 </div>
