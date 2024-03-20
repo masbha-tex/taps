@@ -26,7 +26,7 @@ class BuyerSourcingOffice(models.Model):
         for record in self:
             if record.name and record.sourcing_type:
                 # Only goes off when the custom_search is in the context values.
-                result.append((record.id, "{}-[{}]".format(record.name, record.sourcing_type.name)))
+                result.append((record.id, "{}-{}".format(record.name, record.sourcing_type.name)))
             else:
                 result.append((record.id, record.name))
         return result

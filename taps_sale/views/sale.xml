@@ -7,7 +7,7 @@
 			<field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
-                    <attribute name="domain">[('customer_rank', '=', 1)]</attribute>
+                    <attribute name="domain">[('customer_rank', '>', 0)]</attribute>
                     <!-- <attribute name="attrs">{}</attribute> -->
                     <attribute name="attrs">{'required': [['sample_type', 'not in', ['buyinghouse','pacc']]], 'invisible': [['sales_type', '=', 'sample'],['sample_type', '!=', 'customer']]}</attribute>
                     <!-- <attribute name="autocomplete">off</attribute> -->

@@ -27,8 +27,11 @@ class BusinessExcellence(models.Model):
         ('2', 'Outsource'),
         ('3', 'Inhouse & Outsource')], string="Development", tracking=True)
     type = fields.Selection([
-        ('new', 'New Process'),
-        ('existing', 'Existing Process')],string="Type", required=True, default="new")
+        ('newproduct', 'New Product'),
+        ('existingproduct', 'Existing Product'),
+        ('newprocess', 'New Process'),
+        ('existingprocess', 'Existing Process'),
+        ],string="Innovation Area", required=True, default="newproduct")
     currency_id = fields.Many2one('res.currency', string='Currency')
     project_cost= fields.Monetary(string='Project Cost', store=True, currency_field='currency_id')
     date = fields.Date(string = "Start Date")
