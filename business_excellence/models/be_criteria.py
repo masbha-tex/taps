@@ -15,6 +15,7 @@ class Criteria(models.Model):
     company_id = fields.Many2one('res.company', string='Company')
     title_ids = fields.One2many('business.excellence.title', 'criteria_id', string='Scope')
     color = fields.Integer('Color Index')
+    
 
     _sql_constraints = [
         ('name_uniq', 'unique(name)', 'The name of the Business Excellence must be unique!'),]      

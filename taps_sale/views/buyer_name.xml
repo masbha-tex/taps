@@ -9,8 +9,8 @@
         <xpath expr="//form[1]/sheet[1]/div[not(@name)][1]" position="after">
             <group name="Related Data" attrs="{'invisible': ['|',('company_type', '=', 'person'),('supplier_rank', '>', 0)]}">
               <group name="Group and Brand">
-                <field name="group" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('customer_rank', '!=', 0)]}"/>
-                <field name="buying_house" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('customer_rank', '!=', 0)]}"/>
+                <field name="group" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('customer_rank', '=', 0)]}"/>
+                <field name="buying_house" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('customer_rank', '=', 0)]}"/>
                 <field name="brand" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('buyer_rank', '!=', 1)]}"/>
                 <!-- <field name="sale_representative"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/> -->
                 <!-- <field name="user_id" domain="[('share', '=', False)]"  options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|','|','|','|',('customer_group_rank', '>', 0),('brand_rank', '>', 0),('supplier_rank', '>', 0),('buyer_rank', '>', 0),('company_type', '=', 'person')]}"/> -->
@@ -26,8 +26,8 @@
                 
                 <!-- <field name="sourcing_type" attrs="{'invisible': ['|','|','|','|',('supplier_rank', '>', 0),('company_type', '=', 'person'),('brand_rank', '>', 0),('customer_rank', '>', 0),('customer_group_rank','>',0)]}" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}"/> -->
                 
-                <field name="customer_type" attrs="{'invisible': [('customer_rank', '!=', 0)]}"/>
-                <field name ="customer_status" attrs="{'invisible': [('customer_rank', '!=', 0)]}"/>
+                <field name="customer_type" attrs="{'invisible': [('customer_rank', '=', 0)]}"/>
+                <field name ="customer_status" attrs="{'invisible': [('customer_rank', '=', 0)]}"/>
               </group>  
             </group>
         </xpath>
@@ -58,20 +58,20 @@
             <field name="buying_house_rank" invisible="1"/>
         </xpath>
         <xpath expr="//field[@name='vat']" position="after">
-            <field name="swift_code" attrs="{'invisible': [('customer_rank', '!=', 0),('buying_house_rank', '!=', 1)]}"/>
-            <field name="bond_license" attrs="{'invisible': [('customer_rank', '!=', 0),('buying_house_rank', '!=', 1)]}"/>
-            <field name="custom_delivery_method" attrs="{'invisible': [('customer_rank', '!=', 0)]}"/>
+            <field name="swift_code" attrs="{'invisible': [('customer_rank', '=', 0),('buying_house_rank', '=', 0)]}"/>
+            <field name="bond_license" attrs="{'invisible': [('customer_rank', '=', 0),('buying_house_rank', '=', 0)]}"/>
+            <field name="custom_delivery_method" attrs="{'invisible': [('customer_rank', '=', 0)]}"/>
             
         </xpath>
         <xpath expr="//field[@name='category_id']" position="after">
-            <field name="property_payment_term_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('customer_rank', '!=', 0),('buying_house_rank', '!=', 1)]}"/>
-            <field name="incoterms" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('customer_rank', '!=', 0),('buying_house_rank', '!=', 1)]}"/>
+            <field name="property_payment_term_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|',('customer_rank', '=', 0),('buying_house_rank', '=', 0)]}"/>
+            <field name="incoterms" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('customer_rank', '=', 0),('buying_house_rank', '=', 0)]}"/>
         </xpath>
         <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]/group[2]/field[@name='function']" position="before">
             <field name="contact_person" attrs="{'invisible': ['|',('supplier_rank', '>', 0),('company_type', '=', 'person')]}"/>
         </xpath>
         <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]" position="after">
-            <group attrs="{'invisible': [('customer_rank', '!=', 0),('buying_house_rank', '!=', 1),('buyer_rank', '!=', 1)]}">
+            <group attrs="{'invisible': [('customer_rank', '=', 0),('buying_house_rank', '!=', 1),('buyer_rank', '!=', 1)]}">
               <group>
                   <field name= "delivery_address" attrs="{'invisible':[('buyer_rank', '>', 0)]}" />
                   
@@ -79,7 +79,7 @@
               <group>
                   <span class="o_form_label o_td_label" name="billing_address_name">
                                 <b>
-                                    <label for="billing_address" string="Billing Address" attrs="{'invisible':[('customer_rank', '!=', 0),('buying_house_rank', '!=', 1)]}"/>
+                                    <label for="billing_address" string="Billing Address" attrs="{'invisible':[('customer_rank', '=', 0),('buying_house_rank', '=', 0)]}"/>
                                     <label for="billing_address" string="Local Office Address" attrs="{'invisible':[('buyer_rank', '!=', 1)]}"/>
                                 </b>
                     </span>

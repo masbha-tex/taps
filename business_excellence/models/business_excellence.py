@@ -39,6 +39,7 @@ class BusinessExcellence(models.Model):
     count = fields.Integer(string="Est Days", compute="_compute_count")
     criteria_id = fields.Many2one('business.excellence.criteria', required=True, string='Title')
     title_ids = fields.Many2one('business.excellence.title', string='Scope', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
+    area_impact = fields.Many2many('business.excellence.impact', string="Area Impact")
 
     @api.depends('date', 'finish_date')
     def _compute_count(self):

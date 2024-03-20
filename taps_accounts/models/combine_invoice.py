@@ -175,6 +175,9 @@ class CombineInvoiceReport(models.AbstractModel):
         z_total_qty = z_total_value = m_total_qty = m_total_value = m_total_pcs = total_value = 0
         total_qty = sum(line_data.mapped('quantity'))
         total_value = sum(line_data.mapped('price_total'))
+        total = docs.amount_total
+        if total>total_value:
+            total_value = total
         if z_items:
             z_total = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
