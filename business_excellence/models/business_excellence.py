@@ -10,7 +10,7 @@ class BusinessExcellence(models.Model):
     _parent_name = 'parent_project_id'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default=_('New'))
+    code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True)
     
     parent_project_id = fields.Many2one('business.excellence',
                                        string="Parent Project",
@@ -57,3 +57,40 @@ class BusinessExcellence(models.Model):
             date = vals.get('date')
             vals['code'] = self.env['ir.sequence'].next_by_code('business.excellence', sequence_date=date)
         return super(BusinessExcellence, self).create(vals)
+
+
+
+# class BusinessExcellenceLine(models.Model):
+
+#     _name = 'business.excellence.line'
+#     _description = 'Business Excellence Line'
+
+    
+        
+#     allocated_id = fields.Many2one('customer.allocated', string='Allocated Id', index=True, required=True, ondelete='cascade')
+#     name = fields.Char(string="Description")
+#     # domain = fields.Char()
+#     customer_domain = fields.Char(compute="_compute_customer",readonly=True, store=True)
+
+#     buyer = fields.Many2one('res.partner', string='Buyer', domain="[('buyer_rank', '=', 1)]" ,store=True, required=True)
+#     customer = fields.Many2one('res.partner', string='Customer',store=True, required=True)
+#     assign_date = fields.Date(string="Assign Date", default=date.today())
+#     active = fields.Boolean(string="Active", default="True")
+    
+    
+    
+
+    
+#     @api.onchange('buyer')
+#     def _on_change_buyer(self):
+#         self.customer = False
+
+#     @api.depends('buyer')
+#     def _compute_customer(self):
+#         for rec in self:
+#            if self.buyer:
+#                   self.customer_domain = json.dumps([('id', 'in', self.buyer.related_customer.ids)])
+#            else:
+#                self.customer_domain = json.dumps([('id', '=', False)])
+
+

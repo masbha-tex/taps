@@ -182,7 +182,7 @@
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>DOCUMENT ARRIVAL NOTICE/EXP NO:</strong>
+								<strong>BB DC REF:</strong>
 								<p>
 									<t t-if="o.exp_no">
 										<t t-esc="o.exp_no"/>
@@ -190,10 +190,10 @@
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-50 mb-2">
-								<strong>DATE:</strong>
+								<strong>APPLICANT REF:</strong>
 								<p>
-									<t t-if="o.exp_date">
-										<t t-esc="o.exp_date.strftime('%d-%b-%Y')"/>
+									<t t-if="o.appl_ref">
+										<t t-esc="o.appl_ref"/>
 									</t>
 								</p>
 							</div>
@@ -450,7 +450,8 @@
 											<br/>
                                             
                                             <t t-if="o.master_lc">
-                                                <t t-esc="o.master_lc"/><t t-esc="o.master_date"/>
+                                                <t t-esc="o.master_lc"/>
+                                                <!-- <t t-esc="o.master_date"/> -->
                                             </t>
 											
 										</p>
@@ -563,7 +564,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                         <br/>
 						<footer>
                             <div class="float-right mt32 mb32 ! important" style="font-size:12px">
-                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                <t t-if="o.beneficiary.id == 2">
+                                    <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                </t>
+                                <t t-if="o.beneficiary.id != 2">
+                                    <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                </t>
                                 <div>
                                     <span>______________________</span>
                                     <br/>
@@ -932,7 +938,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											<strong>EXPORT LC NO:</strong>
 											<br/>
                                             <t t-if="o.master_lc">
-                                                <t t-esc="o.master_lc"/><t t-esc="o.master_date"/>
+                                                <t t-esc="o.master_lc"/>
+                                                <!-- <t t-esc="o.master_date"/> -->
                                             </t>
 										</p>
 									</div>
@@ -986,7 +993,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                         
 						<footer>
                            <div class="float-right mt32 mb32 ! important" style="font-size:12px">
-                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                <t t-if="o.beneficiary.id == 2">
+                                    <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                </t>
+                                <t t-if="o.beneficiary.id != 2">
+                                    <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                </t>
                                 <div>
                                     <span>______________________</span>
                                     <br/>
@@ -1380,7 +1392,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											<strong>EXPORT LC NO:</strong>
 											<br/>
                                             <t t-if="o.master_lc">
-                                                <t t-esc="o.master_lc"/><t t-esc="o.master_date"/>
+                                                <t t-esc="o.master_lc"/>
+                                                <!-- <t t-esc="o.master_date"/> -->
                                             </t>
 										</p>
 									</div>
@@ -1419,7 +1432,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                 <div>
                                     <span>CHECK &amp; APPROVED BY</span>
                                     <br/>
-                                    <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                    <t t-if="o.beneficiary.id == 2">
+                                        <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                    </t>
+                                    <t t-if="o.beneficiary.id != 2">
+                                        <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                    </t>
                                     <br/>
                                     <span>______________________</span>
                                     <br/>
@@ -1826,7 +1844,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 											<strong>EXPORT LC NO:</strong>
 											<br/>
                                             <t t-if="o.master_lc">
-                                                <t t-esc="o.master_lc"/><t t-esc="o.master_date"/>
+                                                <t t-esc="o.master_lc"/>
+                                                <!-- <t t-esc="o.master_date"/> -->
                                             </t>
 										</p>
 									</div>
@@ -1865,7 +1884,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                 <div>
                                     <span>CHECK &amp; APPROVED BY</span>
                                     <br/>
-                                    <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                    <t t-if="o.beneficiary.id == 2">
+                                        <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                    </t>
+                                    <t t-if="o.beneficiary.id != 2">
+                                        <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                    </t>
                                     <br/>
                                     <span>______________________</span>
                                     <br/>
@@ -1924,7 +1948,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<br/>
                                 <div class="row">
                                     <div class="col-12 mt-4" style="font-size:12px">
-                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/></strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/><t t-esc="o.beneficiary.name"/> ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
+                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/></strong>   FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/><t t-esc="o.beneficiary.name"/> ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
                                           <br/>
                                     </div>
                                 </div>
@@ -1971,7 +1995,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong><t t-esc="o.hs_code"/></strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.master_lc"/><t t-esc="o.master_date"/> </strong>
+                                        <strong><t t-esc="o.master_lc"/></strong>
+                                            <!-- <t t-esc="o.master_date"/>  -->
                                         <br/>
                                         <br/>
                                         <strong><t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/> </strong>
@@ -2013,7 +2038,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-12" style="font-size:12px">
                                         
                                         <div class="float-right mt32 mb32 ! important">
-        									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            <t t-if="o.beneficiary.id == 2">
+                                                <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                            </t>
+                                            <t t-if="o.beneficiary.id != 2">
+                                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            </t>
         									<div>
         										<span>______________________</span>
         										<br/>
@@ -2058,7 +2088,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<br/>
                                 <div class="row">
                                     <div class="col-12 mt-4" style="font-size:12px">
-                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/> </strong>   days from the date of  DELIVERY FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/><t t-esc="o.beneficiary.name"/> ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
+                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/> </strong>   Second bill of exchange (FIRST of the same tenor and date being unpaid) Pay to the order of the<br/><t t-esc="o.beneficiary.name"/> ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
                                           <br/>
                                     </div>
                                 </div>
@@ -2105,7 +2135,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong><t t-esc="o.hs_code"/></strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.master_lc"/><t t-esc="o.master_date"/> </strong>
+                                        <strong><t t-esc="o.master_lc"/> </strong>
+                                        <!-- <t t-esc="o.master_date"/> -->
                                         <br/>
                                         <br/>
                                         <strong><t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/> </strong>
@@ -2256,7 +2287,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                 <div class="row">
                                 <div class="col-12" style="font-size:12px">
                                         <div class="float-left mt32 mb32 ! important">
-                                            <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            <t t-if="o.beneficiary.id == 2">
+                                                <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                            </t>
+                                            <t t-if="o.beneficiary.id != 2">
+                                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            </t>
                                             <div>
                                                 <span>______________________</span>
                                                 <br/>

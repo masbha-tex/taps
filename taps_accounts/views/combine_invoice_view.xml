@@ -68,7 +68,8 @@
                                 <field name="master_lc"/>
                                 <field name="master_date"/>
                                 <field name="exp_no"/>
-                                <field name="exp_date"/>
+                                <field name="appl_ref"/>
+                                <field name="exp_date" invisible="1"/>
                                 <field name="numberof_carton"/>
                                 <field name="gross_weight"/>
                                 <field name="net_weight"/>
