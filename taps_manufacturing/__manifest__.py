@@ -73,7 +73,7 @@
         
         
         'views/fg_packaging.xml',
-        'views/mis_dashboard.xml',
+        # 'views/mis_dashboard.xml',
     ],
     'qweb': [
         "static/src/xml/qweb_templates.xml",
