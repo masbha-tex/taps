@@ -1259,7 +1259,6 @@ class MrpReportWizard(models.TransientModel):
     #code for packing_invoice
     def daily_pr_xls_template(self, docids, data=None):
         
-        
         start_time = fields.datetime.now()
         month_ = None
         _day = to_day = None

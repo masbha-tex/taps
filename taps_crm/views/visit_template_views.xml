@@ -118,6 +118,7 @@
                         <field name="team_id"  icon="fa-users" enable_counters="1"/>
                         <field class="mt32" name="stages"  icon="fa-filter" enable_counters="1"/>
                         <field class="mt32" name="core_purpose"  icon="fa-magic" enable_counters="1"/>
+                        
                    
                     </searchpanel>
                 </search>

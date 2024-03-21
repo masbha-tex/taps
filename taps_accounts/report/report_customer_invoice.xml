@@ -174,7 +174,7 @@
 									<strong>ISSUED BY:</strong>
 									<br/>
 									<t t-if="o.issued_by">
-										<t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/>
+										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
 									</t>
 								</p>
 							</div>
@@ -558,24 +558,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									  NOTE:OUR PRODUCT IS NOT MADE TO BE USED IN DYEING PROCESS OR OVERDYEING PROCESS. WE DON’T ENTERTAIN ANY CLAIM IN THIS REGARD.
 									</p>
 								</div>
-							<!--</t>-->
-							<!-- <div class="col-4">
-								
-								<div class="float-right mt32 mb32 ! important">
-									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
-									<div>
-										<span>______________________</span>
-										<br/>
-										<span>Authorised Signature</span>
-									</div>
-								</div>
-							</div> -->
-							<br/>
 							<br/>
 						</div>
                         <br/>
 						<footer>
-                           <div class="float-right mt32 mb32 ! important" style="font-size:12px">
+                            <div class="float-right mt32 mb32 ! important" style="font-size:12px">
                                 <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
                                 <div>
                                     <span>______________________</span>
@@ -583,9 +570,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <span>AUTHORISED SIGNATORY</span>
                                 </div>
                             </div>
-                     </footer>
+                        </footer>
 					</div>
-					<br/>
+					<p style="page-break-after: always;"/>
 					
 					<div class="page" style="page-break-after: always;">
 						<div class="footer text-center" style="margin:0px; padding:0px;">
@@ -600,7 +587,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
 									<span style="color: Black ! important">INVOICE #  
-                                         <t t-esc="o.name"/> 
+                                         <t t-esc="o.name"/>  <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
 									</span>
 									<!-- <t t-if="o.is_revised == True">
 										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
@@ -666,6 +653,15 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.lc_no"/> 
 								</p>
 							</div>
+                            
+    						<div class="col-auto col-2 mw-100 mb-2">
+								<strong>DATE</strong>
+								<p>
+									<t t-if="o.lc_date">
+										<t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+									</t>
+								</p>
+							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>APPLICANT'S TIN :</strong>
@@ -721,24 +717,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<strong>ISSUED BY</strong>
 									<br/>
 									<t t-if="o.issued_by">
-										<t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/>
-									</t>
-								</p>
-							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<strong>STYLE REF</strong>
-								<p>
-									<!-- <t t-if="o.style_ref">
-										<t t-esc="o.style_ref"/>
-									</t> -->
-								</p>
-							</div>
-                            
-						  <div class="col-auto col-2 mw-100 mb-2">
-								<strong>DATE</strong>
-								<p>
-									<t t-if="o.invoice_date">
-										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
 									</t>
 								</p>
 							</div>
@@ -750,66 +729,37 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<strong>CURRENCY</strong>
-								<p>
-									<t t-esc="o.currency_id.name"/>
-								</p>
-							</div>
-							
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<strong>STYLE REF</strong>
+								<p>
+									<t t-if="o.style_ref">
+										<t t-esc="o.style_ref"/>
+									</t>
+								</p>
+							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PO NO.</strong>
 								<p>
-									<!-- <t t-if="o.kind_attention">
-										<t t-esc="o.kind_attention"/>
-									</t> -->
+									<t t-if="o.po_numbers">
+										<t t-esc="o.po_numbers"/>
+									</t>
 								</p>
 							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PI NO.</strong>
 								<p>
-									<!-- <t t-if="o.user_id">
-										<t t-esc="o.user_id.partner_id.name"/>
-									</t> -->
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>CURRENCY</strong>
-								<p>
-									<t t-esc="o.currency_id.name"/>
-								</p> -->
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>SALESPERSON</strong> -->
-								<p>
-									<!-- <t t-if="o.style_ref">
-										<t t-esc="o.style_ref"/>
-									</t> -->
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>DATE</strong> -->
-								<p>
-									<!--<t t-if="o.order_type">-->
-										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
-									<!--</t>-->
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>INVOICE/BILL DATE</strong> -->
-								<p>
-									<!--<t t-if="o.order_type">-->
-										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
-									<!--</t>-->
+									<t t-if="o.pi_numbers">
+										<t t-esc="o.pi_numbers"/>
+									</t>
 								</p>
 							</div>
 						</div>
 						
 						 <div style="font-size:12px">
-							
-							
 							<table class="table table-sm o_main_table">
                                 <thead>
                                     <t t-set="line_count" t-value="0"/>
@@ -1033,6 +983,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						</div>
 						
                         <br/>
+                        
 						<footer>
                            <div class="float-right mt32 mb32 ! important" style="font-size:12px">
                                 <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
@@ -1044,7 +995,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                             </div>
                      </footer>
 					</div>
-					<br/>
+					<p style="page-break-after: always;"/>
 					
 					<div class="page" style="page-break-after: always;">
 						<div class="footer text-center" style="margin:0px; padding:0px;">
@@ -1052,7 +1003,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						</div>
 						<h4 class="text-center">
 							<strong>
-							DELIVERY CHALLAN
+							DELIVERY CHALLAN / TRUCK RECEIPT
 							</strong>
 						</h4>
 						<div>
@@ -1100,20 +1051,18 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 								<strong style="font-size:12px">CONSIGNED TO</strong>
 								</div>
 								<p>
-									<!-- <span style="font-size:12px;" t-esc="o.partner_shipping_id.name"/>
-									<br/>
-									<span style="font-size:10px" t-esc="o.delivery_details"/> -->
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>
+									</t>
 								</p>
 							</div>
 							<div class="col-auto col-3 mw-50 mb-2">
-								<!-- <t t-if="o.applicant_bank">
-									<div>
-										<strong style="font-size:12px">APPLICANT BANK</strong>
-									</div>
-									<p>
-										<span style="font-size:12px;" t-esc="o.applicant_bank"/>
-									</p>
-								</t> -->
+                                <div>
+                                    <strong style="font-size:12px">INVOICE DATE</strong>
+                                </div>
+                                <p>
+                                    <span style="font-size:12px;" t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                </p>
 							</div>
 						</div>
 						<br/>
@@ -1137,7 +1086,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
     								</p>
     							</div>
                             </t>
-                            
+    						<div class="col-auto col-2 mw-100 mb-2">
+								<strong>DATE</strong>
+								<p>
+									<t t-if="o.lc_date">
+										<t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+									</t>
+								</p>
+							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>APPLICANT'S TIN :</strong>
@@ -1193,95 +1149,48 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									<strong>ISSUED BY</strong>
 									<br/>
 									<t t-if="o.issued_by">
-										<t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/>
-									</t>
-								</p>
-							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<strong>STYLE REF</strong>
-								<p>
-									<!-- <t t-if="o.style_ref">
-										<t t-esc="o.style_ref"/>
-									</t> -->
-								</p>
-							</div>
-                            
-						  <div class="col-auto col-2 mw-100 mb-2">
-								<strong>DATE</strong>
-								<p>
-									<t t-if="o.invoice_date">
-										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
 									</t>
 								</p>
 							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>INVOICE/BILL DATE</strong>
 								<p>
-									<!--<t t-if="o.order_type">-->
-										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-									<!--</t>-->
-								</p>
-							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<strong>CURRENCY</strong>
-								<p>
-									<t t-esc="o.currency_id.name"/>
+                                    <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
 								</p>
 							</div>
 							
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<strong>STYLE REF</strong>
+								<p>
+									<t t-if="o.style_ref">
+										<t t-esc="o.style_ref"/>
+									</t>
+								</p>
+							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PO NO.</strong>
 								<p>
-									<!-- <t t-if="o.kind_attention">
-										<t t-esc="o.kind_attention"/>
-									</t> -->
+									<t t-if="o.po_numbers">
+										<t t-esc="o.po_numbers"/>
+									</t>
 								</p>
 							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PI NO.</strong>
 								<p>
-									<!-- <t t-if="o.user_id">
-										<t t-esc="o.user_id.partner_id.name"/>
-									</t> -->
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>CURRENCY</strong>
-								<p>
-									<t t-esc="o.currency_id.name"/>
-								</p> -->
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>SALESPERSON</strong> -->
-								<p>
-									<!-- <t t-if="o.style_ref">
-										<t t-esc="o.style_ref"/>
-									</t> -->
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>DATE</strong> -->
-								<p>
-									<!--<t t-if="o.order_type">-->
-										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
-									<!--</t>-->
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>INVOICE/BILL DATE</strong> -->
-								<p>
-									<!--<t t-if="o.order_type">-->
-										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
-									<!--</t>-->
+									<t t-if="o.pi_numbers">
+										<t t-esc="o.pi_numbers"/>
+									</t>
 								</p>
 							</div>
 						</div>
 						
 						 <div style="font-size:12px">
-							
-							
 							<table class="table table-sm o_main_table">
                                 <thead>
                                     <t t-set="line_count" t-value="0"/>
@@ -1534,7 +1443,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                             </div>
                      </footer>
 					</div>
-					<br/>
+					<p style="page-break-after: always;"/>
+                    
 				<div class="page" style="page-break-after: always;">
 					<div class="footer text-center" style="margin:0px; padding:0px;">
                     Page: <span class="page"/>/<span class="topage"/>
@@ -1589,20 +1499,18 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 								<strong style="font-size:12px">CONSIGNED TO</strong>
 								</div>
 								<p>
-									<!-- <span style="font-size:12px;" t-esc="o.partner_shipping_id.name"/>
-									<br/>
-									<span style="font-size:10px" t-esc="o.delivery_details"/> -->
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>
+									</t>
 								</p>
 							</div>
 							<div class="col-auto col-3 mw-50 mb-2">
-								<!-- <t t-if="o.applicant_bank">
-									<div>
-										<strong style="font-size:12px">APPLICANT BANK</strong>
-									</div>
-									<p>
-										<span style="font-size:12px;" t-esc="o.applicant_bank"/>
-									</p>
-								</t> -->
+                                <div>
+                                    <strong style="font-size:12px">INVOICE DATE</strong>
+                                </div>
+                                <p>
+                                    <span style="font-size:12px;" t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                </p>
 							</div>
 						</div>
 						<br/>
@@ -1614,9 +1522,18 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.lc_no"/> 
 								</p>
 							</div>
+                            
+    						<div class="col-auto col-2 mw-100 mb-2">
+								<strong>DATE</strong>
+								<p>
+									<t t-if="o.lc_date">
+										<t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+									</t>
+								</p>
+							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>APPLICANT'S TIN :</strong>
+									<strong>APPLICANT'S TIN:</strong>
 									<br/>
 									 <t t-esc="o.applicant_tin"/> 
 								</p>
@@ -1666,39 +1583,19 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>NOTIFY PARTY IF OTHER</strong>
+									<strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
 									<br/>
-									<!-- <t t-if="o.revised_date">
-										<t t-esc="o.revised_date.strftime('%d-%m-%Y')"/>
-									</t> -->
-								</p>
-							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>THEN APPLICANT</strong>
-									<br/>
-									<!-- <t t-if="o.revised_date">
-										<t t-esc="o.revised_date.strftime('%d-%m-%Y')"/>
-									</t> -->
-								</p>
-							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<strong>STYLE REF</strong>
-								<p>
-									<!-- <t t-if="o.style_ref">
-										<t t-esc="o.style_ref"/>
-									</t> -->
-								</p>
-							</div>
-                            
-						  <div class="col-auto col-2 mw-100 mb-2">
-								<strong>DATE</strong>
-								<p>
-									<t t-if="o.invoice_date">
-										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
 									</t>
 								</p>
 							</div>
+                            <!-- <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>THEN APPLICANT</strong>
+									<br/>
+								</p>
+							</div> -->
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>INVOICE/BILL DATE</strong>
 								<p>
@@ -1707,54 +1604,32 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
-                            
-							
 						</div>
 						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<strong>STYLE REF</strong>
+								<p>
+									<t t-if="o.style_ref">
+										<t t-esc="o.style_ref"/>
+									</t>
+								</p>
+							</div>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PO NO.</strong>
 								<p>
-									<!-- <t t-if="o.kind_attention">
-										<t t-esc="o.kind_attention"/>
-									</t> -->
+									<t t-if="o.po_numbers">
+										<t t-esc="o.po_numbers"/>
+									</t>
 								</p>
 							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-2 mw-100 mb-2">
 								<strong>PI NO.</strong>
 								<p>
-									<!-- <t t-if="o.user_id">
-										<t t-esc="o.user_id.partner_id.name"/>
-									</t> -->
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<strong>CURRENCY</strong>
-								<p>
-									<t t-esc="o.currency_id.name"/>
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>SALESPERSON</strong> -->
-								<p>
-									<!-- <t t-if="o.style_ref">
-										<t t-esc="o.style_ref"/>
-									</t> -->
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>DATE</strong> -->
-								<p>
-									<!--<t t-if="o.order_type">-->
-										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
-									<!--</t>-->
-								</p>
-							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<!-- <strong>INVOICE/BILL DATE</strong> -->
-								<p>
-									<!--<t t-if="o.order_type">-->
-										<!-- <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/> -->
-									<!--</t>-->
+									<t t-if="o.pi_numbers">
+										<t t-esc="o.pi_numbers"/>
+									</t>
 								</p>
 							</div>
 						</div>
@@ -2014,7 +1889,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                             </div>
                      </footer>
 					</div>
-					<br/>
+					<p style="page-break-after: always;"/>
+                    
 					<div class="page" style="page-break-after: always;">
 						<div class="footer text-center" style="margin:0px; padding:0px;">
                     Page: <span class="page"/>/<span class="topage"/>
@@ -2098,7 +1974,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong><t t-esc="o.master_lc"/><t t-esc="o.master_date"/> </strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/> </strong>
+                                        <strong><t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/> </strong>
                                         <br/>
                                     </div>
                                     <div class="col-1" style="font-size:12px">
@@ -2232,7 +2108,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <strong><t t-esc="o.master_lc"/><t t-esc="o.master_date"/> </strong>
                                         <br/>
                                         <br/>
-                                        <strong><t t-esc="o.issued_by.name"/><t t-esc="o.issued_address"/> </strong>
+                                        <strong><t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/> </strong>
                                         <br/>
                                     </div>
                                     <div class="col-1" style="font-size:12px">

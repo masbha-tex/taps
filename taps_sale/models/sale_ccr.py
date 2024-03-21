@@ -84,8 +84,8 @@ class SaleCcr(models.Model):
     name = fields.Char(string='CCR Reference', required=True, copy=False, index=True, readonly=True,  default=lambda self: _('New'))
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     oa_number = fields.Many2one('sale.order', string='OA Number', readonly=True)
-    customer = fields.Many2one('res.partner',related = 'oa_number.partner_id', string='Customer')
-    buyer = fields.Many2one('res.partner',related = 'oa_number.buyer_name', string='Buyer')
+    customer = fields.Many2one('res.partner',related = 'oa_number.partner_id', string='Customer', store=True)
+    buyer = fields.Many2one('res.partner',related = 'oa_number.buyer_name', string='Buyer', store=True)
     pi_number = fields.Many2one('sale.order', related = 'oa_number.order_ref',string='PI Number')
     order_quantity = fields.Float(related = 'oa_number.order_ref.total_product_qty',string='Order Quantity')
     rejected_quantity = fields.Float(string='Rejected Quantity')
@@ -338,7 +338,7 @@ class SaleCcr(models.Model):
                 # email_from_list.append('csd.zipper@texzipperbd.com')
             if self.company_id.id == 3:
                 email_cc_list.append('kumar.abhishek@texzipperbd.com')
-                email_to_list.append('quality2.metaltrims@texzipperbd.com')
+                email_to_list.append('quality1.metaltrims@texzipperbd.com')
                 email_to_list.append('quality4.metaltrims@texzipperbd.com')
                 
                 # email_from_list.append('nasir.csd@texzipperbd.com')
