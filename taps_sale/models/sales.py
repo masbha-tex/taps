@@ -542,7 +542,7 @@ class SaleOrder(models.Model):
                 ]
             email_from_list = ['odoo@texzipperbd.com']
             email_cc_list = [
-                'gaurav.gupta@bd.texfastener.com',
+                'gaurav.gupta@bd.texfasteners.com',
                 'shahid.hossain@texzipperbd.com',
                 'alamgir@texzipperbd.com',
                 'nitish.bassi@texzipperbd.com',

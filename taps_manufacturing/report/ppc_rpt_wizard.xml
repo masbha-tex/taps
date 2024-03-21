@@ -39,7 +39,7 @@
     
         <menuitem id="ppc_reports_daily"
               name="PPC REPORTS"
-              sequence="2"
+              sequence="1"
               parent="taps_manufacturing.ppc_reports"
               action="mrp_ppc_report"
               />

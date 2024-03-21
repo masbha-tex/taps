@@ -96,6 +96,7 @@ class MrpReportWizard(models.TransientModel):
                 email_to_list = ['production@bd.texfasteners.com',]#'asraful.haque@texzipperbd.com',
                 email_cc_list = [
                     'deepak.shah@bd.texfasteners.com',
+                    'gaurav.gupta@bd.texfasteners.com',
                     'nitish.bassi@texzipperbd.com',
                     'shahid.hossain@texzipperbd.com',
                     'ranjeet.singh@texzipperbd.com',
@@ -107,6 +108,7 @@ class MrpReportWizard(models.TransientModel):
                 email_to_list = ['packing.button@texzipperbd.com',]#'asraful.haque@texzipperbd.com',
                 email_cc_list = [
                     'deepak.shah@bd.texfasteners.com',
+                    'gaurav.gupta@bd.texfasteners.com',
                     'nitish.bassi@texzipperbd.com',
                     'shahid.hossain@texzipperbd.com',
                     'kumar.abhishek@texzipperbd.com',
@@ -1490,8 +1492,19 @@ class MrpReportWizard(models.TransientModel):
                             # val = round(sum(get_pending.mapped('sale_order_line.price_subtotal')),2)
                             # if qty > 0:
                             price = get_pending[2]#round(val/qty,2)
-                            
                             pending_pcs = qty
+
+                            # if self.env.company.id == 3:
+                            #     self.env.cr.execute("""
+                            #     SELECT SUM(balance_qty) AS total_balance 
+                            #     FROM manufacturing_order 
+                            #     WHERE company_id = 3 AND state NOT IN ('cancel', 'hold')
+                            # """)
+                            #     result = self.env.cr.fetchone()
+                            #     pending_pcs = result[0] if result else 0
+                            # else :
+                            #      pending_pcs = qty
+                            # raise UserError((pending_pcs))
     
                             pending_orders = self.env['manufacturing.order'].search([('oa_id','in',(pending_oa_ids)),('company_id','=',self.env.company.id)])
                             if pending_orders:
@@ -1512,8 +1525,26 @@ class MrpReportWizard(models.TransientModel):
                             _outputs = all_outputs.sudo().filtered(lambda pr: (pr.action_date.date() <= full_date.date() and  pr.fg_categ_type == item.name and pr.oa_id.id in pending_oa_ids))
                             if _outputs:
                                 doneqty = sum(_outputs.mapped('qty'))
+                                # if self.env.company.id == 3:
+                                #     self.env.cr.execute("""
+                                #     SELECT 
+                                #         SUM(balance_qty) AS total_balance 
+                                #     FROM 
+                                #         operation_packing as m
+                                #     WHERE 
+                                #         company_id = 3 
+                                #         AND state NOT IN ('cancel', 'hold','closed')
+                                #         AND (m.create_date <= %s) 
+                                #         AND (m.fg_categ_type = %s)
+                                #         AND (m.oa_id IN %s)
+                                # """, (full_date.date(), item.name, tuple(pending_oa_ids)))
+                                #     result = self.env.cr.fetchone()
+                                #     pending_pcs = result[0] if result else 0
+                                # else :
                                 pending_pcs = qty - doneqty
+                                # pending_pcs = qty - doneqty
                                 pending_usd = round((pending_pcs * price),2)
+                                # raise UserError((pending_pcs))
                     
                     # if start_time.date() == full_date.date():
                     #     # raise UserError((start_time.date(),full_date.date()))
@@ -1672,6 +1703,7 @@ class MrpReportWizard(models.TransientModel):
                 sheet.write(row, 0, 'TOTAL', row_style)
                 sheet.write(row, 1, '=SUM(B{0}:B{1})'.format(1, row-1), row_style)
                 sheet.write(row, 2, '=SUM(C{0}:C{1})'.format(1, row), _row_style)
+                sheet.write(row, 3, '=SUM(D{0}:D{1})'.format(1, row), row_style)
                 sheet.write(row, 3, '=SUM(D{0}:D{1})'.format(1, row), row_style)
                 sheet.write(row, 4, '=SUM(E{0}:E{1})'.format(1, row), _row_style)
                 sheet.write(row, 5, '=SUM(F{0}:F{1})'.format(1, row), row_style)

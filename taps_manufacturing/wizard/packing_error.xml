@@ -10,7 +10,8 @@
                 </group>
                 <footer>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
-                     <button string="Solve" name="solve" class="btn-primary"/>
+                    <!-- <button name="get_operation_details" string="Update OA IDs" type="object" class="btn-primary"/> -->
+                    <button string="Solve" name="solve" class="btn-primary"/>
                     <!-- <button string="Solve" class="btn-secondary" special="cancel"/> -->
                 </footer>
             </form>

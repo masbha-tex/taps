@@ -78,7 +78,7 @@ class CombineInvoice(models.Model):
     master_date = fields.Date(string='Export LC Date', store=True, readonly=False)
     exp_no = fields.Char(string='BB DC REF.', store=True, readonly=False)
     exp_date = fields.Date(string='Document/Export Date', store=True, readonly=False)
-    appl_ref = fields.Char(string='BB DC REF.', store=True, readonly=False)
+    appl_ref = fields.Char(string='APPLICANT REF.', store=True, readonly=False)
     numberof_carton = fields.Float('No. of Ctn', default=0.0, store=True)
     gross_weight = fields.Float('Gross Weight', default=0.0, store=True)
     net_weight = fields.Float('Net Weight', default=0.0, store=True)
@@ -212,22 +212,26 @@ class CombineInvoiceReport(models.AbstractModel):
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
                                 
+                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                
                                 order_data = []
                                 order_data = [
                                     item.name,
                                     finish,
                                     shade,
-                                    size,
+                                    size_value,
                                     qty,
                                     round(price,4),
                                     round(value,4),
+                                    unit,
                                     ]
                                 report_data.append(order_data)
                 order_data = []
                 if com.id == 1:
-                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),]
+                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
                 if com.id == 3:
-                    order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),]
+                    order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
 

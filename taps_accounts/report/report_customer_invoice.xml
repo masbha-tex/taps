@@ -255,6 +255,8 @@
                                         <th>SHADE</th>
                                         <t t-set="line_count" t-value="line_count+1"/>
                                         <th>SIZE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th style="border-left: hidden ! important;"></th>
                                         <th>QTY</th>
                                         <th>PRICE/UNIT</th>
                                         <th>AMOUNT</th>
@@ -267,42 +269,6 @@
                                     <t t-set="prev_item_2" t-value=""/>
                                     <t t-foreach="datas" t-as="line">
                                         <tr>
-                                            <!-- <t>
-												<t t-if="line[0]">
-													<t t-if="prev_item == line[0]">
-														<td colspan="3" style="border-top:hidden !important"/>
-													</t>
-													<t t-if="prev_item != line[0]">
-														<td colspan="3" class="text-left" style="border-top:1px solid black;">
-															<span style="font-size:14px">
-																<t t-esc="line[0]"/>
-																<t t-set="prev_item" t-value="line[0]"/>
-															</span>
-														</td>
-													</t>
-												</t>
-												<t t-if="not line[0]">
-													<td colspan="3"/>
-												</t>
-											</t>
-                                            <t>
-												<t t-if="line[1]">
-													<t t-if="prev_item == line[1]">
-														<td colspan="3" style="border-top:hidden !important"/>
-													</t>
-													<t t-if="prev_item != line[1]">
-														<td colspan="3" class="text-left" style="border-top:1px solid black;">
-															<span style="font-size:14px">
-																<t t-esc="line[1]"/>
-																<t t-set="prev_item" t-value="line[1]"/>
-															</span>
-														</td>
-													</t>
-												</t>
-												<t t-if="not line[1]">
-													<td colspan="3"/>
-												</t>
-											</t> -->
                                             <t t-if="prev_item == line[0]">
                                                 <td></td>
                                             </t>
@@ -330,6 +296,7 @@
                                             <!-- <td><t t-esc="line[1]"/></td> -->
                                             <!-- <td><t t-esc="line[2]"/></td> -->
                                             <td class="text-right"><t t-esc="line[3]"/></td>
+                                            <td class="text-left" style="border-left: hidden ! important;"><t t-esc="line[7]"/></td>
                                             <td class="text-right"><t t-esc="line[4]"/></td>
                                             <td class="text-right"><t t-esc="line[5]"/></td>
                                             <td class="text-right"><t t-esc="line[6]"/></td>
@@ -778,7 +745,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <th>SHADE</th>
                                         <t t-set="line_count" t-value="line_count+1"/>
                                         <th>SIZE</th>
-                                        <!-- <t t-set="line_count" t-value="line_count+1"/> -->
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th style="border-left: hidden ! important;"></th>
                                         <th>QTY</th>
                                     </tr>
                                 </thead>
@@ -812,7 +780,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                             </t>
                                             <!-- <td><t t-esc="line[1]"/></td> -->
                                             <!-- <td><t t-esc="line[2]"/></td> -->
-                                            <td><t t-esc="line[3]"/></td>
+                                            <td class="text-right" ><t t-esc="line[3]"/></td>
+                                            <td class="text-left" style="border-left: hidden ! important;"><t t-esc="line[7]"/></td>
                                             <td><t t-esc="line[4]"/></td>
                                         </tr>
                                     </t>
@@ -1215,7 +1184,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <th>SHADE</th>
                                         <t t-set="line_count" t-value="line_count+1"/>
                                         <th>SIZE</th>
-                                        <!-- <t t-set="line_count" t-value="line_count+1"/> -->
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th style="border-left: hidden ! important;"></th>
                                         <th>QTY</th>
                                     </tr>
                                 </thead>
@@ -1249,7 +1219,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                             </t>
                                             <!-- <td><t t-esc="line[1]"/></td> -->
                                             <!-- <td><t t-esc="line[2]"/></td> -->
-                                            <td><t t-esc="line[3]"/></td>
+                                            <td class="text-right"><t t-esc="line[3]"/></td>
+                                            <td class="text-left" style="border-left: hidden ! important;"><t t-esc="line[7]"/></td>
                                             <td><t t-esc="line[4]"/></td>
                                         </tr>
                                     </t>
@@ -1667,7 +1638,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <th>SHADE</th>
                                         <t t-set="line_count" t-value="line_count+1"/>
                                         <th>SIZE</th>
-                                        <!-- <t t-set="line_count" t-value="line_count+1"/> -->
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th style="border-left: hidden ! important;"></th>
                                         <th>QTY</th>
                                     </tr>
                                 </thead>
@@ -1701,7 +1673,8 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                             </t>
                                             <!-- <td><t t-esc="line[1]"/></td> -->
                                             <!-- <td><t t-esc="line[2]"/></td> -->
-                                            <td><t t-esc="line[3]"/></td>
+                                            <td class="text-right"><t t-esc="line[3]"/></td>
+                                            <td class="text-left" style="border-left: hidden ! important;"><t t-esc="line[7]"/></td>
                                             <td><t t-esc="line[4]"/></td>
                                         </tr>
                                     </t>

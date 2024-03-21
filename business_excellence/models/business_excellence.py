@@ -10,8 +10,10 @@ class BusinessExcellence(models.Model):
     _parent_name = 'parent_project_id'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True)
-    
+    # code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True)
+    code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default='New')
+
+    # business_line = fields.One2many('business.excellence.line', 'business_id', string='AllocatedLine', copy=True)
     parent_project_id = fields.Many2one('business.excellence',
                                        string="Parent Project",
                                        ondelete="cascade",
@@ -37,9 +39,23 @@ class BusinessExcellence(models.Model):
     date = fields.Date(string = "Start Date")
     finish_date = fields.Date(string = "Finish Date")
     count = fields.Integer(string="Est Days", compute="_compute_count")
-    criteria_id = fields.Many2one('business.excellence.criteria', required=True, string='Title')
-    title_ids = fields.Many2one('business.excellence.title', string='Scope', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
+    criteria_id = fields.Many2one('business.excellence.criteria', string='Title')
+    title_ids = fields.Many2one('business.excellence.title', string='Scope', domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
     area_impact = fields.Many2many('business.excellence.impact', string="Area Impact")
+    review = fields.Text('Review', tracking=True)
+    conclusion = fields.Text('Conclusion', tracking=True)
+    remarks = fields.Text('Special Remark', tracking=True)
+    capitalize = fields.Selection(selection=[
+        ('1', 'Capex'),
+        ('2', 'New Upgradation'),
+        ('3', 'Not Required')], string="Capitalize", tracking=True, default="3")
+    # priority = fields.Selection([
+    #         ('1', 'No Star'),
+    #         ('2', 'One Star'),
+    #         ('3', 'Two Star'),
+    #         ('4', 'Three Star'),
+    #         ('5', 'Four Star'),
+    #         ('6', 'Five Star')], 'Priority', tracking=True, default='1')
 
     @api.depends('date', 'finish_date')
     def _compute_count(self):
@@ -58,39 +74,32 @@ class BusinessExcellence(models.Model):
             vals['code'] = self.env['ir.sequence'].next_by_code('business.excellence', sequence_date=date)
         return super(BusinessExcellence, self).create(vals)
 
+    def view_task(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'My Task',
+            'view_mode': 'tree,kanban',
+            'res_model': 'business.excellence.line',
+            # 'domain': [('business_id', '=', self.id)],
+            # 'context': "{'create': False}"
+            
+        }
+
 
 
 # class BusinessExcellenceLine(models.Model):
 
 #     _name = 'business.excellence.line'
 #     _description = 'Business Excellence Line'
-
-    
-        
-#     allocated_id = fields.Many2one('customer.allocated', string='Allocated Id', index=True, required=True, ondelete='cascade')
+  
+#     business_id = fields.Many2one('business.excellence', string='Task', index=True, required=True, ondelete='cascade')
 #     name = fields.Char(string="Description")
-#     # domain = fields.Char()
-#     customer_domain = fields.Char(compute="_compute_customer",readonly=True, store=True)
-
-#     buyer = fields.Many2one('res.partner', string='Buyer', domain="[('buyer_rank', '=', 1)]" ,store=True, required=True)
-#     customer = fields.Many2one('res.partner', string='Customer',store=True, required=True)
-#     assign_date = fields.Date(string="Assign Date", default=date.today())
+#     criteria_id = fields.Many2one('business.excellence.criteria', required=True, string='Title')
+#     title_ids = fields.Many2one('business.excellence.title', string='Scope', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
 #     active = fields.Boolean(string="Active", default="True")
     
     
     
-
-    
-#     @api.onchange('buyer')
-#     def _on_change_buyer(self):
-#         self.customer = False
-
-#     @api.depends('buyer')
-#     def _compute_customer(self):
-#         for rec in self:
-#            if self.buyer:
-#                   self.customer_domain = json.dumps([('id', 'in', self.buyer.related_customer.ids)])
-#            else:
-#                self.customer_domain = json.dumps([('id', '=', False)])
 
 

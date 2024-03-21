@@ -9,9 +9,18 @@
             <tree string="" sample="1">
                 <field name="code"/>
                 <field name="name"/>
+                <field name="parent_project_id"/>
                 <field name="company_id"/>
                 <field name="department_id"/>
+                <field name="project_cost"/>
                 <field name="date"/>
+                <field name="finish_date"/>
+                <field name="count"/>
+                <field name="area_impact"  widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True, 'color_field': 'color'}" />
+                
+                <field name="review"/>
+                <field name="conclusion"/>
+                <field name="remarks"/>
             </tree>
         </field>
     </record>
@@ -24,6 +33,20 @@
             <form string="">
                 
 				<sheet>
+                    <!-- <div class="oe_button_box" name="button_box">
+                        <button type="object"
+                            name="view_customer"
+                            class="oe_stat_button"
+                            icon="fa-users"
+                            attrs="{}" >
+                            
+                            <field name="customer_count" widget="statinfo" string="My Customers" />
+                            <field name="customer_ids" invisible="1"/>
+                            
+                        </button>
+                        
+                    </div> -->
+                    
                     <field name="active" invisible="1"/>   
                     <!-- <h3><field name="code" readonly="1"/></h3> -->
                     <group>
@@ -33,6 +56,7 @@
                             <field name="type"/>
                         </group>
                     </group>
+                    <!-- <field name="priority" widget="priority"/> -->
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1><field name="name" string="Project" placeholder="E.g. Finance"/></h1>
@@ -41,6 +65,13 @@
                         <field name="parent_project_id" domain="[('id', '!=', id)]"/>
                     </group>
                     <!-- <field name="children_project_ids"/> -->
+                    <div class="oe_title">
+                        <label for="capitalize"/>
+                        <br/>
+                        <br/>
+                        <field name="capitalize" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}"/>
+                    </div>
+                    <!-- <label for="capitalize" class="oe_edit_only"/> -->
                     
                     <group>
                         <group>
@@ -58,6 +89,11 @@
                             <field name="count"/>
                         </group>
                                            
+                    </group>
+                    <group>
+                        <field name="review"/>
+                        <field name="conclusion"/>
+                        <field name="remarks"/>
                     </group>
                     <notebook>
                             <page string="Product Details">
@@ -104,6 +140,63 @@
             </search>
         </field>
     </record>
+      
+      <!-- <record id="business_excellence_line_tree" model="ir.ui.view">
+            <field name="name">business.excellence.line.tree</field>
+            <field name="model">business.excellence.line</field>
+            <field name="arch" type="xml">
+                <tree string="Business Excellence Tree" create="false">
+                   
+                    
+                    
+                    <field name="criteria_id"/>
+                    <field name="title_ids" invisible="1"/>
+                </tree>
+            </field>
+    </record>
+      <record id="business_excellence_line_kanban" model="ir.ui.view">
+            <field name="name">business.excellence.line.kanban</field>
+            <field name="model">business.excellence.line</field>
+            <field name="arch" type="xml">
+                <kanban class="o_res_partner_kanban">
+                    <field name="id"/>
+                    <field name="criteria_id"/>
+                    <field name="title_ids"/>
+                    
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                                
+                    
+                                <div class="oe_kanban_details">
+                                   <div class="o_kanban_record_top">
+                                       <div class="o_kanban_record_headings">
+                                           <strong class="o_kanban_record_title">
+                                                <field name="criteria_id"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <i><field name="title_ids"/></i>
+                                    <div>
+                                        
+                                        
+                                        
+                                    </div>
+                                    <div class="o_kanban_inline_block">
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+    </record>
+    <record model="ir.actions.act_window" id="business_excellence_line_action">
+            <field name="name">Business Excellence Line</field>
+            <field name="res_model">business.excellence.line</field>
+            <field name="view_mode">tree,kanban</field>
+    </record> -->
 
     <record model="ir.actions.act_window" id="action_business_excellence">
         <field name="name">Business Excellence</field>

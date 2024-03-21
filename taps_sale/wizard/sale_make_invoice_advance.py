@@ -97,17 +97,25 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                     if com_in.style_ref:
                         style = com_in.style_ref
                     if pi_numbers:
-                        pi_numbers += "," + or_ref.replace('S','TZBD-Z')
+                        if or_ref.replace('S','TZBD-Z') not in pi_numbers:
+                            pi_numbers += "," + or_ref.replace('S','TZBD-Z')
                     else:
-                        pi_numbers += or_ref.replace('S','TZBD-Z')
+                        if or_ref.replace('S','TZBD-Z') not in pi_numbers:
+                            pi_numbers += or_ref.replace('S','TZBD-Z')
                     if po_numbers:
-                        po_numbers += "," + po_no
+                        if po_no not in po_numbers:
+                            po_numbers += "," + po_no
                     else:
-                        po_numbers += po_no
+                        if po_no not in po_numbers:
+                            po_numbers += po_no
                     if style_ref:
-                        style_ref += "," + style
+                        if style not in style_ref:
+                            style_ref += "," + style
                     else:
-                        style_ref += style
+                        if style not in style_ref:
+                            style_ref += style
+
+            
             else:
                 if hs_code:
                     hs_code = '9607.11.00 AND 9606.22.00'
