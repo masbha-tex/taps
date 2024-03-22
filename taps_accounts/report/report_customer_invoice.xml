@@ -2280,5 +2280,2313 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 			</t>
 		</t>
 	</template>
+	<template id="report_cus_invoice">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+					<div class="page" style="page-break-after: always;">
+						<div class="footer text-center" style="margin:0px; padding:0px;">
+                    Page: <span class="page"/>/<span class="topage"/>
+						</div>
+						<h4 class="text-center">
+							<strong>
+							COMMERCIAL INVOICE 
+							</strong>
+						</h4>
+						<div>
+							<div class="float-left">
+								<h2 class="mt15" style="font-size: 15px">
+									<span style="color: Black ! important">INVOICE #  
+                                         <t t-esc="o.name"/> 
+									</span>
+									<span style="color: Black ! important">DATE:  
+    									<t t-if="o.invoice_date">
+    										<t t-esc="o.invoice_date.strftime('%d-%b-%Y')"/>
+    									</t> 
+									</span>
+								</h2>
+							</div>
+							<div class="float-right">
+								<h5 style="font-size: 12px">
+									<strong>BIN NO: 000230362-0305</strong>
+								</h5>
+							</div>
+						</div>
+						<br/>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+									<strong style="font-size:12px">INVOICE ADDRESS</strong>
+								</div>
+								<p>
+									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
+									<br/>
+									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/> 
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+									<strong style="font-size:12px">DESPATCH ADDRESS</strong>
+								</div>
+								<p>
+									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
+									<br/>
+									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/>
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<!--<div>-->
+								<!--	<strong style="font-size:12px">DELIVERY ADDRESS</strong>-->
+								<!--</div>-->
+								<p>
+									<!-- <span style="font-size:12px;" t-esc="o.partner_shipping_id.name"/>
+									<br/>
+									<span style="font-size:10px" t-esc="o.delivery_details"/> -->
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<!-- <t t-if="o.applicant_bank">
+									<div>
+										<strong style="font-size:12px">APPLICANT BANK</strong>
+									</div>
+									<p>
+										<span style="font-size:12px;" t-esc="o.applicant_bank"/>
+									</p>
+								</t> -->
+							</div>
+						</div>
+						<br/>
+						<div class="row mt32 mb32" style="font-size:12px">
+						  <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>LC NO.:</strong>
+									<br/>
+									 <t t-esc="o.lc_no"/> 
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>LC DATE:</strong>
+								<p>
+									<t t-if="o.lc_date">
+										<t t-esc="o.lc_date.strftime('%d-%b-%Y')"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>BANK REF NO:</strong>
+									<br/>
+									 <t t-esc="o.partner_bank_id.sanitized_acc_number"/>
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>IRC NO:</strong>
+									<br/>
+									 <t t-if="o.tin_no">
+										<t t-esc="o.tin_no"/>
+									</t>
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>APPLICANT'S TIN :</strong>
+									<br/>
+									 <t t-esc="o.applicant_tin"/> 
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>BIN/VAT REG.NO.</strong>
+									<br/>
+									 <t t-esc="o.bin_vat_reg"/> 
+								</p>
+							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+                                <p>
+                                    <strong>BOND LICENSE NO:</strong>
+                                    <br/>
+                                     <t t-esc="o.bond_licence"/> 
+                                </p>
+                            </div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								 <p>
+								<strong>TIN NO:</strong>
+								<br/> 
+								 <!-- <t t-esc="o.tin_no"/>   -->
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+								  <strong>BANK BIN NO:</strong>
+									
+									<br/>
+									 <t t-esc="o.bank_bin"/> 
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>H.S. CODE:</strong>
+									<br/>
+									<t t-if="o.hs_code">
+										<t t-esc="o.hs_code"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>PAYMENT TERMS:</strong>
+									<br/>
+									 <!--<t t-if="o.invoice_payment_term_id">-->
+										<t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/>
+                                    
+									<!--</t>-->
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>ISSUED BY:</strong>
+									<br/>
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
+									</t>
+								</p>
+							</div>
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-2 mw-50 mb-2">
+								<strong>BB DC REF:</strong>
+								<p>
+									<t t-if="o.exp_no">
+										<t t-esc="o.exp_no"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-50 mb-2">
+								<strong>APPLICANT REF:</strong>
+								<p>
+									<t t-if="o.appl_ref">
+										<t t-esc="o.appl_ref"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-50 mb-2">
+								<strong>SC NO:</strong>
+								<p>
+									<t t-if="o.sc_no">
+										<t t-esc="o.sc_no"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-50 mb-2">
+								<strong>DATE:</strong>
+								<p>
+									<t t-if="o.sc_date">
+										<t t-esc="o.sc_date.strftime('%d-%b-%Y')"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-2 mw-50 mb-2">
+								<strong>STYLE REF:</strong>
+								<p>
+									<t t-if="o.style_ref">
+										<t t-esc="o.style_ref"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-50 mb-2">
+								<strong>PO NO.:</strong>
+								<p>
+									<t t-if="o.po_numbers">
+										<t t-esc="o.po_numbers"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-2 mw-50 mb-2">
+								<strong>PI NO.:</strong>
+								<p>
+									<t t-if="o.pi_numbers">
+										<t t-esc="o.pi_numbers"/>
+									</t>
+								</p>
+							</div>
+						</div>
+                        <div style="font-size:12px">
+						<table class="table table-sm o_main_table">
+                                <thead>
+                                    <t t-set="line_count" t-value="0"/>
+                                    <tr>
+                                        <th>ITEM</th>
+                                        <t t-set="line_count" t-value="2"/>
+                                        <!-- <th>CODE</th> -->
+                                        <th>FINISH</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SHADE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SIZE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th style="border-left: hidden ! important;"></th>
+                                        <th>QTY</th>
+                                        <th>PRICE/UNIT</th>
+                                        <th>AMOUNT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- <t t-set="total_am" t-value="0"/> -->
+                                    <t t-set="prev_item" t-value="0.0"/>
+                                    <t t-set="prev_item_1" t-value="False"/>
+                                    <t t-set="prev_item_2" t-value=""/>
+                                    <t t-foreach="datas" t-as="line">
+                                        <tr>
+                                            <t t-if="prev_item == line[0]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[0]"/></td>
+                                                <t t-set="prev_item" t-value="line[0]"/>
+                                            </t>
+                                            <!-- <td></td> -->
+                                            <t>
+                                            <t t-if="prev_item_1 == line[1]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[1]"/></td>
+                                                <t t-set="prev_item_1" t-value="line[1]"/>
+                                            </t>
+                                            <t t-if="prev_item_2 == line[2]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[2]"/></td>
+                                                <t t-set="prev_item_2" t-value="line[2]"/>
+                                            </t>
+                                            </t>
+                                            <!-- <td><t t-esc="line[1]"/></td> -->
+                                            <!-- <td><t t-esc="line[2]"/></td> -->
+                                            <td class="text-right"><t t-esc="line[3]"/></td>
+                                            <td class="text-left" style="border-left: hidden ! important;"><t t-esc="line[7]"/></td>
+                                            <td class="text-right"><t t-esc="line[4]"/></td>
+                                            <td class="text-right"><t t-esc="line[5]"/></td>
+                                            <td class="text-right"><t t-esc="line[6]"/></td>
+                                            <!-- <t t-set="total_am" t-value="total_am+line[6]"/> -->
+                                        </tr>
+                                    </t>
+                                            
+                                    <tr>
+										<td t-att-colspan="line_count" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;">
+										<!-- <td colspan="1" style="vertical-align:middle;border-top: 1px solid black;"> -->
+    										<strong>Total :</strong>
+										</td>
+										<!-- <td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>Total :</strong>
+										</td> -->
+										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>
+												<t t-esc="common_data[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+											</strong>
+										</td>
+										<td colspan="1" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important;"/>
+                                        <td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;;border-left: 1px solid black;">
+											<strong>
+												<t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+											</strong>
+										</td>
+									</tr>
+                                    
+                                </tbody>
+                            </table>
+
+                        
+							
+						</div>
+                          <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
+                             <div class="row float-left pl-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>No. of Catn</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+													<t t-esc="o.numberof_carton" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>Gross weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<t t-esc="o.gross_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+                                        <tr class="border-black o_subtotal">
+											<td>
+												<strong>Net weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<t t-esc="o.net_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+                              
+                             <br/>
+                             <br/>
+						</div>
+                         
+                                      
+						 
+						<!-- <br/> -->
+                        <br/>
+							<div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="common_data[8]"/>
+								</strong>
+								<br/>
+								
+							</div>
+                        <br/>
+						<div style="font-size:12px;page-break-inside:avoid;">
+							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
+								<t t-set="payment_count" t-value="0"/>
+                                <!--<t t-if="o.loading_place">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>PLACE OF LOADING:</strong>
+											<br/>
+											AEPZ Narayanganj
+											<!-- <t t-set="payment_count" t-value="payment_count+3"/> -->
+										</p>
+									</div>
+								<!--</t>-->
+                                <!--		<t t-foreach="int((12-payment_count)/3)" t-as="p_count">-->
+                                <!--			<div class="col-auto col-3 mw-100 mb-2">-->
+                                <!--</div>-->
+                                <!--		</t>-->
+								<!--<t t-if="o.payment_term_id">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>EXPORT LC NO:</strong>
+											<br/>
+                                            
+                                            <t t-if="o.master_lc">
+                                                <t t-esc="o.master_lc"/>
+                                                <!-- <t t-esc="o.master_date"/> -->
+                                            </t>
+											
+										</p>
+									</div>
+								<!--</t>-->
+								<!-- <t t-if="o.invoice_incoterm_id == 'EX WORKS (EXW)'"> -->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>TRADE TERM:</strong>
+											<br/>
+											<t t-esc="o.invoice_incoterm_id.name"/>
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!-- </t> -->
+								<!--<t t-if="o.shipment_mode">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>CARRIER:</strong>
+											<br/>
+											<t t-esc="common_data[12]"/>
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								
+							</div>
+							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
+								<t t-set="desc_count" t-value="0"/>
+								<!--<t t-if="o.destination_port">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>PACKING:</strong>
+											<br/>
+											Export Standard
+											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.origin_country">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>COUNTRY OF ORIGIN:</strong>
+											<br/>
+											BANGLADESH
+											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.validity_period">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>PERIOD OF VALIDITY:</strong>
+											<br/>
+											<!--<t t-esc="o.validity_period"/>-->
+											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-foreach="int((12-desc_count)/3)" t-as="d_count">-->
+                        <div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<!-- <strong>SALESPERSON</strong> -->
+											<br/>
+											<!--<t t-esc="o.shipment_mode"/>-->
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+							</div>
+						</div>
+                            <!-- <t t-if="'EX WORKS (EXW)' in o.invoice_incoterm_id.name">
+                                 <div class="row mb32 mt32">
+                                     <div class="col-7">
+                                         <strong style="background-color:yellow">
+    									</strong>
+                                     </div>
+                                     <div class="col-3">
+                                         <strong style="background-color:yellow">
+                                             <span>FREIGHT COLLECT</span>
+    									</strong>
+                                     </div>
+                                     <div class="col-2">
+                                         <strong style="background-color:yellow">
+    									</strong>
+                                     </div>
+                                 </div>
+                             </t> -->
+						<div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
+							<!--<t t-if="o.note">-->
+								<div class="col-12">
+								  
+									<p>
+										<!--<strong>TERMS AND CONDITIONS:</strong>-->
+										<br/>
+										We certify that the quality, quantity, other particulars of goods and unit price of  			
+the merchandise supplied are Strictly in conformity with the profoma invoice no.
+                                        <t t-if="o.pi_numbers">
+                                            <t t-esc="o.pi_numbers"/>
+                                        </t>
+
+									</p>
+									<br/>
+									<p>
+									  NOTE:OUR PRODUCT IS NOT MADE TO BE USED IN DYEING PROCESS OR OVERDYEING PROCESS. WE DON’T ENTERTAIN ANY CLAIM IN THIS REGARD.
+									</p>
+								</div>
+							<br/>
+						</div>
+                        <br/>
+						<footer>
+                            <div class="float-right mt32 mb32 ! important" style="font-size:12px">
+                                <t t-if="o.beneficiary.id == 2">
+                                    <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                </t>
+                                <t t-if="o.beneficiary.id != 2">
+                                    <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                </t>
+                                <div>
+                                    <span>______________________</span>
+                                    <br/>
+                                    <span>AUTHORISED SIGNATORY</span>
+                                </div>
+                            </div>
+                        </footer>
+					</div>
+					<p style="page-break-after: always;"/>
+				</t>
+			</t>
+		</t>
+	</template>
+    
+	<template id="report_packing_list">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+                    <div class="page" style="page-break-after: always;">
+						<div class="footer text-center" style="margin:0px; padding:0px;">
+                    Page: <span class="page"/>/<span class="topage"/>
+						</div>
+						<h4 class="text-center">
+							<strong>
+							PACKING LIST 
+							</strong>
+						</h4>
+						<div>
+							<div class="float-left">
+								<h2 class="mt15" style="font-size: 15px">
+									<span style="color: Black ! important">INVOICE #  
+                                         <t t-esc="o.name"/>  <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									</span>
+									<!-- <t t-if="o.is_revised == True">
+										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
+										</span>
+									</t> -->
+								</h2>
+							</div>
+							<div class="float-right">
+								<h5 style="font-size: 12px">
+									<strong>BIN NO: 000230362-0305</strong>
+								</h5>
+							</div>
+						</div>
+						<br/>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+									<strong style="font-size:12px">INVOICE DETAILS</strong>
+								</div>
+								<p>
+									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
+									<br/>
+									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/> 
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+									<strong style="font-size:12px">DESPATCH DETAILS</strong>
+								</div>
+								<p>
+									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
+									<br/>
+									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/>
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<!--<div>-->
+								<!--	<strong style="font-size:12px">DELIVERY ADDRESS</strong>-->
+								<!--</div>-->
+								<p>
+									<!-- <span style="font-size:12px;" t-esc="o.partner_shipping_id.name"/>
+									<br/>
+									<span style="font-size:10px" t-esc="o.delivery_details"/> -->
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<!-- <t t-if="o.applicant_bank">
+									<div>
+										<strong style="font-size:12px">APPLICANT BANK</strong>
+									</div>
+									<p>
+										<span style="font-size:12px;" t-esc="o.applicant_bank"/>
+									</p>
+								</t> -->
+							</div>
+						</div>
+						<br/>
+						<div class="row mt32 mb32" style="font-size:12px">
+						  <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>LC NO.:</strong>
+									<br/>
+									 <t t-esc="o.lc_no"/> 
+								</p>
+							</div>
+                            
+    						<div class="col-auto col-2 mw-100 mb-2">
+								<strong>DATE</strong>
+								<p>
+									<t t-if="o.lc_date">
+										<t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+									</t>
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>APPLICANT'S TIN :</strong>
+									<br/>
+									 <t t-esc="o.applicant_tin"/> 
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>VAT REG.NO.</strong>
+									<br/>
+									 <t t-esc="o.bin_vat_reg"/> 
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								 <p>
+								<strong>TIN NO:</strong>
+								<br/> 
+								 <t t-esc="o.tin_no"/>  
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+								  <strong>BANK BIN NO</strong>
+									
+									<br/>
+									 <t t-esc="o.bank_bin"/> 
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>H.S. CODE</strong>
+									<br/>
+									<t t-if="o.hs_code">
+										<t t-esc="o.hs_code"/>
+									</t>
+								</p>
+							</div>
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>PAYMENT TERMS </strong>
+									<br/>
+									 <!--<t t-if="o.invoice_payment_term_id">-->
+										<t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/>
+									<!--</t>-->
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>ISSUED BY</strong>
+									<br/>
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>INVOICE/BILL DATE</strong>
+								<p>
+									<t t-if="o.invoice_date">
+										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<strong>STYLE REF</strong>
+								<p>
+									<t t-if="o.style_ref">
+										<t t-esc="o.style_ref"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>PO NO.</strong>
+								<p>
+									<t t-if="o.po_numbers">
+										<t t-esc="o.po_numbers"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>PI NO.</strong>
+								<p>
+									<t t-if="o.pi_numbers">
+										<t t-esc="o.pi_numbers"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						
+						 <div style="font-size:12px">
+							<table class="table table-sm o_main_table">
+                                <thead>
+                                    <t t-set="line_count" t-value="0"/>
+                                    <tr>
+                                        <th>ITEM</th>
+                                        <t t-set="line_count" t-value="2"/>
+                                        <!-- <th>CODE</th> -->
+                                        <th>FINISH</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SHADE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SIZE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th style="border-left: hidden ! important;"></th>
+                                        <th>QTY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="prev_item" t-value="False"/>
+                                    <t t-set="prev_item_1" t-value="False"/>
+                                    <t t-set="prev_item_2" t-value="False"/>
+                                    <t t-foreach="datas" t-as="line">
+                                        <tr>
+                                            <t t-if="prev_item == line[0]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[0]"/></td>
+                                                <t t-set="prev_item" t-value="line[0]"/>
+                                            </t>
+                                            <!-- <td></td> -->
+                                            <t t-if="prev_item_1 == line[1]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[1]"/></td>
+                                                <t t-set="prev_item_1" t-value="line[1]"/>
+                                            </t>
+                                            <t t-if="prev_item_2 == line[2]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[2]"/></td>
+                                                <t t-set="prev_item_2" t-value="line[2]"/>
+                                            </t>
+                                            <!-- <td><t t-esc="line[1]"/></td> -->
+                                            <!-- <td><t t-esc="line[2]"/></td> -->
+                                            <td class="text-right" ><t t-esc="line[3]"/></td>
+                                            <td class="text-left" style="border-left: hidden ! important;"><t t-esc="line[7]"/></td>
+                                            <td><t t-esc="line[4]"/></td>
+                                        </tr>
+                                    </t>
+                                            
+                                    <tr>
+										<td t-att-colspan="line_count" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;">
+										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
+    										<strong>Total :</strong>
+										</td>
+										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>
+												<t t-esc="common_data[6]"/>
+											</strong>
+										</td>
+										<!-- <td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/> -->
+									</tr>
+                                    
+                                </tbody>
+                            </table>
+							
+						</div>
+						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
+                             <div class="row float-left pl-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>No. of Catn</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+													<t t-esc="o.numberof_carton" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>Gross weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<t t-esc="o.gross_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+                                        <tr class="border-black o_subtotal">
+											<td>
+												<strong>Net weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<t t-esc="o.net_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<!-- <div class="row float-right pr-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>Subtotal</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Total</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div> -->
+                             <br/>
+                             <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div> -->
+						</div>
+						<br/>
+                        <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div>
+                        <br/> -->
+						<div style="font-size:12px;page-break-inside:avoid;">
+							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
+								<t t-set="payment_count" t-value="0"/>
+                                <!--<t t-if="o.loading_place">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>PLACE OF LOADING:</strong>
+											<br/>
+											AEPZ Narayanganj
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+                                <!--		<t t-foreach="int((12-payment_count)/3)" t-as="p_count">-->
+                                <!--			<div class="col-auto col-3 mw-100 mb-2">-->
+                                <!--</div>-->
+                                <!--		</t>-->
+								<!--<t t-if="o.payment_term_id">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>EXPORT LC NO:</strong>
+											<br/>
+                                            <t t-if="o.master_lc">
+                                                <t t-esc="o.master_lc"/>
+                                                <!-- <t t-esc="o.master_date"/> -->
+                                            </t>
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.incoterm">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>TRADE TERM:</strong>
+											<br/>
+											<t t-esc="o.invoice_incoterm_id.name"/>
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.shipment_mode">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>CARRIER:</strong>
+											<br/>
+											<t t-esc="common_data[12]"/>
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+                                <!--<t t-if="o.destination_port">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>PACKING:</strong>
+											<br/>
+											Export Standard
+											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.origin_country">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>COUNTRY OF ORIGIN:</strong>
+											<br/>
+											BANGLADESH
+											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								
+							</div>
+							
+						</div>
+						
+                        <br/>
+                        
+						<footer>
+                           <div class="float-right mt32 mb32 ! important" style="font-size:12px">
+                                <t t-if="o.beneficiary.id == 2">
+                                    <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                </t>
+                                <t t-if="o.beneficiary.id != 2">
+                                    <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                </t>
+                                <div>
+                                    <span>______________________</span>
+                                    <br/>
+                                    <span>AUTHORISED SIGNATORY</span>
+                                </div>
+                            </div>
+                     </footer>
+					</div>
+					<p style="page-break-after: always;"/>
+				</t>
+			</t>
+		</t>
+	</template>
+    
+	<template id="report_delivery_challan">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+                    <div class="page" style="page-break-after: always;">
+						<div class="footer text-center" style="margin:0px; padding:0px;">
+                    Page: <span class="page"/>/<span class="topage"/>
+						</div>
+						<h4 class="text-center">
+							<strong>
+							DELIVERY CHALLAN / TRUCK RECEIPT
+							</strong>
+						</h4>
+						<div>
+							<div class="float-left">
+								<h2 class="mt15" style="font-size: 15px">
+									<span style="color: Black ! important">DELIVERY CHALLAN #  
+                                         <t t-esc="common_data[9]"/> 
+									</span>
+									<!-- <t t-if="o.is_revised == True">
+										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
+										</span>
+									</t> -->
+								</h2>
+							</div>
+							<div class="float-right">
+								<h5 style="font-size: 12px">
+									<strong>INVOICE NO: <t t-esc="o.name"/></strong>
+								</h5>
+							</div>
+						</div>
+						<br/>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+									<strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+								</div>
+								<p>
+									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
+									<br/>
+									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/> 
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+									<strong style="font-size:12px">DESPATCH ADDRESS</strong>
+								</div>
+								<p>
+									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
+									<br/>
+									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/>
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+								<strong style="font-size:12px">CONSIGNED TO</strong>
+								</div>
+								<p>
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+                                <div>
+                                    <strong style="font-size:12px">INVOICE DATE</strong>
+                                </div>
+                                <p>
+                                    <span style="font-size:12px;" t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                </p>
+							</div>
+						</div>
+						<br/>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            
+                            <t t-if="o.sc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>S.C NO.:</strong>
+    									<br/>
+    									 <t t-esc="o.sc_no"/> 
+    								</p>
+    							</div>
+                            </t>
+                            <t t-elif="not o.sc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>LC NO.:</strong>
+    									<br/>
+    									 <t t-esc="o.lc_no"/> 
+    								</p>
+    							</div>
+                            </t>
+    						<div class="col-auto col-2 mw-100 mb-2">
+								<strong>DATE</strong>
+								<p>
+									<t t-if="o.lc_date">
+										<t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+									</t>
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>APPLICANT'S TIN :</strong>
+									<br/>
+									 <t t-esc="o.applicant_tin"/> 
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>VAT REG.NO.</strong>
+									<br/>
+									 <t t-esc="o.bin_vat_reg"/> 
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								 <p>
+								<strong>TIN NO:</strong>
+								<br/> 
+								 <t t-esc="o.tin_no"/>  
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+								  <strong>BANK BIN NO</strong>
+									
+									<br/>
+									 <t t-esc="o.bank_bin"/> 
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>H.S. CODE</strong>
+									<br/>
+									<t t-if="o.hs_code">
+										<t t-esc="o.hs_code"/>
+									</t>
+								</p>
+							</div>
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>PAYMENT TERMS </strong>
+									<br/>
+									 <!--<t t-if="o.invoice_payment_term_id">-->
+										<t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/>
+									<!--</t>-->
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>ISSUED BY</strong>
+									<br/>
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>INVOICE/BILL DATE</strong>
+								<p>
+                                    <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+								</p>
+							</div>
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<strong>STYLE REF</strong>
+								<p>
+									<t t-if="o.style_ref">
+										<t t-esc="o.style_ref"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>PO NO.</strong>
+								<p>
+									<t t-if="o.po_numbers">
+										<t t-esc="o.po_numbers"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>PI NO.</strong>
+								<p>
+									<t t-if="o.pi_numbers">
+										<t t-esc="o.pi_numbers"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						
+						 <div style="font-size:12px">
+							<table class="table table-sm o_main_table">
+                                <thead>
+                                    <t t-set="line_count" t-value="0"/>
+                                    <tr>
+                                        <th>ITEM</th>
+                                        <t t-set="line_count" t-value="2"/>
+                                        <!-- <th>CODE</th> -->
+                                        <th>FINISH</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SHADE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SIZE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th style="border-left: hidden ! important;"></th>
+                                        <th>QTY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="prev_item" t-value="False"/>
+                                    <t t-set="prev_item_1" t-value="False"/>
+                                    <t t-set="prev_item_2" t-value="False"/>
+                                    <t t-foreach="datas" t-as="line">
+                                        <tr>
+                                            <t t-if="prev_item == line[0]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[0]"/></td>
+                                                <t t-set="prev_item" t-value="line[0]"/>
+                                            </t>
+                                            <!-- <td></td> -->
+                                            <t t-if="prev_item_1 == line[1]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[1]"/></td>
+                                                <t t-set="prev_item_1" t-value="line[1]"/>
+                                            </t>
+                                            <t t-if="prev_item_2 == line[2]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[2]"/></td>
+                                                <t t-set="prev_item_2" t-value="line[2]"/>
+                                            </t>
+                                            <!-- <td><t t-esc="line[1]"/></td> -->
+                                            <!-- <td><t t-esc="line[2]"/></td> -->
+                                            <td class="text-right"><t t-esc="line[3]"/></td>
+                                            <td class="text-left" style="border-left: hidden ! important;"><t t-esc="line[7]"/></td>
+                                            <td><t t-esc="line[4]"/></td>
+                                        </tr>
+                                    </t>
+                                            
+                                    <tr>
+										<td t-att-colspan="line_count" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;">
+										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
+    										<strong>Total :</strong>
+										</td>
+										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>
+												<t t-esc="common_data[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+											</strong>
+										</td>
+										<!-- <td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/> -->
+									</tr>
+                                    
+                                </tbody>
+                            </table>
+							
+						</div>
+						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
+                             <div class="row float-left pl-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>No. of Catn</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+													<t t-esc="o.numberof_carton" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>Gross weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<t t-esc="o.gross_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+                                        <tr class="border-black o_subtotal">
+											<td>
+												<strong>Net weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<t t-esc="o.net_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<!-- <div class="row float-right pr-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>Subtotal</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Total</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div> -->
+                             <br/>
+                             <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div> -->
+						</div>
+						<br/>
+                        <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div>
+                        <br/> -->
+						<div style="font-size:12px;page-break-inside:avoid;">
+							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
+								<t t-set="payment_count" t-value="0"/>
+                                
+									
+								<!--<t t-if="o.shipment_mode">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>CARRIER:</strong>
+											<br/>
+											<t t-esc="common_data[12]"/>
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+                                <!--<t t-if="o.destination_port">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>PACKING:</strong>
+											<br/>
+											Export Standard
+											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.origin_country">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>COUNTRY OF ORIGIN:</strong>
+											<br/>
+											BANGLADESH
+											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+                                <div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>EXPORT LC NO:</strong>
+											<br/>
+                                            <t t-if="o.master_lc">
+                                                <t t-esc="o.master_lc"/>
+                                                <!-- <t t-esc="o.master_date"/> -->
+                                            </t>
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.incoterm">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>TRADE TERM:</strong>
+											<br/>
+											<t t-esc="o.invoice_incoterm_id.name"/>
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								
+							</div>
+							
+						</div>
+                        <br/>
+                        <div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
+							<!--<t t-if="o.note">-->
+								<div class="col-12">
+								  
+									<p>
+										<br/><strong>RECEIVING ACKNOWLEDGMENT: </strong>WE THE BUYER HERE BY CONFIRM THAT WE HAVE RECEIVED THE ABOVE GOODS 
+                                        <br/>IN GOOD ORDER &amp; CONDITION AS PER L/C TERMS AND ASPER SPECIFICATION OF THE PROFORMA INVOICE 
+                                        <br/>THIS DELIVERY CHALLAN ALSO TREAT AS TRUCK RECEIPT
+                                    </p>
+									<br/>
+								</div>
+						</div>
+                        <br/>
+						<footer style="font-size:12px;page-break-inside:avoid;">
+                            <div class="float-left mt32 mb32 ! important">
+                                
+                                <div>
+                                    <span>CHECK &amp; APPROVED BY</span>
+                                    <br/>
+                                    <t t-if="o.beneficiary.id == 2">
+                                        <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                    </t>
+                                    <t t-if="o.beneficiary.id != 2">
+                                        <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                    </t>
+                                    <br/>
+                                    <span>______________________</span>
+                                    <br/>
+                                    <span>Signature &amp; Seal</span>
+                                </div>
+                            </div>
+                           <div class="float-right mt32 mb32 ! important">
+                                
+                                <div>
+                                    <!-- <span style="float: right;">CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span> -->
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <!-- <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/> -->
+                                    <br/>
+                                    <span>______________________________________________________</span>
+                                    <br/>
+                                    <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                </div>
+                            </div>
+                     </footer>
+					</div>
+					<p style="page-break-after: always;"/>
+				</t>
+			</t>
+		</t>
+	</template>
+    
+	<template id="report_truck_receipt">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+                    <div class="page" style="page-break-after: always;">
+					<div class="footer text-center" style="margin:0px; padding:0px;">
+                    Page: <span class="page"/>/<span class="topage"/>
+						</div>
+						<h4 class="text-center">
+							<strong>
+							TRUCK RECEIPT 
+							</strong>
+						</h4>
+						<div>
+							<div class="float-left">
+								<h2 class="mt15" style="font-size: 15px">
+									<span style="color: Black ! important">TRUCK RECEIPT #  
+                                         <t t-esc="common_data[10]"/> 
+									</span>
+									<!-- <t t-if="o.is_revised == True">
+										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
+										</span>
+									</t> -->
+								</h2>
+							</div>
+							<div class="float-right">
+								<h5 style="font-size: 12px">
+									<strong>INVOICE NO: <t t-esc="o.name"/></strong>
+								</h5>
+							</div>
+						</div>
+						<br/>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+									<strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+								</div>
+								<p>
+									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
+									<br/>
+									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/> 
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+									<strong style="font-size:12px">DESPATCH ADDRESS</strong>
+								</div>
+								<p>
+									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
+									<br/>
+									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/>
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+								<div>
+								<strong style="font-size:12px">CONSIGNED TO</strong>
+								</div>
+								<p>
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-3 mw-50 mb-2">
+                                <div>
+                                    <strong style="font-size:12px">INVOICE DATE</strong>
+                                </div>
+                                <p>
+                                    <span style="font-size:12px;" t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                </p>
+							</div>
+						</div>
+						<br/>
+						<div class="row mt32 mb32" style="font-size:12px">
+						  <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>LC NO.:</strong>
+									<br/>
+									 <t t-esc="o.lc_no"/> 
+								</p>
+							</div>
+                            
+    						<div class="col-auto col-2 mw-100 mb-2">
+								<strong>DATE</strong>
+								<p>
+									<t t-if="o.lc_date">
+										<t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+									</t>
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>APPLICANT'S TIN:</strong>
+									<br/>
+									 <t t-esc="o.applicant_tin"/> 
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>VAT REG.NO.</strong>
+									<br/>
+									 <t t-esc="o.bin_vat_reg"/> 
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								 <p>
+								<strong>TIN NO:</strong>
+								<br/> 
+								 <t t-esc="o.tin_no"/>  
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+								  <strong>BANK BIN NO</strong>
+									
+									<br/>
+									 <t t-esc="o.bank_bin"/> 
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>H.S. CODE</strong>
+									<br/>
+									<t t-if="o.hs_code">
+										<t t-esc="o.hs_code"/>
+									</t>
+								</p>
+							</div>
+							
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>PAYMENT TERMS </strong>
+									<br/>
+									 <!--<t t-if="o.invoice_payment_term_id">-->
+										<t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/>
+									<!--</t>-->
+								</p>
+							</div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+									<br/>
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
+									</t>
+								</p>
+							</div>
+                            <!-- <div class="col-auto col-2 mw-100 mb-2">
+								<p>
+									<strong>THEN APPLICANT</strong>
+									<br/>
+								</p>
+							</div> -->
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>INVOICE/BILL DATE</strong>
+								<p>
+									<t t-if="o.invoice_date">
+										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+                            <div class="col-auto col-2 mw-100 mb-2">
+								<strong>STYLE REF</strong>
+								<p>
+									<t t-if="o.style_ref">
+										<t t-esc="o.style_ref"/>
+									</t>
+								</p>
+							</div>
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>PO NO.</strong>
+								<p>
+									<t t-if="o.po_numbers">
+										<t t-esc="o.po_numbers"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						<div class="row mt32 mb32" style="font-size:12px">
+							<div class="col-auto col-2 mw-100 mb-2">
+								<strong>PI NO.</strong>
+								<p>
+									<t t-if="o.pi_numbers">
+										<t t-esc="o.pi_numbers"/>
+									</t>
+								</p>
+							</div>
+						</div>
+						
+						 <div style="font-size:12px">
+							
+							
+							<table class="table table-sm o_main_table">
+                                <thead>
+                                    <t t-set="line_count" t-value="0"/>
+                                    <tr>
+                                        <th>ITEM</th>
+                                        <t t-set="line_count" t-value="2"/>
+                                        <!-- <th>CODE</th> -->
+                                        <th>FINISH</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SHADE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th>SIZE</th>
+                                        <t t-set="line_count" t-value="line_count+1"/>
+                                        <th style="border-left: hidden ! important;"></th>
+                                        <th>QTY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="prev_item" t-value="False"/>
+                                    <t t-set="prev_item_1" t-value="False"/>
+                                    <t t-set="prev_item_2" t-value="False"/>
+                                    <t t-foreach="datas" t-as="line">
+                                        <tr>
+                                            <t t-if="prev_item == line[0]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[0]"/></td>
+                                                <t t-set="prev_item" t-value="line[0]"/>
+                                            </t>
+                                            <!-- <td></td> -->
+                                            <t t-if="prev_item_1 == line[1]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[1]"/></td>
+                                                <t t-set="prev_item_1" t-value="line[1]"/>
+                                            </t>
+                                            <t t-if="prev_item_2 == line[2]">
+                                                <td></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td><t t-esc="line[2]"/></td>
+                                                <t t-set="prev_item_2" t-value="line[2]"/>
+                                            </t>
+                                            <!-- <td><t t-esc="line[1]"/></td> -->
+                                            <!-- <td><t t-esc="line[2]"/></td> -->
+                                            <td class="text-right"><t t-esc="line[3]"/></td>
+                                            <td class="text-left" style="border-left: hidden ! important;"><t t-esc="line[7]"/></td>
+                                            <td><t t-esc="line[4]"/></td>
+                                        </tr>
+                                    </t>
+                                            
+                                    <tr>
+										<td t-att-colspan="line_count" class="text-right" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-left: hidden ! important;">
+										<!--<td colspan="2" style="vertical-align:middle;border-top: 1px solid black;">-->
+    										<strong>Total :</strong>
+										</td>
+										<td colspan="1" class="text-right" style="vertical-align:middle;border-top: 1px solid black;">
+											<strong>
+												<t t-esc="common_data[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+											</strong>
+										</td>
+										<!-- <td colspan="3" style="vertical-align:middle;border-top: 1px solid black; border-bottom:hidden ! important; border-right: hidden ! important;"/> -->
+									</tr>
+                                    
+                                </tbody>
+                            </table>
+							
+						</div>
+						 <div class="clearfix" style="font-size:12px; page-break-inside:avoid;">
+                             <div class="row float-left pl-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>No. of Catn</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+													<t t-esc="o.numberof_carton" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>Gross weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<t t-esc="o.gross_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+                                        <tr class="border-black o_subtotal">
+											<td>
+												<strong>Net weight</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+													<t t-esc="o.net_weight" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<!-- <div class="row float-right pr-3">
+								<div>
+									<table class="table table-sm o_main_table">
+										<tr class="border-black o_subtotal">
+											<td>
+												<strong>Subtotal</strong>
+											</td>
+											<td style="background-color: white ! important">
+												<span>
+												</span>
+											</td>
+										</tr>
+										<tr class="border-black o_subtotal">
+											<td style="background-color: white ! important; color: Black ! important">
+												<strong>Total</strong>
+											</td>
+											<td style="background-color: white ! important; color: Black ! important">
+												<span>
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div> -->
+                             <br/>
+                             <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div> -->
+						</div>
+						<br/>
+                        <br/>
+							<!-- <div class="clearfix" style="font-size:12px">
+								<strong>AMOUNT IN WORDS(USD): 
+								<span t-esc="o.amount_in_word"/>
+								</strong>
+								<br/>
+								
+							</div>
+                        <br/> -->
+						<div style="font-size:12px;page-break-inside:avoid;">
+							<div class="row mt32 mb32" style="font-size:12px;page-break-inside:avoid;">
+								<t t-set="payment_count" t-value="0"/>
+                                
+									
+								<!--<t t-if="o.shipment_mode">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>CARRIER:</strong>
+											<br/>
+											<t t-esc="common_data[12]"/>
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+                                <!--<t t-if="o.destination_port">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>PACKING:</strong>
+											<br/>
+											Export Standard
+											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.origin_country">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>COUNTRY OF ORIGIN:</strong>
+											<br/>
+											BANGLADESH
+											<!--<t t-set="desc_count" t-value="desc_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+                                <div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>EXPORT LC NO:</strong>
+											<br/>
+                                            <t t-if="o.master_lc">
+                                                <t t-esc="o.master_lc"/>
+                                                <!-- <t t-esc="o.master_date"/> -->
+                                            </t>
+										</p>
+									</div>
+								<!--</t>-->
+								<!--<t t-if="o.incoterm">-->
+									<div class="col-auto col-3 mw-100 mb-2">
+										<p>
+											<strong>TRADE TERM:</strong>
+											<br/>
+											<t t-esc="o.invoice_incoterm_id.name"/>
+											<!--<t t-set="payment_count" t-value="payment_count+3"/>-->
+										</p>
+									</div>
+								<!--</t>-->
+								
+							</div>
+							
+						</div>
+                        <br/>
+                        <div class="row mb32 mt32" style="font-size:12px;page-break-inside:avoid;">
+							<!--<t t-if="o.note">-->
+								<div class="col-12">
+								  
+									<p>
+										<br/><strong>RECEIVING ACKNOWLEDGMENT: </strong>WE THE BUYER HERE BY CONFIRM THAT WE HAVE RECEIVED THE ABOVE GOODS 
+                                        <br/>IN GOOD ORDER &amp; CONDITION AS PER L/C TERMS AND ASPER SPECIFICATION OF THE PROFORMA INVOICE 
+                                        <br/>THIS DELIVERY CHALLAN ALSO TREAT AS TRUCK RECEIPT
+                                    </p>
+									<br/>
+								</div>
+						</div>
+                        <br/>
+						<footer style="font-size:12px;page-break-inside:avoid;">
+                            <div class="float-left mt32 mb32 ! important">
+                                
+                                <div>
+                                    <span>CHECK &amp; APPROVED BY</span>
+                                    <br/>
+                                    <t t-if="o.beneficiary.id == 2">
+                                        <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                    </t>
+                                    <t t-if="o.beneficiary.id != 2">
+                                        <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                    </t>
+                                    <br/>
+                                    <span>______________________</span>
+                                    <br/>
+                                    <span>Signature &amp; Seal</span>
+                                </div>
+                            </div>
+                           <div class="float-right mt32 mb32 ! important">
+                                
+                                <div>
+                                    <!-- <span style="float: right;">CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span> -->
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <!-- <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/> -->
+                                    <br/>
+                                    <span>______________________________________________________</span>
+                                    <br/>
+                                    <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                </div>
+                            </div>
+                     </footer>
+					</div>
+					<p style="page-break-after: always;"/>
+				</t>
+			</t>
+		</t>
+	</template>
+    
+	<template id="report_bill_of_exchange">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+                    <div class="page" style="page-break-after: always;">
+						<div class="footer text-center" style="margin:0px; padding:0px;">
+                    Page: <span class="page"/>/<span class="topage"/>
+						</div>
+						<div class="container" style="border: 1pt solid black;">
+                            <br/>
+						<h4 class="text-center">
+							<strong>
+	BILL OF EXCHANGE  
+							</strong>
+						</h4>
+						<div>
+							<div class="float-left">
+								<h2 class="mt15" style="font-size: 15px">
+									<span style="color: Black ! important">BE #  
+                                         <t t-esc="common_data[11]"/> 
+									</span>
+									<!-- <t t-if="o.is_revised == True">
+										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
+										</span>
+									</t> -->
+								</h2>
+							</div>
+							<div class="float-right">
+								<h5 style="font-size: 12px">
+									<strong>Date : <t t-if="o.invoice_date"><t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/></t></strong>
+                                    
+								</h5>
+							</div>
+						</div>
+						<br/>
+                                <div class="row">
+                                    <div class="col-12 mt-4" style="font-size:12px">
+                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/></strong>   FIRST  bill of exchange ( Second of the same tenor and date being unpaid) Pay to the order of the<br/><t t-esc="o.beneficiary.name"/> ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
+                                          <br/>
+                                    </div>
+                                </div>
+                            <div class="row">
+                                    <div class="col-3" style="font-size:12px">
+                                        Against Invoice No:   <strong></strong>
+                                        <br/>
+                                        <br/>
+                                        Drawn letter of Credit No:   <strong></strong>
+                                        <br/>
+                                        APPLICANT'S TIN: <strong></strong>
+                                        <br/>
+                                        VAT REG.NO. :  
+                                        <br/>
+                                        <br/>
+                                        TIN NO:
+                                        <br/>
+                                        BANK BIN NO:
+                                        <br/>
+                                        H.S. CODE 
+                                        <br/>
+                                        <br/>
+                                        Export LC no:
+                                        <br/>
+                                        <br/>
+                                        Drawn Under : 
+                                        <br/>
+                                    </div>
+                                    <div class="col-6" style="font-size:12px">
+                                        <strong><t t-esc="o.name"/> </strong>
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.lc_no"/> </strong>
+                                        <br/>
+                                        <strong><t t-esc="o.applicant_tin"/> </strong>
+                                        <br/>
+                                        <strong><t t-esc="o.bin_vat_reg"/> </strong>
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.tin_no"/> </strong>
+                                        <br/>
+                                        <strong><t t-esc="o.bank_bin"/> </strong>
+                                        <br/>
+                                        <strong><t t-esc="o.hs_code"/></strong>
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.master_lc"/></strong>
+                                            <!-- <t t-esc="o.master_date"/>  -->
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/> </strong>
+                                        <br/>
+                                    </div>
+                                    <div class="col-1" style="font-size:12px">
+                                         DATE:   <strong></strong>
+                                        <br/>
+                                        <br/>
+                                         DATE:  <strong></strong>
+                                        <br/>
+                                    </div>
+                                    <div class="col-2" style="font-size:12px">
+                                        <t t-if="o.invoice_date">
+                                            <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+    									</t>
+                                        <br/>
+                                        <br/>
+                                        <t t-if="o.invoice_date">
+                                            <t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+    									</t>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <!-- <div class="float-right mt32 mb32 ! important">
+        									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+        									<div>
+        										<span>______________________</span>
+        										<br/>
+        										<span>Authorised Signature</span>
+        									</div>
+        								</div> -->
+                                    </div>
+                                
+                                </div>
+                        <div class="row">
+                                   
+                                    <div class="col-12" style="font-size:12px">
+                                        
+                                        <div class="float-right mt32 mb32 ! important">
+                                            <t t-if="o.beneficiary.id == 2">
+                                                <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                            </t>
+                                            <t t-if="o.beneficiary.id != 2">
+                                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            </t>
+        									<div>
+        										<span>______________________</span>
+        										<br/>
+        										<span>AUTHORISED SIGNATORY</span>
+        									</div>
+        								</div>
+                                    </div>
+                                
+                                </div>
+						
+                        </div>
+
+                    <br/>
+                    <div class="container" style="border: 1pt solid black;">
+                            <br/>
+						<h4 class="text-center">
+							<strong>
+	BILL OF EXCHANGE  
+							</strong>
+						</h4>
+						<div>
+							<div class="float-left">
+								<h2 class="mt15" style="font-size: 15px">
+									<span style="color: Black ! important">BE #  
+                                         <t t-esc="common_data[11]"/> 
+									</span>
+									<!-- <t t-if="o.is_revised == True">
+										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
+										</span>
+									</t> -->
+								</h2>
+							</div>
+							<div class="float-right">
+								<h5 style="font-size: 12px">
+									<strong>Date : <t t-if="o.invoice_date">
+										<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+									</t></strong>
+                                    
+								</h5>
+							</div>
+						</div>
+						<br/>
+                                <div class="row">
+                                    <div class="col-12 mt-4" style="font-size:12px">
+                                      <p>For USD    <strong style="text-decoration: underline; font-size: 15px">  <t t-esc="common_data[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/> </strong>  at  <strong style="text-decoration: underline; font-size: 15px ">  <t t-esc="o.invoice_payment_term_id.name"/> <t t-esc="o.pay_term_details"/> </strong>   Second bill of exchange (FIRST of the same tenor and date being unpaid) Pay to the order of the<br/><t t-esc="o.beneficiary.name"/> ,Bangladesh  The Sum of   <strong style="text-decoration: underline; font-size: 15px"> <t t-esc="common_data[8]"/> </strong>   Value received for accessories for readymade garments </p>
+                                          <br/>
+                                    </div>
+                                </div>
+                            <div class="row">
+                                    <div class="col-3" style="font-size:12px">
+                                        Against Invoice No:   <strong></strong>
+                                        <br/>
+                                        <br/>
+                                        Drawn letter of Credit No:   <strong></strong>
+                                        <br/>
+                                        APPLICANT'S TIN: <strong></strong>
+                                        <br/>
+                                        VAT REG.NO. :  
+                                        <br/>
+                                        <br/>
+                                        TIN NO:
+                                        <br/>
+                                        BANK BIN NO:
+                                        <br/>
+                                        H.S. CODE 
+                                        <br/>
+                                        <br/>
+                                        Export LC no:
+                                        <br/>
+                                        <br/>
+                                        Drawn Under : 
+                                        <br/>
+                                    </div>
+                                    <div class="col-6" style="font-size:12px">
+                                        <strong><t t-esc="o.name"/> </strong>
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.lc_no"/> </strong>
+                                        <br/>
+                                        <strong><t t-esc="o.applicant_tin"/> </strong>
+                                        <br/>
+                                        <strong><t t-esc="o.bin_vat_reg"/> </strong>
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.tin_no"/> </strong>
+                                        <br/>
+                                        <strong><t t-esc="o.bank_bin"/> </strong>
+                                        <br/>
+                                        <strong><t t-esc="o.hs_code"/></strong>
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.master_lc"/> </strong>
+                                        <!-- <t t-esc="o.master_date"/> -->
+                                        <br/>
+                                        <br/>
+                                        <strong><t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/> </strong>
+                                        <br/>
+                                    </div>
+                                    <div class="col-1" style="font-size:12px">
+                                         DATE:   <strong></strong>
+                                        <br/>
+                                        <br/>
+                                         DATE:  <strong></strong>
+                                        <br/>
+                                    </div>
+                                    <div class="col-2" style="font-size:12px">
+                                        <t t-if="o.invoice_date">
+                                            <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                        </t>
+                                        <br/>
+                                        <br/>
+                                        <t t-if="o.lc_date">
+                                            <t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
+                                        </t>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <!-- <div class="float-right mt32 mb32 ! important">
+        									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+        									<div>
+        										<span>______________________</span>
+        										<br/>
+        										<span>Authorised Signature</span>
+        									</div>
+        								</div> -->
+                                    </div>
+                                
+                                </div>
+                        <div class="row">
+                                   
+                                    <div class="col-12" style="font-size:12px">
+                                        
+                                        <div class="float-right mt32 mb32 ! important">
+        									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+        									<div>
+        										<span>______________________</span>
+        										<br/>
+        										<span>AUTHORISED SIGNATORY</span>
+        									</div>
+        								</div>
+                                    </div>
+                                
+                                </div>
+						
+                        </div>
+					</div>
+					<p style="page-break-after: always;"/>
+				</t>
+			</t>
+		</t>
+	</template>
+	<template id="report_applicant_certificate">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+<div class="page" style="page-break-after: always; color: Black ! important; font-weight: bold;">
+						<div class="footer text-center" style="margin:0px; padding:0px;">
+                    Page: <span class="page"/>/<span class="topage"/>
+						</div>
+						<div class="container mt-4 mb-4 ml-4 mr-4">
+                            <br/>
+						
+        						<div>
+        							<div class="float-left">
+        								<h2 class="mt15" style="font-size: 12px">
+        									<span style="color: Black ! important">Applicant’s Certificate</span>
+        								</h2>
+        							</div>
+        						</div>
+                                <br/>
+                                <div class="text-center" style="font-size: 12px">
+                                    <strong>Date : <t t-if="o.invoice_date">
+                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
+                                    </t></strong>
+                                    <br/>
+                                    <br/>
+                                    <p style="text-decoration: underline;">ISSUING BANK:</p>
+                                    <br/>
+                                    <br/>
+                                    PUBALI BANK LTD.<br/>
+                                    MOTIJHEEL BRANCH<br/>
+                                    DHAKA<br/>
+                                </div>
+        						<br/>
+                                <br/>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-12 mt-4" style="font-size:12px">
+                                      <p> We do hereby certify that the goods under Invoice No: TZBD/2023-24/3319 DT. 13.03.2024 against<br/><br/>L/C No: '' 0000019524120273 date 11.03.2024 have been shipped strictly in accordance with the terms and <br/><br/><span style="font-size:11px">condition of the Proforma Invoice No:</span> <br/>TZBD- Z007621 DT-29-02-2024,TZBD- B502070 DT-29-02-2024</p>
+                                          <br/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3" style="font-size:12px">
+                                        IRC NO:   <strong></strong>
+                                        <br/>
+                                        BIN NO:   <strong></strong>
+                                        <br/>
+                                        TIN NO: <strong></strong>
+                                        <br/>
+                                        BANK BIN NO:  
+                                        <br/>
+                                        H.S. CODE NO:
+                                        
+                                        <br/>
+                                    </div>
+                                    <div class="col-6" style="font-size:12px">
+                                        <strong></strong>
+                                        <br/>
+                                        <strong></strong>
+                                        <br/>
+                                        <strong></strong>
+                                        <br/>
+                                        <strong></strong>
+                                        <br/>
+                                        <strong></strong>
+                                        <br/>
+                                        
+                                    </div>
+                                </div>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-3" style="font-size:12px">
+                                            EXPORT CONTRACT NO.:  <strong></strong>
+                                    </div>
+                                    <div class="col-6" style="font-size:12px">
+                                            <strong>SAL/7751/10/2023 DT:01.08.2023</strong>
+                                    </div>
+                                </div>
+                                <br/>
+                                <br/>
+                                <div class="row" style="font-size:12px">
+                                    <div class="col-12 mt-4" style="font-size:12px">
+                                        <p>Above goods are acknowledged and received in good condition of package and full quantity as per PI</p>
+                                    </div>
+                                </div>
+                                <div class="row" style="text-decoration: underline; font-size:12px">
+                                    <div class="col-12 mt-4" style="font-size:12px">
+                                        <span t-esc="o.partner_id.name"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <div class="row">
+                                <div class="col-12" style="font-size:12px">
+                                        <div class="float-left mt32 mb32 ! important">
+                                            <t t-if="o.beneficiary.id == 2">
+                                                <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                            </t>
+                                            <t t-if="o.beneficiary.id != 2">
+                                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            </t>
+                                            <div>
+                                                <span>______________________</span>
+                                                <br/>
+                                                <span>AUTHORISED SIGNATORY</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+					</div>
+				</t>
+			</t>
+		</t>
+	</template>
 </odoo>   
     

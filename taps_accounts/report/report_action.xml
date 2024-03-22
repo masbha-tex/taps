@@ -2,10 +2,82 @@
 <odoo>
     <data noupdate='0'>
 		<record id="action_report_customer_invoice" model="ir.actions.report">
-			<field name="name">Customer Invoice</field>
+			<field name="name">Combine Invoice</field>
 			<field name="model">combine.invoice</field>
 			<field name="report_type">qweb-pdf</field>
 			<field name="report_name">taps_accounts.report_customer_invoice</field>
+			<field name="report_file">taps_accounts.report_customer_invoice</field>
+			<field name="binding_model_id" ref="model_combine_invoice"/>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
+			<field name="default_print_option">print</field>
+			<field name="print_report_name">(object.name)</field>
+		</record>
+		<record id="action_report_cus_invoice" model="ir.actions.report">
+			<field name="name">Customer Invoice</field>
+			<field name="model">combine.invoice</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">taps_accounts.report_cus_invoice</field>
+			<field name="report_file">taps_accounts.report_customer_invoice</field>
+			<field name="binding_model_id" ref="model_combine_invoice"/>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
+			<field name="default_print_option">print</field>
+			<field name="print_report_name">(object.name)</field>
+		</record>
+		<record id="action_report_packing_list" model="ir.actions.report">
+			<field name="name">Packing List</field>
+			<field name="model">combine.invoice</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">taps_accounts.report_packing_list</field>
+			<field name="report_file">taps_accounts.report_customer_invoice</field>
+			<field name="binding_model_id" ref="model_combine_invoice"/>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
+			<field name="default_print_option">print</field>
+			<field name="print_report_name">(object.name)</field>
+		</record>
+		<record id="action_report_delivery_challan" model="ir.actions.report">
+			<field name="name">Delivery Challan</field>
+			<field name="model">combine.invoice</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">taps_accounts.report_delivery_challan</field>
+			<field name="report_file">taps_accounts.report_customer_invoice</field>
+			<field name="binding_model_id" ref="model_combine_invoice"/>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
+			<field name="default_print_option">print</field>
+			<field name="print_report_name">(object.name)</field>
+		</record>
+		<record id="action_report_truck_receipt" model="ir.actions.report">
+			<field name="name">Truck Receipt</field>
+			<field name="model">combine.invoice</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">taps_accounts.report_truck_receipt</field>
+			<field name="report_file">taps_accounts.report_customer_invoice</field>
+			<field name="binding_model_id" ref="model_combine_invoice"/>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
+			<field name="default_print_option">print</field>
+			<field name="print_report_name">(object.name)</field>
+		</record>
+		<record id="action_report_bill_of_exchange" model="ir.actions.report">
+			<field name="name">Bill of Exchange</field>
+			<field name="model">combine.invoice</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">taps_accounts.report_bill_of_exchange</field>
+			<field name="report_file">taps_accounts.report_customer_invoice</field>
+			<field name="binding_model_id" ref="model_combine_invoice"/>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
+			<field name="default_print_option">print</field>
+			<field name="print_report_name">(object.name)</field>
+		</record>
+		<record id="action_report_applicant_certificate" model="ir.actions.report">
+			<field name="name">Applicant’s Certificate</field>
+			<field name="model">combine.invoice</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">taps_accounts.report_applicant_certificate</field>
 			<field name="report_file">taps_accounts.report_customer_invoice</field>
 			<field name="binding_model_id" ref="model_combine_invoice"/>
 			<field name="binding_type">report</field>
