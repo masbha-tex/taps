@@ -23,7 +23,7 @@
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
 			<field name="default_print_option">print</field>
-			<field name="print_report_name">(object.name)</field>
+			<field name="print_report_name">("C.I "+ object.name)</field>
 		</record>
 		<record id="action_report_packing_list" model="ir.actions.report">
 			<field name="name">Packing List</field>
@@ -35,7 +35,7 @@
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
 			<field name="default_print_option">print</field>
-			<field name="print_report_name">(object.name)</field>
+			<field name="print_report_name">("P.L "+ object.name)</field>
 		</record>
 		<record id="action_report_delivery_challan" model="ir.actions.report">
 			<field name="name">Delivery Challan</field>
@@ -47,7 +47,7 @@
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
 			<field name="default_print_option">print</field>
-			<field name="print_report_name">(object.name)</field>
+			<field name="print_report_name">("D.C "+ object.name)</field>
 		</record>
 		<record id="action_report_truck_receipt" model="ir.actions.report">
 			<field name="name">Truck Receipt</field>
@@ -59,7 +59,7 @@
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
 			<field name="default_print_option">print</field>
-			<field name="print_report_name">(object.name)</field>
+			<field name="print_report_name">("T.R "+ object.name)</field>
 		</record>
 		<record id="action_report_bill_of_exchange" model="ir.actions.report">
 			<field name="name">Bill of Exchange</field>
@@ -71,7 +71,7 @@
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
 			<field name="default_print_option">print</field>
-			<field name="print_report_name">(object.name)</field>
+			<field name="print_report_name">("B.E "+ object.name)</field>
 		</record>
 		<record id="action_report_applicant_certificate" model="ir.actions.report">
 			<field name="name">Applicant’s Certificate</field>
@@ -83,7 +83,7 @@
 			<field name="binding_type">report</field>
 			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
 			<field name="default_print_option">print</field>
-			<field name="print_report_name">(object.name)</field>
+			<field name="print_report_name">("A.C "+ object.name)</field>
 		</record>
     </data>
 </odoo>

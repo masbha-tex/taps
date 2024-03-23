@@ -28,8 +28,9 @@ class change_production_date(models.TransientModel):
         return res 
             
     def done_production_date(self):
-        if self.from_date <= self.production_date.date():
-            raise UserError(('You can not Change date to same or advance date'))
+        if self.from_date == self.production_date.date():
+            raise UserError(('You can not Change date to same date'))
+            # or advance 
             return
         mo_id = self.env.context.get("active_ids")
         production = self.env["operation.details"].browse(mo_id)
