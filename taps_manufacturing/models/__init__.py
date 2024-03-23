@@ -13,3 +13,4 @@ from . import label_print_data
 from . import operation_packing
 from . import operation_packing_topbottom
 from . import fg_packaging
+from . import mis_dashboard

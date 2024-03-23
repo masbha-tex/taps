@@ -66,9 +66,11 @@ class CombineInvoice(models.Model):
         ], string='Status', required=True, readonly=True, copy=False, tracking=True,
         default='draft')
     applicant_tin = fields.Char(string="APPLICANT'S TIN", store=True, readonly=False)
+    etin_no = fields.Char(string='E-TIN NO', store=True, readonly=False)
     bin_vat_reg = fields.Char(string='BIN/VAT REG.NO', store=True, readonly=False)
     bond_licence = fields.Char(string='BOND LICENSE NO', store=True, readonly=False)
     tin_no = fields.Char(string='IRC NO', store=True, readonly=False)
+    erc_no = fields.Char(string='ERC NO', store=True, readonly=False)
     bank_bin = fields.Char(string='BANK BIN NO', store=True, readonly=False)
     lc_no = fields.Char(string='LC', store=True, readonly=False)
     lc_date = fields.Date(string='LC Date', store=True, readonly=False)
@@ -82,7 +84,15 @@ class CombineInvoice(models.Model):
     numberof_carton = fields.Float('No. of Ctn', default=0.0, store=True)
     gross_weight = fields.Float('Gross Weight', default=0.0, store=True)
     net_weight = fields.Float('Net Weight', default=0.0, store=True)
-    amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all', tracking=4)
+    
+    notify_partner = fields.Boolean(readonly=False, default=False, store=True)
+    notify_bank = fields.Boolean(readonly=False, default=False, store=True)
+    consigned = fields.Selection([
+            ('consigned_to', 'Consigned To'),
+            ('consigned_order', 'Consigned to the order of'),
+            ('nothing', 'Nothing')],
+            string='Consigned', default='nothing')
+    amount_total = fields.Monetary(string='Total', store=True, readonly=False, compute='_amount_all', tracking=4)
 
     @api.depends('line_id.price_total')
     def _amount_all(self):
@@ -177,15 +187,20 @@ class CombineInvoiceReport(models.AbstractModel):
         total_qty = sum(line_data.mapped('quantity'))
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
+        ex_items = None
         if total>total_value:
             total_value = total
         if z_items:
+            ex_items = 'ZIPPER'
             z_total = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
+            ex_items = 'BUTTON'
             m_total = sum(m_items.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
+        if z_items and m_items:
+            ex_items = 'ZIPPER & BUTTON'
         report_data = []
         if line_data:
             companies = line_data.mapped('product_template_id.company_id')
@@ -242,7 +257,7 @@ class CombineInvoiceReport(models.AbstractModel):
         del_chalan = docs[0].name.replace('TZBD/','TZBD/DC/')
         tr_receipt = docs[0].name.replace('TZBD/','TZBD/TR/')
         be_no = docs[0].name.replace('TZBD/','TZBD/BE/')
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode]
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode,ex_items]
         # raise UserError((report_data))
         return {
             'docs': docs,
@@ -287,15 +302,20 @@ class CustomerInvoice(models.AbstractModel):
         total_qty = sum(line_data.mapped('quantity'))
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
+        ex_items = None
         if total>total_value:
             total_value = total
         if z_items:
+            ex_items = 'ZIPPER'
             z_total = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
+            ex_items = 'BUTTON'
             m_total = sum(m_items.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
+        if z_items and m_items:
+            ex_items = 'ZIPPER & BUTTON'
         report_data = []
         if line_data:
             companies = line_data.mapped('product_template_id.company_id')
@@ -352,7 +372,7 @@ class CustomerInvoice(models.AbstractModel):
         del_chalan = docs[0].name.replace('TZBD/','TZBD/DC/')
         tr_receipt = docs[0].name.replace('TZBD/','TZBD/TR/')
         be_no = docs[0].name.replace('TZBD/','TZBD/BE/')
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode]
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode,ex_items]
         # raise UserError((report_data))
         return {
             'docs': docs,
@@ -397,15 +417,20 @@ class PackingList(models.AbstractModel):
         total_qty = sum(line_data.mapped('quantity'))
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
+        ex_items = None
         if total>total_value:
             total_value = total
         if z_items:
+            ex_items = 'ZIPPER'
             z_total = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
+            ex_items = 'BUTTON'
             m_total = sum(m_items.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
+        if z_items and m_items:
+            ex_items = 'ZIPPER & BUTTON'
         report_data = []
         if line_data:
             companies = line_data.mapped('product_template_id.company_id')
@@ -462,7 +487,7 @@ class PackingList(models.AbstractModel):
         del_chalan = docs[0].name.replace('TZBD/','TZBD/DC/')
         tr_receipt = docs[0].name.replace('TZBD/','TZBD/TR/')
         be_no = docs[0].name.replace('TZBD/','TZBD/BE/')
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode]
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode,ex_items]
         # raise UserError((report_data))
         return {
             'docs': docs,
@@ -507,15 +532,20 @@ class DeliveryChallan(models.AbstractModel):
         total_qty = sum(line_data.mapped('quantity'))
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
+        ex_items = None
         if total>total_value:
             total_value = total
         if z_items:
+            ex_items = 'ZIPPER'
             z_total = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
+            ex_items = 'BUTTON'
             m_total = sum(m_items.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
+        if z_items and m_items:
+            ex_items = 'ZIPPER & BUTTON'
         report_data = []
         if line_data:
             companies = line_data.mapped('product_template_id.company_id')
@@ -572,7 +602,7 @@ class DeliveryChallan(models.AbstractModel):
         del_chalan = docs[0].name.replace('TZBD/','TZBD/DC/')
         tr_receipt = docs[0].name.replace('TZBD/','TZBD/TR/')
         be_no = docs[0].name.replace('TZBD/','TZBD/BE/')
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode]
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode,ex_items]
         # raise UserError((report_data))
         return {
             'docs': docs,
@@ -617,15 +647,20 @@ class TruckReceipt(models.AbstractModel):
         total_qty = sum(line_data.mapped('quantity'))
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
+        ex_items = None
         if total>total_value:
             total_value = total
         if z_items:
+            ex_items = 'ZIPPER'
             z_total = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
+            ex_items = 'BUTTON'
             m_total = sum(m_items.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
+        if z_items and m_items:
+            ex_items = 'ZIPPER & BUTTON'
         report_data = []
         if line_data:
             companies = line_data.mapped('product_template_id.company_id')
@@ -682,7 +717,7 @@ class TruckReceipt(models.AbstractModel):
         del_chalan = docs[0].name.replace('TZBD/','TZBD/DC/')
         tr_receipt = docs[0].name.replace('TZBD/','TZBD/TR/')
         be_no = docs[0].name.replace('TZBD/','TZBD/BE/')
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode]
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode,ex_items]
         # raise UserError((report_data))
         return {
             'docs': docs,
@@ -727,15 +762,20 @@ class BillofExchange(models.AbstractModel):
         total_qty = sum(line_data.mapped('quantity'))
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
+        ex_items = None
         if total>total_value:
             total_value = total
         if z_items:
+            ex_items = 'ZIPPER'
             z_total = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
+            ex_items = 'BUTTON'
             m_total = sum(m_items.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
+        if z_items and m_items:
+            ex_items = 'ZIPPER & BUTTON'
         report_data = []
         if line_data:
             companies = line_data.mapped('product_template_id.company_id')
@@ -792,7 +832,7 @@ class BillofExchange(models.AbstractModel):
         del_chalan = docs[0].name.replace('TZBD/','TZBD/DC/')
         tr_receipt = docs[0].name.replace('TZBD/','TZBD/TR/')
         be_no = docs[0].name.replace('TZBD/','TZBD/BE/')
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode]
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode,ex_items]
         # raise UserError((report_data))
         return {
             'docs': docs,
@@ -837,15 +877,20 @@ class ApplicantCertificate(models.AbstractModel):
         total_qty = sum(line_data.mapped('quantity'))
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
+        ex_items = None
         if total>total_value:
             total_value = total
         if z_items:
+            ex_items = 'ZIPPER'
             z_total = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
+            ex_items = 'BUTTON'
             m_total = sum(m_items.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
+        if z_items and m_items:
+            ex_items = 'ZIPPER & BUTTON'
         report_data = []
         if line_data:
             companies = line_data.mapped('product_template_id.company_id')
@@ -902,7 +947,7 @@ class ApplicantCertificate(models.AbstractModel):
         del_chalan = docs[0].name.replace('TZBD/','TZBD/DC/')
         tr_receipt = docs[0].name.replace('TZBD/','TZBD/TR/')
         be_no = docs[0].name.replace('TZBD/','TZBD/BE/')
-        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode]
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode,ex_items]
         # raise UserError((report_data))
         return {
             'docs': docs,

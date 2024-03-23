@@ -39,8 +39,8 @@ class BusinessExcellence(models.Model):
     date = fields.Date(string = "Start Date")
     finish_date = fields.Date(string = "Finish Date")
     count = fields.Integer(string="Est Days", compute="_compute_count")
-    criteria_id = fields.Many2one('business.excellence.criteria', string='Title')
-    title_ids = fields.Many2one('business.excellence.title', string='Scope', domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
+    criteria_id = fields.Many2one('business.excellence.criteria', string='Scope')
+    title_ids = fields.Many2one('business.excellence.title', string='Title', domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
     area_impact = fields.Many2many('business.excellence.impact', string="Area Impact")
     review = fields.Text('Review', tracking=True)
     conclusion = fields.Text('Conclusion', tracking=True)
@@ -74,16 +74,30 @@ class BusinessExcellence(models.Model):
             vals['code'] = self.env['ir.sequence'].next_by_code('business.excellence', sequence_date=date)
         return super(BusinessExcellence, self).create(vals)
 
+    # def view_task(self):
+    #     self.ensure_one()
+    #     return {
+    #         'type': 'ir.actions.act_window',
+    #         'name': 'My Task',
+    #         'view_mode': 'tree,kanban',
+    #         'res_model': 'business.excellence.line',
+    #         # 'domain': [('business_id', '=', self.id)],
+    #         # 'context': "{'create': False}"
+            
+    #     }
+
     def view_task(self):
         self.ensure_one()
         return {
+            # 'name': _('%s Goals') % self.employee_id.name,
+            'view_mode': 'tree,form',
+            'res_model': 'business.excellence.task',
             'type': 'ir.actions.act_window',
-            'name': 'My Task',
-            'view_mode': 'tree,kanban',
-            'res_model': 'business.excellence.line',
-            # 'domain': [('business_id', '=', self.id)],
-            # 'context': "{'create': False}"
-            
+            # 'target': 'current',
+            # 'domain': [('employee_id', '=', self.employee_id.id), ('deadline', '=', self.date_close)],
+            # 'context': {'default_employee_id': self.employee_id.id},
+            'domain': [('business_id', '=', self.id), ('title_ids', '=', self.title_ids)],
+            'context': "{'create': True}"
         }
 
 
@@ -93,11 +107,12 @@ class BusinessExcellence(models.Model):
 #     _name = 'business.excellence.line'
 #     _description = 'Business Excellence Line'
   
-#     business_id = fields.Many2one('business.excellence', string='Task', index=True, required=True, ondelete='cascade')
-#     name = fields.Char(string="Description")
-#     criteria_id = fields.Many2one('business.excellence.criteria', required=True, string='Title')
-#     title_ids = fields.Many2one('business.excellence.title', string='Scope', required=True, domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
-#     active = fields.Boolean(string="Active", default="True")
+#     business_id = fields.Many2one('business.excellence', string='Project', index=True, required=True, ondelete='cascade')
+#     # name = fields.Char(string="Description")
+#     name = fields.Char('Task', required=True, translate=True)
+#     # criteria_id = fields.Many2one('business.excellence.criteria', required=True, string='Title')
+#     title_ids = fields.Many2one('business.excellence.title', string='Scope', domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
+#     # active = fields.Boolean(string="Active", default="True")
     
     
     

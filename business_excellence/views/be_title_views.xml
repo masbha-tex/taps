@@ -5,7 +5,7 @@
             <field name="name">business.excellence.title.form</field>
             <field name="model">business.excellence.title</field>
             <field name="arch" type="xml">
-                <form string="Business Excellence Scope">
+                <form string="Business Excellence Title">
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <field name="active" invisible="1"/>
@@ -38,7 +38,7 @@
             <field name="name">business.excellence.title.tree</field>
             <field name="model">business.excellence.title</field>
             <field name="arch" type="xml">
-                <tree string="Business Excellence Scope" sample="1">
+                <tree string="Business Excellence Title" sample="1">
                     <field name="name"/>
                     <field name="criteria_id"/>
                     <field name="company_id" groups="base.group_multi_company" invisible="1"/>
@@ -86,7 +86,7 @@
         </record>
 
         <record id="action_business_excellence_title" model="ir.actions.act_window">
-            <field name="name">Business Excellence Scope</field>
+            <field name="name">Business Excellence Title</field>
             <field name="res_model">business.excellence.title</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="search_view_id" ref="view_business_excellence_title_filter"/>
@@ -101,7 +101,7 @@
         </record>
         <menuitem
             id="menu_business_excellence_title_tree"
-            name="Scope"
+            name="Title"
             action="action_business_excellence_title"
             parent="business_excellence.menu_business_excellence_config_settings"
             groups="hr.group_hr_manager"

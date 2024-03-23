@@ -38,7 +38,12 @@
                         <group>
                             <group>
                                 <field name="currency_id" readonly="1" force_save="1"/>
-                                <field name="partner_id" readonly="1" force_save="1"/>
+                                <label for="partner_id"/>
+                                <div class="o_row">
+                                    <field name="partner_id" readonly="1" force_save="1"/>
+                                    <field name="notify_partner" string="" widget="boolean_toggle"/>
+                                </div>
+                                <!-- <field name="partner_id" readonly="1" force_save="1"/> -->
                                 <field name="partner_bank_id" readonly="1" force_save="1"/>
                                 <field name="payment_reference" readonly="1" force_save="1"/>
                                 <field name="invoice_date"/>
@@ -46,20 +51,28 @@
                                 <field name="pay_term_details"/>
                                 <field name="invoice_incoterm_id" readonly="1" force_save="1"/>
                                 <field name="beneficiary"/>
-                                <field name="issued_by"/>
+                                <label for="issued_by"/>
+                                <div class="o_row">
+                                    <field name="issued_by"/>
+                                    <field name="notify_bank" string="" widget="boolean_toggle"/>
+                                </div>
+                                <!-- <field name="issued_by"/> -->
                                 <field name="issued_address"/>
                                 <field name="z_invoice" readonly="1" force_save="1"/>
                                 <field name="m_invoice" readonly="1" force_save="1"/>
                                 <field name="style_ref" readonly="1" force_save="1"/>
                                 <field name="pi_numbers" readonly="1" force_save="1"/>
                                 <field name="po_numbers" readonly="1" force_save="1"/>
+                                <field name="consigned" widget="radio"/>
                             </group>
                             <group>
                                 <field name="hs_code"/>
                                 <field name="applicant_tin"/>
+                                <field name="etin_no"/>
                                 <field name="bin_vat_reg"/>
                                 <field name="bond_licence"/>
                                 <field name="tin_no"/>
+                                <field name="erc_no"/>
                                 <field name="bank_bin"/>
                                 <field name="lc_no"/>
                                 <field name="lc_date"/>

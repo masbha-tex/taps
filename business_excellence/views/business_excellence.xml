@@ -37,7 +37,7 @@
                         <button type="object"
                             name="view_customer"
                             class="oe_stat_button"
-                            icon="fa-users"
+                            icon="fa-tasks"
                             attrs="{}" >
                             
                             <field name="customer_count" widget="statinfo" string="My Customers" />
@@ -46,6 +46,13 @@
                         </button>
                         
                     </div> -->
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="view_task" icon="fa-tasks" type="object">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Task</span>
+                            </div>
+                        </button>
+                    </div>
                     
                     <field name="active" invisible="1"/>   
                     <!-- <h3><field name="code" readonly="1"/></h3> -->
@@ -53,9 +60,16 @@
                         <group>
                             <h3><field name="code"/></h3><br/>
                             <!-- <field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}"/> -->
-                            <field name="type"/>
+                            <field name="criteria_id"/>
                         </group>
                     </group>
+                    <div class="oe_title">
+                        <label for="type"/>
+                        <br/>
+                        <!-- <br/> -->
+                        <field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}"/>
+                        <br/>
+                    </div>
                     <!-- <field name="priority" widget="priority"/> -->
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
@@ -68,7 +82,7 @@
                     <div class="oe_title">
                         <label for="capitalize"/>
                         <br/>
-                        <br/>
+                        <!-- <br/> -->
                         <field name="capitalize" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}"/>
                     </div>
                     <!-- <label for="capitalize" class="oe_edit_only"/> -->
@@ -145,12 +159,13 @@
             <field name="name">business.excellence.line.tree</field>
             <field name="model">business.excellence.line</field>
             <field name="arch" type="xml">
-                <tree string="Business Excellence Tree" create="false">
+                <tree string="Business Excellence Tree">
                    
                     
                     
-                    <field name="criteria_id"/>
-                    <field name="title_ids" invisible="1"/>
+                    <field name="business_id" invisible="1"/>
+                    <field name="name" />
+                    <field name="title_ids" />
                 </tree>
             </field>
     </record>
@@ -159,9 +174,7 @@
             <field name="model">business.excellence.line</field>
             <field name="arch" type="xml">
                 <kanban class="o_res_partner_kanban">
-                    <field name="id"/>
-                    <field name="criteria_id"/>
-                    <field name="title_ids"/>
+                    <field name="business_id"/>
                     
                     
                     <templates>
@@ -173,11 +186,10 @@
                                    <div class="o_kanban_record_top">
                                        <div class="o_kanban_record_headings">
                                            <strong class="o_kanban_record_title">
-                                                <field name="criteria_id"/>
+                                                <field name="business_id"/>
                                             </strong>
                                         </div>
                                     </div>
-                                    <i><field name="title_ids"/></i>
                                     <div>
                                         
                                         

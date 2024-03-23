@@ -5,7 +5,7 @@
             <field name="name">business.excellence.impact.form</field>
             <field name="model">business.excellence.impact</field>
             <field name="arch" type="xml">
-                <form string="Area Impact">
+                <form string="Area impact">
                     <sheet>
                         <div class="oe_title">
                             <div class="oe_edit_only">
@@ -29,7 +29,7 @@
             <field name="name">business.excellence.impact.tree</field>
             <field name="model">business.excellence.impact</field>
             <field name="arch" type="xml">
-                <tree string="Business Excellence Impact" editable="bottom">
+                <tree string="Business Excellence impact" editable="bottom">
                     <field name="name"/>
                     <field name="color" widget="color_picker"/>
                 </tree>
@@ -40,7 +40,7 @@
             <field name="name">business.excellence.impact.search</field>
             <field name="model">business.excellence.impact</field>
             <field name="arch" type="xml">
-                <search string="Business Excellence Impact">
+                <search string="Business Excellence impact">
                     <field name="name" string="Training Criteria"/>
                     <separator/>
                     <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
@@ -50,7 +50,7 @@
 
 
         <record id="business_excellence_impact_tree_action" model="ir.actions.act_window">
-            <field name="name">Business Excellence Area Impact</field>
+            <field name="name">Business Excellence Area impact</field>
             <field name="res_model">business.excellence.impact</field>
             <field name="view_id" ref="view_business_excellence_impact_tree"/>
             <field name="help" type="html">

@@ -4,3 +4,4 @@ access_business_excellence_manager,business.excellence,model_business_excellence
 access_business_excellence_criteria,business.excellence.criteria,model_business_excellence_criteria,base.group_user,1,1,1,1
 access_business_excellence_title,business.excellence.title,model_business_excellence_title,base.group_user,1,1,1,1
 access_business_excellence_impact,business.excellence.impact,model_business_excellence_impact,base.group_user,1,1,1,1
+access_business_excellence_task,business.excellence.task,model_business_excellence_task,base.group_user,1,1,1,1

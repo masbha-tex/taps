@@ -5,7 +5,7 @@
             <field name="name">business.excellence.criteria.form</field>
             <field name="model">business.excellence.criteria</field>
             <field name="arch" type="xml">
-                <form string="Business Excellence Title">
+                <form string="Business Excellence Scope">
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <field name="active" invisible="1"/>
@@ -31,7 +31,7 @@
             <field name="name">business.excellence.criteria.tree</field>
             <field name="model">business.excellence.criteria</field>
             <field name="arch" type="xml">
-                <tree string="Business Excellence Title" sample="1">
+                <tree string="Business Excellence Scope" sample="1">
                     <field name="name"/>
                     <field name="title_ids"/>
                     <field name="company_id" groups="base.group_multi_company" invisible="1"/>
@@ -43,7 +43,7 @@
             <field name="name">business.excellence.criteria.search</field>
             <field name="model">business.excellence.criteria</field>
             <field name="arch" type="xml">
-                <search string="Business Excellence Title">
+                <search string="Business Excellence Scope">
                     <field name="name" string="Training Criteria"/>
                     <field name="title_ids" />
                     <separator/>
@@ -92,16 +92,16 @@
         </record>
 
         <record id="business_excellence_kanban_action" model="ir.actions.act_window">
-            <field name="name">Business Excellence Title</field>
+            <field name="name">Business Excellence Scope</field>
             <field name="res_model">business.excellence.criteria</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="view_business_excellence_filter"/>
             <field name="help" type="html">
               <p class="o_view_nocontent_smiling_face">
-                Create a new Reward Criteria
+                Create a new Business Excellence Scope
               </p><p>
-                Odoo's reward structure is used to manage all reward Criteria
-                related to employees by reward Title: employee, etc.
+                Odoo's reward structure is used to manage all Business Excellence Scope
+                related to employees by Business Excellence Scope: employee, etc.
               </p>
             </field>
         </record>
@@ -112,16 +112,15 @@
             <field name="search_view_id" ref="view_business_excellence_filter"/>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Create a new Training Criteria
+                    Create a new Business Excellence Scope
                 </p><p>
-                    Odoo's LMS structure is used to manage all Training Criteria
-                    related to employees by Training Title: employee, etc.
+                    Odoo's LMS structure is used to manage all Business Excellence Scope to employees by Business Excellence Scope: employee, etc.
                 </p>
             </field>
         </record>
         <menuitem
             id="menu_business_excellence_tree"
-            name="Title"
+            name="Scope"
             action="business_excellence_tree_action"
             parent="business_excellence.menu_business_excellence_config_settings"
             groups="hr.group_hr_manager"

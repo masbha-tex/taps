@@ -103,22 +103,24 @@
 									 <t t-esc="o.partner_bank_id.sanitized_acc_number"/>
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>IRC NO:</strong>
-									<br/>
-									 <t t-if="o.tin_no">
-										<t t-esc="o.tin_no"/>
-									</t>
-								</p>
-							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>APPLICANT'S TIN :</strong>
-									<br/>
-									 <t t-esc="o.applicant_tin"/> 
-								</p>
-							</div>
+                            <t t-if="o.applicant_tin">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>APPLICANT'S TIN:</strong>
+    								<br/> 
+    								 <t t-esc="o.applicant_tin"/>  
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.etin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>E-TIN NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.etin_no"/>  
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>BIN/VAT REG.NO.</strong>
@@ -135,13 +137,24 @@
                                      <t t-esc="o.bond_licence"/> 
                                 </p>
                             </div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								 <p>
-								<strong>TIN NO:</strong>
-								<br/> 
-								 <!-- <t t-esc="o.tin_no"/>   -->
-								</p>
-							</div>
+                            <t t-if="o.tin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>IRC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.tin_no"/>  
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.erc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>ERC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.erc_no"/>  
+    								</p>
+    							</div>
+                            </t>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 								  <strong>BANK BIN NO:</strong>
@@ -243,6 +256,14 @@
 							</div>
 						</div>
                         <div style="font-size:12px">
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>EXPORT ITEM </th>
+                                    <th><t t-esc="common_data[13]"/></th>
+                                </tr>
+                            </thead>
+                        </table>
 						<table class="table table-sm o_main_table">
                                 <thead>
                                     <t t-set="line_count" t-value="0"/>
@@ -635,13 +656,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>APPLICANT'S TIN :</strong>
-									<br/>
-									 <t t-esc="o.applicant_tin"/> 
-								</p>
-							</div>
+                            <t t-if="o.applicant_tin">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>APPLICANT'S TIN:</strong>
+    									<br/>
+    									 <t t-esc="o.applicant_tin"/> 
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.etin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>E-TIN NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.etin_no"/>  
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>VAT REG.NO.</strong>
@@ -649,13 +681,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.bin_vat_reg"/> 
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								 <p>
-								<strong>TIN NO:</strong>
-								<br/> 
-								 <t t-esc="o.tin_no"/>  
-								</p>
-							</div>
+                            <t t-if="o.tin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>ERC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.tin_no"/>  
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.erc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>ERC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.erc_no"/>  
+    								</p>
+    							</div>
+                            </t>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 								  <strong>BANK BIN NO</strong>
@@ -733,6 +776,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						</div>
 						
 						 <div style="font-size:12px">
+                            <table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr>
+                                        <th>EXPORT ITEM </th>
+                                        <th><t t-esc="common_data[13]"/></th>
+                                    </tr>
+                                </thead>
+                            </table>
 							<table class="table table-sm o_main_table">
                                 <thead>
                                     <t t-set="line_count" t-value="0"/>
@@ -1009,7 +1060,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+                                    </t>
+                                    <t t-if="not o.notify_partner">
+                                        <strong style="font-size:12px">INVOICE ADDRESS</strong>
+                                    </t>
+									
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -1027,16 +1084,18 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/>
 								</p>
 							</div>
-							<div class="col-auto col-3 mw-50 mb-2">
-								<div>
-								<strong style="font-size:12px">CONSIGNED TO</strong>
-								</div>
-								<p>
-									<t t-if="o.issued_by">
-										<t t-esc="o.issued_by.name"/>
-									</t>
-								</p>
-							</div>
+                            <t t-if="o.consigned != 'nothing'">
+    							<div class="col-auto col-3 mw-50 mb-2">
+    								<div>
+                                        <strong style="font-size:12px"><span style="font-size:12px;" t-field="o.consigned"/></strong>
+    								</div>
+    								<p>
+    									<t t-if="o.issued_by">
+    										<t t-esc="o.issued_by.name"/>
+    									</t>
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-3 mw-50 mb-2">
                                 <div>
                                     <strong style="font-size:12px">INVOICE DATE</strong>
@@ -1075,13 +1134,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>APPLICANT'S TIN :</strong>
-									<br/>
-									 <t t-esc="o.applicant_tin"/> 
-								</p>
-							</div>
+                            <t t-if="o.applicant_tin">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>APPLICANT'S TIN:</strong>
+    									<br/>
+    									 <t t-esc="o.applicant_tin"/> 
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.etin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>E-TIN NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.etin_no"/>  
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>VAT REG.NO.</strong>
@@ -1089,13 +1159,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.bin_vat_reg"/> 
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								 <p>
-								<strong>TIN NO:</strong>
-								<br/> 
-								 <t t-esc="o.tin_no"/>  
-								</p>
-							</div>
+                            <t t-if="o.tin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>IRC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.tin_no"/>  
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.erc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>ERC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.erc_no"/>  
+    								</p>
+    							</div>
+                            </t>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 								  <strong>BANK BIN NO</strong>
@@ -1172,6 +1253,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						</div>
 						
 						 <div style="font-size:12px">
+                            <table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr>
+                                        <th>EXPORT ITEM </th>
+                                        <th><t t-esc="common_data[13]"/></th>
+                                    </tr>
+                                </thead>
+                            </table>
 							<table class="table table-sm o_main_table">
                                 <thead>
                                     <t t-set="line_count" t-value="0"/>
@@ -1427,7 +1516,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <br/>
                                     <span>______________________________________________________</span>
                                     <br/>
-                                    <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                    <t t-if="o.notify_partner">
+                                        <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                    </t>
+                                    <t t-if="not o.notify_partner">
+                                        <span>CUSTOMER/APPLICANT CERTIFICATION</span>
+                                    </t>
+                                    
                                 </div>
                             </div>
                      </footer>
@@ -1465,7 +1560,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+                                    </t>
+                                    <t t-if="not o.notify_partner">
+                                        <strong style="font-size:12px">INVOICE ADDRESS</strong>
+                                    </t>
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -1483,16 +1583,18 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/>
 								</p>
 							</div>
-							<div class="col-auto col-3 mw-50 mb-2">
-								<div>
-								<strong style="font-size:12px">CONSIGNED TO</strong>
-								</div>
-								<p>
-									<t t-if="o.issued_by">
-										<t t-esc="o.issued_by.name"/>
-									</t>
-								</p>
-							</div>
+                            <t t-if="o.consigned != 'nothing'">
+    							<div class="col-auto col-3 mw-50 mb-2">
+    								<div>
+                                        <strong style="font-size:12px"><span style="font-size:12px;" t-field="o.consigned"/></strong>
+    								</div>
+    								<p>
+    									<t t-if="o.issued_by">
+    										<t t-esc="o.issued_by.name"/>
+    									</t>
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-3 mw-50 mb-2">
                                 <div>
                                     <strong style="font-size:12px">INVOICE DATE</strong>
@@ -1520,13 +1622,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>APPLICANT'S TIN:</strong>
-									<br/>
-									 <t t-esc="o.applicant_tin"/> 
-								</p>
-							</div>
+                            <t t-if="o.applicant_tin">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>APPLICANT'S TIN:</strong>
+    									<br/>
+    									 <t t-esc="o.applicant_tin"/> 
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.etin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>E-TIN NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.etin_no"/>  
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>VAT REG.NO.</strong>
@@ -1534,13 +1647,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.bin_vat_reg"/> 
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								 <p>
-								<strong>TIN NO:</strong>
-								<br/> 
-								 <t t-esc="o.tin_no"/>  
-								</p>
-							</div>
+                            <t t-if="o.tin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>IRC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.tin_no"/>  
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.erc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>ERC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.erc_no"/>  
+    								</p>
+    							</div>
+                            </t>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 								  <strong>BANK BIN NO</strong>
@@ -1572,7 +1696,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    </t>
+                                    <t t-elif="not o.notify_partner">
+                                        <strong>ISSUED BY</strong>
+                                    </t>
 									<br/>
 									<t t-if="o.issued_by">
 										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
@@ -1625,6 +1754,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						
 						 <div style="font-size:12px">
 							
+                            <table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr>
+                                        <th>EXPORT ITEM </th>
+                                        <th><t t-esc="common_data[13]"/></th>
+                                    </tr>
+                                </thead>
+                            </table>
 							
 							<table class="table table-sm o_main_table">
                                 <thead>
@@ -1881,7 +2018,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <br/>
                                     <span>______________________________________________________</span>
                                     <br/>
-                                    <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                    <t t-if="o.notify_partner">
+                                        <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                    </t>
+                                    <t t-if="not o.notify_partner">
+                                        <span>CUSTOMER/APPLICANT CERTIFICATION</span>
+                                    </t>
                                 </div>
                             </div>
                      </footer>
@@ -2379,22 +2521,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.partner_bank_id.sanitized_acc_number"/>
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>IRC NO:</strong>
-									<br/>
-									 <t t-if="o.tin_no">
-										<t t-esc="o.tin_no"/>
-									</t>
-								</p>
-							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>APPLICANT'S TIN :</strong>
-									<br/>
-									 <t t-esc="o.applicant_tin"/> 
-								</p>
-							</div>
+                            <t t-if="o.applicant_tin">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>APPLICANT'S TIN:</strong>
+    									<br/>
+    									 <t t-esc="o.applicant_tin"/> 
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.etin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>E-TIN NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.etin_no"/>  
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>BIN/VAT REG.NO.</strong>
@@ -2411,13 +2555,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                      <t t-esc="o.bond_licence"/> 
                                 </p>
                             </div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								 <p>
-								<strong>TIN NO:</strong>
-								<br/> 
-								 <!-- <t t-esc="o.tin_no"/>   -->
-								</p>
-							</div>
+                            <t t-if="o.tin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>IRC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.tin_no"/>  
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.erc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>ERC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.erc_no"/>  
+    								</p>
+    							</div>
+                            </t>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 								  <strong>BANK BIN NO:</strong>
@@ -2519,6 +2674,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
 						</div>
                         <div style="font-size:12px">
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>EXPORT ITEM </th>
+                                    <th><t t-esc="common_data[13]"/></th>
+                                </tr>
+                            </thead>
+                        </table>
 						<table class="table table-sm o_main_table">
                                 <thead>
                                     <t t-set="line_count" t-value="0"/>
@@ -2911,13 +3074,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>APPLICANT'S TIN :</strong>
-									<br/>
-									 <t t-esc="o.applicant_tin"/> 
-								</p>
-							</div>
+                            <t t-if="o.applicant_tin">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>APPLICANT'S TIN:</strong>
+    									<br/>
+    									 <t t-esc="o.applicant_tin"/> 
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.etin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>E-TIN NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.etin_no"/>  
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>VAT REG.NO.</strong>
@@ -2925,13 +3099,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.bin_vat_reg"/> 
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								 <p>
-								<strong>TIN NO:</strong>
-								<br/> 
-								 <t t-esc="o.tin_no"/>  
-								</p>
-							</div>
+                            <t t-if="o.tin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>IRC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.tin_no"/>  
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.erc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>ERC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.erc_no"/>  
+    								</p>
+    							</div>
+                            </t>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 								  <strong>BANK BIN NO</strong>
@@ -3009,6 +3194,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						</div>
 						
 						 <div style="font-size:12px">
+                            <table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr>
+                                        <th>EXPORT ITEM </th>
+                                        <th><t t-esc="common_data[13]"/></th>
+                                    </tr>
+                                </thead>
+                            </table>
 							<table class="table table-sm o_main_table">
                                 <thead>
                                     <t t-set="line_count" t-value="0"/>
@@ -3293,7 +3486,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+                                    </t>
+                                    <t t-if=" not o.notify_partner">
+                                        <strong style="font-size:12px">INVOICE ADDRESS</strong>
+                                    </t>              
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -3311,16 +3509,18 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/>
 								</p>
 							</div>
-							<div class="col-auto col-3 mw-50 mb-2">
-								<div>
-								<strong style="font-size:12px">CONSIGNED TO</strong>
-								</div>
-								<p>
-									<t t-if="o.issued_by">
-										<t t-esc="o.issued_by.name"/>
-									</t>
-								</p>
-							</div>
+                            <t t-if="o.consigned != 'nothing'">
+    							<div class="col-auto col-3 mw-50 mb-2">
+    								<div>
+                                        <strong style="font-size:12px"><span style="font-size:12px;" t-field="o.consigned"/></strong>
+    								</div>
+    								<p>
+    									<t t-if="o.issued_by">
+    										<t t-esc="o.issued_by.name"/>
+    									</t>
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-3 mw-50 mb-2">
                                 <div>
                                     <strong style="font-size:12px">INVOICE DATE</strong>
@@ -3359,13 +3559,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>APPLICANT'S TIN :</strong>
-									<br/>
-									 <t t-esc="o.applicant_tin"/> 
-								</p>
-							</div>
+                            <t t-if="o.applicant_tin">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>APPLICANT'S TIN:</strong>
+    									<br/>
+    									 <t t-esc="o.applicant_tin"/> 
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.etin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>E-TIN NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.etin_no"/>  
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>VAT REG.NO.</strong>
@@ -3373,13 +3584,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.bin_vat_reg"/> 
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								 <p>
-								<strong>TIN NO:</strong>
-								<br/> 
-								 <t t-esc="o.tin_no"/>  
-								</p>
-							</div>
+                            <t t-if="o.tin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>IRC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.tin_no"/>  
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.erc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>ERC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.erc_no"/>  
+    								</p>
+    							</div>
+                            </t>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 								  <strong>BANK BIN NO</strong>
@@ -3456,6 +3678,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						</div>
 						
 						 <div style="font-size:12px">
+                            <table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr>
+                                        <th>EXPORT ITEM </th>
+                                        <th><t t-esc="common_data[13]"/></th>
+                                    </tr>
+                                </thead>
+                            </table>
 							<table class="table table-sm o_main_table">
                                 <thead>
                                     <t t-set="line_count" t-value="0"/>
@@ -3711,7 +3941,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <br/>
                                     <span>______________________________________________________</span>
                                     <br/>
-                                    <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                    <t t-if="o.notify_partner">
+                                        <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                    </t>
+                                    <t t-if="not o.notify_partner">
+                                        <span>CUSTOMER/APPLICANT CERTIFICATION</span>
+                                    </t>
                                 </div>
                             </div>
                      </footer>
@@ -3757,7 +3992,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						<div class="row mt32 mb32" style="font-size:12px">
 							<div class="col-auto col-3 mw-50 mb-2">
 								<div>
-									<strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+                                    <t t-if="o.notify_partner">
+    									<strong style="font-size:12px">INVOICE ADDRESS/NOTIFY PARTY</strong>
+                                    </t>
+                                    <t t-if=" not o.notify_partner">
+                                        <strong style="font-size:12px">INVOICE ADDRESS</strong>
+                                    </t> 
 								</div>
 								<p>
 									<span style="font-size:12px;" t-esc="o.partner_id.name"/>
@@ -3775,16 +4015,18 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <span style="font-size:10px" t-esc="o.partner_id.contact_address_complete"/>
 								</p>
 							</div>
-							<div class="col-auto col-3 mw-50 mb-2">
-								<div>
-								<strong style="font-size:12px">CONSIGNED TO</strong>
-								</div>
-								<p>
-									<t t-if="o.issued_by">
-										<t t-esc="o.issued_by.name"/>
-									</t>
-								</p>
-							</div>
+                            <t t-if="o.consigned != 'nothing'">
+    							<div class="col-auto col-3 mw-50 mb-2">
+    								<div>
+                                        <strong style="font-size:12px"><span style="font-size:12px;" t-field="o.consigned"/></strong>
+    								</div>
+    								<p>
+    									<t t-if="o.issued_by">
+    										<t t-esc="o.issued_by.name"/>
+    									</t>
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-3 mw-50 mb-2">
                                 <div>
                                     <strong style="font-size:12px">INVOICE DATE</strong>
@@ -3812,13 +4054,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>APPLICANT'S TIN:</strong>
-									<br/>
-									 <t t-esc="o.applicant_tin"/> 
-								</p>
-							</div>
+                            <t t-if="o.applicant_tin">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>APPLICANT'S TIN:</strong>
+    									<br/>
+    									 <t t-esc="o.applicant_tin"/> 
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.etin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>E-TIN NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.etin_no"/>  
+    								</p>
+    							</div>
+                            </t>
 							<div class="col-auto col-2 mw-100 mb-2">
 								<p>
 									<strong>VAT REG.NO.</strong>
@@ -3826,13 +4079,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									 <t t-esc="o.bin_vat_reg"/> 
 								</p>
 							</div>
-                            <div class="col-auto col-2 mw-100 mb-2">
-								 <p>
-								<strong>TIN NO:</strong>
-								<br/> 
-								 <t t-esc="o.tin_no"/>  
-								</p>
-							</div>
+                            <t t-if="o.tin_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>IRC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.tin_no"/>  
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.erc_no">
+                                <div class="col-auto col-2 mw-100 mb-2">
+    								 <p>
+    								<strong>ERC NO:</strong>
+    								<br/> 
+    								 <t t-esc="o.erc_no"/>  
+    								</p>
+    							</div>
+                            </t>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
 								  <strong>BANK BIN NO</strong>
@@ -3916,6 +4180,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						</div>
 						
 						 <div style="font-size:12px">
+                            <table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr>
+                                        <th>EXPORT ITEM </th>
+                                        <th><t t-esc="common_data[13]"/></th>
+                                    </tr>
+                                </thead>
+                            </table>
 							
 							
 							<table class="table table-sm o_main_table">
@@ -4173,7 +4445,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <br/>
                                     <span>______________________________________________________</span>
                                     <br/>
-                                    <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                    <t t-if="o.notify_partner">
+                                        <span>CUSTOMER/NOTIFY PARTY/APPLICANT CERTIFICATION</span>
+                                    </t>
+                                    <t t-if="not o.notify_partner">
+                                        <span>CUSTOMER/APPLICANT CERTIFICATION</span>
+                                    </t>
                                 </div>
                             </div>
                      </footer>

@@ -91,6 +91,7 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                     com_in = self.env['sale.order'].sudo().search([('company_id','=',1),('name','=',order)])
                     beneficiary = com_in[0].bank.id
                     or_ref = com_in.order_ref.name
+                    pi_date = com_in.order_ref.pi_date
                     po_no = style = ""
                     if com_in.po_no:
                         po_no = com_in.po_no
@@ -98,10 +99,10 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                         style = com_in.style_ref
                     if pi_numbers:
                         if or_ref.replace('S','TZBD-Z') not in pi_numbers:
-                            pi_numbers += "," + or_ref.replace('S','TZBD-Z')
+                            pi_numbers += "," + or_ref.replace('S','TZBD-Z') + " DT:" + pi_date.strftime('%d-%m-%Y')
                     else:
                         if or_ref.replace('S','TZBD-Z') not in pi_numbers:
-                            pi_numbers += or_ref.replace('S','TZBD-Z')
+                            pi_numbers += or_ref.replace('S','TZBD-Z') + " DT:" + pi_date.strftime('%d-%m-%Y')
                     if po_numbers:
                         if po_no not in po_numbers:
                             po_numbers += "," + po_no
@@ -128,17 +129,18 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                     com_in = self.env['sale.order'].sudo().search([('company_id','=',3),('name','=',order)])
                     beneficiary = com_in[0].bank.id
                     or_ref = com_in.order_ref.name
+                    pi_date = com_in.order_ref.pi_date
                     po_no = style = ""
                     if com_in.po_no:
                         po_no = com_in.po_no
                     if com_in.style_ref:
                         style = com_in.style_ref
                     if pi_numbers:
-                        pi_numbers += "," + or_ref.replace('S','TZBD-B')
+                        pi_numbers += "," + or_ref.replace('S','TZBD-B') + " DT:" + pi_date.strftime('%d-%m-%Y')
                         po_numbers += "," + po_no
                         style_ref += "," + style
                     else:
-                        pi_numbers += or_ref.replace('S','TZBD-B')
+                        pi_numbers += or_ref.replace('S','TZBD-B') + " DT:" + pi_date.strftime('%d-%m-%Y')
                         po_numbers += po_no
                         style_ref += style
                     

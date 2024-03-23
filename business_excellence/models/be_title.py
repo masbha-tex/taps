@@ -9,14 +9,14 @@ class Title(models.Model):
     _inherit = ['mail.thread']
     _rec_name = 'name'
 
-    name = fields.Char(string="Scope", required=True, index=True, translate=True)
+    name = fields.Char(string="Title", required=True, index=True, translate=True)
     active = fields.Boolean('Active', default=True)
     company_id = fields.Many2one('res.company', string='Company')
-    criteria_id = fields.Many2one('business.excellence.criteria', string='Title')
+    criteria_id = fields.Many2one('business.excellence.criteria', string='Scope')
     description = fields.Text('Content', help='Add content description here...')
 
     _sql_constraints = [
-        ('name_company_uniq', 'unique(name, company_id, criteria_id)', 'The name of the reward title must be unique per business excellence in company!'),]    
+        ('name_company_uniq', 'unique(name, company_id, criteria_id)', 'The name of the business title must be unique per business excellence in company!'),]    
 
     # @api.model
     # def create(self, vals):

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_business_excellence_task_form" model="ir.ui.view">
+            <field name="name">business.excellence.task.form</field>
+            <field name="model">business.excellence.task</field>
+            <field name="arch" type="xml">
+                <form string="Area task">
+                    <sheet>
+                        <div class="oe_title">
+                            <div class="oe_edit_only">
+                                <label for="name"/>
+                            </div>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <!-- <field name="title_ids" options="{'no_create':true, 'no_open':true}"/> -->
+                                <field name="description"/>
+                                <field name="start_date"/>
+                                <field name="finish_date"/>
+                                <field name="attachment_no"/>
+                                <field name="attachment"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_business_excellence_task_tree" model="ir.ui.view">
+            <field name="name">business.excellence.task.tree</field>
+            <field name="model">business.excellence.task</field>
+            <field name="arch" type="xml">
+                <tree string="Business Excellence task" editable="bottom">
+                    <field name="name"/>
+                    <field name="business_id" options="{'no_create':true, 'no_open':true}"/>
+                    <!-- <field name="title_ids" options="{'no_create':true, 'no_open':true}"/> -->
+                    <field name="description"/>
+                    <field name="start_date"/>
+                    <field name="finish_date"/>
+                    <field name="attachment_no"/>
+                    <field name="attachment"/>
+                    <!-- <field name="color" widget="color_picker"/> -->
+                </tree>
+            </field>
+        </record>
+
+        <!-- <record id="view_business_excellence_task_filter" model="ir.ui.view">
+            <field name="name">business.excellence.task.search</field>
+            <field name="model">business.excellence.task</field>
+            <field name="arch" type="xml">
+                <search string="Business Excellence task">
+                    <field name="name" string="Training Criteria"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+             </field>
+        </record> -->
+
+
+        <record id="business_excellence_task_tree_action" model="ir.actions.act_window">
+            <field name="name">Business Excellence Area task</field>
+            <field name="res_model">business.excellence.task</field>
+            <field name="view_id" ref="view_business_excellence_task_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                Create new tags for your opportunities
+                </p><p>
+                Create tags that fit your business (product structure, sales type, etc.) to better manage and track your opportunities.
+                </p>
+            </field>
+        </record>
+        
+        <!-- <menuitem
+            id="menu_business_excellence_task_tree"
+            name="Area Imapct"
+            action="business_excellence_task_tree_action"
+            parent="menu_business_excellence_config_settings"
+            groups="hr.group_hr_manager"
+            sequence="4"/> -->
+        
+    </data>
+</odoo>
