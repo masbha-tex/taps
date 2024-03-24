@@ -29,7 +29,7 @@ class CombineInvoice(models.Model):
     # ==== Business fields ====
     name = fields.Char(string='Number', copy=False, readonly=False, store=True, index=True, tracking=True)
     currency_id = fields.Many2one('res.currency', store=True, readonly=True, string='Currency')
-    line_id = fields.One2many('combine.invoice.line', 'invoice_id', string='Customer Invoice Items', copy=True, readonly=True,)
+    line_id = fields.One2many('combine.invoice.line', 'invoice_id', string='Customer Invoice Items', copy=True,  auto_join=True)
     partner_id = fields.Many2one('res.partner', readonly=True ,string='Partner', states={'draft': [('readonly', False)]})
     # commercial_partner_id = fields.Many2one('res.partner', string='Commercial Entity', store=True, readonly=True,
     #     compute='_compute_commercial_partner_id', ondelete='restrict')
@@ -140,7 +140,7 @@ class CombineInvoiceLine(models.Model):
     parent_state = fields.Selection(related='invoice_id.state', store=True, readonly=True)
     sequence = fields.Integer(default=10)
     currency_id = fields.Many2one('res.currency', string='Currency')
-    product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
+    product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure')#, domain="[('category_id', '=', product_uom_category_id.id)]"
     product_id = fields.Many2one('product.product', related='account_move_line.product_id', string='Product Id', ondelete='restrict')
     product_uom_category_id = fields.Many2one('uom.category', related='product_id.uom_id.category_id')
     # product_id = fields.Many2one('product.product', related='sale_order_line.product_id', string='Product Id',ondelete='restrict', check_company=True)

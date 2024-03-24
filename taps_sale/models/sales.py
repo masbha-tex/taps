@@ -2309,6 +2309,30 @@ class SaleOrderLine(models.Model):
             self.logo='WORK-WEAR'
             self.logoref='T-5784'
             self.finish_ref='TS-411703'
+        elif self.product_template_id.name == 'SHANK BUTTON 100219071':
+            self.logo='WORK-WEAR'
+            self.logoref='T-5784'
+            self.finish_ref='TG-4117'
+        elif self.product_template_id.name == 'SHANK BUTTON 100219052':
+            self.logo='WORK-WEAR'
+            self.logoref='T-4998'
+            self.finish_ref='TS-411006'
+        elif self.product_template_id.name == 'SHANK BUTTON 100219051':
+            self.logo='WORK-WEAR'
+            self.logoref='T-4998'
+            self.finish_ref='TS-4102'
+        elif self.product_template_id.name == 'SHANK BUTTON 100219127':
+            self.logo='WORK-WEAR'
+            self.logoref=''
+            self.finish_ref='TS-4103'
+        elif self.product_template_id.name == 'SHANK BUTTON 100219128':
+            self.logo='WORK-WEAR'
+            self.logoref=''
+            self.finish_ref='TS-4104'
+        elif self.product_template_id.name == 'HOLE SHANK BUTTON 100219070':
+            self.logo='WREATH'
+            self.logoref='D-866'
+            self.finish_ref='TS-411703'
         
                 
         self._compute_tax_id()

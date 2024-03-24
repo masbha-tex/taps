@@ -13,7 +13,7 @@ class BusinessExcellence(models.Model):
     # code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True)
     code = fields.Char(string="Number", required=True, index=True, copy=False, readonly=True, default='New')
 
-    # business_line = fields.One2many('business.excellence.line', 'business_id', string='AllocatedLine', copy=True)
+    business_line = fields.One2many('business.excellence.task', 'business_id', string='AllocatedLine', copy=True)
     parent_project_id = fields.Many2one('business.excellence',
                                        string="Parent Project",
                                        ondelete="cascade",
@@ -89,14 +89,14 @@ class BusinessExcellence(models.Model):
     def view_task(self):
         self.ensure_one()
         return {
-            # 'name': _('%s Goals') % self.employee_id.name,
+            'name': _('%s Task') % self.name,
             'view_mode': 'tree,form',
             'res_model': 'business.excellence.task',
             'type': 'ir.actions.act_window',
             # 'target': 'current',
             # 'domain': [('employee_id', '=', self.employee_id.id), ('deadline', '=', self.date_close)],
             # 'context': {'default_employee_id': self.employee_id.id},
-            'domain': [('business_id', '=', self.id), ('title_ids', '=', self.title_ids)],
+            'domain': [('business_id', '=', self.id)],
             'context': "{'create': True}"
         }
 

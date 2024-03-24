@@ -4,7 +4,7 @@ from datetime import timedelta
 from random import randint
 
 
-class Criteria(models.Model):
+class BusinessExcellenceTask(models.Model):
     _name = 'business.excellence.task'
     _description = 'Business Excellence Task'
     _inherit = ['mail.thread']
@@ -28,7 +28,19 @@ class Criteria(models.Model):
     start_date = fields.Date(string = "Start Date")
     finish_date = fields.Date(string = "Finish Date")
     attachment_no = fields.Text('Document No', tracking=True)
-    attachment = fields.Text('Evidence', tracking=True)
+    attachment = fields.Binary('Evidence', attachment=True)
+
+    attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
+
+    def action_open_attachments(self):
+        return {
+            'name': 'Attachments',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'ir.attachment',
+            'domain': [('id', 'in', self.attachment_ids.ids)],
+            'target': 'current',
+            }
     # active = fields.Boolean('Active', default=True)
     # color = fields.Integer('Color', default=_get_default_color)
 

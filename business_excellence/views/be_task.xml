@@ -22,6 +22,7 @@
                                 <field name="start_date"/>
                                 <field name="finish_date"/>
                                 <field name="attachment_no"/>
+                                <button name="action_open_attachments" string="Attachments" type="object"/>
                                 <field name="attachment"/>
                             </group>
                         </group>
@@ -34,7 +35,8 @@
             <field name="name">business.excellence.task.tree</field>
             <field name="model">business.excellence.task</field>
             <field name="arch" type="xml">
-                <tree string="Business Excellence task" editable="bottom">
+                <!-- <tree string="Business Excellence task" editable="bottom"> -->
+                <tree string="Business Excellence task">
                     <field name="name"/>
                     <field name="business_id" options="{'no_create':true, 'no_open':true}"/>
                     <!-- <field name="title_ids" options="{'no_create':true, 'no_open':true}"/> -->
@@ -42,6 +44,7 @@
                     <field name="start_date"/>
                     <field name="finish_date"/>
                     <field name="attachment_no"/>
+                    <button name="action_open_attachments" string="Attachments" type="object"/>
                     <field name="attachment"/>
                     <!-- <field name="color" widget="color_picker"/> -->
                 </tree>

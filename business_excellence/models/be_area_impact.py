@@ -4,7 +4,7 @@ from datetime import timedelta
 from random import randint
 
 
-class Criteria(models.Model):
+class BusinessExcellenceImpact(models.Model):
     _name = 'business.excellence.impact'
     _description = 'Business Excellence Area Impact'
     _inherit = ['mail.thread']
