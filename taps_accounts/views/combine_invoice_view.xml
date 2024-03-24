@@ -64,6 +64,7 @@
                                 <field name="pi_numbers" readonly="1" force_save="1"/>
                                 <field name="po_numbers" readonly="1" force_save="1"/>
                                 <field name="consigned" widget="radio"/>
+                                <field name="freight_colect" widget="radio"/>
                             </group>
                             <group>
                                 <field name="hs_code"/>

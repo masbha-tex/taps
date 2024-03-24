@@ -93,6 +93,13 @@ class CombineInvoice(models.Model):
             ('consigned_order', 'Consigned to the order of'),
             ('nothing', 'Nothing')],
             string='Consigned', default='nothing')
+    freight_colect = fields.Selection([
+            ('freight', 'FREIGHT COLLECT'),
+            ('freight_to', 'FREIGHT TO COLLECT'),
+            ('rapid', 'RAPID COLLECT'),
+            ('nothing', 'NOTHING')],
+            string='Freight', default='freight')
+    
     amount_total = fields.Monetary(string='Total', store=True, readonly=False, compute='_amount_all', tracking=4)
 
     @api.depends('line_id.price_total')
@@ -876,6 +883,121 @@ class BillofExchange(models.AbstractModel):
 class ApplicantCertificate(models.AbstractModel):
     _name = 'report.taps_accounts.report_applicant_certificate'
     _description = 'Applicant Certificate'     
+
+    def _get_report_values(self, docids, data=None):
+        # raise UserError((docids))
+        docs = self.env['combine.invoice'].sudo().browse(docids)
+        line_data = self.env['combine.invoice.line'].sudo().search([('invoice_id','in',docids)])
+        z_items = line_data.filtered(lambda x: x.product_id.product_tmpl_id.company_id.id == 1)
+        m_items = line_data.filtered(lambda x: x.product_id.product_tmpl_id.company_id.id == 3)
+        z_total_qty = z_total_value = m_total_qty = m_total_value = m_total_pcs = total_value = 0
+        total_qty = sum(line_data.mapped('quantity'))
+        total_value = sum(line_data.mapped('price_total'))
+        total = docs.amount_total
+        ex_items = None
+        if total>total_value:
+            total_value = total
+        if z_items:
+            ex_items = 'ZIPPER'
+            z_total = sum(z_items.mapped('quantity'))
+            z_total_value = sum(z_items.mapped('price_total'))
+        if m_items:
+            ex_items = 'BUTTON'
+            m_total = sum(m_items.mapped('quantity'))
+            m_total_pcs = m_total*144
+            m_total_value = sum(m_items.mapped('price_total'))
+        if z_items and m_items:
+            ex_items = 'ZIPPER & BUTTON'
+        report_data = []
+        if line_data:
+            companies = line_data.mapped('product_template_id.company_id')
+            for com in companies:
+                com_line_data = line_data.filtered(lambda x: x.product_template_id.company_id.id == com.id)
+                
+                all_item = com_line_data.mapped('product_template_id')
+                # raise UserError((all_item.id))
+                for item in all_item:
+                    single_item = com_line_data.filtered(lambda x: x.product_template_id.id == item.id)
+                    all_finish = single_item.mapped('finish')
+                    all_finish = list(set(all_finish))
+                    for finish in all_finish:
+                        single_finish = single_item.filtered(lambda x: x.finish == finish)
+                        all_shade = single_finish.mapped('shade')
+                        all_shade = list(set(all_shade))
+                        for shade in all_shade:
+                            single_shade = single_finish.filtered(lambda x: x.shade == shade)
+                            all_size = single_shade.mapped('sizcommon')
+                            all_size = list(set(all_size))
+                            for size in all_size:
+                                single_size = single_finish.filtered(lambda x: x.sizcommon == size)
+                                qty = sum(single_size.mapped('quantity'))
+                                value = sum(single_size.mapped('price_subtotal'))
+                                price = value/qty
+                                
+                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                
+                                order_data = []
+                                order_data = [
+                                    item.name,
+                                    finish,
+                                    shade,
+                                    size_value,
+                                    qty,
+                                    round(price,4),
+                                    round(value,4),
+                                    unit,
+                                    ]
+                                report_data.append(order_data)
+                order_data = []
+                if com.id == 1:
+                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
+                if com.id == 3:
+                    order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
+                # raise UserError((com.id,order_data))
+                report_data.append(order_data)
+
+        sales_person = None
+        sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
+        shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
+        amount_in_word = self._amount_in_words(total_value)    
+        del_chalan = docs[0].name.replace('TZBD/','TZBD/DC/')
+        tr_receipt = docs[0].name.replace('TZBD/','TZBD/TR/')
+        be_no = docs[0].name.replace('TZBD/','TZBD/BE/')
+        common_data = [sales_person,z_total_qty,z_total_value,m_total_qty,m_total_value,m_total_pcs,total_qty,total_value,amount_in_word,del_chalan,tr_receipt,be_no,shipment_mode,ex_items]
+        # raise UserError((report_data))
+        return {
+            'docs': docs,
+            'datas': report_data,
+            'common_data':common_data,
+            # 'company': com_id,
+            'doc_model': 'combine.invoice',
+            }
+            
+
+    def _amount_in_words(self,amount):
+        total = 0.0
+        total = format(amount, ".2f")
+        text = ''
+        entire_num = int((str(total).split('.'))[0])
+        decimal_num = int((str(total).split('.'))[1])
+        text+=num2words(entire_num, lang='en_IN')
+        if entire_num == 1:
+            text+=' dollar '
+        else:
+            text+=' dollars '
+        if decimal_num > 0:
+            text+=num2words(decimal_num, lang='en_IN')
+            if decimal_num == 1:
+                text+=' cent '
+            else:
+                text+=' cents '
+        amount_in_word = text.upper()
+        return amount_in_word
+
+class Undertaking(models.AbstractModel):
+    _name = 'report.taps_accounts.report_undertaking'
+    _description = 'Undertaking'     
 
     def _get_report_values(self, docids, data=None):
         # raise UserError((docids))

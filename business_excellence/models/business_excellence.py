@@ -97,7 +97,7 @@ class BusinessExcellence(models.Model):
             # 'domain': [('employee_id', '=', self.employee_id.id), ('deadline', '=', self.date_close)],
             # 'context': {'default_employee_id': self.employee_id.id},
             'domain': [('business_id', '=', self.id)],
-            'context': "{'create': True}"
+            'context': {'create': True, 'default_criteria_id': self.criteria_id.id, 'default_business_id': self.id}
         }
 
 

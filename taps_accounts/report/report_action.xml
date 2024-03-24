@@ -85,5 +85,17 @@
 			<field name="default_print_option">print</field>
 			<field name="print_report_name">("A.C "+ object.name)</field>
 		</record>
+		<record id="action_report_undertaking" model="ir.actions.report">
+			<field name="name">Undertaking</field>
+			<field name="model">combine.invoice</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="report_name">taps_accounts.report_undertaking</field>
+			<field name="report_file">taps_accounts.report_customer_invoice</field>
+			<field name="binding_model_id" ref="model_combine_invoice"/>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="taps_accounts.paperformat_customer_invoice"/>
+			<field name="default_print_option">print</field>
+			<field name="print_report_name">("U "+ object.name)</field>
+		</record>
     </data>
 </odoo>

@@ -12,6 +12,10 @@
             <field name="model">mrp.output</field>
             <field name="arch" type="xml">
                 <form string="Manufacturing Output">
+                    <header>
+                        <button name="done_mo_output" string="Done" type="object" default_focus="1" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                    </header>
                     <group>
                         <group>
                             <field name="lot_code" widget="lot_code_enter"/>

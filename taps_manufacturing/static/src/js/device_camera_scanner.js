@@ -30,7 +30,7 @@ odoo.define('device_camera.barcode_scanner', function (require) {
                 inputStream: {
                     name: "Live",
                     type: "LiveStream",
-                    target: document.querySelector('#camera_feed'), // Replace with the ID of the element where you want to display the camera feed
+                    target: document.querySelector('lot_code_enter'), // Replace with the ID of the element where you want to display the camera feed
                 },
                 decoder: {
                     readers: ["ean_reader"] // Specify the barcode types you want to scan

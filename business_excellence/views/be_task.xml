@@ -9,15 +9,16 @@
                     <sheet>
                         <div class="oe_title">
                             <div class="oe_edit_only">
-                                <label for="name"/>
+                                <label for="business_id"/>
                             </div>
                             <h1>
-                                <field name="name"/>
+                                <field name="business_id" options="{'no_create':true, 'no_open':true}" invisible="1"/>
                             </h1>
                         </div>
                         <group>
                             <group>
-                                <!-- <field name="title_ids" options="{'no_create':true, 'no_open':true}"/> -->
+                                <field name="criteria_id" options="{'no_create':true, 'no_open':true}" invisible="1"/>
+                                <field name="title_ids" options="{'no_create':true, 'no_open':true}"/>
                                 <field name="description"/>
                                 <field name="start_date"/>
                                 <field name="finish_date"/>
@@ -35,11 +36,12 @@
             <field name="name">business.excellence.task.tree</field>
             <field name="model">business.excellence.task</field>
             <field name="arch" type="xml">
-                <!-- <tree string="Business Excellence task" editable="bottom"> -->
-                <tree string="Business Excellence task">
-                    <field name="name"/>
-                    <field name="business_id" options="{'no_create':true, 'no_open':true}"/>
-                    <!-- <field name="title_ids" options="{'no_create':true, 'no_open':true}"/> -->
+                <tree string="Business Excellence task" editable="bottom">
+                <!-- <tree string="Business Excellence task"> -->
+                    <!-- <field name="name" invisible="1"/> -->
+                    <field name="business_id" options="{'no_create':true, 'no_open':true}" invisible="1"/>
+                    <field name="criteria_id" options="{'no_create':true, 'no_open':true}" invisible="1"/>
+                    <field name="title_ids" options="{'no_create':true, 'no_open':true}"/>
                     <field name="description"/>
                     <field name="start_date"/>
                     <field name="finish_date"/>

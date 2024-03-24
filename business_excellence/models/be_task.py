@@ -7,9 +7,9 @@ from random import randint
 class BusinessExcellenceTask(models.Model):
     _name = 'business.excellence.task'
     _description = 'Business Excellence Task'
-    _inherit = ['mail.thread']
-    _order = "name"
-    _rec_name = 'name'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "title_ids"
+    _rec_name = 'title_ids'
 
     # name = fields.Char('Area Imapct', required=True)
     
@@ -22,8 +22,9 @@ class BusinessExcellenceTask(models.Model):
 
     business_id = fields.Many2one('business.excellence', string='Project', index=True, required=True, ondelete='cascade')
 
-    name = fields.Char('Task', required=True, translate=True)
-    title_ids = fields.Many2one('business.excellence.title', string='Scope', domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
+    name = fields.Char('Name', required=False, translate=True)
+    criteria_id = fields.Many2one('business.excellence.criteria', string='Scope')
+    title_ids = fields.Many2one('business.excellence.title', required=True, string='Task', domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
     description = fields.Text('Description', tracking=True)
     start_date = fields.Date(string = "Start Date")
     finish_date = fields.Date(string = "Finish Date")
@@ -51,7 +52,7 @@ class BusinessExcellenceTask(models.Model):
     #     return super(RetentionMatrix, self).create(vals)
 
     _sql_constraints = [
-        ('name_uniq', 'unique(name)', 'The name of the Business Excellence Task must be unique!'),]      
+        ('name_uniq', 'unique(title_ids)', 'The name of the Business Excellence Task must be unique!'),]      
 
     # @api.model
     # def create(self, vals):

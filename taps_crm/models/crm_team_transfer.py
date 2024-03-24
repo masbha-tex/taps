@@ -1,7 +1,7 @@
 import json
 
 from babel.dates import format_date
-from datetime import date,datetime
+from datetime import date,datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
@@ -144,10 +144,16 @@ class CrmTeamTransfer(models.Model):
         end_date += timedelta(days=1)
         visit = self.env['crm.visit'].sudo().search([('user_id', '=', self.user_id.id),('create_date', '>=',start_date),('create_date', '<', end_date)])
         for rec in visit:
-            rec.write({'team_id': visit.team_id.id})
+            rec.write({'team_id': self.new_team.id})
             
     def _update_sale_order(self):
-        return {}
+        start_date = datetime.combine(self.eff_date, datetime.min.time())
+        end_date = datetime.combine(self.eff_date, datetime.max.time())
+        end_date += timedelta(days=1)
+        sale_order = self.env['sale.order'].sudo().search([('user_id', '=', self.user_id.id),('create_date', '>=',start_date),('create_date', '<', end_date)])
+        for rec in sale_order:
+            rec.write({'team_id': self.new_team.id, 'region_id': self.new_team.region_id.id})
+        
             
                 
         
