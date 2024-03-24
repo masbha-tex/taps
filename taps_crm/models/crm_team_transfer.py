@@ -1,7 +1,7 @@
 import json
 
 from babel.dates import format_date
-from datetime import date
+from datetime import date,datetime
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
@@ -89,7 +89,8 @@ class CrmTeamTransfer(models.Model):
                 self._update_visit()
                 self._update_sale_order()
             if self. type == "remove":
-                self.user_id.sale_team_id = False
+                self._action_remove()
+                
             if self. type == "transfer":
                 self.user_id.sale_team_id = self.new_team.id
             
@@ -117,7 +118,24 @@ class CrmTeamTransfer(models.Model):
                 raise UserError(("Already Exist in this Team"))
         self.user_id.sale_team_id = self.new_team.id
         if self.is_team_leader:
-            self.new_team.user_id = self.user_id.id
+            self.new_team.user_id = self.user_id
+
+    
+
+    def _action_remove(self):
+        if self.new_team.name == 'MARKETING':
+            assign_user = self.env['buyer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
+            if assign_user:
+                assign_user.active = False
+        else:
+            assign_user = self.env['customer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
+            if assign_user:
+                assign_user.write({'active': True})
+                
+        self.user_id.sale_team_id = False
+        if self.user_id.id == self.existing_team.user_id.id:
+            # raise UserError((self.user_id,self.existing_team.user_id))
+            self.existing_team.user_id = False
         
 
     def _update_visit(self):

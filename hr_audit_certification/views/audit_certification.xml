@@ -63,9 +63,15 @@
         </field>
     </record>
 
+      <!-- <menuitem 
+        id="main_hr_audit_certification_menu" 
+        name="Audit &amp; Certification"
+        action="action_hr_audit_certification"
+        groups="hr_audit_certification.group_user_hr_audit_certification"
+        web_icon="hr_audit_certification,static/src/img/icon.png"/> -->
       <menuitem 
         id="main_hr_audit_certification_menu" 
-        name="BE"
+        name="Audit Certification"
         action="action_hr_audit_certification"
         groups="hr_audit_certification.group_user_hr_audit_certification"
         web_icon="hr_audit_certification,static/src/img/icon.png"/>

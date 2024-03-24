@@ -30,7 +30,8 @@ class CombineInvoice(models.Model):
     name = fields.Char(string='Number', copy=False, readonly=False, store=True, index=True, tracking=True)
     currency_id = fields.Many2one('res.currency', store=True, readonly=True, string='Currency')
     line_id = fields.One2many('combine.invoice.line', 'invoice_id', string='Customer Invoice Items', copy=True,  auto_join=True)
-    partner_id = fields.Many2one('res.partner', readonly=True ,string='Partner', states={'draft': [('readonly', False)]})
+    partner_id = fields.Many2one('res.partner', readonly=False ,string='Partner')
+    # , states={'draft': [('readonly', False)]}
     # commercial_partner_id = fields.Many2one('res.partner', string='Commercial Entity', store=True, readonly=True,
     #     compute='_compute_commercial_partner_id', ondelete='restrict')
     # country_code = fields.Char(related='company_id.country_id.code', readonly=True)
@@ -141,7 +142,16 @@ class CombineInvoiceLine(models.Model):
     sequence = fields.Integer(default=10)
     currency_id = fields.Many2one('res.currency', string='Currency')
     product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure')#, domain="[('category_id', '=', product_uom_category_id.id)]"
-    product_id = fields.Many2one('product.product', related='account_move_line.product_id', string='Product Id', ondelete='restrict')
+    product_id = fields.Many2one('product.product', compute='_compute_product_code',inverse='_inverse_compute_product_code', string='Product Id', ondelete='restrict')#related='account_move_line.product_id', 
+    
+    def _inverse_compute_product_code(self):
+        pass
+    
+    @api.depends('account_move_line')
+    def _compute_product_code(self):
+        for rec in self:
+            rec.product_id = rec.account_move_line.product_id.id
+            
     product_uom_category_id = fields.Many2one('uom.category', related='product_id.uom_id.category_id')
     # product_id = fields.Many2one('product.product', related='sale_order_line.product_id', string='Product Id',ondelete='restrict', check_company=True)
     product_template_id = fields.Many2one(

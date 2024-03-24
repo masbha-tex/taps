@@ -6,11 +6,11 @@ from odoo.exceptions import UserError
 class SaleAdvancePaymentInvCustom(models.TransientModel):
     _inherit = "sale.advance.payment.inv"
 
-
     def create_invoices(self):
         sale_orders = self.env['sale.order'].browse(self._context.get('active_ids', []))
         if self.advance_payment_method == 'delivered':
             moves = sale_orders._create_invoices(final=self.deduct_down_payments)
+            
             #----- Start for Mould --------#
             # btn_order = sale_orders.filtered(lambda x: x.company_id.id == 3)
             # order_ref = btn_order.mapped('order_ref')
@@ -36,8 +36,8 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
             #         invoice_vals_list_w = []
             #         invoice_vals_w['line_id'] += invoice_line_vals_w
             #         invoice_vals_list_w.append(invoice_vals_w)
-            #         raise UserError((invoice_vals_list_w))
-            #         com_update = b_moves.sudo().write(invoice_vals_list_w)
+            #         # raise UserError((invoice_vals_list_w))
+            #         com_update = b_moves.sudo().update(invoice_vals_list_w)
             #----- End for Mould --------#
             
             moves.action_post()

@@ -13,7 +13,27 @@ class HrAuditCertification(models.Model):
     employee_id = fields.Many2one('hr.employee', "Employee", tracking=True, required=True)    
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
+    # company_id = fields.Many2one('res.company', 'Company')
+    # department_id = fields.Many2one('hr.department', 'Department', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     date = fields.Date(string = "Date")
+    audit_certification = fields.Text('Audit Certification', tracking=True)
+    type = fields.Selection(selection=[
+        ('1', 'Fire Safety'),
+        ('2', 'Machine Safety'),
+        ('3', 'Buidling Safety'),
+        ('4', 'Electrical Safety'),
+        ('5', 'Chemical Safety'),
+        ('6', 'Social Compliance Aspects'),
+        ('7', 'OHS'),
+        ('8', 'Protection of the Environment')], string="Type", tracking=True)
+    severity = fields.Selection(selection=[
+        ('1', 'Low'),
+        ('2', 'Medium'),
+        ('3', 'High')], string="Severity", tracking=True)
+    observation = fields.Text('Observation', tracking=True) 
+    corrective_action = fields.Text('Corrective Action', tracking=True)
+    preventive_action = fields.Text('Preventive Action', tracking=True)
+    remarks = fields.Text('Remarks', tracking=True)
 
             
     @api.model

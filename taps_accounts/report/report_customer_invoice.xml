@@ -184,7 +184,13 @@
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY:</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    </t>
+                                    <t t-elif="not o.notify_partner">
+                                        <strong>ISSUED BY</strong>
+                                    </t>
+									<!-- <strong>ISSUED BY:</strong> -->
 									<br/>
 									<t t-if="o.issued_by">
 										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
@@ -730,7 +736,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    </t>
+                                    <t t-elif="not o.notify_partner">
+                                        <strong>ISSUED BY</strong>
+                                    </t>
+									<!-- <strong>ISSUED BY</strong> -->
 									<br/>
 									<t t-if="o.issued_by">
 										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
@@ -1208,7 +1220,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    </t>
+                                    <t t-elif="not o.notify_partner">
+                                        <strong>ISSUED BY</strong>
+                                    </t>
+									<!-- <strong>ISSUED BY</strong> -->
 									<br/>
 									<t t-if="o.issued_by">
 										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
@@ -2602,7 +2620,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY:</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    </t>
+                                    <t t-elif="not o.notify_partner">
+                                        <strong>ISSUED BY</strong>
+                                    </t>
+									<!-- <strong>ISSUED BY:</strong> -->
 									<br/>
 									<t t-if="o.issued_by">
 										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
@@ -3148,7 +3172,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    </t>
+                                    <t t-elif="not o.notify_partner">
+                                        <strong>ISSUED BY</strong>
+                                    </t>
+									<!-- <strong>ISSUED BY</strong> -->
 									<br/>
 									<t t-if="o.issued_by">
 										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
@@ -3633,7 +3663,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    </t>
+                                    <t t-elif="not o.notify_partner">
+                                        <strong>ISSUED BY</strong>
+                                    </t>
+									<!-- <strong>ISSUED BY</strong> -->
 									<br/>
 									<t t-if="o.issued_by">
 										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
@@ -4128,7 +4164,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							</div>
                             <div class="col-auto col-2 mw-100 mb-2">
 								<p>
-									<strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    <t t-if="o.notify_partner">
+                                        <strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong>
+                                    </t>
+                                    <t t-elif="not o.notify_partner">
+                                        <strong>ISSUED BY</strong>
+                                    </t>
+									<!-- <strong>ISSUED BY / NOTIFY PARTY IF OTHER THEN APPLICANT</strong> -->
 									<br/>
 									<t t-if="o.issued_by">
 										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
