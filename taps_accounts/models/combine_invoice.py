@@ -213,7 +213,7 @@ class CombineInvoiceReport(models.AbstractModel):
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            without_mould = m_items.filtered(lambda x: x.product_id.id != 118570)
             m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
@@ -333,7 +333,7 @@ class CustomerInvoice(models.AbstractModel):
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            without_mould = m_items.filtered(lambda x: x.product_id.id != 118570)
             m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
@@ -456,7 +456,7 @@ class PackingList(models.AbstractModel):
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            without_mould = m_items.filtered(lambda x: x.product_id.id != 118570)
             m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
@@ -579,7 +579,7 @@ class DeliveryChallan(models.AbstractModel):
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            without_mould = m_items.filtered(lambda x: x.product_id.id != 118570)
             m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
@@ -702,7 +702,7 @@ class TruckReceipt(models.AbstractModel):
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            without_mould = m_items.filtered(lambda x: x.product_id.id != 118570)
             m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
@@ -825,7 +825,7 @@ class BillofExchange(models.AbstractModel):
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            without_mould = m_items.filtered(lambda x: x.product_id.id != 118570)
             m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
@@ -948,7 +948,7 @@ class ApplicantCertificate(models.AbstractModel):
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            without_mould = m_items.filtered(lambda x: x.product_id.id != 118570)
             m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
@@ -1071,7 +1071,7 @@ class Undertaking(models.AbstractModel):
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            without_mould = m_items.filtered(lambda x: x.product_id.id != 118570)
             m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
