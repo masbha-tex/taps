@@ -603,7 +603,8 @@ class HRISPDFReport(models.TransientModel):
                                     direct_reporting += 1
                             else:
                                 other_unit += 1
-                        no_count = same_section + other_section + direct_reporting + other_unit
+                        no_count = same_section + other_section + other_unit
+                        # no_count = same_section + other_section + direct_reporting + other_unit
                                
                     if i == 1:
                         relation = 'Brother to Brother/Sister'
@@ -620,7 +621,8 @@ class HRISPDFReport(models.TransientModel):
                                     direct_reporting += 1
                             else:
                                 other_unit += 1
-                        no_count = same_section + other_section + direct_reporting + other_unit
+                        no_count = same_section + other_section + other_unit
+                        # no_count = same_section + other_section + direct_reporting + other_unit
                     if i == 2:
                         relation = 'Parents/In law to Son/Daughter'
                         no_count = same_section = other_section = direct_reporting = other_unit = 0
@@ -637,7 +639,8 @@ class HRISPDFReport(models.TransientModel):
                                     direct_reporting += 1
                             else:
                                 other_unit += 1
-                        no_count = same_section + other_section + direct_reporting + other_unit
+                        no_count = same_section + other_section + other_unit
+                        # no_count = same_section + other_section + direct_reporting + other_unit
                        
                     if i == 3:
                         relation = 'Uncle to Nephew/Niece'
@@ -654,7 +657,8 @@ class HRISPDFReport(models.TransientModel):
                                     direct_reporting += 1
                             else:
                                 other_unit += 1
-                        no_count = same_section + other_section + direct_reporting + other_unit
+                        no_count = same_section + other_section + other_unit
+                        # no_count = same_section + other_section + direct_reporting + other_unit
                     if i == 4:
                         relation = 'Cousin Brother/Sister'
                         no_count = same_section = other_section = direct_reporting = other_unit = 0
@@ -670,7 +674,8 @@ class HRISPDFReport(models.TransientModel):
                                     direct_reporting += 1
                             else:
                                 other_unit += 1
-                        no_count = same_section + other_section + direct_reporting + other_unit
+                        no_count = same_section + other_section + other_unit
+                        # no_count = same_section + other_section + direct_reporting + other_unit
                         
                     if i == 5:
                         relation = 'Brother In-Law/Sister In-Law'
@@ -687,7 +692,8 @@ class HRISPDFReport(models.TransientModel):
                                     direct_reporting += 1
                             else:
                                 other_unit += 1
-                        no_count = same_section + other_section + direct_reporting + other_unit
+                        no_count = same_section + other_section + other_unit
+                        # no_count = same_section + other_section + direct_reporting + other_unit
                         
                     # if i == 6:
                     #     relation = ''

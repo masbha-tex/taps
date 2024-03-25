@@ -269,7 +269,7 @@ class CombineInvoiceReport(models.AbstractModel):
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
         total_qty = z_total_qty + m_total_pcs
-        total_value = z_total_value + m_total_value
+        #total_value = z_total_value + m_total_value
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -390,7 +390,7 @@ class CustomerInvoice(models.AbstractModel):
                 report_data.append(order_data)
 
         total_qty = z_total_qty + m_total_pcs
-        total_value = z_total_value + m_total_value
+        #total_value = z_total_value + m_total_value
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -511,7 +511,7 @@ class PackingList(models.AbstractModel):
                 report_data.append(order_data)
         
         total_qty = z_total_qty + m_total_pcs
-        total_value = z_total_value + m_total_value
+        #total_value = z_total_value + m_total_value
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -632,7 +632,7 @@ class DeliveryChallan(models.AbstractModel):
                 report_data.append(order_data)
         
         total_qty = z_total_qty + m_total_pcs
-        total_value = z_total_value + m_total_value
+        #total_value = z_total_value + m_total_value
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -753,7 +753,7 @@ class TruckReceipt(models.AbstractModel):
                 report_data.append(order_data)
 
         total_qty = z_total_qty + m_total_pcs
-        total_value = z_total_value + m_total_value        
+        #total_value = z_total_value + m_total_value        
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -874,7 +874,7 @@ class BillofExchange(models.AbstractModel):
                 report_data.append(order_data)
 
         total_qty = z_total_qty + m_total_pcs
-        total_value = z_total_value + m_total_value        
+        #total_value = z_total_value + m_total_value        
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -995,7 +995,7 @@ class ApplicantCertificate(models.AbstractModel):
                 report_data.append(order_data)
 
         total_qty = z_total_qty + m_total_pcs
-        total_value = z_total_value + m_total_value        
+        #total_value = z_total_value + m_total_value        
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -1116,7 +1116,7 @@ class Undertaking(models.AbstractModel):
                 report_data.append(order_data)
 
         total_qty = z_total_qty + m_total_pcs
-        total_value = z_total_value + m_total_value        
+        #total_value = z_total_value + m_total_value        
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode

@@ -4747,17 +4747,17 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <br/>
                                     <p style="text-decoration: underline;">ISSUING BANK:</p>
                                     <br/>
+									<t t-if="o.issued_by">
+										<t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/>
+									</t>
                                     <br/>
-                                    PUBALI BANK LTD.<br/>
-                                    MOTIJHEEL BRANCH<br/>
-                                    DHAKA<br/>
                                 </div>
         						<br/>
                                 <br/>
                                 <br/>
                                 <div class="row">
                                     <div class="col-12 mt-4" style="font-size:12px">
-                                      <p> We do hereby certify that the goods under Invoice No: <t t-esc="o.name"/> DT. <t t-esc="o.invoice_date"/> against<br/><br/>L/C No: <t t-esc="o.lc_no"/> date <t t-esc="o.lc_date"/> have been shipped strictly in accordance with the terms and <br/><br/><span style="font-size:11px">condition of the Proforma Invoice No:</span> <br/><t t-esc="o.pi_numbers"/></p>
+                                      <p> We do hereby certify that the goods under Invoice No: <t t-esc="o.name"/> DT. <t t-esc="o.invoice_date"/> against<br/><br/>L/C No: <t t-esc="o.lc_no"/> date <t t-esc="o.lc_date"/> have been shipped strictly in accordance with the terms and condition of the Proforma Invoice No: <br/><t t-esc="o.pi_numbers"/></p>
                                           <br/>
                                     </div>
                                 </div>
@@ -4798,7 +4798,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                             EXPORT CONTRACT NO.:  <strong></strong>
                                     </div>
                                     <div class="col-6" style="font-size:12px">
-                                            <strong>SAL/7751/10/2023 DT:01.08.2023</strong>
+                                            <strong><t t-esc="o.master_lc"/></strong>
                                     </div>
                                 </div>
                                 <br/>
@@ -4877,7 +4877,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                 <br/>
 
                                 <br/>
-                                <div class="row">
+                                <div class="row" style="color: Black ! important">
                                     <div class="col-12 mt-4">
                                         <div>
                                             <h2> 
@@ -4893,38 +4893,9 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                           <br/>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-3" style="font-size:12px">
-                                        IRC NO:   <strong></strong>
-                                        <br/>
-                                        BIN NO:   <strong></strong>
-                                        <br/>
-                                        TIN NO: <strong></strong>
-                                        <br/>
-                                        BANK BIN NO:  
-                                        <br/>
-                                        H.S. CODE NO:
-                                        
-                                        <br/>
-                                    </div>
-                                    <div class="col-6" style="font-size:12px">
-                                        <strong></strong>
-                                        <br/>
-                                        <strong></strong>
-                                        <br/>
-                                        <strong></strong>
-                                        <br/>
-                                        <strong></strong>
-                                        <br/>
-                                        <strong></strong>
-                                        <br/>
-                                        
-                                    </div>
+ 
                                 </div>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
+
 
                                 <br/>
                                 <br/>
@@ -4962,7 +4933,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     </div>
                                 </div>
                         </div>
-					</div>
+	
 				</t>
 			</t>
 		</t>
