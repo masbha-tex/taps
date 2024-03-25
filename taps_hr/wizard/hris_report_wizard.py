@@ -431,7 +431,7 @@ class HRISPDFReport(models.TransientModel):
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet(('Employee Relationship'))
-
+        worksheet.hide_gridlines(2)
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
         report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF'})
         worksheet.merge_range('A1:J1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
@@ -509,7 +509,7 @@ class HRISPDFReport(models.TransientModel):
 
         
         worksheet1 = workbook.add_worksheet(('Relationship Matrix'))
-
+        worksheet1.hide_gridlines(2)
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
         report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF'})
         worksheet1.merge_range('A1:I1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
