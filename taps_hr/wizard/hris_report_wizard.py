@@ -415,10 +415,12 @@ class HRISPDFReport(models.TransientModel):
                     slnumber,
                     edata.emp_id,
                     edata.name,
+                    edata.company_id.name,
                     edata.department_id.name,
                     edata.employee_relation.name,
                     edata.relationship_id.emp_id,
                     edata.relationship_id.name,
+                    edata.relationship_id.company_id.name,
                     edata.relationship_id.department_id.name,
                     
                 ]
@@ -432,8 +434,8 @@ class HRISPDFReport(models.TransientModel):
 
         report_title_style = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 16, 'bg_color': '#714B62', 'font_color':'#FFFFFF'})
         report_title_style2 = workbook.add_format({'align': 'center', 'bold': True, 'font_size': 14, 'bg_color': '#343A40', 'font_color':'#FFFFFF'})
-        worksheet.merge_range('A1:H1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
-        worksheet.merge_range('A2:H2', 'Employee Relationship Status', report_title_style2)
+        worksheet.merge_range('A1:J1', 'TEX ZIPPERS (BD) LIMITED', report_title_style)
+        worksheet.merge_range('A2:J2', 'Employee Relationship Status', report_title_style2)
 
         report_small_title_style = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'left': True, 'top': True, 'right': True, 'bottom': True})
         report_small_title_style2 = workbook.add_format({'align': 'left','valign': 'vcenter','font_size': 10, 'bg_color': '#714B62', 'font_color':'#FFFFFF','left': True,'bold': True, 'top': True, 'right': True, 'bottom': True})
@@ -453,10 +455,12 @@ class HRISPDFReport(models.TransientModel):
         worksheet.set_column(0, 0, 5)
         worksheet.set_column(1, 1, 7)
         worksheet.set_column(2, 2, 23)
-        worksheet.set_column(3, 4, 26)
-        worksheet.set_column(5, 5, 7)
-        worksheet.set_column(6, 6, 23)
-        worksheet.set_column(7, 7, 26)
+        worksheet.set_column(3, 3, 10)
+        worksheet.set_column(4, 5, 26)
+        worksheet.set_column(6, 6, 7)
+        worksheet.set_column(7, 7, 23)
+        worksheet.set_column(8, 8, 10)
+        worksheet.set_column(9, 9, 26)
         
         # worksheet.set_row(2, 20)
         
@@ -464,11 +468,13 @@ class HRISPDFReport(models.TransientModel):
         worksheet.write(2, 0, 'SL.', column_product_style)
         worksheet.write(2, 1, 'ID', column_product_style)        
         worksheet.write(2, 2, 'Name', column_product_style)
-        worksheet.write(2, 3, 'Section', column_product_style)
-        worksheet.write(2, 4, 'Relation', column_product_style)
-        worksheet.write(2, 5, 'ID', column_product_style)
-        worksheet.write(2, 6, 'Name', column_product_style)
-        worksheet.write(2, 7, 'Section', column_product_style)
+        worksheet.write(2, 3, 'Unit', column_product_style)
+        worksheet.write(2, 4, 'Section', column_product_style)
+        worksheet.write(2, 5, 'Relation', column_product_style)
+        worksheet.write(2, 6, 'ID', column_product_style)
+        worksheet.write(2, 7, 'Name', column_product_style)
+        worksheet.write(2, 8, 'Unit', column_product_style)
+        worksheet.write(2, 9, 'Section', column_product_style)
         col = 0
         row=3
         
@@ -476,10 +482,10 @@ class HRISPDFReport(models.TransientModel):
         for line in report_data:
             col = 0
             for l in line:
-                if col == 4:
+                if col == 5:
                     worksheet.write(row, col, l, report_small_title_style2)
                     col+=1
-                elif (col in (0,1,2,3,5,6,7)):
+                elif (col in (0,1,2,3,4,6,7,8,9)):
                     worksheet.write(row, col, l, report_small_title_style)
                     col+=1
             row+=1

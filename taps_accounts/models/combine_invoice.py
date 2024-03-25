@@ -244,10 +244,10 @@ class CombineInvoiceReport(models.AbstractModel):
                                 qty = sum(single_size.mapped('quantity'))
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
-                                size_value = ''
+                                size_value = unit =''
                                 if size:
                                     size_value = float(re.match(r'^([\d.]+)', size).group(1))
-                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                    unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
                                 order_data = [
@@ -364,10 +364,10 @@ class CustomerInvoice(models.AbstractModel):
                                 price = value/qty
                                 
                                 
-                                size_value = ''
+                                size_value = unit = ''
                                 if size:
                                     size_value = float(re.match(r'^([\d.]+)', size).group(1))
-                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                    unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
                                 order_data = [
@@ -485,10 +485,10 @@ class PackingList(models.AbstractModel):
                                 price = value/qty
                                 
                                 
-                                size_value = ''
+                                size_value = unit = ''
                                 if size:
                                     size_value = float(re.match(r'^([\d.]+)', size).group(1))
-                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                    unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
                                 order_data = [
@@ -606,10 +606,10 @@ class DeliveryChallan(models.AbstractModel):
                                 price = value/qty
                                 
                                 
-                                size_value = ''
+                                size_value = unit = ''
                                 if size:
                                     size_value = float(re.match(r'^([\d.]+)', size).group(1))
-                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                    unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
                                 order_data = [
@@ -727,10 +727,10 @@ class TruckReceipt(models.AbstractModel):
                                 price = value/qty
                                 
                                 
-                                size_value = ''
+                                size_value = unit = ''
                                 if size:
                                     size_value = float(re.match(r'^([\d.]+)', size).group(1))
-                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                    unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
                                 order_data = [
@@ -848,10 +848,10 @@ class BillofExchange(models.AbstractModel):
                                 price = value/qty
                                 
                                 
-                                size_value = ''
+                                size_value = unit = ''
                                 if size:
                                     size_value = float(re.match(r'^([\d.]+)', size).group(1))
-                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                    unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
                                 order_data = [
@@ -969,10 +969,10 @@ class ApplicantCertificate(models.AbstractModel):
                                 price = value/qty
                                 
                                 
-                                size_value = ''
+                                size_value = unit = ''
                                 if size:
                                     size_value = float(re.match(r'^([\d.]+)', size).group(1))
-                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                    unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
                                 order_data = [
@@ -1090,10 +1090,10 @@ class Undertaking(models.AbstractModel):
                                 price = value/qty
                                 
                                 
-                                size_value = ''
+                                size_value = unit = ''
                                 if size:
                                     size_value = float(re.match(r'^([\d.]+)', size).group(1))
-                                unit = re.match(r'^[\d.]+(\D+)', size).group(1)
+                                    unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
                                 order_data = [

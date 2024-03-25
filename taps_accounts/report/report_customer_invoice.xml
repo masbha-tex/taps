@@ -4853,20 +4853,20 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
         						<div>
         							<div class="float-left">
         								<h2 class="mt15" style="font-size: 12px">
-        									<span style="color: Black ! important">REF: TZBD/2023-24/3381</span>
+        									<span style="color: Black ! important"><t t-esc="o.name"/></span>
         								</h2>
                                         <h2 class="mt15" style="font-size: 12pt; font-weight: bold;">
         									<span style="color: Black ! important">Date: 19.03.2024</span>
         								</h2>
                                         <br/>
                                         <br/>
-                                        <h2 class="mt15" style="font-size: 12px">
+                                        <h2 class="mt15" style="font-size: 11pt">
         									<span style="color: Black ! important">The Executive Director </span>
         								</h2>
-                                        <h2 class="mt15" style="font-size: 12px">
+                                        <h2 class="mt15" style="font-size: 11pt">
         									<span style="color: Black ! important">Adamjee Export Processing Zone </span>
         								</h2>
-                                        <h2 class="mt15" style="font-size: 12px">
+                                        <h2 class="mt15" style="font-size: 11pt">
         									<span style="color: Black ! important">AdamjeeNagar,Shiddirgonj, Narayangonj.  </span>
         								</h2>
         							</div>
@@ -4888,7 +4888,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                             </h2>
                                         </div>
                                       <p style="font-size: 11pt; text-align: justify;"> We do here by certifying that the goods as described in the Invoice
-<span>No.</span> <span style="font-size: 12pt; font-weight: bold;" /> <span>Date  <t t-esc="o.invoice_date"/>,</span> for <b>USD: 1679 </b>. been manufactured in our factory in Adamjee port Processing Zone Adamjee Nagar, Shiddhirgonj,Narayangonj. In accordance with the approval of the authority <span style="font-size: 12pt; font-weight: bold;" t-esc="o.partner_id.name"/>,at present international market price against <b>S.C/LC 147524120263  DATED: 07.02.2024</b> ,other undertake that we shall abide by the rules and regulations of the Government and BEPZA in connection with the export and held liable in case of any default. Being duly authorized by the board of Directors of our Company, the undersigned issues the above statement on behalf of the Company. In view of the above, please issue us the Export permit.
+<span>No.</span> <span style="font-size: 12pt; font-weight: bold;"> <t t-esc="o.name"/> </span>  <span>Date  <t t-esc="o.invoice_date"/>,</span> for <b>USD: 1679 </b>. been manufactured in our factory in Adamjee port Processing Zone Adamjee Nagar, Shiddhirgonj,Narayangonj. In accordance with the approval of the authority <span style="font-size: 12pt; font-weight: bold;" t-esc="o.partner_id.name"/>,at present international market price against <b><t t-esc="o.lc_no"/> DATED <t t-esc="o.lc_date"/></b> ,other undertake that we shall abide by the rules and regulations of the Government and BEPZA in connection with the export and held liable in case of any default. Being duly authorized by the board of Directors of our Company, the undersigned issues the above statement on behalf of the Company. In view of the above, please issue us the Export permit.
 </p>
                                           <br/>
                                     </div>
