@@ -106,7 +106,7 @@
             </field>
         </record>
         <record id="business_excellence_tree_action" model="ir.actions.act_window">
-            <field name="name">Business Excellence Title</field>
+            <field name="name">Business Excellence Scope</field>
             <field name="res_model">business.excellence.criteria</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="search_view_id" ref="view_business_excellence_filter"/>

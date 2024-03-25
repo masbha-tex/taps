@@ -86,7 +86,7 @@
         </record>
 
         <record id="action_business_excellence_title" model="ir.actions.act_window">
-            <field name="name">Business Excellence Title</field>
+            <field name="name">Business Excellence Task</field>
             <field name="res_model">business.excellence.title</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="search_view_id" ref="view_business_excellence_title_filter"/>
@@ -101,7 +101,7 @@
         </record>
         <menuitem
             id="menu_business_excellence_title_tree"
-            name="Title"
+            name="Task"
             action="action_business_excellence_title"
             parent="business_excellence.menu_business_excellence_config_settings"
             groups="hr.group_hr_manager"

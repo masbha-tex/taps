@@ -22,6 +22,7 @@
                                 <field name="description"/>
                                 <field name="start_date"/>
                                 <field name="finish_date"/>
+                                <field name="state"/>
                                 <field name="attachment_no"/>
                                 <button name="action_open_attachments" string="Attachments" type="object"/>
                                 <field name="attachment"/>
@@ -45,6 +46,13 @@
                     <field name="description"/>
                     <field name="start_date"/>
                     <field name="finish_date"/>
+                    <field name="state"/>
+                    <!-- <field name="state" widget="selection">
+                        <option name="color1" style="background-color: #ff0000;" />
+                        <option name="color2" style="background-color: #00ff00;" />
+                        <option name="color3" style="background-color: #0000ff;" />
+                    </field> -->
+
                     <field name="attachment_no"/>
                     <button name="action_open_attachments" string="Attachments" type="object"/>
                     <field name="attachment"/>
@@ -67,7 +75,7 @@
 
 
         <record id="business_excellence_task_tree_action" model="ir.actions.act_window">
-            <field name="name">Business Excellence Area task</field>
+            <field name="name">Business Excellence Task</field>
             <field name="res_model">business.excellence.task</field>
             <field name="view_id" ref="view_business_excellence_task_tree"/>
             <field name="help" type="html">

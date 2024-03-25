@@ -4853,30 +4853,43 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
         						<div>
         							<div class="float-left">
         								<h2 class="mt15" style="font-size: 12px">
-        									<span style="color: Black ! important">Applicant’s Certificate</span>
+        									<span style="color: Black ! important">REF: TZBD/2023-24/3381</span>
+        								</h2>
+                                        <h2 class="mt15" style="font-size: 12px">
+        									<span style="color: Black ! important">Date: 19.03.2024</span>
+        								</h2>
+                                        <br/>
+                                        <br/>
+                                        <h2 class="mt15" style="font-size: 12px">
+        									<span style="color: Black ! important">The Executive Director </span>
+        								</h2>
+                                        <h2 class="mt15" style="font-size: 12px">
+        									<span style="color: Black ! important">Adamjee Export Processing Zone </span>
+        								</h2>
+                                        <h2 class="mt15" style="font-size: 12px">
+        									<span style="color: Black ! important">AdamjeeNagar,Shiddirgonj, Narayangonj.  </span>
         								</h2>
         							</div>
         						</div>
                                 <br/>
-                                <div class="text-center" style="font-size: 12px">
-                                    <strong>Date : <t t-if="o.invoice_date">
-                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
-                                    </t></strong>
-                                    <br/>
-                                    <br/>
-                                    <p style="text-decoration: underline;">ISSUING BANK:</p>
-                                    <br/>
-                                    <br/>
-                                    PUBALI BANK LTD.<br/>
-                                    MOTIJHEEL BRANCH<br/>
-                                    DHAKA<br/>
-                                </div>
+
         						<br/>
                                 <br/>
+
                                 <br/>
                                 <div class="row">
-                                    <div class="col-12 mt-4" style="font-size:12px">
-                                      <p> We do hereby certify that the goods under Invoice No: TZBD/2023-24/3319 DT. 13.03.2024 against<br/><br/>L/C No: '' 0000019524120273 date 11.03.2024 have been shipped strictly in accordance with the terms and <br/><br/><span style="font-size:11px">condition of the Proforma Invoice No:</span> <br/>TZBD- Z007621 DT-29-02-2024,TZBD- B502070 DT-29-02-2024</p>
+                                    <div class="col-12 mt-4">
+                                        <div>
+                                            <h2> 
+                                                <span style="font-size: 14pt; font-weight: bold;"> Sub: Undertaking and request for Issuance of Export permit.</span>
+                                            </h2>
+                                            <h2> 
+                                                <span style="font-size: 14pt;"> Dear Sir,</span>
+                                            </h2>
+                                        </div>
+                                      <p style="font-size: 11pt; text-align: justify;"> We do here by certifying that the goods as described in the invoice
+<span>No.</span> <span style="font-size: 12pt; font-weight: bold;">TZBD/2023-24/3381</span> <span>Date 19.03.2024,</span> for <b>USD: 1679 </b>. been manufactured in our factory in Adamjee port Processing Zone Adamjee Nagar, Shiddhirgonj,Narayangonj. In accordance with the approval of the authority <span style="font-size: 12pt; font-weight: bold;" t-esc="o.partner_id.name"/>,at present international market price against <b>S.C/LC 147524120263  DATED: 07.02.2024</b> ,other undertake that we shall abide by the rules and regulations of the Government and BEPZA in connection with the export and held liable in case of any default. Being duly authorized by the board of Directors of our Company, the undersigned issues the above statement on behalf of the Company. In view of the above, please issue us the Export permit.
+</p>
                                           <br/>
                                     </div>
                                 </div>
@@ -4912,24 +4925,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                 <br/>
                                 <br/>
                                 <br/>
-                                <div class="row">
-                                    <div class="col-3" style="font-size:12px">
-                                            EXPORT CONTRACT NO.:  <strong></strong>
-                                    </div>
-                                    <div class="col-6" style="font-size:12px">
-                                            <strong>SAL/7751/10/2023 DT:01.08.2023</strong>
-                                    </div>
-                                </div>
+
                                 <br/>
                                 <br/>
-                                <div class="row" style="font-size:12px">
-                                    <div class="col-12 mt-4" style="font-size:12px">
-                                        <p>Above goods are acknowledged and received in good condition of package and full quantity as per PI</p>
-                                    </div>
-                                </div>
+
                                 <div class="row" style="text-decoration: underline; font-size:12px">
                                     <div class="col-12 mt-4" style="font-size:12px">
-                                        <span t-esc="o.partner_id.name"/>
+                                        <span> Thanking you for </span>
                                     </div>
                                 </div>
                                 <br/>
@@ -4945,10 +4947,17 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                                 <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
                                             </t>
                                             <div>
-                                                <span>______________________</span>
-                                                <br/>
-                                                <span>AUTHORISED SIGNATORY</span>
+                                                <!-- <span>______________________</span>
+                                                <br/> -->
+                                                <span>TEX ZIPPERS (BD) LIMITED    </span>
                                             </div>
+                                            <br/>
+                                            <br/>
+                                            <span>Include</span>
+                                            <span>1.Commercial Invoice  </span>
+                                            <span>2.Packing list </span>
+                                            <span>3.Exp Form </span>
+                                            <span>4.LC</span>
                                         </div>
                                     </div>
                                 </div>

@@ -2333,6 +2333,10 @@ class SaleOrderLine(models.Model):
             self.logo='WREATH'
             self.logoref='D-866'
             self.finish_ref='TS-411703'
+        elif self.product_template_id.name == 'HOLE SHANK BUTTON 100219069':
+            self.logo='WREATH'
+            self.logoref='D-866'
+            self.finish_ref='TS-4117'
         
                 
         self._compute_tax_id()

@@ -149,7 +149,7 @@ class CombineInvoiceLine(models.Model):
     sequence = fields.Integer(default=10)
     currency_id = fields.Many2one('res.currency', string='Currency')
     product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure')#, domain="[('category_id', '=', product_uom_category_id.id)]"
-    product_id = fields.Many2one('product.product', compute='_compute_product_code',inverse='_inverse_compute_product_code', string='Product Id', ondelete='restrict')#related='account_move_line.product_id', 
+    product_id = fields.Many2one('product.product', compute='_compute_product_code',inverse='_inverse_compute_product_code', string='Product Id', ondelete='restrict',store=True)# 
     
     def _inverse_compute_product_code(self):
         pass

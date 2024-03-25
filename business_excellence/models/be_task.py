@@ -30,18 +30,32 @@ class BusinessExcellenceTask(models.Model):
     finish_date = fields.Date(string = "Finish Date")
     attachment_no = fields.Text('Document No', tracking=True)
     attachment = fields.Binary('Evidence', attachment=True)
+    state = fields.Selection([
+            ('Active', 'Active'),
+            ('Inprocess', 'Inprocess'),
+            ('Hold', 'Hold'),
+            ('Rejected', 'Rejected'),
+            ('Not Started', 'Identified/Not Started'),
+            ('Completed', 'Completed')], 'Status', required=True, tracking=True, default='Active')
 
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
 
     def action_open_attachments(self):
         return {
             'name': 'Attachments',
-            'view_type': 'form',
+            'view_type': 'tree',
             'view_mode': 'tree,form',
             'res_model': 'ir.attachment',
             'domain': [('id', 'in', self.attachment_ids.ids)],
             'target': 'current',
             }
+        # res = self.env['ir.actions.act_window']._for_xml_id('base.action_attachment')
+        # res['domain'] = [('res_model', '=', 'business.excellence.task'), ('res_id', 'in', self.ids)]
+        # res['context'] = {
+        #     'default_res_model': 'business.excellence.task',
+        #     'default_res_id': self.id,
+        # }
+        # return res        
     # active = fields.Boolean('Active', default=True)
     # color = fields.Integer('Color', default=_get_default_color)
 

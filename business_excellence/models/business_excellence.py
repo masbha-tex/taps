@@ -89,7 +89,7 @@ class BusinessExcellence(models.Model):
     def view_task(self):
         self.ensure_one()
         return {
-            'name': _('%s Task') % self.name,
+            'name': _('%s _Task') % self.name,
             'view_mode': 'tree,form',
             'res_model': 'business.excellence.task',
             'type': 'ir.actions.act_window',

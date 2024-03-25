@@ -36,7 +36,7 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
             #         invoice_vals_list_w = []
             #         invoice_vals_w['line_id'] += invoice_line_vals_w
             #         invoice_vals_list_w.append(invoice_vals_w)
-            #         # raise UserError((invoice_vals_list_w))
+            #         raise UserError((invoice_vals_list_w[0]))
             #         com_update = b_moves.sudo().update(invoice_vals_list_w)
             #----- End for Mould --------#
             
