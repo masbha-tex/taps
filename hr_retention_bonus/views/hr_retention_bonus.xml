@@ -6,7 +6,7 @@
         <field name="name">hr.retention.bonus.tree</field>
         <field name="model">hr.retention.bonus</field>
         <field name="arch" type="xml">
-            <tree string="Retention Requests" sample="1">
+            <tree string="Retention Requests" multi_edit="1" edit="1" sample="1">
                 <field name="name"/>
                 <field name="employee_id" options="{'no_create': True}"/>
                 <field name="criteria"/>

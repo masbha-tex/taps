@@ -262,6 +262,8 @@ class CombineInvoiceReport(models.AbstractModel):
                                     ]
                                 report_data.append(order_data)
                 order_data = []
+                if len(companies) == 1 and com.id == 3:
+                    m_total_pcs = m_total_pcs/144
                 if com.id == 1:
                     order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
@@ -382,6 +384,8 @@ class CustomerInvoice(models.AbstractModel):
                                     ]
                                 report_data.append(order_data)
                 order_data = []
+                if len(companies) == 1 and com.id == 3:
+                    m_total_pcs = m_total_pcs/144
                 if com.id == 1:
                     order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
@@ -503,6 +507,8 @@ class PackingList(models.AbstractModel):
                                     ]
                                 report_data.append(order_data)
                 order_data = []
+                if len(companies) == 1 and com.id == 3:
+                    m_total_pcs = m_total_pcs/144
                 if com.id == 1:
                     order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
@@ -624,6 +630,8 @@ class DeliveryChallan(models.AbstractModel):
                                     ]
                                 report_data.append(order_data)
                 order_data = []
+                if len(companies) == 1 and com.id == 3:
+                    m_total_pcs = m_total_pcs/144
                 if com.id == 1:
                     order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
@@ -745,6 +753,8 @@ class TruckReceipt(models.AbstractModel):
                                     ]
                                 report_data.append(order_data)
                 order_data = []
+                if len(companies) == 1 and com.id == 3:
+                    m_total_pcs = m_total_pcs/144
                 if com.id == 1:
                     order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
@@ -866,6 +876,8 @@ class BillofExchange(models.AbstractModel):
                                     ]
                                 report_data.append(order_data)
                 order_data = []
+                if len(companies) == 1 and com.id == 3:
+                    m_total_pcs = m_total_pcs/144
                 if com.id == 1:
                     order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
@@ -987,6 +999,8 @@ class ApplicantCertificate(models.AbstractModel):
                                     ]
                                 report_data.append(order_data)
                 order_data = []
+                if len(companies) == 1 and com.id == 3:
+                    m_total_pcs = m_total_pcs/144
                 if com.id == 1:
                     order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
@@ -1108,6 +1122,8 @@ class Undertaking(models.AbstractModel):
                                     ]
                                 report_data.append(order_data)
                 order_data = []
+                if len(companies) == 1 and com.id == 3:
+                    m_total_pcs = m_total_pcs/144
                 if com.id == 1:
                     order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
