@@ -96,7 +96,7 @@ class CombineInvoice(models.Model):
     freight_colect = fields.Selection([
             ('freight', 'FREIGHT COLLECT'),
             ('freight_to', 'FREIGHT TO COLLECT'),
-            ('rapid', 'RAPID COLLECT'),
+            ('rapid', 'FREIGHT PREPAID'),
             ('nothing', 'NOTHING')],
             string='Freight', default='freight')
     
@@ -209,11 +209,12 @@ class CombineInvoiceReport(models.AbstractModel):
             total_value = total
         if z_items:
             ex_items = 'ZIPPER'
-            z_total = sum(z_items.mapped('quantity'))
+            z_total_qty = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            m_total = sum(m_items.mapped('quantity'))
+            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
         if z_items and m_items:
@@ -243,8 +244,9 @@ class CombineInvoiceReport(models.AbstractModel):
                                 qty = sum(single_size.mapped('quantity'))
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
-                                
-                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                size_value = ''
+                                if size:
+                                    size_value = float(re.match(r'^([\d.]+)', size).group(1))
                                 unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
@@ -261,12 +263,13 @@ class CombineInvoiceReport(models.AbstractModel):
                                 report_data.append(order_data)
                 order_data = []
                 if com.id == 1:
-                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
+                    order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
                     order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
-
+        total_qty = z_total_qty + m_total_pcs
+        total_value = z_total_value + m_total_value
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -324,11 +327,12 @@ class CustomerInvoice(models.AbstractModel):
             total_value = total
         if z_items:
             ex_items = 'ZIPPER'
-            z_total = sum(z_items.mapped('quantity'))
+            z_total_qty = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            m_total = sum(m_items.mapped('quantity'))
+            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
         if z_items and m_items:
@@ -359,7 +363,10 @@ class CustomerInvoice(models.AbstractModel):
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
                                 
-                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                
+                                size_value = ''
+                                if size:
+                                    size_value = float(re.match(r'^([\d.]+)', size).group(1))
                                 unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
@@ -376,12 +383,14 @@ class CustomerInvoice(models.AbstractModel):
                                 report_data.append(order_data)
                 order_data = []
                 if com.id == 1:
-                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
+                    order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
                     order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
 
+        total_qty = z_total_qty + m_total_pcs
+        total_value = z_total_value + m_total_value
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -439,11 +448,12 @@ class PackingList(models.AbstractModel):
             total_value = total
         if z_items:
             ex_items = 'ZIPPER'
-            z_total = sum(z_items.mapped('quantity'))
+            z_total_qty = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            m_total = sum(m_items.mapped('quantity'))
+            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
         if z_items and m_items:
@@ -474,7 +484,10 @@ class PackingList(models.AbstractModel):
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
                                 
-                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                
+                                size_value = ''
+                                if size:
+                                    size_value = float(re.match(r'^([\d.]+)', size).group(1))
                                 unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
@@ -491,12 +504,14 @@ class PackingList(models.AbstractModel):
                                 report_data.append(order_data)
                 order_data = []
                 if com.id == 1:
-                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
+                    order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
                     order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
-
+        
+        total_qty = z_total_qty + m_total_pcs
+        total_value = z_total_value + m_total_value
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -554,11 +569,12 @@ class DeliveryChallan(models.AbstractModel):
             total_value = total
         if z_items:
             ex_items = 'ZIPPER'
-            z_total = sum(z_items.mapped('quantity'))
+            z_total_qty = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            m_total = sum(m_items.mapped('quantity'))
+            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
         if z_items and m_items:
@@ -589,7 +605,10 @@ class DeliveryChallan(models.AbstractModel):
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
                                 
-                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                
+                                size_value = ''
+                                if size:
+                                    size_value = float(re.match(r'^([\d.]+)', size).group(1))
                                 unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
@@ -606,12 +625,14 @@ class DeliveryChallan(models.AbstractModel):
                                 report_data.append(order_data)
                 order_data = []
                 if com.id == 1:
-                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
+                    order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
                     order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
-
+        
+        total_qty = z_total_qty + m_total_pcs
+        total_value = z_total_value + m_total_value
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -669,11 +690,12 @@ class TruckReceipt(models.AbstractModel):
             total_value = total
         if z_items:
             ex_items = 'ZIPPER'
-            z_total = sum(z_items.mapped('quantity'))
+            z_total_qty = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            m_total = sum(m_items.mapped('quantity'))
+            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
         if z_items and m_items:
@@ -704,7 +726,10 @@ class TruckReceipt(models.AbstractModel):
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
                                 
-                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                
+                                size_value = ''
+                                if size:
+                                    size_value = float(re.match(r'^([\d.]+)', size).group(1))
                                 unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
@@ -721,12 +746,14 @@ class TruckReceipt(models.AbstractModel):
                                 report_data.append(order_data)
                 order_data = []
                 if com.id == 1:
-                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
+                    order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
                     order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
 
+        total_qty = z_total_qty + m_total_pcs
+        total_value = z_total_value + m_total_value        
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -784,11 +811,12 @@ class BillofExchange(models.AbstractModel):
             total_value = total
         if z_items:
             ex_items = 'ZIPPER'
-            z_total = sum(z_items.mapped('quantity'))
+            z_total_qty = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            m_total = sum(m_items.mapped('quantity'))
+            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
         if z_items and m_items:
@@ -819,7 +847,10 @@ class BillofExchange(models.AbstractModel):
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
                                 
-                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                
+                                size_value = ''
+                                if size:
+                                    size_value = float(re.match(r'^([\d.]+)', size).group(1))
                                 unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
@@ -836,12 +867,14 @@ class BillofExchange(models.AbstractModel):
                                 report_data.append(order_data)
                 order_data = []
                 if com.id == 1:
-                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
+                    order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
                     order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
 
+        total_qty = z_total_qty + m_total_pcs
+        total_value = z_total_value + m_total_value        
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -899,11 +932,12 @@ class ApplicantCertificate(models.AbstractModel):
             total_value = total
         if z_items:
             ex_items = 'ZIPPER'
-            z_total = sum(z_items.mapped('quantity'))
+            z_total_qty = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            m_total = sum(m_items.mapped('quantity'))
+            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
         if z_items and m_items:
@@ -934,7 +968,10 @@ class ApplicantCertificate(models.AbstractModel):
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
                                 
-                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                
+                                size_value = ''
+                                if size:
+                                    size_value = float(re.match(r'^([\d.]+)', size).group(1))
                                 unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
@@ -951,12 +988,14 @@ class ApplicantCertificate(models.AbstractModel):
                                 report_data.append(order_data)
                 order_data = []
                 if com.id == 1:
-                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
+                    order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
                     order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
 
+        total_qty = z_total_qty + m_total_pcs
+        total_value = z_total_value + m_total_value        
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode
@@ -1014,11 +1053,12 @@ class Undertaking(models.AbstractModel):
             total_value = total
         if z_items:
             ex_items = 'ZIPPER'
-            z_total = sum(z_items.mapped('quantity'))
+            z_total_qty = sum(z_items.mapped('quantity'))
             z_total_value = sum(z_items.mapped('price_total'))
         if m_items:
             ex_items = 'BUTTON'
-            m_total = sum(m_items.mapped('quantity'))
+            without_mould = m_items.filtered(lambda x: x.product_id != 118570)
+            m_total = sum(without_mould.mapped('quantity'))
             m_total_pcs = m_total*144
             m_total_value = sum(m_items.mapped('price_total'))
         if z_items and m_items:
@@ -1049,7 +1089,10 @@ class Undertaking(models.AbstractModel):
                                 value = sum(single_size.mapped('price_subtotal'))
                                 price = value/qty
                                 
-                                size_value = float(re.match(r'^([\d.]+)', size).group(1))
+                                
+                                size_value = ''
+                                if size:
+                                    size_value = float(re.match(r'^([\d.]+)', size).group(1))
                                 unit = re.match(r'^[\d.]+(\D+)', size).group(1)
                                 
                                 order_data = []
@@ -1066,12 +1109,14 @@ class Undertaking(models.AbstractModel):
                                 report_data.append(order_data)
                 order_data = []
                 if com.id == 1:
-                    order_data = ['Sub Total (zipper)','','','',z_total,'',round(z_total_value,2),'',]
+                    order_data = ['Sub Total (zipper)','','','',z_total_qty,'',round(z_total_value,2),'',]
                 if com.id == 3:
                     order_data = ['Sub Total (button)','','','',m_total_pcs,'',round(m_total_value,2),'',]
                 # raise UserError((com.id,order_data))
                 report_data.append(order_data)
 
+        total_qty = z_total_qty + m_total_pcs
+        total_value = z_total_value + m_total_value        
         sales_person = None
         sales_person = docs.line_id[0].sale_order_line[0].order_id.user_id.name
         shipment_mode = docs.line_id[0].sale_order_line[0].order_id.shipment_mode

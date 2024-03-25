@@ -54,8 +54,9 @@
                     </field> -->
 
                     <field name="attachment_no"/>
-                    <button name="action_open_attachments" string="Attachments" type="object"/>
-                    <field name="attachment"/>
+                    <!-- <button name="action_open_attachments" string="Attachments" type="object"/> -->
+                    <button name="action_get_attachment_view" string="Attachments" type="object" icon="fa-paperclip"/>    
+                    <!-- <field name="attachment"/> -->
                     <!-- <field name="color" widget="color_picker"/> -->
                 </tree>
             </field>
