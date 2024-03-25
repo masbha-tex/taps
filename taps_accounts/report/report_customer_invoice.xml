@@ -2267,7 +2267,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-12" style="font-size:12px">
                                         
                                         <div class="float-right mt32 mb32 ! important">
-        									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            <t t-if="o.beneficiary.id == 2">
+                                                <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                            </t>
+                                            <t t-if="o.beneficiary.id != 2">
+                                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            </t>
         									<div>
         										<span>______________________</span>
         										<br/>
@@ -4672,7 +4677,12 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-12" style="font-size:12px">
                                         
                                         <div class="float-right mt32 mb32 ! important">
-        									<img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            <t t-if="o.beneficiary.id == 2">
+                                                <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                            </t>
+                                            <t t-if="o.beneficiary.id != 2">
+                                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
+                                            </t>
         									<div>
         										<span>______________________</span>
         										<br/>
