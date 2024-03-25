@@ -2195,13 +2195,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-3" style="font-size:12px">
                                         Against Invoice No:   <strong></strong>
                                         <br/>
-                                        <br/>
                                         Drawn letter of Credit No:   <strong></strong>
                                         <br/>
                                         APPLICANT'S TIN: <strong></strong>
                                         <br/>
                                         VAT REG.NO. :  
-                                        <br/>
                                         <br/>
                                         TIN NO:
                                         <br/>
@@ -2209,9 +2207,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         H.S. CODE 
                                         <br/>
-                                        <br/>
                                         Export LC no:
-                                        <br/>
                                         <br/>
                                         Drawn Under : 
                                         <br/>
@@ -2219,13 +2215,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-6" style="font-size:12px">
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
-                                        <br/>
                                         <strong><t t-esc="o.lc_no"/> </strong>
                                         <br/>
                                         <strong><t t-esc="o.applicant_tin"/> </strong>
                                         <br/>
                                         <strong><t t-esc="o.bin_vat_reg"/> </strong>
-                                        <br/>
                                         <br/>
                                         <strong><t t-esc="o.tin_no"/> </strong>
                                         <br/>
@@ -2233,17 +2227,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         <strong><t t-esc="o.hs_code"/></strong>
                                         <br/>
-                                        <br/>
                                         <strong><t t-esc="o.master_lc"/> </strong>
                                         <!-- <t t-esc="o.master_date"/> -->
-                                        <br/>
                                         <br/>
                                         <strong><t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/> </strong>
                                         <br/>
                                     </div>
                                     <div class="col-1" style="font-size:12px">
                                          DATE:   <strong></strong>
-                                        <br/>
                                         <br/>
                                          DATE:  <strong></strong>
                                         <br/>
@@ -2252,7 +2243,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <t t-if="o.invoice_date">
                                             <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
                                         </t>
-                                        <br/>
                                         <br/>
                                         <t t-if="o.lc_date">
                                             <t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
@@ -4480,13 +4470,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-3" style="font-size:12px">
                                         Against Invoice No:   <strong></strong>
                                         <br/>
-                                        <br/>
                                         Drawn letter of Credit No:   <strong></strong>
                                         <br/>
                                         APPLICANT'S TIN: <strong></strong>
                                         <br/>
                                         VAT REG.NO. :  
-                                        <br/>
                                         <br/>
                                         TIN NO:
                                         <br/>
@@ -4494,9 +4482,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         H.S. CODE 
                                         <br/>
-                                        <br/>
                                         Export LC no:
-                                        <br/>
                                         <br/>
                                         Drawn Under : 
                                         <br/>
@@ -4504,13 +4490,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-6" style="font-size:12px">
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
-                                        <br/>
                                         <strong><t t-esc="o.lc_no"/> </strong>
                                         <br/>
                                         <strong><t t-esc="o.applicant_tin"/> </strong>
                                         <br/>
                                         <strong><t t-esc="o.bin_vat_reg"/> </strong>
-                                        <br/>
                                         <br/>
                                         <strong><t t-esc="o.tin_no"/> </strong>
                                         <br/>
@@ -4518,17 +4502,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         <strong><t t-esc="o.hs_code"/></strong>
                                         <br/>
-                                        <br/>
                                         <strong><t t-esc="o.master_lc"/></strong>
                                             <!-- <t t-esc="o.master_date"/>  -->
-                                        <br/>
                                         <br/>
                                         <strong><t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/> </strong>
                                         <br/>
                                     </div>
                                     <div class="col-1" style="font-size:12px">
                                          DATE:   <strong></strong>
-                                        <br/>
                                         <br/>
                                          DATE:  <strong></strong>
                                         <br/>
@@ -4537,7 +4518,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <t t-if="o.invoice_date">
                                             <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
     									</t>
-                                        <br/>
                                         <br/>
                                         <t t-if="o.invoice_date">
                                             <t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
@@ -4620,13 +4600,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-3" style="font-size:12px">
                                         Against Invoice No:   <strong></strong>
                                         <br/>
-                                        <br/>
                                         Drawn letter of Credit No:   <strong></strong>
                                         <br/>
                                         APPLICANT'S TIN: <strong></strong>
                                         <br/>
                                         VAT REG.NO. :  
-                                        <br/>
                                         <br/>
                                         TIN NO:
                                         <br/>
@@ -4634,9 +4612,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         H.S. CODE 
                                         <br/>
-                                        <br/>
                                         Export LC no:
-                                        <br/>
                                         <br/>
                                         Drawn Under : 
                                         <br/>
@@ -4644,13 +4620,11 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                     <div class="col-6" style="font-size:12px">
                                         <strong><t t-esc="o.name"/> </strong>
                                         <br/>
-                                        <br/>
                                         <strong><t t-esc="o.lc_no"/> </strong>
                                         <br/>
                                         <strong><t t-esc="o.applicant_tin"/> </strong>
                                         <br/>
                                         <strong><t t-esc="o.bin_vat_reg"/> </strong>
-                                        <br/>
                                         <br/>
                                         <strong><t t-esc="o.tin_no"/> </strong>
                                         <br/>
@@ -4658,17 +4632,14 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         <strong><t t-esc="o.hs_code"/></strong>
                                         <br/>
-                                        <br/>
                                         <strong><t t-esc="o.master_lc"/> </strong>
                                         <!-- <t t-esc="o.master_date"/> -->
-                                        <br/>
                                         <br/>
                                         <strong><t t-esc="o.issued_by.name"/>  <t t-esc="o.issued_address"/> </strong>
                                         <br/>
                                     </div>
                                     <div class="col-1" style="font-size:12px">
                                          DATE:   <strong></strong>
-                                        <br/>
                                         <br/>
                                          DATE:  <strong></strong>
                                         <br/>
@@ -4677,7 +4648,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <t t-if="o.invoice_date">
                                             <t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
                                         </t>
-                                        <br/>
                                         <br/>
                                         <t t-if="o.lc_date">
                                             <t t-esc="o.lc_date.strftime('%d-%m-%Y')"/>
@@ -4853,10 +4823,10 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
         						<div>
         							<div class="float-left">
         								<h2 class="mt15" style="font-size: 12px">
-        									<span style="color: Black ! important"><t t-esc="o.name"/></span>
+        									<span style="color: Black ! important; font-size: 12px"><t t-esc="o.name"/></span>
         								</h2>
                                         <h2 class="mt15" style="font-size: 12pt; font-weight: bold;">
-        									<span style="color: Black ! important">Date: 19.03.2024</span>
+        									<span style="color: Black ! important"><t t-esc="o.invoice_date.strftime('%d-%b-%Y')"/></span>
         								</h2>
                                         <br/>
                                         <br/>
@@ -4876,59 +4846,44 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
         						<br/>
                                 <br/>
 
-                                <br/>
                                 <div class="row" style="color: Black ! important">
                                     <div class="col-12 mt-4">
                                         <div>
                                             <h2> 
-                                                <span style="font-size: 14pt; font-weight: bold;"> Sub: Undertaking and request for Issuance of Export permit.</span>
+                                                <span style="font-size: 14pt; font-weight: bold; color: black;"> Sub: Undertaking and request for Issuance of Export permit.</span>
                                             </h2>
                                             <h2> 
-                                                <span style="font-size: 14pt;"> Dear Sir,</span>
+                                                <span style="font-size: 14pt; color: black;"> Dear Sir,</span>
                                             </h2>
                                         </div>
-                                      <p style="font-size: 11pt; text-align: justify;"> We do here by certifying that the goods as described in the Invoice
-<span>No.</span> <span style="font-size: 12pt; font-weight: bold;"> <t t-esc="o.name"/> </span>  <span>Date  <t t-esc="o.invoice_date"/>,</span> for <b>USD: 1679 </b>. been manufactured in our factory in Adamjee port Processing Zone Adamjee Nagar, Shiddhirgonj,Narayangonj. In accordance with the approval of the authority <span style="font-size: 12pt; font-weight: bold;" t-esc="o.partner_id.name"/>,at present international market price against <b><t t-esc="o.lc_no"/> DATED <t t-esc="o.lc_date"/></b> ,other undertake that we shall abide by the rules and regulations of the Government and BEPZA in connection with the export and held liable in case of any default. Being duly authorized by the board of Directors of our Company, the undersigned issues the above statement on behalf of the Company. In view of the above, please issue us the Export permit.
+                                        <div style="margin-right: 25px;">
+                                            <p style="font-size: 11pt; text-align: justify;"> We do here by certifying that the goods as described in the Invoice
+<span>No.</span> <span style="font-size: 12pt; font-weight: bold;"> <t t-esc="o.name"/> </span>  <span>Date  <t t-esc="o.invoice_date.strftime('%d-%b-%Y')"/>,</span> for <b>USD: <t t-esc="common_data[7]"/>  </b>. been manufactured in our factory in Adamjee port Processing Zone Adamjee Nagar, Shiddhirgonj,Narayangonj. In accordance with the approval of the authority <span style="font-size: 12pt; font-weight: bold;" t-esc="o.partner_id.name"/>,at present international market price against LC <b><t t-esc="o.lc_no"/> DATED <t t-esc="o.lc_date.strftime('%d-%b-%Y')"/></b> ,other undertake that we shall abide by the rules and regulations of the Government and BEPZA in connection with the export and held liable in case of any default. Being duly authorized by the board of Directors of our Company, the undersigned issues the above statement on behalf of the Company. In view of the above, please issue us the Export permit.
 </p>
-                                          <br/>
-                                    </div>
-                                </div>
- 
-                                </div>
+                                        </div>
+                                        <br/>
+                                        <br/>
 
-
-                                <br/>
-                                <br/>
-
-                                <div class="row" style="text-decoration: underline; font-size:12px">
-                                    <div class="col-12 mt-4" style="font-size:12px">
-                                        <span> Thanking you for </span>
-                                    </div>
-                                </div>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <div class="row">
-                                <div class="col-12" style="font-size:12px">
-                                        <div class="float-left mt32 mb32 ! important">
-                                            <t t-if="o.beneficiary.id == 2">
+                                        <div class="float-left ! important col-12" style="font-size:12px">
+                                            <span> Thanking you for </span>
+                                            <br/>
                                                 <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
-                                            </t>
-                                            <t t-if="o.beneficiary.id != 2">
-                                                <img style="max-height: 50px;" src="taps_sale/static/src/img/pi-signature.png"/>
-                                            </t>
-                                            <div>
+
+                                    <div>
                                                 <!-- <span>______________________</span>
                                                 <br/> -->
                                                 <span>TEX ZIPPERS (BD) LIMITED    </span>
-                                            </div>
-                                            <br/>
-                                            <br/>
-                                            <span>Include</span>
-                                            <span>1.Commercial Invoice  </span>
-                                            <span>2.Packing list </span>
-                                            <span>3.Exp Form </span>
-                                            <span>4.LC</span>
+
+                                                <br/>
+                                                <br/>
+                                                <br/>
+                                                <span>Include</span><br/>
+                                                <span>1.Commercial Invoice  </span><br/>
+                                                <span>2.Packing list </span><br/>
+                                                <span>3.Exp Form </span><br/>
+                                                <span>4.LC</span>
+                                        </div>    
+                                    </div>
                                         </div>
                                     </div>
                                 </div>
@@ -4937,6 +4892,93 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 				</t>
 			</t>
 		</t>
+    
 	</template>
+    <template id="report_2">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+<div class="page" style="page-break-after: always; color: Black ! important; font-weight: bold;">
+						<div class="footer text-center" style="margin:0px; padding:0px;">
+                    Page: <span class="page"/>/<span class="topage"/>
+						</div>
+						<div class="container mt-4 mb-4 ml-4 mr-4">
+                            <br/>
+						
+        						<div>
+        							<div class="float-left">
+        								<h2 class="mt15" style="font-size: 12px">
+        									<span style="color: Black ! important; font-size: 12px"><t t-esc="o.name"/></span>
+        								</h2>
+                                        <h2 class="mt15" style="font-size: 12pt; font-weight: bold;">
+        									<span style="color: Black ! important"><t t-esc="o.invoice_date.strftime('%d-%b-%Y')"/></span>
+        								</h2>
+                                        <br/>
+                                        <br/>
+                                        <h2 class="mt15" style="font-size: 11pt">
+        									<span style="color: Black ! important">The Executive Director </span>
+        								</h2>
+                                        <h2 class="mt15" style="font-size: 11pt">
+        									<span style="color: Black ! important">Adamjee Export Processing Zone </span>
+        								</h2>
+                                        <h2 class="mt15" style="font-size: 11pt">
+        									<span style="color: Black ! important">AdamjeeNagar,Shiddirgonj, Narayangonj.  </span>
+        								</h2>
+        							</div>
+        						</div>
+                                <br/>
+
+        						<br/>
+                                <br/>
+
+                                <div class="row" style="color: Black ! important">
+                                    <div class="col-12 mt-4">
+                                        <div>
+                                            <h2> 
+                                                <span style="font-size: 14pt; font-weight: bold; color: black;"> Sub: Undertaking and request for Issuance of Export permit.</span>
+                                            </h2>
+                                            <h2> 
+                                                <span style="font-size: 14pt; color: black;"> Dear Sir,</span>
+                                            </h2>
+                                        </div>
+                                        <div style="margin-right: 25px;">
+                                            <p style="font-size: 11pt; text-align: justify;"> We do here by certifying that the goods as described in the Invoice
+<span>No.</span> <span style="font-size: 12pt; font-weight: bold;"> <t t-esc="o.name"/> </span>  <span>Date  <t t-esc="o.invoice_date.strftime('%d-%b-%Y')"/>,</span> for <b>USD: <t t-esc="common_data[7]"/>  </b>. been manufactured in our factory in Adamjee port Processing Zone Adamjee Nagar, Shiddhirgonj,Narayangonj. In accordance with the approval of the authority <span style="font-size: 12pt; font-weight: bold;" t-esc="o.partner_id.name"/>,at present international market price against LC <b><t t-esc="o.lc_no"/> DATED <t t-esc="o.lc_date.strftime('%d-%b-%Y')"/></b> ,other undertake that we shall abide by the rules and regulations of the Government and BEPZA in connection with the export and held liable in case of any default. Being duly authorized by the board of Directors of our Company, the undersigned issues the above statement on behalf of the Company. In view of the above, please issue us the Export permit.
+</p>
+                                        </div>
+                                        <br/>
+                                        <br/>
+
+                                        <div class="float-left ! important col-12" style="font-size:12px">
+                                            <span> Thanking you for </span>
+                                            <br/>
+                                                <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+
+                                    <div>
+                                                <!-- <span>______________________</span>
+                                                <br/> -->
+                                                <span>TEX ZIPPERS (BD) LIMITED    </span>
+
+                                                <br/>
+                                                <br/>
+                                                <br/>
+                                                <span>Include</span><br/>
+                                                <span>1.Commercial Invoice  </span><br/>
+                                                <span>2.Packing list </span><br/>
+                                                <span>3.Exp Form </span><br/>
+                                                <span>4.LC</span>
+                                        </div>    
+                                    </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+	
+				</t>
+			</t>
+		</t>
+    
+	</template>
+
 </odoo>   
     
