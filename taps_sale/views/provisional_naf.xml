@@ -167,13 +167,13 @@
             </field>
         </record>
 
-        <menuitem 
+        <menuitem
             id="provisional_template_view_menu"
             name="P-NAF"
-            parent="taps_sale.sale_manu_naf"
+            parent="sale_manu_naf"
             action="action_provisional_template"
             sequence="3"
-            groups = "sales_team.group_sale_manager"/>
+            groups = "sales_team.group_sale_salesman"/>
         
     </data>
 </odoo>

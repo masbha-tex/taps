@@ -49,6 +49,9 @@ class BusinessExcellence(models.Model):
         ('1', 'Capex'),
         ('2', 'New Upgradation'),
         ('3', 'Not Required')], string="Capitalize", tracking=True, default="3")
+    machine = fields.Selection(selection=[
+        ('1', 'New'),
+        ('2', 'Upgradation')], string="Machine Status", tracking=True, default="1")
     # priority = fields.Selection([
     #         ('1', 'No Star'),
     #         ('2', 'One Star'),
