@@ -19,9 +19,16 @@
                     <sheet>
                         <group>
                             <group>
-                                <h3><field name="code"  readonly="1"/></h3><br/>
-                                <h4><field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}" attrs="{'readonly': [('state', 'not in', ('draft', 'inter'))]}"/></h4><br/>
-                                <h5><field name="pnaf_code"  readonly="1"/></h5><br/>
+                                <h2><field name="code"  readonly="1"/></h2>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <h4><field name="type" widget="radio" class="oe_inline" nolabel="1" options="{'horizontal': true}" attrs="{'readonly': [('state', 'not in', ('draft', 'inter'))]}"/></h4>
+                                <field name="create_uid" options="{'no_open': True}"/>
+                            </group>
+                            <group>
+                                <h4 style="text-align: right;"><field name="pnaf_code" readonly="1"/></h4>
                             </group>
                         </group>
                         <div class="oe_title">
@@ -182,14 +189,41 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree string="NAF List" create="false">
+                    <field name="code"/>
                     <field name="name"/>
                     <field name="type"/>
                     <field name="create_uid" widget="many2one_avatar_user"/>
                     <field name="state"/>
+            
                     <!-- <field name="approved_by" widget="many2one_avatar_user"/> -->
                 </tree>
             </field>
         </record>
+        <record id="view_naf_template_filter" model="ir.ui.view">
+            <field name="name">naf.template.search</field>
+            <field name="model">naf.template</field>
+            <field name="priority">15</field>
+            <field name="arch" type="xml">
+                <search string="Search Naf">
+                    
+                    <field name="name"  string="Customer/Buyer/Buying House" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="code" string="NAF"/>
+                    <field name="pnaf" string="P-NAF"/>
+                    <field name="create_uid" string="Created By"/>
+                    
+                    
+                    
+                    <searchpanel>
+                        <field name="type"  icon="fa-users" enable_counters="1"/>
+                        <field class="mt32" name="state"  icon="fa-filter" enable_counters="1"/>
+                        
+                        
+                   
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+        
         <record id="naf_assign_user_line_tree" model="ir.ui.view">
             <field name="name">naf.assign.user.line.tree</field>
             <field name="model">assign.user.line</field>
@@ -223,9 +257,15 @@
         </record>
 
         <menuitem 
-            id="naf_template_view_menu"
+            id="sale_manu_naf"
             name="NAF"
             parent="sale.sale_menu_root"
+            sequence="2"
+            groups = "sales_team.group_sale_salesman"/>
+        <menuitem 
+            id="naf_template_view"
+            name="NAF"
+            parent="taps_sale.sale_manu_naf"
             action="action_naf_template"
             sequence="2"
             groups = "sales_team.group_sale_salesman"/>

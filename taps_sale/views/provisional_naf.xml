@@ -12,7 +12,7 @@
                         <button name="action_approve" type="object" string="Approve" attrs= "{'invisible': [('state', '!=', 'to approve')]}" help="Click On Approve to create a record"/>
                         
                         
-                        <field name="state" widget="statusbar" statusbar_visible="draft,inter,pnaf,hod,to approve,approved"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,inter,to approve,approved,listed"/>
                     </header>
                     <sheet>
                         <group>
@@ -23,7 +23,7 @@
                         </group>
                         <div class="oe_title">
                             <h1>
-                                <field name="name" default_focus="1" placeholder="Name" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="name" default_focus="1" placeholder="Name" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
                             </h1>
                             
                         </div>
@@ -35,20 +35,20 @@
                                 <b>Company Address</b></span>
                                 <div class="o_address_format">
                                 
-                                    <field name="street" placeholder="Street..." class="o_address_street" attrs="{'readonly': [('state', '=', 'approved')]}"/>
-                                    <field name="street2" placeholder="Street 2..." class="o_address_street" attrs="{'readonly': [('state', '=', 'approved')]}"/>
-                                    <field name="city" placeholder="City" class="o_address_city" attrs="{'readonly': [('state', '=', 'approved')]}"/>
-                                    <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}" attrs="{'readonly': [('state', '=', 'approved')]}"/>
-                                    <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly': [('state', '=', 'approved')]}"/>
-                                    <field name="country_id" placeholder="Country" class="o_address_country" attrs="{'readonly': [('state', '=', 'approved')]}" options='{"no_open": True, "no_create": True}'/>
+                                    <field name="street" placeholder="Street..." class="o_address_street" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
+                                    <field name="street2" placeholder="Street 2..." class="o_address_street" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
+                                    <field name="city" placeholder="City" class="o_address_city" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
+                                    <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True, 'no_create': True}" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
+                                    <field name="country_id" placeholder="Country" class="o_address_country" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}" options='{"no_open": True, "no_create": True}'/>
                             </div>
                             </group>
                             <group>
-                                <field name="contact_person" attrs="{'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="phone" widget="phone" attrs="{'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="mobile" widget="phone" attrs="{'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="email" widget="email" context="{'gravatar_image': True}" attrs="{'readonly': [('state', '=', 'approved')]}"/>
-                                <field name="website" widget="url" placeholder="e.g. https://www.odoo.com" attrs="{'readonly': [('state', '=', 'approved')]}"/>
+                                <field name="contact_person" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
+                                <field name="phone" widget="phone" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
+                                <field name="mobile" widget="phone" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
+                                <field name="email" widget="email" context="{'gravatar_image': True}" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
+                                <field name="website" widget="url" placeholder="e.g. https://www.odoo.com" attrs="{'readonly': [['state', 'in', ['approved','listed']]]}"/>
                         </group>
                         </group>
                        
@@ -128,6 +128,29 @@
                 </tree>
             </field>
         </record>
+        <record id="view_provisional_template_filter" model="ir.ui.view">
+            <field name="name">provisional.template.search</field>
+            <field name="model">provisional.template</field>
+            <field name="priority">15</field>
+            <field name="arch" type="xml">
+                <search string="Search Provisional">
+                    <field name="code" string="PNAF"/>
+                    <field name="name"  string="Customer/Buyer/Buying House" filter_domain="[('name', 'ilike', self)]"/>
+                    
+                    <field name="create_uid" string="Created By"/>
+                    
+                    
+                    
+                    <searchpanel>
+                        <field name="type"  icon="fa-users" enable_counters="1"/>
+                        <field class="mt32" name="state"  icon="fa-filter" enable_counters="1"/>
+                        
+                        
+                   
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
         
         <record id="action_provisional_template" model="ir.actions.act_window">
             <field name="name">Provisional NAF</field>
@@ -146,8 +169,8 @@
 
         <menuitem 
             id="provisional_template_view_menu"
-            name="Provisional NAF"
-            parent="sale.sale_menu_root"
+            name="P-NAF"
+            parent="taps_sale.sale_manu_naf"
             action="action_provisional_template"
             sequence="3"
             groups = "sales_team.group_sale_manager"/>

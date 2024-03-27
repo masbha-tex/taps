@@ -41,6 +41,7 @@ class ProvisionalNaf(models.Model):
         ('to approve', 'To Approve'),
         ('approved', 'Approved'),
         ('cancel', 'Cancel'),
+        ('listed', 'Listed'),
     ], string="Status",  default='draft', tracking=True)
 
     approved_by = fields.Many2one(
@@ -124,7 +125,8 @@ class ProvisionalNaf(models.Model):
                         'mobile' : self.mobile,
                         'email' : self.email,
                         'pnaf' : self.id,
-                        'state' : 'inter',
+                        'state' : 'draft',
+                        'create_uid': self.create_uid.id,
                         }
                 new_record = self.env['naf.template'].sudo().create(data)
                 # self.env.cr.commit()

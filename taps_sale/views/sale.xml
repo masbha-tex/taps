@@ -297,7 +297,13 @@
                     <filter string="Block" name="all_block" domain="[('pi_type','=','block'),('state','=','sale')]"/>
                     <filter string="Replacement" name="all_replacement" domain="[('pi_type','=','replacement'),('state','=','sale'),]"/>
                     
-                   
+                   <searchpanel>
+                       <field name="sales_type"  enable_counters="1"/>
+                       <field class="mt32" name="state"  icon="fa-filter" enable_counters="1"/>
+                       <field name="team_id"  enable_counters="1"/>
+                       <field name="region_id"  enable_counters="1"/>
+                        
+                     </searchpanel>
                </search>
             </field>
         </record>

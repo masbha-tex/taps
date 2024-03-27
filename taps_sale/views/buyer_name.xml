@@ -64,7 +64,7 @@
             
         </xpath>
         <xpath expr="//field[@name='category_id']" position="after">
-            <field name="property_payment_term_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': ['|',('customer_rank', '=', 0),('buying_house_rank', '=', 0)]}"/>
+            <field name="property_payment_term_id" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('customer_rank', '=', 0),('buying_house_rank', '=', 0)]}"/>
             <field name="incoterms" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'invisible': [('customer_rank', '=', 0),('buying_house_rank', '=', 0)]}"/>
         </xpath>
         <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]/group[2]/field[@name='function']" position="before">

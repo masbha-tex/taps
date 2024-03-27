@@ -136,6 +136,16 @@ class NewAccountForm(models.Model):
                     'res_model_id': self.env.ref('taps_sale.model_naf_template').id,
                     'user_id': user.first_approval.id
             })
+            template_id = self.env.ref('taps_sale.naf_assign_core_leader_email_template')
+
+            if template_id:
+                template_id.write({
+                    'email_to': user.first_approval.partner_id.email,
+                    'email_from': 'odoo@texzipperbd.com',
+                    'email_cc' : 'asraful.haque@texzipperbd.com',
+                })
+                ctx ={'name': user.first_approval.partner_id.name}
+                template_id.with_context(ctx).send_mail(self.id, force_send=False)
             self.write({'state':'inter'})
 
     
@@ -284,6 +294,7 @@ class NewAccountForm(models.Model):
                 self.write({'state': 'approved'})
                 activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_final_approval').id)])
                 activity_id.action_feedback(feedback="Approved")
+                self.pnaf.write({'state': 'listed'})
                 if self. type == 'customer':
                     buyers = self.env['res.partner'].search([('id', 'in', self.buyer.ids)])
                     buyers.write({'related_customer': [(4, customer)for customer in new_customer.ids]})
@@ -356,26 +367,26 @@ class NewAccountForm(models.Model):
         return duplicate
 
 
-    def _update_activity(self, id):
-        naf = self.env['naf.template'].search([('id', '=', id)])
-        if naf.state == 'inter':
-            if (naf.type == 'customer') or (naf.type == 'buyinghouse'):
-                app_mat = naf.env['sale.approval.matrix'].sudo().search([('model_name', '=','naf.template.customer')], limit=1)
-                # raise UserError((app_mat.id))
-                template_id = naf.env.ref('taps_sale.naf_assign_core_leader_customer_email_template')
-                email_to = 'abdur.rahman@texzipperbd.com'
-            elif naf.type == 'buyer':
-                app_mat = naf.env['sale.approval.matrix'].sudo().search([('model_name', '=','naf.template.buyer')],limit=1)
-                template_id = naf.env.ref('taps_sale.naf_assign_naf_core_leader_buyer_email_template')
-                email_to = 'abdur.rahman@texzipperbd.com'
-            # raise UserError((app_mat.id))
-            naf.env['mail.activity'].sudo().create({
-                        'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_first_approval').id,
-                        'res_id': naf.id,
-                        'res_model_id': naf.env.ref('taps_sale.model_naf_template').id,
-                        'user_id': app_mat.first_approval.id,
+    # def _update_activity(self, id):
+    #     naf = self.env['naf.template'].search([('id', '=', id)])
+    #     if naf.state == 'inter':
+    #         if (naf.type == 'customer') or (naf.type == 'buyinghouse'):
+    #             app_mat = naf.env['sale.approval.matrix'].sudo().search([('model_name', '=','naf.template.customer')], limit=1)
+    #             # raise UserError((app_mat.id))
+    #             template_id = naf.env.ref('taps_sale.naf_assign_core_leader_customer_email_template')
+    #             email_to = 'abdur.rahman@texzipperbd.com'
+    #         elif naf.type == 'buyer':
+    #             app_mat = naf.env['sale.approval.matrix'].sudo().search([('model_name', '=','naf.template.buyer')],limit=1)
+    #             template_id = naf.env.ref('taps_sale.naf_assign_naf_core_leader_buyer_email_template')
+    #             email_to = 'abdur.rahman@texzipperbd.com'
+    #         # raise UserError((app_mat.id))
+    #         naf.env['mail.activity'].sudo().create({
+    #                     'activity_type_id': self.env.ref('taps_sale.mail_activity_naf_first_approval').id,
+    #                     'res_id': naf.id,
+    #                     'res_model_id': naf.env.ref('taps_sale.model_naf_template').id,
+    #                     'user_id': app_mat.first_approval.id,
                         
-                        })
+    #                     })
             # if template_id:
             #     template_id.write({
             #             'email_to': email_to,
