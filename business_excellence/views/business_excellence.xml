@@ -98,6 +98,7 @@
                         <group>
                             <!-- <field name="employee_id" options="{'no_create':true, 'no_open':true}"/> -->
                             <field name="project_cost"/>
+                            <field name="machine" attrs="{'invisible': ['|',['criteria_id', '!=', 'Process Develoment'],['criteria_id', '!=', 'Capex']]}"/>
                             <field name="date"/>
                             <field name="finish_date"/>
                             <field name="count"/>

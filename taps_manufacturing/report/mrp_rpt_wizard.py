@@ -97,6 +97,7 @@ class MrpReportWizard(models.TransientModel):
                 email_cc_list = [
                     'deepak.shah@bd.texfasteners.com',
                     'gaurav.gupta@bd.texfasteners.com',
+                    'suranjan.kumar@texzipperbd.com',
                     'nitish.bassi@texzipperbd.com',
                     'shahid.hossain@texzipperbd.com',
                     'ranjeet.singh@texzipperbd.com',
@@ -109,6 +110,7 @@ class MrpReportWizard(models.TransientModel):
                 email_cc_list = [
                     'deepak.shah@bd.texfasteners.com',
                     'gaurav.gupta@bd.texfasteners.com',
+                    'suranjan.kumar@texzipperbd.com',
                     'nitish.bassi@texzipperbd.com',
                     'shahid.hossain@texzipperbd.com',
                     'kumar.abhishek@texzipperbd.com',
