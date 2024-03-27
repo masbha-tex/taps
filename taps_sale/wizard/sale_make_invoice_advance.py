@@ -59,6 +59,9 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                         # invoice_item_sequence += 1
                 btn_order = sale_orders.filtered(lambda x: x.company_id.id == 3)
                 order_ref = btn_order.mapped('order_ref')
+                if not order_ref:
+                    order_ref = btn_order.mapped('id')
+                    
             
                 if btn_order:
                     pi_line = self.env['sale.order.line'].search([('order_id','in',btn_order.order_ref.ids)])
@@ -127,8 +130,9 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                     order = order.strip()
                     com_in = self.env['sale.order'].sudo().search([('company_id','=',1),('name','=',order)])
                     beneficiary = com_in[0].bank.id
-                    or_ref = com_in.order_ref.name
-                    pi_date = com_in.order_ref.pi_date
+                    
+                    or_ref = com_in.order_ref.name or com_in.name
+                    pi_date = com_in.order_ref.pi_date or com_in.pi_date
                     po_no = style = ""
                     if com_in.po_no:
                         po_no = com_in.po_no
@@ -165,8 +169,8 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                     order = order.strip()
                     com_in = self.env['sale.order'].sudo().search([('company_id','=',3),('name','=',order)])
                     beneficiary = com_in[0].bank.id
-                    or_ref = com_in.order_ref.name
-                    pi_date = com_in.order_ref.pi_date
+                    or_ref = com_in.order_ref.name or com_in.name
+                    pi_date = com_in.order_ref.pi_date or com_in.pi_date
                     po_no = style = ""
                     if com_in.po_no:
                         po_no = com_in.po_no
@@ -217,8 +221,8 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                     order = order.strip()
                     com_in = self.env['sale.order'].sudo().search([('company_id','=',1),('name','=',order)])
                     beneficiary = com_in[0].bank.id
-                    or_ref = com_in.order_ref.name
-                    pi_date = com_in.order_ref.pi_date
+                    or_ref = com_in.order_ref.name or com_in.name
+                    pi_date = com_in.order_ref.pi_date or com_in.pi_date
                     po_no = style = ""
                     if com_in.po_no:
                         po_no = com_in.po_no
@@ -255,8 +259,8 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
                     order = order.strip()
                     com_in = self.env['sale.order'].sudo().search([('company_id','=',3),('name','=',order)])
                     beneficiary = com_in[0].bank.id
-                    or_ref = com_in.order_ref.name
-                    pi_date = com_in.order_ref.pi_date
+                    or_ref = com_in.order_ref.name or com_in.name
+                    pi_date = com_in.order_ref.pi_date or com_in.pi_date
                     po_no = style = ""
                     if com_in.po_no:
                         po_no = com_in.po_no

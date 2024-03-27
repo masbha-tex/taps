@@ -164,7 +164,7 @@ class HrExpense(models.Model):
     amount_tax = fields.Monetary(string='Total Taxes', store=True, readonly=True, compute='_amount_all')
     amount_total = fields.Monetary(string='Total Amount', store=True, readonly=True, compute='_amount_all')    
     
-    state = fields.Selection(selection_add=[('checked', 'Checked'),('approved',)])
+    state = fields.Selection(selection_add=[('checked', 'Checked'),('approved',),('sacc','Submit To Acc'),('racc','Received By Acc'),('done',)])
 #     state = fields.Selection([
 #         ('draft', 'To Submit'),
 #         ('reported', 'Submitted'),
@@ -399,7 +399,7 @@ class taps_expense_sheet(models.Model):
     ex_currency_id = fields.Many2one(related='expense_line_ids.currency_id', store=True, string='Expense Currency', readonly=True)
     total_actual_amount = fields.Monetary('Total Actual Amount', compute='_compute_actual_amount', store=True, tracking=True, currency_field='ex_currency_id')
     
-    state = fields.Selection(selection_add=[('checked', 'Checked'),('approve',)], ondelete={'checked': lambda records: record.write({'state': 'draft'})})
+    state = fields.Selection(selection_add=[('checked', 'Checked'),('approve',),('sacc','Submit to Acc'),('racc','Received By Acc'),('post',)], ondelete={'checked': lambda records: record.write({'state': 'draft'}),'sacc': lambda records: record.write({'state': 'draft'}),'racc': lambda records: record.write({'state': 'draft'}), 'post': lambda records: record.write({'state': 'draft'})})
     
     expense_lines = fields.Many2many('hr.expense.line', string='Expense Lines.', copy=False, domain="[('id', '=', expense_line_ids)]")
     
@@ -547,3 +547,8 @@ class taps_expense_sheet(models.Model):
         
         # raise UserError((result['hr_approvals']))
         return result
+
+    def action_submit_to_acc(self):
+        self.write({'state': 'sacc'})
+    def action_receive_to_acc(self):
+        self.write({'state': 'racc'})

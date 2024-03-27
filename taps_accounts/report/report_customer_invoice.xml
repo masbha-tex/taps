@@ -4914,81 +4914,73 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 						</div>
 						<div class="container mt-4 mb-4 ml-4 mr-4">
                             <br/>
-						
-        						<div>
-        							<div class="float-left">
-        								<h2 class="mt15" style="font-size: 12px">
-        									<span style="color: Black ! important; font-size: 12px"><t t-esc="o.name"/></span>
-        								</h2>
-                                        <h2 class="mt15" style="font-size: 12pt; font-weight: bold;">
-        									<span style="color: Black ! important"><t t-esc="o.invoice_date.strftime('%d-%b-%Y')"/></span>
-        								</h2>
-                                        <br/>
-                                        <br/>
-                                        <h2 class="mt15" style="font-size: 11pt">
-        									<span style="color: Black ! important">The Executive Director </span>
-        								</h2>
-                                        <h2 class="mt15" style="font-size: 11pt">
-        									<span style="color: Black ! important">Adamjee Export Processing Zone </span>
-        								</h2>
-                                        <h2 class="mt15" style="font-size: 11pt">
-        									<span style="color: Black ! important">AdamjeeNagar,Shiddirgonj, Narayangonj.  </span>
-        								</h2>
-        							</div>
-        						</div>
-                                <br/>
-
-        						<br/>
-                                <br/>
-
-                                <div class="row" style="color: Black ! important">
-                                    <div class="col-12 mt-4">
-                                        <div>
-                                            <h2> 
-                                                <span style="font-size: 14pt; font-weight: bold; color: black;"> Sub: Undertaking and request for Issuance of Export permit.</span>
-                                            </h2>
-                                            <h2> 
-                                                <span style="font-size: 14pt; color: black;"> Dear Sir,</span>
-                                            </h2>
-                                        </div>
-                                        <div style="margin-right: 25px;">
-                                            <p style="font-size: 11pt; text-align: justify;"> We do here by certifying that the goods as described in the Invoice
-<span>No.</span> <span style="font-size: 12pt; font-weight: bold;"> <t t-esc="o.name"/> </span>  <span>Date  <t t-esc="o.invoice_date.strftime('%d-%b-%Y')"/>,</span> for <b>USD: <t t-esc="common_data[7]"/>  </b>. been manufactured in our factory in Adamjee port Processing Zone Adamjee Nagar, Shiddhirgonj,Narayangonj. In accordance with the approval of the authority <span style="font-size: 12pt; font-weight: bold;" t-esc="o.partner_id.name"/>,at present international market price against LC <b><t t-esc="o.lc_no"/> DATED <t t-esc="o.lc_date.strftime('%d-%b-%Y')"/></b> ,other undertake that we shall abide by the rules and regulations of the Government and BEPZA in connection with the export and held liable in case of any default. Being duly authorized by the board of Directors of our Company, the undersigned issues the above statement on behalf of the Company. In view of the above, please issue us the Export permit.
-</p>
-                                        </div>
-                                        <br/>
-                                        <br/>
-
-                                        <div class="float-left ! important col-12" style="font-size:12px">
-                                            <span> Thanking you for </span>
-                                            <br/>
-                                                <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
-
-                                    <div>
-                                                <!-- <span>______________________</span>
-                                                <br/> -->
-                                                <span>TEX ZIPPERS (BD) LIMITED    </span>
-
-                                                <br/>
-                                                <br/>
-                                                <br/>
-                                                <span>Include</span><br/>
-                                                <span>1.Commercial Invoice  </span><br/>
-                                                <span>2.Packing list </span><br/>
-                                                <span>3.Exp Form </span><br/>
-                                                <span>4.LC</span>
-                                        </div>    
+                            <div>
+                                <p style="font-size: 14px; text-align: center; font-weight: bold;">SALES CONTRACT</p><br/>
+                                <div class="float-left">
+                                    <h2 class="mt15" style="font-size: 12pt">
+                                        <span style="color: black; font-size: 12pt">CONTRACT NO: <t t-esc="o.name"/></span>
+                                    </h2>
+                                    <h2 class="mt15" style="font-size: 12pt; color: black;">
+                                        <span> DATE: <t t-esc="o.invoice_date.strftime('%d-%b-%Y')"/></span>
+                                        <p>
+                                            THIS IRREVOCABLES CONTRACT HAS BEEN MADE UNDER THE TERMS AND CONDITIONS STATED <br/> HEREIN AND AS PER ATTACHED SHEET
+                                        </p>
+                                    </h2>
+                                    <br/>
+                                    <p style="text-align: center;">BETWEEN</p><br/>
+                                    <h2 class="mt15" style="font-size: 11pt">
+                                        <span style="font-size: 14pt; font-weight: bold; color: black;">TEX ZIPPERS (BD) LIMITED.</span><br/>
+                                        <span style="font-size: 14pt; color: black;">180, 264,273 ADAMJEE EPZ, SIDDIRGONJ <br/>
+                                        NARAYANGONJ, BANGLADESH</span><br/>
+                                    </h2>
+                                    <p style="text-align: center;">AND</p><br/>
+                                    <h2 class="mt15" style="font-size: 11pt">
+                                        <span style="font-size: 14pt; font-weight: bold; color: black;"><t t-esc="o.partner_id.name"/></span><br/>
+                                        <span style="font-size: 14pt; color: black;">180, 264,273 ADAMJEE EPZ, SIDDIRGONJ <br/>
+                                        NARAYANGONJ, BANGLADESH</span><br/>
+                                    </h2>
+                                    <p>HERE IN AFTER THE CALLED – THE SECOND PARTY HERE AFTER THE FIRST PARTY WILL BE CALLED THE SELLER &amp; THE SECOND PARTY WILL BE CALLED THE BUYER. THE SECOND PARTY ORDERED TO THE FIRST PARTY TO MANUFACTURE</p> <br/>
+                                    <span> QUANTITY 64 GROSS</span>
+                                    <span style="font-size: 12pt;">
+                                                01. NAME OF THE COMMODITY : BUTTON <br/>
+                                                02. PURCHASE ORDER : AS PER ISSUED PI # B502169, dt. 13-03-2024 <br/>
+                                                04. VALIDITY : 30.04.2024 <br/>
+                                                05. NAME OF THE ONSIGNEE : <t style="font-size: 12pt; font-weight: bold;" t-esc="o.partner_id.name"/> <t/><br/>
+                                                06. TERMS OF THE SHIPMENT : EX. - FACTORY <br/>
+                                                07. TERMS OF PAYMENT : RTGS ref(305324150083, DT.18.03.24) <br/>
+                                                08. H.S CODE NO: : 96062200 <br/>
+                                                09. UNIT PRICE IN USD : AS PER ISSUED PIS <b> ABOVE </b>. <br/>
+                                                10. PORT OF DESTINATION : Gazipur <br/>
+                                                11. TOTAL USD : $ <t style="font-size: 12pt; font-weight: bold;" t-esc="common_data[7]"/> <br/>
+                                                12. PARTIAL SHIPMENT : ALLOWED <br/>
+                                                13. Export Contract no:. <br/>
+                                                14. DELIVERY / SHIP TO ADDRESS :  <br/>  
+                                            </span>
+                                    <span style="font-size: 12pt; font-weight: bold;"> <t t-esc="o.partner_id.name"/></span><br/><br/>
+                                    <span style="font-size: 12pt;">
+                                    15. FIRST PARTY BANK NAME: Standard Chartered Bank<br/>
+                                    16) SECOND PARTYS BANK NAME: . DUTCH BANGLA BANK LIMITED
+                                    </span>
+                                    <div class="float-left ! important col-12" style="font-size:12px">
+                                        <span> For Tex zipppers (BD) LTD </span><br/>
+                                        <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/>
+                                            <span>______________________</span> 
+                                            <span> First  PARTY <br/>( SIGNATURE &amp; SEAL )  </span>    
                                     </div>
-                                        </div>
+                                    <div class="float-right ! important col-12" style="font-size:12px">
+                                        <span> <t t-esc="o.partner_id.name"/> </span><br/><br/><br/>
+                                        <!-- <img style="max-height: 50px;" src="taps_accounts/static/src/img/shahid.png"/> -->
+                                            <span>______________________</span> 
+                                            <span> Second  PARTY <br/>( SIGNATURE &amp; SEAL )  </span>    
                                     </div>
                                 </div>
-                        </div>
-	
-				</t>
-			</t>
-		</t>
-    
-	</template>
+                            </div>
 
-</odoo>   
+                        </div>
+                    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </odoo>   
     

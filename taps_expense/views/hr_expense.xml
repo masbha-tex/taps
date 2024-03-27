@@ -30,7 +30,7 @@
                 <attribute name="readonly">1</attribute>
             </xpath>
             <xpath expr="//field[@name='state']" position="attributes"> 
-                <attribute name="statusbar_visible">draft,reported,checked,approved,done,refused</attribute>
+                <attribute name="statusbar_visible">draft,reported,checked,approved,sacc,racc,done,refused</attribute>
             </xpath>
             <field name="product_id" position="before">
                 <field name="purpose" string="Description"/>
@@ -155,9 +155,19 @@
         <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
         <field eval="25" name="priority"/>
         <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_sheet_move_create']" position="before">
+                <button type="object" name="action_submit_to_acc" class="oe_highlight" string="Submit to Account" attrs="{'invisible': [['state', '!=', 'approve']]}"/>
+            </xpath>
+            <xpath expr="//button[@name='action_sheet_move_create']" position="before">
+                <button type="object" name="action_receive_to_acc" class="oe_highlight" string="Received By Account" attrs="{'invisible': [['state', '!=', 'sacc']]}"/>
+            </xpath>
+            <xpath expr="//button[@name='action_sheet_move_create']" position="attributes">
+                <attribute name="attrs">{'invisible': [['state', '!=', 'racc']]}</attribute>
+            </xpath>
             <xpath expr="//field[@name='employee_id']" position="before">
                 <field name="purpose"/>
             </xpath>
+            
             <xpath expr="//field[@name='employee_id']" position="before">
                 <field name="product_id"/>
             </xpath>
@@ -175,7 +185,7 @@
                 <attribute name="states">draft,submit,checked,pprove</attribute>
             </xpath>
             <xpath expr="//field[@name='state']" position="attributes"> 
-                <attribute name="statusbar_visible">draft,submit,checked,approve,post,done</attribute>
+                <attribute name="statusbar_visible">draft,submit,checked,approve,sacc,racc,post,done</attribute>
             </xpath>
             
             <xpath expr="//page[@name='expenses']" position="attributes">
