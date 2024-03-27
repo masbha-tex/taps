@@ -168,9 +168,9 @@
         </record>
 
         <menuitem
-            id="provisional_template_view_menu"
+            id="provisional_naf_view_menu"
             name="P-NAF"
-            parent="sale_manu_naf"
+            parent="taps_sale.sale_manu_naf"
             action="action_provisional_template"
             sequence="3"
             groups = "sales_team.group_sale_salesman"/>
