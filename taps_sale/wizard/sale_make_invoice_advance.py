@@ -42,6 +42,7 @@ class SaleAdvancePaymentInvCustom(models.TransientModel):
             
             moves.action_post()
             if moves:
+                a = 'a'
                 # raise UserError(('erterter'))
                 # for mv in moves:
                 invoice_vals_list = []
