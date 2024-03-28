@@ -57,7 +57,7 @@
 				</xpath>
                 <xpath expr="//field[@name='user_id']" position="attributes">
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True, 'always_reload': True}</attribute>
-                    <attribute name="domain">[['active', 'in',[True,False]]]</attribute>
+                    <attribute name="domain">[['sale_team_id', '!=', False]]</attribute>
                 </xpath>
                 <xpath expr="//field[@name='team_id']" position="attributes">
                     <attribute name="options">{'no_create': True, 'no_quick_create': True, 'no_create_edit': True, 'no_open': True, 'always_reload': True}</attribute>
