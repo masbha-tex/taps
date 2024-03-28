@@ -134,8 +134,9 @@
             <field name="priority">15</field>
             <field name="arch" type="xml">
                 <search string="Search Provisional">
-                    <field name="code" string="PNAF"/>
+                    
                     <field name="name"  string="Customer/Buyer/Buying House" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="code" string="PNAF"/>
                     
                     <field name="create_uid" string="Created By"/>
                     

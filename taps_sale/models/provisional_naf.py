@@ -112,6 +112,7 @@ class ProvisionalNaf(models.Model):
             if result == 1:
                 raise UserError(("This "+self.type + "already exist in Database"))
             else:
+                # raise UserError((self.create_uid.partner_id.name))
                 data = {
                         'type' : self.type,
                         'name': self.name,
@@ -126,7 +127,7 @@ class ProvisionalNaf(models.Model):
                         'email' : self.email,
                         'pnaf' : self.id,
                         'state' : 'draft',
-                        'create_uid': self.create_uid.id,
+                        'raised_by': self.create_uid.id,
                         }
                 new_record = self.env['naf.template'].sudo().create(data)
                 # self.env.cr.commit()

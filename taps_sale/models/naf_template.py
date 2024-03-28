@@ -59,6 +59,7 @@ class NewAccountForm(models.Model):
         string="Approved By",
         comodel_name="res.users",
     )
+    raised_by = fields.Many2one(string="Raised By",comodel_name="res.users", readonly=True)
     customer_group = fields.Many2one('res.partner', string="Customer Group", domain="[['customer_group_rank', '=', 1]]")
     buyer = fields.Many2many('res.partner', string="Buyer", domain="[['buyer_rank' ,'=', 1]]")
     buying_house = fields.Many2one('res.partner', string="Buying House", domain="[('buying_house_rank', '=', 1)]")
@@ -145,7 +146,7 @@ class NewAccountForm(models.Model):
                     'email_cc' : 'asraful.haque@texzipperbd.com',
                 })
                 ctx ={'name': user.first_approval.partner_id.name}
-                template_id.with_context(ctx).send_mail(self.id, force_send=False)
+                template_id.with_context(ctx).send_mail(self.id, force_send=True)
             self.write({'state':'inter'})
 
     
@@ -292,9 +293,19 @@ class NewAccountForm(models.Model):
                 self.env.cr.commit()
                 # raise UserError((new_customer))
                 self.write({'state': 'approved'})
+                self.pnaf.write({'state': 'listed'})
                 activity_id = self.env['mail.activity'].search([('res_id','=', self.id),('user_id','=', self.env.user.id),('activity_type_id','=', self.env.ref('taps_sale.mail_activity_naf_final_approval').id)])
                 activity_id.action_feedback(feedback="Approved")
-                self.pnaf.write({'state': 'listed'})
+                template_id = self.env.ref('taps_sale.naf_confirm_email_template')
+            
+                if template_id:
+                    template_id.write({
+                        'email_to': self.raised_by.partner_id.email,
+                        'email_from': 'odoo@texzipperbd.com',
+                        'email_cc' : 'asraful.haque@texzipperbd.com',
+                    })
+                    template_id.send_mail(self.id, force_send=True)
+                    
                 if self. type == 'customer':
                     buyers = self.env['res.partner'].search([('id', 'in', self.buyer.ids)])
                     buyers.write({'related_customer': [(4, customer)for customer in new_customer.ids]})

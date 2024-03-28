@@ -7,28 +7,43 @@
             <field name="arch" type="xml">
                 <form string="Area task">
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!-- <button class="oe_stat_button" name="view_task" icon="fa-tasks" type="object">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Task</span>
+                                </div>
+                            </button> -->
+                        </div>
                         <div class="oe_title">
                             <div class="oe_edit_only">
-                                <label for="business_id"/>
+                                <label for="title_ids"/>
                             </div>
                             <h1>
-                                <field name="business_id" options="{'no_create':true, 'no_open':true}" invisible="1"/>
+                                <field name="title_ids" options="{'no_create':true, 'no_open':true, 'no_create_edit':True}"/>
                             </h1>
                         </div>
+                        <field name="business_id" options="{'no_create':true, 'no_open':true}" invisible="1"/>
                         <group>
                             <group>
                                 <field name="criteria_id" options="{'no_create':true, 'no_open':true}" invisible="1"/>
-                                <field name="title_ids" options="{'no_create':true, 'no_open':true}"/>
+                                <!-- <field name="title_ids" options="{'no_create':true, 'no_open':true}"/> --><field name="state"/>
                                 <field name="description"/>
+                                <field name="attachment_no"/>
+                            </group>
+                            <group>
                                 <field name="start_date"/>
                                 <field name="finish_date"/>
-                                <field name="state"/>
-                                <field name="attachment_no"/>
-                                <button name="action_open_attachments" string="Attachments" type="object"/>
-                                <field name="attachment"/>
+                                <!-- <field name="attachment_no"/> -->
+                                <!-- <button name="action_open_attachments" string="Attachments" type="object"/> -->
+                                <!-- <field name="attachment_ids" widget="many2many_binary"/> -->
                             </group>
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" options="{'open_attachments': True}"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div> 
                 </form>
             </field>
         </record>
@@ -37,8 +52,8 @@
             <field name="name">business.excellence.task.tree</field>
             <field name="model">business.excellence.task</field>
             <field name="arch" type="xml">
-                <tree string="Business Excellence task" editable="bottom">
-                <!-- <tree string="Business Excellence task"> -->
+                <!-- <tree string="Business Excellence task" editable="bottom"> -->
+                <tree string="Business Excellence task">
                     <!-- <field name="name" invisible="1"/> -->
                     <field name="business_id" options="{'no_create':true, 'no_open':true}" invisible="1"/>
                     <field name="criteria_id" options="{'no_create':true, 'no_open':true}" invisible="1"/>
@@ -47,15 +62,9 @@
                     <field name="start_date"/>
                     <field name="finish_date"/>
                     <field name="state"/>
-                    <!-- <field name="state" widget="selection">
-                        <option name="color1" style="background-color: #ff0000;" />
-                        <option name="color2" style="background-color: #00ff00;" />
-                        <option name="color3" style="background-color: #0000ff;" />
-                    </field> -->
-
                     <field name="attachment_no"/>
                     <!-- <button name="action_open_attachments" string="Attachments" type="object"/> -->
-                    <button name="action_get_attachment_view" string="Attachments" type="object" icon="fa-paperclip"/>    
+                    <!-- <button name="action_get_attachment_view" string="Attachments" type="object" icon="fa-paperclip"/>     -->
                     <!-- <field name="attachment"/> -->
                     <!-- <field name="color" widget="color_picker"/> -->
                 </tree>

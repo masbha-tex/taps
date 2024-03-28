@@ -52,6 +52,7 @@ class BusinessExcellence(models.Model):
     machine = fields.Selection(selection=[
         ('1', 'New'),
         ('2', 'Upgradation')], string="Machine Status", tracking=True, default="1")
+    
     # priority = fields.Selection([
     #         ('1', 'No Star'),
     #         ('2', 'One Star'),
@@ -105,19 +106,5 @@ class BusinessExcellence(models.Model):
 
 
 
-# class BusinessExcellenceLine(models.Model):
-
-#     _name = 'business.excellence.line'
-#     _description = 'Business Excellence Line'
-  
-#     business_id = fields.Many2one('business.excellence', string='Project', index=True, required=True, ondelete='cascade')
-#     # name = fields.Char(string="Description")
-#     name = fields.Char('Task', required=True, translate=True)
-#     # criteria_id = fields.Many2one('business.excellence.criteria', required=True, string='Title')
-#     title_ids = fields.Many2one('business.excellence.title', string='Scope', domain="['|', ('criteria_id', '=', False), ('criteria_id', '=', criteria_id)]")
-#     # active = fields.Boolean(string="Active", default="True")
-    
-    
-    
 
 
