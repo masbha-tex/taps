@@ -131,7 +131,7 @@ class CrmTeamTransfer(models.Model):
         else:
             assign_user = self.env['customer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
             if assign_user:
-                assign_user.write({'active': True})
+                assign_user.write({'active': False})
                 
         self.user_id.sale_team_id = False
         if self.user_id.id == self.existing_team.user_id.id:
@@ -139,19 +139,23 @@ class CrmTeamTransfer(models.Model):
             self.existing_team.user_id = False
 
     def _action_transfer(self):
-        if self.new_team.name == 'MARKETING':
-            assign_user = self.env['buyer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
-            if assign_user:
-                assign_user.active = False
+        if (self.existing_team.name == 'MARKETING'):
+            existing = self.env['buyer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
         else:
-            assign_user = self.env['customer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
-            if assign_user:
-                assign_user.write({'active': True})
-                
-        self.user_id.sale_team_id = False
-        if self.user_id.id == self.existing_team.user_id.id:
-            # raise UserError((self.user_id,self.existing_team.user_id))
-            self.existing_team.user_id = False
+            existing = self.env['customer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
+        if existing:
+            existing.write({'active': False})
+        if (self.new_team.name == 'MARKETING'):
+            new = self.env['buyer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
+            if not new:
+                new_record = self.env['buyer.allocated'].sudo().create({'marketingperson' : self.user_id.id})
+        else:
+            new = self.env['customer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
+            if not new:
+                new_record = self.env['customer.allocated'].sudo().create({'salesperson' : self.user_id.id})
+            
+        self.user_id.sale_team_id = self.new_team.id
+        
         
 
     def _update_visit(self):

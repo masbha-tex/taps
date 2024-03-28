@@ -81,6 +81,7 @@ class CombineInvoice(models.Model):
     master_date = fields.Date(string='Export LC Date', store=True, readonly=False)
     exp_no = fields.Char(string='BB DC REF.', store=True, readonly=False)
     exp_date = fields.Date(string='Document/Export Date', store=True, readonly=False)
+    bepza_permission = fields.Char(string='BEPZA PERMISSION NO', store=True, readonly=False)
     appl_ref = fields.Char(string='APPLICANT REF.', store=True, readonly=False)
     numberof_carton = fields.Float('No. of Ctn', default=0.0, store=True)
     gross_weight = fields.Float('Gross Weight', default=0.0, store=True)

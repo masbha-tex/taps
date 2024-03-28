@@ -80,7 +80,8 @@
                                 <field name="sc_no"/>
                                 <field name="sc_date"/>
                                 <field name="master_lc"/>
-                                <field name="master_date"/>
+                                <field name="bepza_permission"/>
+                                <field name="master_date" invisible="1"/>
                                 <field name="exp_no"/>
                                 <field name="appl_ref"/>
                                 <field name="exp_date" invisible="1"/>

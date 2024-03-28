@@ -96,13 +96,24 @@
 									</t>
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>BANK REF NO:</strong>
-									<br/>
-									 <t t-esc="o.partner_bank_id.sanitized_acc_number"/>
-								</p>
-							</div>
+                            <t t-if="o.partner_bank_id">
+    							<div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>BANK REF NO:</strong>
+    									<br/>
+    									 <t t-esc="o.partner_bank_id.sanitized_acc_number"/>
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.bepza_permission">
+    							<div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>BEPZA PERMISSION NO:</strong>
+    									<br/>
+    									 <t t-esc="o.bepza_permission"/>
+    								</p>
+    							</div>
+                            </t>
                             <t t-if="o.applicant_tin">
                                 <div class="col-auto col-2 mw-100 mb-2">
     								 <p>
@@ -2493,13 +2504,24 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
-							<div class="col-auto col-2 mw-100 mb-2">
-								<p>
-									<strong>BANK REF NO:</strong>
-									<br/>
-									 <t t-esc="o.partner_bank_id.sanitized_acc_number"/>
-								</p>
-							</div>
+                            <t t-if="o.partner_bank_id">
+    							<div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>BANK REF NO:</strong>
+    									<br/>
+    									 <t t-esc="o.partner_bank_id.sanitized_acc_number"/>
+    								</p>
+    							</div>
+                            </t>
+                            <t t-if="o.bepza_permission">
+    							<div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>BEPZA PERMISSION NO:</strong>
+    									<br/>
+    									 <t t-esc="o.bepza_permission"/>
+    								</p>
+    							</div>
+                            </t>
                             <t t-if="o.applicant_tin">
                                 <div class="col-auto col-2 mw-100 mb-2">
     								<p>
@@ -3550,6 +3572,15 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
+                            <t t-if="o.bepza_permission">
+    							<div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>BEPZA PERMISSION NO:</strong>
+    									<br/>
+    									 <t t-esc="o.bepza_permission"/>
+    								</p>
+    							</div>
+                            </t>
                             <t t-if="o.applicant_tin">
                                 <div class="col-auto col-2 mw-100 mb-2">
     								<p>
@@ -4034,6 +4065,15 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 									</t>
 								</p>
 							</div>
+                            <t t-if="o.bepza_permission">
+    							<div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>BEPZA PERMISSION NO:</strong>
+    									<br/>
+    									 <t t-esc="o.bepza_permission"/>
+    								</p>
+    							</div>
+                            </t>
                             <t t-if="o.applicant_tin">
                                 <div class="col-auto col-2 mw-100 mb-2">
     								<p>
@@ -4471,13 +4511,28 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                           <br/>
                                     </div>
                                 </div>
+                            <t t-if="o.bepza_permission">
+    							<div class="col-auto col-2 mw-100 mb-2">
+    								<p>
+    									<strong>BEPZA PERMISSION NO:</strong>
+    									<br/>
+    									 <t t-esc="o.bepza_permission"/>
+    								</p>
+    							</div>
+                            </t>
                             <div class="row">
                                     <div class="col-3" style="font-size:12px">
-                                        Against Invoice No:   <strong></strong>
+                                        Against Invoice No:
                                         <br/>
-                                        Drawn letter of Credit No:   <strong></strong>
+                                        Drawn letter of Credit No:
                                         <br/>
-                                        APPLICANT'S TIN: <strong></strong>
+                                        <t t-if="o.applicant_tin">
+                                            <span>APPLICANT'S TIN:</span>
+                                        </t>
+                                        <br/>
+                                        <t t-if="o.bepza_permission">
+                                            <span>BEPZA PERMISSION NO:</span>
+                                        </t>
                                         <br/>
                                         VAT REG.NO. :  
                                         <br/>
@@ -4497,7 +4552,13 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                         <br/>
                                         <strong><t t-esc="o.lc_no"/> </strong>
                                         <br/>
-                                        <strong><t t-esc="o.applicant_tin"/> </strong>
+                                        <t t-if="o.applicant_tin">
+                                            <strong><t t-esc="o.applicant_tin"/> </strong>
+                                        </t>
+                                        <br/>
+                                        <t t-if="o.bepza_permission">
+                                            <strong><t t-esc="o.bepza_permission"/> </strong>
+                                        </t>
                                         <br/>
                                         <strong><t t-esc="o.bin_vat_reg"/> </strong>
                                         <br/>
@@ -4603,11 +4664,18 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                 </div>
                             <div class="row">
                                     <div class="col-3" style="font-size:12px">
-                                        Against Invoice No:   <strong></strong>
+                                        Against Invoice No:
                                         <br/>
-                                        Drawn letter of Credit No:   <strong></strong>
+                                        Drawn letter of Credit No:
                                         <br/>
-                                        APPLICANT'S TIN: <strong></strong>
+                                        <t t-if="o.applicant_tin">
+                                            <span>APPLICANT'S TIN:</span>
+                                        </t>
+                                        <br/>
+                                        <t t-if="o.bepza_permission">
+                                            <span>BEPZA PERMISSION NO:</span>
+                                        </t>
+                                        <br/>
                                         <br/>
                                         VAT REG.NO. :  
                                         <br/>

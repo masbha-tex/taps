@@ -87,6 +87,13 @@
                 </search>
              </field>
         </record> -->
+            <record id="action_be_task" model="ir.actions.act_window">
+                <field name="name">Task</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">business.excellence.task</field>
+                <field name="view_mode">kanban,tree,form</field>
+                <field name="context">{'group_by': 'business_id', 'order_by': ['title_ids']}</field>
+            </record>
 
 
         <record id="business_excellence_task_tree_action" model="ir.actions.act_window">
@@ -109,6 +116,11 @@
             parent="menu_business_excellence_config_settings"
             groups="hr.group_hr_manager"
             sequence="4"/> -->
+        <menuitem name="Task"
+        parent="main_business_excellence_menu"
+        id="menu_be_task"
+        action="action_be_task"
+        sequence="5"/>
         
     </data>
 </odoo>
