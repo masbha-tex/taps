@@ -4511,15 +4511,6 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
                                           <br/>
                                     </div>
                                 </div>
-                            <t t-if="o.bepza_permission">
-    							<div class="col-auto col-2 mw-100 mb-2">
-    								<p>
-    									<strong>BEPZA PERMISSION NO:</strong>
-    									<br/>
-    									 <t t-esc="o.bepza_permission"/>
-    								</p>
-    							</div>
-                            </t>
                             <div class="row">
                                     <div class="col-3" style="font-size:12px">
                                         Against Invoice No:

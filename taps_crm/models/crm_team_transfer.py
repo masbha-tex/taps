@@ -93,6 +93,8 @@ class CrmTeamTransfer(models.Model):
                 
             if self. type == "transfer":
                 self._action_transfer()
+                self._update_visit()
+                self._update_sale_order()
                 # self.user_id.sale_team_id = self.new_team.id
             
             self.write({'state':'approved'})
@@ -172,7 +174,7 @@ class CrmTeamTransfer(models.Model):
         end_date += timedelta(days=1)
         sale_order = self.env['sale.order'].sudo().search([('user_id', '=', self.user_id.id),('create_date', '>=',start_date),('create_date', '<', end_date)])
         for rec in sale_order:
-            rec.write({'team_id': self.new_team.id, 'region_id': self.new_team.region_id.id})
+            rec.write({'team_id': self.new_team.id, 'region_id': self.new_team.region.id})
         
             
                 
