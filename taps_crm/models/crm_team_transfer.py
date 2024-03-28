@@ -92,7 +92,8 @@ class CrmTeamTransfer(models.Model):
                 self._action_remove()
                 
             if self. type == "transfer":
-                self.user_id.sale_team_id = self.new_team.id
+                self._action_transfer()
+                # self.user_id.sale_team_id = self.new_team.id
             
             self.write({'state':'approved'})
         else:
@@ -123,6 +124,21 @@ class CrmTeamTransfer(models.Model):
     
 
     def _action_remove(self):
+        if self.new_team.name == 'MARKETING':
+            assign_user = self.env['buyer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
+            if assign_user:
+                assign_user.active = False
+        else:
+            assign_user = self.env['customer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
+            if assign_user:
+                assign_user.write({'active': True})
+                
+        self.user_id.sale_team_id = False
+        if self.user_id.id == self.existing_team.user_id.id:
+            # raise UserError((self.user_id,self.existing_team.user_id))
+            self.existing_team.user_id = False
+
+    def _action_transfer(self):
         if self.new_team.name == 'MARKETING':
             assign_user = self.env['buyer.allocated'].sudo().search([('id', '=', self.user_id.id)], limit=1)
             if assign_user:

@@ -89,8 +89,8 @@ class CombineInvoice(models.Model):
     notify_partner = fields.Boolean(readonly=False, default=False, store=True)
     notify_bank = fields.Boolean(readonly=False, default=False, store=True)
     consigned = fields.Selection([
-            ('consigned_to', 'Consigned To'),
-            ('consigned_order', 'Consigned to the order of'),
+            ('consigned_to', 'CONSIGNED TO'),
+            ('consigned_order', 'TO THE ORDER OF'),
             ('nothing', 'Nothing')],
             string='Consigned', default='nothing')
     freight_colect = fields.Selection([
@@ -325,8 +325,8 @@ class CustomerInvoice(models.AbstractModel):
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
         ex_items = None
-        if total>total_value:
-            total_value = total
+        # if total>total_value:
+        total_value = total
         if z_items:
             ex_items = 'ZIPPER'
             z_total_qty = sum(z_items.mapped('quantity'))
@@ -448,8 +448,8 @@ class PackingList(models.AbstractModel):
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
         ex_items = None
-        if total>total_value:
-            total_value = total
+        # if total>total_value:
+        total_value = total
         if z_items:
             ex_items = 'ZIPPER'
             z_total_qty = sum(z_items.mapped('quantity'))
@@ -571,8 +571,8 @@ class DeliveryChallan(models.AbstractModel):
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
         ex_items = None
-        if total>total_value:
-            total_value = total
+        # if total>total_value:
+        total_value = total
         if z_items:
             ex_items = 'ZIPPER'
             z_total_qty = sum(z_items.mapped('quantity'))
@@ -694,8 +694,8 @@ class TruckReceipt(models.AbstractModel):
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
         ex_items = None
-        if total>total_value:
-            total_value = total
+        # if total>total_value:
+        total_value = total
         if z_items:
             ex_items = 'ZIPPER'
             z_total_qty = sum(z_items.mapped('quantity'))
@@ -817,8 +817,8 @@ class BillofExchange(models.AbstractModel):
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
         ex_items = None
-        if total>total_value:
-            total_value = total
+        # if total>total_value:
+        total_value = total
         if z_items:
             ex_items = 'ZIPPER'
             z_total_qty = sum(z_items.mapped('quantity'))
@@ -940,8 +940,8 @@ class ApplicantCertificate(models.AbstractModel):
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
         ex_items = None
-        if total>total_value:
-            total_value = total
+        # if total>total_value:
+        total_value = total
         if z_items:
             ex_items = 'ZIPPER'
             z_total_qty = sum(z_items.mapped('quantity'))
@@ -1063,8 +1063,8 @@ class Undertaking(models.AbstractModel):
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
         ex_items = None
-        if total>total_value:
-            total_value = total
+        # if total>total_value:
+        total_value = total
         if z_items:
             ex_items = 'ZIPPER'
             z_total_qty = sum(z_items.mapped('quantity'))
@@ -1186,8 +1186,8 @@ class SalesContract(models.AbstractModel):
         total_value = sum(line_data.mapped('price_total'))
         total = docs.amount_total
         ex_items = None
-        if total>total_value:
-            total_value = total
+        # if total>total_value:
+        total_value = total
         if z_items:
             ex_items = 'ZIPPER'
             z_total_qty = sum(z_items.mapped('quantity'))

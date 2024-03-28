@@ -3459,7 +3459,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
 									<span style="color: Black ! important">DELIVERY CHALLAN #  
-                                         <t t-esc="common_data[9]"/> 
+                                         <t t-esc="common_data[9]"/> Date:<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
 									</span>
 									<!-- <t t-if="o.is_revised == True">
 										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>
@@ -3954,7 +3954,7 @@ the merchandise supplied are Strictly in conformity with the profoma invoice no.
 							<div class="float-left">
 								<h2 class="mt15" style="font-size: 15px">
 									<span style="color: Black ! important">TRUCK RECEIPT #  
-                                         <t t-esc="common_data[10]"/> 
+                                         <t t-esc="common_data[10]"/> Date:<t t-esc="o.invoice_date.strftime('%d-%m-%Y')"/>
 									</span>
 									<!-- <t t-if="o.is_revised == True">
 										<span style="color: Black ! important">-<span style="color: Black ! important" t-field="o.revised_no"/>

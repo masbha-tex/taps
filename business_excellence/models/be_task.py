@@ -39,6 +39,7 @@ class BusinessExcellenceTask(models.Model):
             ('Completed', 'Completed')], 'Status', required=True, tracking=True, default='Active')
 
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
+    attachment_number = fields.Integer(compute='_compute_attachment_number', string='Number of Attachments', tracking=True)
 
     def action_open_attachments(self):
         return {
@@ -65,6 +66,14 @@ class BusinessExcellenceTask(models.Model):
             'default_res_id': self.id,
         }
         return res 
+
+    def _compute_attachment_number(self):
+        attachment_data = self.env['ir.attachment'].read_group([('res_model', '=', 'business.excellence.task'), ('res_id', 'in', self.ids)], ['res_id'], ['res_id'])
+        attachment = dict((data['res_id'], data['res_id_count']) for data in attachment_data)
+        for task in self:
+            task.attachment_number = attachment.get(task.id, 0)  
+
+
         
     # active = fields.Boolean('Active', default=True)
     # color = fields.Integer('Color', default=_get_default_color)
